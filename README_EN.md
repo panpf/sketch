@@ -2,8 +2,8 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Logs](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=Logs)](https://github.com/xiaopansky/Sketch/releases)
-[![Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
+[![Logs](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=Logs)](https://github.com/xiaopansky/sketch/releases)
+[![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files)
 [![API](https://img.shields.io/badge/API-9%2B-red.svg)](https://android-arsenal.com/api?level=9)
 ![QQ Group](https://img.shields.io/badge/QQ%20Gruop-529630740-orange.svg)
 
@@ -77,7 +77,7 @@ dependencies {
 }
 ```
 
-Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Do not "v")`
+Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(Do not "v")`
 
 If you need to play GIF add sketch-gif dependencies
 
@@ -87,7 +87,7 @@ dependencies {
 }
 ```
 
-Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
+Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
 
 [Click to understand the proguard configuration](docs/wiki/proguard_config.md)
 

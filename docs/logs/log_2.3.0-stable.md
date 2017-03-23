@@ -8,16 +8,16 @@
 >* :bug: 支持下载那些服务端无法确定文件大小导致响应头里只有Transfer-Encoding: chunked没有Content-Length的图片
 
 ##### 缓存
->* :bug: [#4](https://github.com/xiaopansky/Sketch/issues/4) 修复由于在内存中缓存了Drawable，导致同一个缓存Drawable在两个不同的地方使用时bounds被改变从而图片大小显示异常，常见的表现为点击图片进入图片详情页后再回来发现图片变小了
->* :bug: [#11](https://github.com/xiaopansky/Sketch/issues/11) 修复最后一条磁盘缓存无效的BUG，这是DiskLruCache的BUG，因为在commit的时候没有持久化操作记录导致的
->* :bug: [#14](https://github.com/xiaopansky/Sketch/issues/14) 修复ImageHolder直接缓存了Drawable导致同一个Drawable在多个FIX_XY的ImageView上显示时大小异常的BUG
+>* :bug: [#4](https://github.com/xiaopansky/sketch/issues/4) 修复由于在内存中缓存了Drawable，导致同一个缓存Drawable在两个不同的地方使用时bounds被改变从而图片大小显示异常，常见的表现为点击图片进入图片详情页后再回来发现图片变小了
+>* :bug: [#11](https://github.com/xiaopansky/sketch/issues/11) 修复最后一条磁盘缓存无效的BUG，这是DiskLruCache的BUG，因为在commit的时候没有持久化操作记录导致的
+>* :bug: [#14](https://github.com/xiaopansky/sketch/issues/14) 修复ImageHolder直接缓存了Drawable导致同一个Drawable在多个FIX_XY的ImageView上显示时大小异常的BUG
 >* :bug: `DiskLruCache` 捕获commit时可能出现的java.lang.IllegalStateException: edit didn't create file 0异常
 >* :fire: 去掉stateImageMemoryCache，共用一个内存缓存器
 >* :sparkles: Sketch类中新增onLowMemory()和onTrimMemory(int)方法，用于在内存较低时释放缓存，需要在Application中回调，具体请查看README或参考demo app
 >* :sparkles: 新增[BitmapPool](../wiki/bitmap_pool.md)，可减少内存分配，降低因GC回收造成的卡顿
 
 ##### Drawable
->* :bug: [#13](https://github.com/xiaopansky/Sketch/issues/13) 修复SketchBitmapDrawable由于没有设置TargetDensity而始终以160的默认像素密度来缩小图片最终导致通过getIntrinsicWidth()得到的尺寸始终比Bitmap实际尺寸小的BUG
+>* :bug: [#13](https://github.com/xiaopansky/sketch/issues/13) 修复SketchBitmapDrawable由于没有设置TargetDensity而始终以160的默认像素密度来缩小图片最终导致通过getIntrinsicWidth()得到的尺寸始终比Bitmap实际尺寸小的BUG
 
 ##### 占位图（[StateImage](../wiki/state_image.md)）：
 >* :hammer: 重构占位图系统，更名为StateImage，现在可以用任意类型的drawable作为loading占位图了

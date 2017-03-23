@@ -2,8 +2,8 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Logs](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=Logs)](https://github.com/xiaopansky/Sketch/releases)
-[![Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
+[![Logs](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=Logs)](https://github.com/xiaopansky/sketch/releases)
+[![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files)
 [![API](https://img.shields.io/badge/API-9%2B-red.svg)](https://android-arsenal.com/api?level=9)
 ![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-orange.svg)
 
@@ -75,7 +75,7 @@ dependencies {
 }
 ```
 
-请自行替换 `<SKETCH_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(不要"v")`
+请自行替换 `<SKETCH_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(不要"v")`
 
 如果需要播放GIF就添加sketch-gif的依赖
 
@@ -85,7 +85,7 @@ dependencies {
 }
 ```
 
-请自行替换`<SKETCH_GIF_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(不要"v")`
+请自行替换`<SKETCH_GIF_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(不要"v")`
 
 [点击了解混淆配置](docs/wiki/proguard_config.md)
 
