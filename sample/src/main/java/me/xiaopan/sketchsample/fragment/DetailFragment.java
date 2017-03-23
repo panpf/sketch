@@ -255,7 +255,7 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                     if (uriScheme == UriScheme.NET) {
                         DiskCache.Entry imageFile3DiskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(currentUri);
                         if (imageFile3DiskCacheEntry != null) {
-                            new SaveImageAsyncTask(getActivity(), imageFile3DiskCacheEntry.getFile()).execute("");
+                            new SaveImageAsyncTask(getActivity(), imageFile3DiskCacheEntry.getFile(), currentUri).execute("");
                         } else {
                             Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                         }

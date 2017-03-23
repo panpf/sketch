@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * 保存图片异步任务
@@ -21,10 +23,12 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
 
     private Context context;
     private File imageFile;
+    private String imageUri;
 
-    public SaveImageAsyncTask(Context context, File imageFile) {
+    public SaveImageAsyncTask(Context context, File imageFile, String imageUri) {
         this.context = context;
         this.imageFile = imageFile;
+        this.imageUri = imageUri;
     }
 
     @Override
@@ -47,9 +51,12 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
             dir.mkdirs();
         }
 
-        String fileName = imageFile.getName();
-        if (fileName.endsWith(".0") || fileName.endsWith(".1")) {
-            fileName = fileName.substring(0, fileName.length() - 2);
+        String fileName;
+        try {
+            fileName = URLEncoder.encode(imageUri, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return "";
         }
         File outImageFile = new File(dir, fileName);
         try {
