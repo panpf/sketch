@@ -94,6 +94,10 @@ public class SLog {
         v(type, null, text);
     }
 
+    public static void v(String name, String msg) {
+        v(null, name, msg);
+    }
+
     public static void v(String text) {
         v(null, null, text);
     }
@@ -148,6 +152,10 @@ public class SLog {
 
     public static void i(SLogType type, String text) {
         i(type, null, text);
+    }
+
+    public static void i(String name, String msg) {
+        i(null, name, msg);
     }
 
     public static void i(String text) {
@@ -206,6 +214,10 @@ public class SLog {
         d(type, null, text);
     }
 
+    public static void d(String name, String msg) {
+        d(null, name, msg);
+    }
+
     public static void d(String text) {
         d(null, null, text);
     }
@@ -262,6 +274,10 @@ public class SLog {
         w(type, null, text);
     }
 
+    public static void w(String name, String msg) {
+        w(null, name, msg);
+    }
+
     public static void w(String text) {
         w(null, null, text);
     }
@@ -316,6 +332,10 @@ public class SLog {
 
     public static void e(SLogType type, String text) {
         e(type, null, text);
+    }
+
+    public static void e(String name, String msg) {
+        e(null, name, msg);
     }
 
     public static void e(String text) {
