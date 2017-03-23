@@ -82,7 +82,8 @@ public final class Configuration {
 
         MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
 
-        this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
+        // 由于默认的缓存文件名称从URLEncoder加密变成了MD5所以这里要升级一下版本号，好清除旧的缓存
+        this.diskCache = new LruDiskCache(context, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
         this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
         this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
 

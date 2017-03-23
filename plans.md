@@ -9,16 +9,12 @@
 * 再次考虑Drawable.setVisible
 * 通过ExifInterface读取图片方向信息，实现自动旋转方向不正的图片，新的ExifInterface支持库 http://developers.googleblog.cn/2017/01/exifinterface.html compile "com.android.support:exifinterface:25.1.0"
 * 4.3模拟器上模糊失效
-* 滑动关闭功能
-* 长按出选项，点击关闭
 * gif点击播放
-* 自动识别图片方向
 * 长图只读取部分区域，参考百思不得姐
 * 参考高并发对象池，优化sketch里的同步锁与对象池
 * 加上面部识别功能，居中显示部分时可以以脸部为中心
-* 缓存文件的名称改用MD5编码，因为已经出现了文件名字过长导致文件无法访问的问题
-* demo侧滑菜单背景异常
-* demo详情页不可见时暂停播放失效了
+* demo上下滑动关闭功能
+* demo长按出选项，点击关闭
 
 其它：
 * 参考Glide、Fresco和Picasso
@@ -180,6 +176,9 @@
 * （2016-10-25）利用BitmapShader实现各种形状的图片
 * （2016-10-28）支持缓存处理过的图片，这样下次读取就很快了
 * （2016-10-30）加一些具体的使用场景的文档，比如如何让不规则的图片也能使用TransitionDrawable，如何清晰的显示超大图片的缩略图，如何在图片详情页先显示较小的图片，在显示清晰的图片
+* （2017-03-21）demo侧滑菜单背景异常
+* （2017-03-21）demo详情页不可见时暂停播放失效了
+* （2017-03-23）缓存文件的名称改用MD5编码，因为已经出现了文件名字过长导致文件无法访问的问题
 
 不必了：
 * （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）

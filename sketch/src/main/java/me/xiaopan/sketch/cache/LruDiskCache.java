@@ -23,16 +23,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.util.SketchMD5Utils;
 import me.xiaopan.sketch.util.NoSpaceException;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.UnableCreateDirException;
@@ -252,12 +251,7 @@ public class LruDiskCache implements DiskCache {
 //        if (SketchUtils.checkSuffix(uri, ".apk")) {
 //            uri += ".icon";
 //        }
-        try {
-            return URLEncoder.encode(uri, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return SketchMD5Utils.md5(uri);
     }
 
     @Override
