@@ -72,8 +72,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
 
     compile 'me.xiaopan:gohttp:1.2.0'
     compile 'me.xiaopan:androidinjector:1.5.0'

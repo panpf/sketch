@@ -33,5 +33,6 @@ apply from: "../bintrayUpload.gradle"
 
 dependencies {
     provided project(':sketch-gif')
-    provided 'com.android.support:support-annotations:25.2.0'
+    provided "com.android.support:support-annotations:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    provided "com.android.support:exifinterface:${ANDROID_SUPPORT_LIBRARY_VERSION}"
 }
