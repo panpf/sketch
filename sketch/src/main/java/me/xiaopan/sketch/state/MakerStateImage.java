@@ -28,7 +28,7 @@ import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.ImageInfo;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
@@ -155,9 +155,9 @@ public class MakerStateImage implements StateImage {
             BitmapFactory.decodeResource(configuration.getContext().getResources(), resId, options);
 
             String uri = UriScheme.DRAWABLE.createUri(String.valueOf(resId));
-            ImageInfo imageInfo = new ImageInfo(memoryCacheKey, uri, options.outMimeType, options.outWidth, options.outHeight);
+            ImageAttrs imageAttrs = new ImageAttrs(options.outMimeType, options.outWidth, options.outHeight);
 
-            RefBitmap newRefBitmap = new RefBitmap(bitmap, imageInfo, bitmapPool);
+            RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheKey, uri, imageAttrs, bitmapPool);
             memoryCache.put(memoryCacheKey, newRefBitmap);
             return new RefBitmapDrawable(newRefBitmap);
         } else {

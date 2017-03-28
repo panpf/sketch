@@ -31,7 +31,7 @@ import java.io.InputStream;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.drawable.ImageInfo;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -121,10 +121,10 @@ public class ContentDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawable makeGifDrawable(ImageInfo imageInfo, BitmapPool bitmapPool) {
+    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         ContentResolver contentResolver = loadRequest.getSketch().getConfiguration().getContext().getContentResolver();
         try {
-            return SketchGifFactory.createGifDrawable(imageInfo, bitmapPool, contentResolver, contentUri);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, contentResolver, contentUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

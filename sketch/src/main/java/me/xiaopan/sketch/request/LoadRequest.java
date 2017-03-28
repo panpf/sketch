@@ -226,9 +226,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         if (dataSourceFromProcessedCache && decodeResult != null) {
             BitmapFactory.Options options = getSketch().getConfiguration().getImageDecoder().decodeBounds(this);
             if (options != null && !TextUtils.isEmpty(options.outMimeType)) {
-                decodeResult.setMimeType(options.outMimeType);
-                decodeResult.setOriginWidth(options.outWidth);
-                decodeResult.setOriginHeight(options.outHeight);
+                decodeResult.getImageAttrs().reset(options.outMimeType, options.outWidth, options.outHeight);
             }
         }
 
@@ -237,19 +235,22 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
             if (bitmap.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
+                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: "
+                            + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
             if (SLogType.REQUEST.isEnabled()) {
-                printLogI("decode success", "runLoad", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
+                printLogI("decode success", "runLoad", "bitmapInfo: "
+                        + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
             }
 
             if (isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
+                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: "
+                            + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
                 return;
@@ -278,7 +279,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     // 确实是一张新图片，就替换掉旧图片
                     if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != bitmap) {
                         if (SLogType.REQUEST.isEnabled()) {
-                            printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.makeImageInfo(null, newBitmap, decodeResult.getMimeType()));
+                            printLogW("process new bitmap", "runLoad", "bitmapInfo: "
+                                    + SketchUtils.makeImageInfo(null, newBitmap, decodeResult.getImageAttrs().getMimeType()));
                         }
 
                         BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
@@ -294,7 +296,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
                     if (isCanceled()) {
                         if (SLogType.REQUEST.isEnabled()) {
-                            printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
+                            printLogW("canceled", "runLoad", "process after", "bitmapInfo: "
+                                    + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
                         }
                         BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
                         return;

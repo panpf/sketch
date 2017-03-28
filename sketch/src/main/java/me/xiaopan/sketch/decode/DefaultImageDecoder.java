@@ -30,7 +30,7 @@ import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.drawable.ImageInfo;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -194,15 +194,15 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         try {
-            ImageInfo imageInfo = new ImageInfo(request.getKey(), request.getUri(), boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
+            ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
 
-            SketchGifDrawable gifDrawable = decodeHelper.makeGifDrawable(imageInfo, bitmapPool);
+            SketchGifDrawable gifDrawable = decodeHelper.makeGifDrawable(request.getKey(), request.getUri(), imageAttrs, bitmapPool);
             if (gifDrawable == null) {
                 return null;
             }
 
-            return new DecodeResult(boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, gifDrawable);
+            return new DecodeResult(imageAttrs, gifDrawable);
         } catch (Throwable e) {
             e.printStackTrace();
             SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
@@ -307,7 +307,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 成功
         decodeHelper.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
-        return new DecodeResult(boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmap).setCanCacheInDiskCache(true);
+        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
+        return new DecodeResult(imageAttrs, bitmap).setCanCacheInDiskCache(true);
     }
 
     private DecodeResult normal(LoadRequest request, DecodeHelper decodeHelper, ImageFormat imageFormat,
@@ -383,9 +384,9 @@ public class DefaultImageDecoder implements ImageDecoder {
         decodeHelper.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
 
         ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
+        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
         boolean canUseCacheProcessedImageInDisk = sizeCalculator.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
-        return new DecodeResult(boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmap)
-                .setCanCacheInDiskCache(canUseCacheProcessedImageInDisk);
+        return new DecodeResult(imageAttrs, bitmap).setCanCacheInDiskCache(canUseCacheProcessedImageInDisk);
     }
 
     private DecodeResult decodeFromDataSource(LoadRequest request, DataSource dataSource) {

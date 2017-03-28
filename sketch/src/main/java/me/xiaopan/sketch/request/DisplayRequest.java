@@ -26,7 +26,6 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.ImageInfo;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
@@ -174,7 +173,7 @@ public class DisplayRequest extends LoadRequest {
                     cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
 
                     Drawable drawable = new RefBitmapDrawable(cachedRefBitmap);
-                    displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+                    displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getImageAttrs());
                     displayCompleted();
                     return true;
                 } else {
@@ -198,17 +197,15 @@ public class DisplayRequest extends LoadRequest {
             if (bitmap.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
                     printLogE("decode failed", "loadCompleted", "bitmap recycled",
-                            "bitmapInfo=", SketchUtils.makeImageInfo(null, bitmap, loadResult.getMimeType()),
+                            "bitmapInfo=", SketchUtils.makeImageInfo(null, bitmap, loadResult.getImageAttrs().getMimeType()),
                             loadResult.getImageFrom());
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
-            ImageInfo imageInfo = new ImageInfo(getKey(), getUri(), loadResult.getMimeType(),
-                    loadResult.getOriginWidth(), loadResult.getOriginHeight());
             BitmapPool bitmapPool = getSketch().getConfiguration().getBitmapPool();
-            RefBitmap refBitmap = new RefBitmap(bitmap, imageInfo, bitmapPool);
+            RefBitmap refBitmap = new RefBitmap(bitmap, getKey(), getUri(), loadResult.getImageAttrs(), bitmapPool);
 
             // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
             refBitmap.setIsWaitingUse(getLogName() + ":waitingUse:new", true);
@@ -219,7 +216,7 @@ public class DisplayRequest extends LoadRequest {
             }
 
             Drawable drawable = new RefBitmapDrawable(refBitmap);
-            displayResult = new DisplayResult(drawable, loadResult.getImageFrom(), loadResult.getMimeType());
+            displayResult = new DisplayResult(drawable, loadResult.getImageFrom(), loadResult.getImageAttrs());
             displayCompleted();
         } else if (loadResult != null && loadResult.getGifDrawable() != null) {
             SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
@@ -236,7 +233,7 @@ public class DisplayRequest extends LoadRequest {
             // GifDrawable不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
             // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
-            displayResult = new DisplayResult((Drawable) gifDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
+            displayResult = new DisplayResult((Drawable) gifDrawable, loadResult.getImageFrom(), loadResult.getImageAttrs());
             displayCompleted();
         } else {
             if (SLogType.REQUEST.isEnabled()) {
@@ -316,7 +313,7 @@ public class DisplayRequest extends LoadRequest {
         setStatus(Status.COMPLETED);
 
         if (displayListener != null) {
-            displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getMimeType());
+            displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getImageAttrs().getMimeType());
         }
     }
 

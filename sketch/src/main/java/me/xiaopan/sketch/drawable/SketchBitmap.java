@@ -6,16 +6,20 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 public abstract class SketchBitmap {
 
+    private String key;
+    private String uri;
     protected Bitmap bitmap;
-    private ImageInfo imageInfo;
+    private ImageAttrs imageAttrs;
 
-    protected SketchBitmap(Bitmap bitmap, ImageInfo imageInfo) {
+    protected SketchBitmap(Bitmap bitmap, String key, String uri, ImageAttrs imageAttrs) {
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException("bitmap is null or recycled");
         }
 
         this.bitmap = bitmap;
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
     }
 
     public Bitmap getBitmap() {
@@ -23,23 +27,27 @@ public abstract class SketchBitmap {
     }
 
     public String getKey() {
-        return imageInfo.getKey();
+        return key;
     }
 
     public String getUri() {
-        return imageInfo.getUri();
+        return uri;
     }
 
     public int getOriginWidth() {
-        return imageInfo.getOriginWidth();
+        return imageAttrs.getOriginWidth();
     }
 
     public int getOriginHeight() {
-        return imageInfo.getOriginHeight();
+        return imageAttrs.getOriginHeight();
     }
 
     public String getMimeType() {
-        return imageInfo.getMimeType();
+        return imageAttrs.getMimeType();
+    }
+
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
     }
 
     public abstract String getInfo();

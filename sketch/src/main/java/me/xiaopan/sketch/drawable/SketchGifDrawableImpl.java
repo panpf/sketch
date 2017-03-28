@@ -45,70 +45,102 @@ import pl.droidsonroids.gif.GifDrawable;
 public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawable {
     protected String logName = "SketchGifDrawable";
 
-    private ImageInfo imageInfo;
+    private String key;
+    private String uri;
+    private ImageAttrs imageAttrs;
     private ImageFrom imageFrom;
 
     private BitmapPool bitmapPool;
 
     private Map<AnimationListener, pl.droidsonroids.gif.AnimationListener> listenerMap;
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          AssetFileDescriptor afd) throws IOException {
         super(afd);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          AssetManager assets, String assetName) throws IOException {
         super(assets, assetName);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, ByteBuffer buffer) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          ByteBuffer buffer) throws IOException {
         super(buffer);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, byte[] bytes) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          byte[] bytes) throws IOException {
         super(bytes);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, FileDescriptor fd) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          FileDescriptor fd) throws IOException {
         super(fd);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, File file) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          File file) throws IOException {
         super(file);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, String filePath) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          String filePath) throws IOException {
         super(filePath);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, Resources res, int id) throws Resources.NotFoundException, IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          Resources res, int id) throws Resources.NotFoundException, IOException {
         super(res, id);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException {
+    SketchGifDrawableImpl(String key, String imageUri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          ContentResolver resolver, Uri uri) throws IOException {
         super(resolver, uri);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = imageUri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
-    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, InputStream stream) throws IOException {
+    SketchGifDrawableImpl(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool,
+                          InputStream stream) throws IOException {
         super(stream);
-        this.imageInfo = imageInfo;
+        this.key = key;
+        this.uri = uri;
+        this.imageAttrs = imageAttrs;
         this.bitmapPool = bitmapPool;
     }
 
@@ -135,27 +167,27 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
 
     @Override
     public String getKey() {
-        return imageInfo.getKey();
+        return key;
     }
 
     @Override
     public String getUri() {
-        return imageInfo.getUri();
+        return uri;
     }
 
     @Override
     public int getOriginWidth() {
-        return imageInfo.getOriginWidth();
+        return imageAttrs.getOriginWidth();
     }
 
     @Override
     public int getOriginHeight() {
-        return imageInfo.getOriginHeight();
+        return imageAttrs.getOriginHeight();
     }
 
     @Override
     public String getMimeType() {
-        return imageInfo.getMimeType();
+        return imageAttrs.getMimeType();
     }
 
     @Override
@@ -170,7 +202,7 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
 
     @Override
     public String getInfo() {
-        return SketchUtils.makeImageInfo(logName, mBuffer, imageInfo.getMimeType(), getAllocationByteCount());
+        return SketchUtils.makeImageInfo(logName, mBuffer, imageAttrs.getMimeType(), getAllocationByteCount());
     }
 
     @Override

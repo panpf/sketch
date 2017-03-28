@@ -18,6 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 
@@ -25,25 +26,23 @@ public class DecodeResult {
     private Bitmap bitmap;
     private SketchGifDrawable gifDrawable;
 
-    private String mimeType;
-    private int originWidth;
-    private int originHeight;
+    private ImageAttrs imageAttrs;
 
     private ImageFrom imageFrom;
     private boolean canCacheInDiskCache;
 
-    public DecodeResult(int originWidth, int originHeight, String mimeType, SketchGifDrawable gifDrawable) {
-        this.originWidth = originWidth;
-        this.originHeight = originHeight;
-        this.mimeType = mimeType;
+    public DecodeResult(ImageAttrs imageAttrs, SketchGifDrawable gifDrawable) {
+        this.imageAttrs = imageAttrs;
         this.gifDrawable = gifDrawable;
     }
 
-    public DecodeResult(int originWidth, int originHeight, String mimeType, Bitmap bitmap) {
-        this.originWidth = originWidth;
-        this.originHeight = originHeight;
-        this.mimeType = mimeType;
+    public DecodeResult(ImageAttrs imageAttrs, Bitmap bitmap) {
+        this.imageAttrs = imageAttrs;
         this.bitmap = bitmap;
+    }
+
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
     }
 
     public void setImageFrom(ImageFrom imageFrom) {
@@ -54,36 +53,12 @@ public class DecodeResult {
         return imageFrom;
     }
 
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
     public Bitmap getBitmap() {
         return bitmap;
     }
 
     public SketchGifDrawable getGifDrawable() {
         return gifDrawable;
-    }
-
-    public int getOriginHeight() {
-        return originHeight;
-    }
-
-    public int getOriginWidth() {
-        return originWidth;
-    }
-
-    public void setOriginHeight(int originHeight) {
-        this.originHeight = originHeight;
-    }
-
-    public void setOriginWidth(int originWidth) {
-        this.originWidth = originWidth;
     }
 
     public boolean isCanCacheInDiskCache() {

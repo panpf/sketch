@@ -21,7 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.drawable.ImageInfo;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 
 /**
@@ -55,5 +55,5 @@ public interface DecodeHelper {
     /**
      * 创建GifDrawable
      */
-    SketchGifDrawable makeGifDrawable(ImageInfo imageInfo, BitmapPool bitmapPool);
+    SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool);
 }

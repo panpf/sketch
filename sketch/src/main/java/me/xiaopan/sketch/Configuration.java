@@ -33,6 +33,7 @@ import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.feature.HelperFactory;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownloadController;
@@ -64,6 +65,7 @@ public final class Configuration {
     private ResizeCalculator resizeCalculator;
     private ImagePreprocessor imagePreprocessor;
     private ImageSizeCalculator imageSizeCalculator;
+    private ImageOrientationCorrector imageOrientationCorrector;
 
     private HelperFactory helperFactory;
     private RequestFactory requestFactory;
@@ -96,6 +98,7 @@ public final class Configuration {
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.resizeImageProcessor = new ResizeImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
+        this.imageOrientationCorrector = new ImageOrientationCorrector();
 
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
@@ -107,7 +110,7 @@ public final class Configuration {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(this));
+            context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(context));
         }
     }
 
@@ -438,6 +441,31 @@ public final class Configuration {
     }
 
     /**
+     * 获取图片方向纠正器
+     *
+     * @return ImageOrientationCorrector
+     */
+    public ImageOrientationCorrector getImageOrientationCorrector() {
+        return imageOrientationCorrector;
+    }
+
+    /**
+     * 设置图片方向纠正器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setImageOrientationCorrector(ImageOrientationCorrector imageOrientationCorrector) {
+        if (imageOrientationCorrector != null) {
+            this.imageOrientationCorrector = imageOrientationCorrector;
+            if (SLogType.BASE.isEnabled()) {
+                SLog.d(SLogType.BASE, logName, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
+            }
+        }
+        return this;
+    }
+
+    /**
      * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响display请求
      */
     public boolean isGlobalPauseLoad() {
@@ -645,15 +673,15 @@ public final class Configuration {
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private static class MemoryChangedListener implements ComponentCallbacks2 {
-        private Configuration configuration;
+        private Context context;
 
-        public MemoryChangedListener(Configuration configuration) {
-            this.configuration = configuration;
+        public MemoryChangedListener(Context context) {
+            this.context = context.getApplicationContext();
         }
 
         @Override
         public void onTrimMemory(int level) {
-            Sketch.with(configuration.getContext()).onTrimMemory(level);
+            Sketch.with(context).onTrimMemory(level);
         }
 
         @Override
@@ -663,7 +691,7 @@ public final class Configuration {
 
         @Override
         public void onLowMemory() {
-            Sketch.with(configuration.getContext()).onLowMemory();
+            Sketch.with(context).onLowMemory();
         }
     }
 }

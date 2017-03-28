@@ -123,7 +123,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
             cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
 
             Drawable drawable = new RefBitmapDrawable(cachedRefBitmap);
-            displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+            displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getImageAttrs());
             displayCompleted();
             return true;
         } else {

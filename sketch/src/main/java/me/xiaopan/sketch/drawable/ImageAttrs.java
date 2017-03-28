@@ -16,27 +16,15 @@
 
 package me.xiaopan.sketch.drawable;
 
-public class ImageInfo {
-    private String key;
-    private String uri;
+public class ImageAttrs {
     private int originWidth;
     private int originHeight;
     private String mimeType;
 
-    public ImageInfo(String key, String uri, String mimeType, int originWidth, int originHeight) {
-        this.key = key;
-        this.uri = uri;
+    public ImageAttrs(String mimeType, int originWidth, int originHeight) {
         this.mimeType = mimeType;
         this.originWidth = originWidth;
         this.originHeight = originHeight;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getUri() {
-        return uri;
     }
 
     public String getMimeType() {
@@ -49,5 +37,11 @@ public class ImageInfo {
 
     public int getOriginWidth() {
         return originWidth;
+    }
+
+    public void reset(String mimeType, int originWidth, int originHeight){
+        this.mimeType = mimeType;
+        this.originWidth = originWidth;
+        this.originHeight = originHeight;
     }
 }

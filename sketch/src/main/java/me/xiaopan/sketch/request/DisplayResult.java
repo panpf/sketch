@@ -18,17 +18,19 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 
 public class DisplayResult {
     private Drawable drawable;
-    private String mimeType;
+
+    private ImageAttrs imageAttrs;
     private ImageFrom imageFrom;
 
-    public DisplayResult(Drawable drawable, ImageFrom imageFrom, String mimeType) {
+    public DisplayResult(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
         this.drawable = drawable;
         this.imageFrom = imageFrom;
-        this.mimeType = mimeType;
+        this.imageAttrs = imageAttrs;
 
         if (drawable instanceof SketchDrawable) {
             SketchDrawable sketchDrawable = (SketchDrawable) drawable;
@@ -44,7 +46,7 @@ public class DisplayResult {
         return imageFrom;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
     }
 }
