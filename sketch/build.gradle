@@ -25,7 +25,7 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -34,5 +34,4 @@ apply from: "../bintrayUpload.gradle"
 dependencies {
     provided project(':sketch-gif')
     provided "com.android.support:support-annotations:${ANDROID_SUPPORT_LIBRARY_VERSION}"
-    provided "com.android.support:exifinterface:${ANDROID_SUPPORT_LIBRARY_VERSION}"
 }

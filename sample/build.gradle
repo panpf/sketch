@@ -53,6 +53,7 @@ android {
 
         }
 
+        // 为了测试没有导入sketch-gif时是否可以正常运行
         nogiflib {
 
         }
