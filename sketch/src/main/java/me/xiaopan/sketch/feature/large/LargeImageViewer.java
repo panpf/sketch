@@ -32,7 +32,7 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
-import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -283,11 +283,11 @@ public class LargeImageViewer {
     }
 
     /**
-     * 获取图片的格式
+     * 获取图片的类型
      */
     @SuppressWarnings("unused")
-    public ImageFormat getImageFormat() {
-        return tileDecoder.isReady() ? tileDecoder.getDecoder().getImageFormat() : null;
+    public ImageType getImageType() {
+        return tileDecoder.isReady() ? tileDecoder.getDecoder().getImageType() : null;
     }
 
     /**

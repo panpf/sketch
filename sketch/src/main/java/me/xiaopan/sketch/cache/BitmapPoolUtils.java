@@ -26,7 +26,7 @@ import android.text.TextUtils;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchMonitor;
-import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class BitmapPoolUtils {
@@ -73,7 +73,7 @@ public class BitmapPoolUtils {
         }
 
         int inSampleSize = options.inSampleSize;
-        ImageFormat format = ImageFormat.valueOfMimeType(options.outMimeType);
+        ImageType format = ImageType.valueOfMimeType(options.outMimeType);
 
         Bitmap inBitmap = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -81,7 +81,7 @@ public class BitmapPoolUtils {
             int finalHeight = SketchUtils.ceil(options.outHeight, inSampleSize);
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize == 1
-                && (format == ImageFormat.JPEG || format == ImageFormat.PNG)) {
+                && (format == ImageType.JPEG || format == ImageType.PNG)) {
             inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
         }
 

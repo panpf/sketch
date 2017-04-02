@@ -31,7 +31,7 @@ import java.io.InputStream;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -42,22 +42,22 @@ public class ImageRegionDecoder {
 
     private Point imageSize;
     private String imageUri;
-    private ImageFormat imageFormat;
+    private ImageType imageType;
 
     private InputStream sourceInputStream;
     private BitmapRegionDecoder regionDecoder;
 
-    ImageRegionDecoder(String imageUri, int imageWidth, int imageHeight, ImageFormat imageFormat, BitmapRegionDecoder regionDecoder) {
+    ImageRegionDecoder(String imageUri, int imageWidth, int imageHeight, ImageType imageType, BitmapRegionDecoder regionDecoder) {
         this.imageUri = imageUri;
         this.imageSize = new Point(imageWidth, imageHeight);
-        this.imageFormat = imageFormat;
+        this.imageType = imageType;
         this.regionDecoder = regionDecoder;
     }
 
-    ImageRegionDecoder(String imageUri, int imageWidth, int imageHeight, ImageFormat imageFormat, BitmapRegionDecoder regionDecoder, InputStream sourceInputStream) {
+    ImageRegionDecoder(String imageUri, int imageWidth, int imageHeight, ImageType imageType, BitmapRegionDecoder regionDecoder, InputStream sourceInputStream) {
         this.imageUri = imageUri;
         this.imageSize = new Point(imageWidth, imageHeight);
-        this.imageFormat = imageFormat;
+        this.imageType = imageType;
         this.regionDecoder = regionDecoder;
         this.sourceInputStream = sourceInputStream;
     }
@@ -94,9 +94,9 @@ public class ImageRegionDecoder {
         BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(diskCacheFilePath, false);
         int imageWidth = options.outWidth;
         int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder);
+        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder);
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
@@ -110,9 +110,9 @@ public class ImageRegionDecoder {
         BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(filePath, false);
         int imageWidth = options.outWidth;
         int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder);
+        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder);
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
@@ -136,9 +136,9 @@ public class ImageRegionDecoder {
 
         int imageWidth = options.outWidth;
         int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder, inputStream);
+        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder, inputStream);
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
@@ -162,9 +162,9 @@ public class ImageRegionDecoder {
 
         int imageWidth = options.outWidth;
         int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder, inputStream);
+        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder, inputStream);
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
@@ -188,9 +188,9 @@ public class ImageRegionDecoder {
 
         int imageWidth = options.outWidth;
         int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder, inputStream);
+        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder, inputStream);
     }
 
     @SuppressWarnings("unused")
@@ -198,8 +198,8 @@ public class ImageRegionDecoder {
         return imageSize;
     }
 
-    public ImageFormat getImageFormat() {
-        return imageFormat;
+    public ImageType getImageType() {
+        return imageType;
     }
 
     @SuppressWarnings("unused")

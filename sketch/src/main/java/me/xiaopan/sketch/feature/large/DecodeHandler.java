@@ -31,7 +31,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
-import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.decode.ImageType;
 
 /**
  * 解码处理器，运行在解码线程中，负责解码
@@ -107,9 +107,9 @@ class DecodeHandler extends Handler {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
-        ImageFormat imageFormat = regionDecoder.getImageFormat();
-        if (imageFormat != null) {
-            options.inPreferredConfig = imageFormat.getConfig(false);
+        ImageType imageType = regionDecoder.getImageType();
+        if (imageType != null) {
+            options.inPreferredConfig = imageType.getConfig(false);
         }
 
         if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder() && !disableInBitmap) {

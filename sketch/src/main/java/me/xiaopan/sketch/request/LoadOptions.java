@@ -19,6 +19,7 @@ package me.xiaopan.sketch.request;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
@@ -48,7 +49,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 在解码或创建Bitmap的时候尽量使用低质量的Bitmap.Config
      *
-     * @see me.xiaopan.sketch.decode.ImageFormat
+     * @see ImageType
      */
     private boolean lowQualityImage;
 
@@ -233,7 +234,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 尽量返回低质量的图片，优先级低于bitmapConfig
      *
-     * @see me.xiaopan.sketch.decode.ImageFormat
+     * @see ImageType
      */
     public boolean isLowQualityImage() {
         return lowQualityImage;
@@ -244,7 +245,7 @@ public class LoadOptions extends DownloadOptions {
      *
      * @param lowQualityImage 尽量返回低质量的图片
      * @return LoadOptions
-     * @see me.xiaopan.sketch.decode.ImageFormat
+     * @see ImageType
      */
     public LoadOptions setLowQualityImage(boolean lowQualityImage) {
         this.lowQualityImage = lowQualityImage;

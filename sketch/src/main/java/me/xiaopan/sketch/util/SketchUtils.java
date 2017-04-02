@@ -68,7 +68,7 @@ import javax.microedition.khronos.egl.EGLSurface;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
@@ -255,7 +255,7 @@ public class SketchUtils {
                     drawable = null;
                 }
             }
-            return drawable instanceof SketchDrawable && ImageFormat.GIF.getMimeType().equals(((SketchDrawable) drawable).getMimeType());
+            return drawable instanceof SketchDrawable && ImageType.GIF.getMimeType().equals(((SketchDrawable) drawable).getMimeType());
         }
 
         return false;
@@ -905,19 +905,19 @@ public class SketchUtils {
     /**
      * 根据图片格式型判断是否支持读取图片碎片
      */
-    public static boolean formatSupportBitmapRegionDecoder(ImageFormat imageFormat) {
-        return imageFormat != null && (imageFormat == ImageFormat.JPEG || imageFormat == ImageFormat.PNG ||
-                (imageFormat == ImageFormat.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
+    public static boolean formatSupportBitmapRegionDecoder(ImageType imageType) {
+        return imageType != null && (imageType == ImageType.JPEG || imageType == ImageType.PNG ||
+                (imageType == ImageType.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
     }
 
     /**
      * 根据请求和图片类型判断是否支持大图功能
      */
-    public static boolean supportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
+    public static boolean supportLargeImage(LoadRequest loadRequest, ImageType imageType) {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getViewInfo().isSupportLargeImage() &&
                 SketchUtils.sdkSupportBitmapRegionDecoder() &&
-                formatSupportBitmapRegionDecoder(imageFormat);
+                formatSupportBitmapRegionDecoder(imageType);
     }
 
     /**

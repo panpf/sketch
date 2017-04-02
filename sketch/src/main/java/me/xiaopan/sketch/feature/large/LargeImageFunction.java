@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
@@ -161,7 +161,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
             drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight;
             drawableQualified &= SketchUtils.sdkSupportBitmapRegionDecoder();
-            drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageFormat.valueOfMimeType(sketchDrawable.getMimeType()));
+            drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
                 if (SLogType.LARGE.isEnabled()) {
