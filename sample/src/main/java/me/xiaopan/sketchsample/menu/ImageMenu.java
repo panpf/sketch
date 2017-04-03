@@ -172,6 +172,8 @@ public class ImageMenu {
             messageBuilder.append("类型：").append(sketchDrawable.getMimeType());
             messageBuilder.append("\n");
             messageBuilder.append("尺寸：").append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight());
+            messageBuilder.append("\n");
+            messageBuilder.append("方向：").append(sketchDrawable.getOrientation());
 
             File image = null;
             UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getUri());

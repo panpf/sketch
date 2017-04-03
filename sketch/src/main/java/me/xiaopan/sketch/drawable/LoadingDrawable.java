@@ -102,6 +102,11 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     }
 
     @Override
+    public int getOrientation() {
+        return sketchDrawable != null ? sketchDrawable.getOrientation() : 0;
+    }
+
+    @Override
     public int getByteCount() {
         return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
     }

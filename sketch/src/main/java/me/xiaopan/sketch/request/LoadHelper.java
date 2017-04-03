@@ -173,10 +173,19 @@ public class LoadHelper {
     }
 
     /**
+     * 纠正图片的方向，让被旋转了的图片以正常方向显示
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper correctImageOrientation() {
+        loadOptions.setCorrectImageOrientation(true);
+        return this;
+    }
+
+    /**
      * 批量设置加载参数，这会是一个合并的过程，并不会完全覆盖
      */
     public LoadHelper options(LoadOptions newOptions) {
-        loadOptions.apply(newOptions);
+        loadOptions.merge(newOptions);
         return this;
     }
 

@@ -133,4 +133,15 @@ public class CacheFileDecodeHelper implements DecodeHelper {
             return null;
         }
     }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        InputStream inputStream = null;
+        try {
+            inputStream = diskCacheEntry.newInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return inputStream;
+    }
 }

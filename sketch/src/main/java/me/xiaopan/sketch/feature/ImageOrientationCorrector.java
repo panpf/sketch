@@ -16,33 +16,38 @@
 
 package me.xiaopan.sketch.feature;
 
-import android.media.ExifInterface;
-
 import java.io.IOException;
+import java.io.InputStream;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.decode.DecodeHelper;
+import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.util.ExifInterface;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 图片方向纠正器，可让原本旋转了一定方向的图片以正常方向显示
+ * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
 public class ImageOrientationCorrector implements Identifier {
     /**
+     * 根据mimeType判断该类型的图片是否支持通过ExitInterface读取旋转角度
+     *
+     * @param mimeType 从图片文件中取出的图片的mimeTye
+     */
+    public boolean support(String mimeType) {
+        return ImageType.JPEG.getMimeType().equalsIgnoreCase(mimeType);
+    }
+
+    /**
      * 获取图片方向
      *
-     * @param filePath 文件路径
+     * @param inputStream 文件输入流
      * @return 图片旋转度数
      */
-    public int getImageOrientation(String filePath) {
-        ExifInterface exifInterface;
-        try {
-            exifInterface = new ExifInterface(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0;
-        }
-
+    public int getImageOrientation(InputStream inputStream) throws IOException {
+        ExifInterface exifInterface = new ExifInterface(inputStream);
         int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 return 90;
@@ -58,6 +63,48 @@ public class ImageOrientationCorrector implements Identifier {
             case ExifInterface.ORIENTATION_NORMAL:
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * 获取图片方向
+     *
+     * @param correctImageOrientation 是否纠正图片方向，通常由{@link LoadOptions}提供
+     * @param mimeType                图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+     * @param inputStream             输入流
+     * @return 图片旋转角度
+     */
+    @SuppressWarnings("unused")
+    public int getImageOrientation(boolean correctImageOrientation, String mimeType, InputStream inputStream) throws IOException {
+        if (!correctImageOrientation || !support(mimeType)) {
+            return 0;
+        }
+
+        return getImageOrientation(inputStream);
+    }
+
+    /**
+     * 获取图片方向
+     *
+     * @param correctImageOrientation 是否纠正图片方向，通常由{@link LoadOptions}提供
+     * @param mimeType                图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+     * @param decodeHelper            DecodeHelper
+     * @return 图片旋转角度
+     */
+    public int getImageOrientation(boolean correctImageOrientation, String mimeType, DecodeHelper decodeHelper) {
+        if (!correctImageOrientation || !support(mimeType)) {
+            return 0;
+        }
+
+        InputStream inputStream = null;
+        try {
+            inputStream = decodeHelper.getInputStream();
+            return getImageOrientation(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+            SketchUtils.close(inputStream);
         }
     }
 

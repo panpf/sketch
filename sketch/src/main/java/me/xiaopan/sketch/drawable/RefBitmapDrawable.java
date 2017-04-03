@@ -58,17 +58,22 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
 
     @Override
     public int getOriginWidth() {
-        return refBitmap.getOriginWidth();
+        return refBitmap.getAttrs().getOriginWidth();
     }
 
     @Override
     public int getOriginHeight() {
-        return refBitmap.getOriginHeight();
+        return refBitmap.getAttrs().getOriginHeight();
     }
 
     @Override
     public String getMimeType() {
-        return refBitmap.getMimeType();
+        return refBitmap.getAttrs().getMimeType();
+    }
+
+    @Override
+    public int getOrientation() {
+        return refBitmap.getAttrs().getOrientation();
     }
 
     @Override
@@ -83,6 +88,7 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
 
     @Override
     public String getInfo() {
+        // TODO: 2017/4/3 图片信息里加上ImageAttrs里的全部信息
         return SketchUtils.makeImageInfo(logName, getBitmap(), getMimeType(), getByteCount());
     }
 

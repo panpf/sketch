@@ -20,6 +20,7 @@ Sketch共有DisplayOptions `extends` LoadOptions `extends` DownloadOptions三种
 |thumbnailMode|-|false|false|
 |cacheProcessedImageInDisk|-|false|false|
 |bitmapPoolDisabled|-|false|false|
+|correctImageOrientation|-|false|false|
 |cacheInMemoryDisabled|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
@@ -53,7 +54,7 @@ displayOptions.setForceUseResize(true);
 // 解码gif图返回GifDrawable
 displayOptions.setDecodeGifImage(true);
 
-// 尝试返回低质量的图片，例如PNG图片将使用ARGB_4444解析，具体的请查看ImageFormat类
+// 尝试返回低质量的图片，例如PNG图片将使用ARGB_4444解析，具体的请查看ImageType类
 displayOptions.setLowQualityImage(true);
 
 // 强制使用RGB_565解码图片
@@ -73,6 +74,9 @@ displayOptions.setCacheProcessedImageInDisk(true);
 
 // 禁用BitmapPool
 displayOptions.setBitmapPoolDisabled(true);
+
+// 让被旋转了的图片以正常的方向显示
+displayOptions.setCorrectImageOrientation(true);
 
 // 禁用内存缓存
 displayOptions.setCacheInMemoryDisabled(true);

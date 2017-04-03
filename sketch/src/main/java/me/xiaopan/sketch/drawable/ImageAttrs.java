@@ -16,15 +16,24 @@
 
 package me.xiaopan.sketch.drawable;
 
+/**
+ * 关于图片的一些真实属性，例如宽、高、类型、旋转角度等
+ */
 public class ImageAttrs {
     private int originWidth;
     private int originHeight;
     private String mimeType;
+    private int orientation;
 
-    public ImageAttrs(String mimeType, int originWidth, int originHeight) {
+    public ImageAttrs(String mimeType, int originWidth, int originHeight, int orientation) {
         this.mimeType = mimeType;
         this.originWidth = originWidth;
         this.originHeight = originHeight;
+        this.orientation = orientation;
+    }
+
+    public int getOrientation() {
+        return orientation;
     }
 
     public String getMimeType() {
@@ -39,6 +48,7 @@ public class ImageAttrs {
         return originWidth;
     }
 
+    // TODO: 2017/4/2 重置的时候考虑要不要也重置 orientation
     public void reset(String mimeType, int originWidth, int originHeight){
         this.mimeType = mimeType;
         this.originWidth = originWidth;

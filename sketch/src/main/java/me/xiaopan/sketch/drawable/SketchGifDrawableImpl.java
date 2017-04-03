@@ -191,6 +191,11 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
     }
 
     @Override
+    public int getOrientation() {
+        return imageAttrs.getOrientation();
+    }
+
+    @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
     }

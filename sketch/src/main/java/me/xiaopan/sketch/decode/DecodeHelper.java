@@ -20,6 +20,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -37,6 +40,7 @@ public interface DecodeHelper {
 
     /**
      * 解码碎片
+     *
      * @param srcRect 解码区域
      * @param options 解码选项
      */
@@ -56,4 +60,9 @@ public interface DecodeHelper {
      * 创建GifDrawable
      */
     SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool);
+
+    /**
+     * 获取输入流
+     */
+    InputStream getInputStream() throws IOException;
 }

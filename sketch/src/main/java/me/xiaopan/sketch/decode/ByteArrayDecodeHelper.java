@@ -22,7 +22,9 @@ import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.os.Build;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
@@ -100,5 +102,10 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new ByteArrayInputStream(data);
     }
 }

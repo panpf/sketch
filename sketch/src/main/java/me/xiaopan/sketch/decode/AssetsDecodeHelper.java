@@ -129,4 +129,16 @@ public class AssetsDecodeHelper implements DecodeHelper {
             return null;
         }
     }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        InputStream inputStream = null;
+        try {
+            Context context = loadRequest.getSketch().getConfiguration().getContext();
+            inputStream = context.getAssets().open(assetsFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return inputStream;
+    }
 }

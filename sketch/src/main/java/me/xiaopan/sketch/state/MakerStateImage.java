@@ -71,11 +71,11 @@ public class MakerStateImage implements StateImage {
         return drawable;
     }
 
-    private Drawable makeDrawable(Sketch sketch, DisplayOptions displayOptions) {
+    private Drawable makeDrawable(Sketch sketch, DisplayOptions options) {
         Configuration configuration = sketch.getConfiguration();
 
-        ImageProcessor processor = displayOptions.getImageProcessor();
-        Resize resize = displayOptions.getResize();
+        ImageProcessor processor = options.getImageProcessor();
+        Resize resize = options.getResize();
         BitmapPool bitmapPool = configuration.getBitmapPool();
 
         // 不需要处理的时候直接取出图片返回
@@ -84,7 +84,7 @@ public class MakerStateImage implements StateImage {
         }
 
         // 从内存缓存中取
-        String memoryCacheKey = SketchUtils.makeStateImageMemoryCacheKey(String.valueOf(resId), displayOptions);
+        String memoryCacheKey = SketchUtils.makeStateImageMemoryCacheKey(String.valueOf(resId), options);
         MemoryCache memoryCache = configuration.getMemoryCache();
         RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
@@ -98,7 +98,7 @@ public class MakerStateImage implements StateImage {
         // 读取图片
         Bitmap bitmap;
         boolean allowRecycle = false;
-        boolean tempLowQualityImage = configuration.isGlobalLowQualityImage() || displayOptions.isLowQualityImage();
+        boolean tempLowQualityImage = configuration.isGlobalLowQualityImage() || options.isLowQualityImage();
         //noinspection deprecation
         Drawable drawable = configuration.getContext().getResources().getDrawable(resId);
         if (drawable != null && drawable instanceof BitmapDrawable) {
@@ -122,7 +122,7 @@ public class MakerStateImage implements StateImage {
         Bitmap newBitmap;
         try {
             newBitmap = processor.process(sketch, bitmap, resize,
-                    displayOptions.isForceUseResize(), tempLowQualityImage);
+                    options.isForceUseResize(), tempLowQualityImage);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             SketchMonitor sketchMonitor = sketch.getConfiguration().getMonitor();
@@ -150,12 +150,12 @@ public class MakerStateImage implements StateImage {
 
         // 允许回收说明是创建了一张新的图片，不能回收说明还是从res中获取的BitmapDrawable可以直接使用
         if (allowRecycle) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeResource(configuration.getContext().getResources(), resId, options);
+            BitmapFactory.Options boundsOptions = new BitmapFactory.Options();
+            boundsOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(configuration.getContext().getResources(), resId, boundsOptions);
 
             String uri = UriScheme.DRAWABLE.createUri(String.valueOf(resId));
-            ImageAttrs imageAttrs = new ImageAttrs(options.outMimeType, options.outWidth, options.outHeight);
+            ImageAttrs imageAttrs = new ImageAttrs(boundsOptions.outMimeType, boundsOptions.outWidth, boundsOptions.outHeight, 0);
 
             RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheKey, uri, imageAttrs, bitmapPool);
             memoryCache.put(memoryCacheKey, newRefBitmap);

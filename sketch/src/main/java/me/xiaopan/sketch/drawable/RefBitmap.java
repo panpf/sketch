@@ -48,7 +48,7 @@ public class RefBitmap extends SketchBitmap {
         return String.format("%s,%dx%d,%s,%s,%d,%s",
                 Integer.toHexString(bitmap.hashCode()),
                 bitmap.getWidth(), bitmap.getHeight(),
-                getMimeType(),
+                getAttrs().getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
                 SketchUtils.getBitmapByteSize(bitmap),
                 getKey());
@@ -63,7 +63,7 @@ public class RefBitmap extends SketchBitmap {
                 LOG_NAME,
                 Integer.toHexString(bitmap.hashCode()),
                 bitmap.getWidth(), bitmap.getHeight(),
-                getMimeType(),
+                getAttrs().getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
                 SketchUtils.getBitmapByteSize(bitmap),
                 getKey());

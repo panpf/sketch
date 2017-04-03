@@ -119,4 +119,16 @@ public class DrawableDecodeHelper implements DecodeHelper {
             return null;
         }
     }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        InputStream inputStream = null;
+        try {
+            Context context = loadRequest.getSketch().getConfiguration().getContext();
+            inputStream = context.getResources().openRawResource(drawableId);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+        return inputStream;
+    }
 }

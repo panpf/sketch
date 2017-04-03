@@ -16,6 +16,12 @@
 * demo上下滑动关闭功能
 * demo长按出选项，点击关闭
 * 将一个功能的所有处理代码都放到一个类中，例如缓存已处理图片的功能
+* 改善架构，特别是Request里，强化DataSource的功能，数据来源、处理结果，这些概念要分清楚
+* 改造ImageDecoder，改成责任链模式，例如先准备好一些基础属性，如宽、高、类型、旋转角度、然后将gif、缩略图、普通的等等改成一个个的责任链
+* 解码结果改成一个接口，然后有普通bitmap和gif drawable两种实现，支不支持ImageProcessor、创建Drawable或后续该怎么处理交由接口控制
+* 将所有日志全部抽离出去搞成一个类
+* 加一些常用的xml属性
+* DecoderHelper改造一下，只返回InputStream，具体的交由Decoder解决
 
 其它：
 * 参考Glide、Fresco和Picasso

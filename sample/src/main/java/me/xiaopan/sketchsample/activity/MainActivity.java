@@ -341,6 +341,13 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }, menuClickListener));
 
+        menuList.add(new CheckMenu(this, "纠正被旋转的图片", Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION);
+            }
+        }, menuClickListener));
+
         menuList.add("其它");
 
         menuList.add(new CheckMenu(this, "图片详情页面显示缩略图和设置按钮", Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL, new CheckMenu.OnCheckedChangedListener() {

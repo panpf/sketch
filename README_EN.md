@@ -198,6 +198,7 @@ Basic functions:
 >* [Control the picture size by MaxSize.md](docs/wiki/max_size.md)
 >* [Resize the image size by Resize.md](docs/wiki/resize.md)
 >* [Flexible use of various images as loading image by StateImage.md](docs/wiki/state_image.md)
+>* [Use the correctImageOrientation property to let the rotated picture appear in the normal direction.md](docs/wiki/correct_image_orientation.md)
 
 To further enhance the user experience:
 >* [So that any size of the two pictures can use TransitionDrawable transition display.md](docs/wiki/transition_displayer.md)

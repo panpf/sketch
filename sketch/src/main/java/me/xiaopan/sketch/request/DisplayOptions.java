@@ -161,6 +161,11 @@ public class DisplayOptions extends LoadOptions {
         return (DisplayOptions) super.setBitmapPoolDisabled(bitmapPoolDisabled);
     }
 
+    @Override
+    public DisplayOptions setCorrectImageOrientation(boolean correctImageOrientation) {
+        return (DisplayOptions) super.setCorrectImageOrientation(correctImageOrientation);
+    }
+
     /**
      * 禁止使用内存内缓存
      */
@@ -211,22 +216,22 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置加载中时显示的占位图片
      *
-     * @param drawableResId 资源图片ID
+     * @param loadingImage 加载中时显示的占位图片
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new DrawableStateImage(drawableResId));
+    public DisplayOptions setLoadingImage(StateImage loadingImage) {
+        this.loadingImage = loadingImage;
         return this;
     }
 
     /**
      * 设置加载中时显示的占位图片
      *
-     * @param loadingImage 加载中时显示的占位图片
+     * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadingImage(StateImage loadingImage) {
-        this.loadingImage = loadingImage;
+    public DisplayOptions setLoadingImage(int drawableResId) {
+        setLoadingImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -242,22 +247,22 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置加载失败时显示的图片
      *
-     * @param drawableResId 资源图片ID
+     * @param errorImage 加载失败时显示的图片
      * @return DisplayOptions
      */
-    public DisplayOptions setErrorImage(int drawableResId) {
-        setErrorImage(new DrawableStateImage(drawableResId));
+    public DisplayOptions setErrorImage(StateImage errorImage) {
+        this.errorImage = errorImage;
         return this;
     }
 
     /**
      * 设置加载失败时显示的图片
      *
-     * @param errorImage 加载失败时显示的图片
+     * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setErrorImage(StateImage errorImage) {
-        this.errorImage = errorImage;
+    public DisplayOptions setErrorImage(int drawableResId) {
+        setErrorImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -273,22 +278,22 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置暂停下载时显示的图片
      *
-     * @param drawableResId 资源图片ID
+     * @param pauseDownloadImage 暂停下载时显示的图片
      * @return DisplayOptions
      */
-    public DisplayOptions setPauseDownloadImage(int drawableResId) {
-        setPauseDownloadImage(new DrawableStateImage(drawableResId));
+    public DisplayOptions setPauseDownloadImage(StateImage pauseDownloadImage) {
+        this.pauseDownloadImage = pauseDownloadImage;
         return this;
     }
 
     /**
      * 设置暂停下载时显示的图片
      *
-     * @param pauseDownloadImage 暂停下载时显示的图片
+     * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setPauseDownloadImage(StateImage pauseDownloadImage) {
-        this.pauseDownloadImage = pauseDownloadImage;
+    public DisplayOptions setPauseDownloadImage(int drawableResId) {
+        setPauseDownloadImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -407,7 +412,8 @@ public class DisplayOptions extends LoadOptions {
             return;
         }
 
-        super.copy(options);
+        //noinspection RedundantCast
+        super.copy((LoadOptions) options);
 
         cacheInMemoryDisabled = options.cacheInMemoryDisabled;
         imageDisplayer = options.imageDisplayer;
@@ -421,16 +427,16 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 应用属性，应用的过程并不是绝对的覆盖
-     *
-     * @param options 来源
+     * 合并指定的DisplayOptions，合并的过程并不是绝对的覆盖，专门为{@link DisplayHelper#options(DisplayOptions)}方法提供
+     * <br>简单来说自己已经设置了的属性不会被覆盖，对于都设置了但可以比较大小的，较小的优先
      */
-    public void apply(DisplayOptions options) {
+    public void merge(DisplayOptions options) {
         if (options == null) {
             return;
         }
 
-        super.apply(options);
+        //noinspection RedundantCast
+        super.merge((LoadOptions) options);
 
         if (!cacheInMemoryDisabled) {
             cacheInMemoryDisabled = options.cacheInMemoryDisabled;

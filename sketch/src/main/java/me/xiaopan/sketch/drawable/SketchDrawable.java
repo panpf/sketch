@@ -47,6 +47,11 @@ public interface SketchDrawable {
     String getMimeType();
 
     /**
+     * 获取图片方向
+     */
+    int getOrientation();
+
+    /**
      * 获取占用内存，单位字节
      */
     int getByteCount();

@@ -173,7 +173,7 @@ public class DisplayRequest extends LoadRequest {
                     cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
 
                     Drawable drawable = new RefBitmapDrawable(cachedRefBitmap);
-                    displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getImageAttrs());
+                    displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
                     displayCompleted();
                     return true;
                 } else {

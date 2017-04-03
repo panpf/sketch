@@ -274,6 +274,15 @@ public class DisplayHelper {
     }
 
     /**
+     * 纠正图片的方向，让被旋转了的图片以正常方向显示
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper correctImageOrientation() {
+        displayOptions.setCorrectImageOrientation(true);
+        return this;
+    }
+
+    /**
      * 禁用内存缓存
      */
     @SuppressWarnings("unused")
@@ -386,7 +395,7 @@ public class DisplayHelper {
      * 批量设置显示参数，这会是一个合并的过程，并不会完全覆盖
      */
     public DisplayHelper options(DisplayOptions newOptions) {
-        displayOptions.apply(newOptions);
+        displayOptions.merge(newOptions);
         return this;
     }
 
@@ -706,7 +715,7 @@ public class DisplayHelper {
                         imageViewInterface.setImageDrawable(finalDrawable);
                     }
                     if (displayListener != null) {
-                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs().getMimeType());
                     }
 
                     cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:finish", false);

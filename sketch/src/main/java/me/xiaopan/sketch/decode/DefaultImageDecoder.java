@@ -33,6 +33,7 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
@@ -152,10 +153,14 @@ public class DefaultImageDecoder implements ImageDecoder {
             return null;
         }
 
+        // TODO: 2017/4/2 使用options中是否纠正旋转角度属性
+        ImageOrientationCorrector imageOrientationCorrector = request.getSketch().getConfiguration().getImageOrientationCorrector();
+        int imageOrientation = imageOrientationCorrector.getImageOrientation(request.getOptions().isCorrectImageOrientation(), boundOptions.outMimeType, decodeHelper);
+
         final ImageType imageType = ImageType.valueOfMimeType(boundOptions.outMimeType);
 
         // Try decode gif image
-        DecodeResult gifResult = gifImage(request, decodeHelper, boundOptions, imageType);
+        DecodeResult gifResult = gifImage(request, decodeHelper, boundOptions, imageType, imageOrientation);
         if (gifResult != null) {
             return gifResult;
         }
@@ -179,22 +184,22 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // Try decode image by thumbnail mode
         if (!disableProcess) {
-            DecodeResult thumbnailModeResult = thumbnailMode(request, decodeHelper, imageType, boundOptions, decodeOptions);
+            DecodeResult thumbnailModeResult = thumbnailMode(request, decodeHelper, imageType, boundOptions, decodeOptions, imageOrientation);
             if (thumbnailModeResult != null) {
                 return thumbnailModeResult;
             }
         }
 
-        return normal(request, decodeHelper, imageType, boundOptions, decodeOptions, disableProcess);
+        return normal(request, decodeHelper, imageType, boundOptions, decodeOptions, disableProcess, imageOrientation);
     }
 
-    private DecodeResult gifImage(LoadRequest request, DecodeHelper decodeHelper, Options boundOptions, ImageType imageType) {
+    private DecodeResult gifImage(LoadRequest request, DecodeHelper decodeHelper, Options boundOptions, ImageType imageType, int orientation) {
         if (!SketchGifFactory.isExistGifLibrary() || imageType == null || imageType != ImageType.GIF || !request.getOptions().isDecodeGifImage()) {
             return null;
         }
 
         try {
-            ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
+            ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
 
             SketchGifDrawable gifDrawable = decodeHelper.makeGifDrawable(request.getKey(), request.getUri(), imageAttrs, bitmapPool);
@@ -212,7 +217,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     private DecodeResult thumbnailMode(LoadRequest request, DecodeHelper decodeHelper, ImageType imageType,
-                                       Options boundOptions, Options decodeOptions) {
+                                       Options boundOptions, Options decodeOptions, int orientation) {
         decodeOptions.outWidth = boundOptions.outWidth;
         decodeOptions.outHeight = boundOptions.outHeight;
         decodeOptions.outMimeType = boundOptions.outMimeType;
@@ -307,12 +312,12 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 成功
         decodeHelper.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
-        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
+        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
         return new DecodeResult(imageAttrs, bitmap).setCanCacheInDiskCache(true);
     }
 
     private DecodeResult normal(LoadRequest request, DecodeHelper decodeHelper, ImageType imageType,
-                                Options boundOptions, Options decodeOptions, boolean processDisabled) {
+                                Options boundOptions, Options decodeOptions, boolean processDisabled, int orientation) {
         decodeOptions.outWidth = boundOptions.outWidth;
         decodeOptions.outHeight = boundOptions.outHeight;
         decodeOptions.outMimeType = boundOptions.outMimeType;
@@ -384,7 +389,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         decodeHelper.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
 
         ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
-        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
+        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
         boolean canUseCacheProcessedImageInDisk = sizeCalculator.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
         return new DecodeResult(imageAttrs, bitmap).setCanCacheInDiskCache(canUseCacheProcessedImageInDisk);
     }

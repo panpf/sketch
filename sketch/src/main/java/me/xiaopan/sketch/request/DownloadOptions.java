@@ -134,9 +134,10 @@ public class DownloadOptions {
     }
 
     /**
-     * 从指定的DownloadOptions中应用属性，应用的过程并不是绝对的覆盖，专门为{@link DownloadHelper#options(DownloadOptions)}方法提供
+     * 合并指定的DownloadOptions，合并的过程并不是绝对的覆盖，专门为{@link DownloadHelper#options(DownloadOptions)}方法提供
+     * <br>简单来说自己已经设置了的属性不会被覆盖，对于都设置了但可以比较大小的，较小的优先
      */
-    public void apply(DownloadOptions options) {
+    public void merge(DownloadOptions options) {
         if (options == null) {
             return;
         }

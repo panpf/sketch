@@ -45,6 +45,7 @@ public class Settings {
     public static final String PREFERENCE_LOG_TIME = "PREFERENCE_LOG_TIME";
     public static final String PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL = "PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL";
     public static final String PREFERENCE_OUT_LOG_2_SDCARD = "PREFERENCE_OUT_LOG_2_SDCARD";
+    public static final String PREFERENCE_CORRECT_IMAGE_ORIENTATION = "PREFERENCE_CORRECT_IMAGE_ORIENTATION";
 
     public static boolean getBoolean(Context context, @Key String key) {
         boolean defaultValue = false;
@@ -60,7 +61,9 @@ public class Settings {
                 || PREFERENCE_READ_MODE.equals(key)
                 || PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)
                 || PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE.equals(key)
-                || PREFERENCE_SHOW_GIF_FLAG.equals(key)) {
+                || PREFERENCE_SHOW_GIF_FLAG.equals(key)
+                || PREFERENCE_CORRECT_IMAGE_ORIENTATION.equals(key)
+                ) {
             defaultValue = true;
         } else if(PREFERENCE_LOG_REQUEST.equals(key)){
             defaultValue = BuildConfig.DEBUG;
@@ -137,6 +140,7 @@ public class Settings {
             PREFERENCE_LOG_TIME,
             PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL,
             PREFERENCE_OUT_LOG_2_SDCARD,
+            PREFERENCE_CORRECT_IMAGE_ORIENTATION,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Key {

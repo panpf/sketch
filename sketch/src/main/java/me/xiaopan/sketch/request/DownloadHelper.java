@@ -66,7 +66,7 @@ public class DownloadHelper {
      * 批量设置下载参数，这会是一个合并的过程，并不会完全覆盖
      */
     public DownloadHelper options(DownloadOptions newOptions) {
-        downloadOptions.apply(newOptions);
+        downloadOptions.merge(newOptions);
         return this;
     }
 

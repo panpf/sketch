@@ -87,6 +87,12 @@ public class LoadOptions extends DownloadOptions {
      */
     private boolean bitmapPoolDisabled;
 
+    /**
+     * 纠正图片方向，可让被旋转了的图片以正常方向显示
+     */
+    private boolean correctImageOrientation;
+
+
     public LoadOptions() {
         reset();
     }
@@ -346,6 +352,24 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
+    /**
+     * 是否纠正图片的方向，让被旋转了的图片以正常方向显示
+     */
+    public boolean isCorrectImageOrientation() {
+        return correctImageOrientation;
+    }
+
+    /**
+     * 设置纠正图片的方向，让被旋转了的图片以正常方向显示
+     *
+     * @param correctImageOrientation true：纠正图片的方向，让被旋转了的图片以正常方向显示
+     * @return LoadOptions
+     */
+    public LoadOptions setCorrectImageOrientation(boolean correctImageOrientation) {
+        this.correctImageOrientation = correctImageOrientation;
+        return this;
+    }
+
     @Override
     public void reset() {
         super.reset();
@@ -361,6 +385,7 @@ public class LoadOptions extends DownloadOptions {
         thumbnailMode = false;
         cacheProcessedImageInDisk = false;
         bitmapPoolDisabled = false;
+        correctImageOrientation = false;
     }
 
     /**
@@ -373,7 +398,8 @@ public class LoadOptions extends DownloadOptions {
             return;
         }
 
-        super.copy(options);
+        //noinspection RedundantCast
+        super.copy((DownloadOptions) options);
 
         maxSize = options.maxSize;
         resize = options.resize;
@@ -386,19 +412,20 @@ public class LoadOptions extends DownloadOptions {
         thumbnailMode = options.thumbnailMode;
         cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
         bitmapPoolDisabled = options.bitmapPoolDisabled;
+        correctImageOrientation = options.correctImageOrientation;
     }
 
     /**
-     * 应用属性，应用的过程并不是绝对的覆盖
-     *
-     * @param options 来源
+     * 合并指定的LoadOptions，合并的过程并不是绝对的覆盖，专门为{@link LoadHelper#options(LoadOptions)}方法提供
+     * <br>简单来说自己已经设置了的属性不会被覆盖，对于都设置了但可以比较大小的，较小的优先
      */
-    public void apply(LoadOptions options) {
+    public void merge(LoadOptions options) {
         if (options == null) {
             return;
         }
 
-        super.apply(options);
+        //noinspection RedundantCast
+        super.merge((DownloadOptions) options);
 
         if (maxSize == null) {
             maxSize = options.getMaxSize();
@@ -450,6 +477,10 @@ public class LoadOptions extends DownloadOptions {
         if (!bitmapPoolDisabled) {
             bitmapPoolDisabled = options.bitmapPoolDisabled;
         }
+
+        if (!correctImageOrientation) {
+            correctImageOrientation = options.correctImageOrientation;
+        }
     }
 
     @Override
@@ -467,6 +498,9 @@ public class LoadOptions extends DownloadOptions {
             if (thumbnailMode) {
                 builder.append("_").append("thumbnailMode");
             }
+        }
+        if (correctImageOrientation) {
+            builder.append("_").append("correctImageOrientation");
         }
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");
