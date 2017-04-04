@@ -350,7 +350,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         menuList.add("其它");
 
-        menuList.add(new CheckMenu(this, "图片详情页面显示缩略图和设置按钮", Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add(new CheckMenu(this, "图片详情页面显示缩略图", Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(boolean checked) {
                 EventBus.getDefault().post(Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL);

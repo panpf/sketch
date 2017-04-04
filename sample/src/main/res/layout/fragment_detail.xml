@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager_detail_content"
@@ -9,97 +9,38 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:id="@+id/layout_detail_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        tools:layout_gravity="center"
-        android:background="@drawable/shape_linear_gradient_transparent_to_black"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/button_detail_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_list_item"
-            android:contentDescription="@string/app_name"
-            android:drawableTop="@drawable/ic_action_share"
-            android:padding="14dp"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:text="分享" />
-
-        <TextView
-            android:id="@+id/button_detail_applyWallpaper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_list_item"
-            android:contentDescription="@string/app_name"
-            android:drawableTop="@drawable/ic_action_picture"
-            android:padding="14dp"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:text="壁纸" />
-
-        <TextView
-            android:id="@+id/button_detail_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_list_item"
-            android:contentDescription="@string/app_name"
-            android:drawableTop="@drawable/ic_action_play"
-            android:padding="14dp"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:text="播放" />
-
-        <TextView
-            android:id="@+id/button_detail_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_list_item"
-            android:contentDescription="@string/app_name"
-            android:drawableTop="@drawable/ic_action_save"
-            android:padding="14dp"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:text="保存" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_detail_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingTop="8dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="8dp"
         android:layout_gravity="right"
-        android:layout_marginTop="24dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/shape_round_corners_black_translucent">
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_round_corners_black_translucent"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp">
 
         <TextView
             android:id="@+id/text_detail_currentItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:textColor="@android:color/white"
-            android:text="" />
+            android:textSize="14sp"
+            tools:text="29" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:text="/"
             android:textColor="@android:color/white"
-            android:text="/" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/text_detail_countItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:textColor="@android:color/white"
-            android:text="" />
+            android:textSize="14sp"
+            tools:text="100" />
     </LinearLayout>
 </FrameLayout>
