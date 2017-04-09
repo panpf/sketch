@@ -1183,4 +1183,8 @@ public class SketchUtils {
     public static int ceil(int value1, float value2) {
         return (int) Math.ceil(value1 / value2);
     }
+
+    public static boolean isDisabledARGB4444(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
 }

@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 加载选项，适用于 {@link me.xiaopan.sketch.Sketch#load(String, LoadListener)} 方法
@@ -267,6 +268,9 @@ public class LoadOptions extends DownloadOptions {
      * @return LoadOptions
      */
     public LoadOptions setBitmapConfig(Bitmap.Config bitmapConfig) {
+        if (bitmapConfig == Bitmap.Config.ARGB_4444 && SketchUtils.isDisabledARGB4444()) {
+            bitmapConfig = Bitmap.Config.ARGB_8888;
+        }
         this.bitmapConfig = bitmapConfig;
         return this;
     }
