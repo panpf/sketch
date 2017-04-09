@@ -1094,14 +1094,14 @@ public class SketchUtils {
     /**
      * 根据宽、高和配置计算所占用的字节数
      */
-    public static int getBitmapByteSize(int width, int height, Bitmap.Config config) {
+    public static int computeNeedByteSize(int width, int height, Bitmap.Config config) {
         return width * height * getBytesPerPixel(config);
     }
 
     /**
      * 获取指定配置单个像素所占的字节数
      */
-    private static int getBytesPerPixel(Bitmap.Config config) {
+    public static int getBytesPerPixel(Bitmap.Config config) {
         // A bitmap by decoding a gif has null "config" in certain environments.
         if (config == null) {
             config = Bitmap.Config.ARGB_8888;

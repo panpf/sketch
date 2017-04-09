@@ -266,7 +266,7 @@ public class InBitmapTestFragment extends MyFragment {
 
             builder.append("imageUri: ").append(imageUri);
 
-            int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
+            int sizeInBytes = SketchUtils.computeNeedByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
             builder.append("\n").append("image: ")
                     .append(options.outWidth).append("x").append(options.outHeight)
                     .append(", ").append(options.inPreferredConfig)

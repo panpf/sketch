@@ -61,7 +61,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public Bitmap get(int width, int height, Bitmap.Config config) {
-        int size = SketchUtils.getBitmapByteSize(width, height, config);
+        int size = SketchUtils.computeNeedByteSize(width, height, config);
         Key targetKey = keyPool.get(size, config);
         Key bestKey = findBestKey(targetKey, size, config);
 
@@ -129,7 +129,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public String logBitmap(int width, int height, Bitmap.Config config) {
-        int size = SketchUtils.getBitmapByteSize(width, height, config);
+        int size = SketchUtils.computeNeedByteSize(width, height, config);
         return getBitmapString(size, config);
     }
 
