@@ -69,8 +69,14 @@ public class SizeConfigStrategy implements LruPoolStrategy {
         if (result != null) {
             // Decrement must be called before reconfigure.
             decrementBitmapOfSize(SketchUtils.getBitmapByteSize(result), result.getConfig());
-            result.reconfigure(width, height,
-                    result.getConfig() != null ? result.getConfig() : Bitmap.Config.ARGB_8888);
+            try {
+                result.reconfigure(width, height,
+                        result.getConfig() != null ? result.getConfig() : Bitmap.Config.ARGB_8888);
+            } catch (IllegalArgumentException e) {
+                // Bitmap.cpp Bitmap_reconfigure method may throw "IllegalArgumentException: Bitmap not large enough to support new configuration" exception
+                e.printStackTrace();
+                put(result);
+            }
         }
         return result;
     }
