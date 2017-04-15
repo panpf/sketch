@@ -9,7 +9,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 高斯模糊图片处理器
  */
-public class GaussianBlurImageProcessor extends WrapableImageProcessor {
+public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     private static final int NO_LAYER_COLOR = -1;
     private static final int DEFAULT_RADIUS = 15;
 
@@ -18,8 +18,8 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
     private int radius; // 模糊半径，取值为0到100
     private int layerColor; // 图层颜色，在模糊后的图片上加一层颜色
 
-    private GaussianBlurImageProcessor(int radius, int layerColor, WrapableImageProcessor wrapableImageProcessor) {
-        super(wrapableImageProcessor);
+    private GaussianBlurImageProcessor(int radius, int layerColor, WrappedImageProcessor wrappedImageProcessor) {
+        super(wrappedImageProcessor);
         this.radius = radius;
         this.layerColor = layerColor;
     }
@@ -29,12 +29,12 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
      *
      * @param radius                 模糊半径，取值为0到100
      * @param layerColor             图层颜色，在模糊后的图片上加一层颜色
-     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
     @SuppressWarnings("unused")
-    public static GaussianBlurImageProcessor make(int radius, int layerColor, WrapableImageProcessor wrapableImageProcessor) {
-        return new GaussianBlurImageProcessor(radius, layerColor, wrapableImageProcessor);
+    public static GaussianBlurImageProcessor make(int radius, int layerColor, WrappedImageProcessor wrappedImageProcessor) {
+        return new GaussianBlurImageProcessor(radius, layerColor, wrappedImageProcessor);
     }
 
     /**
@@ -53,11 +53,11 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
      * 创建一个图层颜色的高斯模糊图片处理器
      *
      * @param layerColor             图层颜色，在模糊后的图片上加一层颜色
-     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
-    public static GaussianBlurImageProcessor makeLayerColor(int layerColor, WrapableImageProcessor wrapableImageProcessor) {
-        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, layerColor, wrapableImageProcessor);
+    public static GaussianBlurImageProcessor makeLayerColor(int layerColor, WrappedImageProcessor wrappedImageProcessor) {
+        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, layerColor, wrappedImageProcessor);
     }
 
     /**
@@ -74,12 +74,12 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
      * 创建一个指定半径的高斯模糊图片处理器
      *
      * @param radius                 模糊半径，取值为0到100
-     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
     @SuppressWarnings("unused")
-    public static GaussianBlurImageProcessor makeRadius(int radius, WrapableImageProcessor wrapableImageProcessor) {
-        return new GaussianBlurImageProcessor(radius, NO_LAYER_COLOR, wrapableImageProcessor);
+    public static GaussianBlurImageProcessor makeRadius(int radius, WrappedImageProcessor wrappedImageProcessor) {
+        return new GaussianBlurImageProcessor(radius, NO_LAYER_COLOR, wrappedImageProcessor);
     }
 
     /**
@@ -96,12 +96,12 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
     /**
      * 创建一个半径为15的高斯模糊图片处理器
      *
-     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
     @SuppressWarnings("unused")
-    public static GaussianBlurImageProcessor make(WrapableImageProcessor wrapableImageProcessor) {
-        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, NO_LAYER_COLOR, wrapableImageProcessor);
+    public static GaussianBlurImageProcessor make(WrappedImageProcessor wrappedImageProcessor) {
+        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, NO_LAYER_COLOR, wrappedImageProcessor);
     }
 
     /**

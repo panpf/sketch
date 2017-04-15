@@ -27,11 +27,10 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 用于组合两个ImageProcessor一起使用
  */
-// TODO: 2017/4/15 改造这个类的名字
-public abstract class WrapableImageProcessor extends ResizeImageProcessor {
-    private WrapableImageProcessor wrappedProcessor;
+public abstract class WrappedImageProcessor extends ResizeImageProcessor {
+    private WrappedImageProcessor wrappedProcessor;
 
-    public WrapableImageProcessor(WrapableImageProcessor wrappedProcessor) {
+    public WrappedImageProcessor(WrappedImageProcessor wrappedProcessor) {
         this.wrappedProcessor = wrappedProcessor;
     }
 
@@ -54,7 +53,8 @@ public abstract class WrapableImageProcessor extends ResizeImageProcessor {
         }
     }
 
-    public WrapableImageProcessor getWrappedProcessor() {
+    @SuppressWarnings("unused")
+    public WrappedImageProcessor getWrappedProcessor() {
         return wrappedProcessor;
     }
 

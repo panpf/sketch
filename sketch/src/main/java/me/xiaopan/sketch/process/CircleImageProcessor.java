@@ -32,12 +32,12 @@ import me.xiaopan.sketch.request.Resize;
  * 圆形图片处理器
  */
 @SuppressWarnings("unused")
-public class CircleImageProcessor extends WrapableImageProcessor {
+public class CircleImageProcessor extends WrappedImageProcessor {
     private static CircleImageProcessor instance;
 
     protected String logName = "CircleImageProcessor";
 
-    public CircleImageProcessor(WrapableImageProcessor wrappedProcessor) {
+    public CircleImageProcessor(WrappedImageProcessor wrappedProcessor) {
         super(wrappedProcessor);
     }
 

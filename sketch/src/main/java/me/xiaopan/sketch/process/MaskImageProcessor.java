@@ -13,14 +13,14 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 在图片上面个盖上一层颜色，可兼容形状不规则的透明图片
  */
-public class MaskImageProcessor extends WrapableImageProcessor {
+public class MaskImageProcessor extends WrappedImageProcessor {
 
     protected String logName = "MaskImageProcessor";
     private Paint paint;
 
     private int maskColor;
 
-    public MaskImageProcessor(int maskColor, WrapableImageProcessor wrappedProcessor) {
+    public MaskImageProcessor(int maskColor, WrappedImageProcessor wrappedProcessor) {
         super(wrappedProcessor);
         this.maskColor = maskColor;
     }

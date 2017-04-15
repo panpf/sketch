@@ -33,7 +33,7 @@ import me.xiaopan.sketch.request.Resize;
  * 倒影图片处理器
  */
 @SuppressWarnings("unused")
-public class ReflectionImageProcessor extends WrapableImageProcessor {
+public class ReflectionImageProcessor extends WrappedImageProcessor {
     private static final int DEFAULT_REFLECTION_SPACING = 2;
     private static final float DEFAULT_REFLECTION_SCALE = 0.3f;
 
@@ -46,10 +46,10 @@ public class ReflectionImageProcessor extends WrapableImageProcessor {
      *
      * @param reflectionSpacing      倒影和图片之间的距离
      * @param reflectionScale        倒影的高度所占原图高度比例，取值为0.0到1
-     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale, WrapableImageProcessor wrapableImageProcessor) {
-        super(wrapableImageProcessor);
+    public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale, WrappedImageProcessor wrappedImageProcessor) {
+        super(wrappedImageProcessor);
         this.reflectionSpacing = reflectionSpacing;
         this.reflectionScale = reflectionScale;
     }
@@ -64,8 +64,8 @@ public class ReflectionImageProcessor extends WrapableImageProcessor {
         this(reflectionSpacing, reflectionScale, null);
     }
 
-    public ReflectionImageProcessor(WrapableImageProcessor wrapableImageProcessor) {
-        this(DEFAULT_REFLECTION_SPACING, DEFAULT_REFLECTION_SCALE, wrapableImageProcessor);
+    public ReflectionImageProcessor(WrappedImageProcessor wrappedImageProcessor) {
+        this(DEFAULT_REFLECTION_SPACING, DEFAULT_REFLECTION_SCALE, wrappedImageProcessor);
     }
 
     public ReflectionImageProcessor() {

@@ -33,13 +33,13 @@ import me.xiaopan.sketch.request.Resize;
  * 圆角矩形图片处理器
  */
 @SuppressWarnings("unused")
-public class RoundRectImageProcessor extends WrapableImageProcessor {
+public class RoundRectImageProcessor extends WrappedImageProcessor {
     protected String logName = "RoundRectImageProcessor";
 
     private float[] cornerRadius;
 
-    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, WrapableImageProcessor wrapableImageProcessor) {
-        super(wrapableImageProcessor);
+    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, WrappedImageProcessor wrappedImageProcessor) {
+        super(wrappedImageProcessor);
         cornerRadius = new float[]{topLeftRadius, topLeftRadius,
                 topRightRadius, topRightRadius,
                 bottomLeftRadius, bottomLeftRadius,
@@ -50,8 +50,8 @@ public class RoundRectImageProcessor extends WrapableImageProcessor {
         this(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, null);
     }
 
-    public RoundRectImageProcessor(float cornerRadius, WrapableImageProcessor wrapableImageProcessor) {
-        this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, wrapableImageProcessor);
+    public RoundRectImageProcessor(float cornerRadius, WrappedImageProcessor wrappedImageProcessor) {
+        this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, wrappedImageProcessor);
     }
 
     public RoundRectImageProcessor(float cornerRadius) {

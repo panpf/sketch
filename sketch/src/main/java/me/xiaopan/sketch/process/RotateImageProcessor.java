@@ -31,13 +31,13 @@ import me.xiaopan.sketch.request.Resize;
  * 旋转图片处理器
  */
 @SuppressWarnings("unused")
-public class RotateImageProcessor extends WrapableImageProcessor {
+public class RotateImageProcessor extends WrappedImageProcessor {
     protected String logName = "RotateImageProcessor";
 
     private int degrees;
 
-    public RotateImageProcessor(int degrees, WrapableImageProcessor wrapableImageProcessor) {
-        super(wrapableImageProcessor);
+    public RotateImageProcessor(int degrees, WrappedImageProcessor wrappedImageProcessor) {
+        super(wrappedImageProcessor);
         this.degrees = degrees;
     }
 
