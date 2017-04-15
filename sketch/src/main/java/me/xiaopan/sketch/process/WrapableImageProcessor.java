@@ -27,6 +27,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 用于组合两个ImageProcessor一起使用
  */
+// TODO: 2017/4/15 改造这个类的名字
 public abstract class WrapableImageProcessor extends ResizeImageProcessor {
     private WrapableImageProcessor wrappedProcessor;
 

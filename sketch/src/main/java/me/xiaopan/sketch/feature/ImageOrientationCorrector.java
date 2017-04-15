@@ -16,13 +16,16 @@
 
 package me.xiaopan.sketch.feature;
 
+import android.graphics.Bitmap;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.DecodeHelper;
 import me.xiaopan.sketch.decode.ImageType;
-import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.process.RotateImageProcessor;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -30,6 +33,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
 public class ImageOrientationCorrector implements Identifier {
+
     /**
      * 根据mimeType判断该类型的图片是否支持通过ExitInterface读取旋转角度
      *
@@ -40,23 +44,23 @@ public class ImageOrientationCorrector implements Identifier {
     }
 
     /**
-     * 获取图片方向
+     * 读取图片旋转角度
      *
      * @param inputStream 文件输入流
      * @return 图片旋转度数
      */
-    public int getImageOrientation(InputStream inputStream) throws IOException {
+    public int readImageRotateDegrees(InputStream inputStream) throws IOException {
         ExifInterface exifInterface = new ExifInterface(inputStream);
         int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 return 90;
             case ExifInterface.ORIENTATION_ROTATE_180:
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
                 return 180;
             case ExifInterface.ORIENTATION_ROTATE_270:
                 return 270;
             case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
             case ExifInterface.ORIENTATION_TRANSPOSE:
             case ExifInterface.ORIENTATION_TRANSVERSE:
             case ExifInterface.ORIENTATION_UNDEFINED:
@@ -67,45 +71,47 @@ public class ImageOrientationCorrector implements Identifier {
     }
 
     /**
-     * 获取图片方向
+     * 读取图片旋转角度
      *
-     * @param correctImageOrientation 是否纠正图片方向，通常由{@link LoadOptions}提供
-     * @param mimeType                图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
-     * @param inputStream             输入流
+     * @param mimeType    图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+     * @param inputStream 输入流
      * @return 图片旋转角度
      */
     @SuppressWarnings("unused")
-    public int getImageOrientation(boolean correctImageOrientation, String mimeType, InputStream inputStream) throws IOException {
-        if (!correctImageOrientation || !support(mimeType)) {
+    public int readImageRotateDegrees(String mimeType, InputStream inputStream) throws IOException {
+        if (!support(mimeType)) {
             return 0;
         }
 
-        return getImageOrientation(inputStream);
+        return readImageRotateDegrees(inputStream);
     }
 
     /**
-     * 获取图片方向
+     * 读取图片旋转角度
      *
-     * @param correctImageOrientation 是否纠正图片方向，通常由{@link LoadOptions}提供
-     * @param mimeType                图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
-     * @param decodeHelper            DecodeHelper
+     * @param mimeType     图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+     * @param decodeHelper DecodeHelper
      * @return 图片旋转角度
      */
-    public int getImageOrientation(boolean correctImageOrientation, String mimeType, DecodeHelper decodeHelper) {
-        if (!correctImageOrientation || !support(mimeType)) {
+    public int readImageRotateDegrees(String mimeType, DecodeHelper decodeHelper) {
+        if (!support(mimeType)) {
             return 0;
         }
 
         InputStream inputStream = null;
         try {
             inputStream = decodeHelper.getInputStream();
-            return getImageOrientation(inputStream);
+            return readImageRotateDegrees(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
         } finally {
             SketchUtils.close(inputStream);
         }
+    }
+
+    public Bitmap rotate(Bitmap bitmap, int rotateDegrees, BitmapPool bitmapPool) {
+        return RotateImageProcessor.rotate(bitmap, rotateDegrees, bitmapPool);
     }
 
     @Override

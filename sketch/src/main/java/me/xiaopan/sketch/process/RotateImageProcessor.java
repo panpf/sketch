@@ -51,6 +51,20 @@ public class RotateImageProcessor extends WrapableImageProcessor {
             return bitmap;
         }
 
+        return rotate(bitmap, degrees, sketch.getConfiguration().getBitmapPool());
+    }
+
+    @Override
+    public String onGetKey() {
+        // 0度或360度时不加标识，这样做是为了避免浪费合适的内存缓存
+        if (degrees % 360 == 0) {
+            return null;
+        } else {
+            return String.format("%s(degrees=%d)", logName, degrees);
+        }
+    }
+
+    public static Bitmap rotate(Bitmap bitmap, int degrees, BitmapPool bitmapPool){
         Matrix matrix = new Matrix();
         matrix.setRotate(degrees);
 
@@ -62,7 +76,6 @@ public class RotateImageProcessor extends WrapableImageProcessor {
         int newHeight = (int) deviceR.height();
 
         // 创建新图片
-        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
         Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : null;
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {   // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
             config = Bitmap.Config.ARGB_8888;
@@ -80,15 +93,5 @@ public class RotateImageProcessor extends WrapableImageProcessor {
         canvas.drawBitmap(bitmap, srcR, dstR, paint);
 
         return rotateBitmap;
-    }
-
-    @Override
-    public String onGetKey() {
-        // 0度或360度时不加标识，这样做是为了避免浪费合适的内存缓存
-        if (degrees % 360 == 0) {
-            return null;
-        } else {
-            return String.format("%s(degrees=%d)", logName, degrees);
-        }
     }
 }

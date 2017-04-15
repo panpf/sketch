@@ -153,9 +153,11 @@ public class DefaultImageDecoder implements ImageDecoder {
             return null;
         }
 
-        // TODO: 2017/4/2 使用options中是否纠正旋转角度属性
-        ImageOrientationCorrector imageOrientationCorrector = request.getSketch().getConfiguration().getImageOrientationCorrector();
-        int imageOrientation = imageOrientationCorrector.getImageOrientation(request.getOptions().isCorrectImageOrientation(), boundOptions.outMimeType, decodeHelper);
+        int imageOrientation = 0;
+        if (request.getOptions().isCorrectImageOrientation()) {
+            ImageOrientationCorrector imageOrientationCorrector = request.getSketch().getConfiguration().getImageOrientationCorrector();
+            imageOrientation = imageOrientationCorrector.readImageRotateDegrees(boundOptions.outMimeType, decodeHelper);
+        }
 
         final ImageType imageType = ImageType.valueOfMimeType(boundOptions.outMimeType);
 
@@ -384,6 +386,15 @@ public class DefaultImageDecoder implements ImageDecoder {
             decodeHelper.onDecodeError();
             return null;
         }
+
+//        if (orientation != 0) {
+//            Configuration configuration = request.getSketch().getConfiguration();
+//            Bitmap newBitmap = configuration.getImageOrientationCorrector().rotate(bitmap, orientation, configuration.getBitmapPool());
+//            if (newBitmap != bitmap) {
+//                BitmapPoolUtils.freeBitmapToPool(bitmap, configuration.getBitmapPool());
+//                bitmap = newBitmap;
+//            }
+//        }
 
         // 成功
         decodeHelper.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
