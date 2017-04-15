@@ -1,14 +1,7 @@
+这是一个bug修复版本，如果你使用了lowQualityImage属性，那么强烈建议升级
 
-重构：
-* ImageInfo重命名为ImageAttrs，并将当中的key和uri移出，现在其定位为图片的属性
-* ImageFormat重命名为ImageType，LargeImageViewer.getImageFormat()方法重命名为getImageType()
-* ImageAttrs中新增orientation属性，存储图片旋转角度
+bugs：
+* 修复在kitkat以上版本使用lowQualityImage属性时对bitmap执行reconfigure会抛出"IllegalArgumentException: Bitmap not large enough to support new configuration"异常导致图片显示失败的bug
 
-新功能：
-* load和display的Options以及Helper新增correctImageOrientation属性可让被旋转了的图片以正常方向显示，[点击了解更多](../wiki/correct_image_orientation.md)
-
-
-Sample：
-* 图片详情页右下角设置按钮改为长按
-* 图片详情页点击显示底部四个按钮挪到了长按--更多功能里
-* 图片详情页点击关闭页面
+其它：
+* 在kitkat以上版本Options的bitmapConfig属性和ImageFormat的lowQualityConfig属性无法使用ARGB_4444

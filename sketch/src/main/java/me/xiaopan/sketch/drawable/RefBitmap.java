@@ -50,7 +50,7 @@ public class RefBitmap extends SketchBitmap {
                 bitmap.getWidth(), bitmap.getHeight(),
                 getAttrs().getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
-                SketchUtils.getBitmapByteSize(bitmap),
+                SketchUtils.getByteCount(bitmap),
                 getKey());
     }
 
@@ -65,7 +65,7 @@ public class RefBitmap extends SketchBitmap {
                 bitmap.getWidth(), bitmap.getHeight(),
                 getAttrs().getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
-                SketchUtils.getBitmapByteSize(bitmap),
+                SketchUtils.getByteCount(bitmap),
                 getKey());
     }
 

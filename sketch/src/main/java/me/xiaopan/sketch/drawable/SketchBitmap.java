@@ -41,7 +41,7 @@ public abstract class SketchBitmap {
     public abstract String getInfo();
 
     public int getByteCount() {
-        return SketchUtils.getBitmapByteSize(getBitmap());
+        return SketchUtils.getByteCount(getBitmap());
     }
 
     public Bitmap.Config getBitmapConfig() {

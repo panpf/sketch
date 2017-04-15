@@ -159,7 +159,7 @@ public class SketchMonitor implements Identifier {
      */
     public void onInBitmapExceptionForRegionDecoder(String imageUri, int imageWidth, int imageHeight, Rect srcRect, int inSampleSize, Bitmap inBitmap) {
         SLog.w(logName, "onInBitmapExceptionForRegionDecoder. imageUri=%s, imageSize=%dx%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-                imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap));
+                imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap));
     }
 
     /**
@@ -173,7 +173,7 @@ public class SketchMonitor implements Identifier {
      */
     public void onInBitmapException(String imageUri, int imageWidth, int imageHeight, int inSampleSize, Bitmap inBitmap) {
         SLog.w(logName, "onInBitmapException. imageUri=%s, imageSize=%dx%d, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-                imageUri, imageWidth, imageHeight, inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap));
+                imageUri, imageWidth, imageHeight, inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap));
     }
 
     @Override

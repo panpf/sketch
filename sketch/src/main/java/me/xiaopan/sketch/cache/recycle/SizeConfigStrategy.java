@@ -49,7 +49,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public void put(Bitmap bitmap) {
-        int size = SketchUtils.getBitmapByteSize(bitmap);
+        int size = SketchUtils.getByteCount(bitmap);
         Key key = keyPool.get(size, bitmap.getConfig());
 
         groupedMap.put(key, bitmap);
@@ -61,16 +61,22 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public Bitmap get(int width, int height, Bitmap.Config config) {
-        int size = SketchUtils.getBitmapByteSize(width, height, config);
+        int size = SketchUtils.computeByteCount(width, height, config);
         Key targetKey = keyPool.get(size, config);
         Key bestKey = findBestKey(targetKey, size, config);
 
         Bitmap result = groupedMap.get(bestKey);
         if (result != null) {
             // Decrement must be called before reconfigure.
-            decrementBitmapOfSize(SketchUtils.getBitmapByteSize(result), result.getConfig());
-            result.reconfigure(width, height,
-                    result.getConfig() != null ? result.getConfig() : Bitmap.Config.ARGB_8888);
+            decrementBitmapOfSize(SketchUtils.getByteCount(result), result.getConfig());
+            try {
+                result.reconfigure(width, height,
+                        result.getConfig() != null ? result.getConfig() : Bitmap.Config.ARGB_8888);
+            } catch (IllegalArgumentException e) {
+                // Bitmap.cpp Bitmap_reconfigure method may throw "IllegalArgumentException: Bitmap not large enough to support new configuration" exception
+                e.printStackTrace();
+                put(result);
+            }
         }
         return result;
     }
@@ -96,7 +102,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
     public Bitmap removeLast() {
         Bitmap removed = groupedMap.removeLast();
         if (removed != null) {
-            int removedSize = SketchUtils.getBitmapByteSize(removed);
+            int removedSize = SketchUtils.getByteCount(removed);
             decrementBitmapOfSize(removedSize, removed.getConfig());
         }
         return removed;
@@ -123,19 +129,19 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     @Override
     public String logBitmap(Bitmap bitmap) {
-        int size = SketchUtils.getBitmapByteSize(bitmap);
+        int size = SketchUtils.getByteCount(bitmap);
         return getBitmapString(size, bitmap.getConfig());
     }
 
     @Override
     public String logBitmap(int width, int height, Bitmap.Config config) {
-        int size = SketchUtils.getBitmapByteSize(width, height, config);
+        int size = SketchUtils.computeByteCount(width, height, config);
         return getBitmapString(size, config);
     }
 
     @Override
     public int getSize(Bitmap bitmap) {
-        return SketchUtils.getBitmapByteSize(bitmap);
+        return SketchUtils.getByteCount(bitmap);
     }
 
     @Override

@@ -266,7 +266,7 @@ public class InBitmapTestFragment extends MyFragment {
 
             builder.append("imageUri: ").append(imageUri);
 
-            int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
+            int sizeInBytes = SketchUtils.computeByteCount(options.outWidth, options.outHeight, options.inPreferredConfig);
             builder.append("\n").append("image: ")
                     .append(options.outWidth).append("x").append(options.outHeight)
                     .append(", ").append(options.inPreferredConfig)
@@ -281,7 +281,7 @@ public class InBitmapTestFragment extends MyFragment {
                             .append(Integer.toHexString(options.inBitmap.hashCode()))
                             .append(", ").append(options.inBitmap.getWidth()).append("x").append(options.inBitmap.getHeight())
                             .append(", ").append(options.inBitmap.isMutable())
-                            .append(", ").append(SketchUtils.getBitmapByteSize(options.inBitmap));
+                            .append(", ").append(SketchUtils.getByteCount(options.inBitmap));
                 } else {
                     builder.append("\n").append("inBitmap: ").append("null");
                 }
@@ -305,7 +305,7 @@ public class InBitmapTestFragment extends MyFragment {
                         .append(Integer.toHexString(newBitmap.hashCode()))
                         .append(", ").append(newBitmap.getWidth()).append("x").append(newBitmap.getHeight())
                         .append(", ").append(newBitmap.isMutable())
-                        .append(", ").append(SketchUtils.getBitmapByteSize(newBitmap));
+                        .append(", ").append(SketchUtils.getByteCount(newBitmap));
             } else {
                 builder.append("\n").append("newBitmap: ").append("null");
             }

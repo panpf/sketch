@@ -18,11 +18,12 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.util.SketchUtils;
 public enum ImageType {
     JPEG("image/jpeg", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
-    PNG("image/png", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
-    WEBP("image/webp", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
-    GIF("image/gif", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
+    PNG("image/png", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
+    WEBP("image/webp", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
+    GIF("image/gif", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
     BMP("image/bmp", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),;
 
     String mimeType;
@@ -66,6 +67,9 @@ public enum ImageType {
 
     @SuppressWarnings("unused")
     public void setLowQualityConfig(Bitmap.Config lowQualityConfig) {
+        if (lowQualityConfig == Bitmap.Config.ARGB_4444 && SketchUtils.isDisabledARGB4444()) {
+            lowQualityConfig = Bitmap.Config.ARGB_8888;
+        }
         this.lowQualityConfig = lowQualityConfig;
     }
 

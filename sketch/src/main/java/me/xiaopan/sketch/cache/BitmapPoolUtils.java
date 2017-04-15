@@ -73,7 +73,7 @@ public class BitmapPoolUtils {
         }
 
         int inSampleSize = options.inSampleSize;
-        ImageType format = ImageType.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
 
         Bitmap inBitmap = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -81,15 +81,15 @@ public class BitmapPoolUtils {
             int finalHeight = SketchUtils.ceil(options.outHeight, inSampleSize);
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize == 1
-                && (format == ImageType.JPEG || format == ImageType.PNG)) {
+                && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
             inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
         }
 
         if (inBitmap != null && SLogType.CACHE.isEnabled()) {
-            int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
+            int sizeInBytes = SketchUtils.computeByteCount(options.outWidth, options.outHeight, options.inPreferredConfig);
             SLog.d(SLogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     options.outWidth, options.outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
-                    Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap));
+                    Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
         }
 
         options.inBitmap = inBitmap;
@@ -169,10 +169,10 @@ public class BitmapPoolUtils {
 
         if (inBitmap != null) {
             if (SLogType.CACHE.isEnabled()) {
-                int sizeInBytes = SketchUtils.getBitmapByteSize(finalWidth, finalHeight, config);
+                int sizeInBytes = SketchUtils.computeByteCount(finalWidth, finalHeight, config);
                 SLog.d(SLogType.CACHE, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                         finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
-                        Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap));
+                        Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
             }
         } else {
             // 由于BitmapRegionDecoder不支持inMutable所以就自己创建Bitmap

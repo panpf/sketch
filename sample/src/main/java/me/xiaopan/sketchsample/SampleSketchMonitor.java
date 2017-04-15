@@ -256,7 +256,7 @@ class SampleSketchMonitor extends SketchMonitor {
                 srcRect.toString(),
                 inSampleSize,
                 inBitmap.getWidth(), inBitmap.getHeight(),
-                SketchUtils.getBitmapByteSize(inBitmap),
+                SketchUtils.getByteCount(inBitmap),
                 inBitmap.getConfig(),
                 getSystemState());
 
@@ -276,7 +276,7 @@ class SampleSketchMonitor extends SketchMonitor {
                 imageWidth, imageHeight,
                 inSampleSize,
                 inBitmap.getWidth(), inBitmap.getHeight(),
-                SketchUtils.getBitmapByteSize(inBitmap),
+                SketchUtils.getByteCount(inBitmap),
                 inBitmap.getConfig(),
                 getSystemState());
 

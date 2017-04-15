@@ -367,7 +367,7 @@ public class LargeImageViewer {
         long bytes = 0;
         for (Tile tile : tileManager.tileList) {
             if (!tile.isEmpty()) {
-                bytes += SketchUtils.getBitmapByteSize(tile.bitmap);
+                bytes += SketchUtils.getByteCount(tile.bitmap);
             }
         }
         return bytes;

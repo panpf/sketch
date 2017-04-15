@@ -612,22 +612,6 @@ public class SketchUtils {
     }
 
     /**
-     * 获取Bitmap占用内存大小，单位字节
-     */
-    public static int getBitmapByteSize(Bitmap bitmap) {
-        // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
-        if (bitmap == null || bitmap.isRecycled()) {
-            return 0;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return bitmap.getAllocationByteCount();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return bitmap.getByteCount();
-        } else {
-            return bitmap.getRowBytes() * bitmap.getHeight();
-        }
-    }
-
-    /**
      * 根据给定的信息，生成最终的图片信息
      *
      * @param type      类型
@@ -657,7 +641,7 @@ public class SketchUtils {
      * @param mimeType 图片格式
      */
     public static String makeImageInfo(String type, Bitmap bitmap, String mimeType) {
-        return makeImageInfo(type, bitmap, mimeType, getBitmapByteSize(bitmap));
+        return makeImageInfo(type, bitmap, mimeType, getByteCount(bitmap));
     }
 
     /**
@@ -1092,16 +1076,32 @@ public class SketchUtils {
     }
 
     /**
+     * 获取Bitmap占用内存大小，单位字节
+     */
+    public static int getByteCount(Bitmap bitmap) {
+        // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
+        if (bitmap == null || bitmap.isRecycled()) {
+            return 0;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return bitmap.getAllocationByteCount();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getByteCount();
+        } else {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        }
+    }
+
+    /**
      * 根据宽、高和配置计算所占用的字节数
      */
-    public static int getBitmapByteSize(int width, int height, Bitmap.Config config) {
+    public static int computeByteCount(int width, int height, Bitmap.Config config) {
         return width * height * getBytesPerPixel(config);
     }
 
     /**
      * 获取指定配置单个像素所占的字节数
      */
-    private static int getBytesPerPixel(Bitmap.Config config) {
+    public static int getBytesPerPixel(Bitmap.Config config) {
         // A bitmap by decoding a gif has null "config" in certain environments.
         if (config == null) {
             config = Bitmap.Config.ARGB_8888;
@@ -1182,5 +1182,9 @@ public class SketchUtils {
 
     public static int ceil(int value1, float value2) {
         return (int) Math.ceil(value1 / value2);
+    }
+
+    public static boolean isDisabledARGB4444(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 }

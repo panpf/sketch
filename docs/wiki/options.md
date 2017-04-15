@@ -57,7 +57,7 @@ displayOptions.setDecodeGifImage(true);
 // 尝试返回低质量的图片，例如PNG图片将使用ARGB_4444解析，具体的请查看ImageType类
 displayOptions.setLowQualityImage(true);
 
-// 强制使用RGB_565解码图片
+// 强制使用RGB_565解码图片，KITKAT以上版本不能使用ARGB_4444
 displayOptions.setBitmapConfig(Bitmap.Config.RGB_565);
 
 // 解码图片的时候优先考虑质量（默认是优先考虑速度，当你要频繁的对一张图片进行读取然后写出的时候一定要设置优先考虑质量）
