@@ -17,59 +17,54 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Rect;
-import android.os.Build;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
 
-public class FileDecodeHelper implements DecodeHelper {
-    protected String logName = "FileDecodeHelper";
+public class CacheFileDataSource implements DataSource {
+    protected String logName = "CacheFileDataSource";
 
-    private File file;
+    private DiskCache.Entry diskCacheEntry;
     private LoadRequest loadRequest;
+    private ImageFrom imageFrom;
 
-    public FileDecodeHelper(File file, LoadRequest loadRequest) {
-        this.file = file;
+    public CacheFileDataSource(DiskCache.Entry diskCacheEntry, LoadRequest loadRequest, ImageFrom imageFrom) {
+        this.diskCacheEntry = diskCacheEntry;
         this.loadRequest = loadRequest;
+        this.imageFrom = imageFrom;
     }
 
     @Override
-    public Bitmap decode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeFile(file.getPath(), options);
+    public InputStream getInputStream() throws IOException {
+        return diskCacheEntry.newInputStream();
     }
 
     @Override
-    public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return null;
-        }
-
-        BitmapRegionDecoder regionDecoder;
+    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            regionDecoder = BitmapRegionDecoder.newInstance(file.getPath(), false);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
 
-        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
-        regionDecoder.recycle();
-        return bitmap;
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
     }
 
     @Override
@@ -91,23 +86,14 @@ public class FileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeError() {
         if (SLogType.REQUEST.isEnabled()) {
-            SLog.e(SLogType.REQUEST, logName, "decode failed. filePath=%s, fileLength=%d",
-                    file.getPath(), file.exists() ? file.length() : 0);
+            SLog.e(SLogType.REQUEST, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
         }
-    }
 
-    @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        if (!diskCacheEntry.delete()) {
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+                        diskCacheEntry.getUri(), loadRequest.getKey());
+            }
         }
-    }
-
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return new FileInputStream(file);
     }
 }

@@ -37,6 +37,7 @@ import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownloadController;
+import me.xiaopan.sketch.feature.ProcessedImageCache;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
@@ -51,10 +52,13 @@ import me.xiaopan.sketch.request.RequestFactory;
  */
 public final class Configuration {
     protected String logName = "Configuration";
+
     private Context context;
+
     private DiskCache diskCache;
     private BitmapPool bitmapPool;
     private MemoryCache memoryCache;
+    private ProcessedImageCache processedImageCache;
 
     private HttpStack httpStack;
     private ImageDecoder imageDecoder;
@@ -72,6 +76,7 @@ public final class Configuration {
 
     private SketchMonitor monitor;
 
+    // TODO: 2017/4/15 搞一个通用的属性拦截器，把这些放到属性拦截器里
     private boolean globalPauseLoad;   // 全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
@@ -96,6 +101,7 @@ public final class Configuration {
         this.resizeCalculator = new ResizeCalculator();
         this.imagePreprocessor = new ImagePreprocessor();
         this.imageSizeCalculator = new ImageSizeCalculator();
+        this.processedImageCache = new ProcessedImageCache();
         this.resizeImageProcessor = new ResizeImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.imageOrientationCorrector = new ImageOrientationCorrector();
@@ -237,6 +243,27 @@ public final class Configuration {
                 SLog.d(SLogType.BASE, logName, "setMemoryCache. %s", memoryCache.getKey());
             }
         }
+        return this;
+    }
+
+    /**
+     * 获取再处理图片缓存器
+     *
+     * @return ProcessedImageCache
+     */
+    @SuppressWarnings("unused")
+    public ProcessedImageCache getProcessedImageCache() {
+        return processedImageCache;
+    }
+
+    /**
+     * 设置再处理图片缓存器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setProcessedImageCache(ProcessedImageCache processedImageCache) {
+        this.processedImageCache = processedImageCache;
         return this;
     }
 
@@ -653,6 +680,7 @@ public final class Configuration {
                 "\n" + "diskCache：" + diskCache.getKey() +
                 "\n" + "bitmapPool：" + bitmapPool.getKey() +
                 "\n" + "memoryCache：" + memoryCache.getKey() +
+                "\n" + "processedImageCache：" + processedImageCache.getKey() +
                 "\n" + "imageDecoder：" + imageDecoder.getKey() +
                 "\n" + "helperFactory：" + helperFactory.getKey() +
                 "\n" + "defaultImageDisplayer：" + defaultImageDisplayer.getKey() +

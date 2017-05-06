@@ -48,9 +48,7 @@ public class ImageAttrs {
         return originWidth;
     }
 
-    // TODO: 2017/4/2 重置的时候考虑要不要也重置 orientation
-    public void reset(String mimeType, int originWidth, int originHeight){
-        this.mimeType = mimeType;
+    public void resetSize(int originWidth, int originHeight){
         this.originWidth = originWidth;
         this.originHeight = originHeight;
     }

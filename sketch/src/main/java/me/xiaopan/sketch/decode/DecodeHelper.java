@@ -16,53 +16,13 @@
 
 package me.xiaopan.sketch.decode;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 
-import java.io.IOException;
-import java.io.InputStream;
+import me.xiaopan.sketch.request.LoadRequest;
 
-import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.drawable.ImageAttrs;
-import me.xiaopan.sketch.drawable.SketchGifDrawable;
-
-/**
- * 解码监听器
- */
 public interface DecodeHelper {
-    /**
-     * 解码
-     *
-     * @param options 解码选项
-     */
-    Bitmap decode(BitmapFactory.Options options);
+    boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions);
 
-    /**
-     * 解码碎片
-     *
-     * @param srcRect 解码区域
-     * @param options 解码选项
-     */
-    Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options);
-
-    /**
-     * 解码成功
-     */
-    void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize);
-
-    /**
-     * 解码失败
-     */
-    void onDecodeError();
-
-    /**
-     * 创建GifDrawable
-     */
-    SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool);
-
-    /**
-     * 获取输入流
-     */
-    InputStream getInputStream() throws IOException;
+    DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
+                        BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int orientation);
 }

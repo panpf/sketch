@@ -110,6 +110,11 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                 options.setResizeByFixedSize(false);
             }
 
+            boolean playGifOnList = Settings.getBoolean(sketchImageView.getContext(), Settings.PREFERENCE_PLAY_GIF_ON_LIST);
+            if (playGifOnList != options.isDecodeGifImage()) {
+                options.setDecodeGifImage(playGifOnList);
+            }
+
             sketchImageView.displayImage(imageUri);
         }
     }

@@ -325,13 +325,6 @@ public class ImageSizeCalculator implements Identifier {
         return Math.max(resizeScale, imageScale) > Math.min(resizeScale, imageScale) * 1.5f;
     }
 
-    /**
-     * 此缩放比例是否可以使用缓存到本地磁盘功能
-     */
-    public boolean canUseCacheProcessedImageInDisk(int inSampleSize) {
-        return inSampleSize >= 8;
-    }
-
     @SuppressWarnings("unused")
     public float getTargetSizeScale() {
         return targetSizeScale;

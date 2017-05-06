@@ -18,10 +18,13 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 
+// TODO: 2017/5/6 结果抽象化
 public class DecodeResult {
     private Bitmap bitmap;
     private SketchGifDrawable gifDrawable;
@@ -29,7 +32,8 @@ public class DecodeResult {
     private ImageAttrs imageAttrs;
 
     private ImageFrom imageFrom;
-    private boolean canCacheInDiskCache;
+    private boolean processed;
+    private boolean banProcess;
 
     public DecodeResult(ImageAttrs imageAttrs, SketchGifDrawable gifDrawable) {
         this.imageAttrs = imageAttrs;
@@ -41,32 +45,55 @@ public class DecodeResult {
         this.bitmap = bitmap;
     }
 
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
+    public boolean isBanProcess() {
+        return banProcess;
     }
 
-    public void setImageFrom(ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
+    public DecodeResult setBanProcess(boolean banProcess) {
+        this.banProcess = banProcess;
+        return this;
+    }
+
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
     }
 
     public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
+    public void setImageFrom(ImageFrom imageFrom) {
+        this.imageFrom = imageFrom;
+    }
+
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     public SketchGifDrawable getGifDrawable() {
         return gifDrawable;
     }
 
-    public boolean isCanCacheInDiskCache() {
-        return canCacheInDiskCache;
+    public boolean isProcessed() {
+        return processed;
     }
 
-    public DecodeResult setCanCacheInDiskCache(boolean canCacheInDiskCache) {
-        this.canCacheInDiskCache = canCacheInDiskCache;
+    public DecodeResult setProcessed(boolean processed) {
+        this.processed = processed;
         return this;
+    }
+
+    public void recycle(BitmapPool bitmapPool) {
+        if (bitmap != null) {
+            BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
+        }
+
+        if (gifDrawable != null) {
+            gifDrawable.recycle();
+        }
     }
 }

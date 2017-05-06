@@ -64,7 +64,7 @@ public class DisplayRequest extends LoadRequest {
      * 获取内存缓存key
      */
     public String getMemoryCacheKey() {
-        return ((DisplayInfo) info).getMemoryCacheKey();
+        return ((DisplayInfo) getInfo()).getMemoryCacheKey();
     }
 
     /**

@@ -17,12 +17,9 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Rect;
-import android.os.Build;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,42 +30,39 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
 
-public class ByteArrayDecodeHelper implements DecodeHelper {
-    protected String logName = "ByteArrayDecodeHelper";
+public class FileDataSource implements DataSource {
+    protected String logName = "FileDataSource";
 
-    private byte[] data;
+    private File file;
     private LoadRequest loadRequest;
 
-    public ByteArrayDecodeHelper(byte[] data, LoadRequest loadRequest) {
-        this.data = data;
+    public FileDataSource(File file, LoadRequest loadRequest) {
+        this.file = file;
         this.loadRequest = loadRequest;
     }
 
     @Override
-    public Bitmap decode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    public InputStream getInputStream() throws IOException {
+        return new FileInputStream(file);
     }
 
     @Override
-    public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return null;
-        }
-
-        BitmapRegionDecoder regionDecoder;
+    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            regionDecoder = BitmapRegionDecoder.newInstance(data, 0, data.length, false);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
 
-        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
-        regionDecoder.recycle();
-        return bitmap;
+    @Override
+    public ImageFrom getImageFrom() {
+        return ImageFrom.LOCAL;
     }
 
     @Override
@@ -78,7 +72,7 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
                 SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                        "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
+                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
                         sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
@@ -90,22 +84,8 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeError() {
         if (SLogType.REQUEST.isEnabled()) {
-            SLog.e(SLogType.REQUEST, logName, "decode failed. %s", loadRequest.getKey());
+            SLog.e(SLogType.REQUEST, logName, "decode failed. filePath=%s, fileLength=%d",
+                    file.getPath(), file.exists() ? file.length() : 0);
         }
-    }
-
-    @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, data);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return new ByteArrayInputStream(data);
     }
 }

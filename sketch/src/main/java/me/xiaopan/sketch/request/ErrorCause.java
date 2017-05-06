@@ -59,4 +59,24 @@ public enum ErrorCause {
      * 预处理结果是空的
      */
     PRE_PROCESS_RESULT_IS_NULL,
+
+    /**
+     * 下载结果是空的
+     */
+    DOWNLOAD_RESULT_IS_NULL,
+
+    /**
+     * 无法准备数据源
+     */
+    NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI,
+
+    /**
+     * 纠正图片方向失败
+     */
+    CORRECT_ORIENTATION_FAIL,
+
+    /**
+     * 处理图片失败
+     */
+    PROCESS_IMAGE_FAIL,
 }

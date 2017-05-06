@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
- * 
+ * Copyright (C) 2017 Peng fei Pan <sky@xiaopan.me>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,8 @@
 
 package me.xiaopan.sketch.decode;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.LoadRequest;
 
-/**
- * 图片解码器
- */
-public interface ImageDecoder extends Identifier {
-    DecodeResult decode(LoadRequest request) throws DecodeException;
+public interface ResultProcessor {
+    void process(LoadRequest request, DecodeResult result) throws DecodeException;
 }

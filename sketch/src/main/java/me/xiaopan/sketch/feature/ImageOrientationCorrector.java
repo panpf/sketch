@@ -17,13 +17,16 @@
 package me.xiaopan.sketch.feature;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.decode.DecodeHelper;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.process.RotateImageProcessor;
 import me.xiaopan.sketch.util.ExifInterface;
@@ -89,18 +92,18 @@ public class ImageOrientationCorrector implements Identifier {
     /**
      * 读取图片旋转角度
      *
-     * @param mimeType     图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
-     * @param decodeHelper DecodeHelper
+     * @param mimeType   图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+     * @param dataSource DataSource
      * @return 图片旋转角度
      */
-    public int readImageRotateDegrees(String mimeType, DecodeHelper decodeHelper) {
+    public int readImageRotateDegrees(String mimeType, DataSource dataSource) {
         if (!support(mimeType)) {
             return 0;
         }
 
         InputStream inputStream = null;
         try {
-            inputStream = decodeHelper.getInputStream();
+            inputStream = dataSource.getInputStream();
             return readImageRotateDegrees(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,6 +115,19 @@ public class ImageOrientationCorrector implements Identifier {
 
     public Bitmap rotate(Bitmap bitmap, int rotateDegrees, BitmapPool bitmapPool) {
         return RotateImageProcessor.rotate(bitmap, rotateDegrees, bitmapPool);
+    }
+
+    public void rotateSize(DecodeResult result, int rotateDegrees){
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotateDegrees);
+
+        // 根据旋转角度计算新的图片的尺寸
+        RectF dstR = new RectF(0, 0, result.getImageAttrs().getOriginWidth(), result.getImageAttrs().getOriginHeight());
+        RectF deviceR = new RectF();
+        matrix.mapRect(deviceR, dstR);
+        int newWidth = (int) deviceR.width();
+        int newHeight = (int) deviceR.height();
+        result.getImageAttrs().resetSize(newWidth, newHeight);
     }
 
     @Override

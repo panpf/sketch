@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2017 Peng fei Pan <sky@xiaopan.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,6 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Rect;
-import android.os.Build;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,64 +30,39 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.util.SketchUtils;
 
-public class CacheFileDecodeHelper implements DecodeHelper {
-    protected String logName = "CacheFileDecodeHelper";
+public class ProcessedCacheDataSource implements DataSource {
+    protected String logName = "ProcessedCacheFileDataSource";
 
     private DiskCache.Entry diskCacheEntry;
     private LoadRequest loadRequest;
 
-    public CacheFileDecodeHelper(DiskCache.Entry diskCacheEntry, LoadRequest loadRequest) {
+    public ProcessedCacheDataSource(DiskCache.Entry diskCacheEntry, LoadRequest loadRequest) {
         this.diskCacheEntry = diskCacheEntry;
         this.loadRequest = loadRequest;
     }
 
     @Override
-    public Bitmap decode(BitmapFactory.Options options) {
-        InputStream inputStream;
-        try {
-            inputStream = diskCacheEntry.newInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-        return bitmap;
+    public InputStream getInputStream() throws IOException {
+        return diskCacheEntry.newInputStream();
     }
 
     @Override
-    public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return null;
-        }
-
-        InputStream inputStream;
+    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            inputStream = diskCacheEntry.newInputStream();
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
 
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            SketchUtils.close(inputStream);
-        }
-
-        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
-        regionDecoder.recycle();
-        SketchUtils.close(inputStream);
-        return bitmap;
+    @Override
+    public ImageFrom getImageFrom() {
+        return ImageFrom.DISK_CACHE;
     }
 
     @Override
@@ -122,26 +93,5 @@ public class CacheFileDecodeHelper implements DecodeHelper {
                         diskCacheEntry.getUri(), loadRequest.getKey());
             }
         }
-    }
-
-    @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public InputStream getInputStream() throws IOException {
-        InputStream inputStream = null;
-        try {
-            inputStream = diskCacheEntry.newInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return inputStream;
     }
 }

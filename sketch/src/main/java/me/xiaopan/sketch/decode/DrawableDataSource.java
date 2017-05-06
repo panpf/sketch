@@ -19,10 +19,6 @@ package me.xiaopan.sketch.decode;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Rect;
-import android.os.Build;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,79 +30,25 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.util.SketchUtils;
 
-public class DrawableDecodeHelper implements DecodeHelper {
-    protected String logName = "DrawableDecodeHelper";
+public class DrawableDataSource implements DataSource {
+    protected String logName = "DrawableDataSource";
 
     private int drawableId;
     private LoadRequest loadRequest;
 
-    public DrawableDecodeHelper(int drawableId, LoadRequest loadRequest) {
+    public DrawableDataSource(int drawableId, LoadRequest loadRequest) {
         this.drawableId = drawableId;
         this.loadRequest = loadRequest;
     }
 
     @Override
-    public Bitmap decode(BitmapFactory.Options options) {
+    public InputStream getInputStream() throws IOException {
         Context context = loadRequest.getSketch().getConfiguration().getContext();
-        return BitmapFactory.decodeResource(context.getResources(), drawableId, options);
-    }
-
-    @Override
-    public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return null;
-        }
-
-        InputStream inputStream;
-        try {
-            Context context = loadRequest.getSketch().getConfiguration().getContext();
-            inputStream = context.getResources().openRawResource(drawableId);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            SketchUtils.close(inputStream);
-        }
-
-        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
-        regionDecoder.recycle();
-        SketchUtils.close(inputStream);
-        return bitmap;
-    }
-
-    @Override
-    public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
-        if (SLogType.REQUEST.isEnabled()) {
-            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-                ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                        "targetSizeScale=%s,  inSampleSize=%d,  finalSize=%dx%d. %s",
-                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
-            } else {
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
-            }
-        }
-    }
-
-    @Override
-    public void onDecodeError() {
-        if (SLogType.REQUEST.isEnabled()) {
-            SLog.e(SLogType.REQUEST, logName, "decode failed. %s", String.valueOf(drawableId));
-        }
+        return context.getResources().openRawResource(drawableId);
     }
 
     @Override
@@ -121,14 +63,30 @@ public class DrawableDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
-        InputStream inputStream = null;
-        try {
-            Context context = loadRequest.getSketch().getConfiguration().getContext();
-            inputStream = context.getResources().openRawResource(drawableId);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+    public ImageFrom getImageFrom() {
+        return ImageFrom.LOCAL;
+    }
+
+    @Override
+    public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
+        if (SLogType.REQUEST.isEnabled()) {
+            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
+                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
+                ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
+                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
+                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
+            } else {
+                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+            }
         }
-        return inputStream;
+    }
+
+    @Override
+    public void onDecodeError() {
+        if (SLogType.REQUEST.isEnabled()) {
+            SLog.e(SLogType.REQUEST, logName, "decode failed. %s", String.valueOf(drawableId));
+        }
     }
 }

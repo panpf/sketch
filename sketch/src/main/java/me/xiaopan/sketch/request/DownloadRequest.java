@@ -58,7 +58,7 @@ public class DownloadRequest extends AsyncRequest {
      * 获取磁盘缓存key
      */
     public String getDiskCacheKey() {
-        return ((DownloadInfo) info).getDiskCacheKey();
+        return ((DownloadInfo) getInfo()).getDiskCacheKey();
     }
 
     /**

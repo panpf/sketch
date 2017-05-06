@@ -16,12 +16,16 @@
 
 package me.xiaopan.sketch.request;
 
-import me.xiaopan.sketch.SLogType;
+import android.content.Context;
+
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 
-abstract class BaseRequest {
-    protected BaseInfo info;
+public abstract class BaseRequest {
+    // TODO: 2017/4/15 这种字段，全部改成私有的
+    private BaseInfo info;
     private Sketch sketch;
     private String logName = "Request";
     private Status status;
@@ -33,8 +37,21 @@ abstract class BaseRequest {
         this.info = info;
     }
 
+    // TODO: 2017/4/15 使用这个方法大多是为了获取context或 getConfiguration
     public Sketch getSketch() {
         return sketch;
+    }
+
+    public Context getContext() {
+        return sketch.getConfiguration().getContext();
+    }
+
+    public Configuration getConfiguration() {
+        return sketch.getConfiguration();
+    }
+
+    public BaseInfo getInfo() {
+        return info;
     }
 
     /**
@@ -90,7 +107,7 @@ abstract class BaseRequest {
     /**
      * 设置状态
      */
-    void setStatus(Status status) {
+    public void setStatus(Status status) {
         this.status = status;
         if (SLogType.REQUEST.isEnabled()) {
             if (status == Status.FAILED) {
@@ -176,10 +193,6 @@ abstract class BaseRequest {
         }
     }
 
-    protected String getThreadName() {
-        return Thread.currentThread().getName();
-    }
-
     private void printLog(int level, Object... items) {
         StringBuilder builder = new StringBuilder();
         if (items != null && items.length > 0) {
@@ -191,7 +204,7 @@ abstract class BaseRequest {
             }
         }
 
-        builder.append(". ").append(getThreadName());
+        builder.append(". ").append(Thread.currentThread().getName());
         builder.append(". ").append(getKey());
 
         if (level == 0) {
