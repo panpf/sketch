@@ -34,7 +34,12 @@ public class ProcessImageResultProcessor implements ResultProcessor {
             return;
         }
 
-        Bitmap bitmap = result.getBitmap();
+        if (!(result instanceof BitmapDecodeResult)) {
+            return;
+        }
+
+        BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
+        Bitmap bitmap = bitmapDecodeResult.getBitmap();
         if (bitmap == null) {
             return;
         }
@@ -62,7 +67,7 @@ public class ProcessImageResultProcessor implements ResultProcessor {
         if (newBitmap != null && !newBitmap.isRecycled()) {
             if (newBitmap != bitmap) {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, request.getConfiguration().getBitmapPool());
-                result.setBitmap(newBitmap);
+                bitmapDecodeResult.setBitmap(newBitmap);
             }
             result.setProcessed(true);
         } else {

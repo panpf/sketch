@@ -93,7 +93,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
         if (displayFreeRideSet == null) {
             synchronized (this) {
                 if (displayFreeRideSet == null) {
-                    displayFreeRideSet = new HashSet<FreeRideManager.DisplayFreeRide>();
+                    displayFreeRideSet = new HashSet<>();
                 }
             }
         }

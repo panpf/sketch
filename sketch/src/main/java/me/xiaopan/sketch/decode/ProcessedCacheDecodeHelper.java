@@ -132,6 +132,6 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
 
         // 成功
         dataSource.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
-        return new DecodeResult(imageAttrs, bitmap).setBanProcess(true);
+        return new BitmapDecodeResult(imageAttrs, bitmap).setBanProcess(true);
     }
 }

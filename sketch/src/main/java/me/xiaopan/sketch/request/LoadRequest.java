@@ -21,8 +21,10 @@ import android.graphics.Bitmap;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.decode.BitmapDecodeResult;
 import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.DecodeResult;
+import me.xiaopan.sketch.decode.GifDecodeResult;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.feature.ProcessedImageCache;
@@ -160,8 +162,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
             return;
         }
 
-        if (decodeResult != null && decodeResult.getBitmap() != null) {
-            Bitmap bitmap = decodeResult.getBitmap();
+        if (decodeResult != null && decodeResult instanceof BitmapDecodeResult) {
+            Bitmap bitmap = ((BitmapDecodeResult) decodeResult).getBitmap();
 
             if (bitmap.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
@@ -188,8 +190,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
             loadResult = new LoadResult(bitmap, decodeResult);
             loadCompleted();
-        } else if (decodeResult != null && decodeResult.getGifDrawable() != null) {
-            SketchGifDrawable gifDrawable = decodeResult.getGifDrawable();
+        } else if (decodeResult != null && decodeResult instanceof GifDecodeResult) {
+            SketchGifDrawable gifDrawable = ((GifDecodeResult) decodeResult).getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {

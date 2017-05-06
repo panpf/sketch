@@ -30,6 +30,10 @@ public class ProcessedCacheResultProcessor implements ResultProcessor {
             return;
         }
 
+        if (!(result instanceof BitmapDecodeResult)) {
+            return;
+        }
+
         ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
         if (!processedImageCache.canUse(request.getOptions())) {
             return;
@@ -39,6 +43,7 @@ public class ProcessedCacheResultProcessor implements ResultProcessor {
             return;
         }
 
-        processedImageCache.saveProcessedImageToDiskCache(request, result.getBitmap());
+        BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
+        processedImageCache.saveProcessedImageToDiskCache(request, bitmapDecodeResult.getBitmap());
     }
 }

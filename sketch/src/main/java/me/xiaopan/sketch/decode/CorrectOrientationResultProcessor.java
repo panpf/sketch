@@ -32,6 +32,10 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
+        if (!(result instanceof BitmapDecodeResult)) {
+            return;
+        }
+
         if (!request.getOptions().isCorrectImageOrientation()) {
             return;
         }
@@ -41,7 +45,8 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
-        Bitmap bitmap = result.getBitmap();
+        BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
+        Bitmap bitmap = bitmapDecodeResult.getBitmap();
         if (bitmap == null) {
             return;
         }
@@ -53,7 +58,7 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
         if (newBitmap != null && !newBitmap.isRecycled()) {
             if (newBitmap != bitmap) {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, configuration.getBitmapPool());
-                result.setBitmap(newBitmap);
+                bitmapDecodeResult.setBitmap(newBitmap);
             }
 
             corrector.rotateSize(result, orientation);

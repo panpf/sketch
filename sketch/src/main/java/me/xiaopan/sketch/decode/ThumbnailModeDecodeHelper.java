@@ -141,6 +141,6 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
         // 成功
         dataSource.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
-        return new DecodeResult(imageAttrs, bitmap).setProcessed(true);
+        return new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(true);
     }
 }

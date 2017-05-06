@@ -113,6 +113,6 @@ public class NormalDecodeHelper implements DecodeHelper {
         boolean processed = processedImageCache.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
 
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
-        return new DecodeResult(imageAttrs, bitmap).setProcessed(processed);
+        return new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(processed);
     }
 }

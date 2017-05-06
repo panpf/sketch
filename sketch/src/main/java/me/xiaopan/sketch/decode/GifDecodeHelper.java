@@ -49,7 +49,7 @@ public class GifDecodeHelper implements DecodeHelper {
                 return null;
             }
 
-            return new DecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
+            return new GifDecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
         } catch (Throwable e) {
             e.printStackTrace();
             SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
