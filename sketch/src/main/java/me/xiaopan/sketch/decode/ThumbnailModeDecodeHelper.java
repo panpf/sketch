@@ -42,7 +42,9 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
     @Override
     public boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions) {
         LoadOptions loadOptions = request.getOptions();
-        if (!loadOptions.isThumbnailMode() || SketchUtils.sdkSupportBitmapRegionDecoder() || SketchUtils.formatSupportBitmapRegionDecoder(imageType)) {
+        if (!loadOptions.isThumbnailMode()
+                || !SketchUtils.sdkSupportBitmapRegionDecoder()
+                || !SketchUtils.formatSupportBitmapRegionDecoder(imageType)) {
             return false;
         }
 
