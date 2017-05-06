@@ -100,7 +100,7 @@ public class ImagePreprocessor implements Identifier {
      */
     private PreProcessResult getApkIconDiskCache(LoadRequest loadRequest) {
         String realUri = loadRequest.getRealUri();
-        Configuration configuration = loadRequest.getSketch().getConfiguration();
+        Configuration configuration = loadRequest.getConfiguration();
 
         File apkFile = new File(realUri);
         if (!apkFile.exists()) {
@@ -200,7 +200,7 @@ public class ImagePreprocessor implements Identifier {
      */
     private PreProcessResult getInstalledAppIconDiskCache(LoadRequest loadRequest) {
         String diskCacheKey = loadRequest.getUri();
-        Configuration configuration = loadRequest.getSketch().getConfiguration();
+        Configuration configuration = loadRequest.getConfiguration();
 
         DiskCache diskCache = configuration.getDiskCache();
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);

@@ -54,7 +54,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
      */
     private PreProcessResult getXpkIconCacheFile(LoadRequest loadRequest) {
         String realUri = loadRequest.getRealUri();
-        Configuration configuration = loadRequest.getSketch().getConfiguration();
+        Configuration configuration = loadRequest.getConfiguration();
 
         File xpkFile = new File(realUri);
         if (!xpkFile.exists()) {

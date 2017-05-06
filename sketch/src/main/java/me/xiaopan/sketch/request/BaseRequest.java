@@ -24,7 +24,6 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 
 public abstract class BaseRequest {
-    // TODO: 2017/4/15 这种字段，全部改成私有的
     private BaseInfo info;
     private Sketch sketch;
     private String logName = "Request";
@@ -37,7 +36,6 @@ public abstract class BaseRequest {
         this.info = info;
     }
 
-    // TODO: 2017/4/15 使用这个方法大多是为了获取context或 getConfiguration
     public Sketch getSketch() {
         return sketch;
     }

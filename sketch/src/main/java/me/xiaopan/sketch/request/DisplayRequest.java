@@ -16,7 +16,6 @@
 
 package me.xiaopan.sketch.request;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -161,7 +160,7 @@ public class DisplayRequest extends LoadRequest {
         // 检查内存缓存
         if (!displayOptions.isCacheInMemoryDisabled()) {
             setStatus(Status.CHECK_MEMORY_CACHE);
-            MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+            MemoryCache memoryCache = getConfiguration().getMemoryCache();
             RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
             if (cachedRefBitmap != null) {
                 if (!cachedRefBitmap.isRecycled()) {
@@ -204,7 +203,7 @@ public class DisplayRequest extends LoadRequest {
                 return;
             }
 
-            BitmapPool bitmapPool = getSketch().getConfiguration().getBitmapPool();
+            BitmapPool bitmapPool = getConfiguration().getBitmapPool();
             RefBitmap refBitmap = new RefBitmap(bitmap, getKey(), getUri(), loadResult.getImageAttrs(), bitmapPool);
 
             // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
@@ -212,7 +211,7 @@ public class DisplayRequest extends LoadRequest {
 
             // 放入内存缓存中
             if (!displayOptions.isCacheInMemoryDisabled() && getMemoryCacheKey() != null) {
-                getSketch().getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
+                getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
             }
 
             Drawable drawable = new RefBitmapDrawable(refBitmap);
@@ -278,7 +277,7 @@ public class DisplayRequest extends LoadRequest {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap().isRecycled()) {
                 // 这里应该不会再出问题了
-                SketchMonitor sketchMonitor = getSketch().getConfiguration().getMonitor();
+                SketchMonitor sketchMonitor = getConfiguration().getMonitor();
                 sketchMonitor.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
 
                 // 图片不可用
@@ -293,7 +292,7 @@ public class DisplayRequest extends LoadRequest {
         // 显示图片
         if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
                 && drawable instanceof BitmapDrawable) {
-            drawable = new ShapeBitmapDrawable(getSketch().getConfiguration().getContext(), (BitmapDrawable) drawable,
+            drawable = new ShapeBitmapDrawable(getConfiguration().getContext(), (BitmapDrawable) drawable,
                     displayOptions.getShapeSize(), displayOptions.getImageShaper());
         }
 
@@ -330,8 +329,7 @@ public class DisplayRequest extends LoadRequest {
 
         // 显示失败图片
         if (displayOptions.getErrorImage() != null) {
-            Context context = getSketch().getConfiguration().getContext();
-            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(context, requestAndViewBinder.getImageViewInterface(), displayOptions);
+            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(getContext(), requestAndViewBinder.getImageViewInterface(), displayOptions);
             displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), errorDrawable);
         } else {
             if (SLogType.REQUEST.isEnabled()) {

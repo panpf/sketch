@@ -46,7 +46,7 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
-        Configuration configuration = request.getSketch().getConfiguration();
+        Configuration configuration = request.getConfiguration();
         ImageOrientationCorrector corrector = configuration.getImageOrientationCorrector();
         Bitmap newBitmap = corrector.rotate(bitmap, orientation, configuration.getBitmapPool());
 

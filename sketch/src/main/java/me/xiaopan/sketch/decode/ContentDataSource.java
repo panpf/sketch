@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.decode;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
@@ -48,13 +47,12 @@ public class ContentDataSource implements DataSource {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        Context context = loadRequest.getSketch().getConfiguration().getContext();
-        return context.getContentResolver().openInputStream(contentUri);
+        return loadRequest.getContext().getContentResolver().openInputStream(contentUri);
     }
 
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        ContentResolver contentResolver = loadRequest.getSketch().getConfiguration().getContext().getContentResolver();
+        ContentResolver contentResolver = loadRequest.getContext().getContentResolver();
         try {
             return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, contentResolver, contentUri);
         } catch (IOException e) {
@@ -73,7 +71,7 @@ public class ContentDataSource implements DataSource {
         if (SLogType.REQUEST.isEnabled()) {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-                ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
                 SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                                 "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),

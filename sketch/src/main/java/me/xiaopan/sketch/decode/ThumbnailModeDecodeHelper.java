@@ -72,10 +72,10 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
 
         LoadOptions loadOptions = request.getOptions();
         Resize resize = loadOptions.getResize();
-        ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator sizeCalculator = request.getConfiguration().getImageSizeCalculator();
 
         // 计算resize区域在原图中的对应区域
-        ResizeCalculator resizeCalculator = request.getSketch().getConfiguration().getResizeCalculator();
+        ResizeCalculator resizeCalculator = request.getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight,
                 resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
@@ -86,7 +86,7 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
 
         if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder() && !loadOptions.isBitmapPoolDisabled()) {
-            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(decodeOptions, result.srcRect, bitmapPool);
         }
 
@@ -99,8 +99,8 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
             // 要是因为inBitmap而解码失败就记录日志并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
                 if (!loadOptions.isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {
-                    BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-                    SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                    BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
+                    SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
 
                     BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, sketchMonitor, bitmapPool,
                             request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
@@ -117,7 +117,7 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
             }
         } catch (Throwable error) {
             error.printStackTrace();
-            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
             sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
         }
 

@@ -182,7 +182,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     printLogW("canceled", "runLoad", "decode after", "bitmapInfo: "
                             + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
                 }
-                BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
+                BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());
                 return;
             }
 
@@ -231,7 +231,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             // 已经取消了就直接把图片回收了
             if (loadResult != null) {
                 if (loadResult.getBitmap() != null) {
-                    BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getSketch().getConfiguration().getBitmapPool());
+                    BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getConfiguration().getBitmapPool());
                 }
                 if (loadResult.getGifDrawable() != null) {
                     loadResult.getGifDrawable().recycle();

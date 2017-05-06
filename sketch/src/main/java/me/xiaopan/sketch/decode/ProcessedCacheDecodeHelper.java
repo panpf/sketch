@@ -51,7 +51,7 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
 
         // Set inBitmap from bitmap pool
         if (BitmapPoolUtils.sdkSupportInBitmap() && !request.getOptions().isBitmapPoolDisabled()) {
-            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             BitmapPoolUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
         }
 
@@ -64,9 +64,9 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
             // 要是因为inBitmap而解码失败就记录日志并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmap()) {
                 if (!request.getOptions().isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {
-                    SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                    SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
 
-                    BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+                    BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
                     BitmapPoolUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
 
                     decodeOptions.inBitmap = null;
@@ -80,7 +80,7 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
             }
         } catch (Throwable error) {
             error.printStackTrace();
-            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
             sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
         }
 
@@ -122,7 +122,7 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
             // Read image orientation
             int originImageOrientation = 0;
             if (request.getOptions().isCorrectImageOrientation()) {
-                ImageOrientationCorrector imageOrientationCorrector = request.getSketch().getConfiguration().getImageOrientationCorrector();
+                ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
                 originImageOrientation = imageOrientationCorrector.readImageRotateDegrees(originImageOptions.outMimeType, originFileDataSource);
             }
             imageAttrs = new ImageAttrs(originImageOptions.outMimeType, originImageOptions.outWidth, originImageOptions.outHeight, originImageOrientation);

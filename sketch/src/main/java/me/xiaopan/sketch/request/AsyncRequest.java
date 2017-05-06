@@ -53,7 +53,7 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
         if (sync) {
             executeDispatch();
         } else {
-            getSketch().getConfiguration().getRequestExecutor().submitDispatch(this);
+            getConfiguration().getRequestExecutor().submitDispatch(this);
         }
     }
 
@@ -70,7 +70,7 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
         if (sync) {
             executeDownload();
         } else {
-            getSketch().getConfiguration().getRequestExecutor().submitDownload(this);
+            getConfiguration().getRequestExecutor().submitDownload(this);
         }
     }
 
@@ -87,7 +87,7 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
         if (sync) {
             executeLoad();
         } else {
-            getSketch().getConfiguration().getRequestExecutor().submitLoad(this);
+            getConfiguration().getRequestExecutor().submitLoad(this);
         }
     }
 

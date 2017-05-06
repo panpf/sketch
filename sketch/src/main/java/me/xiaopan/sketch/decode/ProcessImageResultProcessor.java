@@ -55,7 +55,7 @@ public class ProcessImageResultProcessor implements ResultProcessor {
                     loadOptions.isLowQualityImage());
         } catch (Throwable e) {
             e.printStackTrace();
-            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
             sketchMonitor.onProcessImageError(e, request.getKey(), imageProcessor);
         }
 

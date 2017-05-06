@@ -16,7 +16,6 @@
 
 package me.xiaopan.sketch.decode;
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
@@ -47,13 +46,12 @@ public class AssetsDataSource implements DataSource {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        Context context = loadRequest.getSketch().getConfiguration().getContext();
-        return context.getAssets().open(assetsFilePath);
+        return loadRequest.getContext().getAssets().open(assetsFilePath);
     }
 
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        AssetManager assetManager = loadRequest.getSketch().getConfiguration().getContext().getAssets();
+        AssetManager assetManager = loadRequest.getContext().getAssets();
         try {
             return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, assetManager, assetsFilePath);
         } catch (IOException e) {
@@ -72,7 +70,7 @@ public class AssetsDataSource implements DataSource {
         if (SLogType.REQUEST.isEnabled()) {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-                ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
                 SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                                 "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),

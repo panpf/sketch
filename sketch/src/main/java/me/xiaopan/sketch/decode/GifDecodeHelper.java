@@ -41,7 +41,7 @@ public class GifDecodeHelper implements DecodeHelper {
         try {
             ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth,
                     boundOptions.outHeight, orientation);
-            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
 
             SketchGifDrawable gifDrawable = dataSource.makeGifDrawable(request.getKey(), request.getUri(),
                     imageAttrs, bitmapPool);
@@ -52,7 +52,7 @@ public class GifDecodeHelper implements DecodeHelper {
             return new DecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
         } catch (Throwable e) {
             e.printStackTrace();
-            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
             sketchMonitor.onDecodeGifImageError(e, request,
                     boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
             return null;

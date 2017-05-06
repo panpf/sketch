@@ -232,7 +232,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         // Read image orientation
         int imageOrientation = 0;
         if (request.getOptions().isCorrectImageOrientation()) {
-            ImageOrientationCorrector imageOrientationCorrector = request.getSketch().getConfiguration().getImageOrientationCorrector();
+            ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
             imageOrientation = imageOrientationCorrector.readImageRotateDegrees(boundOptions.outMimeType, dataSource);
         }
 

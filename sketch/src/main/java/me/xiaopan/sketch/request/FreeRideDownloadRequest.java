@@ -47,17 +47,17 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
     @Override
     public boolean canByDownloadFreeRide() {
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        DiskCache diskCache = getConfiguration().getDiskCache();
         return !diskCache.isClosed() && !diskCache.isDisabled()
                 && !getOptions().isCacheInDiskDisabled()
-                && !isSync() && !getSketch().getConfiguration().getRequestExecutor().isShutdown();
+                && !isSync() && !getConfiguration().getRequestExecutor().isShutdown();
     }
 
     @Override
     protected void submitRunDownload() {
         // 可以坐顺风车的话，就先尝试坐别人的，坐不上就自己成为顺风车主让别人坐
         if (canByDownloadFreeRide()) {
-            FreeRideManager freeRideManager = getSketch().getConfiguration().getFreeRideManager();
+            FreeRideManager freeRideManager = getConfiguration().getFreeRideManager();
             if (freeRideManager.byDownloadFreeRide(this)) {
                 return;
             } else {
@@ -74,7 +74,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
         // 由于在submitRunDownload中会将自己注册成为顺风车主，因此一定要保证在这里取消注册
         if (canByDownloadFreeRide()) {
-            FreeRideManager freeRideManager = getSketch().getConfiguration().getFreeRideManager();
+            FreeRideManager freeRideManager = getConfiguration().getFreeRideManager();
             freeRideManager.unregisterDownloadFreeRideProvider(this);
         }
     }
@@ -99,7 +99,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
     @Override
     public synchronized boolean processDownloadFreeRide() {
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        DiskCache diskCache = getConfiguration().getDiskCache();
         DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
 
         if (diskCacheEntry != null) {

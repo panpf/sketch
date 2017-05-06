@@ -51,14 +51,14 @@ public class NormalDecodeHelper implements DecodeHelper {
         MaxSize maxSize = request.getOptions().getMaxSize();
         if (maxSize != null) {
             boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageType);
-            ImageSizeCalculator imageSizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
+            ImageSizeCalculator imageSizeCalculator = request.getConfiguration().getImageSizeCalculator();
             decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundOptions.outWidth, boundOptions.outHeight,
                     maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
         }
 
         // Set inBitmap from bitmap pool
         if (BitmapPoolUtils.sdkSupportInBitmap() && !request.getOptions().isBitmapPoolDisabled()) {
-            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             BitmapPoolUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
         }
 
@@ -71,9 +71,9 @@ public class NormalDecodeHelper implements DecodeHelper {
             // 要是因为inBitmap而解码失败就记录日志并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmap()) {
                 if (!request.getOptions().isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {
-                    SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                    SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
 
-                    BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+                    BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
                     BitmapPoolUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
 
                     decodeOptions.inBitmap = null;
@@ -87,7 +87,7 @@ public class NormalDecodeHelper implements DecodeHelper {
             }
         } catch (Throwable error) {
             error.printStackTrace();
-            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
             sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
         }
 

@@ -125,7 +125,7 @@ public class DownloadRequest extends AsyncRequest {
         if (!options.isCacheInDiskDisabled()) {
             setStatus(Status.CHECK_DISK_CACHE);
 
-            DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+            DiskCache diskCache = getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLogType.REQUEST.isEnabled()) {
@@ -170,7 +170,7 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        DiskCache diskCache = getConfiguration().getDiskCache();
 
         // 使用磁盘缓存就必须要上锁
         ReentrantLock diskCacheEditLock = null;
@@ -219,7 +219,7 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         // 下载
-        HttpStack httpStack = getSketch().getConfiguration().getHttpStack();
+        HttpStack httpStack = getConfiguration().getHttpStack();
         int retryCount = 0;
         int maxRetryCount = httpStack.getMaxRetryCount();
         DownloadResult justDownloadResult = null;
@@ -230,7 +230,7 @@ public class DownloadRequest extends AsyncRequest {
             } catch (Throwable e) {
                 e.printStackTrace();
 
-                getSketch().getConfiguration().getMonitor().onDownloadError(this, e);
+                getConfiguration().getMonitor().onDownloadError(this, e);
 
                 if (isCanceled()) {
                     if (SLogType.REQUEST.isEnabled()) {

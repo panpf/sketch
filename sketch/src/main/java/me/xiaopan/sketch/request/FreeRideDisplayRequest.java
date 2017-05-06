@@ -55,18 +55,18 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
      */
     @Override
     public boolean canByDisplayFreeRide() {
-        MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+        MemoryCache memoryCache = getConfiguration().getMemoryCache();
         return !memoryCache.isClosed() && !memoryCache.isDisabled()
                 && !getOptions().isCacheInMemoryDisabled()
                 && !getOptions().isDecodeGifImage()
-                && !isSync() && !getSketch().getConfiguration().getRequestExecutor().isShutdown();
+                && !isSync() && !getConfiguration().getRequestExecutor().isShutdown();
     }
 
     @Override
     protected void submitRunLoad() {
         // 可以坐顺风车的话，就先尝试坐别人的，坐不上就自己成为顺风车主让别人坐
         if (canByDisplayFreeRide()) {
-            FreeRideManager freeRideManager = getSketch().getConfiguration().getFreeRideManager();
+            FreeRideManager freeRideManager = getConfiguration().getFreeRideManager();
             if (freeRideManager.byDisplayFreeRide(this)) {
                 return;
             } else {
@@ -83,7 +83,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
 
         // 由于在submitRunLoad中会将自己注册成为顺风车主，因此一定要保证在这里取消注册
         if (canByDisplayFreeRide()) {
-            FreeRideManager freeRideManager = getSketch().getConfiguration().getFreeRideManager();
+            FreeRideManager freeRideManager = getConfiguration().getFreeRideManager();
             freeRideManager.unregisterDisplayFreeRideProvider(this);
         }
     }
@@ -108,7 +108,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
 
     @Override
     public synchronized boolean processDisplayFreeRide() {
-        MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+        MemoryCache memoryCache = getConfiguration().getMemoryCache();
         RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
         if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
             memoryCache.remove(getMemoryCacheKey());
