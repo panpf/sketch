@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 
 import java.io.File;
@@ -34,13 +33,9 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
-import me.xiaopan.sketch.feature.ImagePreprocessor;
-import me.xiaopan.sketch.feature.PreProcessResult;
-import me.xiaopan.sketch.feature.ProcessedImageCache;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
+import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -110,70 +105,49 @@ public class DefaultImageDecoder implements ImageDecoder {
         return bitmap;
     }
 
-    public static DataSource makeDataSource(LoadRequest request, boolean ignoreProcessedCache, String logName) throws DecodeException {
-        // 缓存的处理过的图片，可直接读取
-        if (!ignoreProcessedCache) {
-            ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
-            if (processedImageCache.canUse(request.getOptions())) {
-                DataSource dataSource = processedImageCache.checkProcessedImageDiskCache(request);
-                if (dataSource != null) {
-                    return dataSource;
+    static void decodeSuccess(Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
+        if (SLogType.REQUEST.isEnabled()) {
+            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
+                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
+                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
+                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
+                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
+                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
+            } else {
+                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+            }
+        }
+    }
+
+    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName) {
+        if (dataSource instanceof CacheFileDataSource) {
+            DiskCache.Entry diskCacheEntry = ((CacheFileDataSource) dataSource).getDiskCacheEntry();
+
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
+            }
+
+            if (!diskCacheEntry.delete()) {
+                if (SLogType.REQUEST.isEnabled()) {
+                    SLog.e(SLogType.REQUEST, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+                            diskCacheEntry.getUri(), loadRequest.getKey());
                 }
             }
         }
 
-        // 特殊文件的预处理
-        ImagePreprocessor imagePreprocessor = request.getConfiguration().getImagePreprocessor();
-        if (imagePreprocessor.isSpecific(request)) {
-            PreProcessResult prePrecessResult = request.doPreProcess();
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                return new CacheFileDataSource(prePrecessResult.diskCacheEntry, request, prePrecessResult.imageFrom);
+        if (dataSource instanceof FileDataSource) {
+            File file = ((FileDataSource) dataSource).getFile();
+
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, logName, "decode failed. filePath=%s, fileLength=%d",
+                        file.getPath(), file.exists() ? file.length() : 0);
             }
-
-            if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                return new ByteArrayDataSource(prePrecessResult.imageData, request, prePrecessResult.imageFrom);
+        } else {
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
             }
-
-            SLog.w(SLogType.REQUEST, logName, "pre process result is null", request.getUri());
-            throw new DecodeException("pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
         }
-
-        UriScheme uriScheme = request.getUriScheme();
-
-        if (uriScheme == UriScheme.NET) {
-            DownloadResult downloadResult = request.getDownloadResult();
-            DiskCache.Entry diskCacheEntry = downloadResult != null ? downloadResult.getDiskCacheEntry() : null;
-            if (diskCacheEntry != null) {
-                return new CacheFileDataSource(diskCacheEntry, request, downloadResult.getImageFrom());
-            }
-
-            byte[] imageDataArray = downloadResult != null ? downloadResult.getImageData() : null;
-            if (imageDataArray != null && imageDataArray.length > 0) {
-                return new ByteArrayDataSource(imageDataArray, request, downloadResult.getImageFrom());
-            }
-
-            SLog.w(SLogType.REQUEST, logName, "download result exception", request.getUri());
-            throw new DecodeException("download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
-        }
-
-        if (uriScheme == UriScheme.FILE) {
-            return new FileDataSource(new File(request.getRealUri()), request);
-        }
-
-        if (uriScheme == UriScheme.CONTENT) {
-            return new ContentDataSource(Uri.parse(request.getRealUri()), request);
-        }
-
-        if (uriScheme == UriScheme.ASSET) {
-            return new AssetsDataSource(request.getRealUri(), request);
-        }
-
-        if (uriScheme == UriScheme.DRAWABLE) {
-            return new DrawableDataSource(Integer.valueOf(request.getRealUri()), request);
-        }
-
-        SLog.w(SLogType.REQUEST, logName, "unknown uri is %s", request.getUri());
-        throw new DecodeException(String.format("unknown uri is %s", request.getUri()), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
     }
 
     @Override
@@ -214,7 +188,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         // Make date source
-        DataSource dataSource = makeDataSource(request, false, logName);
+        DataSource dataSource = DataSourceFactory.makeDataSourceByRequest(request, false, logName);
 
         // Decode bounds and mime info
         Options boundOptions = new Options();
@@ -225,7 +199,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             SLog.e(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, request.getKey());
-            dataSource.onDecodeError();
+            decodeError(request, dataSource, logName);
             return null;
         }
 
@@ -269,8 +243,8 @@ public class DefaultImageDecoder implements ImageDecoder {
         return decodeResult;
     }
 
-    private void doProcess(LoadRequest request, DecodeResult result) throws DecodeException{
-        for(ResultProcessor resultProcessor : resultProcessorList){
+    private void doProcess(LoadRequest request, DecodeResult result) throws DecodeException {
+        for (ResultProcessor resultProcessor : resultProcessorList) {
             resultProcessor.process(request, result);
         }
     }

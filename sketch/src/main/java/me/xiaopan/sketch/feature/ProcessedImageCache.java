@@ -96,7 +96,7 @@ public class ProcessedImageCache implements Identifier {
         editLock.unlock();
 
         if (diskCacheEntry != null) {
-            return new ProcessedCacheDataSource(diskCacheEntry, request);
+            return new ProcessedCacheDataSource(diskCacheEntry);
         }
 
         return null;

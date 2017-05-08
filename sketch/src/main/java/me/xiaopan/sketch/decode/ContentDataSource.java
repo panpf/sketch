@@ -17,42 +17,37 @@
 package me.xiaopan.sketch.decode;
 
 import android.content.ContentResolver;
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.net.Uri;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
-import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.MaxSize;
 
 public class ContentDataSource implements DataSource {
     protected String logName = "ContentDataSource";
 
+    private Context context;
     private Uri contentUri;
-    private LoadRequest loadRequest;
 
-    public ContentDataSource(Uri contentUri, LoadRequest loadRequest) {
+    public ContentDataSource(Context context, Uri contentUri) {
+        this.context = context;
         this.contentUri = contentUri;
-        this.loadRequest = loadRequest;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return loadRequest.getContext().getContentResolver().openInputStream(contentUri);
+        return context.getContentResolver().openInputStream(contentUri);
     }
 
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        ContentResolver contentResolver = loadRequest.getContext().getContentResolver();
+        ContentResolver contentResolver = context.getContentResolver();
         try {
             return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, contentResolver, contentUri);
         } catch (IOException e) {
@@ -64,28 +59,5 @@ public class ContentDataSource implements DataSource {
     @Override
     public ImageFrom getImageFrom() {
         return ImageFrom.LOCAL;
-    }
-
-    @Override
-    public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
-        if (SLogType.REQUEST.isEnabled()) {
-            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
-                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
-            } else {
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
-            }
-        }
-    }
-
-    @Override
-    public void onDecodeError() {
-        if (SLogType.REQUEST.isEnabled()) {
-            SLog.e(SLogType.REQUEST, logName, "decode failed. %s", contentUri.toString());
-        }
     }
 }

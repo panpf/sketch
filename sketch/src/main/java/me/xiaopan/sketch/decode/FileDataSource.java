@@ -16,33 +16,24 @@
 
 package me.xiaopan.sketch.decode;
 
-import android.graphics.Bitmap;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
-import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.MaxSize;
 
 public class FileDataSource implements DataSource {
     protected String logName = "FileDataSource";
 
     private File file;
-    private LoadRequest loadRequest;
 
-    public FileDataSource(File file, LoadRequest loadRequest) {
+    public FileDataSource(File file) {
         this.file = file;
-        this.loadRequest = loadRequest;
     }
 
     @Override
@@ -65,27 +56,7 @@ public class FileDataSource implements DataSource {
         return ImageFrom.LOCAL;
     }
 
-    @Override
-    public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
-        if (SLogType.REQUEST.isEnabled()) {
-            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
-                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
-            } else {
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
-            }
-        }
-    }
-
-    @Override
-    public void onDecodeError() {
-        if (SLogType.REQUEST.isEnabled()) {
-            SLog.e(SLogType.REQUEST, logName, "decode failed. filePath=%s, fileLength=%d",
-                    file.getPath(), file.exists() ? file.length() : 0);
-        }
+    File getFile() {
+        return file;
     }
 }

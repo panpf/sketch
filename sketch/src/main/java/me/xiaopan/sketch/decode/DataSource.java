@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch.decode;
 
-import android.graphics.Bitmap;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -32,8 +30,4 @@ public interface DataSource {
     SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool);
 
     ImageFrom getImageFrom();
-
-    void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize);
-
-    void onDecodeError();
 }

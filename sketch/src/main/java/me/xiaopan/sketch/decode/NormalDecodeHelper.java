@@ -74,40 +74,45 @@ public class NormalDecodeHelper implements DecodeHelper {
                     SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
 
                     BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-                    BitmapPoolUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
+                    BitmapPoolUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool,
+                            request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
 
                     decodeOptions.inBitmap = null;
                     try {
                         bitmap = DefaultImageDecoder.decodeBitmap(dataSource, decodeOptions);
                     } catch (Throwable error) {
                         error.printStackTrace();
-                        sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                        sketchMonitor.onDecodeNormalImageError(error, request,
+                                boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
                     }
                 }
             }
         } catch (Throwable error) {
             error.printStackTrace();
             SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
-            sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+            sketchMonitor.onDecodeNormalImageError(error, request,
+                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
         }
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            dataSource.onDecodeError();
+            DefaultImageDecoder.decodeError(request, dataSource, LOG_NAME);
             return null;
         }
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            SLog.w(SLogType.REQUEST, LOG_NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+            SLog.w(SLogType.REQUEST, LOG_NAME,
+                    "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             bitmap.recycle();
-            dataSource.onDecodeError();
+            DefaultImageDecoder.decodeError(request, dataSource, LOG_NAME);
             return null;
         }
 
         // 成功
-        dataSource.onDecodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, decodeOptions.inSampleSize);
+        DefaultImageDecoder.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
+                decodeOptions.inSampleSize, request, LOG_NAME);
 
         ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
         boolean processed = processedImageCache.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
