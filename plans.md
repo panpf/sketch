@@ -22,6 +22,8 @@
 * 将所有日志全部抽离出去搞成一个类
 * 加一些常用的xml属性
 * DecoderHelper改造一下，只返回InputStream，具体的交由Decoder解决
+* 集成Oblique，支持倾斜图片显示
+* 重新设计ImageShaper，感觉现在的很垃圾，限制很大
 
 其它：
 * 参考Glide、Fresco和Picasso

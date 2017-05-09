@@ -77,9 +77,9 @@ class TileExecutor {
     /**
      * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitError(Exception)方法回调
      */
-    public void submitInit(String imageUri, KeyCounter keyCounter) {
+    public void submitInit(String imageUri, KeyCounter keyCounter, boolean correctImageOrientation) {
         installHandlerThread();
-        initHandler.postInit(imageUri, keyCounter.getKey(), keyCounter);
+        initHandler.postInit(imageUri, correctImageOrientation, keyCounter.getKey(), keyCounter);
     }
 
     /**

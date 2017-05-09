@@ -38,6 +38,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 大图片查看器
  */
+// TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
 public class LargeImageViewer {
     private static final String NAME = "LargeImageViewer";
 
@@ -106,12 +107,12 @@ public class LargeImageViewer {
     /**
      * 设置新的图片
      */
-    void setImage(String imageUri) {
+    void setImage(String imageUri, boolean correctImageOrientation) {
         clean("setImage");
 
         this.imageUri = imageUri;
         this.running = !TextUtils.isEmpty(imageUri);
-        this.tileDecoder.setImage(imageUri);
+        this.tileDecoder.setImage(imageUri, correctImageOrientation);
     }
 
     /**

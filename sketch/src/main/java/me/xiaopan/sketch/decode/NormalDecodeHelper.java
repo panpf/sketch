@@ -68,6 +68,7 @@ public class NormalDecodeHelper implements DecodeHelper {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
+            // TODO: 2017/5/9 过滤异常message，准确的识别出inBitmap异常
             // 要是因为inBitmap而解码失败就记录日志并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmap()) {
                 if (!request.getOptions().isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {

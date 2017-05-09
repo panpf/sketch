@@ -36,7 +36,7 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
 
     public LoadingDrawable(Drawable drawable, DisplayRequest displayRequest) {
         super(drawable);
-        this.weakReference = new WeakReference<DisplayRequest>(displayRequest);
+        this.weakReference = new WeakReference<>(displayRequest);
 
         if (drawable instanceof RefDrawable) {
             refDrawable = (RefDrawable) drawable;

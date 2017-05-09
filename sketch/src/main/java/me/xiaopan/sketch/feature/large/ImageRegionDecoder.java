@@ -23,174 +23,82 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DataSourceFactory;
+import me.xiaopan.sketch.decode.DecodeException;
+import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 图片碎片解码器
+ * 图片碎片解码器，支持纠正图片方向
  */
 public class ImageRegionDecoder {
 
+    private final int imageOrientation;    // 顺时针方向将图片旋转多少度能回正
     private Point imageSize;
     private String imageUri;
     private ImageType imageType;
-
-    private InputStream sourceInputStream;
     private BitmapRegionDecoder regionDecoder;
 
-    ImageRegionDecoder(String imageUri, int imageWidth, int imageHeight, ImageType imageType, BitmapRegionDecoder regionDecoder) {
+    ImageRegionDecoder(String imageUri, Point imageSize, ImageType imageType,
+                       int imageOrientation, BitmapRegionDecoder regionDecoder) {
         this.imageUri = imageUri;
-        this.imageSize = new Point(imageWidth, imageHeight);
+        this.imageSize = imageSize;
         this.imageType = imageType;
+        this.imageOrientation = imageOrientation;
         this.regionDecoder = regionDecoder;
     }
 
-    ImageRegionDecoder(String imageUri, int imageWidth, int imageHeight, ImageType imageType, BitmapRegionDecoder regionDecoder, InputStream sourceInputStream) {
-        this.imageUri = imageUri;
-        this.imageSize = new Point(imageWidth, imageHeight);
-        this.imageType = imageType;
-        this.regionDecoder = regionDecoder;
-        this.sourceInputStream = sourceInputStream;
-    }
-
-    public static ImageRegionDecoder build(Context context, final String imageUri) throws Exception {
+    public static ImageRegionDecoder build(Context context, final String imageUri,
+                                           final boolean correctImageOrientation) throws DecodeException, IOException {
         UriScheme uriScheme = UriScheme.valueOfUri(imageUri);
-        if (uriScheme == UriScheme.NET) {
-            return createDecoderFromHttp(context, imageUri);
-        } else if (uriScheme == UriScheme.FILE) {
-            return createDecoderFromFile(imageUri);
-        } else if (uriScheme == UriScheme.CONTENT) {
-            return createDecoderFromContent(context, imageUri);
-        } else if (uriScheme == UriScheme.ASSET) {
-            return createDecoderFromAsset(context, imageUri);
-        } else if (uriScheme == UriScheme.DRAWABLE) {
-            return createDecoderFromDrawable(context, imageUri);
-        } else {
-            throw new Exception("Unknown scheme uri: " + imageUri);
+        if (uriScheme == null) {
+            throw new IllegalArgumentException("Unknown scheme uri: " + imageUri);
         }
-    }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static ImageRegionDecoder createDecoderFromHttp(Context context, String imageUri) throws Exception {
-        DiskCache.Entry diskCacheEntry = Sketch.with(context).getConfiguration().getDiskCache().get(imageUri);
-        if (diskCacheEntry == null) {
-            throw new Exception("Not found disk cache: " + imageUri);
+        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri,
+                uriScheme, uriScheme.crop(imageUri), null, "ImageRegionDecoder");
+
+        // 读取图片尺寸和类型
+        BitmapFactory.Options boundOptions = new BitmapFactory.Options();
+        boundOptions.inJustDecodeBounds = true;
+        DefaultImageDecoder.decodeBitmap(dataSource, boundOptions);
+        Point imageSize = new Point(boundOptions.outWidth, boundOptions.outHeight);
+
+        // 读取图片方向并根据方向改变尺寸
+        Configuration configuration = Sketch.with(context).getConfiguration();
+        int imageOrientation = 0;
+        ImageOrientationCorrector orientationCorrector = configuration.getImageOrientationCorrector();
+        if (correctImageOrientation) {
+            imageOrientation = orientationCorrector.readImageRotateDegrees(boundOptions.outMimeType, dataSource);
         }
-        String diskCacheFilePath = diskCacheEntry.getFile().getPath();
+        if (imageOrientation != 0) {
+            orientationCorrector.rotateSize(imageSize, imageOrientation);
+        }
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(diskCacheFilePath, options);
-
-        BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(diskCacheFilePath, false);
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
-
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder);
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static ImageRegionDecoder createDecoderFromFile(String imageUri) throws IOException {
-        String filePath = UriScheme.FILE.crop(imageUri);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-
-        BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(filePath, false);
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
-
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder);
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static ImageRegionDecoder createDecoderFromContent(Context context, String imageUri) throws Exception {
-        Uri uri = Uri.parse(UriScheme.CONTENT.crop(imageUri));
-
-        InputStream inputStream = context.getContentResolver().openInputStream(uri);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-
-        inputStream = context.getContentResolver().openInputStream(uri);
+        InputStream inputStream = null;
         BitmapRegionDecoder regionDecoder;
         try {
+            inputStream = dataSource.getInputStream();
             regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
+        } finally {
             SketchUtils.close(inputStream);
-            throw e;
         }
 
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(boundOptions.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder, inputStream);
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static ImageRegionDecoder createDecoderFromAsset(Context context, String imageUri) throws IOException {
-        String assetFileName = UriScheme.ASSET.crop(imageUri);
-
-        InputStream inputStream = context.getAssets().open(assetFileName);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-
-        inputStream = context.getAssets().open(assetFileName);
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
-        }
-
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
-
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder, inputStream);
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static ImageRegionDecoder createDecoderFromDrawable(Context context, String imageUri) throws Exception {
-        int drawableResId = Integer.valueOf(UriScheme.DRAWABLE.crop(imageUri));
-
-        InputStream inputStream = context.getResources().openRawResource(drawableResId);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-
-        inputStream = context.getResources().openRawResource(drawableResId);
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
-        }
-
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
-
-        return new ImageRegionDecoder(imageUri, imageWidth, imageHeight, imageType, regionDecoder, inputStream);
+        return new ImageRegionDecoder(imageUri, imageSize, imageType, imageOrientation,
+                regionDecoder);
     }
 
     @SuppressWarnings("unused")
@@ -207,6 +115,10 @@ public class ImageRegionDecoder {
         return imageUri;
     }
 
+    public int getImageOrientation() {
+        return imageOrientation;
+    }
+
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public boolean isReady() {
         return regionDecoder != null && !regionDecoder.isRecycled();
@@ -217,10 +129,6 @@ public class ImageRegionDecoder {
         if (isReady()) {
             regionDecoder.recycle();
             regionDecoder = null;
-            if (sourceInputStream != null) {
-                SketchUtils.close(sourceInputStream);
-                sourceInputStream = null;
-            }
         }
     }
 

@@ -18,6 +18,8 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.io.IOException;
@@ -28,6 +30,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.process.RotateImageProcessor;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -117,17 +120,57 @@ public class ImageOrientationCorrector implements Identifier {
         return RotateImageProcessor.rotate(bitmap, rotateDegrees, bitmapPool);
     }
 
-    public void rotateSize(DecodeResult result, int rotateDegrees){
+    public void rotateSize(DecodeResult result, int rotateDegrees) {
+        ImageAttrs imageAttrs = result.getImageAttrs();
+
         Matrix matrix = new Matrix();
         matrix.setRotate(rotateDegrees);
 
-        // 根据旋转角度计算新的图片的尺寸
-        RectF dstR = new RectF(0, 0, result.getImageAttrs().getOriginWidth(), result.getImageAttrs().getOriginHeight());
+        RectF dstR = new RectF(0, 0, imageAttrs.getOriginWidth(), imageAttrs.getOriginHeight());
         RectF deviceR = new RectF();
         matrix.mapRect(deviceR, dstR);
-        int newWidth = (int) deviceR.width();
-        int newHeight = (int) deviceR.height();
-        result.getImageAttrs().resetSize(newWidth, newHeight);
+
+        imageAttrs.resetSize((int) deviceR.width(), (int) deviceR.height());
+    }
+
+    public void rotateSize(Point size, int rotateDegrees) {
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotateDegrees);
+
+        RectF dstR = new RectF(0, 0, size.x, size.y);
+        RectF deviceR = new RectF();
+        matrix.mapRect(deviceR, dstR);
+
+        size.x = (int) deviceR.width();
+        size.y = (int) deviceR.height();
+    }
+
+    /**
+     * @param rotateDegrees 顺时针方向将图片旋转多少度能回正
+     */
+    @SuppressWarnings("SuspiciousNameCombination")
+    public void reverseRotate(Rect srcRect, Point imageSize, int rotateDegrees) {
+        rotateDegrees = 360 - rotateDegrees;
+
+        if (rotateDegrees == 90) {
+            int top = srcRect.top;
+            srcRect.top = srcRect.left;
+            srcRect.left = imageSize.y - srcRect.bottom;
+            srcRect.bottom = srcRect.right;
+            srcRect.right = imageSize.y - top;
+        } else if (rotateDegrees == 180) {
+            int left = srcRect.left, top = srcRect.top;
+            srcRect.left = imageSize.x - srcRect.right;
+            srcRect.right = imageSize.x - left;
+            srcRect.top = imageSize.y - srcRect.bottom;
+            srcRect.bottom = imageSize.y - top;
+        } else if (rotateDegrees == 270) {
+            int left = srcRect.left;
+            srcRect.left = srcRect.top;
+            srcRect.top = imageSize.x - srcRect.right;
+            srcRect.right = srcRect.bottom;
+            srcRect.bottom = imageSize.x - left;
+        }
     }
 
     @Override

@@ -406,6 +406,7 @@ public class ImageFragment extends MyFragment {
 
             mappingView.getOptions().setImageDisplayer(new FadeInImageDisplayer());
             mappingView.getOptions().setMaxSize(600, 600);
+            mappingView.getOptions().setCorrectImageOrientation(Settings.getBoolean(getContext(), Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION));
             mappingView.displayImage(imageUri);
 
             mappingView.setVisibility(showTools ? View.VISIBLE : View.GONE);

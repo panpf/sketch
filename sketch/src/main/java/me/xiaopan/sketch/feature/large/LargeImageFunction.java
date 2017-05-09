@@ -21,8 +21,8 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
@@ -151,9 +151,10 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         }
 
         Drawable previewDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
+        SketchDrawable sketchDrawable = null;
         boolean drawableQualified = false;
         if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof LoadingDrawable)) {
-            SketchDrawable sketchDrawable = (SketchDrawable) previewDrawable;
+            sketchDrawable = (SketchDrawable) previewDrawable;
             final int previewWidth = previewDrawable.getIntrinsicWidth();
             final int previewHeight = previewDrawable.getIntrinsicHeight();
             final int imageWidth = sketchDrawable.getOriginWidth();
@@ -177,11 +178,11 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         }
 
         if (drawableQualified) {
-            imageUri = ((SketchDrawable) previewDrawable).getUri();
-            largeImageViewer.setImage(imageUri);
+            imageUri = sketchDrawable.getUri();
+            largeImageViewer.setImage(imageUri, sketchDrawable.getOrientation() != 0);
         } else {
             imageUri = null;
-            largeImageViewer.setImage(null);
+            largeImageViewer.setImage(null, false);
         }
     }
 

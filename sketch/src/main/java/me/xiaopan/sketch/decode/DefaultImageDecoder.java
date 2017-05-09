@@ -62,17 +62,17 @@ public class DefaultImageDecoder implements ImageDecoder {
         resultProcessorList.add(new ProcessedCacheResultProcessor());
     }
 
-    public static Bitmap decodeBitmap(DataSource dataSource, BitmapFactory.Options options) {
-        InputStream inputStream;
+    public static Bitmap decodeBitmap(DataSource dataSource, BitmapFactory.Options options) throws IOException {
+        InputStream inputStream = null;
+        Bitmap bitmap = null;
+
         try {
             inputStream = dataSource.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+        } finally {
+            SketchUtils.close(inputStream);
         }
 
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
         return bitmap;
     }
 
@@ -193,7 +193,14 @@ public class DefaultImageDecoder implements ImageDecoder {
         // Decode bounds and mime info
         Options boundOptions = new Options();
         boundOptions.inJustDecodeBounds = true;
-        decodeBitmap(dataSource, boundOptions);
+        try {
+            decodeBitmap(dataSource, boundOptions);
+        } catch (IOException e) {
+            e.printStackTrace();
+            SLog.e(SLogType.REQUEST, logName, "decode bounds failed %s", request.getKey());
+            decodeError(request, dataSource, logName);
+            return null;
+        }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {

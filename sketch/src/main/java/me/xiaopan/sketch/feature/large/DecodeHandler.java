@@ -25,6 +25,7 @@ import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
@@ -32,6 +33,7 @@ import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 
 /**
  * 解码处理器，运行在解码线程中，负责解码
@@ -45,12 +47,16 @@ class DecodeHandler extends Handler {
     private WeakReference<TileExecutor> reference;
     private BitmapPool bitmapPool;
     private SketchMonitor monitor;
+    private ImageOrientationCorrector orientationCorrector;
 
     public DecodeHandler(Looper looper, TileExecutor executor) {
         super(looper);
-        this.reference = new WeakReference<TileExecutor>(executor);
-        this.bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
-        this.monitor = Sketch.with(executor.callback.getContext()).getConfiguration().getMonitor();
+        this.reference = new WeakReference<>(executor);
+
+        Configuration configuration = Sketch.with(executor.callback.getContext()).getConfiguration();
+        this.bitmapPool = configuration.getBitmapPool();
+        this.monitor = configuration.getMonitor();
+        this.orientationCorrector = configuration.getImageOrientationCorrector();
     }
 
     @Override
@@ -105,6 +111,11 @@ class DecodeHandler extends Handler {
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
 
+        // 根据图片方向旋转src区域
+        if (regionDecoder.getImageOrientation() != 0) {
+            orientationCorrector.reverseRotate(srcRect, regionDecoder.getImageSize(), regionDecoder.getImageOrientation());
+        }
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         ImageType imageType = regionDecoder.getImageType();
@@ -123,6 +134,7 @@ class DecodeHandler extends Handler {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
+            // TODO: 2017/5/9 过滤异常message，准确的识别出inBitmap异常
             // 要是因为inBitmap而解码失败就停止继续使用并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
                 if (!disableInBitmap && options.inBitmap != null) {
@@ -152,6 +164,21 @@ class DecodeHandler extends Handler {
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool());
             executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
             return;
+        }
+
+        // 恢复图片方向
+        if (regionDecoder.getImageOrientation() != 0) {
+            Bitmap newBitmap = orientationCorrector.rotate(bitmap, regionDecoder.getImageOrientation(), bitmapPool);
+
+            if (newBitmap != null && !newBitmap.isRecycled()) {
+                if (newBitmap != bitmap) {
+                    BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
+                    bitmap = newBitmap;
+                }
+            } else if (bitmap.isRecycled()) {
+                executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
+                return;
+            }
         }
 
         executor.mainHandler.postDecodeCompleted(key, tile, bitmap, useTime);

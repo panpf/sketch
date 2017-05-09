@@ -47,7 +47,7 @@ class MainHandler extends Handler {
 
     public MainHandler(Looper looper, TileExecutor executor) {
         super(looper);
-        executorReference = new WeakReference<TileExecutor>(executor);
+        executorReference = new WeakReference<>(executor);
         bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
     }
 
