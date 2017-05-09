@@ -1144,7 +1144,7 @@ public class ExifInterface {
     // The following values are used for indicating pointers to the other Image File Directories.
 
     // Indices of Exif Ifd tag groups
-    /** @hide */
+//    /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({IFD_TYPE_PRIMARY, IFD_TYPE_EXIF, IFD_TYPE_GPS, IFD_TYPE_INTEROPERABILITY,
             IFD_TYPE_THUMBNAIL, IFD_TYPE_PREVIEW, IFD_TYPE_ORF_MAKER_NOTE,
@@ -1937,7 +1937,6 @@ public class ExifInterface {
     /**
      * Returns number of milliseconds since Jan. 1, 1970, midnight local time.
      * Returns -1 if the date time information if not available.
-     * @hide
      */
     public long getDateTime() {
         String dateTimeString = getAttribute(TAG_DATETIME);
@@ -1973,7 +1972,6 @@ public class ExifInterface {
     /**
      * Returns number of milliseconds since Jan. 1, 1970, midnight UTC.
      * Returns -1 if the date time information if not available.
-     * @hide
      */
     public long getGpsDateTime() {
         String date = getAttribute(TAG_GPS_DATESTAMP);
