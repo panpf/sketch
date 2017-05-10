@@ -18,9 +18,10 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 ### Features
 >* ``Multiple URL support``. Support for ``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``7 kinds of URI
 >* ``Support gif``. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
->* ``Exclusive gesture zoom and super large image support``. Exclusive built-in gesture zoom and block display super large image features, and the combination of better
->* ``Level 3 cache support``. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
->* ``Various list support``. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
+>* ``Support gesture zoom``. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
+>* ``Support block display large picture``. Support block display large picture function, from then the big picture is not afraid
+>* ``Support level 3 cache``. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
+>* ``Support various list``. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
 >* ``Automatically prevents excessive loading Bitmap`` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
 >* ``Exclusive TransitionDrawable support``. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
 >* ``Only to load or only to download``. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
@@ -28,6 +29,7 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 >* ``Paused download on mobile network``. Built-in mobile network to download pictures under the suspended function, you can simply open
 >* ``Automatically select the appropriate Bitmap.Config``. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
 >* ``Special file preprocessing``. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
+>* ``Support correcting picture orientation``. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
 >* ``Powerful and flexible customization``. Can be customized to download, cache, decoding, processing, display, placeholder and other links
 
 ### Example APP
