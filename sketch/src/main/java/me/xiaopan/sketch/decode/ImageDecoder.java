@@ -115,7 +115,7 @@ public class ImageDecoder implements Identifier {
 
         // Read image orientation
         int imageOrientation = 0;
-        if (request.getOptions().isCorrectImageOrientation()) {
+        if (!request.getOptions().isCorrectImageOrientationDisabled()) {
             ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
             imageOrientation = imageOrientationCorrector.readImageOrientationDegrees(boundOptions.outMimeType, dataSource);
         }

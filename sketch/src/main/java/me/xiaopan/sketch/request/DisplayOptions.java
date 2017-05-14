@@ -162,8 +162,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setCorrectImageOrientation(boolean correctImageOrientation) {
-        return (DisplayOptions) super.setCorrectImageOrientation(correctImageOrientation);
+    public DisplayOptions setCorrectImageOrientationDisabled(boolean correctImageOrientationDisabled) {
+        return (DisplayOptions) super.setCorrectImageOrientationDisabled(correctImageOrientationDisabled);
     }
 
     /**

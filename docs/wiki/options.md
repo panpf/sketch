@@ -20,7 +20,7 @@ Sketch共有DisplayOptions `extends` LoadOptions `extends` DownloadOptions三种
 |thumbnailMode|-|false|false|
 |cacheProcessedImageInDisk|-|false|false|
 |bitmapPoolDisabled|-|false|false|
-|correctImageOrientation|-|false|false|
+|correctImageOrientationDisabled|-|false|false|
 |cacheInMemoryDisabled|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
@@ -75,8 +75,8 @@ displayOptions.setCacheProcessedImageInDisk(true);
 // 禁用BitmapPool
 displayOptions.setBitmapPoolDisabled(true);
 
-// 让被旋转了的图片以正常的方向显示
-displayOptions.setCorrectImageOrientation(true);
+// 禁用纠正图片方向功能
+displayOptions.setCorrectImageOrientationDisabled(true);
 
 // 禁用内存缓存
 displayOptions.setCacheInMemoryDisabled(true);

@@ -56,7 +56,7 @@ public class ProcessedImageCache implements Identifier {
         }
 
         //noinspection RedundantIfStatement
-        if (loadOptions.isCorrectImageOrientation()) {
+        if (!loadOptions.isCorrectImageOrientationDisabled()) {
             return true;
         }
 

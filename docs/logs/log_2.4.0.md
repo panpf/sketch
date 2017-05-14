@@ -6,7 +6,7 @@
 * 移除DefaultImageDecoder，现在ImageDecoder是一个class可以直接使用
 
 新功能：
-* load和display的Options以及Helper新增correctImageOrientation属性可让被旋转了的图片以正常方向显示，[点击了解更多](../wiki/correct_image_orientation.md)
+* 新增自动纠正图片方向功能 [点击了解更多](../wiki/correct_image_orientation.md)
 
 SketchMonitor：
 * onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)

@@ -274,11 +274,11 @@ public class DisplayHelper {
     }
 
     /**
-     * 纠正图片的方向，让被旋转了的图片以正常方向显示
+     * 禁用纠正图片方向功能
      */
     @SuppressWarnings("unused")
-    public DisplayHelper correctImageOrientation() {
-        displayOptions.setCorrectImageOrientation(true);
+    public DisplayHelper disableCorrectImageOrientation() {
+        displayOptions.setCorrectImageOrientationDisabled(true);
         return this;
     }
 

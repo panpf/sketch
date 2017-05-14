@@ -89,9 +89,9 @@ public class LoadOptions extends DownloadOptions {
     private boolean bitmapPoolDisabled;
 
     /**
-     * 纠正图片方向，可让被旋转了的图片以正常方向显示
+     * 禁用纠正图片方向
      */
-    private boolean correctImageOrientation;
+    private boolean correctImageOrientationDisabled;
 
 
     public LoadOptions() {
@@ -357,20 +357,20 @@ public class LoadOptions extends DownloadOptions {
     }
 
     /**
-     * 是否纠正图片的方向，让被旋转了的图片以正常方向显示
+     * 是否禁用纠正图片方向功能
      */
-    public boolean isCorrectImageOrientation() {
-        return correctImageOrientation;
+    public boolean isCorrectImageOrientationDisabled() {
+        return correctImageOrientationDisabled;
     }
 
     /**
-     * 设置纠正图片的方向，让被旋转了的图片以正常方向显示
+     * 设置禁用纠正图片方向功能
      *
-     * @param correctImageOrientation true：纠正图片的方向，让被旋转了的图片以正常方向显示
+     * @param correctImageOrientationDisabled true：禁用纠正图片方向
      * @return LoadOptions
      */
-    public LoadOptions setCorrectImageOrientation(boolean correctImageOrientation) {
-        this.correctImageOrientation = correctImageOrientation;
+    public LoadOptions setCorrectImageOrientationDisabled(boolean correctImageOrientationDisabled) {
+        this.correctImageOrientationDisabled = correctImageOrientationDisabled;
         return this;
     }
 
@@ -389,7 +389,7 @@ public class LoadOptions extends DownloadOptions {
         thumbnailMode = false;
         cacheProcessedImageInDisk = false;
         bitmapPoolDisabled = false;
-        correctImageOrientation = false;
+        correctImageOrientationDisabled = false;
     }
 
     /**
@@ -416,7 +416,7 @@ public class LoadOptions extends DownloadOptions {
         thumbnailMode = options.thumbnailMode;
         cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
         bitmapPoolDisabled = options.bitmapPoolDisabled;
-        correctImageOrientation = options.correctImageOrientation;
+        correctImageOrientationDisabled = options.correctImageOrientationDisabled;
     }
 
     /**
@@ -482,8 +482,8 @@ public class LoadOptions extends DownloadOptions {
             bitmapPoolDisabled = options.bitmapPoolDisabled;
         }
 
-        if (!correctImageOrientation) {
-            correctImageOrientation = options.correctImageOrientation;
+        if (!correctImageOrientationDisabled) {
+            correctImageOrientationDisabled = options.correctImageOrientationDisabled;
         }
     }
 
@@ -503,8 +503,8 @@ public class LoadOptions extends DownloadOptions {
                 builder.append("_").append("thumbnailMode");
             }
         }
-        if (correctImageOrientation) {
-            builder.append("_").append("correctImageOrientation");
+        if (correctImageOrientationDisabled) {
+            builder.append("_").append("correctImageOrientationDisabled");
         }
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");

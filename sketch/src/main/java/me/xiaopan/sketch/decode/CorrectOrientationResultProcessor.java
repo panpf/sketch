@@ -36,7 +36,7 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
-        if (!request.getOptions().isCorrectImageOrientation()) {
+        if (request.getOptions().isCorrectImageOrientationDisabled()) {
             return;
         }
 

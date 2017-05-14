@@ -46,7 +46,7 @@ public class MyImageView extends SketchImageView {
         onGlobalAttrChanged(Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS);
         onGlobalAttrChanged(Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD);
         onGlobalAttrChanged(Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED);
-        onGlobalAttrChanged(Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION);
+        onGlobalAttrChanged(Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION);
     }
 
     public void setAutoApplyGlobalAttr(boolean autoApplyGlobalAttr) {
@@ -84,8 +84,8 @@ public class MyImageView extends SketchImageView {
             if (autoApplyGlobalAttr) {
                 setClickRetryOnError(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED));
             }
-        } else if (Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION.equals(key)) {
-            getOptions().setCorrectImageOrientation(Settings.getBoolean(getContext(), Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION));
+        } else if (Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)) {
+            getOptions().setCorrectImageOrientationDisabled(Settings.getBoolean(getContext(), Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION));
         }
     }
 

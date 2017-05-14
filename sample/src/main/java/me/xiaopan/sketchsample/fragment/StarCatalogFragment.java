@@ -188,7 +188,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                 || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
                 || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
                 || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
-                || Settings.PREFERENCE_CORRECT_IMAGE_ORIENTATION.equals(key)
+                || Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)
                 || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
