@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -25,7 +25,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
 
-class SampleSketchMonitor extends SketchMonitor {
+class SampleErrorTracker extends ErrorTracker {
 
     private static final int INSTALL_FAILED_RETRY_TIME_INTERVAL = 30 * 60 * 1000;
 
@@ -36,10 +36,10 @@ class SampleSketchMonitor extends SketchMonitor {
     private long lastUploadProcessImageFailedTime;
     private boolean uploadDecodeGifImageFailed;
 
-    public SampleSketchMonitor(Context context) {
+    public SampleErrorTracker(Context context) {
         super(context);
         this.context = context.getApplicationContext();
-        logName = "SampleSketchMonitor";
+        logName = "SampleErrorTracker";
     }
 
     @Override

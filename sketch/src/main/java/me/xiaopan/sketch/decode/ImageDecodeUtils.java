@@ -29,7 +29,7 @@ import java.io.InputStream;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -159,7 +159,7 @@ public class ImageDecodeUtils {
      * 反馈inBitmap解码失败，并回收inBitmap
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static void recycleInBitmapOnDecodeError(SketchMonitor sketchMonitor, BitmapPool bitmapPool,
+    public static void recycleInBitmapOnDecodeError(ErrorTracker errorTracker, BitmapPool bitmapPool,
                                                     String imageUri, int imageWidth, int imageHeight, String imageMimeType,
                                                     Throwable throwable, BitmapFactory.Options decodeOptions, boolean fromBitmapRegionDecoder) {
         if (fromBitmapRegionDecoder) {
@@ -172,7 +172,7 @@ public class ImageDecodeUtils {
             }
         }
 
-        sketchMonitor.onInBitmapDecodeError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, decodeOptions.inSampleSize, decodeOptions.inBitmap);
+        errorTracker.onInBitmapDecodeError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, decodeOptions.inSampleSize, decodeOptions.inBitmap);
 
         BitmapPoolUtils.freeBitmapToPool(decodeOptions.inBitmap, bitmapPool);
         decodeOptions.inBitmap = null;

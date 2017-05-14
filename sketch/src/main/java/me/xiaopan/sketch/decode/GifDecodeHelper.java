@@ -18,7 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.BitmapFactory;
 
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -52,8 +52,8 @@ public class GifDecodeHelper implements DecodeHelper {
             return new GifDecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
         } catch (Throwable e) {
             e.printStackTrace();
-            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
-            sketchMonitor.onDecodeGifImageError(e, request,
+            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
+            errorTracker.onDecodeGifImageError(e, request,
                     boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
             return null;
         }

@@ -31,7 +31,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
@@ -434,8 +434,8 @@ class TileManager {
              */
 
             Configuration configuration = Sketch.with(context).getConfiguration();
-            SketchMonitor sketchMonitor = configuration.getMonitor();
-            sketchMonitor.onTileSortError(e, tileList, false);
+            ErrorTracker errorTracker = configuration.getErrorTracker();
+            errorTracker.onTileSortError(e, tileList, false);
 
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             try {
@@ -443,7 +443,7 @@ class TileManager {
             } catch (IllegalArgumentException e2) {
                 e2.printStackTrace();
 
-                sketchMonitor.onTileSortError(e, tileList, true);
+                errorTracker.onTileSortError(e, tileList, true);
             }
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "false");
         }

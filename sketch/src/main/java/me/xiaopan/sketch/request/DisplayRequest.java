@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
@@ -277,8 +277,8 @@ public class DisplayRequest extends LoadRequest {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap().isRecycled()) {
                 // 这里应该不会再出问题了
-                SketchMonitor sketchMonitor = getConfiguration().getMonitor();
-                sketchMonitor.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
+                ErrorTracker errorTracker = getConfiguration().getErrorTracker();
+                errorTracker.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
 
                 // 图片不可用
                 printLogD("image display exception", "bitmap recycled",

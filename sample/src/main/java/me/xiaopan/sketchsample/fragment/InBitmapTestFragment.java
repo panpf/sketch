@@ -23,7 +23,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
@@ -296,10 +296,10 @@ public class InBitmapTestFragment extends MyFragment {
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
 
-                SketchMonitor sketchMonitor = configuration.getMonitor();
+                ErrorTracker errorTracker = configuration.getErrorTracker();
                 BitmapPool bitmapPool = configuration.getBitmapPool();
                 if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, false)) {
-                    ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool,
+                    ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool,
                             imageUri, options.outWidth, options.outHeight, options.outMimeType, throwable, options, false);
                 }
             }

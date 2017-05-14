@@ -230,7 +230,7 @@ public class DownloadRequest extends AsyncRequest {
             } catch (Throwable e) {
                 e.printStackTrace();
 
-                getConfiguration().getMonitor().onDownloadError(this, e);
+                getConfiguration().getErrorTracker().onDownloadError(this, e);
 
                 if (isCanceled()) {
                     if (SLogType.REQUEST.isEnabled()) {

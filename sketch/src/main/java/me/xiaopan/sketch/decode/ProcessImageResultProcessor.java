@@ -18,7 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.BaseRequest;
@@ -60,8 +60,8 @@ public class ProcessImageResultProcessor implements ResultProcessor {
                     loadOptions.isLowQualityImage());
         } catch (Throwable e) {
             e.printStackTrace();
-            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
-            sketchMonitor.onProcessImageError(e, request.getKey(), imageProcessor);
+            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
+            errorTracker.onProcessImageError(e, request.getKey(), imageProcessor);
         }
 
         if (newBitmap != null && !newBitmap.isRecycled()) {

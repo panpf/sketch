@@ -1,4 +1,4 @@
-Sketch在运行的过程中会有各种各样的异常，你可以通过SketchMonitor收到这些异常，然后将这些异常记录下来帮助解决问题
+Sketch在运行的过程中会有各种各样的异常，你可以通过ErrorTracker收到这些异常，然后将这些异常记录下来帮助解决问题
 
 包含以下方法：
 >* `onInstallDiskCacheError(Exception, File)`：安装DiskLruCache异常，但Sketch还是可以正常运行的。一旦失败了这个方法就会被频繁回调，这是因为每一次需要用到DiskCache的时候都会尝试恢复，再次失败就会再次回调
@@ -14,11 +14,11 @@ Sketch在运行的过程中会有各种各样的异常，你可以通过SketchMo
 
 #### 使用
 
-SketchMonitor默认实现只是将收到的异常信息打印在log cat中，你要记录异常信息的话首先你需要继承SketchMonitor修改
+ErrorTracker默认实现只是将收到的异常信息打印在log cat中，你要记录异常信息的话首先你需要继承SketchMonitor修改
 ```java
-public class MySketchMonitor extends SketchMonitor {
+public class MyErrorTracker extends ErrorTracker {
 
-    public MySketchMonitor(Context context) {
+    public MyErrorTracker(Context context) {
         super(context);
     }
 
@@ -31,8 +31,8 @@ public class MySketchMonitor extends SketchMonitor {
 }
 ```
 
-然后通过Configuration的setMonitor(SketchMonitor)方法应用即可
+然后通过Configuration的setErrorTracker(ErrorTracker)方法应用即可
 
 ```java
-Sketch.with(context).getConfiguration().setMonitor(new MySketchMonitor());
+Sketch.with(context).getConfiguration().setErrorTracker(new MyErrorTracker());
 ```

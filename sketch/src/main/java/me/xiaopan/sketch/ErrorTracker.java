@@ -19,13 +19,12 @@ import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
-// TODO: 2017/4/15 改名SketchExceptionTracker
-public class SketchMonitor implements Identifier {
-    protected String logName = "SketchMonitor";
+public class ErrorTracker implements Identifier {
+    protected String logName = "ErrorTracker";
 
     private Context context;
 
-    public SketchMonitor(Context context) {
+    public ErrorTracker(Context context) {
         context = context.getApplicationContext();
         this.context = context;
     }

@@ -11,6 +11,7 @@ SketchMonitor：
 * onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)
 * 删除onInBitmapExceptionForRegionDecoder(String, int, int, Rect, int, Bitmap)方法
 * 新增onDecodeRegionError(String, int, int, String, Throwable, Rect, int)方法
+* 改名维万ErrorTracker
 
 * 最低API提升至10
 

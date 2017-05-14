@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.MemoryCache;
@@ -125,8 +125,8 @@ public class MakerStateImage implements StateImage {
                     options.isForceUseResize(), tempLowQualityImage);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
-            SketchMonitor sketchMonitor = sketch.getConfiguration().getMonitor();
-            sketchMonitor.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
+            ErrorTracker errorTracker = sketch.getConfiguration().getErrorTracker();
+            errorTracker.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
             if (allowRecycle) {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             }

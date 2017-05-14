@@ -43,7 +43,7 @@ public class SketchManager {
         sketchConfiguration.getBitmapPool().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL));
         sketchConfiguration.getMemoryCache().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY));
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
-        sketchConfiguration.setMonitor(new SampleSketchMonitor(context));
+        sketchConfiguration.setErrorTracker(new SampleErrorTracker(context));
     }
 
     public void initDisplayOptions() {

@@ -22,7 +22,7 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -61,10 +61,10 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
 
-            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
+            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             if (ImageDecodeUtils.isInBitmapDecodeError(throwable, decodeOptions, false)) {
-                ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool, request.getUri(),
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool, request.getUri(),
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, throwable, decodeOptions, false);
 
                 try {
@@ -72,11 +72,11 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
                 } catch (Throwable throwable1) {
                     throwable1.printStackTrace();
 
-                    sketchMonitor.onDecodeNormalImageError(throwable1, request,
+                    errorTracker.onDecodeNormalImageError(throwable1, request,
                             boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
                 }
             } else {
-                sketchMonitor.onDecodeNormalImageError(throwable, request,
+                errorTracker.onDecodeNormalImageError(throwable, request,
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
             }
         }

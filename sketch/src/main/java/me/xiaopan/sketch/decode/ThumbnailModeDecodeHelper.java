@@ -22,7 +22,7 @@ import android.os.Build;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -99,10 +99,10 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
 
-            SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
+            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             if (ImageDecodeUtils.isInBitmapDecodeError(throwable, decodeOptions, true)) {
-                ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool, request.getUri(),
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool, request.getUri(),
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, throwable, decodeOptions, true);
 
                 try {
@@ -110,14 +110,14 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
                 } catch (Throwable throwable1) {
                     throwable1.printStackTrace();
 
-                    sketchMonitor.onDecodeNormalImageError(throwable1, request, boundOptions.outWidth,
+                    errorTracker.onDecodeNormalImageError(throwable1, request, boundOptions.outWidth,
                             boundOptions.outHeight, boundOptions.outMimeType);
                 }
             } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, boundOptions.outWidth, boundOptions.outHeight, result.srcRect)) {
-                sketchMonitor.onDecodeRegionError(request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
+                errorTracker.onDecodeRegionError(request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
                         boundOptions.outMimeType, throwable, result.srcRect, decodeOptions.inSampleSize);
             } else {
-                sketchMonitor.onDecodeNormalImageError(throwable, request, boundOptions.outWidth,
+                errorTracker.onDecodeNormalImageError(throwable, request, boundOptions.outWidth,
                         boundOptions.outHeight, boundOptions.outMimeType);
             }
         }

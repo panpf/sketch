@@ -29,7 +29,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
@@ -47,7 +47,7 @@ class DecodeHandler extends Handler {
 
     private WeakReference<TileExecutor> reference;
     private BitmapPool bitmapPool;
-    private SketchMonitor sketchMonitor;
+    private ErrorTracker errorTracker;
     private ImageOrientationCorrector orientationCorrector;
 
     public DecodeHandler(Looper looper, TileExecutor executor) {
@@ -56,7 +56,7 @@ class DecodeHandler extends Handler {
 
         Configuration configuration = Sketch.with(executor.callback.getContext()).getConfiguration();
         this.bitmapPool = configuration.getBitmapPool();
-        this.sketchMonitor = configuration.getMonitor();
+        this.errorTracker = configuration.getErrorTracker();
         this.orientationCorrector = configuration.getImageOrientationCorrector();
     }
 
@@ -138,7 +138,7 @@ class DecodeHandler extends Handler {
             if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, true)) {
                 disableInBitmap = true;
 
-                ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool, regionDecoder.getImageUri(),
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool, regionDecoder.getImageUri(),
                         regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, regionDecoder.getImageType().getMimeType(), throwable, options, true);
 
                 try {
@@ -147,7 +147,7 @@ class DecodeHandler extends Handler {
                     throwable1.printStackTrace();
                 }
             } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
-                sketchMonitor.onDecodeRegionError(regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
+                errorTracker.onDecodeRegionError(regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
                         regionDecoder.getImageType().getMimeType(), throwable, srcRect, options.inSampleSize);
             }
         }

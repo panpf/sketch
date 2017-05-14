@@ -74,7 +74,7 @@ public final class Configuration {
     private HelperFactory helperFactory;
     private RequestFactory requestFactory;
 
-    private SketchMonitor monitor;
+    private ErrorTracker errorTracker;
 
     // TODO: 2017/4/15 搞一个通用的属性拦截器，把这些放到属性拦截器里
     private boolean globalPauseLoad;   // 全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
@@ -109,7 +109,7 @@ public final class Configuration {
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
 
-        this.monitor = new SketchMonitor(context);
+        this.errorTracker = new ErrorTracker(context);
 
         if (SLogType.BASE.isEnabled()) {
             SLog.d(SLogType.BASE, getInfo());
@@ -641,26 +641,26 @@ public final class Configuration {
     }
 
     /**
-     * 获取监控器
+     * 获取错误跟踪器
      *
-     * @return SketchMonitor
+     * @return ErrorTracker
      */
     @SuppressWarnings("unused")
-    public SketchMonitor getMonitor() {
-        return monitor;
+    public ErrorTracker getErrorTracker() {
+        return errorTracker;
     }
 
     /**
-     * 设置监控器
+     * 设置错误跟踪器
      *
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setMonitor(SketchMonitor monitor) {
-        if (monitor != null) {
-            this.monitor = monitor;
+    public Configuration setErrorTracker(ErrorTracker errorTracker) {
+        if (errorTracker != null) {
+            this.errorTracker = errorTracker;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setMonitor. %s", monitor.getKey());
+                SLog.d(SLogType.BASE, logName, "setMonitor. %s", errorTracker.getKey());
             }
         }
         return this;
@@ -691,7 +691,7 @@ public final class Configuration {
                 "\n" + "imageSizeCalculator：" + imageSizeCalculator.getKey() +
                 "\n" + "resizeCalculator：" + resizeCalculator.getKey() +
                 "\n" + "imagePreprocessor：" + imagePreprocessor.getKey() +
-                "\n" + "errorCallback：" + monitor.getKey() +
+                "\n" + "errorCallback：" + errorTracker.getKey() +
                 "\n" + "globalPauseLoad：" + globalPauseLoad +
                 "\n" + "globalPauseDownload：" + globalPauseDownload +
                 "\n" + "globalLowQualityImage：" + globalLowQualityImage +
