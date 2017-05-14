@@ -19,8 +19,8 @@ package me.xiaopan.sketch.cache;
 import android.content.Context;
 import android.text.format.Formatter;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -58,10 +58,14 @@ public class LruMemoryCache implements MemoryCache {
         if (SLogType.CACHE.isEnabled()) {
             oldCacheSize = cache.size();
         }
+
         cache.put(key, refBitmap);
-        SLog.i(SLogType.CACHE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
-                Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
-                Formatter.formatFileSize(context, cache.size()));
+
+        if (SLogType.CACHE.isEnabled()) {
+            SLog.i(SLogType.CACHE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+                    Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
+                    Formatter.formatFileSize(context, cache.size()));
+        }
     }
 
     @Override
