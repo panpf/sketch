@@ -614,16 +614,16 @@ public class SketchUtils {
     /**
      * 根据给定的信息，生成最终的图片信息
      *
-     * @param type        类型
-     * @param imageWidth  图片宽
-     * @param imageHeight 图片高
-     * @param mimeType    图片格式
-     * @param orientation 图片旋转方向
-     * @param bitmap      Bitmap
-     * @param byteCount   bitmap占用字节数
+     * @param type               类型
+     * @param imageWidth         图片宽
+     * @param imageHeight        图片高
+     * @param mimeType           图片格式
+     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     * @param bitmap             Bitmap
+     * @param byteCount          bitmap占用字节数
      */
     public static String makeImageInfo(String type, int imageWidth, int imageHeight, String mimeType,
-                                       int orientation, Bitmap bitmap, long byteCount, String key) {
+                                       int orientationDegrees, Bitmap bitmap, long byteCount, String key) {
         if (bitmap == null) {
             return "Unknown";
         }
@@ -633,7 +633,7 @@ public class SketchUtils {
         String config = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
         String finalKey = key != null ? String.format(", key=%s", key) : "";
         return String.format("%s(image=%dx%d,%s,%d, bitmap=%dx%d,%s,%d,%s%s)",
-                type, imageWidth, imageHeight, mimeType, orientation,
+                type, imageWidth, imageHeight, mimeType, orientationDegrees,
                 bitmap.getWidth(), bitmap.getHeight(), config, byteCount, hashCode,
                 finalKey);
     }

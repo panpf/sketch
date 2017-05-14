@@ -40,8 +40,8 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
-        int orientation = result.getImageAttrs().getOrientation();
-        if (orientation == 0) {
+        int orientationDegrees = result.getImageAttrs().getOrientationDegrees();
+        if (orientationDegrees == 0) {
             return;
         }
 
@@ -53,7 +53,7 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
 
         Configuration configuration = request.getConfiguration();
         ImageOrientationCorrector corrector = configuration.getImageOrientationCorrector();
-        Bitmap newBitmap = corrector.rotate(bitmap, orientation, configuration.getBitmapPool());
+        Bitmap newBitmap = corrector.rotate(bitmap, orientationDegrees, configuration.getBitmapPool());
 
         if (newBitmap != null && !newBitmap.isRecycled()) {
             if (newBitmap != bitmap) {
@@ -61,12 +61,12 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
                 bitmapDecodeResult.setBitmap(newBitmap);
             }
 
-            corrector.rotateSize(result, orientation);
+            corrector.rotateSize(result, orientationDegrees);
 
             result.setProcessed(true);
         } else {
             throw new DecodeException(String.format("%s: %d. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),
-                    orientation, request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
+                    orientationDegrees, request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
         }
     }
 }

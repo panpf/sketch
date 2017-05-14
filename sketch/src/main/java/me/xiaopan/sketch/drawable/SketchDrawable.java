@@ -47,9 +47,9 @@ public interface SketchDrawable {
     String getMimeType();
 
     /**
-     * 获取图片方向
+     * 获取顺时针方向将图片旋转多少度能回正
      */
-    int getOrientation();
+    int getOrientationDegrees();
 
     /**
      * 获取占用内存，单位字节

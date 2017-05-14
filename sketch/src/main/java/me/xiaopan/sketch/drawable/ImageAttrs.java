@@ -23,17 +23,20 @@ public class ImageAttrs {
     private int originWidth;
     private int originHeight;
     private String mimeType;
-    private int orientation;    // 顺时针方向将图片旋转多少度能回正
+    private int orientationDegrees;    // 顺时针方向将图片旋转多少度能回正
 
-    public ImageAttrs(String mimeType, int originWidth, int originHeight, int orientation) {
+    public ImageAttrs(String mimeType, int originWidth, int originHeight, int orientationDegrees) {
         this.mimeType = mimeType;
         this.originWidth = originWidth;
         this.originHeight = originHeight;
-        this.orientation = orientation;
+        this.orientationDegrees = orientationDegrees;
     }
 
-    public int getOrientation() {
-        return orientation;
+    /**
+     * 顺时针方向将图片旋转多少度能回正
+     */
+    public int getOrientationDegrees() {
+        return orientationDegrees;
     }
 
     public String getMimeType() {

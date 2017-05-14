@@ -171,7 +171,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     ImageAttrs imageAttrs = decodeResult.getImageAttrs();
                     String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
                             imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                            imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: ", imageInfo);
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
@@ -182,7 +182,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                 ImageAttrs imageAttrs = decodeResult.getImageAttrs();
                 String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
                         imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                        imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                        imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
                 printLogI("decode success", "runLoad", "bitmapInfo: ", imageInfo);
             }
 
@@ -191,7 +191,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     ImageAttrs imageAttrs = decodeResult.getImageAttrs();
                     String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
                             imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                            imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     printLogW("canceled", "runLoad", "decode after", "bitmapInfo: ", imageInfo);
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());

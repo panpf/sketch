@@ -197,7 +197,7 @@ public class DisplayRequest extends LoadRequest {
                     ImageAttrs imageAttrs = loadResult.getImageAttrs();
                     String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
                             imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                            imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     printLogE("decode failed", "loadCompleted", "bitmap recycled",
                             "bitmapInfo: ", imageInfo, loadResult.getImageFrom());
                 }

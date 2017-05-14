@@ -601,7 +601,7 @@ public class ImageFragment extends MyFragment {
                     .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
 
             messageBuilder.append("\n");
-            messageBuilder.append("原图方向/占用内存：").append(sketchDrawable.getOrientation()).append("/").append(needMemory);
+            messageBuilder.append("原图方向/占用内存：").append(sketchDrawable.getOrientationDegrees()).append("/").append(needMemory);
 
             if (imageView.isSupportZoom()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();

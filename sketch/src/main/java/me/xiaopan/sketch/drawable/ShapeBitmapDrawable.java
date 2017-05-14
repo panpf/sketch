@@ -273,8 +273,8 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     }
 
     @Override
-    public int getOrientation() {
-        return sketchDrawable != null ? sketchDrawable.getOrientation() : 0;
+    public int getOrientationDegrees() {
+        return sketchDrawable != null ? sketchDrawable.getOrientationDegrees() : 0;
     }
 
     @Override

@@ -71,8 +71,8 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     }
 
     @Override
-    public int getOrientation() {
-        return refBitmap.getAttrs().getOrientation();
+    public int getOrientationDegrees() {
+        return refBitmap.getAttrs().getOrientationDegrees();
     }
 
     @Override

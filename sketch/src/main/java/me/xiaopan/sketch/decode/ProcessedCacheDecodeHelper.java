@@ -121,7 +121,7 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
             int originImageOrientation = 0;
             if (request.getOptions().isCorrectImageOrientation()) {
                 ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
-                originImageOrientation = imageOrientationCorrector.readImageRotateDegrees(originImageOptions.outMimeType, originFileDataSource);
+                originImageOrientation = imageOrientationCorrector.readImageOrientationDegrees(originImageOptions.outMimeType, originFileDataSource);
             }
             imageAttrs = new ImageAttrs(originImageOptions.outMimeType, originImageOptions.outWidth, originImageOptions.outHeight, originImageOrientation);
         } else {

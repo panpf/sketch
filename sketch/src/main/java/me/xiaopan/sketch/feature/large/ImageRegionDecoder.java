@@ -80,7 +80,7 @@ public class ImageRegionDecoder {
         int imageOrientation = 0;
         ImageOrientationCorrector orientationCorrector = configuration.getImageOrientationCorrector();
         if (correctImageOrientation) {
-            imageOrientation = orientationCorrector.readImageRotateDegrees(boundOptions.outMimeType, dataSource);
+            imageOrientation = orientationCorrector.readImageOrientationDegrees(boundOptions.outMimeType, dataSource);
         }
         if (imageOrientation != 0) {
             orientationCorrector.rotateSize(imageSize, imageOrientation);

@@ -50,25 +50,25 @@ public class ImageOrientationCorrector implements Identifier {
     }
 
     /**
-     * 读取图片旋转角度
+     * 读取图片方向
      *
      * @param inputStream 文件输入流
-     * @return 图片旋转度数
+     * @return 顺时针方向将图片旋转多少度能回正
      */
-    public int readImageRotateDegrees(InputStream inputStream) throws IOException {
+    public int readImageOrientationDegrees(InputStream inputStream) throws IOException {
         ExifInterface exifInterface = new ExifInterface(inputStream);
         int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
+            case ExifInterface.ORIENTATION_TRANSPOSE:
                 return 90;
             case ExifInterface.ORIENTATION_ROTATE_180:
             case ExifInterface.ORIENTATION_FLIP_VERTICAL:
                 return 180;
             case ExifInterface.ORIENTATION_ROTATE_270:
+            case ExifInterface.ORIENTATION_TRANSVERSE:
                 return 270;
             case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-            case ExifInterface.ORIENTATION_TRANSPOSE:
-            case ExifInterface.ORIENTATION_TRANSVERSE:
             case ExifInterface.ORIENTATION_UNDEFINED:
             case ExifInterface.ORIENTATION_NORMAL:
             default:
@@ -77,29 +77,29 @@ public class ImageOrientationCorrector implements Identifier {
     }
 
     /**
-     * 读取图片旋转角度
+     * 读取图片方向
      *
      * @param mimeType    图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
      * @param inputStream 输入流
-     * @return 图片旋转角度
+     * @return 顺时针方向将图片旋转多少度能回正
      */
     @SuppressWarnings("unused")
-    public int readImageRotateDegrees(String mimeType, InputStream inputStream) throws IOException {
+    public int readImageOrientationDegrees(String mimeType, InputStream inputStream) throws IOException {
         if (!support(mimeType)) {
             return 0;
         }
 
-        return readImageRotateDegrees(inputStream);
+        return readImageOrientationDegrees(inputStream);
     }
 
     /**
-     * 读取图片旋转角度
+     * 读取图片方向
      *
      * @param mimeType   图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
      * @param dataSource DataSource
-     * @return 图片旋转角度
+     * @return 顺时针方向将图片旋转多少度能回正
      */
-    public int readImageRotateDegrees(String mimeType, DataSource dataSource) {
+    public int readImageOrientationDegrees(String mimeType, DataSource dataSource) {
         if (!support(mimeType)) {
             return 0;
         }
@@ -107,7 +107,7 @@ public class ImageOrientationCorrector implements Identifier {
         InputStream inputStream = null;
         try {
             inputStream = dataSource.getInputStream();
-            return readImageRotateDegrees(inputStream);
+            return readImageOrientationDegrees(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -116,15 +116,21 @@ public class ImageOrientationCorrector implements Identifier {
         }
     }
 
-    public Bitmap rotate(Bitmap bitmap, int rotateDegrees, BitmapPool bitmapPool) {
-        return RotateImageProcessor.rotate(bitmap, rotateDegrees, bitmapPool);
+    /**
+     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     */
+    public Bitmap rotate(Bitmap bitmap, int orientationDegrees, BitmapPool bitmapPool) {
+        return RotateImageProcessor.rotate(bitmap, orientationDegrees, bitmapPool);
     }
 
-    public void rotateSize(DecodeResult result, int rotateDegrees) {
+    /**
+     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     */
+    public void rotateSize(DecodeResult result, int orientationDegrees) {
         ImageAttrs imageAttrs = result.getImageAttrs();
 
         Matrix matrix = new Matrix();
-        matrix.setRotate(rotateDegrees);
+        matrix.setRotate(orientationDegrees);
 
         RectF dstR = new RectF(0, 0, imageAttrs.getOriginWidth(), imageAttrs.getOriginHeight());
         RectF deviceR = new RectF();
@@ -133,9 +139,12 @@ public class ImageOrientationCorrector implements Identifier {
         imageAttrs.resetSize((int) deviceR.width(), (int) deviceR.height());
     }
 
-    public void rotateSize(Point size, int rotateDegrees) {
+    /**
+     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     */
+    public void rotateSize(Point size, int orientationDegrees) {
         Matrix matrix = new Matrix();
-        matrix.setRotate(rotateDegrees);
+        matrix.setRotate(orientationDegrees);
 
         RectF dstR = new RectF(0, 0, size.x, size.y);
         RectF deviceR = new RectF();
@@ -146,25 +155,25 @@ public class ImageOrientationCorrector implements Identifier {
     }
 
     /**
-     * @param rotateDegrees 顺时针方向将图片旋转多少度能回正
+     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
      */
     @SuppressWarnings("SuspiciousNameCombination")
-    public void reverseRotate(Rect srcRect, Point imageSize, int rotateDegrees) {
-        rotateDegrees = 360 - rotateDegrees;
+    public void reverseRotate(Rect srcRect, Point imageSize, int orientationDegrees) {
+        orientationDegrees = 360 - orientationDegrees;
 
-        if (rotateDegrees == 90) {
+        if (orientationDegrees == 90) {
             int top = srcRect.top;
             srcRect.top = srcRect.left;
             srcRect.left = imageSize.y - srcRect.bottom;
             srcRect.bottom = srcRect.right;
             srcRect.right = imageSize.y - top;
-        } else if (rotateDegrees == 180) {
+        } else if (orientationDegrees == 180) {
             int left = srcRect.left, top = srcRect.top;
             srcRect.left = imageSize.x - srcRect.right;
             srcRect.right = imageSize.x - left;
             srcRect.top = imageSize.y - srcRect.bottom;
             srcRect.bottom = imageSize.y - top;
-        } else if (rotateDegrees == 270) {
+        } else if (orientationDegrees == 270) {
             int left = srcRect.left;
             srcRect.left = srcRect.top;
             srcRect.top = imageSize.x - srcRect.right;

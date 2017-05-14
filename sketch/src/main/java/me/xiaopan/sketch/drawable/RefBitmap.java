@@ -48,7 +48,7 @@ public class RefBitmap extends SketchBitmap {
         } else {
             ImageAttrs imageAttrs = getAttrs();
             return SketchUtils.makeImageInfo(LOG_NAME, imageAttrs.getOriginWidth(), imageAttrs.getOriginHeight(),
-                    imageAttrs.getMimeType(), imageAttrs.getOrientation(), bitmap, getByteCount(), getKey());
+                    imageAttrs.getMimeType(), imageAttrs.getOrientationDegrees(), bitmap, getByteCount(), getKey());
         }
     }
 
