@@ -25,7 +25,6 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -98,27 +97,12 @@ public class BitmapPoolUtils {
         return inBitmap != null;
     }
 
-    public static boolean inBitmapThrow(Throwable throwable, BitmapFactory.Options options,
-                                        SketchMonitor monitor, BitmapPool bitmapPool, String imageUri, int imageWidth, int imageHeight) {
-        if (throwable instanceof IllegalArgumentException) {
-            if (sdkSupportInBitmap()) {
-                if (options.inBitmap != null) {
-                    monitor.onInBitmapException(imageUri, imageWidth, imageHeight, options.inSampleSize, options.inBitmap);
-                    freeBitmapToPool(options.inBitmap, bitmapPool);
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     /**
-     * 处理bitmap，首先尝试放入bitmap pool，放不进去就回收
+     * 回收bitmap，首先尝试放入bitmap pool，放不进去就回收
      *
      * @param bitmap     要处理的bitmap
      * @param bitmapPool BitmapPool 尝试放入这个池子
-     * @return ture：成功放入bitmap pool
+     * @return true：成功放入bitmap pool
      */
     public static boolean freeBitmapToPool(Bitmap bitmap, BitmapPool bitmapPool) {
         if (bitmap == null || bitmap.isRecycled()) {
@@ -182,23 +166,6 @@ public class BitmapPoolUtils {
         options.inBitmap = inBitmap;
 
         return inBitmap != null;
-    }
-
-    public static boolean inBitmapThrowForRegionDecoder(Throwable throwable, BitmapFactory.Options options,
-                                                        SketchMonitor monitor, BitmapPool bitmapPool, String imageUri,
-                                                        int imageWidth, int imageHeight, Rect srcRect) {
-        if (throwable instanceof IllegalArgumentException) {
-            if (sdkSupportInBitmapForRegionDecoder()) {
-                if (options.inBitmap != null) {
-                    monitor.onInBitmapExceptionForRegionDecoder(imageUri, imageWidth,
-                            imageHeight, srcRect, options.inSampleSize, options.inBitmap);
-                    freeBitmapToPoolForRegionDecoder(options.inBitmap, bitmapPool);
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**

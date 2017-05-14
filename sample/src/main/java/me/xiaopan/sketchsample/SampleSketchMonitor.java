@@ -19,7 +19,6 @@ import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -188,8 +187,8 @@ class SampleSketchMonitor extends SketchMonitor {
     }
 
     @Override
-    public void onProcessImageError(Throwable e, String imageUri, ImageProcessor processor) {
-        super.onProcessImageError(e, imageUri, processor);
+    public void onProcessImageError(Throwable throwable, String imageUri, ImageProcessor processor) {
+        super.onProcessImageError(throwable, imageUri, processor);
 
         // 每半小时上报一次
         long currentTime = System.currentTimeMillis();
@@ -198,89 +197,82 @@ class SampleSketchMonitor extends SketchMonitor {
         }
         lastUploadProcessImageFailedTime = currentTime;
 
-        String outOfMemoryInfo = e instanceof OutOfMemoryError ? String.format("\nmemoryState: %s", getSystemState()) : "";
-        String log = String.format("Sketch - %s - %s" +
-                        "\nexceptionMessage: %s" +
-                        "%s",
+        String outOfMemoryInfo = throwable instanceof OutOfMemoryError ? String.format("\nmemoryState: %s", getSystemState()) : "";
+        CrashReport.postCatchedException(new Exception(String.format(
+                "Sketch - %s - " +
+                        "%s" +
+                        "\n%s",
                 processor.getKey(),
                 decodeUri(context, imageUri),
-                e.getMessage(),
-                outOfMemoryInfo);
-
-        CrashReport.postCatchedException(new Exception(log, e));
-    }
-
-    @Override
-    public void onDownloadError(final DownloadRequest request, Throwable throwable) {
-        super.onDownloadError(request, throwable);
-
-
+                outOfMemoryInfo
+        ), throwable));
     }
 
     @Override
     public void onTileSortError(IllegalArgumentException e, List<Tile> tileList, boolean useLegacyMergeSort) {
         super.onTileSortError(e, tileList, useLegacyMergeSort);
 
-        String log = String.format("Sketch - TileSortError - %s " +
+        CrashReport.postCatchedException(new Exception(String.format(
+                "Sketch - TileSortError - " +
+                        "%s " +
                         "\ntiles: %s",
                 useLegacyMergeSort ? "useLegacyMergeSort. " : "",
-                SketchUtils.tileListToString(tileList));
-
-        CrashReport.postCatchedException(new Exception(log, e));
+                SketchUtils.tileListToString(tileList)
+        ), e));
     }
 
     @Override
     public void onBitmapRecycledOnDisplay(DisplayRequest request, RefDrawable refDrawable) {
         super.onBitmapRecycledOnDisplay(request, refDrawable);
 
-        String log = String.format("Sketch - BitmapRecycledOnDisplay - %s " +
+        CrashReport.postCatchedException(new Exception(String.format(
+                "Sketch - BitmapRecycledOnDisplay - " +
+                        "%s " +
                         "\ndrawable: %s",
                 decodeUri(context, request.getUri()),
-                refDrawable.getInfo());
-
-        CrashReport.postCatchedException(new Exception(log));
+                refDrawable.getInfo())));
     }
 
     @Override
-    public void onInBitmapExceptionForRegionDecoder(String imageUri, int imageWidth, int imageHeight, Rect srcRect, int inSampleSize, Bitmap inBitmap) {
-        super.onInBitmapExceptionForRegionDecoder(imageUri, imageWidth, imageHeight, srcRect, inSampleSize, inBitmap);
+    public void onInBitmapDecodeError(String imageUri, int imageWidth, int imageHeight, String imageMimeType,
+                                      Throwable throwable, int inSampleSize, Bitmap inBitmap) {
+        super.onInBitmapDecodeError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, inSampleSize, inBitmap);
 
-        String log = String.format("Sketch - InBitmapExceptionForRegionDecoder - %s" +
-                        "\nimageSize：%dx%d" +
+        CrashReport.postCatchedException(new Exception(String.format(
+                "Sketch - InBitmapDecodeError - " +
+                        "%s" +
+                        "\nimage：%dx%d/%s" +
+                        "\ninSampleSize：%d" +
+                        "\ninBitmap：%dx%d, %d, %s" +
+                        "\nsystemState：%s",
+                decodeUri(context, imageUri),
+                imageWidth, imageHeight, imageMimeType,
+                inSampleSize,
+                inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap), inBitmap.getConfig(),
+                getSystemState()
+        ), throwable));
+    }
+
+    @Override
+    public void onDecodeRegionError(String imageUri, int imageWidth, int imageHeight, String imageMimeType,
+                                    Throwable throwable, Rect srcRect, int inSampleSize) {
+        super.onDecodeRegionError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, srcRect, inSampleSize);
+
+        CrashReport.postCatchedException(new Exception(String.format(
+                "Sketch - DecodeRegionError - " +
+                        "%s" +
+                        "\nimage：%dx%d/%s" +
                         "\nsrcRect：%s" +
                         "\ninSampleSize：%d" +
-                        "\ninBitmap：%dx%d, %d, %s" +
+                        "\nsrcRect：%s" +
                         "\nsystemState：%s",
                 decodeUri(context, imageUri),
-                imageWidth, imageHeight,
+                imageWidth, imageHeight, imageMimeType,
                 srcRect.toString(),
                 inSampleSize,
-                inBitmap.getWidth(), inBitmap.getHeight(),
-                SketchUtils.getByteCount(inBitmap),
-                inBitmap.getConfig(),
-                getSystemState());
-
-        CrashReport.postCatchedException(new Exception(log));
-    }
-
-    @Override
-    public void onInBitmapException(String imageUri, int imageWidth, int imageHeight, int inSampleSize, Bitmap inBitmap) {
-        super.onInBitmapException(imageUri, imageWidth, imageHeight, inSampleSize, inBitmap);
-
-        String log = String.format("Sketch - InBitmapException - %s" +
-                        "\nimageSize：%dx%d" +
-                        "\ninSampleSize：%d" +
-                        "\ninBitmap：%dx%d, %d, %s" +
-                        "\nsystemState：%s",
-                decodeUri(context, imageUri),
-                imageWidth, imageHeight,
-                inSampleSize,
-                inBitmap.getWidth(), inBitmap.getHeight(),
-                SketchUtils.getByteCount(inBitmap),
-                inBitmap.getConfig(),
-                getSystemState());
-
-        CrashReport.postCatchedException(new Exception(log));
+                srcRect.toShortString(),
+                getSystemState()
+        ), throwable));
     }
 
     private String decodeUri(Context context, String imageUri) {

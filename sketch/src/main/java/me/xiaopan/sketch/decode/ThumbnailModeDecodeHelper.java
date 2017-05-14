@@ -95,40 +95,36 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
 
         Bitmap bitmap = null;
         try {
-            bitmap = DefaultImageDecoder.decodeRegionBitmap(dataSource, result.srcRect, decodeOptions);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, result.srcRect, decodeOptions);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
 
-            // TODO: 2017/5/9 过滤异常message，准确的识别出inBitmap异常
-            // 要是因为inBitmap而解码失败就记录日志并再此尝试
-            if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
-                if (!loadOptions.isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {
-                    BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-                    SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
-
-                    BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, sketchMonitor, bitmapPool,
-                            request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
-
-                    decodeOptions.inBitmap = null;
-                    try {
-                        bitmap = DefaultImageDecoder.decodeRegionBitmap(dataSource, result.srcRect, decodeOptions);
-                    } catch (Throwable error) {
-                        error.printStackTrace();
-                        sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth,
-                                boundOptions.outHeight, boundOptions.outMimeType);
-                    }
-                }
-            }
-        } catch (Throwable error) {
-            error.printStackTrace();
             SketchMonitor sketchMonitor = request.getConfiguration().getMonitor();
-            sketchMonitor.onDecodeNormalImageError(error, request,
-                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
+            if (ImageDecodeUtils.isInBitmapDecodeError(throwable, decodeOptions, true)) {
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool, request.getUri(),
+                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, throwable, decodeOptions, true);
+
+                try {
+                    bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, result.srcRect, decodeOptions);
+                } catch (Throwable throwable1) {
+                    throwable1.printStackTrace();
+
+                    sketchMonitor.onDecodeNormalImageError(throwable1, request, boundOptions.outWidth,
+                            boundOptions.outHeight, boundOptions.outMimeType);
+                }
+            } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, boundOptions.outWidth, boundOptions.outHeight, result.srcRect)) {
+                sketchMonitor.onDecodeRegionError(request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
+                        boundOptions.outMimeType, throwable, result.srcRect, decodeOptions.inSampleSize);
+            } else {
+                sketchMonitor.onDecodeNormalImageError(throwable, request, boundOptions.outWidth,
+                        boundOptions.outHeight, boundOptions.outMimeType);
+            }
         }
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            DefaultImageDecoder.decodeError(request, dataSource, LOG_NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
             return null;
         }
 
@@ -140,12 +136,12 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
                         boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             }
             bitmap.recycle();
-            DefaultImageDecoder.decodeError(request, dataSource, LOG_NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
             return null;
         }
 
         // 成功
-        DefaultImageDecoder.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
+        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
                 decodeOptions.inSampleSize, request, LOG_NAME);
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType,
                 boundOptions.outWidth, boundOptions.outHeight, orientation);

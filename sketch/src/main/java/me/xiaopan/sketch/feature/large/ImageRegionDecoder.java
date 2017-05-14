@@ -33,7 +33,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
 import me.xiaopan.sketch.decode.DecodeException;
-import me.xiaopan.sketch.decode.DefaultImageDecoder;
+import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.UriScheme;
@@ -72,7 +72,7 @@ public class ImageRegionDecoder {
         // 读取图片尺寸和类型
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();
         boundOptions.inJustDecodeBounds = true;
-        DefaultImageDecoder.decodeBitmap(dataSource, boundOptions);
+        ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         Point imageSize = new Point(boundOptions.outWidth, boundOptions.outHeight);
 
         // 读取图片方向并根据方向改变尺寸

@@ -32,6 +32,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 
@@ -46,7 +47,7 @@ class DecodeHandler extends Handler {
 
     private WeakReference<TileExecutor> reference;
     private BitmapPool bitmapPool;
-    private SketchMonitor monitor;
+    private SketchMonitor sketchMonitor;
     private ImageOrientationCorrector orientationCorrector;
 
     public DecodeHandler(Looper looper, TileExecutor executor) {
@@ -55,7 +56,7 @@ class DecodeHandler extends Handler {
 
         Configuration configuration = Sketch.with(executor.callback.getContext()).getConfiguration();
         this.bitmapPool = configuration.getBitmapPool();
-        this.monitor = configuration.getMonitor();
+        this.sketchMonitor = configuration.getMonitor();
         this.orientationCorrector = configuration.getImageOrientationCorrector();
     }
 
@@ -123,7 +124,7 @@ class DecodeHandler extends Handler {
             options.inPreferredConfig = imageType.getConfig(false);
         }
 
-        if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder() && !disableInBitmap) {
+        if (!disableInBitmap && BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
             BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool);
         }
 
@@ -131,26 +132,24 @@ class DecodeHandler extends Handler {
         Bitmap bitmap = null;
         try {
             bitmap = regionDecoder.decodeRegion(srcRect, options);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
 
-            // TODO: 2017/5/9 过滤异常message，准确的识别出inBitmap异常
-            // 要是因为inBitmap而解码失败就停止继续使用并再此尝试
-            if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
-                if (!disableInBitmap && options.inBitmap != null) {
-                    disableInBitmap = BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
-                            regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect);
+            if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, true)) {
+                disableInBitmap = true;
 
-                    options.inBitmap = null;
-                    try {
-                        bitmap = regionDecoder.decodeRegion(srcRect, options);
-                    } catch (Throwable error) {
-                        error.printStackTrace();
-                    }
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool, regionDecoder.getImageUri(),
+                        regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, regionDecoder.getImageType().getMimeType(), throwable, options, true);
+
+                try {
+                    bitmap = regionDecoder.decodeRegion(srcRect, options);
+                } catch (Throwable throwable1) {
+                    throwable1.printStackTrace();
                 }
+            } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
+                sketchMonitor.onDecodeRegionError(regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
+                        regionDecoder.getImageType().getMimeType(), throwable, srcRect, options.inSampleSize);
             }
-        } catch (Throwable error) {
-            error.printStackTrace();
         }
 
         int useTime = (int) (System.currentTimeMillis() - time);

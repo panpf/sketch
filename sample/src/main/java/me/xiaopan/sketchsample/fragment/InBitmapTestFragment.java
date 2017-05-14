@@ -24,7 +24,9 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
@@ -291,13 +293,15 @@ public class InBitmapTestFragment extends MyFragment {
             try {
                 options.inJustDecodeBounds = false;
                 newBitmap = decodeImage(context, imageUri, options);
-            } catch (OutOfMemoryError e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
 
-                SketchMonitor monitor = Sketch.with(getActivity()).getConfiguration().getMonitor();
-                BitmapPoolUtils.inBitmapThrow(e, options, monitor, configuration.getBitmapPool(), imageUri, 0, 0);
+                SketchMonitor sketchMonitor = configuration.getMonitor();
+                BitmapPool bitmapPool = configuration.getBitmapPool();
+                if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, false)) {
+                    ImageDecodeUtils.recycleInBitmapOnDecodeError(sketchMonitor, bitmapPool,
+                            imageUri, options.outWidth, options.outHeight, options.outMimeType, throwable, options, false);
+                }
             }
 
             if (newBitmap != null) {

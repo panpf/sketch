@@ -17,26 +17,17 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Rect;
 import android.os.Build;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
-import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 图片解码器
@@ -60,94 +51,6 @@ public class DefaultImageDecoder implements ImageDecoder {
         resultProcessorList.add(new CorrectOrientationResultProcessor());
         resultProcessorList.add(new ProcessImageResultProcessor());
         resultProcessorList.add(new ProcessedCacheResultProcessor());
-    }
-
-    public static Bitmap decodeBitmap(DataSource dataSource, BitmapFactory.Options options) throws IOException {
-        InputStream inputStream = null;
-        Bitmap bitmap = null;
-
-        try {
-            inputStream = dataSource.getInputStream();
-            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-        } finally {
-            SketchUtils.close(inputStream);
-        }
-
-        return bitmap;
-    }
-
-    public static Bitmap decodeRegionBitmap(DataSource dataSource, Rect srcRect, BitmapFactory.Options options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return null;
-        }
-
-        InputStream inputStream;
-        try {
-            inputStream = dataSource.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            SketchUtils.close(inputStream);
-        }
-
-        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
-        regionDecoder.recycle();
-        SketchUtils.close(inputStream);
-        return bitmap;
-    }
-
-    static void decodeSuccess(Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
-        if (SLogType.REQUEST.isEnabled()) {
-            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
-                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
-            } else {
-                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
-            }
-        }
-    }
-
-    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName) {
-        if (dataSource instanceof CacheFileDataSource) {
-            DiskCache.Entry diskCacheEntry = ((CacheFileDataSource) dataSource).getDiskCacheEntry();
-
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
-            }
-
-            if (!diskCacheEntry.delete()) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.e(SLogType.REQUEST, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
-                            diskCacheEntry.getUri(), loadRequest.getKey());
-                }
-            }
-        }
-
-        if (dataSource instanceof FileDataSource) {
-            File file = ((FileDataSource) dataSource).getFile();
-
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "decode failed. filePath=%s, fileLength=%d",
-                        file.getPath(), file.exists() ? file.length() : 0);
-            }
-        } else {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
-            }
-        }
     }
 
     @Override
@@ -194,11 +97,11 @@ public class DefaultImageDecoder implements ImageDecoder {
         Options boundOptions = new Options();
         boundOptions.inJustDecodeBounds = true;
         try {
-            decodeBitmap(dataSource, boundOptions);
+            ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
             SLog.e(SLogType.REQUEST, logName, "decode bounds failed %s", request.getKey());
-            decodeError(request, dataSource, logName);
+            ImageDecodeUtils.decodeError(request, dataSource, logName);
             return null;
         }
 
@@ -206,7 +109,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             SLog.e(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, request.getKey());
-            decodeError(request, dataSource, logName);
+            ImageDecodeUtils.decodeError(request, dataSource, logName);
             return null;
         }
 

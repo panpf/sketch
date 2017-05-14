@@ -135,7 +135,8 @@ public class SketchMonitor implements Identifier {
      * @param tileList           碎片列表
      * @param useLegacyMergeSort 当前是否使用旧的排序算法
      */
-    public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e, List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
+    public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e, List<Tile> tileList,
+                                @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
         String legacy = useLegacyMergeSort ? "useLegacyMergeSort. " : "";
         SLog.w(logName, "onTileSortError. %s%s", legacy, SketchUtils.tileListToString(tileList));
     }
@@ -149,32 +150,38 @@ public class SketchMonitor implements Identifier {
     }
 
     /**
-     * 在BitmapRegionDecoder中使用inBitmap是发生异常
+     * 使用inBitmap解码时发生异常
      *
-     * @param imageUri     图片url
-     * @param imageWidth   图片宽
-     * @param imageHeight  图片高
-     * @param srcRect      读取区域
-     * @param inSampleSize 缩放比例
-     * @param inBitmap     复用的inBitmap
+     * @param imageUri      图片uri
+     * @param imageWidth    图片宽
+     * @param imageHeight   图片高
+     * @param imageMimeType 图片类型
+     * @param throwable     异常
+     * @param inSampleSize  缩放比例
+     * @param inBitmap      复用的inBitmap
      */
-    public void onInBitmapExceptionForRegionDecoder(String imageUri, int imageWidth, int imageHeight, Rect srcRect, int inSampleSize, Bitmap inBitmap) {
-        SLog.w(logName, "onInBitmapExceptionForRegionDecoder. imageUri=%s, imageSize=%dx%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-                imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap));
+    public void onInBitmapDecodeError(String imageUri, int imageWidth, int imageHeight,
+                                      String imageMimeType, Throwable throwable, int inSampleSize, Bitmap inBitmap) {
+        SLog.w(logName, "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
+                        "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+                imageUri, imageWidth, imageHeight, imageMimeType, inSampleSize,
+                inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap));
     }
 
     /**
-     * 在BitmapFactory中使用inBitmap是发生异常
+     * 使用BitmapRegionDecoder解码图片碎片时发生错误
      *
-     * @param imageUri     图片url
-     * @param imageWidth   图片宽
-     * @param imageHeight  图片高
-     * @param inSampleSize 缩放比例
-     * @param inBitmap     复用的inBitmap
+     * @param imageUri      图片uri
+     * @param imageWidth    图片宽
+     * @param imageHeight   图片高
+     * @param imageMimeType 图片类型
+     * @param throwable     异常
+     * @param srcRect       碎片区域
      */
-    public void onInBitmapException(String imageUri, int imageWidth, int imageHeight, int inSampleSize, Bitmap inBitmap) {
-        SLog.w(logName, "onInBitmapException. imageUri=%s, imageSize=%dx%d, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-                imageUri, imageWidth, imageHeight, inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap));
+    public void onDecodeRegionError(String imageUri, int imageWidth, int imageHeight,
+                                    String imageMimeType, Throwable throwable, Rect srcRect, int inSampleSize) {
+        SLog.w(logName, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
+                imageUri, imageWidth, imageHeight, imageMimeType, srcRect.toString(), inSampleSize);
     }
 
     @Override

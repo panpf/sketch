@@ -61,7 +61,7 @@ public class DataSourceFactory {
             }
 
             SLog.w(SLogType.REQUEST, logName, "pre process result is null", request.getUri());
-            throw new DecodeException("pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
+            throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
         }
 
         return makeDataSource(request.getContext(), request.getUri(), request.getUriScheme(),
@@ -83,7 +83,7 @@ public class DataSourceFactory {
                 }
 
                 SLog.w(SLogType.REQUEST, logName, "download result exception. %s", imageUri);
-                throw new DecodeException("download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
+                throw new DecodeException("Download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
             } else {
                 DiskCache.Entry diskCacheEntry = Sketch.with(context).getConfiguration().getDiskCache().get(imageUri);
                 if (diskCacheEntry != null) {
@@ -111,6 +111,6 @@ public class DataSourceFactory {
         }
 
         SLog.w(SLogType.REQUEST, logName, "unknown uri is %s", imageUri);
-        throw new DecodeException(String.format("unknown uri is %s", imageUri), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
+        throw new DecodeException(String.format("Unknown uri is %s", imageUri), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
     }
 }

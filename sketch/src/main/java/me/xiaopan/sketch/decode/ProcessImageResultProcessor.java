@@ -71,7 +71,8 @@ public class ProcessImageResultProcessor implements ResultProcessor {
             }
             result.setProcessed(true);
         } else {
-            throw new DecodeException(null, ErrorCause.PROCESS_IMAGE_FAIL);
+            throw new DecodeException(String.format("%s: %s. %s", ErrorCause.PROCESS_IMAGE_FAIL.name(),
+                    imageProcessor.getKey(), request.getUri()), ErrorCause.PROCESS_IMAGE_FAIL);
         }
     }
 }

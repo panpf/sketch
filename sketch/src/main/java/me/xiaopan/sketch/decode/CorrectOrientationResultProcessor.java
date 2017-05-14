@@ -65,7 +65,8 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
 
             result.setProcessed(true);
         } else {
-            throw new DecodeException(null, ErrorCause.CORRECT_ORIENTATION_FAIL);
+            throw new DecodeException(String.format("%s: %d. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),
+                    orientation, request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
         }
     }
 }
