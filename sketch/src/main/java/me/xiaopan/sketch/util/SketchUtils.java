@@ -614,34 +614,28 @@ public class SketchUtils {
     /**
      * 根据给定的信息，生成最终的图片信息
      *
-     * @param type      类型
-     * @param bitmap    图片
-     * @param mimeType  图片格式
-     * @param byteCount 占用字节数
+     * @param type        类型
+     * @param imageWidth  图片宽
+     * @param imageHeight 图片高
+     * @param mimeType    图片格式
+     * @param orientation 图片旋转方向
+     * @param bitmap      Bitmap
+     * @param byteCount   bitmap占用字节数
      */
-    public static String makeImageInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
-        if (bitmap != null) {
-            if (TextUtils.isEmpty(type)) {
-                type = "Bitmap";
-            }
-            String hashCode = Integer.toHexString(bitmap.hashCode());
-            String config = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            return String.format("%s(mimeType=%s; hashCode=%s; size=%dx%d; config=%s; byteCount=%d)",
-                    type, mimeType, hashCode, bitmap.getWidth(), bitmap.getHeight(), config, byteCount);
-        } else {
-            return null;
+    public static String makeImageInfo(String type, int imageWidth, int imageHeight, String mimeType,
+                                       int orientation, Bitmap bitmap, long byteCount, String key) {
+        if (bitmap == null) {
+            return "Unknown";
         }
-    }
 
-    /**
-     * 根据给定的信息，生成最终的图片信息
-     *
-     * @param type     类型
-     * @param bitmap   图片
-     * @param mimeType 图片格式
-     */
-    public static String makeImageInfo(String type, Bitmap bitmap, String mimeType) {
-        return makeImageInfo(type, bitmap, mimeType, getByteCount(bitmap));
+        type = TextUtils.isEmpty(type) ? "Bitmap" : type;
+        String hashCode = Integer.toHexString(bitmap.hashCode());
+        String config = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
+        String finalKey = key != null ? String.format(", key=%s", key) : "";
+        return String.format("%s(image=%dx%d,%s,%d, bitmap=%dx%d,%s,%d,%s%s)",
+                type, imageWidth, imageHeight, mimeType, orientation,
+                bitmap.getWidth(), bitmap.getHeight(), config, byteCount, hashCode,
+                finalKey);
     }
 
     /**
@@ -1184,7 +1178,7 @@ public class SketchUtils {
         return (int) Math.ceil(value1 / value2);
     }
 
-    public static boolean isDisabledARGB4444(){
+    public static boolean isDisabledARGB4444() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 }

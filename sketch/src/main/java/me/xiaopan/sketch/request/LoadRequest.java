@@ -25,6 +25,7 @@ import me.xiaopan.sketch.decode.BitmapDecodeResult;
 import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.GifDecodeResult;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.feature.ProcessedImageCache;
@@ -167,22 +168,31 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
             if (bitmap.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: "
-                            + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
+                    ImageAttrs imageAttrs = decodeResult.getImageAttrs();
+                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
+                            imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
+                            imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: ", imageInfo);
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
             if (SLogType.REQUEST.isEnabled()) {
-                printLogI("decode success", "runLoad", "bitmapInfo: "
-                        + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
+                ImageAttrs imageAttrs = decodeResult.getImageAttrs();
+                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
+                        imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
+                        imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                printLogI("decode success", "runLoad", "bitmapInfo: ", imageInfo);
             }
 
             if (isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: "
-                            + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getImageAttrs().getMimeType()));
+                    ImageAttrs imageAttrs = decodeResult.getImageAttrs();
+                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
+                            imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
+                            imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: ", imageInfo);
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());
                 return;

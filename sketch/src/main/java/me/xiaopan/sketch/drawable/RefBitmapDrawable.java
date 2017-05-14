@@ -20,7 +20,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.util.SketchUtils;
 
 public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     protected String logName = "RefBitmapDrawable";
@@ -88,8 +87,7 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
 
     @Override
     public String getInfo() {
-        // TODO: 2017/4/3 图片信息里加上ImageAttrs里的全部信息
-        return SketchUtils.makeImageInfo(logName, getBitmap(), getMimeType(), getByteCount());
+        return refBitmap.getInfo();
     }
 
     @Override

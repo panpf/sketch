@@ -18,10 +18,10 @@ package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -41,32 +41,15 @@ public class RefBitmap extends SketchBitmap {
         this.bitmapPool = bitmapPool;
     }
 
-    public String getBitmapInfo() {
-        if (isRecycled()) {
-            return String.format("%s,%s", LOG_NAME, getKey());
-        }
-        return String.format("%s,%dx%d,%s,%s,%d,%s",
-                Integer.toHexString(bitmap.hashCode()),
-                bitmap.getWidth(), bitmap.getHeight(),
-                getAttrs().getMimeType(),
-                bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
-                SketchUtils.getByteCount(bitmap),
-                getKey());
-    }
-
     @Override
     public String getInfo() {
         if (isRecycled()) {
             return String.format("%s(Recycled,%s)", LOG_NAME, getKey());
+        } else {
+            ImageAttrs imageAttrs = getAttrs();
+            return SketchUtils.makeImageInfo(LOG_NAME, imageAttrs.getOriginWidth(), imageAttrs.getOriginHeight(),
+                    imageAttrs.getMimeType(), imageAttrs.getOrientation(), bitmap, getByteCount(), getKey());
         }
-        return String.format("%s(%s,%dx%d,%s,%s,%d,%s)",
-                LOG_NAME,
-                Integer.toHexString(bitmap.hashCode()),
-                bitmap.getWidth(), bitmap.getHeight(),
-                getAttrs().getMimeType(),
-                bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
-                SketchUtils.getByteCount(bitmap),
-                getKey());
     }
 
     /**
@@ -139,15 +122,15 @@ public class RefBitmap extends SketchBitmap {
 
         if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.w(SLogType.CACHE, LOG_NAME, "Free. %s. bitmap(%s)", callingStation, getBitmapInfo());
+                SLog.w(SLogType.CACHE, LOG_NAME, "Free. %s. %s", callingStation, getInfo());
             }
 
             BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             bitmap = null;
         } else {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.d(SLogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). bitmap(%s)",
-                        callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getBitmapInfo());
+                SLog.d(SLogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). %s",
+                        callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getInfo());
             }
         }
     }

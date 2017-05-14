@@ -20,11 +20,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
@@ -37,13 +38,11 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest {
+    protected DisplayResult displayResult;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
-
     private ViewInfo viewInfo;
     private RequestAndViewBinder requestAndViewBinder;
-
-    protected DisplayResult displayResult;
 
     public DisplayRequest(Sketch sketch, DisplayInfo requestInfo, DisplayOptions displayOptions,
                           ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
@@ -195,9 +194,12 @@ public class DisplayRequest extends LoadRequest {
 
             if (bitmap.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
+                    ImageAttrs imageAttrs = loadResult.getImageAttrs();
+                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
+                            imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
+                            imageAttrs.getOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     printLogE("decode failed", "loadCompleted", "bitmap recycled",
-                            "bitmapInfo=", SketchUtils.makeImageInfo(null, bitmap, loadResult.getImageAttrs().getMimeType()),
-                            loadResult.getImageFrom());
+                            "bitmapInfo: ", imageInfo, loadResult.getImageFrom());
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
@@ -207,7 +209,7 @@ public class DisplayRequest extends LoadRequest {
             RefBitmap refBitmap = new RefBitmap(bitmap, getKey(), getUri(), loadResult.getImageAttrs(), bitmapPool);
 
             // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
-            refBitmap.setIsWaitingUse(getLogName() + ":waitingUse:new", true);
+            refBitmap.setIsWaitingUse(String.format("%s:waitingUse:new", getLogName()), true);
 
             // 放入内存缓存中
             if (!displayOptions.isCacheInMemoryDisabled() && getMemoryCacheKey() != null) {

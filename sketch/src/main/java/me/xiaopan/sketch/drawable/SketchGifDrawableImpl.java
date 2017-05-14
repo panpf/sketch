@@ -207,7 +207,8 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
 
     @Override
     public String getInfo() {
-        return SketchUtils.makeImageInfo(logName, mBuffer, imageAttrs.getMimeType(), getAllocationByteCount());
+        return SketchUtils.makeImageInfo(logName, getOriginWidth(), getOriginHeight(), getMimeType(),
+                getOrientation(), mBuffer, getAllocationByteCount(), null);
     }
 
     @Override
@@ -223,7 +224,7 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
     @Override
     public void addAnimationListener(@NonNull final AnimationListener listener) {
         if (listenerMap == null) {
-            listenerMap = new HashMap<AnimationListener, pl.droidsonroids.gif.AnimationListener>();
+            listenerMap = new HashMap<>();
         }
 
         // 这个内部类配置了混淆时忽略警告，以后有变化时需要同步调整混淆配置，并打包验证
