@@ -43,7 +43,7 @@ class TileDecoder {
     /**
      * 设置新的图片
      */
-    void setImage(String imageUri, boolean correctImageOrientation) {
+    void setImage(String imageUri, boolean correctImageOrientationDisabled) {
         clean("setImage");
 
         if (decoder != null) {
@@ -53,7 +53,7 @@ class TileDecoder {
 
         if (!TextUtils.isEmpty(imageUri)) {
             running = initializing = true;
-            largeImageViewer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientation);
+            largeImageViewer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
         } else {
             running = initializing = false;
         }

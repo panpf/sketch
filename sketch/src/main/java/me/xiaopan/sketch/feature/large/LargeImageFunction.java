@@ -179,7 +179,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
         if (drawableQualified) {
             imageUri = sketchDrawable.getUri();
-            largeImageViewer.setImage(imageUri, sketchDrawable.getOrientationDegrees() != 0);
+            largeImageViewer.setImage(imageUri, imageView.getOptions().isCorrectImageOrientationDisabled());
         } else {
             imageUri = null;
             largeImageViewer.setImage(null, false);

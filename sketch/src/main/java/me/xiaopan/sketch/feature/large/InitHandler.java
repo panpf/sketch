@@ -50,7 +50,7 @@ class InitHandler extends Handler {
         switch (msg.what) {
             case WHAT_INIT:
                 Wrapper wrapper = (Wrapper) msg.obj;
-                init(decodeExecutor, wrapper.imageUri, wrapper.correctImageOrientation, msg.arg1, wrapper.keyCounter);
+                init(decodeExecutor, wrapper.imageUri, wrapper.correctImageOrientationDisabled, msg.arg1, wrapper.keyCounter);
                 break;
         }
 
@@ -59,16 +59,16 @@ class InitHandler extends Handler {
         }
     }
 
-    public void postInit(String imageUri, boolean correctImageOrientation, int key, KeyCounter keyCounter) {
+    public void postInit(String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
         removeMessages(WHAT_INIT);
 
         Message message = obtainMessage(WHAT_INIT);
         message.arg1 = key;
-        message.obj = new Wrapper(imageUri, correctImageOrientation, keyCounter);
+        message.obj = new Wrapper(imageUri, correctImageOrientationDisabled, keyCounter);
         message.sendToTarget();
     }
 
-    private void init(TileExecutor decodeExecutor, String imageUri, boolean correctImageOrientation, int key, KeyCounter keyCounter) {
+    private void init(TileExecutor decodeExecutor, String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
             if (SLogType.LARGE.isEnabled()) {
                 SLog.w(SLogType.LARGE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
@@ -86,7 +86,7 @@ class InitHandler extends Handler {
 
         ImageRegionDecoder decoder;
         try {
-            decoder = ImageRegionDecoder.build(decodeExecutor.callback.getContext(), imageUri, correctImageOrientation);
+            decoder = ImageRegionDecoder.build(decodeExecutor.callback.getContext(), imageUri, correctImageOrientationDisabled);
         } catch (final Exception e) {
             e.printStackTrace();
             decodeExecutor.mainHandler.postInitError(e, imageUri, key, keyCounter);
@@ -121,11 +121,11 @@ class InitHandler extends Handler {
     public static class Wrapper{
         public String imageUri;
         public KeyCounter keyCounter;
-        public boolean correctImageOrientation;
+        public boolean correctImageOrientationDisabled;
 
-        public Wrapper(String imageUri, boolean correctImageOrientation, KeyCounter keyCounter) {
+        public Wrapper(String imageUri, boolean correctImageOrientationDisabled, KeyCounter keyCounter) {
             this.imageUri = imageUri;
-            this.correctImageOrientation = correctImageOrientation;
+            this.correctImageOrientationDisabled = correctImageOrientationDisabled;
             this.keyCounter = keyCounter;
         }
     }

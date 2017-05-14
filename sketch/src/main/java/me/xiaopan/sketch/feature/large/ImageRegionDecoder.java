@@ -60,7 +60,7 @@ public class ImageRegionDecoder {
     }
 
     public static ImageRegionDecoder build(Context context, final String imageUri,
-                                           final boolean correctImageOrientation) throws DecodeException, IOException {
+                                           final boolean correctImageOrientationDisabled) throws DecodeException, IOException {
         UriScheme uriScheme = UriScheme.valueOfUri(imageUri);
         if (uriScheme == null) {
             throw new IllegalArgumentException("Unknown scheme uri: " + imageUri);
@@ -79,7 +79,7 @@ public class ImageRegionDecoder {
         Configuration configuration = Sketch.with(context).getConfiguration();
         int imageOrientation = 0;
         ImageOrientationCorrector orientationCorrector = configuration.getImageOrientationCorrector();
-        if (correctImageOrientation) {
+        if (!correctImageOrientationDisabled) {
             imageOrientation = orientationCorrector.readImageOrientationDegrees(boundOptions.outMimeType, dataSource);
         }
         if (imageOrientation != 0) {

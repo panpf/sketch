@@ -107,12 +107,12 @@ public class LargeImageViewer {
     /**
      * 设置新的图片
      */
-    void setImage(String imageUri, boolean correctImageOrientation) {
+    void setImage(String imageUri, boolean correctImageOrientationDisabled) {
         clean("setImage");
 
         this.imageUri = imageUri;
         this.running = !TextUtils.isEmpty(imageUri);
-        this.tileDecoder.setImage(imageUri, correctImageOrientation);
+        this.tileDecoder.setImage(imageUri, correctImageOrientationDisabled);
     }
 
     /**
