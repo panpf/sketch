@@ -28,7 +28,6 @@ import me.xiaopan.sketch.cache.LruDiskCache;
 import me.xiaopan.sketch.cache.LruMemoryCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.cache.MemorySizeCalculator;
-import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -95,7 +94,7 @@ public final class Configuration {
         this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
 
         this.httpStack = new HurlStack();
-        this.imageDecoder = new DefaultImageDecoder();
+        this.imageDecoder = new ImageDecoder();
         this.freeRideManager = new FreeRideManager();
         this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();

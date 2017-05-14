@@ -22,7 +22,7 @@ import me.xiaopan.sketch.request.LoadRequest;
 /**
  * 缓存经过处理的图片
  */
-public class ProcessedCacheResultProcessor implements ResultProcessor {
+public class ProcessedResultCacheProcessor implements ResultProcessor {
 
     @Override
     public void process(LoadRequest request, DecodeResult result) {

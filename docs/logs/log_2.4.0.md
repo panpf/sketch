@@ -3,6 +3,7 @@
 * ImageFormat重命名为ImageType，LargeImageViewer.getImageFormat()方法重命名为getImageType()
 * ImageAttrs中新增orientation属性，存储图片旋转角度
 * WrapableImageProcessor重命名为WrappedImageProcessor
+* 移除DefaultImageDecoder，现在ImageDecoder是一个class可以直接使用
 
 新功能：
 * load和display的Options以及Helper新增correctImageOrientation属性可让被旋转了的图片以正常方向显示，[点击了解更多](../wiki/correct_image_orientation.md)
@@ -11,7 +12,7 @@ SketchMonitor：
 * onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)
 * 删除onInBitmapExceptionForRegionDecoder(String, int, int, Rect, int, Bitmap)方法
 * 新增onDecodeRegionError(String, int, int, String, Throwable, Rect, int)方法
-* 改名维万ErrorTracker
+* 改名为ErrorTracker
 
 * 最低API提升至10
 
