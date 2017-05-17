@@ -39,7 +39,7 @@ Scan a two-dimensional code to download a sample APP, or [click to download APK]
 
 ### Examples
 ```java
-SketchImageView sketchImageView = findViewByID(R.id.image_main);
+SketchImageView sketchImageView = findViewById(R.id.image_main);
 
 // display image from network
 sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
@@ -74,9 +74,7 @@ sketchImageView.displayURIImage(uri);
 1.Add dependencies to the dependencies node of the app's build.gradle file
 
 ```groovy
-dependencies {
-	compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
-}
+compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
 ```
 
 Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(Do not "v")`
@@ -84,23 +82,14 @@ Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Version](https:/
 If you need to play GIF add sketch-gif dependencies
 
 ```groovy
-dependencies {
-	compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
-}
+compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
 ```
 
 Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
 
-[Click to understand the proguard configuration](docs/wiki/proguard_config.md)
+`Android Studio automatically merges the permissions and proguard in the AAR`
 
-2.Add the following permissions
-```xml
-<uses-permission android:name="android.permission.INTERNET"/>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-```
-
-3.Android 4.0 the following need release of the cache in the Application (Android 4.0 above can be registered directly through the Context and callback)
+2.If your APP wants to be compatible with API 13 (Android 3.2) and the following device Android devices, then you need to call in your Application to release the cache method (Android 4.0 above can be directly through the Context registration and callback)
 ```java
 public class MyApplication extends Application {    
 
@@ -123,8 +112,6 @@ public class MyApplication extends Application {
     }
 }
 ```
-
-Minimum support for `Android2.3 API 9`
 
 #### Supported URIs
 
@@ -231,7 +218,7 @@ More:
 
 [chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
 
-[bumptech](https://github.com/bumptech/glide) - [glide](https://github.com/bumptech/glide) （BitmapPool）
+[bumptech](https://github.com/bumptech) - [glide](https://github.com/bumptech/glide) （BitmapPool）
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>

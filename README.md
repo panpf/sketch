@@ -37,7 +37,7 @@ Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势�
 
 ### 示例
 ```java
-SketchImageView sketchImageView = findViewByID(R.id.image_main);
+SketchImageView sketchImageView = findViewById(R.id.image_main);
 
 // display image from network
 sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
@@ -72,9 +72,7 @@ sketchImageView.displayURIImage(uri);
 1.在app的build.gradle文件的dependencies节点中加入依赖
 
 ```groovy
-dependencies {
-	compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
-}
+compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
 ```
 
 请自行替换 `<SKETCH_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(不要"v")`
@@ -82,23 +80,14 @@ dependencies {
 如果需要播放GIF就添加sketch-gif的依赖
 
 ```groovy
-dependencies {
-	compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
-}
+compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
 ```
 
 请自行替换`<SKETCH_GIF_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(不要"v")`
 
-[点击了解混淆配置](docs/wiki/proguard_config.md)
+`Android Studio会自动合并AAR中所包含的权限和混淆配置`
 
-2.添加以下权限
-```xml
-<uses-permission android:name="android.permission.INTERNET"/>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-```
-
-3.Android 4.0以下需要在Application中调用释放缓存的方法（Android 4.0以上能直接通过Context注册并回调）
+2.如果您的APP想要兼容 API 13 (Android 3.2) 及以下的设备Android设备，那么需要在您的 Application 中调用释放缓存的方法（Android 4.0以上能直接通过Context注册并回调）
 ```java
 public class MyApplication extends Application {    
 
@@ -121,8 +110,6 @@ public class MyApplication extends Application {
     }
 }
 ```
-
-最低支持`Android2.3 API 9`
 
 #### 支持的URI
 |Type|Scheme|Method|
@@ -225,7 +212,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 
 [chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
 
-[bumptech](https://github.com/bumptech/glide) - [glide](https://github.com/bumptech/glide) （BitmapPool）
+[bumptech](https://github.com/bumptech) - [glide](https://github.com/bumptech/glide) （BitmapPool）
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
