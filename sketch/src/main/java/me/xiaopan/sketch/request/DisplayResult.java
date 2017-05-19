@@ -19,11 +19,9 @@ package me.xiaopan.sketch.request;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.drawable.ImageAttrs;
-import me.xiaopan.sketch.drawable.SketchDrawable;
 
 public class DisplayResult {
     private Drawable drawable;
-
     private ImageAttrs imageAttrs;
     private ImageFrom imageFrom;
 
@@ -31,11 +29,6 @@ public class DisplayResult {
         this.drawable = drawable;
         this.imageFrom = imageFrom;
         this.imageAttrs = imageAttrs;
-
-        if (drawable instanceof SketchDrawable) {
-            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
-            sketchDrawable.setImageFrom(imageFrom);
-        }
     }
 
     public Drawable getDrawable() {

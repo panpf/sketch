@@ -29,6 +29,7 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.util.ExifInterface;
 
 /**
  * 图片解码器，读取bitmap之前执行计算采样比例、选择合适的config、读取方向、寻找可复用的bitmap等操作，之后进行方向纠正、处理、缓存等操作
@@ -114,11 +115,13 @@ public class ImageDecoder implements Identifier {
         }
 
         // Read image orientation
-        int imageOrientation = 0;
+        int exifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
         if (!request.getOptions().isCorrectImageOrientationDisabled()) {
             ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
-            imageOrientation = imageOrientationCorrector.readImageOrientationDegrees(boundOptions.outMimeType, dataSource);
+            exifOrientation = imageOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource);
         }
+
+        // TODO: 2017/5/19 先根据方向旋转boundOptions.outWidth和boundsOptions.outHeight
 
         ImageType imageType = ImageType.valueOfMimeType(boundOptions.outMimeType);
 
@@ -141,7 +144,7 @@ public class ImageDecoder implements Identifier {
         DecodeResult decodeResult = null;
         for (DecodeHelper decodeHelper : decodeHelperList) {
             if (decodeHelper.match(request, dataSource, imageType, boundOptions)) {
-                decodeResult = decodeHelper.decode(request, dataSource, imageType, boundOptions, decodeOptions, imageOrientation);
+                decodeResult = decodeHelper.decode(request, dataSource, imageType, boundOptions, decodeOptions, exifOrientation);
                 break;
             }
         }

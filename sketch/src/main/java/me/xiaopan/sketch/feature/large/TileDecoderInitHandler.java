@@ -29,13 +29,13 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 运行在解码线程中，负责初始化TileDecoder
  */
-class InitHandler extends Handler {
+class TileDecoderInitHandler extends Handler {
     private static final String NAME = "InitHandler";
     private static final int WHAT_INIT = 1002;
 
     private WeakReference<TileExecutor> reference;
 
-    public InitHandler(Looper looper, TileExecutor decodeExecutor) {
+    public TileDecoderInitHandler(Looper looper, TileExecutor decodeExecutor) {
         super(looper);
         reference = new WeakReference<>(decodeExecutor);
     }
@@ -44,7 +44,7 @@ class InitHandler extends Handler {
     public void handleMessage(Message msg) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
-            decodeExecutor.mainHandler.cancelDelayDestroyThread();
+            decodeExecutor.tileDecodeCallbackHandler.cancelDelayDestroyThread();
         }
 
         switch (msg.what) {
@@ -55,7 +55,7 @@ class InitHandler extends Handler {
         }
 
         if (decodeExecutor != null) {
-            decodeExecutor.mainHandler.postDelayRecycleDecodeThread();
+            decodeExecutor.tileDecodeCallbackHandler.postDelayRecycleDecodeThread();
         }
     }
 
@@ -89,12 +89,12 @@ class InitHandler extends Handler {
             decoder = ImageRegionDecoder.build(decodeExecutor.callback.getContext(), imageUri, correctImageOrientationDisabled);
         } catch (final Exception e) {
             e.printStackTrace();
-            decodeExecutor.mainHandler.postInitError(e, imageUri, key, keyCounter);
+            decodeExecutor.tileDecodeCallbackHandler.postInitError(e, imageUri, key, keyCounter);
             return;
         }
 
         if (decoder == null || !decoder.isReady()) {
-            decodeExecutor.mainHandler.postInitError(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
+            decodeExecutor.tileDecodeCallbackHandler.postInitError(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
             return;
         }
 
@@ -107,7 +107,7 @@ class InitHandler extends Handler {
             return;
         }
 
-        decodeExecutor.mainHandler.postInitCompleted(decoder, imageUri, key, keyCounter);
+        decodeExecutor.tileDecodeCallbackHandler.postInitCompleted(decoder, imageUri, key, keyCounter);
     }
 
     public void clean(String why) {

@@ -169,9 +169,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
             if (bitmap.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
                     ImageAttrs imageAttrs = decodeResult.getImageAttrs();
-                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
-                            imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
+                            imageAttrs.getHeight(), imageAttrs.getMimeType(),
+                            imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: ", imageInfo);
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
@@ -180,18 +180,18 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
             if (SLogType.REQUEST.isEnabled()) {
                 ImageAttrs imageAttrs = decodeResult.getImageAttrs();
-                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
-                        imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                        imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
+                        imageAttrs.getHeight(), imageAttrs.getMimeType(),
+                        imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                 printLogI("decode success", "runLoad", "bitmapInfo: ", imageInfo);
             }
 
             if (isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
                     ImageAttrs imageAttrs = decodeResult.getImageAttrs();
-                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getOriginWidth(),
-                            imageAttrs.getOriginHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getOrientationDegrees(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
+                            imageAttrs.getHeight(), imageAttrs.getMimeType(),
+                            imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     printLogW("canceled", "runLoad", "decode after", "bitmapInfo: ", imageInfo);
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());

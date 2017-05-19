@@ -17,5 +17,5 @@
 package me.xiaopan.sketch.request;
 
 public interface LoadListener extends Listener {
-    void onCompleted(LoadResult loadResult);
+    void onCompleted(LoadResult result);
 }

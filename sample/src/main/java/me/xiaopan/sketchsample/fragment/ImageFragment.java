@@ -33,10 +33,12 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
-import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
@@ -175,7 +177,7 @@ public class ImageFragment extends MyFragment {
             if (!TextUtils.isEmpty(loadingImageOptionsId)) {
                 String loadingImageMemoryCacheKey = SketchUtils.makeRequestKey(imageUri, loadingImageOptionsId);
                 MemoryCache memoryCache = Sketch.with(getActivity()).getConfiguration().getMemoryCache();
-                RefBitmap cachedRefBitmap = memoryCache.get(loadingImageMemoryCacheKey);
+                SketchRefBitmap cachedRefBitmap = memoryCache.get(loadingImageMemoryCacheKey);
                 if (cachedRefBitmap != null) {
                     options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheKey, null));
                 } else {
@@ -192,7 +194,7 @@ public class ImageFragment extends MyFragment {
         }
 
         @Override
-        public void onCompleted(ImageFrom imageFrom, String mimeType) {
+        public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
             hintView.hidden();
 
             setWindowBackground.onDisplayCompleted();
@@ -482,7 +484,7 @@ public class ImageFragment extends MyFragment {
             final List<MenuItem> menuItemList = new LinkedList<MenuItem>();
 
             String imageInfo;
-            if (drawable instanceof LoadingDrawable) {
+            if (drawable instanceof SketchLoadingDrawable) {
                 imageInfo = "图片正在加载，请稍后";
             } else if (drawable instanceof SketchDrawable) {
                 imageInfo = makeImageInfo(drawable, (SketchDrawable) drawable);
@@ -601,7 +603,8 @@ public class ImageFragment extends MyFragment {
                     .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
 
             messageBuilder.append("\n");
-            messageBuilder.append("原图方向/占用内存：").append(sketchDrawable.getOrientationDegrees()).append("/").append(needMemory);
+            messageBuilder.append("方向/内存：").append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
+                    .append("/").append(needMemory);
 
             if (imageView.isSupportZoom()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();

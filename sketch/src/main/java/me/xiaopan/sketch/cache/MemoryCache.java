@@ -17,7 +17,7 @@
 package me.xiaopan.sketch.cache;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
 
 /**
  * 内存缓存器
@@ -26,17 +26,17 @@ public interface MemoryCache extends Identifier {
     /**
      * 放进去一张图片
      */
-    void put(String key, RefBitmap refBitmap);
+    void put(String key, SketchRefBitmap refBitmap);
 
     /**
      * 根据给定的key获取图片
      */
-    RefBitmap get(String key);
+    SketchRefBitmap get(String key);
 
     /**
      * 根据给定的key删除图片
      */
-    RefBitmap remove(String key);
+    SketchRefBitmap remove(String key);
 
     /**
      * 获取已用容量

@@ -41,13 +41,13 @@ class TileExecutor {
 
     private HandlerThread handlerThread;
 
-    private InitHandler initHandler;
-    MainHandler mainHandler;
-    private DecodeHandler decodeHandler;
+    private TileDecoderInitHandler tileDecoderInitHandler;
+    TileDecodeCallbackHandler tileDecodeCallbackHandler;
+    private TileDecodeHandler tileDecodeHandler;
 
     public TileExecutor(Callback callback) {
         this.callback = callback;
-        this.mainHandler = new MainHandler(Looper.getMainLooper(), this);
+        this.tileDecodeCallbackHandler = new TileDecodeCallbackHandler(Looper.getMainLooper(), this);
     }
 
     /**
@@ -65,10 +65,10 @@ class TileExecutor {
 
                     SLog.i(SLogType.LARGE, NAME, "image region decode thread %s started", handlerThread.getName());
 
-                    decodeHandler = new DecodeHandler(handlerThread.getLooper(), this);
-                    initHandler = new InitHandler(handlerThread.getLooper(), this);
+                    tileDecodeHandler = new TileDecodeHandler(handlerThread.getLooper(), this);
+                    tileDecoderInitHandler = new TileDecoderInitHandler(handlerThread.getLooper(), this);
 
-                    mainHandler.postDelayRecycleDecodeThread();
+                    tileDecodeCallbackHandler.postDelayRecycleDecodeThread();
                 }
             }
         }
@@ -79,7 +79,7 @@ class TileExecutor {
      */
     public void submitInit(String imageUri, KeyCounter keyCounter, boolean correctImageOrientationDisabled) {
         installHandlerThread();
-        initHandler.postInit(imageUri, correctImageOrientationDisabled, keyCounter.getKey(), keyCounter);
+        tileDecoderInitHandler.postInit(imageUri, correctImageOrientationDisabled, keyCounter.getKey(), keyCounter);
     }
 
     /**
@@ -87,15 +87,15 @@ class TileExecutor {
      */
     public void submitDecodeTile(int key, Tile tile) {
         installHandlerThread();
-        decodeHandler.postDecode(key, tile);
+        tileDecodeHandler.postDecode(key, tile);
     }
 
     /**
      * 取消所有的解码任务
      */
     public void cleanDecode(String why) {
-        if (decodeHandler != null) {
-            decodeHandler.clean(why);
+        if (tileDecodeHandler != null) {
+            tileDecodeHandler.clean(why);
         }
     }
 
@@ -103,24 +103,24 @@ class TileExecutor {
      * 回收所有资源
      */
     public void recycle(String why) {
-        if (initHandler != null) {
-            initHandler.clean(why);
+        if (tileDecoderInitHandler != null) {
+            tileDecoderInitHandler.clean(why);
         }
 
-        if (decodeHandler != null) {
-            decodeHandler.clean(why);
+        if (tileDecodeHandler != null) {
+            tileDecodeHandler.clean(why);
         }
 
         recycleDecodeThread();
     }
 
     void recycleDecodeThread() {
-        if (initHandler != null) {
-            initHandler.clean("recycleDecodeThread");
+        if (tileDecoderInitHandler != null) {
+            tileDecoderInitHandler.clean("recycleDecodeThread");
         }
 
-        if (decodeHandler != null) {
-            decodeHandler.clean("recycleDecodeThread");
+        if (tileDecodeHandler != null) {
+            tileDecodeHandler.clean("recycleDecodeThread");
         }
 
         synchronized (handlerThreadLock) {
@@ -147,6 +147,6 @@ class TileExecutor {
 
         void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime);
 
-        void onDecodeError(Tile tile, DecodeHandler.DecodeErrorException exception);
+        void onDecodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception);
     }
 }

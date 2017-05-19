@@ -48,7 +48,7 @@ public class AssetsDataSource implements DataSource {
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         AssetManager assetManager = context.getAssets();
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, assetManager, assetsFilePath);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, assetManager, assetsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

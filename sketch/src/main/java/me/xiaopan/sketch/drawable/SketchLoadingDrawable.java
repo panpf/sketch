@@ -24,22 +24,23 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.DrawableWrapper;
+import me.xiaopan.sketch.util.ExifInterface;
 
 /**
  * 加载中占位图专用Drawable，可绑定请求
  */
-public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
+public class SketchLoadingDrawable extends DrawableWrapper implements SketchRefDrawable {
     private WeakReference<DisplayRequest> weakReference;
 
-    private RefDrawable refDrawable;
+    private SketchRefDrawable refDrawable;
     private SketchDrawable sketchDrawable;
 
-    public LoadingDrawable(Drawable drawable, DisplayRequest displayRequest) {
+    public SketchLoadingDrawable(Drawable drawable, DisplayRequest displayRequest) {
         super(drawable);
         this.weakReference = new WeakReference<>(displayRequest);
 
-        if (drawable instanceof RefDrawable) {
-            refDrawable = (RefDrawable) drawable;
+        if (drawable instanceof SketchRefDrawable) {
+            refDrawable = (SketchRefDrawable) drawable;
         }
         if (drawable instanceof SketchDrawable) {
             sketchDrawable = (SketchDrawable) drawable;
@@ -54,13 +55,6 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     public void setIsDisplayed(String callingStation, boolean displayed) {
         if (refDrawable != null) {
             refDrawable.setIsDisplayed(callingStation, displayed);
-        }
-    }
-
-    @Override
-    public void setIsCached(String callingStation, boolean cached) {
-        if (refDrawable != null) {
-            refDrawable.setIsCached(callingStation, cached);
         }
     }
 
@@ -102,8 +96,8 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     }
 
     @Override
-    public int getOrientationDegrees() {
-        return sketchDrawable != null ? sketchDrawable.getOrientationDegrees() : 0;
+    public int getExifOrientation() {
+        return sketchDrawable != null ? sketchDrawable.getExifOrientation() : ExifInterface.ORIENTATION_UNDEFINED;
     }
 
     @Override
@@ -119,13 +113,6 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     @Override
     public ImageFrom getImageFrom() {
         return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
-    }
-
-    @Override
-    public void setImageFrom(ImageFrom imageFrom) {
-        if (sketchDrawable != null) {
-            sketchDrawable.setImageFrom(imageFrom);
-        }
     }
 
     @Override

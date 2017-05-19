@@ -18,11 +18,13 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -100,7 +102,7 @@ public class ShowProgressFunction extends SketchImageView.Function {
     }
 
     @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
+    public boolean onDisplayCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
         progress = NONE;
         return true;
     }

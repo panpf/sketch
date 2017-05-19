@@ -44,7 +44,7 @@ public class FileDataSource implements DataSource {
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, file);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

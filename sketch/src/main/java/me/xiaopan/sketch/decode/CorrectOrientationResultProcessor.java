@@ -40,8 +40,11 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
-        int orientationDegrees = result.getImageAttrs().getOrientationDegrees();
-        if (orientationDegrees == 0) {
+        Configuration configuration = request.getConfiguration();
+        ImageOrientationCorrector orientationCorrector = configuration.getImageOrientationCorrector();
+
+        int exifOrientation = result.getImageAttrs().getExifOrientation();
+        if (!orientationCorrector.hasRotate(exifOrientation)) {
             return;
         }
 
@@ -51,22 +54,18 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
             return;
         }
 
-        Configuration configuration = request.getConfiguration();
-        ImageOrientationCorrector corrector = configuration.getImageOrientationCorrector();
-        Bitmap newBitmap = corrector.rotate(bitmap, orientationDegrees, configuration.getBitmapPool());
-
-        if (newBitmap != null && !newBitmap.isRecycled()) {
-            if (newBitmap != bitmap) {
+        Bitmap newBitmap = orientationCorrector.rotate(bitmap, exifOrientation, configuration.getBitmapPool());
+        if (newBitmap != null && newBitmap != bitmap) {
+            if (!newBitmap.isRecycled()) {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, configuration.getBitmapPool());
                 bitmapDecodeResult.setBitmap(newBitmap);
+
+                orientationCorrector.rotateSize(result, exifOrientation);
+                result.setProcessed(true);
+            } else {
+                throw new DecodeException(String.format("%s: %s. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),
+                        ImageOrientationCorrector.toName(exifOrientation), request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
             }
-
-            corrector.rotateSize(result, orientationDegrees);
-
-            result.setProcessed(true);
-        } else {
-            throw new DecodeException(String.format("%s: %d. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),
-                    orientationDegrees, request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
         }
     }
 }

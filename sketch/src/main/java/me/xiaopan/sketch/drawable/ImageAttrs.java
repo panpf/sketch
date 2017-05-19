@@ -17,42 +17,39 @@
 package me.xiaopan.sketch.drawable;
 
 /**
- * 关于图片的一些真实属性，例如宽、高、类型、旋转角度等
+ * 图片的真实属性，例如宽、高、类型、方向等
  */
 public class ImageAttrs {
-    private int originWidth;
-    private int originHeight;
+    private int width;
+    private int height;
     private String mimeType;
-    private int orientationDegrees;    // 顺时针方向将图片旋转多少度能回正
+    private int exifOrientation;
 
-    public ImageAttrs(String mimeType, int originWidth, int originHeight, int orientationDegrees) {
+    public ImageAttrs(String mimeType, int width, int height, int exifOrientation) {
         this.mimeType = mimeType;
-        this.originWidth = originWidth;
-        this.originHeight = originHeight;
-        this.orientationDegrees = orientationDegrees;
+        this.width = width;
+        this.height = height;
+        this.exifOrientation = exifOrientation;
     }
 
-    /**
-     * 顺时针方向将图片旋转多少度能回正
-     */
-    public int getOrientationDegrees() {
-        return orientationDegrees;
+    public int getExifOrientation() {
+        return exifOrientation;
     }
 
     public String getMimeType() {
         return mimeType;
     }
 
-    public int getOriginHeight() {
-        return originHeight;
+    public int getHeight() {
+        return height;
     }
 
-    public int getOriginWidth() {
-        return originWidth;
+    public int getWidth() {
+        return width;
     }
 
-    public void resetSize(int originWidth, int originHeight){
-        this.originWidth = originWidth;
-        this.originHeight = originHeight;
+    public void resetSize(int width, int height){
+        this.width = width;
+        this.height = height;
     }
 }

@@ -31,7 +31,7 @@ import android.view.ViewGroup;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.request.DisplayParams;
@@ -235,7 +235,7 @@ public class MappingView extends SketchImageView {
 
     public boolean isUsableDrawable() {
         Drawable drawable = getDrawable();
-        return drawable != null && !(drawable instanceof LoadingDrawable);
+        return drawable != null && !(drawable instanceof SketchLoadingDrawable);
     }
 
     private boolean resetViewSize() {

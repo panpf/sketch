@@ -26,10 +26,10 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
@@ -39,7 +39,7 @@ import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 /**
  * 解码处理器，运行在解码线程中，负责解码
  */
-class DecodeHandler extends Handler {
+class TileDecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
@@ -50,7 +50,7 @@ class DecodeHandler extends Handler {
     private ErrorTracker errorTracker;
     private ImageOrientationCorrector orientationCorrector;
 
-    public DecodeHandler(Looper looper, TileExecutor executor) {
+    public TileDecodeHandler(Looper looper, TileExecutor executor) {
         super(looper);
         this.reference = new WeakReference<>(executor);
 
@@ -64,7 +64,7 @@ class DecodeHandler extends Handler {
     public void handleMessage(Message msg) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
-            decodeExecutor.mainHandler.cancelDelayDestroyThread();
+            decodeExecutor.tileDecodeCallbackHandler.cancelDelayDestroyThread();
         }
 
         switch (msg.what) {
@@ -74,12 +74,12 @@ class DecodeHandler extends Handler {
         }
 
         if (decodeExecutor != null) {
-            decodeExecutor.mainHandler.postDelayRecycleDecodeThread();
+            decodeExecutor.tileDecodeCallbackHandler.postDelayRecycleDecodeThread();
         }
     }
 
     public void postDecode(int key, Tile tile) {
-        Message message = obtainMessage(DecodeHandler.WHAT_DECODE);
+        Message message = obtainMessage(TileDecodeHandler.WHAT_DECODE);
         message.arg1 = key;
         message.obj = tile;
         message.sendToTarget();
@@ -94,28 +94,26 @@ class DecodeHandler extends Handler {
         }
 
         if (tile.isExpired(key)) {
-            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
+            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
             return;
         }
 
         if (tile.isDecodeParamEmpty()) {
-            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
+            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
             return;
         }
 
         ImageRegionDecoder regionDecoder = tile.decoder;
         if (regionDecoder == null || !regionDecoder.isReady()) {
-            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
+            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
             return;
         }
 
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
 
-        // 根据图片方向旋转src区域
-        if (regionDecoder.getImageOrientation() != 0) {
-            orientationCorrector.reverseRotate(srcRect, regionDecoder.getImageSize(), regionDecoder.getImageOrientation());
-        }
+        // 根据图片方向恢复src区域的真实位置
+        orientationCorrector.reverseRotate(srcRect, regionDecoder.getImageSize(), regionDecoder.getExifOrientation());
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
@@ -155,32 +153,34 @@ class DecodeHandler extends Handler {
         int useTime = (int) (System.currentTimeMillis() - time);
 
         if (bitmap == null || bitmap.isRecycled()) {
-            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
+            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
             return;
         }
 
         if (tile.isExpired(key)) {
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool());
-            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
+            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
-        // 恢复图片方向
-        if (regionDecoder.getImageOrientation() != 0) {
-            Bitmap newBitmap = orientationCorrector.rotate(bitmap, regionDecoder.getImageOrientation(), bitmapPool);
-
-            if (newBitmap != null && !newBitmap.isRecycled()) {
-                if (newBitmap != bitmap) {
-                    BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
-                    bitmap = newBitmap;
-                }
-            } else if (bitmap.isRecycled()) {
-                executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
+        // 旋转图片
+        Bitmap newBitmap = orientationCorrector.rotate(bitmap, regionDecoder.getExifOrientation(), bitmapPool);
+        if (newBitmap != null && newBitmap != bitmap) {
+            if (!newBitmap.isRecycled()) {
+                BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
+                bitmap = newBitmap;
+            } else {
+                executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_ROTATE_BITMAP_RECYCLED));
                 return;
             }
         }
 
-        executor.mainHandler.postDecodeCompleted(key, tile, bitmap, useTime);
+        if (bitmap.isRecycled()) {
+            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_RECYCLED));
+            return;
+        }
+
+        executor.tileDecodeCallbackHandler.postDecodeCompleted(key, tile, bitmap, useTime);
     }
 
     public void clean(String why) {
@@ -192,12 +192,14 @@ class DecodeHandler extends Handler {
     }
 
     public static class DecodeErrorException extends Exception {
+        public static final int CAUSE_BITMAP_RECYCLED = 1100;
         public static final int CAUSE_BITMAP_NULL = 1101;
         public static final int CAUSE_BEFORE_KEY_EXPIRED = 1102;
         public static final int CAUSE_AFTER_KEY_EXPIRED = 1103;
         public static final int CAUSE_CALLBACK_KEY_EXPIRED = 1104;
         public static final int CAUSE_DECODE_PARAM_EMPTY = 1105;
         public static final int CAUSE_DECODER_NULL_OR_NOT_READY = 1106;
+        public static final int CAUSE_ROTATE_BITMAP_RECYCLED = 1107;
 
         private int cause;
 
@@ -210,7 +212,9 @@ class DecodeHandler extends Handler {
         }
 
         public String getCauseMessage() {
-            if (cause == CAUSE_BITMAP_NULL) {
+            if (cause == CAUSE_BITMAP_RECYCLED) {
+                return "bitmap is recycled";
+            } else if (cause == CAUSE_BITMAP_NULL) {
                 return "bitmap is null or recycled";
             } else if (cause == CAUSE_BEFORE_KEY_EXPIRED) {
                 return "key expired before decode";
@@ -222,6 +226,8 @@ class DecodeHandler extends Handler {
                 return "decode param is empty";
             } else if (cause == CAUSE_DECODER_NULL_OR_NOT_READY) {
                 return "decoder is null or not ready";
+            } else if (cause == CAUSE_ROTATE_BITMAP_RECYCLED) {
+                return "rotate result bitmap is recycled";
             } else {
                 return "unknown";
             }

@@ -644,7 +644,7 @@ class TileManager {
         }
     }
 
-    void decodeError(Tile tile, DecodeHandler.DecodeErrorException exception) {
+    void decodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
         if (SLogType.LARGE.isEnabled()) {
             SLog.w(SLogType.LARGE, NAME, "decode failed. %s. tile=%s, tiles=%d",
                     exception.getCauseMessage(), tile.getInfo(), tileList.size());

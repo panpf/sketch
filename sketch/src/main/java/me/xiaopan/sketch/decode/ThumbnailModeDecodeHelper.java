@@ -20,9 +20,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -62,7 +62,7 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
 
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int orientation) {
+                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
         decodeOptions.outWidth = boundOptions.outWidth;
         decodeOptions.outHeight = boundOptions.outHeight;
         decodeOptions.outMimeType = boundOptions.outMimeType;
@@ -144,7 +144,7 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
         ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
                 decodeOptions.inSampleSize, request, LOG_NAME);
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType,
-                boundOptions.outWidth, boundOptions.outHeight, orientation);
+                boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
         return new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(true);
     }
 }

@@ -33,8 +33,8 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
  */
-class MainHandler extends Handler {
-    private static final String NAME = "MainHandler";
+class TileDecodeCallbackHandler extends Handler {
+    private static final String NAME = "TileDecodeCallbackHandler";
 
     private static final int WHAT_RECYCLE_DECODE_THREAD = 2001;
     private static final int WHAT_INIT_COMPLETED = 2002;
@@ -45,7 +45,7 @@ class MainHandler extends Handler {
     private BitmapPool bitmapPool;
     private WeakReference<TileExecutor> executorReference;
 
-    public MainHandler(Looper looper, TileExecutor executor) {
+    public TileDecodeCallbackHandler(Looper looper, TileExecutor executor) {
         super(looper);
         executorReference = new WeakReference<>(executor);
         bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
@@ -83,7 +83,7 @@ class MainHandler extends Handler {
     public void postDelayRecycleDecodeThread() {
         cancelDelayDestroyThread();
 
-        Message destroyMessage = obtainMessage(MainHandler.WHAT_RECYCLE_DECODE_THREAD);
+        Message destroyMessage = obtainMessage(TileDecodeCallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
         sendMessageDelayed(destroyMessage, 30 * 1000);
     }
 
@@ -98,33 +98,33 @@ class MainHandler extends Handler {
      * 取消停止解码线程的延迟任务
      */
     public void cancelDelayDestroyThread() {
-        removeMessages(MainHandler.WHAT_RECYCLE_DECODE_THREAD);
+        removeMessages(TileDecodeCallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
     }
 
 
     public void postInitCompleted(ImageRegionDecoder decoder, String imageUri, int initKey, KeyCounter keyCounter) {
-        Message message = obtainMessage(MainHandler.WHAT_INIT_COMPLETED);
+        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_INIT_COMPLETED);
         message.arg1 = initKey;
         message.obj = new InitResult(decoder, imageUri, keyCounter);
         message.sendToTarget();
     }
 
     public void postInitError(Exception e, String imageUri, int key, KeyCounter keyCounter) {
-        Message message = obtainMessage(MainHandler.WHAT_INIT_FAILED);
+        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_INIT_FAILED);
         message.arg1 = key;
         message.obj = new InitErrorResult(e, imageUri, keyCounter);
         message.sendToTarget();
     }
 
     public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
-        Message message = obtainMessage(MainHandler.WHAT_DECODE_COMPLETED);
+        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_DECODE_COMPLETED);
         message.arg1 = key;
         message.obj = new DecodeResult(bitmap, tile, useTime);
         message.sendToTarget();
     }
 
-    public void postDecodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
-        Message message = obtainMessage(MainHandler.WHAT_DECODE_FAILED);
+    public void postDecodeError(int key, Tile tile, TileDecodeHandler.DecodeErrorException exception) {
+        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_DECODE_FAILED);
         message.arg1 = key;
         message.obj = new DecodeErrorResult(tile, exception);
         message.sendToTarget();
@@ -190,11 +190,11 @@ class MainHandler extends Handler {
         } else {
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             executor.callback.onDecodeError(tile,
-                    new DecodeHandler.DecodeErrorException(DecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
+                    new TileDecodeHandler.DecodeErrorException(TileDecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
         }
     }
 
-    private void decodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
+    private void decodeError(int key, Tile tile, TileDecodeHandler.DecodeErrorException exception) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
             if (SLogType.LARGE.isEnabled()) {
@@ -220,9 +220,9 @@ class MainHandler extends Handler {
 
     private static final class DecodeErrorResult {
         public Tile tile;
-        public DecodeHandler.DecodeErrorException exception;
+        public TileDecodeHandler.DecodeErrorException exception;
 
-        public DecodeErrorResult(Tile tile, DecodeHandler.DecodeErrorException exception) {
+        public DecodeErrorResult(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
             this.tile = tile;
             this.exception = exception;
         }

@@ -24,5 +24,5 @@ public interface DecodeHelper {
     boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions);
 
     DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                        BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int orientation);
+                        BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation);
 }

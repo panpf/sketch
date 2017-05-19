@@ -20,7 +20,7 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
@@ -53,7 +53,7 @@ public class DrawableStateImage implements StateImage {
         ImageShaper imageShaper = displayOptions.getImageShaper();
         if ((shapeSize != null || imageShaper != null) && drawable != null
                 && drawable instanceof BitmapDrawable) {
-            drawable = new ShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
+            drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
         }
 
         return drawable;

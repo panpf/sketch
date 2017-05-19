@@ -21,10 +21,11 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.RefBitmap;
-import me.xiaopan.sketch.drawable.RefBitmapDrawable;
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
@@ -45,16 +46,16 @@ public class MemoryCacheStateImage implements StateImage {
     @Override
     public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
         MemoryCache memoryCache = Sketch.with(context).getConfiguration().getMemoryCache();
-        RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
+        SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
             if (cachedRefBitmap.isRecycled()) {
                 memoryCache.remove(memoryCacheKey);
             } else {
-                RefBitmapDrawable bitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
+                SketchBitmapDrawable bitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
                 ShapeSize shapeSize = displayOptions.getShapeSize();
                 ImageShaper imageShaper = displayOptions.getImageShaper();
                 if (shapeSize != null || imageShaper != null) {
-                    return new ShapeBitmapDrawable(context, bitmapDrawable, shapeSize, imageShaper);
+                    return new SketchShapeBitmapDrawable(context, bitmapDrawable, shapeSize, imageShaper);
                 } else {
                     return bitmapDrawable;
                 }

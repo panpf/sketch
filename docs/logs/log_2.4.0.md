@@ -1,12 +1,20 @@
-重构：
+重命名：
 * ImageInfo重命名为ImageAttrs，并将当中的key和uri移出，现在其定位为图片的属性
 * ImageFormat重命名为ImageType，LargeImageViewer.getImageFormat()方法重命名为getImageType()
-* ImageAttrs中新增orientationDegrees属性，存储图片旋转角度
 * WrapableImageProcessor重命名为WrappedImageProcessor
-* 移除DefaultImageDecoder，现在ImageDecoder是一个class可以直接使用
+* LoadingDrawable重命名为SketchLoadingDrawable
+* RefBitmapDrawable重命名为SketchRefBitmapDrawable
+* ShapeBitmapDrawable重命名为SketchShapeBitmapDrawable
+* RefBitmap重命名为SketchRefBitmap
+* RefDrawable重命名为SketchRefDrawable
+
+重构：
+* 移除DefaultImageDecoder，现在ImageDecoder是一个class可以直接使用，如果你有自定义实现ImageDecoder的现在需要直接继承ImageDecoder
+* DisplayListener.onCompleted(ImageFrom, String)参数改为DisplayListener.onCompleted(Drawable, ImageFrom, ImageAttrs)
 
 新功能：
 * 新增自动纠正图片方向功能 [点击了解更多](../wiki/correct_image_orientation.md)
+* ImageAttrs中新增exifOrientation属性，存储图片方向
 
 SketchMonitor：
 * onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)

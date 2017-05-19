@@ -16,11 +16,9 @@
 
 package me.xiaopan.sketch.drawable;
 
-public interface RefDrawable extends SketchDrawable{
+public interface SketchRefDrawable extends SketchDrawable{
 
     void setIsDisplayed(String callingStation, boolean displayed);
-
-    void setIsCached(String callingStation, boolean cached);
 
     void setIsWaitingUse(String callingStation, boolean waitingUse);
 

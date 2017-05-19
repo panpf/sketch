@@ -27,6 +27,7 @@ import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
 import me.xiaopan.sketch.feature.RecyclerCompatFunction;
@@ -953,7 +954,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
          *
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
+        public boolean onDisplayCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
             return false;
         }
 
@@ -992,7 +993,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         private WeakReference<SketchImageView> viewWeakReference;
 
         public PrivateDisplayListener(SketchImageView view) {
-            this.viewWeakReference = new WeakReference<SketchImageView>(view);
+            this.viewWeakReference = new WeakReference<>(view);
         }
 
         @Override
@@ -1045,7 +1046,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         @Override
-        public void onCompleted(ImageFrom imageFrom, String mimeType) {
+        public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
             SketchImageView imageView = viewWeakReference.get();
             if (imageView == null) {
                 return;
@@ -1054,34 +1055,34 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             boolean needInvokeInvalidate = false;
             if (imageView.showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= imageView.showImageFromFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.showImageFromFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.showProgressFunction != null) {
-                needInvokeInvalidate |= imageView.showProgressFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.showProgressFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.showGifFlagFunction != null) {
-                needInvokeInvalidate |= imageView.showGifFlagFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.showGifFlagFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.showPressedFunction != null) {
-                needInvokeInvalidate |= imageView.showPressedFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.showPressedFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.imageShapeFunction != null) {
-                needInvokeInvalidate |= imageView.imageShapeFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.imageShapeFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.clickRetryFunction != null) {
-                needInvokeInvalidate |= imageView.clickRetryFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.clickRetryFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.requestFunction != null) {
-                needInvokeInvalidate |= imageView.requestFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.requestFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.recyclerCompatFunction != null) {
-                needInvokeInvalidate |= imageView.recyclerCompatFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.recyclerCompatFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.zoomFunction != null) {
-                needInvokeInvalidate |= imageView.zoomFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.zoomFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
             if (imageView.largeImageFunction != null) {
-                needInvokeInvalidate |= imageView.largeImageFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.largeImageFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
 
             if (needInvokeInvalidate) {
@@ -1089,7 +1090,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
 
             if (imageView.wrapperDisplayListener != null) {
-                imageView.wrapperDisplayListener.onCompleted(imageFrom, mimeType);
+                imageView.wrapperDisplayListener.onCompleted(drawable, imageFrom, imageAttrs);
             }
         }
 
@@ -1196,7 +1197,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         private WeakReference<SketchImageView> viewWeakReference;
 
         public PrivateProgressListener(SketchImageView view) {
-            this.viewWeakReference = new WeakReference<SketchImageView>(view);
+            this.viewWeakReference = new WeakReference<>(view);
         }
 
         @Override

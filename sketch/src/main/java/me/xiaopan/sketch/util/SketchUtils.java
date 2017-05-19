@@ -69,8 +69,9 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageType;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
@@ -604,8 +605,8 @@ public class SketchUtils {
     public static DisplayRequest findDisplayRequest(ImageViewInterface imageViewInterface) {
         if (imageViewInterface != null) {
             final Drawable drawable = imageViewInterface.getDrawable();
-            if (drawable != null && drawable instanceof LoadingDrawable) {
-                return ((LoadingDrawable) drawable).getRequest();
+            if (drawable != null && drawable instanceof SketchLoadingDrawable) {
+                return ((SketchLoadingDrawable) drawable).getRequest();
             }
         }
         return null;
@@ -614,16 +615,16 @@ public class SketchUtils {
     /**
      * 根据给定的信息，生成最终的图片信息
      *
-     * @param type               类型
-     * @param imageWidth         图片宽
-     * @param imageHeight        图片高
-     * @param mimeType           图片格式
-     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
-     * @param bitmap             Bitmap
-     * @param byteCount          bitmap占用字节数
+     * @param type            类型
+     * @param imageWidth      图片宽
+     * @param imageHeight     图片高
+     * @param mimeType        图片格式
+     * @param exifOrientation 图片方向
+     * @param bitmap          Bitmap
+     * @param byteCount       bitmap占用字节数
      */
     public static String makeImageInfo(String type, int imageWidth, int imageHeight, String mimeType,
-                                       int orientationDegrees, Bitmap bitmap, long byteCount, String key) {
+                                       int exifOrientation, Bitmap bitmap, long byteCount, String key) {
         if (bitmap == null) {
             return "Unknown";
         }
@@ -632,8 +633,8 @@ public class SketchUtils {
         String hashCode = Integer.toHexString(bitmap.hashCode());
         String config = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
         String finalKey = key != null ? String.format(", key=%s", key) : "";
-        return String.format("%s(image=%dx%d,%s,%d, bitmap=%dx%d,%s,%d,%s%s)",
-                type, imageWidth, imageHeight, mimeType, orientationDegrees,
+        return String.format("%s(image=%dx%d,%s,%s, bitmap=%dx%d,%s,%d,%s%s)",
+                type, imageWidth, imageHeight, mimeType, ImageOrientationCorrector.toName(exifOrientation),
                 bitmap.getWidth(), bitmap.getHeight(), config, byteCount, hashCode,
                 finalKey);
     }

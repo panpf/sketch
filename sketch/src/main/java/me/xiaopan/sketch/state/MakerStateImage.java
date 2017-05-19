@@ -23,18 +23,19 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.ErrorTracker;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
-import me.xiaopan.sketch.drawable.RefBitmap;
-import me.xiaopan.sketch.drawable.RefBitmapDrawable;
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.request.ShapeSize;
@@ -65,7 +66,7 @@ public class MakerStateImage implements StateImage {
         ImageShaper imageShaper = displayOptions.getImageShaper();
         if ((shapeSize != null || imageShaper != null) && drawable != null
                 && drawable instanceof BitmapDrawable) {
-            drawable = new ShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
+            drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
         }
 
         return drawable;
@@ -86,12 +87,12 @@ public class MakerStateImage implements StateImage {
         // 从内存缓存中取
         String memoryCacheKey = SketchUtils.makeStateImageMemoryCacheKey(String.valueOf(resId), options);
         MemoryCache memoryCache = configuration.getMemoryCache();
-        RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
+        SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
-            if (cachedRefBitmap.isRecycled()) {
-                memoryCache.remove(memoryCacheKey);
+            if (!cachedRefBitmap.isRecycled()) {
+                return new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
             } else {
-                return new RefBitmapDrawable(cachedRefBitmap);
+                memoryCache.remove(memoryCacheKey);
             }
         }
 
@@ -157,9 +158,9 @@ public class MakerStateImage implements StateImage {
             String uri = UriScheme.DRAWABLE.createUri(String.valueOf(resId));
             ImageAttrs imageAttrs = new ImageAttrs(boundsOptions.outMimeType, boundsOptions.outWidth, boundsOptions.outHeight, 0);
 
-            RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheKey, uri, imageAttrs, bitmapPool);
+            SketchRefBitmap newRefBitmap = new SketchRefBitmap(bitmap, memoryCacheKey, uri, imageAttrs, bitmapPool);
             memoryCache.put(memoryCacheKey, newRefBitmap);
-            return new RefBitmapDrawable(newRefBitmap);
+            return new SketchBitmapDrawable(newRefBitmap, ImageFrom.LOCAL);
         } else {
             return drawable;
         }

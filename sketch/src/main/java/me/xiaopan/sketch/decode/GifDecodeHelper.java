@@ -37,10 +37,10 @@ public class GifDecodeHelper implements DecodeHelper {
 
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int orientation) {
+                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
         try {
             ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth,
-                    boundOptions.outHeight, orientation);
+                    boundOptions.outHeight, exifOrientation);
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
 
             SketchGifDrawable gifDrawable = dataSource.makeGifDrawable(request.getKey(), request.getUri(),

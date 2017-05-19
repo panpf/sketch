@@ -21,12 +21,12 @@ import android.text.format.Formatter;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruMemoryCache implements MemoryCache {
-    private final LruCache<String, RefBitmap> cache;
+    private final LruCache<String, SketchRefBitmap> cache;
     protected String logName = "LruMemoryCache";
     private Context context;
     private boolean closed;
@@ -39,7 +39,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized void put(String key, RefBitmap refBitmap) {
+    public synchronized void put(String key, SketchRefBitmap refBitmap) {
         if (closed) {
             return;
         }
@@ -69,7 +69,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized RefBitmap get(String key) {
+    public synchronized SketchRefBitmap get(String key) {
         if (closed) {
             return null;
         }
@@ -83,7 +83,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized RefBitmap remove(String key) {
+    public synchronized SketchRefBitmap remove(String key) {
         if (closed) {
             return null;
         }
@@ -93,7 +93,7 @@ public class LruMemoryCache implements MemoryCache {
             return null;
         }
 
-        RefBitmap refBitmap = cache.remove(key);
+        SketchRefBitmap refBitmap = cache.remove(key);
         SLog.i(SLogType.CACHE, logName, "remove. memoryCacheSize: %s",
                 Formatter.formatFileSize(context, cache.size()));
         return refBitmap;
@@ -178,7 +178,7 @@ public class LruMemoryCache implements MemoryCache {
         return String.format("%s(maxSize=%s)", logName, Formatter.formatFileSize(context, getMaxSize()));
     }
 
-    private static class RefBitmapLruCache extends LruCache<String, RefBitmap> {
+    private static class RefBitmapLruCache extends LruCache<String, SketchRefBitmap> {
         private LruMemoryCache cache;
 
         public RefBitmapLruCache(LruMemoryCache cache, int maxSize) {
@@ -187,19 +187,19 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         @Override
-        public RefBitmap put(String key, RefBitmap refBitmap) {
+        public SketchRefBitmap put(String key, SketchRefBitmap refBitmap) {
             refBitmap.setIsCached(cache.logName + ":put", true);
             return super.put(key, refBitmap);
         }
 
         @Override
-        public int sizeOf(String key, RefBitmap refBitmap) {
+        public int sizeOf(String key, SketchRefBitmap refBitmap) {
             int bitmapSize = refBitmap.getByteCount();
             return bitmapSize == 0 ? 1 : bitmapSize;
         }
 
         @Override
-        protected void entryRemoved(boolean evicted, String key, RefBitmap oldRefBitmap, RefBitmap newRefBitmap) {
+        protected void entryRemoved(boolean evicted, String key, SketchRefBitmap oldRefBitmap, SketchRefBitmap newRefBitmap) {
             oldRefBitmap.setIsCached(cache.logName + ":entryRemoved", false);
         }
     }

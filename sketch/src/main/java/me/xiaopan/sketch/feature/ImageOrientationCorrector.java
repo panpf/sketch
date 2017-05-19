@@ -17,7 +17,9 @@
 package me.xiaopan.sketch.feature;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -31,14 +33,111 @@ import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.ImageAttrs;
-import me.xiaopan.sketch.process.RotateImageProcessor;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
+// TODO: 2017/5/15 在asset中增加用于测试旋转的图片
 public class ImageOrientationCorrector implements Identifier {
+
+    public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
+
+    public static String toName(int exifOrientation) {
+        switch (exifOrientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return "ROTATE_90";
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                return "TRANSPOSE";
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return "ROTATE_180";
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return "FLIP_VERTICAL";
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return "ROTATE_270";
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                return "TRANSVERSE";
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return "FLIP_HORIZONTAL";
+            case ExifInterface.ORIENTATION_UNDEFINED:
+                return "UNDEFINED";
+            case ExifInterface.ORIENTATION_NORMAL:
+                return "NORMAL";
+            default:
+                return String.valueOf(exifOrientation);
+        }
+    }
+
+    public static int getExifOrientationDegrees(int exifOrientation) {
+        final int degreesToRotate;
+        switch (exifOrientation) {
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                degreesToRotate = 90;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                degreesToRotate = 180;
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                degreesToRotate = 270;
+                break;
+            default:
+                degreesToRotate = 0;
+
+        }
+        return degreesToRotate;
+    }
+
+    @SuppressWarnings("unused")
+    public static int getExifOrientationTranslation(int exifOrientation) {
+        int translation;
+        switch (exifOrientation) {
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                translation = -1;
+                break;
+            default:
+                translation = 1;
+        }
+        return translation;
+    }
+
+    public static void initializeMatrixForExifRotation(int exifOrientation, Matrix matrix) {
+        switch (exifOrientation) {
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                // 也可以 matrix.postScale(1, -1);
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(270);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(270);
+                break;
+            default:
+                // Do nothing.
+        }
+    }
 
     /**
      * 根据mimeType判断该类型的图片是否支持通过ExitInterface读取旋转角度
@@ -50,30 +149,24 @@ public class ImageOrientationCorrector implements Identifier {
     }
 
     /**
+     * 根据exifOrientation判断图片是否被旋转了
+     *
+     * @param exifOrientation from exif info
+     * @return true：已旋转
+     */
+    public boolean hasRotate(int exifOrientation) {
+        return exifOrientation != ExifInterface.ORIENTATION_UNDEFINED && exifOrientation != ExifInterface.ORIENTATION_NORMAL;
+    }
+
+    /**
      * 读取图片方向
      *
      * @param inputStream 文件输入流
-     * @return 顺时针方向将图片旋转多少度能回正
+     * @return exif 保存的原始方向
      */
-    public int readImageOrientationDegrees(InputStream inputStream) throws IOException {
+    public int readExifOrientation(InputStream inputStream) throws IOException {
         ExifInterface exifInterface = new ExifInterface(inputStream);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-            case ExifInterface.ORIENTATION_TRANSPOSE:
-                return 90;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return 180;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-            case ExifInterface.ORIENTATION_TRANSVERSE:
-                return 270;
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-            case ExifInterface.ORIENTATION_UNDEFINED:
-            case ExifInterface.ORIENTATION_NORMAL:
-            default:
-                return 0;
-        }
+        return exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
     }
 
     /**
@@ -81,15 +174,15 @@ public class ImageOrientationCorrector implements Identifier {
      *
      * @param mimeType    图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
      * @param inputStream 输入流
-     * @return 顺时针方向将图片旋转多少度能回正
+     * @return exif 保存的原始方向
      */
     @SuppressWarnings("unused")
-    public int readImageOrientationDegrees(String mimeType, InputStream inputStream) throws IOException {
+    public int readExifOrientation(String mimeType, InputStream inputStream) throws IOException {
         if (!support(mimeType)) {
-            return 0;
+            return ExifInterface.ORIENTATION_UNDEFINED;
         }
 
-        return readImageOrientationDegrees(inputStream);
+        return readExifOrientation(inputStream);
     }
 
     /**
@@ -97,83 +190,126 @@ public class ImageOrientationCorrector implements Identifier {
      *
      * @param mimeType   图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
      * @param dataSource DataSource
-     * @return 顺时针方向将图片旋转多少度能回正
+     * @return exif 保存的原始方向
      */
-    public int readImageOrientationDegrees(String mimeType, DataSource dataSource) {
+    public int readExifOrientation(String mimeType, DataSource dataSource) {
         if (!support(mimeType)) {
-            return 0;
+            return ExifInterface.ORIENTATION_UNDEFINED;
         }
 
         InputStream inputStream = null;
         try {
             inputStream = dataSource.getInputStream();
-            return readImageOrientationDegrees(inputStream);
+            return readExifOrientation(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
-            return 0;
+            return ExifInterface.ORIENTATION_UNDEFINED;
         } finally {
             SketchUtils.close(inputStream);
         }
     }
 
     /**
-     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     * 根据图片方向旋转图片
+     *
+     * @param exifOrientation 图片方向
      */
-    public Bitmap rotate(Bitmap bitmap, int orientationDegrees, BitmapPool bitmapPool) {
-        return RotateImageProcessor.rotate(bitmap, orientationDegrees, bitmapPool);
+    public Bitmap rotate(Bitmap bitmap, int exifOrientation, BitmapPool bitmapPool) {
+        if (!hasRotate(exifOrientation)) {
+            return null;
+        }
+
+        Matrix matrix = new Matrix();
+        initializeMatrixForExifRotation(exifOrientation, matrix);
+
+        // 根据旋转角度计算新的图片的尺寸
+        RectF newRect = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        matrix.mapRect(newRect);
+        int newWidth = (int) newRect.width();
+        int newHeight = (int) newRect.height();
+
+        // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
+        int degrees = getExifOrientationDegrees(exifOrientation);
+        Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : null;
+        if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
+            config = Bitmap.Config.ARGB_8888;
+        }
+
+        Bitmap result = bitmapPool.getOrMake(newWidth, newHeight, config);
+
+        matrix.postTranslate(-newRect.left, -newRect.top);
+
+        final Canvas canvas = new Canvas(result);
+        final Paint paint = new Paint(PAINT_FLAGS);
+        canvas.drawBitmap(bitmap, matrix, paint);
+
+        return result;
     }
 
     /**
-     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     * 根据旋转角度计算新图片旋转后的尺寸
+     *
+     * @param exifOrientation 图片方向
      */
-    public void rotateSize(DecodeResult result, int orientationDegrees) {
+    public void rotateSize(DecodeResult result, int exifOrientation) {
+        if (!hasRotate(exifOrientation)) {
+            return;
+        }
+
         ImageAttrs imageAttrs = result.getImageAttrs();
 
         Matrix matrix = new Matrix();
-        matrix.setRotate(orientationDegrees);
+        initializeMatrixForExifRotation(exifOrientation, matrix);
+        RectF newRect = new RectF(0, 0, imageAttrs.getWidth(), imageAttrs.getHeight());
+        matrix.mapRect(newRect);
 
-        RectF dstR = new RectF(0, 0, imageAttrs.getOriginWidth(), imageAttrs.getOriginHeight());
-        RectF deviceR = new RectF();
-        matrix.mapRect(deviceR, dstR);
-
-        imageAttrs.resetSize((int) deviceR.width(), (int) deviceR.height());
+        imageAttrs.resetSize((int) newRect.width(), (int) newRect.height());
     }
 
     /**
-     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     * 根据旋转角度计算新图片旋转后的尺寸
+     *
+     * @param exifOrientation 图片方向
      */
-    public void rotateSize(Point size, int orientationDegrees) {
+    public void rotateSize(Point size, int exifOrientation) {
+        if (!hasRotate(exifOrientation)) {
+            return;
+        }
+
         Matrix matrix = new Matrix();
-        matrix.setRotate(orientationDegrees);
+        initializeMatrixForExifRotation(exifOrientation, matrix);
+        RectF newRect = new RectF(0, 0, size.x, size.y);
+        matrix.mapRect(newRect);
 
-        RectF dstR = new RectF(0, 0, size.x, size.y);
-        RectF deviceR = new RectF();
-        matrix.mapRect(deviceR, dstR);
-
-        size.x = (int) deviceR.width();
-        size.y = (int) deviceR.height();
+        size.x = (int) newRect.width();
+        size.y = (int) newRect.height();
     }
 
     /**
-     * @param orientationDegrees 顺时针方向将图片旋转多少度能回正
+     * 根据图片方向恢复被旋转前的尺寸
+     *
+     * @param exifOrientation 图片方向
      */
     @SuppressWarnings("SuspiciousNameCombination")
-    public void reverseRotate(Rect srcRect, Point imageSize, int orientationDegrees) {
-        orientationDegrees = 360 - orientationDegrees;
+    public void reverseRotate(Rect srcRect, Point imageSize, int exifOrientation) {
+        if (!hasRotate(exifOrientation)) {
+            return;
+        }
 
-        if (orientationDegrees == 90) {
+        int rotateDegrees = 360 - getExifOrientationDegrees(exifOrientation);
+        if (rotateDegrees == 90) {
             int top = srcRect.top;
             srcRect.top = srcRect.left;
             srcRect.left = imageSize.y - srcRect.bottom;
             srcRect.bottom = srcRect.right;
             srcRect.right = imageSize.y - top;
-        } else if (orientationDegrees == 180) {
+        } else if (rotateDegrees == 180) {
             int left = srcRect.left, top = srcRect.top;
             srcRect.left = imageSize.x - srcRect.right;
             srcRect.right = imageSize.x - left;
             srcRect.top = imageSize.y - srcRect.bottom;
             srcRect.bottom = imageSize.y - top;
-        } else if (orientationDegrees == 270) {
+        } else if (rotateDegrees == 270) {
             int left = srcRect.left;
             srcRect.left = srcRect.top;
             srcRect.top = imageSize.x - srcRect.right;

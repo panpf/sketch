@@ -16,15 +16,13 @@
 
 package me.xiaopan.sketch.request;
 
+import android.graphics.drawable.Drawable;
+
+import me.xiaopan.sketch.drawable.ImageAttrs;
+
 /**
  * 显示监听器，值的注意的是DisplayListener中所有的方法都会在主线中执行，所以实现着不必考虑异步线程中刷新UI的问题
  */
 public interface DisplayListener extends Listener {
-    /**
-     * 已完成
-     *
-     * @param imageFrom 图片来源
-     * @param mimeType  图片类型
-     */
-    void onCompleted(ImageFrom imageFrom, String mimeType);
+    void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs);
 }

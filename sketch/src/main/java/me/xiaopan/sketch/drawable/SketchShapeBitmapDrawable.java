@@ -35,6 +35,7 @@ import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
+import me.xiaopan.sketch.util.ExifInterface;
 
 /**
  * 可以改变BitmapDrawable的形状和尺寸
@@ -45,7 +46,7 @@ import me.xiaopan.sketch.shaper.ImageShaper;
  * shapeImage用来改变形状
  * </p>
  */
-public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
+public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
 
     private BitmapDrawable bitmapDrawable;
@@ -56,12 +57,12 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     private Rect srcRect;
     private BitmapShader bitmapShader;
 
-    private RefDrawable refDrawable;
+    private SketchRefDrawable refDrawable;
     private SketchDrawable sketchDrawable;
 
     private ResizeCalculator resizeCalculator;
 
-    public ShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
+    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
         Bitmap bitmap = bitmapDrawable.getBitmap();
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException(bitmap == null ? "bitmap is null" : "bitmap recycled");
@@ -79,26 +80,26 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
         setShapeSize(shapeSize);
         setImageShaper(imageShaper);
 
-        if (bitmapDrawable instanceof RefDrawable) {
-            this.refDrawable = (RefDrawable) bitmapDrawable;
+        if (bitmapDrawable instanceof SketchRefDrawable) {
+            this.refDrawable = (SketchRefDrawable) bitmapDrawable;
         }
 
         if (bitmapDrawable instanceof SketchDrawable) {
             this.sketchDrawable = (SketchDrawable) bitmapDrawable;
         }
 
-        if (bitmapDrawable instanceof RefBitmapDrawable) {
-            ((RefBitmapDrawable) bitmapDrawable).setLogName("ShapeBitmapDrawable");
+        if (bitmapDrawable instanceof SketchBitmapDrawable) {
+            ((SketchBitmapDrawable) bitmapDrawable).setLogName("ShapeBitmapDrawable");
         }
     }
 
     @SuppressWarnings("unused")
-    public ShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize) {
+    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize) {
         this(context, bitmapDrawable, shapeSize, null);
     }
 
     @SuppressWarnings("unused")
-    public ShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ImageShaper imageShaper) {
+    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ImageShaper imageShaper) {
         this(context, bitmapDrawable, null, imageShaper);
     }
 
@@ -273,8 +274,8 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     }
 
     @Override
-    public int getOrientationDegrees() {
-        return sketchDrawable != null ? sketchDrawable.getOrientationDegrees() : 0;
+    public int getExifOrientation() {
+        return sketchDrawable != null ? sketchDrawable.getExifOrientation() : ExifInterface.ORIENTATION_UNDEFINED;
     }
 
     @Override
@@ -293,13 +294,6 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     }
 
     @Override
-    public void setImageFrom(ImageFrom imageFrom) {
-        if (sketchDrawable != null) {
-            sketchDrawable.setImageFrom(imageFrom);
-        }
-    }
-
-    @Override
     public String getInfo() {
         return sketchDrawable != null ? sketchDrawable.getInfo() : null;
     }
@@ -308,13 +302,6 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     public void setIsDisplayed(String callingStation, boolean displayed) {
         if (refDrawable != null) {
             refDrawable.setIsDisplayed(callingStation, displayed);
-        }
-    }
-
-    @Override
-    public void setIsCached(String callingStation, boolean cached) {
-        if (refDrawable != null) {
-            refDrawable.setIsCached(callingStation, cached);
         }
     }
 

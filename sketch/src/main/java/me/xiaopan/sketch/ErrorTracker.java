@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import me.xiaopan.sketch.drawable.RefDrawable;
+import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -143,7 +143,7 @@ public class ErrorTracker implements Identifier {
     /**
      * 在即将显示时发现Bitmap被回收
      */
-    public void onBitmapRecycledOnDisplay(DisplayRequest request, RefDrawable refDrawable) {
+    public void onBitmapRecycledOnDisplay(DisplayRequest request, SketchRefDrawable refDrawable) {
         SLog.w(logName, "onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
                 request.getUri(), refDrawable.getInfo());
     }

@@ -20,10 +20,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
-import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;
@@ -56,33 +56,37 @@ public class RequestFunction extends SketchImageView.Function {
      * @return true：drawable或其子Drawable是SketchDrawable
      */
     private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        boolean isSketchDrawable = false;
-        if (drawable != null) {
-            if (drawable instanceof LayerDrawable) {
-                LayerDrawable layerDrawable = (LayerDrawable) drawable;
-                for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
-                    isSketchDrawable |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
-                }
-            } else {
-                if (!isDisplayed && drawable instanceof LoadingDrawable) {
-                    LoadingDrawable loadingDrawable = (LoadingDrawable) drawable;
-                    DisplayRequest displayRequest = loadingDrawable.getRequest();
-                    if (displayRequest != null && !displayRequest.isFinished()) {
-                        displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
-                    }
-                }
-
-                if (drawable instanceof RefDrawable) {
-                    ((RefDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
-                } else if (drawable instanceof SketchGifDrawable) {
-                    if (!isDisplayed) {
-                        ((SketchGifDrawable) drawable).recycle();
-                    }
-                }
-
-                isSketchDrawable = drawable instanceof SketchDrawable;
-            }
+        if (drawable == null) {
+            return false;
         }
+
+        boolean isSketchDrawable = false;
+
+        if (drawable instanceof LayerDrawable) {
+            LayerDrawable layerDrawable = (LayerDrawable) drawable;
+            for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
+                isSketchDrawable |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
+            }
+        } else {
+            if (!isDisplayed && drawable instanceof SketchLoadingDrawable) {
+                SketchLoadingDrawable loadingDrawable = (SketchLoadingDrawable) drawable;
+                DisplayRequest displayRequest = loadingDrawable.getRequest();
+                if (displayRequest != null && !displayRequest.isFinished()) {
+                    displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
+                }
+            }
+
+            if (drawable instanceof SketchRefDrawable) {
+                ((SketchRefDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+            } else if (drawable instanceof SketchGifDrawable) {
+                if (!isDisplayed) {
+                    ((SketchGifDrawable) drawable).recycle();
+                }
+            }
+
+            isSketchDrawable = drawable instanceof SketchDrawable;
+        }
+
         return isSketchDrawable;
     }
 
@@ -126,6 +130,7 @@ public class RequestFunction extends SketchImageView.Function {
         return oldDrawableFromSketch;
     }
 
+    @SuppressWarnings("unused")
     public boolean isNewDrawableFromSketch() {
         return newDrawableFromSketch;
     }

@@ -45,7 +45,7 @@ public class ByteArrayDataSource implements DataSource {
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, data);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, data);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

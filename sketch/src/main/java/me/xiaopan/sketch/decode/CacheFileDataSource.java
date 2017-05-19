@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.decode;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -46,7 +47,8 @@ public class CacheFileDataSource implements DataSource {
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
+            FileDescriptor fileDescriptor = new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD();
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, fileDescriptor);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

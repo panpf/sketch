@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriScheme;
@@ -125,7 +125,7 @@ public class ShowImageFromFunction extends SketchImageView.Function {
         ImageFrom oldImageFrom = imageFrom;
         ImageFrom newImageFrom = null;
         Drawable lastDrawable = SketchUtils.getLastDrawable(newDrawable);
-        if (!(lastDrawable instanceof LoadingDrawable) && lastDrawable instanceof SketchDrawable) {
+        if (!(lastDrawable instanceof SketchLoadingDrawable) && lastDrawable instanceof SketchDrawable) {
             SketchDrawable sketchDrawable = (SketchDrawable) lastDrawable;
             newImageFrom = sketchDrawable.getImageFrom();
         }

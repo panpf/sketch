@@ -21,8 +21,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
-import me.xiaopan.sketch.drawable.LoadingDrawable;
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
@@ -52,18 +52,18 @@ public class OldStateImage implements StateImage {
             drawable = layerDrawable.getDrawable(layerDrawable.getNumberOfLayers() - 1);
         }
 
-        if (drawable != null && drawable instanceof LoadingDrawable) {
-            drawable = ((LoadingDrawable) drawable).getWrappedDrawable();
+        if (drawable != null && drawable instanceof SketchLoadingDrawable) {
+            drawable = ((SketchLoadingDrawable) drawable).getWrappedDrawable();
         }
 
         if (drawable != null) {
             ShapeSize shapeSize = displayOptions.getShapeSize();
             ImageShaper imageShaper = displayOptions.getImageShaper();
             if (shapeSize != null || imageShaper != null) {
-                if (drawable instanceof ShapeBitmapDrawable) {
-                    drawable = new ShapeBitmapDrawable(context, ((ShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);
+                if (drawable instanceof SketchShapeBitmapDrawable) {
+                    drawable = new SketchShapeBitmapDrawable(context, ((SketchShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);
                 } else if (drawable instanceof BitmapDrawable) {
-                    drawable = new ShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
+                    drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
                 }
             }
         }

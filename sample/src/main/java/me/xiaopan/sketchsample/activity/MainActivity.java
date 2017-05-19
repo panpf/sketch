@@ -428,6 +428,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         adapter.addItemFactory(new InfoMenuItemFactory());
         menuRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         menuRecyclerView.setAdapter(adapter);
+
+        // TODO: 2017/5/20 启动的时候创建几张用于测试纠正图片方向的图片
     }
 
     @Override

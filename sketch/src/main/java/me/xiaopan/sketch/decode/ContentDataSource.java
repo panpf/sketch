@@ -49,7 +49,7 @@ public class ContentDataSource implements DataSource {
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         ContentResolver contentResolver = context.getContentResolver();
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, contentResolver, contentUri);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, contentResolver, contentUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

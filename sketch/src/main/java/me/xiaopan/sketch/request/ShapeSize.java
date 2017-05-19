@@ -19,9 +19,10 @@ package me.xiaopan.sketch.request;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 
 /**
- * 用来搭配 {@link me.xiaopan.sketch.drawable.ShapeBitmapDrawable} 在绘制时修改图片的尺寸，用来替代大多数情况下对resize的依赖
+ * 用来搭配 {@link SketchShapeBitmapDrawable} 在绘制时修改图片的尺寸，用来替代大多数情况下对resize的依赖
  * <p>
  * 当多张图片的inSampleSize一样，那么读到内存里的bitmap尺寸就一样，但是因为resize不一样，导致会产生多个差别很小的bitmap，这样就降低了内存缓存利用率
  * <p>

@@ -21,13 +21,13 @@ import android.graphics.drawable.BitmapDrawable;
 
 import me.xiaopan.sketch.request.ImageFrom;
 
-public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
-    protected String logName = "RefBitmapDrawable";
+public class SketchBitmapDrawable extends BitmapDrawable implements SketchRefDrawable {
+    protected String logName = "SketchBitmapDrawable";
 
-    private RefBitmap refBitmap;
+    private SketchRefBitmap refBitmap;
     private ImageFrom imageFrom;
 
-    public RefBitmapDrawable(RefBitmap refBitmap) {
+    public SketchBitmapDrawable(SketchRefBitmap refBitmap, ImageFrom imageFrom) {
         super(null, refBitmap.getBitmap());
 
         if (refBitmap.isRecycled()) {
@@ -35,6 +35,7 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
         }
 
         this.refBitmap = refBitmap;
+        this.imageFrom = imageFrom;
 
         // 这一步很重要，让BitmapDrawable的density和Bitmap的density保持一致
         // 这样getIntrinsicWidth()和getIntrinsicHeight()方法得到的就是bitmap的真实的（未经过缩放）尺寸
@@ -57,12 +58,12 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
 
     @Override
     public int getOriginWidth() {
-        return refBitmap.getAttrs().getOriginWidth();
+        return refBitmap.getAttrs().getWidth();
     }
 
     @Override
     public int getOriginHeight() {
-        return refBitmap.getAttrs().getOriginHeight();
+        return refBitmap.getAttrs().getHeight();
     }
 
     @Override
@@ -71,18 +72,13 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     }
 
     @Override
-    public int getOrientationDegrees() {
-        return refBitmap.getAttrs().getOrientationDegrees();
+    public int getExifOrientation() {
+        return refBitmap.getAttrs().getExifOrientation();
     }
 
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
-    }
-
-    @Override
-    public void setImageFrom(ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
     }
 
     @Override
@@ -103,11 +99,6 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     @Override
     public void setIsDisplayed(String callingStation, boolean displayed) {
         refBitmap.setIsDisplayed(callingStation, displayed);
-    }
-
-    @Override
-    public void setIsCached(String callingStation, boolean cached) {
-        refBitmap.setIsCached(callingStation, cached);
     }
 
     @Override

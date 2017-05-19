@@ -27,8 +27,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 引用Bitmap，能够计算缓存引用、显示引用以及等待显示引用
  */
-public class RefBitmap extends SketchBitmap {
-    private static final String LOG_NAME = "RefBitmap";
+public class SketchRefBitmap extends SketchBitmap {
+    private static final String LOG_NAME = "SketchRefBitmap";
 
     private int memoryCacheRefCount;  // 内存缓存引用
     private int displayRefCount;    // 真正显示引用
@@ -36,7 +36,7 @@ public class RefBitmap extends SketchBitmap {
 
     private BitmapPool bitmapPool;
 
-    public RefBitmap(Bitmap bitmap, String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
+    public SketchRefBitmap(Bitmap bitmap, String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         super(bitmap, key, uri, imageAttrs);
         this.bitmapPool = bitmapPool;
     }
@@ -47,8 +47,8 @@ public class RefBitmap extends SketchBitmap {
             return String.format("%s(Recycled,%s)", LOG_NAME, getKey());
         } else {
             ImageAttrs imageAttrs = getAttrs();
-            return SketchUtils.makeImageInfo(LOG_NAME, imageAttrs.getOriginWidth(), imageAttrs.getOriginHeight(),
-                    imageAttrs.getMimeType(), imageAttrs.getOrientationDegrees(), bitmap, getByteCount(), getKey());
+            return SketchUtils.makeImageInfo(LOG_NAME, imageAttrs.getWidth(), imageAttrs.getHeight(),
+                    imageAttrs.getMimeType(), imageAttrs.getExifOrientation(), bitmap, getByteCount(), getKey());
         }
     }
 

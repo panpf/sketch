@@ -42,7 +42,7 @@ public class NormalDecodeHelper implements DecodeHelper {
 
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int orientation) {
+                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
         decodeOptions.outWidth = boundOptions.outWidth;
         decodeOptions.outHeight = boundOptions.outHeight;
         decodeOptions.outMimeType = boundOptions.outMimeType;
@@ -111,7 +111,7 @@ public class NormalDecodeHelper implements DecodeHelper {
         ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
         boolean processed = processedImageCache.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
 
-        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
+        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
         return new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(processed);
     }
 }

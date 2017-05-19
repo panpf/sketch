@@ -24,15 +24,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
-import me.xiaopan.sketch.drawable.RefBitmap;
-import me.xiaopan.sketch.drawable.RefBitmapDrawable;
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.drawable.SketchRefDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
@@ -685,11 +686,11 @@ public class DisplayHelper {
 
     private boolean checkMemoryCache() {
         if (!displayOptions.isCacheInMemoryDisabled()) {
-            RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
+            SketchRefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
             if (cachedRefBitmap != null) {
                 if (!cachedRefBitmap.isRecycled()) {
-                    // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
-                    cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:fromMemory", true);
+                    // 立马标记等待使用，防止被回收
+                    cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", logName), true);
 
                     if (SLogType.REQUEST.isEnabled()) {
                         String viewCode = Integer.toHexString(imageViewInterface.hashCode());
@@ -697,12 +698,11 @@ public class DisplayHelper {
                                 ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
                     }
 
-                    RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
-                    refBitmapDrawable.setImageFrom(ImageFrom.MEMORY_CACHE);
+                    SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
 
                     Drawable finalDrawable;
                     if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
-                        finalDrawable = new ShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
+                        finalDrawable = new SketchShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
                                 displayOptions.getShapeSize(), displayOptions.getImageShaper());
                     } else {
                         finalDrawable = refBitmapDrawable;
@@ -715,10 +715,10 @@ public class DisplayHelper {
                         imageViewInterface.setImageDrawable(finalDrawable);
                     }
                     if (displayListener != null) {
-                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs().getMimeType());
+                        displayListener.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
                     }
 
-                    cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:finish", false);
+                    ((SketchRefDrawable) finalDrawable).setIsWaitingUse(String.format("%s:waitingUse:finish", logName), false);
                     return false;
                 } else {
                     sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
@@ -831,14 +831,14 @@ public class DisplayHelper {
             Stopwatch.with().record("createRequest");
         }
 
-        LoadingDrawable loadingDrawable;
+        SketchLoadingDrawable loadingDrawable;
         StateImage loadingImage = displayOptions.getLoadingImage();
         if (loadingImage != null) {
             Context context = sketch.getConfiguration().getContext();
             Drawable drawable = loadingImage.getDrawable(context, imageViewInterface, displayOptions);
-            loadingDrawable = new LoadingDrawable(drawable, request);
+            loadingDrawable = new SketchLoadingDrawable(drawable, request);
         } else {
-            loadingDrawable = new LoadingDrawable(null, request);
+            loadingDrawable = new SketchLoadingDrawable(null, request);
         }
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("createLoadingImage");

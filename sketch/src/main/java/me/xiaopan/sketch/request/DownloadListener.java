@@ -20,5 +20,5 @@ package me.xiaopan.sketch.request;
  * 下载监听器
  */
 public interface DownloadListener extends Listener {
-    void onCompleted(DownloadResult downloadResult);
+    void onCompleted(DownloadResult result);
 }

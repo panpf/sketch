@@ -37,6 +37,7 @@ import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -44,18 +45,18 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class ImageRegionDecoder {
 
-    private final int imageOrientation;    // 顺时针方向将图片旋转多少度能回正
+    private final int exifOrientation;
     private Point imageSize;
     private String imageUri;
     private ImageType imageType;
     private BitmapRegionDecoder regionDecoder;
 
     ImageRegionDecoder(String imageUri, Point imageSize, ImageType imageType,
-                       int imageOrientation, BitmapRegionDecoder regionDecoder) {
+                       int exifOrientation, BitmapRegionDecoder regionDecoder) {
         this.imageUri = imageUri;
         this.imageSize = imageSize;
         this.imageType = imageType;
-        this.imageOrientation = imageOrientation;
+        this.exifOrientation = exifOrientation;
         this.regionDecoder = regionDecoder;
     }
 
@@ -77,14 +78,12 @@ public class ImageRegionDecoder {
 
         // 读取图片方向并根据方向改变尺寸
         Configuration configuration = Sketch.with(context).getConfiguration();
-        int imageOrientation = 0;
         ImageOrientationCorrector orientationCorrector = configuration.getImageOrientationCorrector();
+        int exifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
         if (!correctImageOrientationDisabled) {
-            imageOrientation = orientationCorrector.readImageOrientationDegrees(boundOptions.outMimeType, dataSource);
+            exifOrientation = orientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource);
         }
-        if (imageOrientation != 0) {
-            orientationCorrector.rotateSize(imageSize, imageOrientation);
-        }
+        orientationCorrector.rotateSize(imageSize, exifOrientation);
 
         InputStream inputStream = null;
         BitmapRegionDecoder regionDecoder;
@@ -97,8 +96,7 @@ public class ImageRegionDecoder {
 
         ImageType imageType = ImageType.valueOfMimeType(boundOptions.outMimeType);
 
-        return new ImageRegionDecoder(imageUri, imageSize, imageType, imageOrientation,
-                regionDecoder);
+        return new ImageRegionDecoder(imageUri, imageSize, imageType, exifOrientation, regionDecoder);
     }
 
     @SuppressWarnings("unused")
@@ -115,8 +113,8 @@ public class ImageRegionDecoder {
         return imageUri;
     }
 
-    public int getImageOrientation() {
-        return imageOrientation;
+    public int getExifOrientation() {
+        return exifOrientation;
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)

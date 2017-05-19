@@ -24,8 +24,8 @@ import java.util.Set;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.RefBitmap;
-import me.xiaopan.sketch.drawable.RefBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -109,7 +109,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
     @Override
     public synchronized boolean processDisplayFreeRide() {
         MemoryCache memoryCache = getConfiguration().getMemoryCache();
-        RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
+        SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
         if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
             memoryCache.remove(getMemoryCacheKey());
             if (SLogType.REQUEST.isEnabled()) {
@@ -119,10 +119,10 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
         }
 
         if (cachedRefBitmap != null) {
-            // 立马标记等待使用，防止被挤出去回收掉
-            cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
+            // 立马标记等待使用，防止被回收
+            cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true);
 
-            Drawable drawable = new RefBitmapDrawable(cachedRefBitmap);
+            Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
             displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
             displayCompleted();
             return true;

@@ -25,7 +25,7 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageType;
-import me.xiaopan.sketch.drawable.LoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -153,7 +153,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         Drawable previewDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
         SketchDrawable sketchDrawable = null;
         boolean drawableQualified = false;
-        if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof LoadingDrawable)) {
+        if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof SketchLoadingDrawable)) {
             sketchDrawable = (SketchDrawable) previewDrawable;
             final int previewWidth = previewDrawable.getIntrinsicWidth();
             final int previewHeight = previewDrawable.getIntrinsicHeight();

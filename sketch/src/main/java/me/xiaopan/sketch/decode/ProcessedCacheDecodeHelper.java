@@ -28,6 +28,7 @@ import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.util.ExifInterface;
 
 /**
  * 解码经过处理的缓存图片时只需原封不动读取，然后读取原图的类型、宽高信息即可
@@ -42,7 +43,7 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
 
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int orientation) {
+                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
         decodeOptions.outWidth = boundOptions.outWidth;
         decodeOptions.outHeight = boundOptions.outHeight;
         decodeOptions.outMimeType = boundOptions.outMimeType;
@@ -118,14 +119,14 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
         ImageAttrs imageAttrs;
         if (originImageOptions != null && !TextUtils.isEmpty(originImageOptions.outMimeType)) {
             // Read image orientation
-            int originImageOrientation = 0;
+            int realExifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
             if (!request.getOptions().isCorrectImageOrientationDisabled()) {
                 ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
-                originImageOrientation = imageOrientationCorrector.readImageOrientationDegrees(originImageOptions.outMimeType, originFileDataSource);
+                realExifOrientation = imageOrientationCorrector.readExifOrientation(originImageOptions.outMimeType, originFileDataSource);
             }
-            imageAttrs = new ImageAttrs(originImageOptions.outMimeType, originImageOptions.outWidth, originImageOptions.outHeight, originImageOrientation);
+            imageAttrs = new ImageAttrs(originImageOptions.outMimeType, originImageOptions.outWidth, originImageOptions.outHeight, realExifOrientation);
         } else {
-            imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, orientation);
+            imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
         }
 
         // 成功

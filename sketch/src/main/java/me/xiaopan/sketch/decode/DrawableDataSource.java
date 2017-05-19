@@ -48,7 +48,7 @@ public class DrawableDataSource implements DataSource {
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         Resources resources = context.getResources();
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, bitmapPool, resources, drawableId);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, resources, drawableId);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

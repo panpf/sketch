@@ -425,7 +425,7 @@ public class LargeImageViewer {
         }
 
         @Override
-        public void onDecodeError(Tile tile, DecodeHandler.DecodeErrorException exception) {
+        public void onDecodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
             if (!running) {
                 SLog.w(SLogType.LARGE, NAME, "stop running. decodeError. tile=%s", tile.getInfo());
                 return;
