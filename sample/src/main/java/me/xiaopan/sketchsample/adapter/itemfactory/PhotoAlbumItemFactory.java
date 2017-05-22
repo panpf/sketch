@@ -58,7 +58,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
     }
 
     public interface OnImageClickListener {
-        void onImageClick(int position, String loadingImageOptionsId);
+        void onClickImage(int position, String loadingImageOptionsId);
     }
 
     public class PhotoAlbumItem extends BindAssemblyRecyclerItem<String> {
@@ -75,7 +75,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                 @Override
                 public void onClick(View v) {
                     if (onImageClickListener != null) {
-                        onImageClickListener.onImageClick(getAdapterPosition(), getData());
+                        onImageClickListener.onClickImage(getAdapterPosition(), getData());
                     }
                 }
             });

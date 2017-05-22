@@ -77,6 +77,7 @@ import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
@@ -148,8 +149,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         getSupportActionBar().setHomeButtonEnabled(true);
         toggleDrawable = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
-        starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
-        appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
+        starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录" }, getBaseContext()));
+        appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包" }, getBaseContext()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
@@ -429,7 +430,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         menuRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         menuRecyclerView.setAdapter(adapter);
 
-        // TODO: 2017/5/20 启动的时候创建几张用于测试纠正图片方向的图片
+        ImageOrientationCorrectTestFileGenerator.getInstance(getBaseContext()).onAppStart();
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
@@ -48,6 +49,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.PhotoAlbumItemFactory;
+import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.util.Settings;
 
@@ -88,7 +90,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
-        int padding  = SketchUtils.dp2px(getActivity(), 2);
+        int padding = SketchUtils.dp2px(getActivity(), 2);
         recyclerView.setPadding(padding, padding, padding, padding);
         recyclerView.setClipToPadding(false);
 
@@ -107,7 +109,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
     }
 
     @Override
-    public void onImageClick(int position, String loadingImageOptionsId) {
+    public void onClickImage(int position, String loadingImageOptionsId) {
         // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
         if (loadingImageOptionsId.contains("Resize")
                 || loadingImageOptionsId.contains("ImageProcessor")
@@ -138,6 +140,24 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
         }
     }
 
+    @SuppressWarnings("unused")
+    @Subscribe
+    // TODO: 2017/5/22 所有属性的改变封装成单独的Event，不使用String
+    public void onGlobalAttrChanged(String key) {
+        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
+                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
+                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
+                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
+                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
+                || Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)
+                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     private class ReadImagesTask extends AsyncTask<Void, Integer, List<String>> {
         private Context context;
 
@@ -160,13 +180,14 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
                 return null;
             }
 
-            List<String> imagePathList = new ArrayList<String>(mCursor.getCount() + 2);
-            for(String assetImageName : AssetImage.ALL){
-                imagePathList.add(assetImageName);
-            }
+            ImageOrientationCorrectTestFileGenerator generator = ImageOrientationCorrectTestFileGenerator.getInstance(context);
+            String[] testFilePaths = generator.getFilePaths();
+
+            List<String> imagePathList = new ArrayList<String>(mCursor.getCount() + AssetImage.ALL.length + testFilePaths.length);
+            Collections.addAll(imagePathList, AssetImage.ALL);
+            Collections.addAll(imagePathList, testFilePaths);
             while (mCursor.moveToNext()) {
-                //获取图片的路径
-                imagePathList.add("file://" + mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                imagePathList.add(String.format("file://%s", mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA))));
             }
             mCursor.close();
             return imagePathList;
@@ -191,23 +212,6 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
             }, 500);
             if (imageUriList != null && imageUriList.size() > 0) {
                 changeBackground(imageUriList.get(0));
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onGlobalAttrChanged(String key){
-        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
-                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
-                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
-                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
-                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
-                || Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)
-                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
             }
         }
     }

@@ -597,14 +597,14 @@ public class ImageFragment extends MyFragment {
                     .append("/").append(needDiskSpace);
 
             messageBuilder.append("\n");
+            messageBuilder.append("方向/内存：").append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
+                    .append("/").append(needMemory);
+
+            messageBuilder.append("\n");
             messageBuilder.append("预览图：")
                     .append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight())
                     .append("/").append(sketchDrawable.getBitmapConfig())
                     .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
-
-            messageBuilder.append("\n");
-            messageBuilder.append("方向/内存：").append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
-                    .append("/").append(needMemory);
 
             if (imageView.isSupportZoom()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();
