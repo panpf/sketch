@@ -7,23 +7,18 @@
 * 4.0以下下webp转png再使用，可以解决很多问题（超大图功能对WebP的限制需要改一下）
 * 支持一次设置两张图地址 分大图小图 WiFi下可直接大图
 * 再次考虑Drawable.setVisible
-* 通过ExifInterface读取图片方向信息，实现自动旋转方向不正的图片，新的ExifInterface支持库 http://developers.googleblog.cn/2017/01/exifinterface.html compile "com.android.support:exifinterface:25.1.0"
 * 4.3模拟器上模糊失效
 * gif点击播放
 * 长图只读取部分区域，参考百思不得姐
 * 参考高并发对象池，优化sketch里的同步锁与对象池
 * 加上面部识别功能，居中显示部分时可以以脸部为中心
 * demo上下滑动关闭功能
-* demo长按出选项，点击关闭
-* 将一个功能的所有处理代码都放到一个类中，例如缓存已处理图片的功能
-* 改善架构，特别是Request里，强化DataSource的功能，数据来源、处理结果，这些概念要分清楚
-* 改造ImageDecoder，改成责任链模式，例如先准备好一些基础属性，如宽、高、类型、旋转角度、然后将gif、缩略图、普通的等等改成一个个的责任链
-* 解码结果改成一个接口，然后有普通bitmap和gif drawable两种实现，支不支持ImageProcessor、创建Drawable或后续该怎么处理交由接口控制
 * 将所有日志全部抽离出去搞成一个类
 * 加一些常用的xml属性
-* DecoderHelper改造一下，只返回InputStream，具体的交由Decoder解决
 * 集成Oblique，支持倾斜图片显示
 * 重新设计ImageShaper，感觉现在的很垃圾，限制很大
+* 集成unsplash的图片资源
+* 支持Base64格式的图片
 
 其它：
 * 参考Glide、Fresco和Picasso
@@ -188,6 +183,13 @@
 * （2017-03-21）demo侧滑菜单背景异常
 * （2017-03-21）demo详情页不可见时暂停播放失效了
 * （2017-03-23）缓存文件的名称改用MD5编码，因为已经出现了文件名字过长导致文件无法访问的问题
+* （2017-05-10）DecoderHelper改造一下，只返回InputStream，具体的交由Decoder解决
+* （2017-05-10）解码结果改成一个接口，然后有普通bitmap和gif drawable两种实现，支不支持ImageProcessor、创建Drawable或后续该怎么处理交由接口控制
+* （2017-05-10）改造ImageDecoder，改成责任链模式，例如先准备好一些基础属性，如宽、高、类型、旋转角度、然后将gif、缩略图、普通的等等改成一个个的责任链
+* （2017-05-10）改善架构，特别是Request里，强化DataSource的功能，数据来源、处理结果，这些概念要分清楚
+* （2017-05-10）demo长按出选项，点击关闭
+* （2017-05-10）将一个功能的所有处理代码都放到一个类中，例如缓存已处理图片的功能
+* （2017-05-10）通过ExifInterface读取图片方向信息，实现自动旋转方向不正的图片，新的ExifInterface支持库 http://developers.googleblog.cn/2017/01/exifinterface.html compile "com.android.support:exifinterface:25.1.0"
 
 不必了：
 * （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
