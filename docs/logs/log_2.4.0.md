@@ -22,7 +22,7 @@ SketchMonitor：
 * 新增onDecodeRegionError(String, int, int, String, Throwable, Rect, int)方法
 * 改名为ErrorTracker
 
-* 最低API提升至10
+最低API提升至10
 
 其它：
 * 优化由inBitmap导致的解码失败的情况的判断
@@ -31,3 +31,4 @@ Sample：
 * 图片详情页右下角设置按钮改为长按
 * 图片详情页点击显示底部四个按钮挪到了长按--更多功能里
 * 图片详情页点击关闭页面
+* 增纠正图片方向功能示例和开关控制
