@@ -39,7 +39,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
-// TODO: 2017/5/15 在asset中增加用于测试旋转的图片
 public class ImageOrientationCorrector implements Identifier {
 
     public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
@@ -109,30 +108,29 @@ public class ImageOrientationCorrector implements Identifier {
 
     public static void initializeMatrixForExifRotation(int exifOrientation, Matrix matrix) {
         switch (exifOrientation) {
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                matrix.setScale(-1, 1);
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
                 break;
             case ExifInterface.ORIENTATION_ROTATE_180:
                 matrix.setRotate(180);
                 break;
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                // 也可以 matrix.postScale(1, -1);
-                matrix.setRotate(180);
-                matrix.postScale(-1, 1);
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(270);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
                 break;
             case ExifInterface.ORIENTATION_TRANSPOSE:
                 matrix.setRotate(90);
                 matrix.postScale(-1, 1);
                 break;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                matrix.setRotate(90);
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
                 break;
             case ExifInterface.ORIENTATION_TRANSVERSE:
                 matrix.setRotate(270);
                 matrix.postScale(-1, 1);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                matrix.setRotate(270);
                 break;
             default:
                 // Do nothing.
