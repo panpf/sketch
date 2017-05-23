@@ -56,10 +56,14 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
 
     @Override
     public PreProcessResult process(LoadRequest request) {
-        String diskCacheKey = request.getUri();
         Configuration configuration = request.getConfiguration();
-
         DiskCache diskCache = configuration.getDiskCache();
+        String diskCacheKey = request.getUri();
+        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
@@ -70,11 +74,6 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
     }
 
     private PreProcessResult readInstalledAppIcon(Context context, DiskCache diskCache, LoadRequest loadRequest, String diskCacheKey) {
-        DiskCache.Entry appIconDiskCacheEntry = diskCache.get(diskCacheKey);
-        if (appIconDiskCacheEntry != null) {
-            return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.DISK_CACHE);
-        }
-
         Uri uri = Uri.parse(loadRequest.getUri());
 
         String packageName = uri.getQueryParameter(INSTALLED_APP_URI_PARAM_PACKAGE_NAME);
@@ -149,9 +148,9 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
         }
 
         if (diskCacheEditor != null) {
-            appIconDiskCacheEntry = diskCache.get(diskCacheKey);
-            if (appIconDiskCacheEntry != null) {
-                return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.LOCAL);
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            if (cacheEntry != null) {
+                return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", loadRequest.getKey());

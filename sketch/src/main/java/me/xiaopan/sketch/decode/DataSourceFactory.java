@@ -38,6 +38,7 @@ public class DataSourceFactory {
 
     private static final String LOG_NAME = "DataSourceFactory";
 
+    // TODO: 2017/5/23 这里简化一下不再依赖request，需要什么传进来什么，这样其它的地方也能用
     public static DataSource makeDataSourceByRequest(LoadRequest request, boolean ignoreProcessedCache) throws DecodeException {
         // 缓存的处理过的图片，可直接读取
         if (!ignoreProcessedCache) {
@@ -70,6 +71,7 @@ public class DataSourceFactory {
                 request.getRealUri(), request.getDownloadResult());
     }
 
+    // TODO: 2017/5/23 预处理挪进来
     public static DataSource makeDataSource(Context context, String imageUri, UriScheme uriScheme, String realUri,
                                             DownloadResult downloadResult) throws DecodeException {
         if (uriScheme == UriScheme.NET) {

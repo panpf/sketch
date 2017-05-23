@@ -51,7 +51,6 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     @Override
     public PreProcessResult process(LoadRequest request) {
         String realUri = request.getRealUri();
-        Configuration configuration = request.getConfiguration();
 
         File apkFile = new File(realUri);
         if (!apkFile.exists()) {
@@ -60,7 +59,13 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         long lastModifyTime = apkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
+        Configuration configuration = request.getConfiguration();
         DiskCache diskCache = configuration.getDiskCache();
+        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
@@ -71,11 +76,6 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     }
 
     private PreProcessResult readApkIcon(Context context, DiskCache diskCache, LoadRequest loadRequest, String diskCacheKey, String realUri) {
-        DiskCache.Entry apkIconDiskCacheEntry = diskCache.get(diskCacheKey);
-        if (apkIconDiskCacheEntry != null) {
-            return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.DISK_CACHE);
-        }
-
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         boolean lowQualityImage = loadRequest.getOptions().isLowQualityImage();
         Bitmap iconBitmap = SketchUtils.readApkIcon(context, realUri, lowQualityImage, LOG_NAME, bitmapPool);
@@ -132,9 +132,9 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            apkIconDiskCacheEntry = diskCache.get(diskCacheKey);
-            if (apkIconDiskCacheEntry != null) {
-                return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.LOCAL);
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            if (cacheEntry != null) {
+                return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", loadRequest.getKey());

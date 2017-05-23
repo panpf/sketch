@@ -46,9 +46,13 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
     @Override
     public PreProcessResult process(LoadRequest request) {
         Configuration configuration = request.getConfiguration();
-        String diskCacheKey = request.getUri();
-
         DiskCache diskCache = configuration.getDiskCache();
+        String diskCacheKey = request.getUri();
+        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
@@ -59,11 +63,6 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
     }
 
     private PreProcessResult cacheBase64Image(DiskCache diskCache, LoadRequest request, String diskCacheKey) {
-        DiskCache.Entry apkIconDiskCacheEntry = diskCache.get(diskCacheKey);
-        if (apkIconDiskCacheEntry != null) {
-            return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.DISK_CACHE);
-        }
-
         String uri = request.getUri();
         String mimeType = uri.substring("data:".length(), uri.indexOf(";"));
         String dataInfo = uri.substring("data:".length() + mimeType.length() + ";base64,".length());
@@ -111,9 +110,9 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            apkIconDiskCacheEntry = diskCache.get(diskCacheKey);
-            if (apkIconDiskCacheEntry != null) {
-                return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.MEMORY);
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            if (cacheEntry != null) {
+                return new PreProcessResult(cacheEntry, ImageFrom.MEMORY);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.w(SLogType.REQUEST, LOG_NAME, "not found base64 image cache file. %s", request.getKey());
