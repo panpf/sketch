@@ -20,9 +20,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -44,16 +44,13 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
                                BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
-        decodeOptions.outWidth = boundOptions.outWidth;
-        decodeOptions.outHeight = boundOptions.outHeight;
-        decodeOptions.outMimeType = boundOptions.outMimeType;
-
         decodeOptions.inSampleSize = 1;
 
         // Set inBitmap from bitmap pool
         if (BitmapPoolUtils.sdkSupportInBitmap() && !request.getOptions().isBitmapPoolDisabled()) {
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-            BitmapPoolUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
+            BitmapPoolUtils.setInBitmapFromPool(decodeOptions,
+                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmapPool);
         }
 
         Bitmap bitmap = null;
@@ -116,18 +113,22 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
             }
         }
 
+        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+
         ImageAttrs imageAttrs;
         if (originImageOptions != null && !TextUtils.isEmpty(originImageOptions.outMimeType)) {
             // Read image orientation
             int realExifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
             if (!request.getOptions().isCorrectImageOrientationDisabled()) {
-                ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
-                realExifOrientation = imageOrientationCorrector.readExifOrientation(originImageOptions.outMimeType, originFileDataSource);
+                realExifOrientation = orientationCorrector.readExifOrientation(originImageOptions.outMimeType, originFileDataSource);
             }
+
             imageAttrs = new ImageAttrs(originImageOptions.outMimeType, originImageOptions.outWidth, originImageOptions.outHeight, realExifOrientation);
         } else {
             imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
         }
+
+        orientationCorrector.rotateSize(imageAttrs, imageAttrs.getExifOrientation());
 
         // 成功
         ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,

@@ -19,9 +19,9 @@ package me.xiaopan.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -43,10 +43,6 @@ public class NormalDecodeHelper implements DecodeHelper {
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
                                BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
-        decodeOptions.outWidth = boundOptions.outWidth;
-        decodeOptions.outHeight = boundOptions.outHeight;
-        decodeOptions.outMimeType = boundOptions.outMimeType;
-
         // Calculate inSampleSize according to max size
         MaxSize maxSize = request.getOptions().getMaxSize();
         if (maxSize != null) {
@@ -59,7 +55,8 @@ public class NormalDecodeHelper implements DecodeHelper {
         // Set inBitmap from bitmap pool
         if (BitmapPoolUtils.sdkSupportInBitmap() && !request.getOptions().isBitmapPoolDisabled()) {
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-            BitmapPoolUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
+            BitmapPoolUtils.setInBitmapFromPool(decodeOptions,
+                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmapPool);
         }
 
         Bitmap bitmap = null;

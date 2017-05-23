@@ -54,7 +54,7 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
             return false;
         }
 
-        // 只有原始图片的宽高比和resize的宽高比相差3倍的时候才能使用略略图方式读取图片
+        // 只有原始图片的宽高比和resize的宽高比相差3倍的时候才能使用缩略图方式读取图片
         ImageSizeCalculator sizeCalculator = request.getConfiguration().getImageSizeCalculator();
         return sizeCalculator.canUseThumbnailMode(boundOptions.outWidth, boundOptions.outHeight,
                 resize.getWidth(), resize.getHeight());

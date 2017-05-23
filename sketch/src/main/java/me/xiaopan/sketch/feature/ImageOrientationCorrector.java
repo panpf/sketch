@@ -30,7 +30,6 @@ import java.io.InputStream;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.util.ExifInterface;
@@ -249,12 +248,10 @@ public class ImageOrientationCorrector implements Identifier {
      *
      * @param exifOrientation 图片方向
      */
-    public void rotateSize(DecodeResult result, int exifOrientation) {
+    public void rotateSize(ImageAttrs imageAttrs, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
         }
-
-        ImageAttrs imageAttrs = result.getImageAttrs();
 
         Matrix matrix = new Matrix();
         initializeMatrixForExifRotation(exifOrientation, matrix);

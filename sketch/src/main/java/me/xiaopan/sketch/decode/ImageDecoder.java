@@ -157,6 +157,10 @@ public class ImageDecoder implements Identifier {
     }
 
     private void doProcess(LoadRequest request, DecodeResult result) throws DecodeException {
+        if (result == null || result.isBanProcess()) {
+            return;
+        }
+
         for (ResultProcessor resultProcessor : resultProcessorList) {
             resultProcessor.process(request, result);
         }

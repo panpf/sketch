@@ -60,7 +60,7 @@ public class CorrectOrientationResultProcessor implements ResultProcessor {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, configuration.getBitmapPool());
                 bitmapDecodeResult.setBitmap(newBitmap);
 
-                orientationCorrector.rotateSize(result, exifOrientation);
+                orientationCorrector.rotateSize(result.getImageAttrs(), exifOrientation);
                 result.setProcessed(true);
             } else {
                 throw new DecodeException(String.format("%s: %s. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),

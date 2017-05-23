@@ -46,22 +46,25 @@ public class BitmapPoolUtils {
     /**
      * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapFactory
      *
-     * @param options    BitmapFactory.Options 需要用到options的outWidth、outHeight、inSampleSize以及inPreferredConfig属性
-     * @param bitmapPool BitmapPool 从这个池子里找可复用的Bitmap
+     * @param options     BitmapFactory.Options 需要用到inSampleSize以及inPreferredConfig属性
+     * @param outWidth    图片原始宽
+     * @param outHeight   图片原始高
+     * @param outMimeType 图片类型
+     * @param bitmapPool  BitmapPool 从这个池子里找可复用的Bitmap
      * @return true：找到了可复用的Bitmap
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static boolean setInBitmapFromPool(BitmapFactory.Options options, BitmapPool bitmapPool) {
+    public static boolean setInBitmapFromPool(BitmapFactory.Options options, int outWidth, int outHeight, String outMimeType, BitmapPool bitmapPool) {
         if (!sdkSupportInBitmap()) {
             return false;
         }
 
-        if (options.outWidth == 0 || options.outHeight == 0) {
+        if (outWidth == 0 || outHeight == 0) {
             SLog.e(SLogType.REQUEST, "outWidth or ourHeight is 0");
             return false;
         }
 
-        if (TextUtils.isEmpty(options.outMimeType)) {
+        if (TextUtils.isEmpty(outMimeType)) {
             SLog.e(SLogType.REQUEST, "outMimeType is empty");
             return false;
         }
@@ -72,22 +75,22 @@ public class BitmapPoolUtils {
         }
 
         int inSampleSize = options.inSampleSize;
-        ImageType imageType = ImageType.valueOfMimeType(options.outMimeType);
+        ImageType imageType = ImageType.valueOfMimeType(outMimeType);
 
         Bitmap inBitmap = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int finalWidth = SketchUtils.ceil(options.outWidth, inSampleSize);
-            int finalHeight = SketchUtils.ceil(options.outHeight, inSampleSize);
+            int finalWidth = SketchUtils.ceil(outWidth, inSampleSize);
+            int finalHeight = SketchUtils.ceil(outHeight, inSampleSize);
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize == 1
                 && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
-            inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
+            inBitmap = bitmapPool.get(outWidth, outHeight, options.inPreferredConfig);
         }
 
         if (inBitmap != null && SLogType.CACHE.isEnabled()) {
-            int sizeInBytes = SketchUtils.computeByteCount(options.outWidth, options.outHeight, options.inPreferredConfig);
+            int sizeInBytes = SketchUtils.computeByteCount(outWidth, outHeight, options.inPreferredConfig);
             SLog.d(SLogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
-                    options.outWidth, options.outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
+                    outWidth, outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
                     Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
         }
 
