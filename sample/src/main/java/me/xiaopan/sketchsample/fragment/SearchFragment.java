@@ -10,17 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +41,6 @@ import me.xiaopan.sketchsample.adapter.itemfactory.StaggeredImageItemFactory;
 import me.xiaopan.sketchsample.net.request.SearchImageRequest;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
-import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
 
 /**
@@ -92,12 +87,6 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle(searchKeyword);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     private void setTitle(String subtitle) {
@@ -172,7 +161,6 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
 
     @Override
     public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
         setTitle("");
         super.onDestroyView();
     }
@@ -301,23 +289,6 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
             urlList.add(imageItem.getSourceUrl());
         }
         DetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onGlobalAttrChanged(String key){
-        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
-                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
-                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
-                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
-                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
-                || Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)
-                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
     }
 
     @Override

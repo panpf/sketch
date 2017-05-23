@@ -11,7 +11,6 @@ import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
-import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<StaggeredImageItemFactory.StaggeredImageItem> {
@@ -55,6 +54,8 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
                 }
             });
             imageView.setOptionsByName(ImageOptions.RECT);
+
+            imageView.setUseInList(true);
         }
 
         @Override
@@ -68,11 +69,6 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
             headParams.width = itemWidth;
             headParams.height = (int) (itemWidth / (image.getWidth() / (float) image.getHeight()));
             imageView.setLayoutParams(headParams);
-
-            boolean playGifOnList = Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_PLAY_GIF_ON_LIST);
-            if (playGifOnList != imageView.getOptions().isDecodeGifImage()) {
-                imageView.getOptions().setDecodeGifImage(playGifOnList);
-            }
 
             imageView.displayImage(image.getSourceUrl());
         }

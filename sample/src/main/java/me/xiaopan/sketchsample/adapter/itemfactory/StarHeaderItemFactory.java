@@ -38,6 +38,8 @@ public class StarHeaderItemFactory extends AssemblyRecyclerItemFactory<StarHeade
             headerParams.width = context.getResources().getDisplayMetrics().widthPixels;
             headerParams.height = (int) (headerParams.width / 3.2f);
             headImageView.setLayoutParams(headerParams);
+
+            headImageView.setUseInList(true);
         }
 
         @Override

@@ -41,6 +41,7 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
         @Override
         protected void onConfigViews(Context context) {
             iconImageView.setOptionsByName(ImageOptions.ROUND_RECT);
+            iconImageView.setUseInList(true);
 
             ImageShaper imageShaper = iconImageView.getOptions().getImageShaper();
             if (imageShaper instanceof RoundRectImageShaper) {

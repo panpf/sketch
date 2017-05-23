@@ -85,6 +85,9 @@ public class HotStarTwoItemFactory extends AssemblyRecyclerItemFactory<HotStarTw
             params.height = (itemHeight - marginBorder) / 2;
             twoImageView.setLayoutParams(params);
             twoImageView.setOptionsByName(ImageOptions.RECT);
+
+            oneImageView.setUseInList(true);
+            twoImageView.setUseInList(true);
         }
 
         @Override

@@ -103,6 +103,10 @@ public class HotStarThreeRightItemFactory extends AssemblyRecyclerItemFactory<Ho
             params.height = (itemHeight - marginBorder) / 2;
             oneImageView.setLayoutParams(params);
             oneImageView.setOptionsByName(ImageOptions.RECT);
+
+            oneImageView.setUseInList(true);
+            twoImageView.setUseInList(true);
+            threeImageView.setUseInList(true);
         }
 
         @Override

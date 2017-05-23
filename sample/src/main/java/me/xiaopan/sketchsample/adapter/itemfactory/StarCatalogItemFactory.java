@@ -78,6 +78,8 @@ public class StarCatalogItemFactory extends AssemblyRecyclerItemFactory<StarCata
             params = nameTextView.getLayoutParams();
             params.width = iconSize;
             nameTextView.setLayoutParams(params);
+
+            iconImageView.setUseInList(true);
         }
 
         @Override

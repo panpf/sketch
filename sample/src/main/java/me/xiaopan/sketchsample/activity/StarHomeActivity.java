@@ -73,7 +73,6 @@ public class StarHomeActivity extends MyBaseActivity implements ApplyBackgroundC
         backgroundImageView.setLayoutParams(layoutParams);
 
         backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
-        backgroundImageView.setAutoApplyGlobalAttr(false);
 
         StarHomeFragment starHomeFragment = new StarHomeFragment();
         starHomeFragment.setArguments(getIntent().getExtras());

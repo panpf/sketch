@@ -71,7 +71,6 @@ public class DetailActivity extends MyBaseActivity implements ApplyBackgroundCal
         backgroundImageView.setLayoutParams(layoutParams);
 
         backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
-        backgroundImageView.setAutoApplyGlobalAttr(false);
 
         toolbar.setVisibility(View.GONE);
 

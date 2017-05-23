@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 
 import me.xiaopan.assemblyadapter.AssemblyFragmentItemFactory;
 import me.xiaopan.sketchsample.fragment.ImageFragment;
-import me.xiaopan.sketchsample.util.Settings;
+import me.xiaopan.sketchsample.util.AppConfig;
 
 public class ImageFragmentItemFactory extends AssemblyFragmentItemFactory<String> {
     private Context context;
@@ -23,7 +23,7 @@ public class ImageFragmentItemFactory extends AssemblyFragmentItemFactory<String
 
     @Override
     public Fragment createFragment(int i, String uri) {
-        boolean showTools = Settings.getBoolean(context, Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL);
+        boolean showTools = AppConfig.getBoolean(context, AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL);
         return ImageFragment.build(uri, loadingImageOptionsId, showTools);
     }
 }

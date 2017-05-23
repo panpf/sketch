@@ -10,14 +10,12 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory;
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
-import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbumItemFactory.PhotoAlbumItem> {
@@ -63,7 +61,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
 
     public class PhotoAlbumItem extends BindAssemblyRecyclerItem<String> {
         @BindView(R.id.image_photoAlbumImageItem)
-        MyImageView sketchImageView;
+        MyImageView imageView;
 
         public PhotoAlbumItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
@@ -71,7 +69,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
 
         @Override
         protected void onConfigViews(Context context) {
-            sketchImageView.setOnClickListener(new View.OnClickListener() {
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onImageClickListener != null) {
@@ -79,43 +77,28 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                     }
                 }
             });
-            sketchImageView.setOptionsByName(ImageOptions.RECT);
+            imageView.setOptionsByName(ImageOptions.RECT);
 
-            ImageShaper imageShaper = sketchImageView.getOptions().getImageShaper();
+            ImageShaper imageShaper = imageView.getOptions().getImageShaper();
             if (imageShaper != null && imageShaper instanceof RoundRectImageShaper) {
                 RoundRectImageShaper roundRectImageShaper = (RoundRectImageShaper) imageShaper;
-                sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-                sketchImageView.setImageShapeCornerRadius(roundRectImageShaper.getOuterRadii());
+                imageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
+                imageView.setImageShapeCornerRadius(roundRectImageShaper.getOuterRadii());
             }
 
             if (itemSize > 0) {
-                ViewGroup.LayoutParams layoutParams = sketchImageView.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
                 layoutParams.width = itemSize;
                 layoutParams.height = itemSize;
-                sketchImageView.setLayoutParams(layoutParams);
+                imageView.setLayoutParams(layoutParams);
             }
+
+            imageView.setUseInList(true);
         }
 
         @Override
         protected void onSetData(int i, String imageUri) {
-            boolean thumbnailMode = Settings.getBoolean(sketchImageView.getContext(), Settings.PREFERENCE_THUMBNAIL_MODE);
-            DisplayOptions options = sketchImageView.getOptions();
-            options.setThumbnailMode(thumbnailMode);
-            options.setCacheProcessedImageInDisk(Settings.getBoolean(sketchImageView.getContext(), Settings.PREFERENCE_CACHE_PROCESSED_IMAGE));
-            if (thumbnailMode) {
-                if (options.getResize() == null && !options.isResizeByFixedSize()) {
-                    options.setResizeByFixedSize(true);
-                }
-            } else {
-                options.setResizeByFixedSize(false);
-            }
-
-            boolean playGifOnList = Settings.getBoolean(sketchImageView.getContext(), Settings.PREFERENCE_PLAY_GIF_ON_LIST);
-            if (playGifOnList != options.isDecodeGifImage()) {
-                options.setDecodeGifImage(playGifOnList);
-            }
-
-            sketchImageView.displayImage(imageUri);
+            imageView.displayImage(imageUri);
         }
     }
 }

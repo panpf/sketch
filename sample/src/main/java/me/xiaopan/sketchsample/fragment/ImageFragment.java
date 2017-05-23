@@ -53,12 +53,13 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
+import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
 import me.xiaopan.sketchsample.util.SaveAssetImageAsyncTask;
 import me.xiaopan.sketchsample.util.SaveContentImageAsyncTask;
 import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
 import me.xiaopan.sketchsample.util.SaveResImageAsyncTask;
-import me.xiaopan.sketchsample.util.Settings;
+import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -141,16 +142,17 @@ public class ImageFragment extends MyFragment {
 
     @SuppressWarnings("unused")
     @Subscribe
-    public void onEvent(String key) {
-        if (Settings.PREFERENCE_SUPPORT_ZOOM.equals(key)) {
+    public void onEvent(AppConfigChangedEvent event) {
+        if (AppConfig.Key.SUPPORT_ZOOM.equals(event.key)) {
             imageZoomHelper.onConfigChanged();
             mappingHelper.onViewCreated();
             longClickHelper.onViewCreated();
             singleClickHelper.onViewCreated();
-        } else if (Settings.PREFERENCE_READ_MODE.equals(key)) {
+        } else if (AppConfig.Key.READ_MODE.equals(event.key)) {
             imageZoomHelper.onReadModeConfigChanged();
-        } else if (Settings.PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)) {
+        } else if (AppConfig.Key.SUPPORT_LARGE_IMAGE.equals(event.key)) {
             largeImageHelper.onConfigChanged();
+            mappingHelper.onViewCreated();
         }
     }
 
@@ -160,7 +162,6 @@ public class ImageFragment extends MyFragment {
 
     private class ShowImageHelper implements DisplayListener {
         private void onViewCreated() {
-            imageView.setAutoApplyGlobalAttr(false);
             imageView.setDisplayListener(this);
 
             initOptions();
@@ -308,7 +309,7 @@ public class ImageFragment extends MyFragment {
 
     private class ImageZoomHelper {
         private void onViewCreated() {
-            imageView.setSupportZoom(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_SUPPORT_ZOOM));
+            imageView.setSupportZoom(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_ZOOM));
             onReadModeConfigChanged();
         }
 
@@ -318,7 +319,7 @@ public class ImageFragment extends MyFragment {
 
         private void onReadModeConfigChanged() {
             if (imageView.isSupportZoom()) {
-                boolean readMode = Settings.getBoolean(getActivity(), Settings.PREFERENCE_READ_MODE);
+                boolean readMode = AppConfig.getBoolean(getActivity(), AppConfig.Key.READ_MODE);
                 imageView.getImageZoomer().setReadMode(readMode);
             }
         }
@@ -326,10 +327,10 @@ public class ImageFragment extends MyFragment {
 
     private class LargeImageHelper {
         private void onViewCreated() {
-            imageView.setSupportLargeImage(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_SUPPORT_LARGE_IMAGE));
+            imageView.setSupportLargeImage(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE));
 
             // 初始化超大图查看器的暂停状态，这一步很重要
-            if (Settings.getBoolean(getActivity(), Settings.PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)
+            if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)
                     && imageView.isSupportLargeImage()) {
                 imageView.getLargeImageViewer().setPause(!isVisibleToUser());
             }
@@ -341,7 +342,7 @@ public class ImageFragment extends MyFragment {
 
         private void onUserVisibleChanged() {
             // 不可见的时候暂停超大图查看器，节省内存
-            if (Settings.getBoolean(getActivity(), Settings.PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)) {
+            if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)) {
                 if (imageView.isSupportLargeImage()) {
                     imageView.getLargeImageViewer().setPause(!isVisibleToUser());
                 }
@@ -401,14 +402,13 @@ public class ImageFragment extends MyFragment {
                     final float realX = x * widthScale;
                     final float realY = y * heightScale;
 
-                    boolean showLocationAnimation = Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_LOCATION_ANIMATE);
+                    boolean showLocationAnimation = AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.LOCATION_ANIMATE);
                     return location(realX, realY, showLocationAnimation);
                 }
             });
 
             mappingView.getOptions().setImageDisplayer(new FadeInImageDisplayer());
             mappingView.getOptions().setMaxSize(600, 600);
-            mappingView.getOptions().setCorrectImageOrientationDisabled(Settings.getBoolean(getContext(), Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION));
             mappingView.displayImage(imageUri);
 
             mappingView.setVisibility(showTools ? View.VISIBLE : View.GONE);

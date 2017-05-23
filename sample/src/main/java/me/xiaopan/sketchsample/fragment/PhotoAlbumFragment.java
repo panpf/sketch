@@ -27,12 +27,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +46,6 @@ import me.xiaopan.sketchsample.activity.DetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.PhotoAlbumItemFactory;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
-import me.xiaopan.sketchsample.util.Settings;
 
 /**
  * 本地相册页面
@@ -77,12 +71,6 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -100,12 +88,6 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
         } else {
             pullRefreshLayout.startRefresh();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroyView();
     }
 
     @Override
@@ -137,24 +119,6 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
         this.backgroundImageUri = imageUri;
         if (applyBackgroundCallback != null) {
             applyBackgroundCallback.onApplyBackground(backgroundImageUri);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    // TODO: 2017/5/22 所有属性的改变封装成单独的Event，不使用String
-    public void onGlobalAttrChanged(String key) {
-        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
-                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
-                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
-                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
-                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
-                || Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)
-                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
         }
     }
 

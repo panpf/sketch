@@ -4,14 +4,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +30,6 @@ import me.xiaopan.sketchsample.net.request.ManStarCatalogRequest;
 import me.xiaopan.sketchsample.net.request.StarCatalogRequest;
 import me.xiaopan.sketchsample.net.request.WomanStarCatalogRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
-import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
 
 /**
@@ -52,12 +47,6 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
 
     private HttpRequestFuture httpRequestFuture;
     private AssemblyRecyclerAdapter adapter;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -84,12 +73,6 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
             recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroyView();
     }
 
     @Override
@@ -177,22 +160,5 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
     @Override
     public void onClickImage(Star star) {
         StarHomeActivity.launch(getActivity(), star.name);
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    public void onGlobalAttrChanged(String key) {
-        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
-                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
-                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
-                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
-                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
-                || Settings.PREFERENCE_DISABLE_CORRECT_IMAGE_ORIENTATION.equals(key)
-                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
     }
 }

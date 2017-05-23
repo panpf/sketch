@@ -4,17 +4,17 @@ import android.content.Context;
 import android.view.View;
 
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
-import me.xiaopan.sketchsample.util.Settings;
+import me.xiaopan.sketchsample.util.AppConfig;
 
 public class CheckMenu {
     public String title;
-    private @Settings.Key String key;
+    private AppConfig.Key key;
     private OnCheckedChangedListener onCheckedChangedListener;
     private View.OnClickListener onClickListener;
 
     private Context context;
 
-    public CheckMenu(Context context, String title, @Settings.Key String key,
+    public CheckMenu(Context context, String title, AppConfig.Key key,
                      OnCheckedChangedListener onCheckedChangedListener, View.OnClickListener onClickListener) {
         this.context = context;
         this.title = title;
@@ -24,12 +24,17 @@ public class CheckMenu {
     }
 
     public boolean isChecked() {
-        return Settings.getBoolean(context, key);
+        return AppConfig.getBoolean(context, key);
     }
 
     public void onClick(AssemblyRecyclerAdapter adapter) {
         boolean newChecked = !isChecked();
-        Settings.putBoolean(context, key, newChecked);
+
+        if (onCheckedChangedListener != null) {
+            onCheckedChangedListener.onCheckedChangedBefore(newChecked);
+        }
+
+        AppConfig.putBoolean(context, key, newChecked);
         adapter.notifyDataSetChanged();
 
         if (onCheckedChangedListener != null) {
@@ -41,6 +46,8 @@ public class CheckMenu {
     }
 
     public interface OnCheckedChangedListener {
+        void onCheckedChangedBefore(boolean checked);
+
         void onCheckedChanged(boolean checked);
     }
 }
