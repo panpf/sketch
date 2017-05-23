@@ -1,14 +1,31 @@
 package me.xiaopan.sketchsample.widget;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.text.format.Formatter;
 import android.util.AttributeSet;
+import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.EventBusException;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
@@ -16,6 +33,7 @@ import me.xiaopan.sketchsample.util.AppConfig;
 public class MyImageView extends SketchImageView {
     private boolean useInList;    // 用于列表
     private boolean disabledRedisplay;
+    private boolean disabledLongClickShowImageInfo;
 
     public MyImageView(Context context) {
         super(context);
@@ -23,6 +41,8 @@ public class MyImageView extends SketchImageView {
 
     public MyImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        setOnLongClickListener(new LongClickShowDrawableInfoListener());
     }
 
     @Override
@@ -65,6 +85,14 @@ public class MyImageView extends SketchImageView {
 
     public void setUseInList(boolean useInList) {
         this.useInList = useInList;
+    }
+
+    public boolean isDisabledLongClickShowImageInfo() {
+        return disabledLongClickShowImageInfo;
+    }
+
+    public void setDisabledLongClickShowImageInfo(boolean disabledLongClickShowImageInfo) {
+        this.disabledLongClickShowImageInfo = disabledLongClickShowImageInfo;
     }
 
     @Override
@@ -151,5 +179,103 @@ public class MyImageView extends SketchImageView {
     protected void onDetachedFromWindow() {
         EventBus.getDefault().unregister(this);
         super.onDetachedFromWindow();
+    }
+
+    private class LongClickShowDrawableInfoListener implements View.OnLongClickListener {
+        @Override
+        public boolean onLongClick(View v) {
+            if (disabledLongClickShowImageInfo) {
+                return false;
+            }
+
+            if (v.getContext() instanceof Activity) {
+                showInfo((Activity) v.getContext());
+            }
+            return true;
+        }
+
+        private void showInfo(Activity activity) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+            Drawable drawable = SketchUtils.getLastDrawable(getDrawable());
+
+            String imageInfo;
+            if (drawable instanceof SketchLoadingDrawable) {
+                imageInfo = "图片正在加载，请稍后";
+            } else if (drawable instanceof SketchDrawable) {
+                imageInfo = makeImageInfo(drawable, (SketchDrawable) drawable);
+            } else {
+                imageInfo = "未知来源图片";
+            }
+            builder.setMessage(imageInfo);
+
+            builder.setNegativeButton("取消", null);
+            builder.show();
+        }
+
+        private String makeImageInfo(Drawable drawable, SketchDrawable sketchDrawable) {
+            StringBuilder messageBuilder = new StringBuilder();
+
+            messageBuilder.append("\n");
+            messageBuilder.append(sketchDrawable.getUri());
+
+            long imageLength = 0;
+            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getUri());
+            if (uriScheme == UriScheme.FILE) {
+                imageLength = new File(UriScheme.FILE.crop(sketchDrawable.getUri())).length();
+            } else if (uriScheme == UriScheme.NET) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
+                if (diskCacheEntry != null) {
+                    imageLength = diskCacheEntry.getFile().length();
+                }
+            } else if (uriScheme == UriScheme.ASSET) {
+                AssetFileDescriptor assetFileDescriptor = null;
+                try {
+                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.crop(sketchDrawable.getUri()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
+            } else if (uriScheme == UriScheme.DRAWABLE) {
+                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.crop(sketchDrawable.getUri())));
+                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
+            } else if (uriScheme == UriScheme.CONTENT) {
+                AssetFileDescriptor assetFileDescriptor = null;
+                try {
+                    assetFileDescriptor = getContext().getContentResolver().openAssetFileDescriptor(Uri.parse(sketchDrawable.getUri()), "r");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
+            }
+
+            String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
+
+            int previewDrawableByteCount = sketchDrawable.getByteCount();
+            int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
+            String needMemory = Formatter.formatFileSize(getContext(), originImageByteCount);
+
+            messageBuilder.append("\n");
+            messageBuilder.append("\n");
+            messageBuilder.append("原始图：")
+                    .append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight())
+                    .append("/").append(sketchDrawable.getMimeType().substring(6))
+                    .append("/").append(needDiskSpace);
+
+            messageBuilder.append("\n");
+            messageBuilder.append("方向/内存：").append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
+                    .append("/").append(needMemory);
+
+            messageBuilder.append("\n");
+            messageBuilder.append("预览图：")
+                    .append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight())
+                    .append("/").append(sketchDrawable.getBitmapConfig())
+                    .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
+
+            messageBuilder.append("\n");
+
+            return messageBuilder.toString();
+        }
     }
 }

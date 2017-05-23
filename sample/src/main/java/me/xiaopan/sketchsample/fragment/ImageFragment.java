@@ -162,6 +162,8 @@ public class ImageFragment extends MyFragment {
 
     private class ShowImageHelper implements DisplayListener {
         private void onViewCreated() {
+            imageView.setDisabledLongClickShowImageInfo(true);
+
             imageView.setDisplayListener(this);
 
             initOptions();
