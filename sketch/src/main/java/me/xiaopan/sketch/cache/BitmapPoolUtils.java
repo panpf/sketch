@@ -137,7 +137,7 @@ public class BitmapPoolUtils {
     /**
      * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapRegionDecoder
      *
-     * @param options    BitmapFactory.Options 需要用到options的outWidth、outHeight、inSampleSize以及inPreferredConfig属性
+     * @param options    BitmapFactory.Options 需要用到options的inSampleSize以及inPreferredConfig属性
      * @param bitmapPool BitmapPool 从这个池子里找可复用的Bitmap
      * @return true：找到了可复用的Bitmap
      */

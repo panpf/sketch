@@ -25,13 +25,14 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.ProcessedImageCache;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class NormalDecodeHelper implements DecodeHelper {
+public class NormalDecodeHelper extends DecodeHelper {
     private static final String LOG_NAME = "NormalDecodeHelper";
 
     @Override
@@ -42,7 +43,11 @@ public class NormalDecodeHelper implements DecodeHelper {
 
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
+                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
+
+        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+        orientationCorrector.rotateSize(boundOptions, exifOrientation);
+
         // Calculate inSampleSize according to max size
         MaxSize maxSize = request.getOptions().getMaxSize();
         if (maxSize != null) {
@@ -101,14 +106,15 @@ public class NormalDecodeHelper implements DecodeHelper {
             return null;
         }
 
-        // 成功
-        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
-                decodeOptions.inSampleSize, request, LOG_NAME);
-
         ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
         boolean processed = processedImageCache.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
 
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
-        return new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(processed);
+        BitmapDecodeResult result = new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(processed);
+
+        correctOrientation(orientationCorrector, result, exifOrientation, request);
+
+        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, LOG_NAME);
+        return result;
     }
 }

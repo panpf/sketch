@@ -26,6 +26,7 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.LoadOptions;
@@ -33,7 +34,7 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ThumbnailModeDecodeHelper implements DecodeHelper {
+public class ThumbnailModeDecodeHelper extends DecodeHelper {
     private static final String LOG_NAME = "ThumbnailModeDecodeHelper";
 
     /**
@@ -61,11 +62,11 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
-        decodeOptions.outWidth = boundOptions.outWidth;
-        decodeOptions.outHeight = boundOptions.outHeight;
-        decodeOptions.outMimeType = boundOptions.outMimeType;
+    public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions,
+                               BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
+
+        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+        orientationCorrector.rotateSize(boundOptions, exifOrientation);
 
         // 缩略图模式强制质量优先
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
@@ -73,29 +74,30 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
             decodeOptions.inPreferQualityOverSpeed = true;
         }
 
+        // 计算resize区域在原图中的对应区域
         LoadOptions loadOptions = request.getOptions();
         Resize resize = loadOptions.getResize();
-        ImageSizeCalculator sizeCalculator = request.getConfiguration().getImageSizeCalculator();
-
-        // 计算resize区域在原图中的对应区域
         ResizeCalculator resizeCalculator = request.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight,
+        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight,
                 resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
         boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageType);
 
         // 根据resize的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
-        decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
+        ImageSizeCalculator sizeCalculator = request.getConfiguration().getImageSizeCalculator();
+        decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(mapping.srcRect.width(), mapping.srcRect.height(),
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
+
+        orientationCorrector.reverseRotate(mapping.srcRect, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
 
         if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder() && !loadOptions.isBitmapPoolDisabled()) {
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-            BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(decodeOptions, result.srcRect, bitmapPool);
+            BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(decodeOptions, mapping.srcRect, bitmapPool);
         }
 
         Bitmap bitmap = null;
         try {
-            bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, result.srcRect, decodeOptions);
+            bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, mapping.srcRect, decodeOptions);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
 
@@ -106,16 +108,16 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, throwable, decodeOptions, true);
 
                 try {
-                    bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, result.srcRect, decodeOptions);
+                    bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, mapping.srcRect, decodeOptions);
                 } catch (Throwable throwable1) {
                     throwable1.printStackTrace();
 
                     errorTracker.onDecodeNormalImageError(throwable1, request, boundOptions.outWidth,
                             boundOptions.outHeight, boundOptions.outMimeType);
                 }
-            } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, boundOptions.outWidth, boundOptions.outHeight, result.srcRect)) {
+            } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, boundOptions.outWidth, boundOptions.outHeight, mapping.srcRect)) {
                 errorTracker.onDecodeRegionError(request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
-                        boundOptions.outMimeType, throwable, result.srcRect, decodeOptions.inSampleSize);
+                        boundOptions.outMimeType, throwable, mapping.srcRect, decodeOptions.inSampleSize);
             } else {
                 errorTracker.onDecodeNormalImageError(throwable, request, boundOptions.outWidth,
                         boundOptions.outHeight, boundOptions.outMimeType);
@@ -140,11 +142,12 @@ public class ThumbnailModeDecodeHelper implements DecodeHelper {
             return null;
         }
 
-        // 成功
-        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
-                decodeOptions.inSampleSize, request, LOG_NAME);
-        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType,
-                boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
-        return new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(true);
+        ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
+        BitmapDecodeResult result = new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(true);
+
+        correctOrientation(orientationCorrector, result, exifOrientation, request);
+
+        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, LOG_NAME);
+        return result;
     }
 }

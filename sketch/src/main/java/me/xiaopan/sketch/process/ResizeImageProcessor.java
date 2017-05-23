@@ -44,9 +44,9 @@ public class ResizeImageProcessor implements ImageProcessor {
         }
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
+        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 resize.getWidth(), resize.getHeight(), resize.getScaleType(), forceUseResize);
-        if (result == null) {
+        if (mapping == null) {
             return bitmap;
         }
 
@@ -56,10 +56,10 @@ public class ResizeImageProcessor implements ImageProcessor {
         }
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
 
-        Bitmap resizeBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, config);
+        Bitmap resizeBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config);
 
         Canvas canvas = new Canvas(resizeBitmap);
-        canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
+        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null);
 
         return resizeBitmap;
     }

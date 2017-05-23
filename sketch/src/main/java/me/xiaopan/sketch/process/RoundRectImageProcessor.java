@@ -81,18 +81,18 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
         }
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
+        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 resize != null ? resize.getWidth() : bitmap.getWidth(),
                 resize != null ? resize.getHeight() : bitmap.getHeight(),
                 resize != null ? resize.getScaleType() : null, forceUseResize);
-        if (result == null) {
+        if (mapping == null) {
             return bitmap;
         }
 
         Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
 
-        Bitmap roundRectBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, config);
+        Bitmap roundRectBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config);
 
         Canvas canvas = new Canvas(roundRectBitmap);
         Paint paint = new Paint();
@@ -102,12 +102,12 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
 
         // 绘制圆角的罩子
         Path path = new Path();
-        path.addRoundRect(new RectF(0, 0, result.imageWidth, result.imageHeight), cornerRadius, Path.Direction.CW);
+        path.addRoundRect(new RectF(0, 0, mapping.imageWidth, mapping.imageHeight), cornerRadius, Path.Direction.CW);
         canvas.drawPath(path, paint);
 
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, result.srcRect, result.destRect, paint);
+        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint);
 
         return roundRectBitmap;
     }

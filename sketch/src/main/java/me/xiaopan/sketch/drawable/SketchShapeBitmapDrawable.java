@@ -186,8 +186,8 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
             srcRect.set(0, 0, bitmapWidth, bitmapHeight);
         } else {
             ImageView.ScaleType scaleType = shapeSize != null ? shapeSize.getScaleType() : ImageView.ScaleType.FIT_CENTER;
-            ResizeCalculator.Result result = resizeCalculator.calculator(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, scaleType, true);
-            srcRect.set(result.srcRect);
+            ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, scaleType, true);
+            srcRect.set(mapping.srcRect);
         }
 
         if (imageShaper != null && bitmapShader != null) {

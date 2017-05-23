@@ -18,6 +18,7 @@ package me.xiaopan.sketch.feature.large;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
@@ -113,7 +114,8 @@ class TileDecodeHandler extends Handler {
         int inSampleSize = tile.inSampleSize;
 
         // 根据图片方向恢复src区域的真实位置
-        orientationCorrector.reverseRotate(srcRect, regionDecoder.getImageSize(), regionDecoder.getExifOrientation());
+        Point imageSize = regionDecoder.getImageSize();
+        orientationCorrector.reverseRotate(srcRect, imageSize.x, imageSize.y, regionDecoder.getExifOrientation());
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;

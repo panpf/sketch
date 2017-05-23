@@ -108,16 +108,16 @@ public class ResizeCalculator implements Identifier {
      * @param forceUseResize 强制使用resize
      * @return 计算结果
      */
-    public Result calculator(int imageWidth, int imageHeight,
-                             int resizeWidth, int resizeHeight,
-                             ImageView.ScaleType scaleType, boolean forceUseResize) {
+    public Mapping calculator(int imageWidth, int imageHeight,
+                              int resizeWidth, int resizeHeight,
+                              ImageView.ScaleType scaleType, boolean forceUseResize) {
         if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
-            Result result = new Result();
-            result.imageWidth = imageWidth;
-            result.imageHeight = imageHeight;
-            result.srcRect = new Rect(0, 0, imageWidth, imageHeight);
-            result.destRect = result.srcRect;
-            return result;
+            Mapping mapping = new Mapping();
+            mapping.imageWidth = imageWidth;
+            mapping.imageHeight = imageHeight;
+            mapping.srcRect = new Rect(0, 0, imageWidth, imageHeight);
+            mapping.destRect = mapping.srcRect;
+            return mapping;
         }
 
         if (scaleType == null) {
@@ -152,15 +152,15 @@ public class ResizeCalculator implements Identifier {
             srcRect = srcMappingCenterRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
         }
 
-        Result result = new Result();
-        result.imageWidth = newImageWidth;
-        result.imageHeight = newImageHeight;
-        result.srcRect = srcRect;
-        result.destRect = destRect;
-        return result;
+        Mapping mapping = new Mapping();
+        mapping.imageWidth = newImageWidth;
+        mapping.imageHeight = newImageHeight;
+        mapping.srcRect = srcRect;
+        mapping.destRect = destRect;
+        return mapping;
     }
 
-    public static class Result {
+    public static class Mapping {
         public int imageWidth;
         public int imageHeight;
         public Rect srcRect;

@@ -78,16 +78,16 @@ public class CircleImageProcessor extends WrappedImageProcessor {
         ImageView.ScaleType scaleType = resize != null ? resize.getScaleType() : ImageView.ScaleType.FIT_CENTER;
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
+        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 newBitmapSize, newBitmapSize, scaleType, forceUseResize);
-        if (result == null) {
+        if (mapping == null) {
             return bitmap;
         }
 
         Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
 
-        Bitmap circleBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, config);
+        Bitmap circleBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config);
 
         Canvas canvas = new Canvas(circleBitmap);
         Paint paint = new Paint();
@@ -96,12 +96,12 @@ public class CircleImageProcessor extends WrappedImageProcessor {
         paint.setColor(0xFFFF0000);
 
         // 绘制圆形的罩子
-        canvas.drawCircle(result.imageWidth / 2, result.imageHeight / 2,
-                (result.imageWidth < result.imageHeight ? result.imageWidth : result.imageHeight) / 2, paint);
+        canvas.drawCircle(mapping.imageWidth / 2, mapping.imageHeight / 2,
+                (mapping.imageWidth < mapping.imageHeight ? mapping.imageWidth : mapping.imageHeight) / 2, paint);
 
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, result.srcRect, result.destRect, paint);
+        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint);
 
         return circleBitmap;
     }

@@ -33,7 +33,7 @@ import me.xiaopan.sketch.util.ExifInterface;
 /**
  * 解码经过处理的缓存图片时只需原封不动读取，然后读取原图的类型、宽高信息即可
  */
-public class ProcessedCacheDecodeHelper implements DecodeHelper {
+public class ProcessedCacheDecodeHelper extends DecodeHelper {
     private static final String LOG_NAME = "ProcessedCacheDecodeHelper";
 
     @Override
@@ -130,9 +130,7 @@ public class ProcessedCacheDecodeHelper implements DecodeHelper {
 
         orientationCorrector.rotateSize(imageAttrs, imageAttrs.getExifOrientation());
 
-        // 成功
-        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight,
-                decodeOptions.inSampleSize, request, LOG_NAME);
+        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, LOG_NAME);
         return new BitmapDecodeResult(imageAttrs, bitmap).setBanProcess(true);
     }
 }

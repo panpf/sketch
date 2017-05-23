@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.feature;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -266,6 +267,25 @@ public class ImageOrientationCorrector implements Identifier {
      *
      * @param exifOrientation 图片方向
      */
+    public void rotateSize(BitmapFactory.Options options, int exifOrientation) {
+        if (!hasRotate(exifOrientation)) {
+            return;
+        }
+
+        Matrix matrix = new Matrix();
+        initializeMatrixForExifRotation(exifOrientation, matrix);
+        RectF newRect = new RectF(0, 0, options.outWidth, options.outHeight);
+        matrix.mapRect(newRect);
+
+        options.outWidth = (int) newRect.width();
+        options.outHeight = (int) newRect.height();
+    }
+
+    /**
+     * 根据旋转角度计算新图片旋转后的尺寸
+     *
+     * @param exifOrientation 图片方向
+     */
     public void rotateSize(Point size, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
@@ -286,7 +306,7 @@ public class ImageOrientationCorrector implements Identifier {
      * @param exifOrientation 图片方向
      */
     @SuppressWarnings("SuspiciousNameCombination")
-    public void reverseRotate(Rect srcRect, Point imageSize, int exifOrientation) {
+    public void reverseRotate(Rect srcRect, int imageWidth, int imageHeight, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
         }
@@ -295,21 +315,21 @@ public class ImageOrientationCorrector implements Identifier {
         if (rotateDegrees == 90) {
             int top = srcRect.top;
             srcRect.top = srcRect.left;
-            srcRect.left = imageSize.y - srcRect.bottom;
+            srcRect.left = imageHeight - srcRect.bottom;
             srcRect.bottom = srcRect.right;
-            srcRect.right = imageSize.y - top;
+            srcRect.right = imageHeight - top;
         } else if (rotateDegrees == 180) {
             int left = srcRect.left, top = srcRect.top;
-            srcRect.left = imageSize.x - srcRect.right;
-            srcRect.right = imageSize.x - left;
-            srcRect.top = imageSize.y - srcRect.bottom;
-            srcRect.bottom = imageSize.y - top;
+            srcRect.left = imageWidth - srcRect.right;
+            srcRect.right = imageWidth - left;
+            srcRect.top = imageHeight - srcRect.bottom;
+            srcRect.bottom = imageHeight - top;
         } else if (rotateDegrees == 270) {
             int left = srcRect.left;
             srcRect.left = srcRect.top;
-            srcRect.top = imageSize.x - srcRect.right;
+            srcRect.top = imageWidth - srcRect.right;
             srcRect.right = srcRect.bottom;
-            srcRect.bottom = imageSize.x - left;
+            srcRect.bottom = imageWidth - left;
         }
     }
 

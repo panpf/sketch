@@ -50,11 +50,17 @@ public class ImageDecoder implements Identifier {
         decodeHelperList.add(new ThumbnailModeDecodeHelper());
         decodeHelperList.add(new NormalDecodeHelper());
 
-        resultProcessorList.add(new CorrectOrientationResultProcessor());
         resultProcessorList.add(new ProcessImageResultProcessor());
         resultProcessorList.add(new ProcessedResultCacheProcessor());
     }
 
+    /**
+     * 解码入口方法，统计解码时间、调用解码方法以及后续处理
+     *
+     * @param request LoadRequest
+     * @return DecodeResult
+     * @throws DecodeException 解码失败了
+     */
     public DecodeResult decode(LoadRequest request) throws DecodeException {
         long startTime = 0;
         if (SLogType.TIME.isEnabled()) {
@@ -90,6 +96,13 @@ public class ImageDecoder implements Identifier {
         return result;
     }
 
+    /**
+     * 执行具体解码，这个方法里值读取出解码所需的一些属性，然后再交给具体的DecodeHelper去解码
+     *
+     * @param request LoadRequest
+     * @return DecodeResult
+     * @throws DecodeException 解码失败了
+     */
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         // Make date source
         DataSource dataSource = DataSourceFactory.makeDataSourceByRequest(request, false, logName);
@@ -120,8 +133,6 @@ public class ImageDecoder implements Identifier {
             ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
             exifOrientation = imageOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource);
         }
-
-        // TODO: 2017/5/19 先根据方向旋转boundOptions.outWidth和boundsOptions.outHeight
 
         ImageType imageType = ImageType.valueOfMimeType(boundOptions.outMimeType);
 
@@ -156,6 +167,13 @@ public class ImageDecoder implements Identifier {
         return decodeResult;
     }
 
+    /**
+     * 执行后续的处理，包括转换、缓存
+     *
+     * @param request LoadRequest
+     * @param result  DecodeResult
+     * @throws DecodeException 处理失败了
+     */
     private void doProcess(LoadRequest request, DecodeResult result) throws DecodeException {
         if (result == null || result.isBanProcess()) {
             return;

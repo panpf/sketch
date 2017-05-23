@@ -25,7 +25,7 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.LoadRequest;
 
-public class GifDecodeHelper implements DecodeHelper {
+public class GifDecodeHelper extends DecodeHelper {
 
     @Override
     public boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions) {

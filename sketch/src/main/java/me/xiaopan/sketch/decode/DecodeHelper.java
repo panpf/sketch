@@ -16,13 +16,40 @@
 
 package me.xiaopan.sketch.decode;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.feature.ImageOrientationCorrector;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 
-public interface DecodeHelper {
-    boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions);
+public abstract class DecodeHelper {
+    abstract boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions);
 
-    DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                        BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation);
+    abstract DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions,
+                                 BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException;
+
+    protected void correctOrientation(ImageOrientationCorrector orientationCorrector, DecodeResult decodeResult,
+                                      int exifOrientation, LoadRequest request) throws DecodeException {
+        if (!(decodeResult instanceof BitmapDecodeResult)) {
+            return;
+        }
+
+        BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) decodeResult;
+
+        Bitmap bitmap = bitmapDecodeResult.getBitmap();
+        Bitmap newBitmap = orientationCorrector.rotate(bitmap, exifOrientation, request.getConfiguration().getBitmapPool());
+        if (newBitmap != null && newBitmap != bitmap) {
+            if (!newBitmap.isRecycled()) {
+                BitmapPoolUtils.freeBitmapToPool(bitmap, request.getConfiguration().getBitmapPool());
+                bitmapDecodeResult.setBitmap(newBitmap);
+
+                bitmapDecodeResult.setProcessed(true);
+            } else {
+                throw new DecodeException(String.format("%s: %s. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),
+                        ImageOrientationCorrector.toName(exifOrientation), request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
+            }
+        }
+    }
 }
