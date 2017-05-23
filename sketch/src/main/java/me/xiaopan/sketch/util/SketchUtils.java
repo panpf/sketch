@@ -69,8 +69,8 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageType;
-import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -652,13 +652,13 @@ public class SketchUtils {
         }
 
         LayerDrawable layerDrawable = (LayerDrawable) drawable;
-        for (int i = layerDrawable.getNumberOfLayers() - 1; i >= 0; i--) {
-            Drawable childDrawable = getLastDrawable(layerDrawable.getDrawable(i));
-            if (childDrawable != null) {
-                return childDrawable;
-            }
+
+        int layerCount = layerDrawable.getNumberOfLayers();
+        if (layerCount <= 0) {
+            return null;
         }
-        return null;
+
+        return getLastDrawable(layerDrawable.getDrawable(layerCount - 1));
     }
 
     /**

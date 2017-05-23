@@ -19,10 +19,10 @@ package me.xiaopan.sketch.display;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
 
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchTransitionDrawable;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -61,14 +61,11 @@ public class TransitionImageDisplayer implements ImageDisplayer {
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(newDrawable);
         } else {
-            Drawable oldDrawable = imageViewInterface.getDrawable();
-            if (oldDrawable != null && oldDrawable instanceof LayerDrawable) {
-                oldDrawable = SketchUtils.getLastDrawable(oldDrawable);
-            }
+            Drawable oldDrawable = SketchUtils.getLastDrawable(imageViewInterface.getDrawable());
             if (oldDrawable == null) {
                 oldDrawable = new ColorDrawable(Color.TRANSPARENT);
             }
-            TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
+            TransitionDrawable transitionDrawable = new SketchTransitionDrawable(oldDrawable, newDrawable);
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(transitionDrawable);
             transitionDrawable.setCrossFadeEnabled(true);

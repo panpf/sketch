@@ -20,7 +20,6 @@ import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.request.ImageFrom;
 
-// TODO: 2017/5/19 修改纠正图片方向的文档，说明可以通过sketchDrawble获取方向，也增加一张专门的文档说明一颗通过sketchDrawable获取图片信息
 public interface SketchDrawable {
     /**
      * 获取图片ID

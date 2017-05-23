@@ -19,7 +19,6 @@ package me.xiaopan.sketch.state;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
@@ -27,6 +26,7 @@ import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 使用当前ImageView正在显示的图片作为状态图片
@@ -45,12 +45,7 @@ public class OldStateImage implements StateImage {
 
     @Override
     public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
-        Drawable drawable = imageViewInterface.getDrawable();
-
-        if (drawable != null && drawable instanceof LayerDrawable) {
-            LayerDrawable layerDrawable = (LayerDrawable) drawable;
-            drawable = layerDrawable.getDrawable(layerDrawable.getNumberOfLayers() - 1);
-        }
+        Drawable drawable = SketchUtils.getLastDrawable(imageViewInterface.getDrawable());
 
         if (drawable != null && drawable instanceof SketchLoadingDrawable) {
             drawable = ((SketchLoadingDrawable) drawable).getWrappedDrawable();
