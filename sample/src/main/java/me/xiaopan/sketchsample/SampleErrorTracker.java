@@ -279,7 +279,7 @@ class SampleErrorTracker extends ErrorTracker {
         UriScheme scheme = UriScheme.valueOfUri(imageUri);
         if (scheme != null && scheme == UriScheme.DRAWABLE) {
             try {
-                int resId = Integer.parseInt(UriScheme.DRAWABLE.crop(imageUri));
+                int resId = Integer.parseInt(UriScheme.DRAWABLE.cropContent(imageUri));
                 return context.getResources().getResourceName(resId);
             } catch (Exception e) {
                 e.printStackTrace();

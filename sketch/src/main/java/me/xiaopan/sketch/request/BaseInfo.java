@@ -18,7 +18,7 @@ package me.xiaopan.sketch.request;
 
 public abstract class BaseInfo {
     private String uri;
-    private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
+    private String uriContent;    // 例如原uri是asset://test.png，uriContent就是test.png
     private UriScheme uriScheme;    // Uri协议类型
 
     private String key; // key是由uri和选项组成的
@@ -35,13 +35,13 @@ public abstract class BaseInfo {
         if (uri != null) {
             this.uri = uri;
             this.uriScheme = UriScheme.valueOfUri(uri);
-            this.realUri = uriScheme != null ? uriScheme.crop(uri) : null;
+            this.uriContent = uriScheme != null ? uriScheme.cropContent(uri) : null;
 
             this.key = null;
         } else {
             this.uri = null;
             this.uriScheme = null;
-            this.realUri = null;
+            this.uriContent = null;
 
             this.key = null;
         }
@@ -49,7 +49,7 @@ public abstract class BaseInfo {
 
     void copy(BaseInfo info) {
         this.uri = info.uri;
-        this.realUri = info.realUri;
+        this.uriContent = info.uriContent;
         this.uriScheme = info.uriScheme;
 
         this.key = info.key;
@@ -67,8 +67,8 @@ public abstract class BaseInfo {
         return uri;
     }
 
-    public String getRealUri() {
-        return realUri;
+    public String getUriContent() {
+        return uriContent;
     }
 
     public UriScheme getUriScheme() {

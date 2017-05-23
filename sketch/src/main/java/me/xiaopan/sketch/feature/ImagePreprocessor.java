@@ -16,11 +16,14 @@
 
 package me.xiaopan.sketch.feature;
 
+import android.content.Context;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 图片预处理器，可对特殊类型的图片先转换在读取
@@ -80,12 +83,16 @@ public class ImagePreprocessor implements Identifier {
     /**
      * 判断请求是否需要预处理
      *
-     * @param request LoadRequest
+     * @param context    Context
+     * @param imageUri   图片uri
+     * @param uriScheme  图片类型
+     * @param uriContent 图片uri内容
+     * @param options    加载配置
      * @return true：需要预处理，紧接着会调用process(LoadRequest)方法处理
      */
-    public boolean match(LoadRequest request) {
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
         for (Preprocessor preprocessor : preprocessorList) {
-            if (preprocessor.match(request)) {
+            if (preprocessor.match(context, imageUri, uriScheme, uriContent, options)) {
                 return true;
             }
         }
@@ -96,13 +103,17 @@ public class ImagePreprocessor implements Identifier {
     /**
      * 预处理请求
      *
-     * @param request LoadRequest
+     * @param context    Context
+     * @param imageUri   图片uri
+     * @param uriScheme  图片类型
+     * @param uriContent 图片uri内容
+     * @param options    加载配置
      * @return 预处理结果
      */
-    public PreProcessResult process(LoadRequest request) {
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
         for (Preprocessor preprocessor : preprocessorList) {
-            if (preprocessor.match(request)) {
-                return preprocessor.process(request);
+            if (preprocessor.match(context, imageUri, uriScheme, uriContent, options)) {
+                return preprocessor.process(context, imageUri, uriScheme, uriContent, options);
             }
         }
 
@@ -115,8 +126,8 @@ public class ImagePreprocessor implements Identifier {
     }
 
     public interface Preprocessor {
-        boolean match(LoadRequest request);
+        boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options);
 
-        PreProcessResult process(LoadRequest request);
+        PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options);
     }
 }

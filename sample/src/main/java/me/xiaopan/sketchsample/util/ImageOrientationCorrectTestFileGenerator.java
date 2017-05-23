@@ -107,7 +107,7 @@ public class ImageOrientationCorrectTestFileGenerator {
 
                 InputStream inputStream;
                 try {
-                    inputStream = assetManager.open(UriScheme.ASSET.crop(AssetImage.MEI_NV));
+                    inputStream = assetManager.open(UriScheme.ASSET.cropContent(AssetImage.MEI_NV));
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;

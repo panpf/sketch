@@ -37,7 +37,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
     @Override
     public String getDownloadFreeRideKey() {
-        return getRealUri();
+        return getUriContent();
     }
 
     @Override

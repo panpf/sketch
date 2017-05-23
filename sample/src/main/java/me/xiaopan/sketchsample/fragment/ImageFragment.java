@@ -557,7 +557,7 @@ public class ImageFragment extends MyFragment {
             long imageLength = 0;
             UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getUri());
             if (uriScheme == UriScheme.FILE) {
-                imageLength = new File(UriScheme.FILE.crop(sketchDrawable.getUri())).length();
+                imageLength = new File(UriScheme.FILE.cropContent(sketchDrawable.getUri())).length();
             } else if (uriScheme == UriScheme.NET) {
                 DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
                 if (diskCacheEntry != null) {
@@ -566,13 +566,13 @@ public class ImageFragment extends MyFragment {
             } else if (uriScheme == UriScheme.ASSET) {
                 AssetFileDescriptor assetFileDescriptor = null;
                 try {
-                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.crop(sketchDrawable.getUri()));
+                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.cropContent(sketchDrawable.getUri()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
             } else if (uriScheme == UriScheme.DRAWABLE) {
-                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.crop(sketchDrawable.getUri())));
+                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.cropContent(sketchDrawable.getUri())));
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
             } else if (uriScheme == UriScheme.CONTENT) {
                 AssetFileDescriptor assetFileDescriptor = null;
@@ -819,7 +819,7 @@ public class ImageFragment extends MyFragment {
                     return null;
                 }
             } else if (uriScheme == UriScheme.FILE) {
-                return new File(UriScheme.FILE.crop(imageUri));
+                return new File(UriScheme.FILE.cropContent(imageUri));
             } else {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return null;
@@ -896,11 +896,11 @@ public class ImageFragment extends MyFragment {
                     Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                 }
             } else if (uriScheme == UriScheme.ASSET) {
-                new SaveAssetImageAsyncTask(getActivity(), UriScheme.ASSET.crop(imageUri)).execute("");
+                new SaveAssetImageAsyncTask(getActivity(), UriScheme.ASSET.cropContent(imageUri)).execute("");
             } else if (uriScheme == UriScheme.CONTENT) {
                 new SaveContentImageAsyncTask(getActivity(), Uri.parse(imageUri)).execute("");
             } else if (uriScheme == UriScheme.DRAWABLE) {
-                new SaveResImageAsyncTask(getActivity(), Integer.valueOf(UriScheme.DRAWABLE.crop(imageUri))).execute("");
+                new SaveResImageAsyncTask(getActivity(), Integer.valueOf(UriScheme.DRAWABLE.cropContent(imageUri))).execute("");
             } else if (uriScheme == UriScheme.FILE) {
                 Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
             } else {

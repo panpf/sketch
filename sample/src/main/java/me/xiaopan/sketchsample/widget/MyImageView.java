@@ -28,6 +28,7 @@ import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
+import me.xiaopan.sketchsample.event.CacheCleanEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 
 public class MyImageView extends SketchImageView {
@@ -175,6 +176,12 @@ public class MyImageView extends SketchImageView {
         }
     }
 
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onEvent(CacheCleanEvent event) {
+        redisplay();
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         EventBus.getDefault().unregister(this);
@@ -222,7 +229,7 @@ public class MyImageView extends SketchImageView {
             long imageLength = 0;
             UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getUri());
             if (uriScheme == UriScheme.FILE) {
-                imageLength = new File(UriScheme.FILE.crop(sketchDrawable.getUri())).length();
+                imageLength = new File(UriScheme.FILE.cropContent(sketchDrawable.getUri())).length();
             } else if (uriScheme == UriScheme.NET) {
                 DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
                 if (diskCacheEntry != null) {
@@ -231,13 +238,13 @@ public class MyImageView extends SketchImageView {
             } else if (uriScheme == UriScheme.ASSET) {
                 AssetFileDescriptor assetFileDescriptor = null;
                 try {
-                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.crop(sketchDrawable.getUri()));
+                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.cropContent(sketchDrawable.getUri()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
             } else if (uriScheme == UriScheme.DRAWABLE) {
-                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.crop(sketchDrawable.getUri())));
+                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.cropContent(sketchDrawable.getUri())));
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
             } else if (uriScheme == UriScheme.CONTENT) {
                 AssetFileDescriptor assetFileDescriptor = null;

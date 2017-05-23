@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
@@ -36,7 +35,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -50,15 +49,16 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
     private static final String LOG_NAME = "InstalledAppIconPreprocessor";
 
     @Override
-    public boolean match(LoadRequest request) {
-        return request.getUriScheme() == UriScheme.FILE && request.getRealUri().startsWith(INSTALLED_APP_URI_HOST);
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+        return uriScheme == UriScheme.FILE && uriContent.startsWith(INSTALLED_APP_URI_HOST);
     }
 
     @Override
-    public PreProcessResult process(LoadRequest request) {
-        Configuration configuration = request.getConfiguration();
-        DiskCache diskCache = configuration.getDiskCache();
-        String diskCacheKey = request.getUri();
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+
+        //noinspection UnnecessaryLocalVariable
+        String diskCacheKey = imageUri;
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
             return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
@@ -67,14 +67,14 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readInstalledAppIcon(configuration.getContext(), diskCache, request, diskCacheKey);
+        PreProcessResult result = readInstalledAppIcon(context, imageUri, options, diskCache, diskCacheKey);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readInstalledAppIcon(Context context, DiskCache diskCache, LoadRequest loadRequest, String diskCacheKey) {
-        Uri uri = Uri.parse(loadRequest.getUri());
+    private PreProcessResult readInstalledAppIcon(Context context, String imageUri, LoadOptions options, DiskCache diskCache, String diskCacheKey) {
+        Uri uri = Uri.parse(imageUri);
 
         String packageName = uri.getQueryParameter(INSTALLED_APP_URI_PARAM_PACKAGE_NAME);
         int versionCode = Integer.valueOf(uri.getQueryParameter(INSTALLED_APP_URI_PARAM_VERSION_CODE));
@@ -92,7 +92,7 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
 
         String apkFilePath = packageInfo.applicationInfo.sourceDir;
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        boolean lowQualityImage = loadRequest.getOptions().isLowQualityImage();
+        boolean lowQualityImage = options != null && options.isLowQualityImage();
         Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, lowQualityImage, LOG_NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
@@ -100,7 +100,7 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
 
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", loadRequest.getKey());
+                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", imageUri);
             }
             return null;
         }
@@ -153,7 +153,7 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", loadRequest.getKey());
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", imageUri);
                 }
                 return null;
             }

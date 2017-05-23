@@ -21,6 +21,7 @@ import android.net.Uri;
 
 import java.io.File;
 
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
@@ -31,30 +32,33 @@ import me.xiaopan.sketch.feature.ProcessedImageCache;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 
 public class DataSourceFactory {
 
     private static final String LOG_NAME = "DataSourceFactory";
 
-    // TODO: 2017/5/23 这里简化一下不再依赖request，需要什么传进来什么，这样其它的地方也能用
-    public static DataSource makeDataSourceByRequest(LoadRequest request, boolean ignoreProcessedCache) throws DecodeException {
-        // 缓存的处理过的图片，可直接读取
-        if (!ignoreProcessedCache) {
-            ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
-            if (processedImageCache.canUse(request.getOptions())) {
-                DataSource dataSource = processedImageCache.checkProcessedImageDiskCache(request);
-                if (dataSource != null) {
-                    return dataSource;
-                }
-            }
-        }
-
+    /**
+     * 创建数据源，可用于解码
+     *
+     * @param context        Context
+     * @param imageUri       图片uri
+     * @param uriScheme      图片类型
+     * @param uriContent     uri内容
+     * @param options        加载选项
+     * @param downloadResult 下载结果
+     * @return DataSource
+     * @throws DecodeException 无法创建数据源
+     */
+    public static DataSource makeDataSource(Context context, String imageUri, UriScheme uriScheme, String uriContent,
+                                            LoadOptions options, DownloadResult downloadResult) throws DecodeException {
         // 特殊文件预处理
-        ImagePreprocessor imagePreprocessor = request.getConfiguration().getImagePreprocessor();
-        if (imagePreprocessor.match(request)) {
-            PreProcessResult prePrecessResult = imagePreprocessor.process(request);
+        Configuration configuration = Sketch.with(context).getConfiguration();
+        ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
+        if (imagePreprocessor.match(context, imageUri, uriScheme, uriContent, options)) {
+
+            PreProcessResult prePrecessResult = imagePreprocessor.process(context, imageUri, uriScheme, uriContent, options);
             if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
                 return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
             }
@@ -63,17 +67,10 @@ public class DataSourceFactory {
                 return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             }
 
-            SLog.w(SLogType.REQUEST, LOG_NAME, "pre process result is null", request.getUri());
+            SLog.w(SLogType.REQUEST, LOG_NAME, "pre process result is null", imageUri);
             throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
         }
 
-        return makeDataSource(request.getContext(), request.getUri(), request.getUriScheme(),
-                request.getRealUri(), request.getDownloadResult());
-    }
-
-    // TODO: 2017/5/23 预处理挪进来
-    public static DataSource makeDataSource(Context context, String imageUri, UriScheme uriScheme, String realUri,
-                                            DownloadResult downloadResult) throws DecodeException {
         if (uriScheme == UriScheme.NET) {
             if (downloadResult != null) {
                 DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
@@ -99,22 +96,52 @@ public class DataSourceFactory {
         }
 
         if (uriScheme == UriScheme.FILE) {
-            return new FileDataSource(new File(realUri));
+            return new FileDataSource(new File(uriContent));
         }
 
         if (uriScheme == UriScheme.CONTENT) {
-            return new ContentDataSource(context, Uri.parse(realUri));
+            return new ContentDataSource(context, Uri.parse(uriContent));
         }
 
         if (uriScheme == UriScheme.ASSET) {
-            return new AssetsDataSource(context, realUri);
+            return new AssetsDataSource(context, uriContent);
         }
 
         if (uriScheme == UriScheme.DRAWABLE) {
-            return new DrawableDataSource(context, Integer.valueOf(realUri));
+            return new DrawableDataSource(context, Integer.valueOf(uriContent));
         }
 
         SLog.w(SLogType.REQUEST, LOG_NAME, "unknown uri is %s", imageUri);
         throw new DecodeException(String.format("Unknown uri is %s", imageUri), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
+    }
+
+    /**
+     * 创建数据源时已处理缓存优先
+     *
+     * @param context                    Context
+     * @param imageUri                   图片uri
+     * @param uriScheme                  图片类型
+     * @param uriContent                 uri内容
+     * @param options                    加载选项
+     * @param downloadResult             下载结果
+     * @param processedImageDiskCacheKey 已处理缓存key
+     * @return DataSource
+     * @throws DecodeException 无法创建数据源
+     */
+    public static DataSource processedCacheFirstMakeDataSource(Context context, String imageUri, UriScheme uriScheme,
+                                                               String uriContent, LoadOptions options, DownloadResult downloadResult,
+                                                               String processedImageDiskCacheKey) throws DecodeException {
+        Configuration configuration = Sketch.with(context).getConfiguration();
+        ProcessedImageCache processedImageCache = configuration.getProcessedImageCache();
+
+        if (processedImageCache.canUse(options)) {
+            DiskCache diskCache = configuration.getDiskCache();
+            DataSource dataSource = processedImageCache.checkProcessedImageDiskCache(diskCache, processedImageDiskCacheKey);
+            if (dataSource != null) {
+                return dataSource;
+            }
+        }
+
+        return makeDataSource(context, imageUri, uriScheme, uriContent, options, downloadResult);
     }
 }

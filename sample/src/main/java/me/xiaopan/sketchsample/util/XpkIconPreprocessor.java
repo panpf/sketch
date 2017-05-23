@@ -1,5 +1,7 @@
 package me.xiaopan.sketchsample.util;
 
+import android.content.Context;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,78 +12,59 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 在继承ImagePreprocessor的基础上扩展了解析XPK文件的图标
+ * 解析XPK文件的图标
  */
-public class MyImagePreprocessor extends ImagePreprocessor {
+public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
 
-    public MyImagePreprocessor() {
-        key = "MyImagePreprocessor";
+    private static final String LOG_NAME = "XpkIconPreprocessor";
+
+    @Override
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uriContent, ".xpk");
     }
 
     @Override
-    public boolean match(LoadRequest request) {
-        return super.match(request) || isXpkFile(request);
-    }
-
-    @Override
-    public PreProcessResult process(LoadRequest request) {
-        if (isXpkFile(request)) {
-            return getXpkIconCacheFile(request);
-        }
-        return super.process(request);
-    }
-
-    private boolean isXpkFile(LoadRequest loadRequest) {
-        return loadRequest.getUriScheme() == UriScheme.FILE
-                && SketchUtils.checkSuffix(loadRequest.getRealUri(), ".xpk");
-    }
-
-    /**
-     * 获取XPK图标的缓存文件
-     */
-    private PreProcessResult getXpkIconCacheFile(LoadRequest loadRequest) {
-        String realUri = loadRequest.getRealUri();
-        Configuration configuration = loadRequest.getConfiguration();
-
-        File xpkFile = new File(realUri);
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+        File xpkFile = new File(uriContent);
         if (!xpkFile.exists()) {
             return null;
         }
         long lastModifyTime = xpkFile.lastModified();
-        String diskCacheKey = realUri + "." + lastModifyTime;
+        String diskCacheKey = uriContent + "." + lastModifyTime;
 
-        DiskCache diskCache = configuration.getDiskCache();
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+
+        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readXpkIcon(diskCache, loadRequest, diskCacheKey, realUri);
+        PreProcessResult result = readXpkIcon(imageUri, uriContent, diskCache, diskCacheKey);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readXpkIcon(DiskCache diskCache, LoadRequest loadRequest, String diskCacheKey, String realUri) {
-        DiskCache.Entry xpkIconDiskCacheEntry = diskCache.get(diskCacheKey);
-        if (xpkIconDiskCacheEntry != null) {
-            return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.DISK_CACHE);
-        }
-
+    private PreProcessResult readXpkIcon(String imageUri, String uriContent, DiskCache diskCache, String diskCacheKey) {
         ZipFile zipFile;
         try {
-            zipFile = new ZipFile(realUri);
+            zipFile = new ZipFile(uriContent);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -90,7 +73,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, key, "not found icon.png in. %s", loadRequest.getKey());
+                SLog.w(SLogType.REQUEST, LOG_NAME, "not found icon.png in. %s", imageUri);
             }
             return null;
         }
@@ -155,12 +138,12 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         }
 
         if (diskCacheEditor != null) {
-            xpkIconDiskCacheEntry = diskCache.get(diskCacheKey);
-            if (xpkIconDiskCacheEntry != null) {
-                return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.LOCAL);
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            if (cacheEntry != null) {
+                return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, key, "not found xpk icon cache file. %s", loadRequest.getKey());
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found xpk icon cache file. %s", imageUri);
                 }
                 return null;
             }

@@ -85,14 +85,14 @@ public class InBitmapTestFragment extends MyFragment {
             }
         } else if (uriScheme == UriScheme.ASSET) {
             try {
-                inputStream = context.getAssets().open(UriScheme.ASSET.crop(imageUri));
+                inputStream = context.getAssets().open(UriScheme.ASSET.cropContent(imageUri));
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
         } else if (uriScheme == UriScheme.DRAWABLE) {
             try {
-                inputStream = context.getResources().openRawResource(Integer.valueOf(UriScheme.DRAWABLE.crop(imageUri)));
+                inputStream = context.getResources().openRawResource(Integer.valueOf(UriScheme.DRAWABLE.cropContent(imageUri)));
             } catch (Resources.NotFoundException e) {
                 e.printStackTrace();
                 return null;

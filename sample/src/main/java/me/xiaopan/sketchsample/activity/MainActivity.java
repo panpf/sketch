@@ -37,6 +37,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +64,7 @@ import me.xiaopan.sketchsample.adapter.itemfactory.MenuTitleItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.PageMenuItemFactory;
 import me.xiaopan.sketchsample.bean.CheckMenu;
 import me.xiaopan.sketchsample.bean.InfoMenu;
+import me.xiaopan.sketchsample.event.CacheCleanEvent;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
 import me.xiaopan.sketchsample.fragment.Base64ImageTestFragment;
@@ -221,6 +224,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
                 menuClickListener.onClick(null);
                 adapter.notifyDataSetChanged();
+
+                EventBus.getDefault().post(new CacheCleanEvent());
             }
         });
         menuList.add(new InfoMenu("BitmapPool（点击清空）") {
@@ -237,6 +242,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 Sketch.with(getBaseContext()).getConfiguration().getBitmapPool().clear();
                 menuClickListener.onClick(null);
                 adapter.notifyDataSetChanged();
+
+                EventBus.getDefault().post(new CacheCleanEvent());
             }
         });
         menuList.add(new InfoMenu("磁盘缓存（点击清空）") {
@@ -262,6 +269,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                         super.onPostExecute(integer);
                         menuClickListener.onClick(null);
                         adapter.notifyDataSetChanged();
+
+                        EventBus.getDefault().post(new CacheCleanEvent());
                     }
                 }.execute(0);
             }

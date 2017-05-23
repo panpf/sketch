@@ -85,13 +85,11 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    public ProcessedCacheDataSource checkProcessedImageDiskCache(LoadRequest request) {
-        DiskCache diskCache = request.getConfiguration().getDiskCache();
-
-        ReentrantLock editLock = diskCache.getEditLock(request.getProcessedImageDiskCacheKey());
+    public ProcessedCacheDataSource checkProcessedImageDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+        ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
-        DiskCache.Entry diskCacheEntry = diskCache.get(request.getProcessedImageDiskCacheKey());
+        DiskCache.Entry diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
 
         editLock.unlock();
 

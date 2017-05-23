@@ -67,8 +67,8 @@ public class ImageRegionDecoder {
             throw new IllegalArgumentException("Unknown scheme uri: " + imageUri);
         }
 
-        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri,
-                uriScheme, uriScheme.crop(imageUri), null);
+        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri, uriScheme,
+                uriScheme.cropContent(imageUri), null, null);
 
         // 读取图片尺寸和类型
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();

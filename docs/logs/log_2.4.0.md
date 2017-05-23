@@ -11,6 +11,7 @@
 重构：
 * 移除DefaultImageDecoder，现在ImageDecoder是一个class可以直接使用，如果你有自定义实现ImageDecoder的现在需要直接继承ImageDecoder
 * DisplayListener.onCompleted(ImageFrom, String)参数改为DisplayListener.onCompleted(Drawable, ImageFrom, ImageAttrs)
+* ImagePreprocessor重构
 
 新功能：
 * 新增自动纠正图片方向功能 [点击了解更多](../wiki/correct_image_orientation.md)

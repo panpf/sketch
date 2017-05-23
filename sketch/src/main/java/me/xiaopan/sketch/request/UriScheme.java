@@ -22,24 +22,24 @@ package me.xiaopan.sketch.request;
 public enum UriScheme {
     NET("http://", "https://") {
         @Override
-        public String createUri(String uri) {
-            return uri;
+        public String createUri(String content) {
+            return content;
         }
 
         @Override
-        public String crop(String uri) {
+        public String cropContent(String uri) {
             return uri;
         }
     },
 
     FILE("/", "file://") {
         @Override
-        public String createUri(String uri) {
-            return uri;
+        public String createUri(String content) {
+            return content;
         }
 
         @Override
-        public String crop(String uri) {
+        public String cropContent(String uri) {
             String uriPrefix = getUriPrefix();
             if (uri.startsWith(uriPrefix)) {
                 return uri;
@@ -56,12 +56,12 @@ public enum UriScheme {
 
     CONTENT("content://") {
         @Override
-        public String createUri(String uri) {
-            return uri;
+        public String createUri(String content) {
+            return content;
         }
 
         @Override
-        public String crop(String uri) {
+        public String cropContent(String uri) {
             return uri;
         }
     },
@@ -76,7 +76,7 @@ public enum UriScheme {
         }
 
         @Override
-        public String crop(String uri) {
+        public String cropContent(String uri) {
             String uriPrefix = getUriPrefix();
             if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
@@ -101,7 +101,7 @@ public enum UriScheme {
         }
 
         @Override
-        public String crop(String uri) {
+        public String cropContent(String uri) {
             String uriPrefix = getUriPrefix();
             if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
@@ -118,13 +118,13 @@ public enum UriScheme {
 
     BASE64("data:image/", "data:img/") {
         @Override
-        public String createUri(String uri) {
-            return uri;
+        public String createUri(String content) {
+            return content;
         }
 
         @Override
-        public String crop(String uri) {
-            return uri;
+        public String cropContent(String uri) {
+            return uri.substring(uri.indexOf(";") + ";base64,".length());
         }
     };
 
@@ -154,7 +154,7 @@ public enum UriScheme {
 
     public abstract String createUri(String content);
 
-    public abstract String crop(String uri);
+    public abstract String cropContent(String uri);
 
     public String getUriPrefix() {
         return uriPrefix;

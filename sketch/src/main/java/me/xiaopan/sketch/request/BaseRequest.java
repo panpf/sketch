@@ -67,10 +67,10 @@ public abstract class BaseRequest {
     }
 
     /**
-     * 获取真实的uri，例如原始uri是asset://sample.png，那么真实uri就是sample.png
+     * 例如uri是asset://sample.png，那么uriContent就是sample.png
      */
-    public String getRealUri() {
-        return info.getRealUri();
+    public String getUriContent() {
+        return info.getUriContent();
     }
 
     /**

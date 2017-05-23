@@ -21,7 +21,7 @@ import me.xiaopan.sketch.state.OldStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
-import me.xiaopan.sketchsample.util.MyImagePreprocessor;
+import me.xiaopan.sketchsample.util.XpkIconPreprocessor;
 
 public class SketchManager {
     private Context context;
@@ -47,7 +47,7 @@ public class SketchManager {
         onEvent(new AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY));
 
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
-        sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
+        sketchConfiguration.getImagePreprocessor().addPreprocessor(new XpkIconPreprocessor());
         sketchConfiguration.setErrorTracker(new SampleErrorTracker(context));
 
         EventBus.getDefault().register(this);

@@ -260,7 +260,7 @@ public class DownloadRequest extends AsyncRequest {
             throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
         setStatus(Status.CONNECTING);
 
-        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRealUri());
+        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getUriContent());
         if (isCanceled()) {
             httpResponse.releaseConnection();
             if (SLogType.REQUEST.isEnabled()) {

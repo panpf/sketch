@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
@@ -34,7 +33,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -44,23 +43,21 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "ApkIconPreprocessor";
 
     @Override
-    public boolean match(LoadRequest request) {
-        return request.getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(request.getRealUri(), ".apk");
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uriContent, ".apk");
     }
 
     @Override
-    public PreProcessResult process(LoadRequest request) {
-        String realUri = request.getRealUri();
-
-        File apkFile = new File(realUri);
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+        File apkFile = new File(uriContent);
         if (!apkFile.exists()) {
             return null;
         }
         long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = realUri + "." + lastModifyTime;
+        String diskCacheKey = uriContent + "." + lastModifyTime;
 
-        Configuration configuration = request.getConfiguration();
-        DiskCache diskCache = configuration.getDiskCache();
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
             return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
@@ -69,22 +66,23 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readApkIcon(configuration.getContext(), diskCache, request, diskCacheKey, realUri);
+        PreProcessResult result = readApkIcon(context, imageUri, uriContent, options, diskCache, diskCacheKey);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readApkIcon(Context context, DiskCache diskCache, LoadRequest loadRequest, String diskCacheKey, String realUri) {
+    private PreProcessResult readApkIcon(Context context, String imageUri,
+                                         String uriContent, LoadOptions options, DiskCache diskCache, String diskCacheKey) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        boolean lowQualityImage = loadRequest.getOptions().isLowQualityImage();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, realUri, lowQualityImage, LOG_NAME, bitmapPool);
+        boolean lowQualityImage = options != null && options.isLowQualityImage();
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriContent, lowQualityImage, LOG_NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", loadRequest.getKey());
+                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", imageUri);
             }
             return null;
         }
@@ -137,7 +135,7 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", loadRequest.getKey());
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", imageUri);
                 }
                 return null;
             }
