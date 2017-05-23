@@ -15,6 +15,7 @@
 新功能：
 * 新增自动纠正图片方向功能 [点击了解更多](../wiki/correct_image_orientation.md)
 * ImageAttrs中新增exifOrientation属性，存储图片方向
+* SketchImageView增加redisplay()方法可在需要的时候重走显示流程
 
 SketchMonitor：
 * onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)

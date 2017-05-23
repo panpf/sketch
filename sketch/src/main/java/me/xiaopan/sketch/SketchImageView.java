@@ -541,6 +541,17 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
+    @Override
+    public boolean redisplay() {
+        DisplayParams displayParams = getDisplayParams();
+        String uri = displayParams != null ? displayParams.info.getUri() : null;
+        if (uri != null && !"".equals(uri)) {
+            Sketch.with(getContext()).display(uri, this).commit();
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 设置当暂停下载的时候点击显示图片
      */
@@ -668,6 +679,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置GIF标识图片
      */
+    @SuppressWarnings("unused")
     public void setShowGifFlag(int gifFlagDrawableResId) {
         //noinspection deprecation
         setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));

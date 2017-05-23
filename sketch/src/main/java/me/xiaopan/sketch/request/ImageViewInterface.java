@@ -147,4 +147,11 @@ public interface ImageViewInterface {
      * 是否支持大图片
      */
     boolean isSupportLargeImage();
+
+    /**
+     * 重新显示
+     *
+     * @return false：重新显示失败，之前没有显示过
+     */
+    boolean redisplay();
 }
