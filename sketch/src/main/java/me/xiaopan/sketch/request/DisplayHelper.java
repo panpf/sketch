@@ -623,7 +623,7 @@ public class DisplayHelper {
 
         // 根据URI和显示选项生成请求key
         if (displayInfo.getKey() == null) {
-            displayInfo.setKey(SketchUtils.makeRequestKey(displayInfo.getUri(), displayOptions));
+            displayInfo.setKey(SketchUtils.makeRequestKey(displayInfo.getUri(), displayInfo.getUriScheme(), displayOptions));
         }
     }
 

@@ -114,6 +114,18 @@ public enum UriScheme {
 
             return null;
         }
+    },
+
+    BASE64("data:image/", "data:img/") {
+        @Override
+        public String createUri(String uri) {
+            return uri;
+        }
+
+        @Override
+        public String crop(String uri) {
+            return uri;
+        }
     };
 
     private String uriPrefix;
@@ -128,18 +140,6 @@ public enum UriScheme {
         this.secondaryUriPrefix = secondaryUriPrefix;
     }
 
-    public abstract String createUri(String content);
-
-    public abstract String crop(String uri);
-
-    public String getUriPrefix() {
-        return uriPrefix;
-    }
-
-    public String getSecondaryUriPrefix() {
-        return secondaryUriPrefix;
-    }
-
     public static UriScheme valueOfUri(String uri) {
         if (uri != null && !"".equals(uri.trim())) {
             for (UriScheme uriScheme : values()) {
@@ -150,5 +150,17 @@ public enum UriScheme {
             }
         }
         return null;
+    }
+
+    public abstract String createUri(String content);
+
+    public abstract String crop(String uri);
+
+    public String getUriPrefix() {
+        return uriPrefix;
+    }
+
+    public String getSecondaryUriPrefix() {
+        return secondaryUriPrefix;
     }
 }

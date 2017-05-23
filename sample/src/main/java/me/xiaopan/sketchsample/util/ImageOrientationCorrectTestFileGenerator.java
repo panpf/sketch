@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.util.ExifInterface;
+import me.xiaopan.sketch.util.SketchMD5Utils;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.fragment.Base64ImageTestFragment;
 
 public class ImageOrientationCorrectTestFileGenerator {
 
@@ -38,6 +41,8 @@ public class ImageOrientationCorrectTestFileGenerator {
 
     private Config[] files = null;
     private AssetManager assetManager;
+    private File externalFilesDir;
+    private String base64ImageFilePath;
 
     public static ImageOrientationCorrectTestFileGenerator getInstance(Context context) {
         instance.init(context);
@@ -45,6 +50,10 @@ public class ImageOrientationCorrectTestFileGenerator {
     }
 
     private void init(Context context) {
+        if (files != null) {
+            return;
+        }
+
         if (assetManager == null) {
             assetManager = context.getAssets();
         }
@@ -54,15 +63,11 @@ public class ImageOrientationCorrectTestFileGenerator {
             updateVersion(context);
         }
 
-        if (files != null) {
-            return;
+        externalFilesDir = context.getExternalFilesDir(null);
+        if (externalFilesDir == null) {
+            externalFilesDir = context.getFilesDir();
         }
-
-        File filesDir = context.getExternalFilesDir(null);
-        if (filesDir == null) {
-            filesDir = context.getFilesDir();
-        }
-        String dirPath = filesDir.getPath() + File.separator + "TEST_ORIENTATION";
+        String dirPath = externalFilesDir.getPath() + File.separator + "TEST_ORIENTATION";
 
         files = new Config[configs.length];
         for (int w = 0; w < configs.length; w++) {
@@ -89,10 +94,11 @@ public class ImageOrientationCorrectTestFileGenerator {
     }
 
     public String[] getFilePaths() {
-        String[] filePaths = new String[files.length];
+        String[] filePaths = new String[files.length + 1];
         for (int w = 0; w < configs.length; w++) {
             filePaths[w] = files[w].filePath;
         }
+        filePaths[filePaths.length-1] = base64ImageFilePath;
         return filePaths;
     }
 
@@ -120,6 +126,8 @@ public class ImageOrientationCorrectTestFileGenerator {
                 }
 
                 sourceBitmap.recycle();
+
+                base64ImageFilePath = createBase64TestImage();
             }
         }).start();
     }
@@ -205,5 +213,50 @@ public class ImageOrientationCorrectTestFileGenerator {
             this.xScale = xScale;
             this.orientation = orientation;
         }
+    }
+
+    public String createBase64TestImage() {
+
+        String info = Base64ImageTestFragment.BASE64_IMAGE;
+
+        String type = info.substring("data:".length(), info.indexOf(";"));
+        String finalType = type.replaceFirst("img", "image");
+        System.out.println("mimeType: " + finalType);
+
+        String fileType = finalType.substring("iamge/".length());
+        System.out.println("fileType: " + fileType);
+
+        String dataInfo = info.substring("data:".length() + type.length() + ";base64,".length());
+        System.out.println("dataInfo: " + dataInfo);
+
+        byte[] data = Base64.decode(dataInfo, Base64.DEFAULT);
+
+        String md5 = SketchMD5Utils.md5(info);
+        File file = new File(externalFilesDir, String.format("%s.%s", md5, fileType));
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(data);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return file.getPath();
     }
 }

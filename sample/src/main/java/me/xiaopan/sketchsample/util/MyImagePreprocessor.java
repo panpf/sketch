@@ -28,20 +28,20 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class MyImagePreprocessor extends ImagePreprocessor {
 
     public MyImagePreprocessor() {
-        logName = "MyImagePreprocessor";
+        key = "MyImagePreprocessor";
     }
 
     @Override
-    public boolean isSpecific(LoadRequest loadRequest) {
-        return super.isSpecific(loadRequest) || isXpkFile(loadRequest);
+    public boolean match(LoadRequest request) {
+        return super.match(request) || isXpkFile(request);
     }
 
     @Override
-    public PreProcessResult process(LoadRequest loadRequest) {
-        if (isXpkFile(loadRequest)) {
-            return getXpkIconCacheFile(loadRequest);
+    public PreProcessResult process(LoadRequest request) {
+        if (isXpkFile(request)) {
+            return getXpkIconCacheFile(request);
         }
-        return super.process(loadRequest);
+        return super.process(request);
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
@@ -90,7 +90,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, logName, "not found icon.png in. %s", loadRequest.getKey());
+                SLog.w(SLogType.REQUEST, key, "not found icon.png in. %s", loadRequest.getKey());
             }
             return null;
         }
@@ -160,7 +160,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
                 return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, logName, "not found xpk icon cache file. %s", loadRequest.getKey());
+                    SLog.w(SLogType.REQUEST, key, "not found xpk icon cache file. %s", loadRequest.getKey());
                 }
                 return null;
             }

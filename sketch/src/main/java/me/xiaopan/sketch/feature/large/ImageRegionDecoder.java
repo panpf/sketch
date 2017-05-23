@@ -68,7 +68,7 @@ public class ImageRegionDecoder {
         }
 
         DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri,
-                uriScheme, uriScheme.crop(imageUri), null, "ImageRegionDecoder");
+                uriScheme, uriScheme.crop(imageUri), null);
 
         // 读取图片尺寸和类型
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();

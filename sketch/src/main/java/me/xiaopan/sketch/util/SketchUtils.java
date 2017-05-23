@@ -77,6 +77,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.UriScheme;
 
 public class SketchUtils {
 
@@ -993,12 +994,17 @@ public class SketchUtils {
     /**
      * 生成请求KEY
      *
-     * @param imageUri 图片地址
-     * @param options  选项
+     * @param imageUri  图片地址
+     * @param uriScheme UriScheme
+     * @param options   选项
      */
-    public static String makeRequestKey(String imageUri, DownloadOptions options) {
+    public static String makeRequestKey(String imageUri, UriScheme uriScheme, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
-        builder.append(imageUri);
+        if (uriScheme == UriScheme.BASE64) {
+            builder.append(SketchMD5Utils.md5(imageUri));
+        } else {
+            builder.append(imageUri);
+        }
         if (options != null) {
             options.makeKey(builder);
         }

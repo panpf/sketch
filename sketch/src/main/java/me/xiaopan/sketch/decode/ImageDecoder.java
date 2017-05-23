@@ -105,7 +105,7 @@ public class ImageDecoder implements Identifier {
      */
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         // Make date source
-        DataSource dataSource = DataSourceFactory.makeDataSourceByRequest(request, false, logName);
+        DataSource dataSource = DataSourceFactory.makeDataSourceByRequest(request, false);
 
         // Decode bounds and mime info
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();

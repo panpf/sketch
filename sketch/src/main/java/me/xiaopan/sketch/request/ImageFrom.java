@@ -39,4 +39,9 @@ public enum ImageFrom {
      * 内存缓存
      */
     MEMORY_CACHE,
+
+    /**
+     * 内存
+     */
+    MEMORY,
 }

@@ -300,7 +300,7 @@ public class LoadHelper {
 
         // 根据URI和加载选项生成请求ID
         if (loadInfo.getKey() == null) {
-            loadInfo.setKey(SketchUtils.makeRequestKey(loadInfo.getUri(), loadOptions));
+            loadInfo.setKey(SketchUtils.makeRequestKey(loadInfo.getUri(), loadInfo.getUriScheme(), loadOptions));
         }
     }
 

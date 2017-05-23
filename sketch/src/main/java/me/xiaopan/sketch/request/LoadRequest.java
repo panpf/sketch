@@ -27,7 +27,6 @@ import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.GifDecodeResult;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.feature.ProcessedImageCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -136,11 +135,6 @@ public class LoadRequest extends FreeRideDownloadRequest {
             }
             error(ErrorCause.DOWNLOAD_FAIL);
         }
-    }
-
-    public PreProcessResult doPreProcess() {
-        setStatus(Status.PRE_PROCESS);
-        return getConfiguration().getImagePreprocessor().process(this);
     }
 
     @Override

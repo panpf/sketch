@@ -136,7 +136,7 @@ public class DownloadHelper {
 
         // 根据URI和下载选项生成请求key
         if (downloadInfo.getKey() == null) {
-            downloadInfo.setKey(SketchUtils.makeRequestKey(downloadInfo.getUri(), downloadOptions));
+            downloadInfo.setKey(SketchUtils.makeRequestKey(downloadInfo.getUri(), downloadInfo.getUriScheme(), downloadOptions));
         }
     }
 

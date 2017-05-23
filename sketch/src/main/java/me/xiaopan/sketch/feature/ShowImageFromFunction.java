@@ -23,8 +23,8 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -36,10 +36,12 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <li>黄色：磁盘缓存</li>
  * <li>蓝色：本地</li>
  * <li>绿色：内存缓存
+ * <li>紫色：内存
  * </ul>
  */
 public class ShowImageFromFunction extends SketchImageView.Function {
-    private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
+    private static final int FROM_FLAG_COLOR_MEMORY = 0x88A020F0;
+    private static final int FROM_FLAG_COLOR_MEMORY_CACHE = 0x8800FF00;
     private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
     private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
@@ -80,7 +82,7 @@ public class ShowImageFromFunction extends SketchImageView.Function {
         }
         switch (imageFrom) {
             case MEMORY_CACHE:
-                imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY);
+                imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY_CACHE);
                 break;
             case DISK_CACHE:
                 imageFromPaint.setColor(FROM_FLAG_COLOR_DISK_CACHE);
@@ -91,13 +93,16 @@ public class ShowImageFromFunction extends SketchImageView.Function {
             case LOCAL:
                 imageFromPaint.setColor(FROM_FLAG_COLOR_LOCAL);
                 break;
+            case MEMORY:
+                imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY);
+                break;
             default:
                 return;
         }
         canvas.drawPath(imageFromPath, imageFromPaint);
     }
 
-    private void initImageFromPath(){
+    private void initImageFromPath() {
         if (imageFromPath == null) {
             imageFromPath = new Path();
         } else {

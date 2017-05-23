@@ -162,7 +162,7 @@ public class DownloadOptions {
      * 生成选项KEY，用于组装请求或内存缓存key
      *
      * @see SketchImageView#getOptionsKey()
-     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, DownloadOptions)
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriScheme, DownloadOptions)
      */
     public StringBuilder makeKey(StringBuilder builder) {
         return builder;

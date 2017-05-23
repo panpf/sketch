@@ -309,11 +309,6 @@ public abstract class BaseRequest {
         CHECK_MEMORY_CACHE("checkMemoryCache"),
 
         /**
-         * 预处理
-         */
-        PRE_PROCESS("preProcess"),
-
-        /**
          * 解码中
          */
         DECODING("decoding"),

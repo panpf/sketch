@@ -36,7 +36,9 @@ import me.xiaopan.sketch.request.UriScheme;
 
 public class DataSourceFactory {
 
-    public static DataSource makeDataSourceByRequest(LoadRequest request, boolean ignoreProcessedCache, String logName) throws DecodeException {
+    private static final String LOG_NAME = "DataSourceFactory";
+
+    public static DataSource makeDataSourceByRequest(LoadRequest request, boolean ignoreProcessedCache) throws DecodeException {
         // 缓存的处理过的图片，可直接读取
         if (!ignoreProcessedCache) {
             ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
@@ -48,10 +50,10 @@ public class DataSourceFactory {
             }
         }
 
-        // 特殊文件的预处理
+        // 特殊文件预处理
         ImagePreprocessor imagePreprocessor = request.getConfiguration().getImagePreprocessor();
-        if (imagePreprocessor.isSpecific(request)) {
-            PreProcessResult prePrecessResult = request.doPreProcess();
+        if (imagePreprocessor.match(request)) {
+            PreProcessResult prePrecessResult = imagePreprocessor.process(request);
             if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
                 return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
             }
@@ -60,16 +62,16 @@ public class DataSourceFactory {
                 return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             }
 
-            SLog.w(SLogType.REQUEST, logName, "pre process result is null", request.getUri());
+            SLog.w(SLogType.REQUEST, LOG_NAME, "pre process result is null", request.getUri());
             throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
         }
 
         return makeDataSource(request.getContext(), request.getUri(), request.getUriScheme(),
-                request.getRealUri(), request.getDownloadResult(), logName);
+                request.getRealUri(), request.getDownloadResult());
     }
 
     public static DataSource makeDataSource(Context context, String imageUri, UriScheme uriScheme, String realUri,
-                                            DownloadResult downloadResult, String logName) throws DecodeException {
+                                            DownloadResult downloadResult) throws DecodeException {
         if (uriScheme == UriScheme.NET) {
             if (downloadResult != null) {
                 DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
@@ -82,7 +84,7 @@ public class DataSourceFactory {
                     return new ByteArrayDataSource(imageDataArray, downloadResult.getImageFrom());
                 }
 
-                SLog.w(SLogType.REQUEST, logName, "download result exception. %s", imageUri);
+                SLog.w(SLogType.REQUEST, LOG_NAME, "download result exception. %s", imageUri);
                 throw new DecodeException("Download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
             } else {
                 DiskCache.Entry diskCacheEntry = Sketch.with(context).getConfiguration().getDiskCache().get(imageUri);
@@ -110,7 +112,7 @@ public class DataSourceFactory {
             return new DrawableDataSource(context, Integer.valueOf(realUri));
         }
 
-        SLog.w(SLogType.REQUEST, logName, "unknown uri is %s", imageUri);
+        SLog.w(SLogType.REQUEST, LOG_NAME, "unknown uri is %s", imageUri);
         throw new DecodeException(String.format("Unknown uri is %s", imageUri), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
     }
 }

@@ -637,7 +637,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 设置是否显示图片来源，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
+     * 设置是否显示图片来源，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存加载的
      */
     public void setShowImageFrom(boolean showImageFrom) {
         ShowImageFromFunction oldShowImageFromFunction = showImageFromFunction;
