@@ -65,6 +65,7 @@ import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
 import me.xiaopan.sketchsample.fragment.Base64ImageTestFragment;
+import me.xiaopan.sketchsample.fragment.ImageOrientationTestHomeFragment;
 import me.xiaopan.sketchsample.fragment.ImageProcessorTestFragment;
 import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
 import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
@@ -116,7 +117,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(BuildConfig.DEBUG ? Page.IMAGE_PROCESSOR_TEST : Page.LARGE_IMAGE);
+        switchPage(BuildConfig.DEBUG ? Page.IMAGE_ORIENTATION_TEST : Page.LARGE_IMAGE);
     }
 
     private void initViews() {
@@ -472,6 +473,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         IMAGE_SHAPER_TESt("ImageShaper测试", ImageShaperTestFragment.class, true, false),
         REPEAT_LOAD_OR_DOWNLOAD_TEST("重复加载/下载测试", RepeatLoadOrDownloadTestFragment.class, true, false),
         IN_BITMAP_TESt("inBitmap测试", InBitmapTestFragment.class, true, false),
+        IMAGE_ORIENTATION_TEST("自动纠正图片方向测试", ImageOrientationTestHomeFragment.class, true, false),
         BASE64_IMAGE_TESt("Base64图片测试", Base64ImageTestFragment.class, true, false),
         OTHER_TEST("其它测试", OtherTestFragment.class, true, !BuildConfig.DEBUG),;
 

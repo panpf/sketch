@@ -89,7 +89,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
             if (itemSize > 0) {
                 ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
                 layoutParams.width = itemSize;
-                layoutParams.height = itemSize / 2;
+                layoutParams.height = itemSize;
                 imageView.setLayoutParams(layoutParams);
             }
 

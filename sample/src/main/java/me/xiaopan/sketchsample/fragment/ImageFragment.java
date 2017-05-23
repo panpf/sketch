@@ -582,6 +582,11 @@ public class ImageFragment extends MyFragment {
                     e.printStackTrace();
                 }
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
+            } else if (uriScheme == UriScheme.BASE64) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
+                if (diskCacheEntry != null) {
+                    imageLength = diskCacheEntry.getFile().length();
+                }
             }
 
             String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
@@ -799,6 +804,14 @@ public class ImageFragment extends MyFragment {
 
             if (uriScheme == UriScheme.NET) {
                 DiskCache.Entry diskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(imageUri);
+                if (diskCacheEntry != null) {
+                    return diskCacheEntry.getFile();
+                } else {
+                    Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
+                    return null;
+                }
+            } else if (uriScheme == UriScheme.BASE64) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(imageUri);
                 if (diskCacheEntry != null) {
                     return diskCacheEntry.getFile();
                 } else {

@@ -247,6 +247,11 @@ public class MyImageView extends SketchImageView {
                     e.printStackTrace();
                 }
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
+            } else if (uriScheme == UriScheme.BASE64) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
+                if (diskCacheEntry != null) {
+                    imageLength = diskCacheEntry.getFile().length();
+                }
             }
 
             String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
