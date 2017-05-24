@@ -77,7 +77,7 @@ public class InBitmapTestFragment extends MyFragment {
         DataSource dataSource;
         try {
             dataSource = DataSourceFactory.makeDataSource(context, imageUri, downloadInfo.getUriScheme(),
-                    downloadInfo.getUriContent(), null, null, downloadInfo.getDiskCacheKey());
+                    downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
         } catch (DecodeException e) {
             e.printStackTrace();
             return null;

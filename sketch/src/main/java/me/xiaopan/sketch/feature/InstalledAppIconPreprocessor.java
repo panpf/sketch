@@ -35,7 +35,6 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -49,14 +48,15 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
     private static final String LOG_NAME = "InstalledAppIconPreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         return uriScheme == UriScheme.FILE && uriContent.startsWith(INSTALLED_APP_URI_HOST);
     }
 
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
+        // TODO: 2017/5/24 使用正规diskcachekey
         //noinspection UnnecessaryLocalVariable
         String diskCacheKey = imageUri;
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
@@ -67,13 +67,13 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readInstalledAppIcon(context, imageUri, options, diskCache, diskCacheKey);
+        PreProcessResult result = readInstalledAppIcon(context, imageUri, diskCache, diskCacheKey);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readInstalledAppIcon(Context context, String imageUri, LoadOptions options, DiskCache diskCache, String diskCacheKey) {
+    private PreProcessResult readInstalledAppIcon(Context context, String imageUri, DiskCache diskCache, String diskCacheKey) {
         Uri uri = Uri.parse(imageUri);
 
         String packageName = uri.getQueryParameter(INSTALLED_APP_URI_PARAM_PACKAGE_NAME);
@@ -92,8 +92,7 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
 
         String apkFilePath = packageInfo.applicationInfo.sourceDir;
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        boolean lowQualityImage = options != null && options.isLowQualityImage();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, lowQualityImage, LOG_NAME, bitmapPool);
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, false, LOG_NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }

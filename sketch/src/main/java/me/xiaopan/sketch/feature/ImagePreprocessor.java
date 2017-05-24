@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
@@ -87,12 +86,11 @@ public class ImagePreprocessor implements Identifier {
      * @param imageUri   图片uri
      * @param uriScheme  图片类型
      * @param uriContent 图片uri内容
-     * @param options    加载配置
      * @return true：需要预处理，紧接着会调用process(LoadRequest)方法处理
      */
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         for (Preprocessor preprocessor : preprocessorList) {
-            if (preprocessor.match(context, imageUri, uriScheme, uriContent, options)) {
+            if (preprocessor.match(context, imageUri, uriScheme, uriContent)) {
                 return true;
             }
         }
@@ -107,13 +105,12 @@ public class ImagePreprocessor implements Identifier {
      * @param imageUri   图片uri
      * @param uriScheme  图片类型
      * @param uriContent 图片uri内容
-     * @param options    加载配置
      * @return 预处理结果
      */
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         for (Preprocessor preprocessor : preprocessorList) {
-            if (preprocessor.match(context, imageUri, uriScheme, uriContent, options)) {
-                return preprocessor.process(context, imageUri, uriScheme, uriContent, options);
+            if (preprocessor.match(context, imageUri, uriScheme, uriContent)) {
+                return preprocessor.process(context, imageUri, uriScheme, uriContent);
             }
         }
 
@@ -126,8 +123,8 @@ public class ImagePreprocessor implements Identifier {
     }
 
     public interface Preprocessor {
-        boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options);
+        boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent);
 
-        PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options);
+        PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent);
     }
 }

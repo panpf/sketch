@@ -30,7 +30,6 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -40,15 +39,16 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "Base64ImagePreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         return uriScheme == UriScheme.BASE64;
     }
 
     // TODO: 2017/5/24  String imageUri, UriScheme uriScheme, String uriContent风转成uri info
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
+        // TODO: 2017/5/24 使用正规diskcachekey
         //noinspection UnnecessaryLocalVariable
         String diskCacheKey = uriContent;
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);

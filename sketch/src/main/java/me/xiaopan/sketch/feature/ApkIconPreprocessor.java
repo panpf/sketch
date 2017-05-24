@@ -33,7 +33,6 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -43,12 +42,12 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "ApkIconPreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uriContent, ".apk");
     }
 
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         File apkFile = new File(uriContent);
         if (!apkFile.exists()) {
             return null;
@@ -66,18 +65,16 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readApkIcon(context, imageUri, uriContent, options, diskCache, diskCacheKey);
+        PreProcessResult result = readApkIcon(context, imageUri, uriContent, diskCache, diskCacheKey);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    // TODO: 2017/5/24 不再依赖于LoadOptions，因为这里是在预处理图片，按最高规格来即可
     private PreProcessResult readApkIcon(Context context, String imageUri,
-                                         String uriContent, LoadOptions options, DiskCache diskCache, String diskCacheKey) {
+                                         String uriContent, DiskCache diskCache, String diskCacheKey) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        boolean lowQualityImage = options != null && options.isLowQualityImage();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriContent, lowQualityImage, LOG_NAME, bitmapPool);
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriContent, false, LOG_NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }

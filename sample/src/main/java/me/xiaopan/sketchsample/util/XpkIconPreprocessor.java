@@ -19,7 +19,6 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -32,12 +31,12 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "XpkIconPreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uriContent, ".xpk");
     }
 
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
+    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
         File xpkFile = new File(uriContent);
         if (!xpkFile.exists()) {
             return null;
