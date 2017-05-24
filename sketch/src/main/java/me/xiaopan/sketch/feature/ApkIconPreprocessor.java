@@ -72,6 +72,7 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         return result;
     }
 
+    // TODO: 2017/5/24 不再依赖于LoadOptions，因为这里是在预处理图片，按最高规格来即可
     private PreProcessResult readApkIcon(Context context, String imageUri,
                                          String uriContent, LoadOptions options, DiskCache diskCache, String diskCacheKey) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();

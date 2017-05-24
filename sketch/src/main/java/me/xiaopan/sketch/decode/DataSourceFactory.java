@@ -48,11 +48,13 @@ public class DataSourceFactory {
      * @param uriContent     uri内容
      * @param options        加载选项
      * @param downloadResult 下载结果
+     * @param diskCacheKey   磁盘缓存key
      * @return DataSource
      * @throws DecodeException 无法创建数据源
      */
+    // TODO: 2017/5/24 改造成依赖DownloadInfo
     public static DataSource makeDataSource(Context context, String imageUri, UriScheme uriScheme, String uriContent,
-                                            LoadOptions options, DownloadResult downloadResult) throws DecodeException {
+                                            LoadOptions options, DownloadResult downloadResult, String diskCacheKey) throws DecodeException {
         // 特殊文件预处理
         Configuration configuration = Sketch.with(context).getConfiguration();
         ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
@@ -86,7 +88,7 @@ public class DataSourceFactory {
                 SLog.w(SLogType.REQUEST, LOG_NAME, "download result exception. %s", imageUri);
                 throw new DecodeException("Download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
             } else {
-                DiskCache.Entry diskCacheEntry = Sketch.with(context).getConfiguration().getDiskCache().get(imageUri);
+                DiskCache.Entry diskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
                 if (diskCacheEntry != null) {
                     return new CacheFileDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
                 }
@@ -123,25 +125,26 @@ public class DataSourceFactory {
      * @param uriScheme                  图片类型
      * @param uriContent                 uri内容
      * @param options                    加载选项
+     * @param diskCacheKey   磁盘缓存key
      * @param downloadResult             下载结果
      * @param processedImageDiskCacheKey 已处理缓存key
      * @return DataSource
      * @throws DecodeException 无法创建数据源
      */
     public static DataSource processedCacheFirstMakeDataSource(Context context, String imageUri, UriScheme uriScheme,
-                                                               String uriContent, LoadOptions options, DownloadResult downloadResult,
+                                                               String uriContent, LoadOptions options, DownloadResult downloadResult, String diskCacheKey,
                                                                String processedImageDiskCacheKey) throws DecodeException {
         Configuration configuration = Sketch.with(context).getConfiguration();
         ProcessedImageCache processedImageCache = configuration.getProcessedImageCache();
 
         if (processedImageCache.canUse(options)) {
             DiskCache diskCache = configuration.getDiskCache();
-            DataSource dataSource = processedImageCache.checkProcessedImageDiskCache(diskCache, processedImageDiskCacheKey);
+            DataSource dataSource = processedImageCache.getDiskCache(diskCache, processedImageDiskCacheKey);
             if (dataSource != null) {
                 return dataSource;
             }
         }
 
-        return makeDataSource(context, imageUri, uriScheme, uriContent, options, downloadResult);
+        return makeDataSource(context, imageUri, uriScheme, uriContent, options, downloadResult, diskCacheKey);
     }
 }

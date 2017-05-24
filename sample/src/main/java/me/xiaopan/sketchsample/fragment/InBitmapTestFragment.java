@@ -1,7 +1,6 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,10 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
@@ -26,8 +22,11 @@ import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DataSourceFactory;
+import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.request.DownloadInfo;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
@@ -70,45 +69,26 @@ public class InBitmapTestFragment extends MyFragment {
     private View currentMode;
 
     private static Bitmap decodeImage(Context context, String imageUri, BitmapFactory.Options options) {
-        UriScheme uriScheme = UriScheme.valueOfUri(imageUri);
-        if (uriScheme == null) {
+        DownloadInfo downloadInfo = new DownloadInfo();
+        downloadInfo.reset(imageUri);
+        if (downloadInfo.getUriScheme() == null) {
             return null;
         }
-
-        InputStream inputStream;
-        if (uriScheme == UriScheme.FILE) {
-            try {
-                inputStream = new FileInputStream(imageUri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else if (uriScheme == UriScheme.ASSET) {
-            try {
-                inputStream = context.getAssets().open(UriScheme.ASSET.cropContent(imageUri));
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else if (uriScheme == UriScheme.DRAWABLE) {
-            try {
-                inputStream = context.getResources().openRawResource(Integer.valueOf(UriScheme.DRAWABLE.cropContent(imageUri)));
-            } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return null;
-        }
-
-        Bitmap bitmap;
+        DataSource dataSource;
         try {
-            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-        } finally {
-            SketchUtils.close(inputStream);
+            dataSource = DataSourceFactory.makeDataSource(context, imageUri, downloadInfo.getUriScheme(),
+                    downloadInfo.getUriContent(), null, null, downloadInfo.getDiskCacheKey());
+        } catch (DecodeException e) {
+            e.printStackTrace();
+            return null;
         }
 
-        return bitmap;
+        try {
+            return ImageDecodeUtils.decodeBitmap(dataSource, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

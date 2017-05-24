@@ -44,6 +44,7 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
         return uriScheme == UriScheme.BASE64;
     }
 
+    // TODO: 2017/5/24  String imageUri, UriScheme uriScheme, String uriContent风转成uri info
     @Override
     public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent, LoadOptions options) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();

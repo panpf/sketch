@@ -26,7 +26,6 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ProcessedCacheDataSource;
 import me.xiaopan.sketch.request.LoadOptions;
-import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -70,13 +69,11 @@ public class ProcessedImageCache implements Identifier {
         return inSampleSize >= 8;
     }
 
-    public boolean existProcessedImageDiskCache(LoadRequest request) {
-        DiskCache diskCache = request.getConfiguration().getDiskCache();
-
-        ReentrantLock editLock = diskCache.getEditLock(request.getProcessedImageDiskCacheKey());
+    public boolean checkDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+        ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
-        boolean exist = diskCache.exist(request.getProcessedImageDiskCacheKey());
+        boolean exist = diskCache.exist(processedImageDiskCacheKey);
 
         editLock.unlock();
         return exist;
@@ -85,7 +82,7 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    public ProcessedCacheDataSource checkProcessedImageDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+    public ProcessedCacheDataSource getDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
@@ -103,19 +100,17 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 保存bitmap到磁盘缓存
      */
-    public void saveProcessedImageToDiskCache(LoadRequest request, Bitmap bitmap) {
-        DiskCache diskCache = request.getConfiguration().getDiskCache();
-
-        ReentrantLock editLock = diskCache.getEditLock(request.getProcessedImageDiskCacheKey());
+    public void saveToDiskCache(DiskCache diskCache, String processedImageDiskCacheKey, Bitmap bitmap) {
+        ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
-        DiskCache.Entry diskCacheEntry = diskCache.get(request.getProcessedImageDiskCacheKey());
+        DiskCache.Entry diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
 
         if (diskCacheEntry != null) {
             diskCacheEntry.delete();
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(request.getProcessedImageDiskCacheKey());
+        DiskCache.Editor diskCacheEditor = diskCache.edit(processedImageDiskCacheKey);
         if (diskCacheEditor != null) {
             BufferedOutputStream outputStream = null;
             try {

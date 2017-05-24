@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
+// TODO: 2017/5/24 弄一个单独的出去，不再继承自dOWNLOADiNFO
 public class LoadInfo extends DownloadInfo {
 
     public LoadInfo() {

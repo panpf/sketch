@@ -44,6 +44,7 @@ public class ProcessedResultCacheProcessor implements ResultProcessor {
         }
 
         BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
-        processedImageCache.saveProcessedImageToDiskCache(request, bitmapDecodeResult.getBitmap());
+        processedImageCache.saveToDiskCache(request.getConfiguration().getDiskCache(),
+                request.getProcessedImageDiskCacheKey(), bitmapDecodeResult.getBitmap());
     }
 }

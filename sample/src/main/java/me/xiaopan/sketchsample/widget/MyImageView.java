@@ -24,6 +24,7 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
+import me.xiaopan.sketch.request.DownloadInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
@@ -227,15 +228,16 @@ public class MyImageView extends SketchImageView {
             messageBuilder.append(sketchDrawable.getUri());
 
             long imageLength = 0;
-            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getUri());
-            if (uriScheme == UriScheme.FILE) {
+            DownloadInfo downloadInfo = new DownloadInfo();
+            downloadInfo.reset(sketchDrawable.getUri());
+            if (downloadInfo.getUriScheme() == UriScheme.FILE) {
                 imageLength = new File(UriScheme.FILE.cropContent(sketchDrawable.getUri())).length();
-            } else if (uriScheme == UriScheme.NET) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
+            } else if (downloadInfo.getUriScheme() == UriScheme.NET) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
                 if (diskCacheEntry != null) {
                     imageLength = diskCacheEntry.getFile().length();
                 }
-            } else if (uriScheme == UriScheme.ASSET) {
+            } else if (downloadInfo.getUriScheme() == UriScheme.ASSET) {
                 AssetFileDescriptor assetFileDescriptor = null;
                 try {
                     assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.cropContent(sketchDrawable.getUri()));
@@ -243,10 +245,10 @@ public class MyImageView extends SketchImageView {
                     e.printStackTrace();
                 }
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (uriScheme == UriScheme.DRAWABLE) {
+            } else if (downloadInfo.getUriScheme() == UriScheme.DRAWABLE) {
                 AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.cropContent(sketchDrawable.getUri())));
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (uriScheme == UriScheme.CONTENT) {
+            } else if (downloadInfo.getUriScheme() == UriScheme.CONTENT) {
                 AssetFileDescriptor assetFileDescriptor = null;
                 try {
                     assetFileDescriptor = getContext().getContentResolver().openAssetFileDescriptor(Uri.parse(sketchDrawable.getUri()), "r");
@@ -254,8 +256,8 @@ public class MyImageView extends SketchImageView {
                     e.printStackTrace();
                 }
                 imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (uriScheme == UriScheme.BASE64) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
+            } else if (downloadInfo.getUriScheme() == UriScheme.BASE64) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
                 if (diskCacheEntry != null) {
                     imageLength = diskCacheEntry.getFile().length();
                 }

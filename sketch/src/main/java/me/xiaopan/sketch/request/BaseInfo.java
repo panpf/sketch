@@ -31,7 +31,7 @@ public abstract class BaseInfo {
 
     }
 
-    void reset(String uri) {
+    public void reset(String uri) {
         if (uri != null) {
             this.uri = uri;
             this.uriScheme = UriScheme.valueOfUri(uri);

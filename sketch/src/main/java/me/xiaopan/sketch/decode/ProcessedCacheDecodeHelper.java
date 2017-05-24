@@ -99,7 +99,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         DataSource originFileDataSource = null;
         try {
             originFileDataSource = DataSourceFactory.makeDataSource(request.getContext(), request.getUri(),
-                    request.getUriScheme(), request.getUriContent(), request.getOptions(), request.getDownloadResult());
+                    request.getUriScheme(), request.getUriContent(), request.getOptions(), request.getDownloadResult(), request.getDiskCacheKey());
         } catch (DecodeException e) {
             e.printStackTrace();
         }

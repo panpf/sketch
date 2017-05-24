@@ -112,7 +112,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
         } else {
             ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
             // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
-            if (processedImageCache.canUse(getOptions()) && processedImageCache.existProcessedImageDiskCache(this)) {
+            if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(
+                    getConfiguration().getDiskCache(), getProcessedImageDiskCacheKey())) {
                 if (SLogType.REQUEST.isEnabled()) {
                     printLogD("local thread", "disk cache image", "runDispatch");
                 }

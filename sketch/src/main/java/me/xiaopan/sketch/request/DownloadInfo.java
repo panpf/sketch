@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
+// TODO: 2017/5/24 改造成专门的uri解析器，参考Message搞一个obtain
 public class DownloadInfo extends BaseInfo {
 
     public DownloadInfo() {
@@ -29,6 +30,6 @@ public class DownloadInfo extends BaseInfo {
      * 获取磁盘缓存key
      */
     public String getDiskCacheKey() {
-        return getUri();
+        return getUriScheme() == UriScheme.BASE64 ? getUriContent() : getUri();
     }
 }
