@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -21,7 +20,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,8 +28,10 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DataSourceFactory;
+import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -57,10 +57,7 @@ import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
-import me.xiaopan.sketchsample.util.SaveAssetImageAsyncTask;
-import me.xiaopan.sketchsample.util.SaveContentImageAsyncTask;
 import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
-import me.xiaopan.sketchsample.util.SaveResImageAsyncTask;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -555,41 +552,20 @@ public class ImageFragment extends MyFragment {
             messageBuilder.append("\n");
             messageBuilder.append(sketchDrawable.getUri());
 
-            long imageLength = 0;
             DownloadInfo downloadInfo = new DownloadInfo();
             downloadInfo.reset(sketchDrawable.getUri());
-            // TODO: 2017/5/24 改造DataSource提供获取文件长度的功能，像这种的就全部替换一下
-            if (downloadInfo.getUriScheme() == UriScheme.FILE) {
-                imageLength = new File(UriScheme.FILE.cropContent(sketchDrawable.getUri())).length();
-            } else if (downloadInfo.getUriScheme() == UriScheme.NET) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    imageLength = diskCacheEntry.getFile().length();
-                }
-            } else if (downloadInfo.getUriScheme() == UriScheme.ASSET) {
-                AssetFileDescriptor assetFileDescriptor = null;
-                try {
-                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.cropContent(sketchDrawable.getUri()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (downloadInfo.getUriScheme() == UriScheme.DRAWABLE) {
-                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.cropContent(sketchDrawable.getUri())));
-                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (downloadInfo.getUriScheme() == UriScheme.CONTENT) {
-                AssetFileDescriptor assetFileDescriptor = null;
-                try {
-                    assetFileDescriptor = getContext().getContentResolver().openAssetFileDescriptor(Uri.parse(sketchDrawable.getUri()), "r");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (downloadInfo.getUriScheme() == UriScheme.BASE64) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    imageLength = diskCacheEntry.getFile().length();
-                }
+            DataSource dataSource = null;
+            try {
+                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
+                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+            } catch (DecodeException e) {
+                e.printStackTrace();
+            }
+            long imageLength = 0;
+            try {
+                imageLength = dataSource != null ? dataSource.getLength() : 0;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
@@ -803,29 +779,26 @@ public class ImageFragment extends MyFragment {
             DownloadInfo downloadInfo = new DownloadInfo();
             downloadInfo.reset(imageUri);
             if (downloadInfo.getUriScheme() == null) {
+                Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return null;
             }
 
-            if (downloadInfo.getUriScheme() == UriScheme.NET) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    return diskCacheEntry.getFile();
-                } else {
-                    Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
-                    return null;
-                }
-            } else if (downloadInfo.getUriScheme() == UriScheme.BASE64) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    return diskCacheEntry.getFile();
-                } else {
-                    Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
-                    return null;
-                }
-            } else if (downloadInfo.getUriScheme() == UriScheme.FILE) {
-                return new File(UriScheme.FILE.cropContent(imageUri));
-            } else {
-                Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
+            DataSource dataSource = null;
+            try {
+                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
+                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+            } catch (DecodeException e) {
+                e.printStackTrace();
+            }
+            if (dataSource == null) {
+                Toast.makeText(getActivity(), "图片还没有准备好", Toast.LENGTH_LONG).show();
+                return null;
+            }
+
+            try {
+                return dataSource.getFile(getContext().getExternalCacheDir(), null);
+            } catch (IOException e) {
+                e.printStackTrace();
                 return null;
             }
         }
@@ -840,6 +813,7 @@ public class ImageFragment extends MyFragment {
 
             File imageFile = getImageFile(imageUri);
             if (imageFile == null) {
+                Toast.makeText(getActivity(), "图片还没有准备好", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -866,6 +840,7 @@ public class ImageFragment extends MyFragment {
 
             File imageFile = getImageFile(imageUri);
             if (imageFile == null) {
+                Toast.makeText(getActivity(), "图片还没有准备好", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -893,24 +868,29 @@ public class ImageFragment extends MyFragment {
 
             DownloadInfo downloadInfo = new DownloadInfo();
             downloadInfo.reset(imageUri);
-            if (downloadInfo.getUriScheme() == UriScheme.NET) {
-                DiskCache.Entry imageFile3DiskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (imageFile3DiskCacheEntry != null) {
-                    new SaveImageAsyncTask(getActivity(), imageFile3DiskCacheEntry.getFile(), imageUri).execute("");
-                } else {
-                    Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
-                }
-            } else if (downloadInfo.getUriScheme() == UriScheme.ASSET) {
-                new SaveAssetImageAsyncTask(getActivity(), downloadInfo.getUriContent()).execute("");
-            } else if (downloadInfo.getUriScheme() == UriScheme.CONTENT) {
-                new SaveContentImageAsyncTask(getActivity(), Uri.parse(imageUri)).execute("");
-            } else if (downloadInfo.getUriScheme() == UriScheme.DRAWABLE) {
-                new SaveResImageAsyncTask(getActivity(), Integer.valueOf(downloadInfo.getUriContent())).execute("");
-            } else if (downloadInfo.getUriScheme() == UriScheme.FILE) {
-                Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
-            } else {
+
+            if (downloadInfo.getUriScheme() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
             }
+
+            if (downloadInfo.getUriScheme() == UriScheme.FILE) {
+                Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            DataSource dataSource = null;
+            try {
+                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
+                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+            } catch (DecodeException e) {
+                e.printStackTrace();
+            }
+            if (dataSource == null) {
+                Toast.makeText(getActivity(), "图片还没有准备好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            new SaveImageAsyncTask(getActivity(), dataSource, downloadInfo.getUriContent()).execute("");
         }
 
         private String parseFileType(String fileName) {

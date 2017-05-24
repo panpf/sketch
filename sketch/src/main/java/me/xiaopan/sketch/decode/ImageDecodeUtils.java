@@ -121,7 +121,7 @@ public class ImageDecodeUtils {
         }
 
         if (dataSource instanceof FileDataSource) {
-            File file = ((FileDataSource) dataSource).getFile();
+            File file = ((FileDataSource) dataSource).getFile(null, null);
 
             SLog.e(SLogType.REQUEST, logName, "decode failed. filePath=%s, fileLength=%d",
                     file.getPath(), file.exists() ? file.length() : 0);

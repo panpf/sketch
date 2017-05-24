@@ -31,6 +31,7 @@ public class FileDataSource implements DataSource {
     protected String logName = "FileDataSource";
 
     private File file;
+    private long length = -1;
 
     public FileDataSource(File file) {
         this.file = file;
@@ -42,13 +43,18 @@ public class FileDataSource implements DataSource {
     }
 
     @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    public synchronized long getLength() throws IOException {
+        if (length >= 0) {
+            return length;
         }
+
+        length = file.length();
+        return length;
+    }
+
+    @Override
+    public File getFile(File outDir, String outName) {
+        return file;
     }
 
     @Override
@@ -56,7 +62,13 @@ public class FileDataSource implements DataSource {
         return ImageFrom.LOCAL;
     }
 
-    File getFile() {
-        return file;
+    @Override
+    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
+        try {
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

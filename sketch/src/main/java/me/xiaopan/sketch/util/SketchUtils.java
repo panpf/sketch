@@ -24,8 +24,10 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -43,6 +45,7 @@ import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Base64;
 import android.view.ViewGroup;
 
 import java.io.Closeable;
@@ -68,6 +71,8 @@ import javax.microedition.khronos.egl.EGLSurface;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -241,6 +246,18 @@ public class SketchUtils {
 
         try {
             closeable.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void close(AssetFileDescriptor fileDescriptor) {
+        if (fileDescriptor == null) {
+            return;
+        }
+
+        try {
+            fileDescriptor.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1187,5 +1204,22 @@ public class SketchUtils {
 
     public static boolean isDisabledARGB4444() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    public static String generatorTempFileName(DataSource dataSource, String uri) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        try {
+            ImageDecodeUtils.decodeBitmap(dataSource, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Base64.encodeToString(uri.getBytes(), Base64.DEFAULT);
+        }
+
+        if (options.outMimeType == null || !options.outMimeType.startsWith("image/")) {
+            return Base64.encodeToString(uri.getBytes(), Base64.DEFAULT);
+        }
+
+        return String.format("%s.%s", Base64.encodeToString(uri.getBytes(), Base64.DEFAULT), options.outMimeType.replace("image/", ""));
     }
 }

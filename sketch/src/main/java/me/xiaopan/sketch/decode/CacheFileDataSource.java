@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.decode;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ public class CacheFileDataSource implements DataSource {
 
     private DiskCache.Entry diskCacheEntry;
     private ImageFrom imageFrom;
+    private long length = -1;
 
     public CacheFileDataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
@@ -45,6 +47,30 @@ public class CacheFileDataSource implements DataSource {
     }
 
     @Override
+    public long getLength() throws IOException {
+        if (length >= 0) {
+            return length;
+        }
+
+        length = diskCacheEntry.getFile().length();
+        return length;
+    }
+
+    @Override
+    public File getFile(File outDir, String outName) {
+        return diskCacheEntry.getFile();
+    }
+
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
+    public DiskCache.Entry getDiskCacheEntry() {
+        return diskCacheEntry;
+    }
+
+    @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
             FileDescriptor fileDescriptor = new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD();
@@ -53,14 +79,5 @@ public class CacheFileDataSource implements DataSource {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    DiskCache.Entry getDiskCacheEntry() {
-        return diskCacheEntry;
     }
 }

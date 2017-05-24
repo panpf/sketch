@@ -3,9 +3,7 @@ package me.xiaopan.sketchsample.widget;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,13 +12,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.EventBusException;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DataSourceFactory;
+import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
@@ -227,40 +224,20 @@ public class MyImageView extends SketchImageView {
             messageBuilder.append("\n");
             messageBuilder.append(sketchDrawable.getUri());
 
-            long imageLength = 0;
             DownloadInfo downloadInfo = new DownloadInfo();
             downloadInfo.reset(sketchDrawable.getUri());
-            if (downloadInfo.getUriScheme() == UriScheme.FILE) {
-                imageLength = new File(UriScheme.FILE.cropContent(sketchDrawable.getUri())).length();
-            } else if (downloadInfo.getUriScheme() == UriScheme.NET) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    imageLength = diskCacheEntry.getFile().length();
-                }
-            } else if (downloadInfo.getUriScheme() == UriScheme.ASSET) {
-                AssetFileDescriptor assetFileDescriptor = null;
-                try {
-                    assetFileDescriptor = getContext().getAssets().openFd(UriScheme.ASSET.cropContent(sketchDrawable.getUri()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (downloadInfo.getUriScheme() == UriScheme.DRAWABLE) {
-                AssetFileDescriptor assetFileDescriptor = getContext().getResources().openRawResourceFd(Integer.valueOf(UriScheme.DRAWABLE.cropContent(sketchDrawable.getUri())));
-                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (downloadInfo.getUriScheme() == UriScheme.CONTENT) {
-                AssetFileDescriptor assetFileDescriptor = null;
-                try {
-                    assetFileDescriptor = getContext().getContentResolver().openAssetFileDescriptor(Uri.parse(sketchDrawable.getUri()), "r");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                imageLength = assetFileDescriptor != null ? assetFileDescriptor.getLength() : 0;
-            } else if (downloadInfo.getUriScheme() == UriScheme.BASE64) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(getContext()).getConfiguration().getDiskCache().get(downloadInfo.getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    imageLength = diskCacheEntry.getFile().length();
-                }
+            DataSource dataSource = null;
+            try {
+                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
+                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+            } catch (DecodeException e) {
+                e.printStackTrace();
+            }
+            long imageLength = 0;
+            try {
+                imageLength = dataSource != null ? dataSource.getLength() : 0;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";

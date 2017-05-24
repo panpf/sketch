@@ -8,26 +8,26 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 保存图片异步任务
  */
-public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
+public class SaveImageAsyncTask extends AsyncTask<String, Integer, File> {
 
     private Context context;
-    private File imageFile;
+    private DataSource dataSource;
     private String imageUri;
 
-    public SaveImageAsyncTask(Context context, File imageFile, String imageUri) {
+    public SaveImageAsyncTask(Context context, DataSource dataSource, String imageUri) {
         this.context = context;
-        this.imageFile = imageFile;
+        this.dataSource = dataSource;
         this.imageUri = imageUri;
     }
 
@@ -37,7 +37,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected File doInBackground(String... params) {
         File dir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             dir = new File(Environment.getExternalStorageDirectory(), "download");
@@ -46,31 +46,24 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
             dir = context.getFilesDir();
         }
         if (dir == null) {
-            return "无法获取目录";
+            return null;
         } else if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        String fileName;
-        try {
-            fileName = URLEncoder.encode(imageUri, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return "";
-        }
-        File outImageFile = new File(dir, fileName);
+        File outImageFile = new File(dir, SketchUtils.generatorTempFileName(dataSource, imageUri));
         try {
             outImageFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
-            return "创建文件失败，请重试";
+            return null;
         }
 
         OutputStream outputStream = null;
         InputStream inputStream = null;
         try {
             outputStream = new FileOutputStream(outImageFile);
-            inputStream = new FileInputStream(imageFile);
+            inputStream = dataSource.getInputStream();
             byte[] data = new byte[1024];
             int length;
             while ((length = inputStream.read(data)) != -1) {
@@ -78,35 +71,23 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return "保存图片失败，请重试";
+            return null;
         } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            SketchUtils.close(outputStream);
+            SketchUtils.close(inputStream);
         }
 
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outImageFile)));
-        return "已保存到 " + outImageFile.getParentFile().getPath() + "目录";
+        return outImageFile;
     }
 
     @Override
-    protected void onPostExecute(String s) {
-        Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+    protected void onPostExecute(File outFile) {
+        if (outFile != null) {
+            File dir = outFile.getParentFile();
+            Toast.makeText(context, "已保存到 " + dir.getPath() + "目录", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "保存图片失败，请重试", Toast.LENGTH_LONG).show();
+        }
     }
 }
