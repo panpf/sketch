@@ -67,6 +67,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_6
     }
 
+    aaptOptions {
+        noCompress "bmp"
+    }
+
     useLibrary 'org.apache.http.legacy'
 }
 

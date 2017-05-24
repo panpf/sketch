@@ -254,8 +254,8 @@ public class MyImageView extends SketchImageView {
                     .append("/").append(sketchDrawable.getMimeType().substring(6))
                     .append("/").append(needDiskSpace);
 
-            messageBuilder.append("\n");
-            messageBuilder.append("方向/内存：").append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
+            messageBuilder.append("\n                ");
+            messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
                     .append("/").append(needMemory);
 
             messageBuilder.append("\n");
