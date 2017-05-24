@@ -35,6 +35,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -48,33 +49,32 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
     private static final String LOG_NAME = "InstalledAppIconPreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
-        return uriScheme == UriScheme.FILE && uriContent.startsWith(INSTALLED_APP_URI_HOST);
+    public boolean match(Context context, UriInfo uriInfo) {
+        return uriInfo.getScheme() == UriScheme.FILE
+                && uriInfo.getContent() != null
+                && uriInfo.getContent().startsWith(INSTALLED_APP_URI_HOST);
     }
 
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
+    public PreProcessResult process(Context context, UriInfo uriInfo) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
-        // TODO: 2017/5/24 使用正规diskcachekey
-        //noinspection UnnecessaryLocalVariable
-        String diskCacheKey = imageUri;
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+        DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
         if (cacheEntry != null) {
             return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readInstalledAppIcon(context, imageUri, diskCache, diskCacheKey);
+        PreProcessResult result = readInstalledAppIcon(context, uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readInstalledAppIcon(Context context, String imageUri, DiskCache diskCache, String diskCacheKey) {
-        Uri uri = Uri.parse(imageUri);
+    private PreProcessResult readInstalledAppIcon(Context context, UriInfo uriInfo, DiskCache diskCache) {
+        Uri uri = Uri.parse(uriInfo.getUri());
 
         String packageName = uri.getQueryParameter(INSTALLED_APP_URI_PARAM_PACKAGE_NAME);
         int versionCode = Integer.valueOf(uri.getQueryParameter(INSTALLED_APP_URI_PARAM_VERSION_CODE));
@@ -99,12 +99,12 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
 
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", imageUri);
+                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -147,12 +147,12 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", imageUri);
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

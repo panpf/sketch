@@ -105,9 +105,8 @@ public class ImageDecoder implements Identifier {
      */
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         // Make date source
-        DataSource dataSource = DataSourceFactory.processedCacheFirstMakeDataSource(request.getContext(), request.getUri(),
-                request.getUriScheme(), request.getUriContent(), request.getOptions(), request.getDownloadResult(),
-                request.getDiskCacheKey(), request.getProcessedImageDiskCacheKey());
+        DataSource dataSource = DataSourceFactory.processedCacheFirstMakeDataSource(request.getContext(), request.getUriInfo(),
+                request.getDownloadResult(), request.getOptions(), request.getProcessedImageDiskCacheKey());
 
         // Decode bounds and mime info
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();

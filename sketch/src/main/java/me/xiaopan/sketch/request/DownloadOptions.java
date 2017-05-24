@@ -134,31 +134,6 @@ public class DownloadOptions {
     }
 
     /**
-     * 合并指定的DownloadOptions，合并的过程并不是绝对的覆盖，专门为{@link DownloadHelper#options(DownloadOptions)}方法提供
-     * <br>简单来说自己已经设置了的属性不会被覆盖，对于都设置了但可以比较大小的，较小的优先
-     */
-    public void merge(DownloadOptions options) {
-        if (options == null) {
-            return;
-        }
-
-        if (!cacheInDiskDisabled) {
-            cacheInDiskDisabled = options.cacheInDiskDisabled;
-        }
-
-        if (requestLevel == null) {
-            requestLevel = options.requestLevel;
-            requestLevelFrom = null;
-        } else {
-            RequestLevel optionRequestLevel = options.getRequestLevel();
-            if (optionRequestLevel != null && optionRequestLevel.getLevel() < requestLevel.getLevel()) {
-                requestLevel = optionRequestLevel;
-                requestLevelFrom = null;
-            }
-        }
-    }
-
-    /**
      * 生成选项KEY，用于组装请求或内存缓存key
      *
      * @see SketchImageView#getOptionsKey()

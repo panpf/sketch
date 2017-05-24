@@ -34,10 +34,10 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideManager.DisplayFreeRide {
     private Set<FreeRideManager.DisplayFreeRide> displayFreeRideSet;
 
-    public FreeRideDisplayRequest(Sketch sketch, DisplayInfo requestInfo, DisplayOptions displayOptions,
+    public FreeRideDisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
                                   ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
                                   DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
-        super(sketch, requestInfo, displayOptions, viewInfo, requestAndViewBinder, displayListener, downloadProgressListener);
+        super(sketch, uriInfo, key, displayOptions, viewInfo, requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
     @Override

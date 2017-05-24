@@ -28,7 +28,6 @@ import me.xiaopan.sketch.feature.InstalledAppIconPreprocessor;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
@@ -344,17 +343,6 @@ public class Sketch {
      */
     public DisplayHelper displayInstalledAppIcon(String packageName, int versionCode, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, createInstalledAppIconUri(packageName, versionCode), imageViewInterface);
-    }
-
-    /**
-     * 显示图片，主要用于配合SketchImageView兼容RecyclerView以及点击重试功能
-     *
-     * @param displayParams      显示参数缓存
-     * @param imageViewInterface 默认实现是SketchImageView
-     * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
-     */
-    public DisplayHelper display(DisplayParams displayParams, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, displayParams, imageViewInterface);
     }
 
     /**

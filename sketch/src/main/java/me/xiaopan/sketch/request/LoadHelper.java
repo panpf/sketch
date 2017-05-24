@@ -20,9 +20,9 @@ import android.graphics.Bitmap;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -30,19 +30,20 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 加载Helper，负责组织、收集、初始化加载参数，最后执行commit()提交请求
  */
 public class LoadHelper {
-    protected String logName = "LoadHelper";
+    private static final String LOG_NAME = "LoadHelper";
 
-    protected Sketch sketch;
+    private Sketch sketch;
+    private boolean sync;
 
-    protected boolean sync;
-    protected LoadInfo loadInfo = new LoadInfo();
-    protected LoadOptions loadOptions = new LoadOptions();
-    protected LoadListener loadListener;
-    protected DownloadProgressListener downloadProgressListener;
+    private UriInfo uriInfo;
+    private String key;
+    private LoadOptions loadOptions = new LoadOptions();
+    private LoadListener loadListener;
+    private DownloadProgressListener downloadProgressListener;
 
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.loadInfo.reset(uri);
+        this.uriInfo = UriInfo.make(uri);
     }
 
     /**
@@ -95,7 +96,7 @@ public class LoadHelper {
 
     /**
      * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
-     * 但尺寸不一定会等于resi，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
      */
     public LoadHelper resize(int width, int height) {
         loadOptions.setResize(width, height);
@@ -182,16 +183,16 @@ public class LoadHelper {
     }
 
     /**
-     * 批量设置加载参数，这会是一个合并的过程，并不会完全覆盖
+     * 批量设置加载参数（完全覆盖）
      */
     public LoadHelper options(LoadOptions newOptions) {
-        loadOptions.merge(newOptions);
+        loadOptions.copy(newOptions);
         return this;
     }
 
     /**
-     * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，
-     * 然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置加载参数（完全覆盖），你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，
+     * 然后在这里指定其名称即可
      */
     @SuppressWarnings("unused")
     public LoadHelper optionsByName(Enum<?> optionsName) {
@@ -234,17 +235,35 @@ public class LoadHelper {
 
         CallbackHandler.postCallbackStarted(loadListener, sync);
 
-        preProcess();
-
         if (!checkUri()) {
             return null;
         }
+
+        preProcess();
 
         if (!checkRequestLevel()) {
             return null;
         }
 
         return submitRequest();
+    }
+
+    private boolean checkUri() {
+        if (uriInfo == null) {
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, LOG_NAME, "uri is null or empty");
+            }
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
+            return false;
+        }
+
+        if (uriInfo.getScheme() == null) {
+            SLog.e(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -299,39 +318,19 @@ public class LoadHelper {
         }
 
         // 根据URI和加载选项生成请求ID
-        if (loadInfo.getKey() == null) {
-            loadInfo.setKey(SketchUtils.makeRequestKey(loadInfo.getUri(), loadInfo.getUriScheme(), loadOptions));
-        }
-    }
-
-    private boolean checkUri() {
-        if (loadInfo.getUri() == null || "".equals(loadInfo.getUri().trim())) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "uri is null or empty");
-            }
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
-            return false;
-        }
-
-        if (loadInfo.getUriScheme() == null) {
-            SLog.e(SLogType.REQUEST, logName, "unknown uri scheme. %s", loadInfo.getUri());
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
-        }
-
-        return true;
+        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getScheme(), loadOptions);
     }
 
     private boolean checkRequestLevel() {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (loadOptions.getRequestLevel() == RequestLevel.LOCAL
-                && loadInfo.getUriScheme() == UriScheme.NET
-                && !sketch.getConfiguration().getDiskCache().exist(loadInfo.getDiskCacheKey())) {
+                && uriInfo.getScheme() == UriScheme.NET
+                && !sketch.getConfiguration().getDiskCache().exist(uriInfo.getDiskCacheKey())) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, logName, "canceled. %s. %s",
-                        isPauseDownload ? "pause download" : "requestLevel is local", loadInfo.getKey());
+                SLog.w(SLogType.REQUEST, LOG_NAME, "canceled. %s. %s",
+                        isPauseDownload ? "pause download" : "requestLevel is local", key);
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
@@ -344,7 +343,7 @@ public class LoadHelper {
 
     private LoadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        LoadRequest request = requestFactory.newLoadRequest(sketch, loadInfo, loadOptions, loadListener, downloadProgressListener);
+        LoadRequest request = requestFactory.newLoadRequest(sketch, uriInfo, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

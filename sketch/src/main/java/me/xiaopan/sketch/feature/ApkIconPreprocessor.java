@@ -33,6 +33,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -42,18 +43,20 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "ApkIconPreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
-        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uriContent, ".apk");
+    public boolean match(Context context, UriInfo uriInfo) {
+        return uriInfo.getScheme() == UriScheme.FILE
+                && uriInfo.getContent() != null
+                && SketchUtils.checkSuffix(uriInfo.getContent(), ".apk");
     }
 
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
-        File apkFile = new File(uriContent);
+    public PreProcessResult process(Context context, UriInfo uriInfo) {
+        File apkFile = new File(uriInfo.getContent());
         if (!apkFile.exists()) {
             return null;
         }
         long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = uriContent + "." + lastModifyTime;
+        String diskCacheKey = uriInfo.getContent() + "." + lastModifyTime;
 
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
@@ -65,27 +68,26 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readApkIcon(context, imageUri, uriContent, diskCache, diskCacheKey);
+        PreProcessResult result = readApkIcon(context, uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readApkIcon(Context context, String imageUri,
-                                         String uriContent, DiskCache diskCache, String diskCacheKey) {
+    private PreProcessResult readApkIcon(Context context, UriInfo uriInfo, DiskCache diskCache) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriContent, false, LOG_NAME, bitmapPool);
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriInfo.getContent(), false, LOG_NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", imageUri);
+                SLog.w(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -128,12 +130,12 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", imageUri);
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

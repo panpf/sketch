@@ -33,6 +33,7 @@ import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 
 public class DataSourceFactory {
@@ -43,23 +44,22 @@ public class DataSourceFactory {
      * 创建数据源，可用于解码
      *
      * @param context        Context
-     * @param imageUri       图片uri
-     * @param uriScheme      图片类型
-     * @param uriContent     uri内容
+     * @param uriInfo        图片uri
      * @param downloadResult 下载结果
-     * @param diskCacheKey   磁盘缓存key
      * @return DataSource
      * @throws DecodeException 无法创建数据源
      */
-    // TODO: 2017/5/24 改造成依赖DownloadInfo
-    public static DataSource makeDataSource(Context context, String imageUri, UriScheme uriScheme, String uriContent,
-                                            DownloadResult downloadResult, String diskCacheKey) throws DecodeException {
+    public static DataSource makeDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
+        if (context == null || uriInfo == null) {
+            return null;
+        }
+
         // 特殊文件预处理
         Configuration configuration = Sketch.with(context).getConfiguration();
         ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
-        if (imagePreprocessor.match(context, imageUri, uriScheme, uriContent)) {
+        if (imagePreprocessor.match(context, uriInfo)) {
 
-            PreProcessResult prePrecessResult = imagePreprocessor.process(context, imageUri, uriScheme, uriContent);
+            PreProcessResult prePrecessResult = imagePreprocessor.process(context, uriInfo);
             if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
                 return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
             }
@@ -68,11 +68,11 @@ public class DataSourceFactory {
                 return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             }
 
-            SLog.w(SLogType.REQUEST, LOG_NAME, "pre process result is null", imageUri);
+            SLog.w(SLogType.REQUEST, LOG_NAME, "pre process result is null", uriInfo.getUri());
             throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
         }
 
-        if (uriScheme == UriScheme.NET) {
+        if (uriInfo.getScheme() == UriScheme.NET) {
             if (downloadResult != null) {
                 DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
                 if (diskCacheEntry != null) {
@@ -84,55 +84,55 @@ public class DataSourceFactory {
                     return new ByteArrayDataSource(imageDataArray, downloadResult.getImageFrom());
                 }
 
-                SLog.w(SLogType.REQUEST, LOG_NAME, "download result exception. %s", imageUri);
+                SLog.w(SLogType.REQUEST, LOG_NAME, "download result exception. %s", uriInfo.getUri());
                 throw new DecodeException("Download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
             } else {
-                DiskCache.Entry diskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
+                DiskCache.Entry diskCacheEntry = configuration.getDiskCache().get(uriInfo.getDiskCacheKey());
                 if (diskCacheEntry != null) {
                     return new CacheFileDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
                 }
 
-                throw new DecodeException(String.format("Not found disk cache: %s", imageUri), ErrorCause.DOWNLOAD_RESULT_IS_NULL);
+                throw new DecodeException(String.format("Not found disk cache: %s", uriInfo.getUri()), ErrorCause.DOWNLOAD_RESULT_IS_NULL);
             }
         }
 
-        if (uriScheme == UriScheme.FILE) {
-            return new FileDataSource(new File(uriContent));
+        if (uriInfo.getScheme() == UriScheme.FILE) {
+            return new FileDataSource(new File(uriInfo.getContent()));
         }
 
-        if (uriScheme == UriScheme.CONTENT) {
-            return new ContentDataSource(context, Uri.parse(uriContent));
+        if (uriInfo.getScheme() == UriScheme.CONTENT) {
+            return new ContentDataSource(context, Uri.parse(uriInfo.getContent()));
         }
 
-        if (uriScheme == UriScheme.ASSET) {
-            return new AssetsDataSource(context, uriContent);
+        if (uriInfo.getScheme() == UriScheme.ASSET) {
+            return new AssetsDataSource(context, uriInfo.getContent());
         }
 
-        if (uriScheme == UriScheme.DRAWABLE) {
-            return new DrawableDataSource(context, Integer.valueOf(uriContent));
+        if (uriInfo.getScheme() == UriScheme.DRAWABLE) {
+            return new DrawableDataSource(context, Integer.valueOf(uriInfo.getContent()));
         }
 
-        SLog.w(SLogType.REQUEST, LOG_NAME, "unknown uri is %s", imageUri);
-        throw new DecodeException(String.format("Unknown uri is %s", imageUri), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
+        SLog.w(SLogType.REQUEST, LOG_NAME, "unknown uri is %s", uriInfo.getUri());
+        throw new DecodeException(String.format("Unknown uri is %s", uriInfo.getUri()), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
     }
 
     /**
      * 创建数据源时已处理缓存优先
      *
      * @param context                    Context
-     * @param imageUri                   图片uri
-     * @param uriScheme                  图片类型
-     * @param uriContent                 uri内容
+     * @param uriInfo                    图片uri
      * @param options                    加载选项
-     * @param diskCacheKey               磁盘缓存key
      * @param downloadResult             下载结果
      * @param processedImageDiskCacheKey 已处理缓存key
      * @return DataSource
      * @throws DecodeException 无法创建数据源
      */
-    public static DataSource processedCacheFirstMakeDataSource(Context context, String imageUri, UriScheme uriScheme, String uriContent,
-                                                               LoadOptions options, DownloadResult downloadResult, String diskCacheKey,
-                                                               String processedImageDiskCacheKey) throws DecodeException {
+    public static DataSource processedCacheFirstMakeDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult,
+                                                               LoadOptions options, String processedImageDiskCacheKey) throws DecodeException {
+        if (context == null || uriInfo == null) {
+            return null;
+        }
+
         Configuration configuration = Sketch.with(context).getConfiguration();
         ProcessedImageCache processedImageCache = configuration.getProcessedImageCache();
 
@@ -144,6 +144,6 @@ public class DataSourceFactory {
             }
         }
 
-        return makeDataSource(context, imageUri, uriScheme, uriContent, downloadResult, diskCacheKey);
+        return makeDataSource(context, uriInfo, downloadResult);
     }
 }

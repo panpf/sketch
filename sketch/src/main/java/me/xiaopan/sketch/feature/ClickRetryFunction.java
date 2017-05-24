@@ -21,6 +21,7 @@ import android.view.View;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.RequestLevel;
@@ -86,8 +87,13 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     @Override
     public void onClick(View v) {
         if ((clickRetryOnError && displayError) || (clickRetryOnPauseDownload && pauseDownload)) {
-            if (requestFunction.getDisplayParams() != null) {
-                Sketch.with(view.getContext()).display(requestFunction.getDisplayParams(), imageViewInterface).requestLevel(RequestLevel.NET).commit();
+            DisplayCache displayCache = requestFunction.getDisplayCache();
+            if (displayCache != null) {
+                Sketch.with(view.getContext())
+                        .display(displayCache.uri, imageViewInterface)
+                        .options(displayCache.options)
+                        .requestLevel(RequestLevel.NET)
+                        .commit();
                 return;
             }
         }

@@ -25,27 +25,23 @@ import me.xiaopan.sketch.Sketch;
 public class RequestFactory implements Identifier {
     protected String logName = "RequestFactory";
 
-    public DisplayRequest newDisplayRequest(
-            Sketch sketch, DisplayInfo displayInfo, DisplayOptions displayOptions,
-            ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
-            DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
+    public DisplayRequest newDisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
+                                            ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
+                                            DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
-        // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
-        return new FreeRideDisplayRequest(
-                sketch, new DisplayInfo(displayInfo), new DisplayOptions(displayOptions),
+        // 因此ViewInfo和DisplayOptions不能直接拿来用，要重新New一个
+        return new FreeRideDisplayRequest(sketch, uriInfo, key, new DisplayOptions(displayOptions),
                 new ViewInfo(viewInfo), requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
-    public LoadRequest newLoadRequest(
-            Sketch sketch, LoadInfo loadInfo, LoadOptions options,
-            LoadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new LoadRequest(sketch, loadInfo, options, listener, downloadProgressListener);
+    public LoadRequest newLoadRequest(Sketch sketch, UriInfo uriInfo, String key, LoadOptions options,
+                                      LoadListener listener, DownloadProgressListener downloadProgressListener) {
+        return new LoadRequest(sketch, uriInfo, key, options, listener, downloadProgressListener);
     }
 
-    public DownloadRequest newDownloadRequest(
-            Sketch sketch, DownloadInfo downloadInfo, DownloadOptions options,
-            DownloadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new FreeRideDownloadRequest(sketch, downloadInfo, options, listener, downloadProgressListener);
+    public DownloadRequest newDownloadRequest(Sketch sketch, UriInfo uriInfo, String key, DownloadOptions options,
+                                              DownloadListener listener, DownloadProgressListener downloadProgressListener) {
+        return new FreeRideDownloadRequest(sketch, uriInfo, key, options, listener, downloadProgressListener);
     }
 
     @Override

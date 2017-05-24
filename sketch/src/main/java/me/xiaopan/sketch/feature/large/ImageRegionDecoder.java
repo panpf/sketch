@@ -36,7 +36,7 @@ import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
-import me.xiaopan.sketch.request.DownloadInfo;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -62,14 +62,12 @@ public class ImageRegionDecoder {
 
     public static ImageRegionDecoder build(Context context, final String imageUri,
                                            final boolean correctImageOrientationDisabled) throws DecodeException, IOException {
-        DownloadInfo downloadInfo = new DownloadInfo();
-        downloadInfo.reset(imageUri);
-        if (downloadInfo.getUriScheme() == null) {
+        UriInfo uriInfo = UriInfo.make(imageUri);
+        if (uriInfo == null || uriInfo.getScheme() == null) {
             throw new IllegalArgumentException("Unknown scheme uri: " + imageUri);
         }
 
-        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri, downloadInfo.getUriScheme(),
-                downloadInfo.getUriContent(), null, imageUri);
+        DataSource dataSource = DataSourceFactory.makeDataSource(context, uriInfo, null);
 
         // 读取图片尺寸和类型
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();

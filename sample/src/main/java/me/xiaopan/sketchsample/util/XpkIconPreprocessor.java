@@ -19,6 +19,7 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -31,18 +32,20 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "XpkIconPreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
-        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uriContent, ".xpk");
+    public boolean match(Context context, UriInfo uriInfo) {
+        return uriInfo.getScheme() == UriScheme.FILE
+                && uriInfo.getContent() != null
+                && SketchUtils.checkSuffix(uriInfo.getContent(), ".xpk");
     }
 
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
-        File xpkFile = new File(uriContent);
+    public PreProcessResult process(Context context, UriInfo uriInfo) {
+        File xpkFile = new File(uriInfo.getContent());
         if (!xpkFile.exists()) {
             return null;
         }
         long lastModifyTime = xpkFile.lastModified();
-        String diskCacheKey = uriContent + "." + lastModifyTime;
+        String diskCacheKey = uriInfo.getContent() + "." + lastModifyTime;
 
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
@@ -54,16 +57,16 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result = readXpkIcon(imageUri, uriContent, diskCache, diskCacheKey);
+        PreProcessResult result = readXpkIcon(uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readXpkIcon(String imageUri, String uriContent, DiskCache diskCache, String diskCacheKey) {
+    private PreProcessResult readXpkIcon(UriInfo uriInfo, DiskCache diskCache) {
         ZipFile zipFile;
         try {
-            zipFile = new ZipFile(uriContent);
+            zipFile = new ZipFile(uriInfo.getContent());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -72,7 +75,7 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "not found icon.png in. %s", imageUri);
+                SLog.w(SLogType.REQUEST, LOG_NAME, "not found icon.png in. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -84,7 +87,7 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -137,12 +140,12 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found xpk icon cache file. %s", imageUri);
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

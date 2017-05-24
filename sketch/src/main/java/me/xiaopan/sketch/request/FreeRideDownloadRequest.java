@@ -30,14 +30,14 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class FreeRideDownloadRequest extends DownloadRequest implements FreeRideManager.DownloadFreeRide {
     private Set<FreeRideManager.DownloadFreeRide> downloadFreeRideSet;
 
-    public FreeRideDownloadRequest(Sketch sketch, DownloadInfo info, DownloadOptions options,
+    public FreeRideDownloadRequest(Sketch sketch, UriInfo uriInfo, String key, DownloadOptions options,
                                    DownloadListener downloadListener, DownloadProgressListener downloadProgressListener) {
-        super(sketch, info, options, downloadListener, downloadProgressListener);
+        super(sketch, uriInfo, key, options, downloadListener, downloadProgressListener);
     }
 
     @Override
     public String getDownloadFreeRideKey() {
-        return getUriContent();
+        return getUriInfo().getContent();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
     @Override
     public synchronized boolean processDownloadFreeRide() {
         DiskCache diskCache = getConfiguration().getDiskCache();
-        DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
+        DiskCache.Entry diskCacheEntry = diskCache.get(getUriInfo().getDiskCacheKey());
 
         if (diskCacheEntry != null) {
             if (SLogType.REQUEST.isEnabled()) {

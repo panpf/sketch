@@ -134,14 +134,14 @@ public interface ImageViewInterface {
     void setDownloadProgressListener(DownloadProgressListener downloadProgressListener);
 
     /**
-     * 获取显示参数，此方法由Sketch调用，你无需理会即可
+     * 获取显示缓存，此方法由Sketch调用，无需理会
      */
-    DisplayParams getDisplayParams();
+    DisplayCache getDisplayCache();
 
     /**
-     * 设置显示参数集，此方法由Sketch调用，你无需理会即可
+     * 设置显示缓存，此方法由Sketch调用，无需理会
      */
-    void setDisplayParams(DisplayParams displayParams);
+    void setDisplayCache(DisplayCache displayCache);
 
     /**
      * 是否支持大图片

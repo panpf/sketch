@@ -45,76 +45,36 @@ import me.xiaopan.sketch.util.Stopwatch;
  * 显示Helper，负责组织、收集、初始化显示参数，最后执行commit()提交请求
  */
 public class DisplayHelper {
-    protected String logName = "DisplayHelper";
+    private static final String LOG_NAME = "DisplayHelper";
 
-    protected Sketch sketch;
+    private Sketch sketch;
 
-    protected DisplayInfo displayInfo = new DisplayInfo();
-    protected DisplayOptions displayOptions = new DisplayOptions();
-    protected DisplayListener displayListener;
-    protected DownloadProgressListener downloadProgressListener;
+    private UriInfo uriInfo;
+    private String key;
+    private DisplayOptions displayOptions = new DisplayOptions();
+    private DisplayListener displayListener;
+    private DownloadProgressListener downloadProgressListener;
 
-    protected ViewInfo viewInfo = new ViewInfo();
-    protected ImageViewInterface imageViewInterface;
+    private ViewInfo viewInfo = new ViewInfo();
+    private ImageViewInterface imageViewInterface;
 
-    public DisplayHelper(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
-        init(sketch, uri, imageViewInterface);
-    }
-
-    public DisplayHelper(Sketch sketch, DisplayParams displayParams, ImageViewInterface imageViewInterface) {
-        init(sketch, displayParams, imageViewInterface);
-    }
-
-    /**
-     * 初始化
-     */
     public DisplayHelper init(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
         this.sketch = sketch;
+        this.uriInfo = UriInfo.make(uri);
         this.imageViewInterface = imageViewInterface;
 
         if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().start(logName + ". display use time");
+            Stopwatch.with().start(LOG_NAME + ". display use time");
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onReadyDisplay(displayInfo.getUriScheme());
+        this.imageViewInterface.onReadyDisplay(uriInfo != null ? uriInfo.getScheme() : null);
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("onDisplay");
         }
 
-        displayInfo.reset(uri);
         viewInfo.reset(imageViewInterface, sketch);
         displayOptions.copy(imageViewInterface.getOptions());
-        if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().record("init");
-        }
-
-        displayListener = imageViewInterface.getDisplayListener();
-        downloadProgressListener = imageViewInterface.getDownloadProgressListener();
-
-        return this;
-    }
-
-    /**
-     * 初始化，此方法用来在RecyclerView中恢复使用
-     */
-    public DisplayHelper init(Sketch sketch, DisplayParams params, ImageViewInterface imageViewInterface) {
-        this.sketch = sketch;
-        this.imageViewInterface = imageViewInterface;
-
-        if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().start(logName + ". display use time");
-        }
-
-        // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onReadyDisplay(displayInfo.getUriScheme());
-        if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().record("onDisplay");
-        }
-
-        displayInfo.copy(params.info);
-        viewInfo.reset(imageViewInterface, sketch);
-        displayOptions.copy(params.options);
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("init");
         }
@@ -131,7 +91,8 @@ public class DisplayHelper {
     public void reset() {
         sketch = null;
 
-        displayInfo.reset(null);
+        uriInfo = null;
+        key = null;
         displayOptions.reset();
         displayListener = null;
         downloadProgressListener = null;
@@ -393,16 +354,16 @@ public class DisplayHelper {
 
 
     /**
-     * 批量设置显示参数，这会是一个合并的过程，并不会完全覆盖
+     * 批量设置显示参数（完全覆盖）
      */
     public DisplayHelper options(DisplayOptions newOptions) {
-        displayOptions.merge(newOptions);
+        displayOptions.copy(newOptions);
         return this;
     }
 
     /**
-     * 批量设置显示参数，你只需要提前将DisplayOptions通过Sketch.putDisplayOptions()方法存起来，
-     * 然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置显示参数（完全覆盖），你只需要提前将DisplayOptions通过Sketch.putDisplayOptions()方法存起来，
+     * 然后在这里指定其名称即可
      */
     @SuppressWarnings("unused")
     public DisplayHelper optionsByName(Enum<?> optionsName) {
@@ -414,10 +375,10 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            SLog.w(SLogType.REQUEST, logName, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
-                    Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getUri());
+            SLog.w(SLogType.REQUEST, LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
+                    Integer.toHexString(imageViewInterface.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
             if (SLogType.TIME.isEnabled()) {
-                Stopwatch.with().print(displayInfo.getUri());
+                Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -426,6 +387,18 @@ public class DisplayHelper {
         CallbackHandler.postCallbackStarted(displayListener, false);
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("callbackStarted");
+        }
+
+        boolean checkResult = checkUri();
+        if (SLogType.TIME.isEnabled()) {
+            Stopwatch.with().record("checkUri");
+        }
+        if (!checkResult) {
+            if (SLogType.TIME.isEnabled()) {
+                Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
+            }
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            return null;
         }
 
         preProcess();
@@ -438,25 +411,13 @@ public class DisplayHelper {
             Stopwatch.with().record("saveParams");
         }
 
-        boolean checkResult = checkUri();
-        if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().record("checkUri");
-        }
-        if (!checkResult) {
-            if (SLogType.TIME.isEnabled()) {
-                Stopwatch.with().print(displayInfo.getKey());
-            }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            return null;
-        }
-
         checkResult = checkMemoryCache();
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("checkMemoryCache");
         }
         if (!checkResult) {
             if (SLogType.TIME.isEnabled()) {
-                Stopwatch.with().print(displayInfo.getKey());
+                Stopwatch.with().print(key);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -468,7 +429,7 @@ public class DisplayHelper {
         }
         if (!checkResult) {
             if (SLogType.TIME.isEnabled()) {
-                Stopwatch.with().print(displayInfo.getKey());
+                Stopwatch.with().print(key);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -480,7 +441,7 @@ public class DisplayHelper {
         }
         if (potentialRequest != null) {
             if (SLogType.TIME.isEnabled()) {
-                Stopwatch.with().print(displayInfo.getKey());
+                Stopwatch.with().print(key);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return potentialRequest;
@@ -489,10 +450,53 @@ public class DisplayHelper {
         DisplayRequest request = submitRequest();
 
         if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().print(displayInfo.getKey());
+            Stopwatch.with().print(key);
         }
         sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
         return request;
+    }
+
+    private boolean checkUri() {
+        if (uriInfo == null) {
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, LOG_NAME, "uri is null or empty. viewHashCode=%s",
+                        Integer.toHexString(imageViewInterface.hashCode()));
+            }
+
+            Drawable drawable = null;
+            if (displayOptions.getErrorImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
+            } else if (displayOptions.getLoadingImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
+            }
+            imageViewInterface.setImageDrawable(drawable);
+
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NULL_OR_EMPTY, false);
+            return false;
+        }
+
+        if (uriInfo.getScheme() == null) {
+            String viewCode = Integer.toHexString(imageViewInterface.hashCode());
+            SLog.e(SLogType.REQUEST, LOG_NAME, "unknown uri scheme: %s. viewHashCode=%s. %s",
+                    uriInfo.getUri(), viewCode, uriInfo.getUri());
+
+            Drawable drawable = null;
+            if (displayOptions.getErrorImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
+            } else if (displayOptions.getLoadingImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
+            }
+            imageViewInterface.setImageDrawable(drawable);
+
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -614,124 +618,83 @@ public class DisplayHelper {
                         ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.d(SLogType.REQUEST, logName, "%s. viewHashCode=%s. %s",
-                            errorInfo, Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getKey());
+                    SLog.d(SLogType.REQUEST, LOG_NAME, "%s. viewHashCode=%s. %s",
+                            errorInfo, Integer.toHexString(imageViewInterface.hashCode()), uriInfo.getUri());
                 }
                 throw new IllegalArgumentException(errorInfo);
             }
         }
 
         // 根据URI和显示选项生成请求key
-        if (displayInfo.getKey() == null) {
-            displayInfo.setKey(SketchUtils.makeRequestKey(displayInfo.getUri(), displayInfo.getUriScheme(), displayOptions));
-        }
+        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getScheme(), displayOptions);
     }
 
     /**
      * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
      */
     private void saveParams() {
-        DisplayParams displayParams = imageViewInterface.getDisplayParams();
-        if (displayParams == null) {
-            displayParams = new DisplayParams();
-            imageViewInterface.setDisplayParams(displayParams);
+        DisplayCache displayCache = imageViewInterface.getDisplayCache();
+        if (displayCache == null) {
+            displayCache = new DisplayCache();
+            imageViewInterface.setDisplayCache(displayCache);
         }
 
-        displayParams.info.copy(displayInfo);
-        displayParams.options.copy(displayOptions);
-    }
-
-    private boolean checkUri() {
-        if (displayInfo.getUri() == null || "".equals(displayInfo.getUri().trim())) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "uri is null or empty. viewHashCode=%s",
-                        Integer.toHexString(imageViewInterface.hashCode()));
-            }
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
-            }
-            imageViewInterface.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NULL_OR_EMPTY, false);
-            return false;
-        }
-
-        if (displayInfo.getUriScheme() == null) {
-            String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-            SLog.e(SLogType.REQUEST, logName, "unknown uri scheme: %s. viewHashCode=%s. %s",
-                    displayInfo.getUri(), viewCode, displayInfo.getUri());
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
-            }
-            imageViewInterface.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
-            return false;
-        }
-
-        return true;
+        displayCache.uri = uriInfo.getUri();
+        displayCache.options.copy(displayOptions);
     }
 
     private boolean checkMemoryCache() {
-        if (!displayOptions.isCacheInMemoryDisabled()) {
-            SketchRefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
-            if (cachedRefBitmap != null) {
-                if (!cachedRefBitmap.isRecycled()) {
-                    // 立马标记等待使用，防止被回收
-                    cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", logName), true);
-
-                    if (SLogType.REQUEST.isEnabled()) {
-                        String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-                        SLog.i(SLogType.REQUEST, logName, "image display completed. %s. %s. viewHashCode=%s",
-                                ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
-                    }
-
-                    SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
-
-                    Drawable finalDrawable;
-                    if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
-                        finalDrawable = new SketchShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
-                                displayOptions.getShapeSize(), displayOptions.getImageShaper());
-                    } else {
-                        finalDrawable = refBitmapDrawable;
-                    }
-
-                    ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
-                    if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
-                        imageDisplayer.display(imageViewInterface, finalDrawable);
-                    } else {
-                        imageViewInterface.setImageDrawable(finalDrawable);
-                    }
-                    if (displayListener != null) {
-                        displayListener.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
-                    }
-
-                    ((SketchRefDrawable) finalDrawable).setIsWaitingUse(String.format("%s:waitingUse:finish", logName), false);
-                    return false;
-                } else {
-                    sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
-                    if (SLogType.REQUEST.isEnabled()) {
-                        String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-                        SLog.e(SLogType.REQUEST, logName, "memory cache drawable recycled. %s. viewHashCode=%s",
-                                cachedRefBitmap.getInfo(), viewCode);
-                    }
-                }
-            }
+        if (displayOptions.isCacheInMemoryDisabled()) {
+            return true;
         }
 
-        return true;
+        String memoryCacheKey = key;
+        SketchRefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(memoryCacheKey);
+        if (cachedRefBitmap == null) {
+            return true;
+        }
+
+        if (cachedRefBitmap.isRecycled()) {
+            sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
+            if (SLogType.REQUEST.isEnabled()) {
+                String viewCode = Integer.toHexString(imageViewInterface.hashCode());
+                SLog.e(SLogType.REQUEST, LOG_NAME, "memory cache drawable recycled. %s. viewHashCode=%s",
+                        cachedRefBitmap.getInfo(), viewCode);
+            }
+            return true;
+        }
+
+        // 立马标记等待使用，防止被回收
+        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", LOG_NAME), true);
+
+        if (SLogType.REQUEST.isEnabled()) {
+            String viewCode = Integer.toHexString(imageViewInterface.hashCode());
+            SLog.i(SLogType.REQUEST, LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
+                    ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
+        }
+
+        SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
+
+        Drawable finalDrawable;
+        if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
+            finalDrawable = new SketchShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
+                    displayOptions.getShapeSize(), displayOptions.getImageShaper());
+        } else {
+            finalDrawable = refBitmapDrawable;
+        }
+
+        ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
+        if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
+            imageDisplayer.display(imageViewInterface, finalDrawable);
+        } else {
+            imageViewInterface.setImageDrawable(finalDrawable);
+        }
+        if (displayListener != null) {
+            displayListener.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
+        }
+
+        ((SketchRefDrawable) finalDrawable).setIsWaitingUse(String.format("%s:waitingUse:finish", LOG_NAME), false);
+        return false;
     }
 
     private boolean checkRequestLevel() {
@@ -740,9 +703,9 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, logName,
+                SLog.w(SLogType.REQUEST, LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
-                        Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getKey());
+                        Integer.toHexString(imageViewInterface.hashCode()), key);
             }
 
             Drawable loadingDrawable = null;
@@ -759,15 +722,14 @@ public class DisplayHelper {
         }
 
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
-        if (displayOptions.getRequestLevel() == RequestLevel.LOCAL
-                && displayInfo.getUriScheme() == UriScheme.NET
-                && !sketch.getConfiguration().getDiskCache().exist(displayInfo.getDiskCacheKey())) {
+        if (displayOptions.getRequestLevel() == RequestLevel.LOCAL && uriInfo.getScheme() == UriScheme.NET
+                && !sketch.getConfiguration().getDiskCache().exist(uriInfo.getDiskCacheKey())) {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.d(SLogType.REQUEST, logName,
+                SLog.d(SLogType.REQUEST, LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseDownload ? "pause download" : "requestLevel is local",
-                        Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getKey());
+                        Integer.toHexString(imageViewInterface.hashCode()), key);
             }
 
             // 显示暂停下载图片
@@ -781,8 +743,8 @@ public class DisplayHelper {
                 drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, logName, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
-                            Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getKey());
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
+                            Integer.toHexString(imageViewInterface.hashCode()), key);
                 }
             }
             imageViewInterface.setImageDrawable(drawable);
@@ -803,16 +765,16 @@ public class DisplayHelper {
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
-            if (displayInfo.getKey().equals(potentialRequest.getKey())) {
+            if (key.equals(potentialRequest.getKey())) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.d(SLogType.REQUEST, logName, "repeat request. newId=%s. viewHashCode=%s",
-                            displayInfo.getKey(), Integer.toHexString(imageViewInterface.hashCode()));
+                    SLog.d(SLogType.REQUEST, LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
+                            key, Integer.toHexString(imageViewInterface.hashCode()));
                 }
                 return potentialRequest;
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, logName, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
-                            displayInfo.getKey(), potentialRequest.getKey(), Integer.toHexString(imageViewInterface.hashCode()));
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
+                            key, potentialRequest.getKey(), Integer.toHexString(imageViewInterface.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
             }
@@ -824,8 +786,7 @@ public class DisplayHelper {
     private DisplayRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(imageViewInterface);
-        DisplayRequest request = requestFactory.newDisplayRequest(
-                sketch, displayInfo, displayOptions, viewInfo,
+        DisplayRequest request = requestFactory.newDisplayRequest(sketch, uriInfo, key, displayOptions, viewInfo,
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("createRequest");
@@ -850,8 +811,8 @@ public class DisplayHelper {
         }
 
         if (SLogType.REQUEST.isEnabled()) {
-            SLog.d(SLogType.REQUEST, logName, "submit request. viewHashCode=%s. %s",
-                    Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getKey());
+            SLog.d(SLogType.REQUEST, LOG_NAME, "submit request. viewHashCode=%s. %s",
+                    Integer.toHexString(imageViewInterface.hashCode()), key);
         }
 
         request.submit();

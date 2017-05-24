@@ -44,10 +44,10 @@ import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.DownloadInfo;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -552,12 +552,10 @@ public class ImageFragment extends MyFragment {
             messageBuilder.append("\n");
             messageBuilder.append(sketchDrawable.getUri());
 
-            DownloadInfo downloadInfo = new DownloadInfo();
-            downloadInfo.reset(sketchDrawable.getUri());
+            UriInfo uriInfo = UriInfo.make(sketchDrawable.getUri());
             DataSource dataSource = null;
             try {
-                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
-                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+                dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
             } catch (DecodeException e) {
                 e.printStackTrace();
             }
@@ -776,17 +774,15 @@ public class ImageFragment extends MyFragment {
                 return null;
             }
 
-            DownloadInfo downloadInfo = new DownloadInfo();
-            downloadInfo.reset(imageUri);
-            if (downloadInfo.getUriScheme() == null) {
+            UriInfo uriInfo = UriInfo.make(imageUri);
+            if (uriInfo == null || uriInfo.getScheme() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return null;
             }
 
             DataSource dataSource = null;
             try {
-                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
-                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+                dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
             } catch (DecodeException e) {
                 e.printStackTrace();
             }
@@ -866,22 +862,20 @@ public class ImageFragment extends MyFragment {
                 return;
             }
 
-            DownloadInfo downloadInfo = new DownloadInfo();
-            downloadInfo.reset(imageUri);
-
-            if (downloadInfo.getUriScheme() == null) {
+            UriInfo uriInfo = UriInfo.make(imageUri);
+            if (uriInfo == null || uriInfo.getScheme() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
+                return;
             }
 
-            if (downloadInfo.getUriScheme() == UriScheme.FILE) {
+            if (uriInfo.getScheme() == UriScheme.FILE) {
                 Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
                 return;
             }
 
             DataSource dataSource = null;
             try {
-                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
-                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+                dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
             } catch (DecodeException e) {
                 e.printStackTrace();
             }
@@ -890,7 +884,7 @@ public class ImageFragment extends MyFragment {
                 return;
             }
 
-            new SaveImageAsyncTask(getActivity(), dataSource, downloadInfo.getUriContent()).execute("");
+            new SaveImageAsyncTask(getActivity(), dataSource, uriInfo.getContent()).execute("");
         }
 
         private String parseFileType(String fileName) {

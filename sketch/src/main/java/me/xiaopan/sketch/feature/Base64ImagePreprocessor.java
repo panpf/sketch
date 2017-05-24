@@ -30,6 +30,7 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -39,36 +40,32 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
     private static final String LOG_NAME = "Base64ImagePreprocessor";
 
     @Override
-    public boolean match(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
-        return uriScheme == UriScheme.BASE64;
+    public boolean match(Context context, UriInfo uriInfo) {
+        return uriInfo.getScheme() == UriScheme.BASE64;
     }
 
-    // TODO: 2017/5/24  String imageUri, UriScheme uriScheme, String uriContent风转成uri info
     @Override
-    public PreProcessResult process(Context context, String imageUri, UriScheme uriScheme, String uriContent) {
+    public PreProcessResult process(Context context, UriInfo uriInfo) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
-        // TODO: 2017/5/24 使用正规diskcachekey
-        //noinspection UnnecessaryLocalVariable
-        String diskCacheKey = uriContent;
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+        DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
         if (cacheEntry != null) {
             return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
         diskCacheEditLock.lock();
 
-        PreProcessResult result = cacheBase64Image(imageUri, uriContent, diskCache, diskCacheKey);
+        PreProcessResult result = cacheBase64Image(uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult cacheBase64Image(String imageUri, String uriContent, DiskCache diskCache, String diskCacheKey) {
-        byte[] data = Base64.decode(uriContent, Base64.DEFAULT);
+    private PreProcessResult cacheBase64Image(UriInfo uriInfo, DiskCache diskCache) {
+        byte[] data = Base64.decode(uriInfo.getContent(), Base64.DEFAULT);
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -109,12 +106,12 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.MEMORY);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found base64 image cache file. %s", imageUri);
+                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found base64 image cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

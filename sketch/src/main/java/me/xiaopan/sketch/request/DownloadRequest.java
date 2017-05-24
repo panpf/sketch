@@ -41,24 +41,15 @@ public class DownloadRequest extends AsyncRequest {
     private DownloadListener downloadListener;
     private DownloadProgressListener downloadProgressListener;
 
-    public DownloadRequest(
-            Sketch sketch, DownloadInfo info,
-            DownloadOptions options, DownloadListener downloadListener,
-            DownloadProgressListener downloadProgressListener) {
-        super(sketch, info);
+    public DownloadRequest(Sketch sketch, UriInfo uriInfo, String key, DownloadOptions options,
+                           DownloadListener downloadListener, DownloadProgressListener downloadProgressListener) {
+        super(sketch, uriInfo, key);
 
         this.options = options;
         this.downloadListener = downloadListener;
         this.downloadProgressListener = downloadProgressListener;
 
         setLogName("DownloadRequest");
-    }
-
-    /**
-     * 获取磁盘缓存key
-     */
-    public String getDiskCacheKey() {
-        return ((DownloadInfo) getInfo()).getDiskCacheKey();
     }
 
     /**
@@ -126,7 +117,7 @@ public class DownloadRequest extends AsyncRequest {
             setStatus(Status.CHECK_DISK_CACHE);
 
             DiskCache diskCache = getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = diskCache.get(getUriInfo().getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLogType.REQUEST.isEnabled()) {
                     printLogD("from diskCache", "runDispatch");
@@ -177,13 +168,13 @@ public class DownloadRequest extends AsyncRequest {
         if (!getOptions().isCacheInDiskDisabled()) {
             setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
 
-            diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey());
+            diskCacheEditLock = diskCache.getEditLock(getUriInfo().getDiskCacheKey());
             if (diskCacheEditLock != null) {
                 diskCacheEditLock.lock();
             }
         }
 
-        DownloadResult justDownloadResult = download(diskCache, getDiskCacheKey());
+        DownloadResult justDownloadResult = download(diskCache, getUriInfo().getDiskCacheKey());
 
         // 解锁
         if (diskCacheEditLock != null) {
@@ -260,7 +251,7 @@ public class DownloadRequest extends AsyncRequest {
             throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
         setStatus(Status.CONNECTING);
 
-        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getUriContent());
+        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getUriInfo().getContent());
         if (isCanceled()) {
             httpResponse.releaseConnection();
             if (SLogType.REQUEST.isEnabled()) {

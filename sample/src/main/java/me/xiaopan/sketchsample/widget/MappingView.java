@@ -34,7 +34,7 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
-import me.xiaopan.sketch.request.DisplayParams;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class MappingView extends SketchImageView {
@@ -165,8 +165,8 @@ public class MappingView extends SketchImageView {
     }
 
     private String getImageUri() {
-        DisplayParams displayParams = getDisplayParams();
-        return displayParams != null ? displayParams.info.getUri() : null;
+        DisplayCache displayCache = getDisplayCache();
+        return displayCache != null ? displayCache.uri : null;
     }
 
     public void update(Point newDrawableSize, Rect newVisibleRect) {

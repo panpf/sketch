@@ -21,7 +21,7 @@ import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
-import me.xiaopan.sketch.request.DownloadInfo;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
@@ -224,12 +224,10 @@ public class MyImageView extends SketchImageView {
             messageBuilder.append("\n");
             messageBuilder.append(sketchDrawable.getUri());
 
-            DownloadInfo downloadInfo = new DownloadInfo();
-            downloadInfo.reset(sketchDrawable.getUri());
+            UriInfo uriInfo = UriInfo.make(sketchDrawable.getUri());
             DataSource dataSource = null;
             try {
-                dataSource = DataSourceFactory.makeDataSource(getContext(), downloadInfo.getUri(),
-                        downloadInfo.getUriScheme(), downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+                dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
             } catch (DecodeException e) {
                 e.printStackTrace();
             }

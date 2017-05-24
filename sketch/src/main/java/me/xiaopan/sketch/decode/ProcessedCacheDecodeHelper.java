@@ -98,8 +98,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         // 由于是读取的经过处理的缓存图片，因此要重新读取原图的类型、宽高信息
         DataSource originFileDataSource = null;
         try {
-            originFileDataSource = DataSourceFactory.makeDataSource(request.getContext(), request.getUri(),
-                    request.getUriScheme(), request.getUriContent(), request.getDownloadResult(), request.getDiskCacheKey());
+            originFileDataSource = DataSourceFactory.makeDataSource(request.getContext(), request.getUriInfo(), request.getDownloadResult());
         } catch (DecodeException e) {
             e.printStackTrace();
         }

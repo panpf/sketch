@@ -19,7 +19,6 @@ package me.xiaopan.sketch.feature;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.DisplayHelper;
-import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadHelper;
@@ -27,7 +26,7 @@ import me.xiaopan.sketch.request.LoadHelper;
 public class HelperFactory implements Identifier {
     protected String logName = "HelperFactory";
 
-    private DisplayHelper obsoletingDisplayHelper;
+    private DisplayHelper cacheDisplayHelper;
 
     public DownloadHelper getDownloadHelper(Sketch sketch, String uri) {
         return new DownloadHelper(sketch, uri);
@@ -38,34 +37,23 @@ public class HelperFactory implements Identifier {
     }
 
     public DisplayHelper getDisplayHelper(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
-        if (this.obsoletingDisplayHelper == null) {
-            return new DisplayHelper(sketch, uri, imageViewInterface);
-        } else {
-            DisplayHelper displayHelper = this.obsoletingDisplayHelper;
-            this.obsoletingDisplayHelper = null;
-            displayHelper.init(sketch, uri, imageViewInterface);
-            return displayHelper;
+        if (this.cacheDisplayHelper == null) {
+            this.cacheDisplayHelper = new DisplayHelper();
         }
-    }
 
-    public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, ImageViewInterface imageViewInterface) {
-        if (this.obsoletingDisplayHelper == null) {
-            return new DisplayHelper(sketch, displayParams, imageViewInterface);
-        } else {
-            DisplayHelper displayHelper = this.obsoletingDisplayHelper;
-            this.obsoletingDisplayHelper = null;
-            displayHelper.init(sketch, displayParams, imageViewInterface);
-            return displayHelper;
-        }
+        DisplayHelper displayHelper = this.cacheDisplayHelper;
+        this.cacheDisplayHelper = null;
+        displayHelper.init(sketch, uri, imageViewInterface);
+        return displayHelper;
     }
 
     /**
      * 用完了要回收
      */
-    public void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper) {
-        obsoletingDisplayHelper.reset();
-        if (this.obsoletingDisplayHelper == null) {
-            this.obsoletingDisplayHelper = obsoletingDisplayHelper;
+    public void recycleDisplayHelper(DisplayHelper displayHelper) {
+        displayHelper.reset();
+        if (this.cacheDisplayHelper == null) {
+            this.cacheDisplayHelper = displayHelper;
         }
     }
 

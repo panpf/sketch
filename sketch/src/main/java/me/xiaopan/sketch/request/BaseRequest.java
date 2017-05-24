@@ -24,16 +24,18 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 
 public abstract class BaseRequest {
-    private BaseInfo info;
+    private UriInfo uriInfo;
+    private String key;
     private Sketch sketch;
     private String logName = "Request";
     private Status status;
     private ErrorCause errorCause;
     private CancelCause cancelCause;
 
-    BaseRequest(Sketch sketch, BaseInfo info) {
+    BaseRequest(Sketch sketch, UriInfo uriInfo, String key) {
         this.sketch = sketch;
-        this.info = info;
+        this.uriInfo = uriInfo;
+        this.key = key;
     }
 
     public Sketch getSketch() {
@@ -48,36 +50,22 @@ public abstract class BaseRequest {
         return sketch.getConfiguration();
     }
 
-    public BaseInfo getInfo() {
-        return info;
+    public UriInfo getUriInfo() {
+        return uriInfo;
     }
 
     /**
      * 获取KEY
      */
     public String getKey() {
-        return info.getKey();
+        return key;
     }
 
     /**
      * 获取uri
      */
     public String getUri() {
-        return info.getUri();
-    }
-
-    /**
-     * 例如uri是asset://sample.png，那么uriContent就是sample.png
-     */
-    public String getUriContent() {
-        return info.getUriContent();
-    }
-
-    /**
-     * 获取uri类型
-     */
-    public UriScheme getUriScheme() {
-        return info.getUriScheme();
+        return uriInfo.getUri();
     }
 
     /**

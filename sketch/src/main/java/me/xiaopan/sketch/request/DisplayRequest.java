@@ -44,10 +44,10 @@ public class DisplayRequest extends LoadRequest {
     private ViewInfo viewInfo;
     private RequestAndViewBinder requestAndViewBinder;
 
-    public DisplayRequest(Sketch sketch, DisplayInfo requestInfo, DisplayOptions displayOptions,
+    public DisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
                           ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
                           DownloadProgressListener downloadProgressListener) {
-        super(sketch, requestInfo, displayOptions, null, downloadProgressListener);
+        super(sketch, uriInfo, key, displayOptions, null, downloadProgressListener);
 
         this.viewInfo = viewInfo;
         this.displayOptions = displayOptions;
@@ -62,7 +62,7 @@ public class DisplayRequest extends LoadRequest {
      * 获取内存缓存key
      */
     public String getMemoryCacheKey() {
-        return ((DisplayInfo) getInfo()).getMemoryCacheKey();
+        return getKey();
     }
 
     /**

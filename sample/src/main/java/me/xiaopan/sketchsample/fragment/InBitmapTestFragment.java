@@ -26,7 +26,7 @@ import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
 import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
-import me.xiaopan.sketch.request.DownloadInfo;
+import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
@@ -69,15 +69,13 @@ public class InBitmapTestFragment extends MyFragment {
     private View currentMode;
 
     private static Bitmap decodeImage(Context context, String imageUri, BitmapFactory.Options options) {
-        DownloadInfo downloadInfo = new DownloadInfo();
-        downloadInfo.reset(imageUri);
-        if (downloadInfo.getUriScheme() == null) {
+        UriInfo uriInfo = UriInfo.make(imageUri);
+        if (uriInfo == null || uriInfo.getScheme() == null) {
             return null;
         }
         DataSource dataSource;
         try {
-            dataSource = DataSourceFactory.makeDataSource(context, imageUri, downloadInfo.getUriScheme(),
-                    downloadInfo.getUriContent(), null, downloadInfo.getDiskCacheKey());
+            dataSource = DataSourceFactory.makeDataSource(context, uriInfo, null);
         } catch (DecodeException e) {
             e.printStackTrace();
             return null;

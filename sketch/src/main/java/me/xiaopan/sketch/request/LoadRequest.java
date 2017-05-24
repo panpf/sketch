@@ -39,11 +39,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
     private LoadResult loadResult;
 
-    public LoadRequest(
-            Sketch sketch, LoadInfo info,
-            LoadOptions loadOptions, LoadListener loadListener,
-            DownloadProgressListener downloadProgressListener) {
-        super(sketch, info, loadOptions, null, downloadProgressListener);
+    public LoadRequest(Sketch sketch, UriInfo uriInfo, String key, LoadOptions loadOptions,
+                       LoadListener loadListener, DownloadProgressListener downloadProgressListener) {
+        super(sketch, uriInfo, key, loadOptions, null, downloadProgressListener);
 
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;
@@ -55,7 +53,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
      * 获取磁盘缓存key
      */
     public String getProcessedImageDiskCacheKey() {
-        return ((LoadInfo) getInfo()).getProcessedImageDiskCacheKey();
+        return getKey();
     }
 
     /**
@@ -102,7 +100,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
         setStatus(Status.INTERCEPT_LOCAL_TASK);
 
-        if (getUriScheme() != UriScheme.NET) {
+        if (getUriInfo().getScheme() != UriScheme.NET) {
             // 本地请求直接执行加载
             if (SLogType.REQUEST.isEnabled()) {
                 printLogD("local thread", "local image", "runDispatch");

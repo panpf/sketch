@@ -16,9 +16,9 @@
 
 package me.xiaopan.sketch.request;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -26,19 +26,20 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 下载Helper，负责组织、收集、初始化下载参数，最后执行commit()提交请求
  */
 public class DownloadHelper {
-    protected String logName = "DownloadHelper";
+    private static final String LOG_NAME = "DownloadHelper";
 
-    protected Sketch sketch;
+    private Sketch sketch;
+    private boolean sync;
 
-    protected boolean sync;
-    protected DownloadInfo downloadInfo = new DownloadInfo();
-    protected DownloadOptions downloadOptions = new DownloadOptions();
-    protected DownloadListener downloadListener;
-    protected DownloadProgressListener downloadProgressListener;
+    private UriInfo uriInfo;
+    private String key;
+    private DownloadOptions downloadOptions = new DownloadOptions();
+    private DownloadListener downloadListener;
+    private DownloadProgressListener downloadProgressListener;
 
     public DownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.downloadInfo.reset(uri);
+        this.uriInfo = UriInfo.make(uri);
     }
 
     /**
@@ -63,16 +64,16 @@ public class DownloadHelper {
     }
 
     /**
-     * 批量设置下载参数，这会是一个合并的过程，并不会完全覆盖
+     * 批量设置下载参数（完全覆盖）
      */
     public DownloadHelper options(DownloadOptions newOptions) {
-        downloadOptions.merge(newOptions);
+        downloadOptions.copy(newOptions);
         return this;
     }
 
     /**
-     * 批量设置下载参数，你只需要提前将DownloadOptions通过Sketch.putDownloadOptions()方法存起来，
-     * 然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置下载参数（完全覆盖），你只需要提前将DownloadOptions通过Sketch.putDownloadOptions()方法存起来，
+     * 然后在这里指定其名称即可
      */
     @SuppressWarnings("unused")
     public DownloadHelper optionsByName(Enum<?> optionsName) {
@@ -115,17 +116,43 @@ public class DownloadHelper {
 
         CallbackHandler.postCallbackStarted(downloadListener, sync);
 
-        preProcess();
-
         if (!checkUri()) {
             return null;
         }
+
+        preProcess();
 
         if (!checkDiskCache()) {
             return null;
         }
 
         return submitRequest();
+    }
+
+    private boolean checkUri() {
+        if (uriInfo == null) {
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, LOG_NAME, "uri is null or empty");
+            }
+            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
+            return false;
+        }
+
+        if (uriInfo.getScheme() == null) {
+            SLog.e(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
+            return false;
+        }
+
+        if (uriInfo.getScheme() != UriScheme.NET) {
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, LOG_NAME, "only support http ot https. %s", uriInfo.getUri());
+            }
+            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -135,44 +162,16 @@ public class DownloadHelper {
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
         // 根据URI和下载选项生成请求key
-        if (downloadInfo.getKey() == null) {
-            downloadInfo.setKey(SketchUtils.makeRequestKey(downloadInfo.getUri(), downloadInfo.getUriScheme(), downloadOptions));
-        }
-    }
-
-    private boolean checkUri() {
-        if (downloadInfo.getUri() == null || "".equals(downloadInfo.getUri().trim())) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "uri is null or empty");
-            }
-            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
-            return false;
-        }
-
-        if (downloadInfo.getUriScheme() == null) {
-            SLog.e(SLogType.REQUEST, logName, "unknown uri scheme. %s", downloadInfo.getUri());
-            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
-        }
-
-        if (downloadInfo.getUriScheme() != UriScheme.NET) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, logName, "only support http ot https. %s", downloadInfo.getUri());
-            }
-            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
-        }
-
-        return true;
+        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getScheme(), downloadOptions);
     }
 
     private boolean checkDiskCache() {
         if (!downloadOptions.isCacheInDiskDisabled()) {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(downloadInfo.getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.i(SLogType.REQUEST, logName, "image download completed. %s", downloadInfo.getKey());
+                    SLog.i(SLogType.REQUEST, LOG_NAME, "image download completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
@@ -187,8 +186,8 @@ public class DownloadHelper {
 
     private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DownloadRequest request = requestFactory.newDownloadRequest(sketch, downloadInfo,
-                downloadOptions, downloadListener, downloadProgressListener);
+        DownloadRequest request = requestFactory.newDownloadRequest(sketch, uriInfo, key, downloadOptions,
+                downloadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

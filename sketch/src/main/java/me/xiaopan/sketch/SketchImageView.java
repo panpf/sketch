@@ -43,7 +43,7 @@ import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.DisplayParams;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.request.ErrorCause;
@@ -488,13 +488,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public DisplayParams getDisplayParams() {
-        return requestFunction.getDisplayParams();
+    public DisplayCache getDisplayCache() {
+        return requestFunction.getDisplayCache();
     }
 
     @Override
-    public void setDisplayParams(DisplayParams displayParams) {
-        requestFunction.setDisplayParams(displayParams);
+    public void setDisplayCache(DisplayCache displayCache) {
+        requestFunction.setDisplayCache(displayCache);
     }
 
     @Override
@@ -543,8 +543,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public boolean redisplay() {
-        DisplayParams displayParams = getDisplayParams();
-        String uri = displayParams != null ? displayParams.info.getUri() : null;
+        DisplayCache displayCache = getDisplayCache();
+        String uri = displayCache != null ? displayCache.uri : null;
         if (uri != null && !"".equals(uri)) {
             Sketch.with(getContext()).display(uri, this).commit();
             return true;
@@ -848,9 +848,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, String)
      */
     public String getOptionsKey() {
-        DisplayParams displayParams = getDisplayParams();
-        if (displayParams != null) {
-            return displayParams.options.makeKey(new StringBuilder()).toString();
+        DisplayCache displayCache = getDisplayCache();
+        if (displayCache != null) {
+            return displayCache.options.makeKey(new StringBuilder()).toString();
         } else {
             return getOptions().makeKey(new StringBuilder()).toString();
         }

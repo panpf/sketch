@@ -26,7 +26,7 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.DisplayParams;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -38,7 +38,7 @@ public class RequestFunction extends SketchImageView.Function {
     private ImageViewInterface imageViewInterface;
 
     private DisplayOptions displayOptions = new DisplayOptions();
-    private DisplayParams displayParams;
+    private DisplayCache displayCache;
 
     private boolean oldDrawableFromSketch;
     private boolean newDrawableFromSketch;
@@ -111,18 +111,18 @@ public class RequestFunction extends SketchImageView.Function {
 
         // 如果新Drawable不是来自Sketch，那么就要清空显示参数，防止被RecyclerCompatFunction在onAttachedToWindow的时候错误的恢复成上一张图片
         if (!newDrawableFromSketch) {
-            displayParams = null;
+            displayCache = null;
         }
 
         return false;
     }
 
-    public DisplayParams getDisplayParams() {
-        return displayParams;
+    public DisplayCache getDisplayCache() {
+        return displayCache;
     }
 
-    public void setDisplayParams(DisplayParams displayParams) {
-        this.displayParams = displayParams;
+    public void setDisplayCache(DisplayCache displayCache) {
+        this.displayCache = displayCache;
     }
 
     @SuppressWarnings("unused")

@@ -13,6 +13,9 @@
 * DisplayListener.onCompleted(ImageFrom, String)参数改为DisplayListener.onCompleted(Drawable, ImageFrom, ImageAttrs)
 * ImagePreprocessor重构
 
+变化：
+* DisplayHelper.options()、LoadHelper.options()、DownloadHelper.options()内部处理由合并改为完全覆盖
+
 新功能：
 * 新增自动纠正图片方向功能 [点击了解更多](../wiki/correct_image_orientation.md)
 * ImageAttrs中新增exifOrientation属性，存储图片方向

@@ -22,7 +22,7 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.request.DisplayParams;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
 
@@ -53,12 +53,15 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
             return;
         }
 
-        DisplayParams displayParams = requestFunction.getDisplayParams();
-        if (displayParams != null) {
+        DisplayCache displayCache = requestFunction.getDisplayCache();
+        if (displayCache != null) {
             if (SLogType.BASE.isEnabled()) {
-                SLog.w(SLogType.BASE, logName, "restore image on attached to window. %s", displayParams.info.getUri());
+                SLog.w(SLogType.BASE, logName, "restore image on attached to window. %s", displayCache.uri);
             }
-            Sketch.with(context).display(displayParams, imageViewInterface).commit();
+            Sketch.with(context)
+                    .display(displayCache.uri, imageViewInterface)
+                    .options(displayCache.options)
+                    .commit();
         }
     }
 

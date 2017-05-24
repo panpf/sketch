@@ -7,8 +7,8 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
     private RunStatus runStatus;
     private boolean sync;
 
-    AsyncRequest(Sketch sketch, BaseInfo info) {
-        super(sketch, info);
+    AsyncRequest(Sketch sketch, UriInfo uriInfo, String key) {
+        super(sketch, uriInfo, key);
     }
 
     @Override
