@@ -4,8 +4,8 @@
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Logs](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=Logs)](https://github.com/xiaopansky/sketch/releases)
 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files)
-[![API](https://img.shields.io/badge/API-10%2B-red.svg)](https://android-arsenal.com/api?level=9)
-![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-orange.svg)
+[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
 
 [English version of the README.md](README_EN.md)
 
@@ -13,57 +13,28 @@ Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势�
 
 ![sample](docs/res/sample.jpg)
 
-### 特点
->* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
->* ``支持gif图``. 集成了[android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
->* ``支持手势缩放``. 支持手势缩放功能，在[PhotoView](https://github.com/chrisbanes/PhotoView)的基础上进行了优化，增加了滚动条，定位等功能
->* ``支持分块显示超大图``. 支持分块显示超大图功能，从此再大的图片也不怕了
->* ``支持三级缓存``. 通过LruMemoryCache、LruDiskCache复用图片，加快显示时间；通过LruBitmapPool复用Bitmap，减少因GC而造成的卡顿
->* ``支持各种列表``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
->* ``自动防止加载过大Bitmap`` 可通过maxSize来控制加载到内存的图片的尺寸，默认为ImageView的layout_width和layout_height或屏幕的宽高
->* ``独家TransitionDrawable支持``. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形
->* ``只加载或只下载``. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地
->* ``支持读取APK图标``. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标
->* ``移动网络下暂停下载``. 内置了移动网络下暂停下载图片的功能，你只需开启即可
->* ``自动选择合适的Bitmap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码
->* ``特殊文件预处理``. 通过ImagePreprocessor可对特殊文件（例如多媒体文件）进行预处理，提取出其包含的图片，读取APK文件的图标就是通过这个功能实现的
->* ``支持纠正图片方向``. 可纠正方向不正的图片，并且分块显示超大图功能也支持，仅限jpeg格式的图片
->* ``强大且灵活的自定义``. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节
+### 特性
+>* `多种URI支持`. 支持`http://或https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg或/sdcard/sample.jpg`、`drawable://`、`data:image/或data:img/`等6种URI
+>* `支持gif图`. 集成了[android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
+>* `支持手势缩放`. 支持手势缩放功能，在[PhotoView](https://github.com/chrisbanes/PhotoView)的基础上进行了优化，增加了滚动条，定位等功能
+>* `支持分块显示超大图`. 支持分块显示超大图功能，从此再大的图片也不怕了
+>* `支持三级缓存`. 通过LruMemoryCache、LruDiskCache复用图片，加快显示时间；通过LruBitmapPool复用Bitmap，减少因GC而造成的卡顿
+>* `支持纠正图片方向`. 可纠正方向不正的图片，并且分块显示超大图功能也支持，仅限jpeg格式的图片
+>* `支持读取APK图标`. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标
+>* `支持Base64图片`. 支持解析 Base64 格式的图片
+>* `支持各种列表`. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
+>* `自动防止加载过大Bitmap` 可通过maxSize来控制加载到内存的图片的尺寸，默认为ImageView的layout_width和layout_height或屏幕的宽高
+>* `独家TransitionDrawable支持`. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形
+>* `只加载或只下载`. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地
+>* `移动网络下暂停下载`. 内置了移动网络下暂停下载图片的功能，你只需开启即可
+>* `自动选择合适的Bitmap.Config`. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码
+>* `特殊文件预处理`. 通过ImagePreprocessor可对特殊文件（例如多媒体文件）进行预处理，提取出其包含的图片，读取APK文件的图标就是通过这个功能实现的
+>* `强大且灵活的自定义`. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节
 
 ### 示例APP
 ![SampleApp](docs/sketch-sample.png)
 
 扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](docs/sketch-sample.apk)
-
-### 示例
-```java
-SketchImageView sketchImageView = findViewById(R.id.image_main);
-
-// display image from network
-sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
-
-// display image from SDCard
-sketchImageView.displayImage("/sdcard/sample.png");
-sketchImageView.displayImage("file:///sdcard/sample.png");
-
-// display apk icon from SDCard
-sketchImageView.displayImage("/sdcard/google_play.apk");
-
-// display installed app icon
-sketchImageView.displayInstalledAppIcon("com.tencent.qq", 50001);
-
-// display resource drawable
-sketchImageView.displayResourceImage(R.drawable.sample);
-
-// display image from asset
-sketchImageView.displayAssetImage("sample.jpg");
-
-// display image from URI
-Uri uri = ...;
-sketchImageView.displayURIImage(uri);
-```
-
-[SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
 
 ### 使用指南
 
@@ -87,7 +58,7 @@ compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
 
 `Android Studio会自动合并AAR中所包含的权限和混淆配置`
 
-2.如果您的APP想要兼容 API 13 (Android 3.2) 及以下的设备Android设备，那么需要在您的 Application 中调用释放缓存的方法（Android 4.0以上能直接通过Context注册并回调）
+2.如果您的APP想要兼容 API 13 (Android 3.2) 及以下的版本，那么需要在您的 Application 中调用释放缓存的方法（Android 4.0以上能直接通过Context注册并回调）
 ```java
 public class MyApplication extends Application {    
 
@@ -111,24 +82,54 @@ public class MyApplication extends Application {
 }
 ```
 
+#### 显示图片
+```java
+SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
+
+// display image from net
+sketchImageView.displayImage("http://t.cn/RShdS1f");
+
+// display image from SDCard
+sketchImageView.displayImage("/sdcard/sample.jpg");
+sketchImageView.displayImage("file:///sdcard/sample.jpg");
+
+// display resource drawable
+sketchImageView.displayResourceImage(R.drawable.sample);
+
+// display image from asset
+sketchImageView.displayAssetImage("sample.jpg");
+
+// display image from content provider
+sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/last"));
+
+// display base64 image
+sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
+
+// display apk icon from SDCard
+sketchImageView.displayImage("/sdcard/google_play.apk");
+
+// display installed app icon
+sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
+```
+
+[SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
+
 #### 支持的URI
-|Type|Scheme|Method|
+|Type|Scheme|Method In SketchImageView|
 |:---|:---|:---|
 |File in network|http://, https:// |displayImage(String)|
 |File in SDCard|/, file:// |displayImage(String)|
-|Content Provider|content:// |displayURIImage(Uri)|
+|Content Provider|content:// |displayContentImage(Uri)|
 |Asset in app|asset:// |displayAssetImage(String)|
 |Resource in app|resource:// |displayResourceImage(int)|
+|Base64|data:image/, data:/img/ |displayImage(String)|
 
 #### 支持的图片类型
-
-|Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:---|:---|:---|:---|:---|:---|:---|
-|File in network|http://, https:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
-|Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|Asset in app|asset:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|Resource in app|resource:// |YES|YES|YES（Android4.0 above）|YES|NO|
+* jpeg：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* png：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* gif：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* bmp：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* webp：[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 #### download()、load()、display()
 Sketch共有display()、load()、download()三个方法可供使用，你可以根据你的需求选择合适的方法
@@ -139,12 +140,12 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 示例：
 ```
 // 显示
-Sketch.with(context).display("http://biying.png", sketchImageView)
+Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
     .loadingImage(R.drawable.image_loading)
     .commit();
 
 // 加载
-Sketch.with(context).load("http://biying.png", new LoadListener() {
+Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
     @Override
     public void onCompleted(LoadResult loadResult) {
 
@@ -154,7 +155,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
 }).maxSize(100, 100).commit();
 
 // 下载
-Sketch.with(context).download("http://biying.png", new DownloadListener() {
+Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
     @Override
     public void onCompleted(DownloadResult downloadResult) {
 

@@ -4,8 +4,8 @@
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Logs](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=Logs)](https://github.com/xiaopansky/sketch/releases)
 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files)
-[![API](https://img.shields.io/badge/API-10%2B-red.svg)](https://android-arsenal.com/api?level=9)
-![QQ Group](https://img.shields.io/badge/QQ%20Gruop-529630740-orange.svg)
+[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+![QQ Group](https://img.shields.io/badge/QQ%20Gruop-529630740-red.svg)
 
 [Chinese version of the README.md](README.md)
 
@@ -16,56 +16,27 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 ![sample](docs/res/sample.jpg)
 
 ### Features
->* ``Multiple URL support``. Support for ``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``7 kinds of URI
->* ``Support gif``. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
->* ``Support gesture zoom``. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
->* ``Support block display large picture``. Support block display large picture function, from then the big picture is not afraid
->* ``Support level 3 cache``. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
->* ``Support various list``. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
->* ``Automatically prevents excessive loading Bitmap`` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
->* ``Exclusive TransitionDrawable support``. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
->* ``Only to load or only to download``. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
->* ``Support reading APK icon``. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
->* ``Paused download on mobile network``. Built-in mobile network to download pictures under the suspended function, you can simply open
->* ``Automatically select the appropriate Bitmap.Config``. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
->* ``Special file preprocessing``. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
->* ``Support correcting picture orientation``. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
->* ``Powerful and flexible customization``. Can be customized to download, cache, decoding, processing, display, placeholder and other links
+>* `Multiple URL support`. Support for `http:// or https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg or /sdcard/sample.jpg`、`drawable://`、`data:image/ or data:img/`6 kinds of URI
+>* `Support gif`. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
+>* `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
+>* `Support block display large picture`. Support block display large picture function, from then the big picture is not afraid
+>* `Support level 3 cache`. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
+>* `Support correcting picture orientation`. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
+>* `Support reading APK icon`. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
+>* `Support Base64 image`. Support parse of Base64 format image
+>* `Support various list`. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
+>* `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
+>* `Exclusive TransitionDrawable support`. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
+>* `Only to load or only to download`. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
+>* `Paused download on mobile network`. Built-in mobile network to download pictures under the suspended function, you can simply open
+>* `Automatically select the appropriate Bitmap.Config`. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
+>* `Special file preprocessing`. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
+>* `Powerful and flexible customization`. Can be customized to download, cache, decoding, processing, display, placeholder and other links
 
 ### Example APP
 ![SampleApp](docs/sketch-sample.png)
 
 Scan a two-dimensional code to download a sample APP, or [click to download APK](docs/sketch-sample.apk)
-
-### Examples
-```java
-SketchImageView sketchImageView = findViewById(R.id.image_main);
-
-// display image from network
-sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
-
-// display image from SDCard
-sketchImageView.displayImage("/sdcard/sample.png");
-sketchImageView.displayImage("file:///sdcard/sample.png");
-
-// display apk icon from SDCard
-sketchImageView.displayImage("/sdcard/google_play.apk");
-
-// display installed app icon
-sketchImageView.displayInstalledAppIcon("com.tencent.qq", 50001);
-
-// display resource drawable
-sketchImageView.displayResourceImage(R.drawable.sample);
-
-// display image from asset
-sketchImageView.displayAssetImage("sample.jpg");
-
-// display image from URI
-Uri uri = ...;
-sketchImageView.displayURIImage(uri);
-```
-
-[SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
 
 ### Guide
 
@@ -89,7 +60,7 @@ Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Version](htt
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 
-2.If your APP wants to be compatible with API 13 (Android 3.2) and the following device Android devices, then you need to call in your Application to release the cache method (Android 4.0 above can be directly through the Context registration and callback)
+2.If your APP wants to be compatible with API 13 (Android 3.2) and below, then you need to call in your Application to release the cache method (Android 4.0 above can be directly through the Context registration and callback)
 ```java
 public class MyApplication extends Application {    
 
@@ -113,25 +84,54 @@ public class MyApplication extends Application {
 }
 ```
 
-#### Supported URIs
+#### Display Image
+```java
+SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
 
-|Type|Scheme|Method|
+// display image from net
+sketchImageView.displayImage("http://t.cn/RShdS1f");
+
+// display image from SDCard
+sketchImageView.displayImage("/sdcard/sample.jpg");
+sketchImageView.displayImage("file:///sdcard/sample.jpg");
+
+// display resource drawable
+sketchImageView.displayResourceImage(R.drawable.sample);
+
+// display image from asset
+sketchImageView.displayAssetImage("sample.jpg");
+
+// display image from content provider
+sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/last"));
+
+// display base64 image
+sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
+
+// display apk icon from SDCard
+sketchImageView.displayImage("/sdcard/google_play.apk");
+
+// display installed app icon
+sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
+```
+
+[SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
+
+#### Supported URIs
+|Type|Scheme|Method In SketchImageView|
 |:---|:---|:---|
 |File in network|http://, https:// |displayImage(String)|
 |File in SDCard|/, file:// |displayImage(String)|
-|Content Provider|content:// |displayURIImage(Uri)|
+|Content Provider|content:// |displayContentImage(Uri)|
 |Asset in app|asset:// |displayAssetImage(String)|
 |Resource in app|resource:// |displayResourceImage(int)|
+|Base64|data:image/, data:/img/ |displayImage(String)|
 
 #### Supported image types
-
-|Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:---|:---|:---|:---|:---|:---|:---|
-|File in network|http://, https:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
-|Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|Asset in app|asset:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|Resource in app|resource:// |YES|YES|YES（Android4.0 above）|YES|NO|
+* jpeg：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* png：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* gif：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* bmp：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
+* webp：[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 #### download()、load()、display()
 Sketch total display (), load (), download () three methods available, you can choose according to your needs appropriate method
@@ -142,12 +142,12 @@ Sketch total display (), load (), download () three methods available, you can c
 Examples:
 ```
 // Display
-Sketch.with(context).display("http://biying.png", sketchImageView)
+Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
     .loadingImage(R.drawable.image_loading)
     .commit();
 
 // Load
-Sketch.with(context).load("http://biying.png", new LoadListener() {
+Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
     @Override
     public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
 
@@ -161,7 +161,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
 }).maxSize(100, 100).commit();
 
 // Download
-Sketch.with(context).download("http://biying.png", new DownloadListener() {
+Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
     @Override
     public void onCompleted(File cacheFile, boolean isFromNetwork) {
 

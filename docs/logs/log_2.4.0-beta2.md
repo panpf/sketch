@@ -1,3 +1,7 @@
+此版本主要是优化了纠正图片方向功能以及一些内在功能的实现，还要就是增加了对Base64图片的支持
+
+:fire::fire::fire::fire::fire::fire::fire::fire: 不能平稳升级 :fire::fire::fire::fire::fire::fire::fire::fire:
+
 ### :sparkles: Base64格式图片支持
 * 新增支持Base64格式的图片，支持data:image和data:img两种写法
 * 对于Base64格式的图片会首先会缓存到磁盘上再读取
@@ -44,17 +48,20 @@ Sketch.with(context).display("http://...", imageView)
 `这段代码，之前的效果decodeGifImage属性的值最终是true，因为合并时true优先。现在改为完全覆盖后最终的值就是false，因为options里decodeGifImage属性是false`
 
 ### SketchImageView
-* :sparkles: SketchImageView增加redisplay()方法可在需要的时候重走显示流程
+* :sparkles: SketchImageView新增redisplay()方法可在需要的时候重走显示流程
+* :sparkles: SketchImageView新增displayContentImage(Uri)方法用来代替displayURIImage(Uri)
 * :hammer: getDisplayParams()方法改名为 getDisplayCache()
 
 ### SketchMonitor：
+* :hammer: 改名为ErrorTracker
 * :hammer: onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)
 * :fire: 删除onInBitmapExceptionForRegionDecoder(String, int, int, Rect, int, Bitmap)方法
 * :sparkles: 新增onDecodeRegionError(String, int, int, String, Throwable, Rect, int)方法
-* :hammer: 改名为ErrorTracker
 
 ### 其它：
 * :art: 优化由inBitmap导致的解码失败的情况的判断
+* :sparkles: Sketch新增displayFromContent(Uri)方法用来代替displayFromURI(Uri)
+* :fire: 删除WRITE_EXTERNAL_STORAGE权限
 
 ### Sample App：
 * :sparkles: 增加自动纠正图片方向测试页面
@@ -64,4 +71,4 @@ Sketch.with(context).display("http://...", imageView)
 * :sparkles: 可以在任意位置长按图片查看图片信息
 
 待办：
-* 增加了base64图片支持，log，文档都得加
+* 还有一些改动的文档得修改
