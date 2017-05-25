@@ -435,6 +435,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
+    public DisplayRequest displayContentImage(Uri uri) {
+        return Sketch.with(getContext()).displayFromContent(uri, this).commit();
+    }
+
+    @Override
+    @Deprecated
     public DisplayRequest displayURIImage(Uri uri) {
         return Sketch.with(getContext()).displayFromURI(uri, this).commit();
     }

@@ -192,6 +192,7 @@ public class DownloadRequest extends AsyncRequest {
         downloadCompleted();
     }
 
+    // TODO: 2017/5/25 将下载部分弄成一个ImageDownloader，Request部分值控制流程
     private DownloadResult download(DiskCache diskCache, String diskCacheKey) {
         if (isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {

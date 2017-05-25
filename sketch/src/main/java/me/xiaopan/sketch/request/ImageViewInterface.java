@@ -82,11 +82,22 @@ public interface ImageViewInterface {
     DisplayRequest displayAssetImage(String imageFileName);
 
     /**
-     * 显示URI指向的图片
+     * 显示来自ContentProvider的图片
      *
      * @param uri 图片URI
      */
     @SuppressWarnings("unused")
+    DisplayRequest displayContentImage(Uri uri);
+
+    /**
+     * 显示URI指向的图片
+     *
+     * @param uri 图片URI
+     * @see #displayContentImage(Uri)
+     * @deprecated Please use the {@link #displayContentImage(Uri)} method
+     */
+    @SuppressWarnings("unused")
+    @Deprecated
     DisplayRequest displayURIImage(Uri uri);
 
     /**

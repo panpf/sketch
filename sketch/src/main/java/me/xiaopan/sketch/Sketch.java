@@ -323,12 +323,26 @@ public class Sketch {
     }
 
     /**
-     * 显示URI指向的图片
+     * 显示来自ContentProvider的图片
      *
      * @param uri                图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
      * @param imageViewInterface 默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
+    public DisplayHelper displayFromContent(Uri uri, ImageViewInterface imageViewInterface) {
+        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, imageViewInterface);
+    }
+
+    /**
+     * 显示URI指向的图片
+     *
+     * @param uri                图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
+     * @param imageViewInterface 默认实现是SketchImageView
+     * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
+     * @see #displayFromContent(Uri, ImageViewInterface)}
+     * @deprecated Please use the {@link #displayFromContent(Uri, ImageViewInterface)} method
+     */
+    @Deprecated
     public DisplayHelper displayFromURI(Uri uri, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, imageViewInterface);
     }
