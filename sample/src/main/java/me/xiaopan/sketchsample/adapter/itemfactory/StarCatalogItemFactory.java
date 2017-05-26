@@ -57,7 +57,7 @@ public class StarCatalogItemFactory extends AssemblyRecyclerItemFactory<StarCata
                 iconSize = itemWidth - (space * 2);
             }
 
-            getItemView().setOnClickListener(new View.OnClickListener() {
+            iconImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onClickStarListener != null) {
