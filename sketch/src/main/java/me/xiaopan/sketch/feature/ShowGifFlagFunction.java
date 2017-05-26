@@ -18,7 +18,6 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -27,61 +26,45 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 显示GIF图标识功能，使用者指定一个小图标，如果当前显示的图片是GIF图就会在ImageView的右下角显示这个小图标
  */
 public class ShowGifFlagFunction extends SketchImageView.Function {
-    private View view;
+    private SketchImageView imageView;
+    private Drawable gifFlagDrawable;
 
-    protected boolean isGifImage;
-    protected float gifDrawableLeft = -1;
-    protected float gifDrawableTop = -1;
-    protected Drawable gifFlagDrawable;
+    private boolean gifImage;
+    private float iconDrawLeft;
+    private float iconDrawTop;
+    private Drawable lastDrawable;
+    private int cacheViewWidth;
+    private int cacheViewHeight;
 
-    public ShowGifFlagFunction(View view, Drawable gifFlagDrawable) {
-        this.view = view;
+    public ShowGifFlagFunction(SketchImageView imageView, Drawable gifFlagDrawable) {
+        this.imageView = imageView;
 
         this.gifFlagDrawable = gifFlagDrawable;
         this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
     }
 
     @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        initLeftAndTop();
-    }
-
-    @Override
     public void onDraw(Canvas canvas) {
-        if (!isGifImage) {
+        Drawable drawable = imageView.getDrawable();
+        if (drawable != lastDrawable) {
+            gifImage = SketchUtils.isGifImage(drawable);
+            lastDrawable = drawable;
+        }
+
+        if (!gifImage) {
             return;
         }
 
-        if (gifDrawableLeft == -1 || gifDrawableTop == -1) {
-            initLeftAndTop();
+        if (cacheViewWidth != imageView.getWidth() || cacheViewHeight != imageView.getHeight()) {
+            cacheViewWidth = imageView.getWidth();
+            cacheViewHeight = imageView.getHeight();
+            iconDrawLeft = imageView.getWidth() - imageView.getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+            iconDrawTop = imageView.getHeight() - imageView.getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
         }
 
         canvas.save();
-        canvas.translate(gifDrawableLeft, gifDrawableTop);
+        canvas.translate(iconDrawLeft, iconDrawTop);
         gifFlagDrawable.draw(canvas);
         canvas.restore();
-    }
-
-    @Override
-    public boolean onDetachedFromWindow() {
-        // drawable都已经被清空了，GIF标识当然要重置了
-        isGifImage = false;
-        return false;
-    }
-
-    @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        boolean oldIsGifDrawable = isGifImage;
-        isGifImage = SketchUtils.isGifImage(newDrawable);
-        return isGifImage != oldIsGifDrawable;
-    }
-
-    public Drawable getGifFlagDrawable() {
-        return gifFlagDrawable;
-    }
-
-    private void initLeftAndTop() {
-        gifDrawableLeft = view.getWidth() - view.getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-        gifDrawableTop = view.getHeight() - view.getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
     }
 }
