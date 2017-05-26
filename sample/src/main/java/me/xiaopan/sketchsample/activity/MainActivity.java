@@ -313,8 +313,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         menuList.add(new CheckMenu(this, "仅可见时解码超大图（详情页）", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
 
         menuList.add("GIF");
-        menuList.add(new CheckMenu(this, "播放GIF（列表）", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示GIF图标识（列表）", AppConfig.Key.SHOW_GIF_FLAG, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "自动播放GIF（列表）", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "显示GIF标识（列表）", AppConfig.Key.SHOW_GIF_FLAG, null, menuClickListener));
 
         menuList.add("解码");
         menuList.add(new CheckMenu(this, "全局解码时质量优先", AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener));
