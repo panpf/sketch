@@ -270,12 +270,13 @@ public class MyImageView extends SketchImageView {
             int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
             int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
             String needMemory = Formatter.formatFileSize(getContext(), originImageByteCount);
+            String mimeType = sketchDrawable.getMimeType();
 
             messageBuilder.append("\n");
             messageBuilder.append("\n");
             messageBuilder.append("原始图：")
                     .append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight())
-                    .append("/").append(sketchDrawable.getMimeType().substring(6))
+                    .append("/").append(mimeType != null && mimeType.startsWith("image/") ? mimeType.substring(6) : "未知")
                     .append("/").append(needDiskSpace);
 
             messageBuilder.append("\n                ");
