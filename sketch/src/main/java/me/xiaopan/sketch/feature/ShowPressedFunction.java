@@ -34,6 +34,7 @@ import me.xiaopan.sketch.SketchImageView;
 public class ShowPressedFunction extends SketchImageView.Function {
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
 
+    // TODO: 2017/5/26 改掉能改的logname变成常量
     protected String logName = "ShowPressedFunction";
 
     private View view;

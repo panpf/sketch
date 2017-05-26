@@ -34,33 +34,44 @@ class SampleErrorTracker extends ErrorTracker {
     private long lastUploadDecodeNormalImageFailedTime;
     private long lastUploadDecodeGifImageFailedTime;
     private long lastUploadProcessImageFailedTime;
-    private boolean uploadDecodeGifImageFailed;
+    private boolean uploadNotFoundGidSoError;
 
     public SampleErrorTracker(Context context) {
         super(context);
         this.context = context.getApplicationContext();
-        logName = "SampleErrorTracker";
+    }
+
+    @Override
+    public void onNotFoundGifSoError(Throwable e) {
+        super.onNotFoundGifSoError(e);
+
+        // 每次运行只上报一次
+        if (uploadNotFoundGidSoError) {
+            return;
+        }
+        uploadNotFoundGidSoError = true;
+
+        String abis;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            abis = Arrays.toString(Build.SUPPORTED_ABIS);
+        } else {
+            abis = Arrays.toString(new String[]{Build.CPU_ABI, Build.CPU_ABI2});
+        }
+        String message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", abis);
+
+        CrashReport.postCatchedException(new Exception(message, e));
     }
 
     @Override
     public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         super.onDecodeGifImageError(throwable, request, outWidth, outHeight, outMimeType);
 
-        boolean notFoundSoFile = throwable instanceof UnsatisfiedLinkError || throwable instanceof ExceptionInInitializerError;
-        if (notFoundSoFile) {
-            // 如果是找不到so文件异常，那么每次运行只上报一次
-            if (uploadDecodeGifImageFailed) {
-                return;
-            }
-            uploadDecodeGifImageFailed = true;
-        } else {
-            // 其它异常每半小时上报一次
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastUploadDecodeGifImageFailedTime < INSTALL_FAILED_RETRY_TIME_INTERVAL) {
-                return;
-            }
-            lastUploadDecodeGifImageFailedTime = currentTime;
+        // 其它异常每半小时上报一次
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUploadDecodeGifImageFailedTime < INSTALL_FAILED_RETRY_TIME_INTERVAL) {
+            return;
         }
+        lastUploadDecodeGifImageFailedTime = currentTime;
 
         StringBuilder builder = new StringBuilder();
 
@@ -70,14 +81,6 @@ class SampleErrorTracker extends ErrorTracker {
                 .append(" - ").append(decodeUri(context, request.getUri()));
 
         builder.append("\n").append("exceptionMessage: ").append(throwable.getMessage());
-
-        if (notFoundSoFile) {
-            if (Build.VERSION.SDK_INT >= 21) {
-                builder.append("\n").append("abiInfo: ").append(Arrays.toString(Build.SUPPORTED_ABIS));
-            } else {
-                builder.append("\n").append("abiInfo: ").append("abi1=").append(Build.CPU_ABI).append(", abi2=").append(Build.CPU_ABI2);
-            }
-        }
 
         if (throwable instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();

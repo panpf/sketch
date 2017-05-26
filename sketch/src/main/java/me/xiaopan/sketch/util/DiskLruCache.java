@@ -256,7 +256,7 @@ public final class DiskLruCache implements Closeable {
             }
             if (!file.delete()) {
 //                throw new IOException("failed to delete file: " + file);
-                SLog.w("DiskLruCache", "failed to delete file: " + file.getPath());
+                SLog.w("DiskLruCache", "failed to delete file: %s", file.getPath());
             }
         }
     }

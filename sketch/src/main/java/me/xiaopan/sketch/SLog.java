@@ -90,16 +90,16 @@ public class SLog {
         }
     }
 
-    public static void v(SLogType type, String text) {
-        v(type, null, text);
+    public static void v(SLogType type, String msg) {
+        v(type, null, msg);
     }
 
     public static void v(String name, String msg) {
         v(null, name, msg);
     }
 
-    public static void v(String text) {
-        v(null, null, text);
+    public static void v(String msg) {
+        v(null, null, msg);
     }
 
 
@@ -150,16 +150,16 @@ public class SLog {
         }
     }
 
-    public static void i(SLogType type, String text) {
-        i(type, null, text);
+    public static void i(SLogType type, String msg) {
+        i(type, null, msg);
     }
 
     public static void i(String name, String msg) {
         i(null, name, msg);
     }
 
-    public static void i(String text) {
-        i(null, null, text);
+    public static void i(String msg) {
+        i(null, null, msg);
     }
 
 
@@ -210,16 +210,16 @@ public class SLog {
         }
     }
 
-    public static void d(SLogType type, String text) {
-        d(type, null, text);
+    public static void d(SLogType type, String msg) {
+        d(type, null, msg);
     }
 
     public static void d(String name, String msg) {
         d(null, name, msg);
     }
 
-    public static void d(String text) {
-        d(null, null, text);
+    public static void d(String msg) {
+        d(null, null, msg);
     }
 
 
@@ -270,19 +270,20 @@ public class SLog {
         }
     }
 
-    public static void w(SLogType type, String text) {
-        w(type, null, text);
+    public static void w(SLogType type, String msg) {
+        w(type, null, msg);
     }
 
     public static void w(String name, String msg) {
         w(null, name, msg);
     }
 
-    public static void w(String text) {
-        w(null, null, text);
+    public static void w(String msg) {
+        w(null, null, msg);
     }
 
 
+    // TODO: 2017/5/26 改名ef
     public static void e(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
@@ -330,15 +331,15 @@ public class SLog {
         }
     }
 
-    public static void e(SLogType type, String text) {
-        e(type, null, text);
+    public static void e(SLogType type, String msg) {
+        e(type, null, msg);
     }
 
     public static void e(String name, String msg) {
         e(null, name, msg);
     }
 
-    public static void e(String text) {
-        e(null, null, text);
+    public static void e(String msg) {
+        e(null, null, msg);
     }
 }

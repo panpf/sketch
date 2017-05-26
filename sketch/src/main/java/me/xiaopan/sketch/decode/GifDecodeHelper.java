@@ -19,6 +19,7 @@ package me.xiaopan.sketch.decode;
 import android.graphics.BitmapFactory;
 
 import me.xiaopan.sketch.ErrorTracker;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -29,10 +30,14 @@ public class GifDecodeHelper extends DecodeHelper {
 
     @Override
     public boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions) {
-        return imageType != null
-                && imageType == ImageType.GIF
-                && request.getOptions().isDecodeGifImage()
-                && SketchGifFactory.isExistGifLibrary();
+        if (imageType != null && imageType == ImageType.GIF && request.getOptions().isDecodeGifImage()) {
+            if (SketchGifFactory.isExistGifLibrary()) {
+                return true;
+            } else {
+                SLog.e("GifDecodeHelper", "Not found sketch-gif library. Please go to “https://github.com/xiaopansky/sketch” find how to import the sketch-gif library");
+            }
+        }
+        return false;
     }
 
     @Override
@@ -52,9 +57,15 @@ public class GifDecodeHelper extends DecodeHelper {
             return new GifDecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
         } catch (Throwable e) {
             e.printStackTrace();
+
             ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
-            errorTracker.onDecodeGifImageError(e, request,
-                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+            if (e instanceof UnsatisfiedLinkError || e instanceof ExceptionInInitializerError) {
+                errorTracker.onNotFoundGifSoError(e);
+            } else {
+                errorTracker.onDecodeGifImageError(e, request,
+                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+            }
+
             return null;
         }
     }
