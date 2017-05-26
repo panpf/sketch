@@ -115,21 +115,22 @@ Options支持的属性Helper中都有对应的方法，只是方法名不一样�
 Sketch.display()、Sketch.load()、Sketch.download()都会返回其专属的Helper，Helper中也都会有专门的方法配置这些属性，例如：
 ```java
 // 显示
-Sketch.with(context).display("http://biying.png", sketchImageView)
+Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
 	.loadingImage(R.drawable.image_loading)
 	.displayer(new TransitionImageDisplayer())
+	.shapeSizeByFixedSize()
 	...
 	.commit();
 
 // 加载
-Sketch.with(context).load("http://biying.png", new LoadListener() {...})
+Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {...})
 	.maxSize(300, 400)
 	.bitmapConfig()
 	...
 	.commit();
 
 // 下载
-Sketch.with(context).download("http://biying.png", new DownloadListener(){...})
+Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...})
 	.disableCacheInDisk()
 	...
 	.commit();
@@ -141,7 +142,7 @@ Sketch.with(context).download("http://biying.png", new DownloadListener(){...})
 DisplayOptions displayOptions = new DisplayOptions();
 displayOptions.set***;
 
-Sketch.with(context).display("http://biying.png", sketchImageView)
+Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
 	.options(displayOptions)
 	.commit();
 
@@ -152,7 +153,7 @@ sketchImageView.setOptions(displayOptions);
 LoadOptions loadOptions = new LoadOptions();
 loadOptions.set***;
 
-Sketch.with(context).load("http://biying.png", new LoadListener() {...})
+Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {...})
 	.options(loadOptions)
 	.commit();
 
@@ -160,7 +161,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {...})
 DownloadOptions downloadOptions = new DownloadOptions();
 downloadOptions.set***;
 
-Sketch.with(context).download("http://biying.png", new DownloadListener(){...})
+Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...})
 	.options(downloadOptions)
 	.commit();
 ```
@@ -213,7 +214,7 @@ public class MyApplication extends Application {
 SketchImageView sketchImageView = ...;
 sketchImageView.setOptions(Sketch.getDisplayOptions(OptionsType.APP_ICON));
 
-Sketch.with(context).display("http://biying.png", sketchImageView)
+Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
 	.options(Sketch.getDisplayOptions(OptionsType.WINDOW_BACKGROUND))
 	.commit();
 ```
@@ -223,7 +224,7 @@ Sketch.with(context).display("http://biying.png", sketchImageView)
 SketchImageView sketchImageView = ...;
 sketchImageView.setOptionsByName(OptionsType.APP_ICON);
 
-Sketch.with(context).display("http://biying.png", sketchImageView)
+Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
 	.optionsByName(OptionsType.WINDOW_BACKGROUND)
 	.commit();
 ```

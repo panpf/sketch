@@ -1,6 +1,6 @@
 load()和download()还支持同步执行，只需调用sync()方法开启即可：
 ```java
-Sketch.with(context).load("http://biying.png", new LoadListener() {
+Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
     @Override
     public void onStarted() {
 

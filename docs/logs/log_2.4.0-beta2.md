@@ -1,9 +1,9 @@
 此版本主要是优化了纠正图片方向功能以及一些内在功能的实现，还要就是增加了对Base64图片的支持
 
-:fire::fire::fire::fire::fire::fire::fire::fire: 不能平稳升级 :fire::fire::fire::fire::fire::fire::fire::fire:
+:fire::fire::fire: 不能无痛升级 :fire::fire::fire:
 
 ### :sparkles: Base64格式图片支持
-* 新增支持Base64格式的图片，支持data:image和data:img两种写法
+* 新增支持Base64格式的图片，支持data:image/和data:img/两种写法
 * 对于Base64格式的图片会首先会缓存到磁盘上再读取
 * 支持Sketch所有功能
 
@@ -12,7 +12,7 @@
 * :hammer: SketchDrawable.getOrientation()方法改为getExifOrientation()方法，并且返回的是原始exif方向
 * :bug: 修复缩略图功能没有正确旋转的bug
 * :bug: 修复读取已处理缓存图片时读取原图尺寸后没有按照图片方向旋转的bug
-* :bug: 修复恢复图片方向时值处理了方向，没有处理翻转的bug
+* :bug: 修复纠正图片方向时只处理了方向，没有处理翻转的bug
 
 ### Drawable：
 * :hammer: LoadingDrawable重命名为SketchLoadingDrawable
@@ -28,35 +28,35 @@
 ### ImagePreprocessor
 * :hammer: isSpecific(LoadRequest)方法改为match(Context, UriInfo)，只是方法名和入参变了，作用没变
 * :hammer: process(LoadRequest)方法改为process(Context, UriInfo)，只是入参变了，作用没变
-* :hammer: 内部实重构，改为一个个小的Preprocessor，同样也有match(Context, UriInfo)和process(Context, UriInfo)方法，你可以通过ImagePreprocessor.addPreprocessor()方法添加一个自定义的子预处理器进来
+* :hammer: 内部实现重构，改为一个个小的Preprocessor，同样也有match(Context, UriInfo)和process(Context, UriInfo)方法，你可以通过ImagePreprocessor.addPreprocessor()方法添加一个自定义的子预处理器进来
 
 `由于重构了ImagePreprocessor的实现，因此有重写需求的需要重新适配，可参考sample app`
 
 ### Request：
-* :hammer: DisplayHelper.options()、LoadHelper.options()、DownloadHelper.options()内部处理由合并改为完全覆盖
 * :hammer: DisplayListener.onCompleted(ImageFrom, String)参数改为DisplayListener.onCompleted(Drawable, ImageFrom, ImageAttrs)
+* :hammer: DisplayHelper.options()、LoadHelper.options()、DownloadHelper.options()内部处理由合并改为完全覆盖。由此带来的影响，如下示例：
+    ```java
+    DisplayOptions options = new DisplayOptions();
 
-`注意，由此带来的影响，如下示例：`
-```java
-DisplayOptions options = new DisplayOptions();
-
-Sketch.with(context).display("http://...", imageView)
-    .decodeGifImage()
-    .options(options)
-    .commit();
-```
-`这段代码，之前的效果decodeGifImage属性的值最终是true，因为合并时true优先。现在改为完全覆盖后最终的值就是false，因为options里decodeGifImage属性是false`
+    Sketch.with(context).display("http://...", imageView)
+        .decodeGifImage()
+        .options(options)
+        .commit();
+    ```
+    这段代码，之前的效果decodeGifImage属性的值最终是true，因为合并时true优先。现在改为完全覆盖后最终的值就是false，因为options里decodeGifImage属性是false
 
 ### SketchImageView
-* :sparkles: SketchImageView新增redisplay()方法可在需要的时候重走显示流程
+* :sparkles: SketchImageView新增redisplay(RedisplayListener)方法可按照上次的配置重新显示
 * :sparkles: SketchImageView新增displayContentImage(Uri)方法用来代替displayURIImage(Uri)
 * :hammer: getDisplayParams()方法改名为 getDisplayCache()
+* :fire: 修复在显示错误时点击重试的时候会意外的跳过移动网络暂停下载功能
 
 ### SketchMonitor：
 * :hammer: 改名为ErrorTracker
 * :hammer: onInBitmapException(String, int, int, int, Bitmap)方法改为onInBitmapDecodeError(String, int, int, String, Throwable, int, Bitmap)
 * :fire: 删除onInBitmapExceptionForRegionDecoder(String, int, int, Rect, int, Bitmap)方法
-* :sparkles: 新增onDecodeRegionError(String, int, int, String, Throwable, Rect, int)方法
+* :sparkles: 新增onDecodeRegionError(String, int, int, String, Throwable, Rect, int)方法，用于通报使用BitmapRegionDecoder解码图片时候发生的错误
+* :hammer: 新增onNotFoundGifSoError(Throwable)方法，用于准确通报找不到gif so文件错误，onDecodeGifImageError(Throwable, LoadRequest, int, int, String)方法将不会再收到找不到gif so文件错误
 
 ### 其它：
 * :art: 优化由inBitmap导致的解码失败的情况的判断
@@ -69,6 +69,3 @@ Sketch.with(context).display("http://...", imageView)
 * :art: 优化侧滑选项的命名
 * :sparkles: drawable、asset、content来源的图片可以使用分享、保存和设置壁纸功能了
 * :sparkles: 可以在任意位置长按图片查看图片信息
-
-待办：
-* 还有一些改动的文档得修改

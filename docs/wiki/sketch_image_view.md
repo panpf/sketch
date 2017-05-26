@@ -86,7 +86,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 
     @Override
-    public void onCompleted(ImageFrom imageFrom, String mimeType) {
+    public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
         Log.i("displayListener", "完成");
     }
 

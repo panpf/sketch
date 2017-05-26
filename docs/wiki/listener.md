@@ -10,7 +10,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 
     @Override
-    public void onCompleted(ImageFrom imageFrom, String mimeType) {
+    public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
 
     }
 
@@ -40,7 +40,7 @@ sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x76
 
 load()
 ```java
-Sketch.with(context).load("http://biying.png", new LoadListener() {
+Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
     @Override
     public void onStarted() {
 
@@ -70,7 +70,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
 
 download()
 ```java
-Sketch.with(context).download("http://biying.png", new DownloadListener() {
+Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
     @Override
     public void onStarted() {
 

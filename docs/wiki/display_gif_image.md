@@ -30,7 +30,7 @@ imageView.setDisplayListener(new DisplayListener() {
     ...
 
     @Override
-    public void onCompleted(ImageFrom imageFrom, String mimeType) {
+    public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
         // 显示完成，isResumed() && getUserVisibleHint()为true页面可见，否则不可见
         Drawable lastDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
         if (lastDrawable != null && (lastDrawable instanceof SketchGifDrawable)) {
@@ -90,7 +90,7 @@ imageView.setDisplayListener(new DisplayListener() {
     ...
 
     @Override
-    public void onCompleted(ImageFrom imageFrom, String mimeType) {
+    public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
         // 显示完成，resumed为true页面可见，否则不可见
         Drawable lastDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
         if (lastDrawable != null && (lastDrawable instanceof SketchGifDrawable)) {

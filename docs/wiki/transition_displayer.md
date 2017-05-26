@@ -64,20 +64,19 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
 ```
 `TransitionDrawable extends LayerDrawable`
 
-为了解决这个问题，Sketch引入了[ShapeSize](shape_size.md)功能，ShapeSize可以在绘制的时候以指定的尺寸显示图片，当ShapeSize和图片比例不一致，则只显示图片中间的部分，类似CENTER_CROP效果。
+为了解决这个问题，Sketch引入了[ShapeSize](shape_size.md)功能，可以在绘制的时候以指定的尺寸显示图片，当ShapeSize和图片比例不一致，则只显示图片中间的部分，类似CENTER_CROP效果。
 
-如下：
+因此在使用TransitionImageDisplayer的时候再指定ShapeSize让两张图片的尺寸保持一致，这样即可完美过渡显示，如下：
 ```java
-DisplayOptions options = new DisplayOptions();
-...
-options.setLoadingImage(R.drawable.loading);
+SketchImageView sketchImageView = ...;
+DisplayOptions options = sketchImageView.getOptions();
 
-// 以300x300的尺寸显示图片
+options.setLoadingImage(R.drawable.loading);
 options.setImageDisplayer(new TransitionImageDisplayer());
+
+// 以300x300的尺寸显示loadingImage和最终的图片
 options.setShapeSize(300, 300);
 
-SketchImageView sketchImageView = ...;
-sketchImageView.setOptions(options);
 sketchImageView.displayImage(R.drawable.sample);
 ```
 
@@ -85,4 +84,4 @@ sketchImageView.displayImage(R.drawable.sample);
 >* 没有配置loadingImage时无需配置ShapeSize
 >* 配置了loadingImage却没有配置ShapeSize时Sketch就会尝试用ImageView的固定宽高（layout_width和layout_height是固定的值）作为ShapeSize，如果宽高不固定就只能抛运行时异常了
 
-[更详细的ShapeSize使用介绍点我查看](shape_size.md)
+[详细了解ShapeSize](shape_size.md)
