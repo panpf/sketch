@@ -16,14 +16,12 @@
 
 package me.xiaopan.sketch.feature;
 
-import android.content.Context;
-
-import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.request.DisplayCache;
+import me.xiaopan.sketch.SLogType;
+import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
@@ -32,19 +30,15 @@ import me.xiaopan.sketch.request.UriScheme;
  * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayParams恢复之前的图片
  */
 public class RecyclerCompatFunction extends SketchImageView.Function {
-    protected String logName = "RecyclerCompatFunction";
+    private static final String LOG_NAME = "RecyclerCompatFunction";
 
-    private Context context;
-    private RequestFunction requestFunction;
     private ImageViewInterface imageViewInterface;
 
     private boolean isSetImage;
+    private RedisplayListener redisplayListener;
 
-    public RecyclerCompatFunction(Context context, ImageViewInterface imageViewInterface, RequestFunction requestFunction) {
-        context = context.getApplicationContext();
-        this.context = context;
+    public RecyclerCompatFunction(ImageViewInterface imageViewInterface) {
         this.imageViewInterface = imageViewInterface;
-        this.requestFunction = requestFunction;
     }
 
     @Override
@@ -53,16 +47,10 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
             return;
         }
 
-        DisplayCache displayCache = requestFunction.getDisplayCache();
-        if (displayCache != null) {
-            if (SLogType.BASE.isEnabled()) {
-                SLog.w(SLogType.BASE, logName, "restore image on attached to window. %s", displayCache.uri);
-            }
-            Sketch.with(context)
-                    .display(displayCache.uri, imageViewInterface)
-                    .options(displayCache.options)
-                    .commit();
+        if (redisplayListener == null) {
+            redisplayListener = new RecyclerRedisplayListener();
         }
+        imageViewInterface.redisplay(redisplayListener);
     }
 
     @Override
@@ -75,5 +63,15 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
     public boolean onDetachedFromWindow() {
         this.isSetImage = false;
         return false;
+    }
+
+    private static class RecyclerRedisplayListener implements RedisplayListener {
+
+        @Override
+        public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+            if (SLogType.BASE.isEnabled()) {
+                SLog.w(SLogType.BASE, LOG_NAME, "restore image on attached to window. %s", cacheUri);
+            }
+        }
     }
 }

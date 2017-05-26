@@ -162,7 +162,8 @@ public interface ImageViewInterface {
     /**
      * 重新显示
      *
+     * @param listener 在重新显示之前你可以通过这个listener，修改缓存的options
      * @return false：重新显示失败，之前没有显示过
      */
-    boolean redisplay();
+    boolean redisplay(RedisplayListener listener);
 }

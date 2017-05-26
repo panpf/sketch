@@ -18,12 +18,12 @@ package me.xiaopan.sketch.feature;
 
 import android.view.View;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.DisplayCache;
+import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.request.UriScheme;
 
@@ -31,20 +31,19 @@ import me.xiaopan.sketch.request.UriScheme;
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
 public class ClickRetryFunction extends SketchImageView.Function implements View.OnClickListener {
-    private boolean clickRetryOnError;
-    private boolean clickRetryOnPauseDownload;
+    private boolean clickRetryOnErrorEnabled;
+    private boolean clickRetryOnPauseDownloadEnabled;
     private View.OnClickListener wrapperClickListener;
 
     private boolean displayError;
     private boolean pauseDownload;
 
     private View view;
-    private RequestFunction requestFunction;
     private ImageViewInterface imageViewInterface;
+    private RedisplayListener redisplayListener;
 
-    public ClickRetryFunction(View view, RequestFunction requestFunction, ImageViewInterface imageViewInterface) {
+    public ClickRetryFunction(View view, ImageViewInterface imageViewInterface) {
         this.view = view;
-        this.requestFunction = requestFunction;
         this.imageViewInterface = imageViewInterface;
     }
 
@@ -86,14 +85,12 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
 
     @Override
     public void onClick(View v) {
-        if ((clickRetryOnError && displayError) || (clickRetryOnPauseDownload && pauseDownload)) {
-            DisplayCache displayCache = requestFunction.getDisplayCache();
-            if (displayCache != null) {
-                Sketch.with(view.getContext())
-                        .display(displayCache.uri, imageViewInterface)
-                        .options(displayCache.options)
-                        .requestLevel(RequestLevel.NET)
-                        .commit();
+        if ((clickRetryOnErrorEnabled && displayError) || (clickRetryOnPauseDownloadEnabled && pauseDownload)) {
+            if (redisplayListener == null) {
+                redisplayListener = new RetryOnPauseDownloadRedisplayListener();
+            }
+
+            if (imageViewInterface.redisplay(redisplayListener)) {
                 return;
             }
         }
@@ -106,16 +103,16 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     /**
      * 设置当暂停下载的时候点击显示图片
      */
-    public void setClickRetryOnPauseDownload(boolean clickDisplayOnPauseDownload) {
-        this.clickRetryOnPauseDownload = clickDisplayOnPauseDownload;
+    public void setClickRetryOnPauseDownloadEnabled(boolean clickRetryOnPauseDownloadEnabled) {
+        this.clickRetryOnPauseDownloadEnabled = clickRetryOnPauseDownloadEnabled;
         updateClickable();
     }
 
     /**
      * 设置当失败的时候点击重新显示图片
      */
-    public void setClickRetryOnError(boolean clickRedisplayOnError) {
-        this.clickRetryOnError = clickRedisplayOnError;
+    public void setClickRetryOnErrorEnabled(boolean clickRetryOnErrorEnabled) {
+        this.clickRetryOnErrorEnabled = clickRetryOnErrorEnabled;
         updateClickable();
     }
 
@@ -125,8 +122,18 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     }
 
     public void updateClickable() {
-        view.setClickable((clickRetryOnError && displayError)
-                || (clickRetryOnPauseDownload && pauseDownload)
+        view.setClickable((clickRetryOnErrorEnabled && displayError)
+                || (clickRetryOnPauseDownloadEnabled && pauseDownload)
                 || wrapperClickListener != null);
+    }
+
+    private class RetryOnPauseDownloadRedisplayListener implements RedisplayListener {
+
+        @Override
+        public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+            if (clickRetryOnPauseDownloadEnabled && pauseDownload) {
+                cacheOptions.setRequestLevel(RequestLevel.NET);
+            }
+        }
     }
 }

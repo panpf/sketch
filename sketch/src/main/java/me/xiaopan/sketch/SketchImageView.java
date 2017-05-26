@@ -41,14 +41,15 @@ import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomFunction;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
@@ -89,10 +90,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     private void init() {
         requestFunction = new RequestFunction(this);
-        recyclerCompatFunction = new RecyclerCompatFunction(getContext(), this, requestFunction);
+        recyclerCompatFunction = new RecyclerCompatFunction(this);
 
         imageShapeFunction = new ImageShapeFunction(this);
-        clickRetryFunction = new ClickRetryFunction(this, requestFunction, this);
+        clickRetryFunction = new ClickRetryFunction(this, this);
 
         displayListener = new PrivateDisplayListener(this);
         downloadProgressListener = new PrivateProgressListener(this);
@@ -548,28 +549,34 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public boolean redisplay() {
+    public boolean redisplay(RedisplayListener listener) {
         DisplayCache displayCache = getDisplayCache();
-        String uri = displayCache != null ? displayCache.uri : null;
-        if (uri != null && !"".equals(uri)) {
-            Sketch.with(getContext()).display(uri, this).commit();
-            return true;
+        if (displayCache == null) {
+            return false;
         }
-        return false;
+
+        if (listener != null) {
+            listener.onPreCommit(displayCache.uri, displayCache.options);
+        }
+        Sketch.with(getContext())
+                .display(displayCache.uri, this)
+                .options(displayCache.options)
+                .commit();
+        return true;
     }
 
     /**
      * 设置当暂停下载的时候点击显示图片
      */
     public void setClickRetryOnPauseDownload(boolean clickRetryOnPauseDownload) {
-        clickRetryFunction.setClickRetryOnPauseDownload(clickRetryOnPauseDownload);
+        clickRetryFunction.setClickRetryOnPauseDownloadEnabled(clickRetryOnPauseDownload);
     }
 
     /**
      * 设置当失败的时候点击重新显示图片
      */
     public void setClickRetryOnError(boolean clickRetryOnError) {
-        clickRetryFunction.setClickRetryOnError(clickRetryOnError);
+        clickRetryFunction.setClickRetryOnErrorEnabled(clickRetryOnError);
     }
 
     /**
@@ -669,6 +676,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
+     * 设置GIF标识图片
+     */
+    @SuppressWarnings("unused")
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        //noinspection deprecation
+        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
+    }
+
+    /**
      * 设置是否显示GIF标识
      */
     @SuppressWarnings("unused")
@@ -680,15 +696,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showGifFlagFunction = null;
         }
         invalidate();
-    }
-
-    /**
-     * 设置GIF标识图片
-     */
-    @SuppressWarnings("unused")
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        //noinspection deprecation
-        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
     /**
@@ -720,9 +727,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float radius) {
+    public void setImageShapeCornerRadius(float[] radiis) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radius);
+            imageShapeFunction.setCornerRadius(radiis);
         }
     }
 
@@ -730,9 +737,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float[] radiis) {
+    public void setImageShapeCornerRadius(float radius) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radiis);
+            imageShapeFunction.setCornerRadius(radius);
         }
     }
 

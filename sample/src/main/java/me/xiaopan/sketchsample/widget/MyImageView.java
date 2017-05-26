@@ -21,6 +21,8 @@ import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.feature.ImageOrientationCorrector;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -86,6 +88,7 @@ public class MyImageView extends SketchImageView {
         this.useInList = useInList;
     }
 
+    @SuppressWarnings("unused")
     public boolean isDisabledLongClickShowImageInfo() {
         return disabledLongClickShowImageInfo;
     }
@@ -95,8 +98,8 @@ public class MyImageView extends SketchImageView {
     }
 
     @Override
-    public boolean redisplay() {
-        return !disabledRedisplay && super.redisplay();
+    public boolean redisplay(RedisplayListener listener) {
+        return !disabledRedisplay && super.redisplay(listener);
     }
 
     @Subscribe
@@ -127,57 +130,80 @@ public class MyImageView extends SketchImageView {
 
 
         } else if (AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(event.key)) {
-            redisplay();
+            redisplay(null);
         } else if (AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK.equals(event.key)) {
-            redisplay();
+            redisplay(null);
         } else if (AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL.equals(event.key)) {
-            redisplay();
+            redisplay(null);
         } else if (AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY.equals(event.key)) {
-            redisplay();
+            redisplay(null);
 
 
         } else if (AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION.equals(event.key)) {
-            boolean correctImageOrientationDisabled = AppConfig.getBoolean(getContext(), AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION);
-            if (correctImageOrientationDisabled != getOptions().isCorrectImageOrientationDisabled()) {
-                getOptions().setCorrectImageOrientationDisabled(correctImageOrientationDisabled);
-                redisplay();
-            }
+            final boolean correctImageOrientationDisabled = AppConfig.getBoolean(getContext(), AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION);
+            getOptions().setCorrectImageOrientationDisabled(correctImageOrientationDisabled);
+
+            redisplay(new RedisplayListener() {
+                @Override
+                public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+                    cacheOptions.setCorrectImageOrientationDisabled(correctImageOrientationDisabled);
+                }
+            });
         } else if (AppConfig.Key.PLAY_GIF_ON_LIST.equals(event.key)) {
             if (useInList) {
-                boolean playGifOnList = AppConfig.getBoolean(getContext(), AppConfig.Key.PLAY_GIF_ON_LIST);
-                if (playGifOnList != getOptions().isDecodeGifImage()) {
-                    getOptions().setDecodeGifImage(playGifOnList);
-                    redisplay();
-                }
+                final boolean playGifOnList = AppConfig.getBoolean(getContext(), AppConfig.Key.PLAY_GIF_ON_LIST);
+                getOptions().setDecodeGifImage(playGifOnList);
+
+                redisplay(new RedisplayListener() {
+                    @Override
+                    public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+                        cacheOptions.setDecodeGifImage(playGifOnList);
+                    }
+                });
             }
         } else if (AppConfig.Key.THUMBNAIL_MODE.equals(event.key)) {
             if (useInList) {
-                boolean thumbnailMode = AppConfig.getBoolean(getContext(), AppConfig.Key.THUMBNAIL_MODE);
-                if (thumbnailMode != getOptions().isThumbnailMode()) {
-                    getOptions().setThumbnailMode(thumbnailMode);
-                    if (thumbnailMode) {
-                        if (getOptions().getResize() == null && !getOptions().isResizeByFixedSize()) {
-                            getOptions().setResizeByFixedSize(true);
-                        }
-                    } else {
-                        getOptions().setResizeByFixedSize(false);
+                final boolean thumbnailMode = AppConfig.getBoolean(getContext(), AppConfig.Key.THUMBNAIL_MODE);
+                getOptions().setThumbnailMode(thumbnailMode);
+                if (thumbnailMode) {
+                    if (getOptions().getResize() == null && !getOptions().isResizeByFixedSize()) {
+                        getOptions().setResizeByFixedSize(true);
                     }
-                    redisplay();
+                } else {
+                    getOptions().setResizeByFixedSize(false);
                 }
+
+                redisplay(new RedisplayListener() {
+                    @Override
+                    public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+                        cacheOptions.setThumbnailMode(thumbnailMode);
+                        if (thumbnailMode) {
+                            if (cacheOptions.getResize() == null && !cacheOptions.isResizeByFixedSize()) {
+                                cacheOptions.setResizeByFixedSize(true);
+                            }
+                        } else {
+                            cacheOptions.setResizeByFixedSize(false);
+                        }
+                    }
+                });
             }
         } else if (AppConfig.Key.CACHE_PROCESSED_IMAGE.equals(event.key)) {
-            boolean cacheProcessedImageInDisk = AppConfig.getBoolean(getContext(), AppConfig.Key.CACHE_PROCESSED_IMAGE);
-            if (cacheProcessedImageInDisk != getOptions().isCacheProcessedImageInDisk()) {
-                getOptions().setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
-                redisplay();
-            }
+            final boolean cacheProcessedImageInDisk = AppConfig.getBoolean(getContext(), AppConfig.Key.CACHE_PROCESSED_IMAGE);
+            getOptions().setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
+
+            redisplay(new RedisplayListener() {
+                @Override
+                public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+                    cacheOptions.setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
+                }
+            });
         }
     }
 
     @SuppressWarnings("unused")
     @Subscribe
     public void onEvent(CacheCleanEvent event) {
-        redisplay();
+        redisplay(null);
     }
 
     @Override
