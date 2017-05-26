@@ -31,9 +31,7 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class RotateImageProcessor extends WrappedImageProcessor {
-    public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
-
-    protected String logName = "RotateImageProcessor";
+    private static final String KEY = "RotateImageProcessor";
 
     private int degrees;
 
@@ -67,7 +65,7 @@ public class RotateImageProcessor extends WrappedImageProcessor {
         matrix.postTranslate(-newRect.left, -newRect.top);
 
         final Canvas canvas = new Canvas(result);
-        final Paint paint = new Paint(PAINT_FLAGS);
+        final Paint paint = new Paint(Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
         canvas.drawBitmap(bitmap, matrix, paint);
 
         return result;
@@ -88,7 +86,7 @@ public class RotateImageProcessor extends WrappedImageProcessor {
         if (degrees % 360 == 0) {
             return null;
         } else {
-            return String.format("%s(degrees=%d)", logName, degrees);
+            return String.format("%s(degrees=%d)", KEY, degrees);
         }
     }
 }

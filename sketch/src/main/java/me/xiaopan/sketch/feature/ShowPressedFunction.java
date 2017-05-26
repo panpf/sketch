@@ -32,10 +32,9 @@ import me.xiaopan.sketch.SketchImageView;
  * 显示按下状态，按下后会在ImageView上显示一个黑色半透明的蒙层，松手后小时
  */
 public class ShowPressedFunction extends SketchImageView.Function {
-    private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
+    private static final String LOG_NAME = "ShowPressedFunction";
 
-    // TODO: 2017/5/26 改掉能改的logname变成常量
-    protected String logName = "ShowPressedFunction";
+    private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
 
     private View view;
     private ImageShapeFunction imageShapeFunction;
@@ -81,7 +80,7 @@ public class ShowPressedFunction extends SketchImageView.Function {
                 try {
                     canvas.clipPath(imageShapeFunction.getClipPath());
                 } catch (UnsupportedOperationException e) {
-                    SLog.e(logName, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                    SLog.e(LOG_NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                     }

@@ -10,10 +10,10 @@ import me.xiaopan.sketch.request.Resize;
  * 高斯模糊图片处理器
  */
 public class GaussianBlurImageProcessor extends WrappedImageProcessor {
+    private static final String KEY = "GaussianBlurImageProcessor";
+
     private static final int NO_LAYER_COLOR = -1;
     private static final int DEFAULT_RADIUS = 15;
-
-    protected String logName = "GaussianBlurImageProcessor";
 
     private int radius; // 模糊半径，取值为0到100
     private int layerColor; // 图层颜色，在模糊后的图片上加一层颜色
@@ -349,7 +349,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
 
     @Override
     public String onGetKey() {
-        return String.format("%s(radius=%d,maskColor=%d)", logName, radius, layerColor);
+        return String.format("%s(radius=%d,maskColor=%d)", KEY, radius, layerColor);
     }
 
     @Override

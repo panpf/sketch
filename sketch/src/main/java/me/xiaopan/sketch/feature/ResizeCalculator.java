@@ -25,7 +25,7 @@ import me.xiaopan.sketch.Identifier;
  * 用来计算resize
  */
 public class ResizeCalculator implements Identifier {
-    protected String logName = "ResizeCalculator";
+    private static final String KEY = "ResizeCalculator";
 
     public static Rect srcMappingStartRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         float widthScale = (float) originalImageWidth / targetImageWidth;
@@ -94,7 +94,7 @@ public class ResizeCalculator implements Identifier {
 
     @Override
     public String getKey() {
-        return logName;
+        return KEY;
     }
 
     /**

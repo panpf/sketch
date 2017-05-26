@@ -29,13 +29,13 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class LruBitmapPool implements BitmapPool {
     private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
+    private static final String LOG_NAME = "LruBitmapPool";
 
     private final LruPoolStrategy strategy;
     private final Set<Bitmap.Config> allowedConfigs;
     private final int initialMaxSize;
     private final BitmapTracker tracker;
 
-    protected String logName = "LruBitmapPool";
     private int maxSize;
     private int currentSize;
     private int hits;
@@ -105,7 +105,7 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "Disabled. Unable put, bitmap=%s,%s",
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable put, bitmap=%s,%s",
                     strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
             return false;
         }
@@ -114,7 +114,7 @@ public class LruBitmapPool implements BitmapPool {
             throw new NullPointerException("Bitmap must not be null");
         }
         if (bitmap.isRecycled() || !bitmap.isMutable() || strategy.getSize(bitmap) > maxSize || !allowedConfigs.contains(bitmap.getConfig())) {
-            SLog.fw(SLogType.CACHE, logName, "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s",
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s",
                     strategy.logBitmap(bitmap), bitmap.isRecycled(), bitmap.isMutable(),
                     allowedConfigs.contains(bitmap.getConfig()), SketchUtils.toHexString(bitmap));
             return false;
@@ -127,7 +127,7 @@ public class LruBitmapPool implements BitmapPool {
         puts++;
         currentSize += size;
 
-        SLog.fv(SLogType.CACHE, logName, "Put bitmap in pool=%s,%s",
+        SLog.fv(SLogType.CACHE, LOG_NAME, "Put bitmap in pool=%s,%s",
                 strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
         dump();
 
@@ -143,7 +143,7 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "Disabled. Unable get, bitmap=%s,%s",
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable get, bitmap=%s,%s",
                     strategy.logBitmap(width, height, config));
             return null;
         }
@@ -152,10 +152,10 @@ public class LruBitmapPool implements BitmapPool {
         // null as the requested config here. See issue #194.
         final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
         if (result == null) {
-            SLog.fw(SLogType.CACHE, logName, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
             misses++;
         } else {
-            SLog.fi(SLogType.CACHE, logName, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
+            SLog.fi(SLogType.CACHE, LOG_NAME, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
             hits++;
             currentSize -= strategy.getSize(result);
             tracker.remove(result);
@@ -235,9 +235,9 @@ public class LruBitmapPool implements BitmapPool {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "setDisabled. %s", true);
+            SLog.fw(SLogType.CACHE, LOG_NAME, "setDisabled. %s", true);
         } else {
-            SLog.fi(SLogType.CACHE, logName, "setDisabled. %s", false);
+            SLog.fi(SLogType.CACHE, LOG_NAME, "setDisabled. %s", false);
         }
     }
 
@@ -254,7 +254,7 @@ public class LruBitmapPool implements BitmapPool {
 
         if (SLogType.CACHE.isEnabled()) {
             String releasedSize = Formatter.formatFileSize(context, size - getSize());
-            SLog.fw(SLogType.CACHE, logName, "trimMemory. level=%s, released: %s",
+            SLog.fw(SLogType.CACHE, LOG_NAME, "trimMemory. level=%s, released: %s",
                     SketchUtils.getTrimLevelName(level), releasedSize);
         }
     }
@@ -262,7 +262,7 @@ public class LruBitmapPool implements BitmapPool {
     @Override
     public synchronized void clear() {
         if (SLogType.CACHE.isEnabled()) {
-            SLog.fw(SLogType.CACHE, logName, "clear. before size %s", Formatter.formatFileSize(context, getSize()));
+            SLog.fw(SLogType.CACHE, LOG_NAME, "clear. before size %s", Formatter.formatFileSize(context, getSize()));
         }
 
         trimToSize(0);
@@ -287,13 +287,13 @@ public class LruBitmapPool implements BitmapPool {
         while (currentSize > size) {
             final Bitmap removed = strategy.removeLast();
             if (removed == null) {
-                SLog.w(SLogType.CACHE, logName, "Size mismatch, resetting");
+                SLog.w(SLogType.CACHE, LOG_NAME, "Size mismatch, resetting");
                 dumpUnchecked();
                 currentSize = 0;
                 return;
             }
 
-            SLog.fe(SLogType.CACHE, logName, "Evicting bitmap=%s,%s",
+            SLog.fe(SLogType.CACHE, LOG_NAME, "Evicting bitmap=%s,%s",
                     strategy.logBitmap(removed), SketchUtils.toHexString(removed));
             tracker.remove(removed);
             currentSize -= strategy.getSize(removed);
@@ -304,20 +304,20 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private void dump() {
-        if (Log.isLoggable(logName, Log.VERBOSE)) {
+        if (Log.isLoggable(LOG_NAME, Log.VERBOSE)) {
             dumpUnchecked();
         }
     }
 
     private void dumpUnchecked() {
-        SLog.fv(SLogType.CACHE, logName,
+        SLog.fv(SLogType.CACHE, LOG_NAME,
                 "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
                 hits, misses, puts, evictions, currentSize, maxSize, strategy);
     }
 
     @Override
     public String getKey() {
-        return String.format("%s(maxSize=%s)", logName, Formatter.formatFileSize(context, getMaxSize()));
+        return String.format("%s(maxSize=%s)", LOG_NAME, Formatter.formatFileSize(context, getMaxSize()));
     }
 
     private interface BitmapTracker {

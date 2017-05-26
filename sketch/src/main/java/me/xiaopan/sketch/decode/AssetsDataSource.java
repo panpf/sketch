@@ -35,7 +35,6 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class AssetsDataSource implements DataSource {
-    protected String logName = "AssetsDataSource";
 
     private Context context;
     private String assetsFilePath;

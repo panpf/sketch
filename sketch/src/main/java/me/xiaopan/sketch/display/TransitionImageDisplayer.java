@@ -30,7 +30,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 过渡效果的图片显示器
  */
 public class TransitionImageDisplayer implements ImageDisplayer {
-    protected String logName = "TransitionImageDisplayer";
+    private static final String KEY = "TransitionImageDisplayer";
 
     private int duration;
     private boolean alwaysUse;
@@ -87,6 +87,6 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getKey() {
-        return String.format("%s(duration=%d, alwaysUse=%s)", logName, duration, alwaysUse);
+        return String.format("%s(duration=%d, alwaysUse=%s)", KEY, duration, alwaysUse);
     }
 }

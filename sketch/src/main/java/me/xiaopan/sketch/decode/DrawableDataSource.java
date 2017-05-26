@@ -35,7 +35,6 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class DrawableDataSource implements DataSource {
-    protected String logName = "DrawableDataSource";
 
     private Context context;
     private int drawableId;

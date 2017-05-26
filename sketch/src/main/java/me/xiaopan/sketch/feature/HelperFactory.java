@@ -24,7 +24,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadHelper;
 
 public class HelperFactory implements Identifier {
-    protected String logName = "HelperFactory";
+    private static final String KEY = "HelperFactory";
 
     private DisplayHelper cacheDisplayHelper;
 
@@ -59,6 +59,6 @@ public class HelperFactory implements Identifier {
 
     @Override
     public String getKey() {
-        return logName;
+        return KEY;
     }
 }

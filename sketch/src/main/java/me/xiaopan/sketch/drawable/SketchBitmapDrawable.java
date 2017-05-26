@@ -22,7 +22,6 @@ import android.graphics.drawable.BitmapDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class SketchBitmapDrawable extends BitmapDrawable implements SketchRefDrawable {
-    protected String logName = "SketchBitmapDrawable";
 
     private SketchRefBitmap refBitmap;
     private ImageFrom imageFrom;
@@ -40,10 +39,6 @@ public class SketchBitmapDrawable extends BitmapDrawable implements SketchRefDra
         // 这一步很重要，让BitmapDrawable的density和Bitmap的density保持一致
         // 这样getIntrinsicWidth()和getIntrinsicHeight()方法得到的就是bitmap的真实的（未经过缩放）尺寸
         setTargetDensity(refBitmap.getBitmap().getDensity());
-    }
-
-    protected void setLogName(String logName) {
-        this.logName = logName;
     }
 
     @Override

@@ -36,7 +36,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 图片最大尺寸和修正尺寸计算器
  */
 public class ImageSizeCalculator implements Identifier {
-    protected String logName = "ImageSizeCalculator";
+    private static final String KEY = "ImageSizeCalculator";
 
     private int openGLMaxTextureSize = -1;
     private float targetSizeScale = 1.1f;
@@ -342,6 +342,6 @@ public class ImageSizeCalculator implements Identifier {
 
     @Override
     public String getKey() {
-        return logName;
+        return KEY;
     }
 }

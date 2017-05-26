@@ -34,10 +34,10 @@ import me.xiaopan.sketch.request.UriScheme;
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
 public class ShowProgressFunction extends SketchImageView.Function {
+    private static final String LOG_NAME = "ShowProgressFunction";
+
     private static final int NONE = -1;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
-
-    protected String logName = "ShowProgressFunction";
 
     private View view;
     private ImageShapeFunction imageShapeFunction;
@@ -69,7 +69,7 @@ public class ShowProgressFunction extends SketchImageView.Function {
             try {
                 canvas.clipPath(imageShapeFunction.getClipPath());
             } catch (UnsupportedOperationException e) {
-                SLog.e(logName, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                SLog.e(LOG_NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 }
@@ -82,7 +82,12 @@ public class ShowProgressFunction extends SketchImageView.Function {
             progressPaint.setColor(downloadProgressColor);
             progressPaint.setAntiAlias(true);
         }
-        canvas.drawRect(view.getPaddingLeft(), view.getPaddingTop() + (progress * view.getHeight()), view.getWidth() - view.getPaddingLeft() - view.getPaddingRight(), view.getHeight() - view.getPaddingTop() - view.getPaddingBottom(), progressPaint);
+        canvas.drawRect(
+                view.getPaddingLeft(),
+                view.getPaddingTop() + (progress * view.getHeight()),
+                view.getWidth() - view.getPaddingLeft() - view.getPaddingRight(),
+                view.getHeight() - view.getPaddingTop() - view.getPaddingBottom(),
+                progressPaint);
 
         if (applyMaskClip) {
             canvas.restore();

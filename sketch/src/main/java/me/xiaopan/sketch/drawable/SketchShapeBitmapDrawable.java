@@ -87,10 +87,6 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         if (bitmapDrawable instanceof SketchDrawable) {
             this.sketchDrawable = (SketchDrawable) bitmapDrawable;
         }
-
-        if (bitmapDrawable instanceof SketchBitmapDrawable) {
-            ((SketchBitmapDrawable) bitmapDrawable).setLogName("ShapeBitmapDrawable");
-        }
     }
 
     @SuppressWarnings("unused")

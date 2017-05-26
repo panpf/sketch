@@ -33,9 +33,9 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class CircleImageProcessor extends WrappedImageProcessor {
-    private static CircleImageProcessor instance;
+    private static final String KEY = "CircleImageProcessor";
 
-    protected String logName = "CircleImageProcessor";
+    private static CircleImageProcessor instance;
 
     public CircleImageProcessor(WrappedImageProcessor wrappedProcessor) {
         super(wrappedProcessor);
@@ -58,7 +58,7 @@ public class CircleImageProcessor extends WrappedImageProcessor {
 
     @Override
     public String onGetKey() {
-        return logName;
+        return KEY;
     }
 
     @Override

@@ -34,7 +34,7 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class RoundRectImageProcessor extends WrappedImageProcessor {
-    protected String logName = "RoundRectImageProcessor";
+    private static final String KEY = "RoundRectImageProcessor";
 
     private float[] cornerRadius;
 
@@ -62,10 +62,10 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
     public String onGetKey() {
         if (cornerRadius != null) {
             return String.format("%s(cornerRadius=[%sx%s,%sx%s,%sx%s,%sx%s])",
-                    logName, cornerRadius[0], cornerRadius[1], cornerRadius[2], cornerRadius[3],
+                    KEY, cornerRadius[0], cornerRadius[1], cornerRadius[2], cornerRadius[3],
                     cornerRadius[4], cornerRadius[5], cornerRadius[6], cornerRadius[7]);
         } else {
-            return logName;
+            return KEY;
         }
     }
 

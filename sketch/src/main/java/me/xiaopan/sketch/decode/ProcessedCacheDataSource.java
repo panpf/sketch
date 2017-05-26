@@ -23,6 +23,5 @@ public class ProcessedCacheDataSource extends CacheFileDataSource {
 
     public ProcessedCacheDataSource(DiskCache.Entry diskCacheEntry) {
         super(diskCacheEntry, ImageFrom.DISK_CACHE);
-        logName = "ProcessedCacheFileDataSource";
     }
 }

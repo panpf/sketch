@@ -15,9 +15,9 @@ import me.xiaopan.sketch.request.Resize;
  */
 public class MaskImageProcessor extends WrappedImageProcessor {
 
-    protected String logName = "MaskImageProcessor";
-    private Paint paint;
+    private static final String KEY = "MaskImageProcessor";
 
+    private Paint paint;
     private int maskColor;
 
     public MaskImageProcessor(int maskColor, WrappedImageProcessor wrappedProcessor) {
@@ -39,7 +39,7 @@ public class MaskImageProcessor extends WrappedImageProcessor {
 
     @Override
     public String onGetKey() {
-        return String.format("%s(maskColor=%d)", logName, maskColor);
+        return String.format("%s(maskColor=%d)", KEY, maskColor);
     }
 
     @Override

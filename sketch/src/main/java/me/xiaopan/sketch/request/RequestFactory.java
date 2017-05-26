@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Sketch;
  * Request创建工厂
  */
 public class RequestFactory implements Identifier {
-    protected String logName = "RequestFactory";
+    private static final String KEY = "RequestFactory";
 
     public DisplayRequest newDisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
                                             ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
@@ -46,6 +46,6 @@ public class RequestFactory implements Identifier {
 
     @Override
     public String getKey() {
-        return logName;
+        return KEY;
     }
 }

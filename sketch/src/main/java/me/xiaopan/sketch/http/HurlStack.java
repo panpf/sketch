@@ -29,7 +29,7 @@ import java.util.Map;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class HurlStack implements HttpStack {
-    protected String logName = "HurlStack";
+    private static final String KEY = "HurlStack";
 
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
@@ -112,7 +112,7 @@ public class HurlStack implements HttpStack {
     @Override
     public String getKey() {
         return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
-                logName, maxRetryCount, connectTimeout, readTimeout, userAgent);
+                KEY, maxRetryCount, connectTimeout, readTimeout, userAgent);
     }
 
     @Override

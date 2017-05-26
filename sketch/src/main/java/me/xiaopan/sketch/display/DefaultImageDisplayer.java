@@ -24,7 +24,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  * 默认的图片显示器，没有任何动画效果
  */
 public class DefaultImageDisplayer implements ImageDisplayer {
-    protected String logName = "DefaultImageDisplayer";
+    private static final String KEY = "DefaultImageDisplayer";
 
     public DefaultImageDisplayer() {
     }
@@ -50,6 +50,6 @@ public class DefaultImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getKey() {
-        return logName;
+        return KEY;
     }
 }

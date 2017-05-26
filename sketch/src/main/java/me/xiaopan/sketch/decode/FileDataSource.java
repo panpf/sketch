@@ -28,7 +28,6 @@ import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class FileDataSource implements DataSource {
-    protected String logName = "FileDataSource";
 
     private File file;
     private long length = -1;

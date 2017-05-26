@@ -37,7 +37,7 @@ public class RequestExecutor implements Identifier {
     public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
     public static final int DEFAULT_NET_THREAD_POOL_SIZE = 3;
 
-    protected String logName = "RequestExecutor";
+    private static final String KEY = "RequestExecutor";
 
     private ExecutorService netTaskExecutor;    //网络任务执行器
     private ExecutorService localTaskExecutor;    //本地任务执行器
@@ -138,7 +138,7 @@ public class RequestExecutor implements Identifier {
 
     @Override
     public String getKey() {
-        return String.format("%s(%s", logName, shutdown ? "shutdown" : "running)");
+        return String.format("%s(%s", KEY, shutdown ? "shutdown" : "running)");
     }
 
     public void shutdown() {

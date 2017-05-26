@@ -29,7 +29,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 @SuppressWarnings("unused")
 public class ZoomOutImageDisplayer implements ImageDisplayer {
-    protected String logName = "ZoomOutImageDisplayer";
+    private static final String KEY = "ZoomOutImageDisplayer";
 
     private int duration;
     private float fromX;
@@ -105,7 +105,7 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     @Override
     public String getKey() {
         return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",
-                logName, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
+                KEY, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 
     @Override

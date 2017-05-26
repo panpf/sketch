@@ -27,7 +27,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 @SuppressWarnings("unused")
 public class ColorTransitionImageDisplayer implements ImageDisplayer {
-    protected String logName = "ColorTransitionImageDisplayer";
+    private static final String KEY = "ColorTransitionImageDisplayer";
 
     private int duration;
     private int color;
@@ -65,7 +65,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getKey() {
-        return String.format("%s(duration=%d, color=%d, alwaysUse=%s)", logName, duration, color, alwaysUse);
+        return String.format("%s(duration=%d, color=%d, alwaysUse=%s)", KEY, duration, color, alwaysUse);
     }
 
     @Override

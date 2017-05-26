@@ -36,7 +36,6 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class ContentDataSource implements DataSource {
-    protected String logName = "ContentDataSource";
 
     private Context context;
     private Uri contentUri;

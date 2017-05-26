@@ -33,7 +33,6 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class ByteArrayDataSource implements DataSource {
-    protected String logName = "ByteArrayDataSource";
 
     private byte[] data;
     private ImageFrom imageFrom;

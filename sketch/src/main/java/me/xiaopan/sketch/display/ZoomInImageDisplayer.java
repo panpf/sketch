@@ -29,9 +29,8 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 @SuppressWarnings("unused")
 public class ZoomInImageDisplayer implements ImageDisplayer {
+    private static final String KEY = "ZoomInImageDisplayer";
     private static final float DEFAULT_FROM = 0.5f;
-
-    protected String logName = "ZoomInImageDisplayer";
 
     private int duration;
     private float fromX;
@@ -107,7 +106,7 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
     @Override
     public String getKey() {
         return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",
-                logName, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
+                KEY, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 
     @Override

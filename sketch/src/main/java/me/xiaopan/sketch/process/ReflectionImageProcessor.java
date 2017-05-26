@@ -34,18 +34,19 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class ReflectionImageProcessor extends WrappedImageProcessor {
+    private static final String KEY = "ReflectionImageProcessor";
+
     private static final int DEFAULT_REFLECTION_SPACING = 2;
     private static final float DEFAULT_REFLECTION_SCALE = 0.3f;
 
-    protected String logName = "ReflectionImageProcessor";
     private int reflectionSpacing;
     private float reflectionScale;
 
     /**
      * 创建一个倒影图片处理器
      *
-     * @param reflectionSpacing      倒影和图片之间的距离
-     * @param reflectionScale        倒影的高度所占原图高度比例，取值为0.0到1
+     * @param reflectionSpacing     倒影和图片之间的距离
+     * @param reflectionScale       倒影的高度所占原图高度比例，取值为0.0到1
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
     public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale, WrappedImageProcessor wrappedImageProcessor) {
@@ -74,7 +75,7 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
 
     @Override
     public String onGetKey() {
-        return String.format("%s(scale=%s,spacing=%d)", logName, reflectionScale, reflectionSpacing);
+        return String.format("%s(scale=%s,spacing=%d)", KEY, reflectionScale, reflectionSpacing);
     }
 
     @Override

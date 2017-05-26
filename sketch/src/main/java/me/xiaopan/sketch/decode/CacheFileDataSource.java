@@ -30,7 +30,6 @@ import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class CacheFileDataSource implements DataSource {
-    protected String logName = "CacheFileDataSource";
 
     private DiskCache.Entry diskCacheEntry;
     private ImageFrom imageFrom;

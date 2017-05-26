@@ -38,7 +38,7 @@ import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
 
 public class LruDiskCache implements DiskCache {
-    protected String logName = "LruDiskCache";
+    private static final String LOG_NAME = "LruDiskCache";
 
     private int maxSize;
     private int appVersionCode;
@@ -108,7 +108,7 @@ public class LruDiskCache implements DiskCache {
             return;
         }
 
-        SLog.fd(SLogType.CACHE, logName, "diskCacheDir: %s", cacheDir.getPath());
+        SLog.fd(SLogType.CACHE, LOG_NAME, "diskCacheDir: %s", cacheDir.getPath());
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
@@ -126,7 +126,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "Disabled. Unable judge exist, uri=%s", uri);
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable judge exist, uri=%s", uri);
             return false;
         }
 
@@ -156,7 +156,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "Disabled. Unable get, uri=%s", uri);
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable get, uri=%s", uri);
             return null;
         }
 
@@ -185,7 +185,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "Disabled. Unable edit, uri=%s", uri);
+            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable edit, uri=%s", uri);
             return null;
         }
 
@@ -276,9 +276,9 @@ public class LruDiskCache implements DiskCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.fw(SLogType.CACHE, logName, "setDisabled. %s", true);
+            SLog.fw(SLogType.CACHE, LOG_NAME, "setDisabled. %s", true);
         } else {
-            SLog.fi(SLogType.CACHE, logName, "setDisabled. %s", false);
+            SLog.fi(SLogType.CACHE, LOG_NAME, "setDisabled. %s", false);
         }
     }
 
@@ -344,7 +344,7 @@ public class LruDiskCache implements DiskCache {
     @Override
     public String getKey() {
         return String.format("%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
-                logName, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
+                LOG_NAME, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
     }
 
     public static class LruDiskCacheEntry implements Entry {
