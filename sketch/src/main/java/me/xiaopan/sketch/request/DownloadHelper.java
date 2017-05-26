@@ -139,14 +139,14 @@ public class DownloadHelper {
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.e(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            SLog.fe(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (uriInfo.getScheme() != UriScheme.NET) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, LOG_NAME, "only support http ot https. %s", uriInfo.getUri());
+                SLog.fe(SLogType.REQUEST, LOG_NAME, "only support http ot https. %s", uriInfo.getUri());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
@@ -171,7 +171,7 @@ public class DownloadHelper {
             DiskCache.Entry diskCacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.i(SLogType.REQUEST, LOG_NAME, "image download completed. %s", key);
+                    SLog.fi(SLogType.REQUEST, LOG_NAME, "image download completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

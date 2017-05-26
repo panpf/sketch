@@ -137,7 +137,7 @@ class TileDecodeCallbackHandler extends Handler {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
+                SLog.fw(SLogType.LARGE, NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -146,7 +146,7 @@ class TileDecodeCallbackHandler extends Handler {
         int newKey = keyCounter.getKey();
         if (key != newKey) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
+                SLog.fw(SLogType.LARGE, NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -159,7 +159,7 @@ class TileDecodeCallbackHandler extends Handler {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
+                SLog.fw(SLogType.LARGE, NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
             }
             return;
         }
@@ -167,7 +167,7 @@ class TileDecodeCallbackHandler extends Handler {
         int newKey = keyCounter.getKey();
         if (key != newKey) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
+                SLog.fw(SLogType.LARGE, NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             return;
         }
@@ -179,7 +179,7 @@ class TileDecodeCallbackHandler extends Handler {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
+                SLog.fw(SLogType.LARGE, NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
             }
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
@@ -198,7 +198,7 @@ class TileDecodeCallbackHandler extends Handler {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
+                SLog.fw(SLogType.LARGE, NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
             }
             return;
         }

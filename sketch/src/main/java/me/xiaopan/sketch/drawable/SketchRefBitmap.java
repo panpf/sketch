@@ -115,21 +115,21 @@ public class SketchRefBitmap extends SketchBitmap {
     private void referenceChanged(String callingStation) {
         if (isRecycled()) {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.e(SLogType.CACHE, LOG_NAME, "Recycled. %s. %s", callingStation, getKey());
+                SLog.fe(SLogType.CACHE, LOG_NAME, "Recycled. %s. %s", callingStation, getKey());
             }
             return;
         }
 
         if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.w(SLogType.CACHE, LOG_NAME, "Free. %s. %s", callingStation, getInfo());
+                SLog.fw(SLogType.CACHE, LOG_NAME, "Free. %s. %s", callingStation, getInfo());
             }
 
             BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             bitmap = null;
         } else {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.d(SLogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). %s",
+                SLog.fd(SLogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). %s",
                         callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getInfo());
             }
         }

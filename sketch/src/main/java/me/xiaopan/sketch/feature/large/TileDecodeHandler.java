@@ -89,7 +89,7 @@ class TileDecodeHandler extends Handler {
     private void decode(TileExecutor executor, int key, Tile tile) {
         if (executor == null) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
+                SLog.fw(SLogType.LARGE, NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
             }
             return;
         }

@@ -118,14 +118,14 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
+                SLog.fw(SLogType.LARGE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
+                SLog.fw(SLogType.LARGE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             }
             return;
         }
@@ -166,12 +166,12 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
             if (drawableQualified) {
                 if (SLogType.LARGE.isEnabled()) {
-                    SLog.d(SLogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                    SLog.fd(SLogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
                 if (SLogType.LARGE.isEnabled()) {
-                    SLog.w(SLogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                    SLog.fw(SLogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }

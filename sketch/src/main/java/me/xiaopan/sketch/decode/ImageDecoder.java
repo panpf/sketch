@@ -115,14 +115,14 @@ public class ImageDecoder implements Identifier {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
-            SLog.e(SLogType.REQUEST, logName, "decode bounds failed %s", request.getKey());
+            SLog.fe(SLogType.REQUEST, logName, "decode bounds failed %s", request.getKey());
             ImageDecodeUtils.decodeError(request, dataSource, logName);
             return null;
         }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            SLog.e(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
+            SLog.fe(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, request.getKey());
             ImageDecodeUtils.decodeError(request, dataSource, logName);
             return null;

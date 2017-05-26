@@ -61,7 +61,7 @@ public class MemorySizeCalculator {
         }
 
         if (SLogType.CACHE.isEnabled()) {
-            SLog.d(SLogType.CACHE, LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
+            SLog.fd(SLogType.CACHE, LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(memoryCacheSize), toMb(bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(maxSize), activityManager.getMemoryClass(), isLowMemoryDevice(activityManager));
         }
     }

@@ -43,7 +43,7 @@ public class SLog {
         }
     }
 
-    public static void v(SLogType type, String name, String format, Object... args) {
+    public static void fv(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -65,12 +65,16 @@ public class SLog {
         }
     }
 
-    public static void v(SLogType type, String format, Object... args) {
-        v(type, null, format, args);
+    public static void fv(SLogType type, String format, Object... args) {
+        fv(type, null, format, args);
     }
 
-    public static void v(String name, String format, Object... args) {
-        v(null, name, format, args);
+    public static void fv(String name, String format, Object... args) {
+        fv(null, name, format, args);
+    }
+
+    public static void fv(String format, Object... args) {
+        fv(null, null, format, args);
     }
 
     public static void v(SLogType type, String name, String msg) {
@@ -103,7 +107,7 @@ public class SLog {
     }
 
 
-    public static void i(SLogType type, String name, String format, Object... args) {
+    public static void fi(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -125,12 +129,16 @@ public class SLog {
         }
     }
 
-    public static void i(SLogType type, String format, Object... args) {
-        i(type, null, format, args);
+    public static void fi(SLogType type, String format, Object... args) {
+        fi(type, null, format, args);
     }
 
-    public static void i(String name, String format, Object... args) {
-        i(null, name, format, args);
+    public static void fi(String name, String format, Object... args) {
+        fi(null, name, format, args);
+    }
+
+    public static void fi(String format, Object... args) {
+        fi(null, null, format, args);
     }
 
     public static void i(SLogType type, String name, String msg) {
@@ -163,7 +171,7 @@ public class SLog {
     }
 
 
-    public static void d(SLogType type, String name, String format, Object... args) {
+    public static void fd(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -185,12 +193,16 @@ public class SLog {
         }
     }
 
-    public static void d(SLogType type, String format, Object... args) {
-        d(type, null, format, args);
+    public static void fd(SLogType type, String format, Object... args) {
+        fd(type, null, format, args);
     }
 
-    public static void d(String name, String format, Object... args) {
-        d(null, name, format, args);
+    public static void fd(String name, String format, Object... args) {
+        fd(null, name, format, args);
+    }
+
+    public static void fd(String format, Object... args) {
+        fd(null, null, format, args);
     }
 
     public static void d(SLogType type, String name, String msg) {
@@ -223,7 +235,7 @@ public class SLog {
     }
 
 
-    public static void w(SLogType type, String name, String format, Object... args) {
+    public static void fw(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -245,12 +257,16 @@ public class SLog {
         }
     }
 
-    public static void w(SLogType type, String format, Object... args) {
-        w(type, null, format, args);
+    public static void fw(SLogType type, String format, Object... args) {
+        fw(type, null, format, args);
     }
 
-    public static void w(String name, String format, Object... args) {
-        w(null, name, format, args);
+    public static void fw(String name, String format, Object... args) {
+        fw(null, name, format, args);
+    }
+
+    public static void fw(String format, Object... args) {
+        fw(null, null, format, args);
     }
 
     public static void w(SLogType type, String name, String msg) {
@@ -283,8 +299,7 @@ public class SLog {
     }
 
 
-    // TODO: 2017/5/26 改名ef
-    public static void e(SLogType type, String name, String format, Object... args) {
+    public static void fe(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -306,12 +321,16 @@ public class SLog {
         }
     }
 
-    public static void e(SLogType type, String format, Object... args) {
-        e(type, null, format, args);
+    public static void fe(SLogType type, String format, Object... args) {
+        fe(type, null, format, args);
     }
 
-    public static void e(String name, String format, Object... args) {
-        e(null, name, format, args);
+    public static void fe(String name, String format, Object... args) {
+        fe(null, name, format, args);
+    }
+
+    public static void fe(String format, Object... args) {
+        fe(null, null, format, args);
     }
 
     public static void e(SLogType type, String name, String msg) {

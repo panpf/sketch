@@ -65,7 +65,7 @@ class TileDecoder {
     void decodeTile(Tile tile) {
         if (!isReady()) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "not ready. decodeTile. %s", tile.getInfo());
+                SLog.fw(SLogType.LARGE, NAME, "not ready. decodeTile. %s", tile.getInfo());
             }
             return;
         }
@@ -76,7 +76,7 @@ class TileDecoder {
 
     void clean(String why) {
         if (SLogType.LARGE.isEnabled()) {
-            SLog.w(SLogType.LARGE, NAME, "clean. %s", why);
+            SLog.fw(SLogType.LARGE, NAME, "clean. %s", why);
         }
 
         initKeyCounter.refresh();
@@ -84,7 +84,7 @@ class TileDecoder {
 
     void recycle(String why) {
         if (SLogType.LARGE.isEnabled()) {
-            SLog.w(SLogType.LARGE, NAME, "recycle. %s", why);
+            SLog.fw(SLogType.LARGE, NAME, "recycle. %s", why);
         }
 
         if (decoder != null) {
@@ -94,7 +94,7 @@ class TileDecoder {
 
     void initCompleted(String imageUri, ImageRegionDecoder decoder) {
         if (SLogType.LARGE.isEnabled()) {
-            SLog.d(SLogType.LARGE, NAME, "init completed. %s", imageUri);
+            SLog.fd(SLogType.LARGE, NAME, "init completed. %s", imageUri);
         }
 
         initializing = false;
@@ -103,7 +103,7 @@ class TileDecoder {
 
     void initError(String imageUri, Exception e) {
         if (SLogType.LARGE.isEnabled()) {
-            SLog.d(SLogType.LARGE, NAME, "init failed. %s. %s", e.getMessage(), imageUri);
+            SLog.fd(SLogType.LARGE, NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 
         initializing = false;

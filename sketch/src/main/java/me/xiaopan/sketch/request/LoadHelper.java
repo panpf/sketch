@@ -258,7 +258,7 @@ public class LoadHelper {
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.e(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            SLog.fe(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -329,7 +329,7 @@ public class LoadHelper {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "canceled. %s. %s",
+                SLog.fw(SLogType.REQUEST, LOG_NAME, "canceled. %s. %s",
                         isPauseDownload ? "pause download" : "requestLevel is local", key);
             }
 

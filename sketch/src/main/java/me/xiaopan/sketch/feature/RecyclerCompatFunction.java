@@ -70,7 +70,7 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
         @Override
         public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
             if (SLogType.BASE.isEnabled()) {
-                SLog.w(SLogType.BASE, LOG_NAME, "restore image on attached to window. %s", cacheUri);
+                SLog.fw(SLogType.BASE, LOG_NAME, "restore image on attached to window. %s", cacheUri);
             }
         }
     }

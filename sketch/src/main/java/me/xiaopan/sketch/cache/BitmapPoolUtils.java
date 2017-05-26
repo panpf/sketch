@@ -89,7 +89,7 @@ public class BitmapPoolUtils {
 
         if (inBitmap != null && SLogType.CACHE.isEnabled()) {
             int sizeInBytes = SketchUtils.computeByteCount(outWidth, outHeight, options.inPreferredConfig);
-            SLog.d(SLogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+            SLog.fd(SLogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     outWidth, outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
                     Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
         }
@@ -157,7 +157,7 @@ public class BitmapPoolUtils {
         if (inBitmap != null) {
             if (SLogType.CACHE.isEnabled()) {
                 int sizeInBytes = SketchUtils.computeByteCount(finalWidth, finalHeight, config);
-                SLog.d(SLogType.CACHE, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                SLog.fd(SLogType.CACHE, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                         finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
                         Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
             }

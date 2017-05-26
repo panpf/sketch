@@ -96,7 +96,7 @@ public class SketchUtils {
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, logName, "get packageInfo is null. %s", apkFilePath);
+                SLog.fw(SLogType.REQUEST, logName, "get packageInfo is null. %s", apkFilePath);
             }
             return null;
         }
@@ -112,7 +112,7 @@ public class SketchUtils {
         }
         if (drawable == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, logName, "app icon is null. %s", apkFilePath);
+                SLog.fw(SLogType.REQUEST, logName, "app icon is null. %s", apkFilePath);
             }
             return null;
         }

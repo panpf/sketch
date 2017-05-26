@@ -172,7 +172,7 @@ public class MappingView extends SketchImageView {
     public void update(Point newDrawableSize, Rect newVisibleRect) {
         if (newDrawableSize.x == 0 || newDrawableSize.y == 0 || newVisibleRect.isEmpty()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
+                SLog.fw(SLogType.ZOOM, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
                         getImageUri(), newDrawableSize.toString(), newVisibleRect.toShortString());
             }
 

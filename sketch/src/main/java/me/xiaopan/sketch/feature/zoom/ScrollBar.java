@@ -75,7 +75,7 @@ class ScrollBar {
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
+                SLog.fw(SLogType.ZOOM, ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
             }
             return;
         }

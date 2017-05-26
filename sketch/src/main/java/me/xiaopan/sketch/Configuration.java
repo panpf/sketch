@@ -151,7 +151,7 @@ public final class Configuration {
                 oldRequestExecutor.shutdown();
             }
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setRequestExecutor. %s", requestExecutor.getKey());
+                SLog.fd(SLogType.BASE, logName, "setRequestExecutor. %s", requestExecutor.getKey());
             }
         }
         return this;
@@ -180,7 +180,7 @@ public final class Configuration {
                 oldDiskCache.close();
             }
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setDiskCache. %s", diskCache.getKey());
+                SLog.fd(SLogType.BASE, logName, "setDiskCache. %s", diskCache.getKey());
             }
         }
         return this;
@@ -210,7 +210,7 @@ public final class Configuration {
                 oldBitmapPool.close();
             }
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setBitmapPool. %s", bitmapPool.getKey());
+                SLog.fd(SLogType.BASE, logName, "setBitmapPool. %s", bitmapPool.getKey());
             }
         }
         return this;
@@ -239,7 +239,7 @@ public final class Configuration {
                 oldMemoryCache.close();
             }
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setMemoryCache. %s", memoryCache.getKey());
+                SLog.fd(SLogType.BASE, logName, "setMemoryCache. %s", memoryCache.getKey());
             }
         }
         return this;
@@ -285,7 +285,7 @@ public final class Configuration {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setImageDecoder. %s", imageDecoder.getKey());
+                SLog.fd(SLogType.BASE, logName, "setImageDecoder. %s", imageDecoder.getKey());
             }
         }
         return this;
@@ -310,7 +310,7 @@ public final class Configuration {
         if (httpStack != null) {
             this.httpStack = httpStack;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setHttpStack. %s", httpStack.getKey());
+                SLog.fd(SLogType.BASE, logName, "setHttpStack. %s", httpStack.getKey());
             }
         }
         return this;
@@ -335,7 +335,7 @@ public final class Configuration {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
+                SLog.fd(SLogType.BASE, logName, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
             }
         }
         return this;
@@ -360,7 +360,7 @@ public final class Configuration {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
+                SLog.fd(SLogType.BASE, logName, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
             }
         }
         return this;
@@ -385,7 +385,7 @@ public final class Configuration {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
+                SLog.fd(SLogType.BASE, logName, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
             }
         }
         return this;
@@ -410,7 +410,7 @@ public final class Configuration {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setHelperFactory. %s", helperFactory.getKey());
+                SLog.fd(SLogType.BASE, logName, "setHelperFactory. %s", helperFactory.getKey());
             }
         }
         return this;
@@ -435,7 +435,7 @@ public final class Configuration {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setRequestFactory. %s", requestFactory.getKey());
+                SLog.fd(SLogType.BASE, logName, "setRequestFactory. %s", requestFactory.getKey());
             }
         }
         return this;
@@ -460,7 +460,7 @@ public final class Configuration {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setResizeCalculator. %s", resizeCalculator.getKey());
+                SLog.fd(SLogType.BASE, logName, "setResizeCalculator. %s", resizeCalculator.getKey());
             }
         }
         return this;
@@ -485,7 +485,7 @@ public final class Configuration {
         if (imageOrientationCorrector != null) {
             this.imageOrientationCorrector = imageOrientationCorrector;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
+                SLog.fd(SLogType.BASE, logName, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
             }
         }
         return this;
@@ -507,7 +507,7 @@ public final class Configuration {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setGlobalPauseLoad. %s", globalPauseLoad);
+                SLog.fd(SLogType.BASE, logName, "setGlobalPauseLoad. %s", globalPauseLoad);
             }
         }
         return this;
@@ -529,7 +529,7 @@ public final class Configuration {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setGlobalPauseDownload. %s", globalPauseDownload);
+                SLog.fd(SLogType.BASE, logName, "setGlobalPauseDownload. %s", globalPauseDownload);
             }
         }
         return this;
@@ -562,7 +562,7 @@ public final class Configuration {
             }
 
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
+                SLog.fd(SLogType.BASE, logName, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
             }
         }
         return this;
@@ -584,7 +584,7 @@ public final class Configuration {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setGlobalLowQualityImage. %s", globalLowQualityImage);
+                SLog.fd(SLogType.BASE, logName, "setGlobalLowQualityImage. %s", globalLowQualityImage);
             }
         }
         return this;
@@ -609,7 +609,7 @@ public final class Configuration {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
+                SLog.fd(SLogType.BASE, logName, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
             }
         }
         return this;
@@ -633,7 +633,7 @@ public final class Configuration {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setImagePreprocessor. %s", imagePreprocessor.getKey());
+                SLog.fd(SLogType.BASE, logName, "setImagePreprocessor. %s", imagePreprocessor.getKey());
             }
         }
         return this;
@@ -659,7 +659,7 @@ public final class Configuration {
         if (errorTracker != null) {
             this.errorTracker = errorTracker;
             if (SLogType.BASE.isEnabled()) {
-                SLog.d(SLogType.BASE, logName, "setMonitor. %s", errorTracker.getKey());
+                SLog.fd(SLogType.BASE, logName, "setMonitor. %s", errorTracker.getKey());
             }
         }
         return this;

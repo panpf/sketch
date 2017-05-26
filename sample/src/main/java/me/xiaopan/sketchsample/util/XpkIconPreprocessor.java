@@ -75,7 +75,7 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME, "not found icon.png in. %s", uriInfo.getUri());
+                SLog.fw(SLogType.REQUEST, LOG_NAME, "not found icon.png in. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -145,7 +145,7 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
+                    SLog.fw(SLogType.REQUEST, LOG_NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

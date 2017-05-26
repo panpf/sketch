@@ -111,7 +111,7 @@ public class Base64ImagePreprocessor implements ImagePreprocessor.Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.MEMORY);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "not found base64 image cache file. %s", uriInfo.getUri());
+                    SLog.fw(SLogType.REQUEST, LOG_NAME, "not found base64 image cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

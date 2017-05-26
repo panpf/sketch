@@ -68,7 +68,7 @@ public class DataSourceFactory {
                 return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             }
 
-            SLog.w(SLogType.REQUEST, LOG_NAME, "pre process result is null", uriInfo.getUri());
+            SLog.fw(SLogType.REQUEST, LOG_NAME, "pre process result is null", uriInfo.getUri());
             throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
         }
 
@@ -84,7 +84,7 @@ public class DataSourceFactory {
                     return new ByteArrayDataSource(imageDataArray, downloadResult.getImageFrom());
                 }
 
-                SLog.w(SLogType.REQUEST, LOG_NAME, "download result exception. %s", uriInfo.getUri());
+                SLog.fw(SLogType.REQUEST, LOG_NAME, "download result exception. %s", uriInfo.getUri());
                 throw new DecodeException("Download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
             } else {
                 DiskCache.Entry diskCacheEntry = configuration.getDiskCache().get(uriInfo.getDiskCacheKey());
@@ -112,7 +112,7 @@ public class DataSourceFactory {
             return new DrawableDataSource(context, Integer.valueOf(uriInfo.getContent()));
         }
 
-        SLog.w(SLogType.REQUEST, LOG_NAME, "unknown uri is %s", uriInfo.getUri());
+        SLog.fw(SLogType.REQUEST, LOG_NAME, "unknown uri is %s", uriInfo.getUri());
         throw new DecodeException(String.format("Unknown uri is %s", uriInfo.getUri()), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
     }
 

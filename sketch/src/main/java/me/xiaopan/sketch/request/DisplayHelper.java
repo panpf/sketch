@@ -375,7 +375,7 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            SLog.w(SLogType.REQUEST, LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
+            SLog.fw(SLogType.REQUEST, LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
                     Integer.toHexString(imageViewInterface.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
             if (SLogType.TIME.isEnabled()) {
                 Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
@@ -459,7 +459,7 @@ public class DisplayHelper {
     private boolean checkUri() {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, LOG_NAME, "uri is null or empty. viewHashCode=%s",
+                SLog.fe(SLogType.REQUEST, LOG_NAME, "uri is null or empty. viewHashCode=%s",
                         Integer.toHexString(imageViewInterface.hashCode()));
             }
 
@@ -479,7 +479,7 @@ public class DisplayHelper {
 
         if (uriInfo.getScheme() == null) {
             String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-            SLog.e(SLogType.REQUEST, LOG_NAME, "unknown uri scheme: %s. viewHashCode=%s. %s",
+            SLog.fe(SLogType.REQUEST, LOG_NAME, "unknown uri scheme: %s. viewHashCode=%s. %s",
                     uriInfo.getUri(), viewCode, uriInfo.getUri());
 
             Drawable drawable = null;
@@ -618,7 +618,7 @@ public class DisplayHelper {
                         ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.d(SLogType.REQUEST, LOG_NAME, "%s. viewHashCode=%s. %s",
+                    SLog.fd(SLogType.REQUEST, LOG_NAME, "%s. viewHashCode=%s. %s",
                             errorInfo, Integer.toHexString(imageViewInterface.hashCode()), uriInfo.getUri());
                 }
                 throw new IllegalArgumentException(errorInfo);
@@ -658,7 +658,7 @@ public class DisplayHelper {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
             if (SLogType.REQUEST.isEnabled()) {
                 String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-                SLog.e(SLogType.REQUEST, LOG_NAME, "memory cache drawable recycled. %s. viewHashCode=%s",
+                SLog.fe(SLogType.REQUEST, LOG_NAME, "memory cache drawable recycled. %s. viewHashCode=%s",
                         cachedRefBitmap.getInfo(), viewCode);
             }
             return true;
@@ -669,7 +669,7 @@ public class DisplayHelper {
 
         if (SLogType.REQUEST.isEnabled()) {
             String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-            SLog.i(SLogType.REQUEST, LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
+            SLog.fi(SLogType.REQUEST, LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
                     ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
 
@@ -703,7 +703,7 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(SLogType.REQUEST, LOG_NAME,
+                SLog.fw(SLogType.REQUEST, LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
                         Integer.toHexString(imageViewInterface.hashCode()), key);
             }
@@ -727,7 +727,7 @@ public class DisplayHelper {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.d(SLogType.REQUEST, LOG_NAME,
+                SLog.fd(SLogType.REQUEST, LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseDownload ? "pause download" : "requestLevel is local",
                         Integer.toHexString(imageViewInterface.hashCode()), key);
             }
@@ -743,7 +743,7 @@ public class DisplayHelper {
                 drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
+                    SLog.fw(SLogType.REQUEST, LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
                             Integer.toHexString(imageViewInterface.hashCode()), key);
                 }
             }
@@ -767,13 +767,13 @@ public class DisplayHelper {
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.d(SLogType.REQUEST, LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
+                    SLog.fd(SLogType.REQUEST, LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
                             key, Integer.toHexString(imageViewInterface.hashCode()));
                 }
                 return potentialRequest;
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(SLogType.REQUEST, LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
+                    SLog.fw(SLogType.REQUEST, LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
                             key, potentialRequest.getKey(), Integer.toHexString(imageViewInterface.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -811,7 +811,7 @@ public class DisplayHelper {
         }
 
         if (SLogType.REQUEST.isEnabled()) {
-            SLog.d(SLogType.REQUEST, LOG_NAME, "submit request. viewHashCode=%s. %s",
+            SLog.fd(SLogType.REQUEST, LOG_NAME, "submit request. viewHashCode=%s. %s",
                     Integer.toHexString(imageViewInterface.hashCode()), key);
         }
 

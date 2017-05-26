@@ -87,7 +87,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            SLog.w(SLogType.REQUEST, LOG_NAME,
+            SLog.fw(SLogType.REQUEST, LOG_NAME,
                     "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             bitmap.recycle();
