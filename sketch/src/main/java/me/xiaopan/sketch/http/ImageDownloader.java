@@ -41,6 +41,12 @@ public class ImageDownloader implements Identifier {
      * 下载，这个方法主要实现缓存锁与检查缓存
      */
     public DownloadResult download(DownloadRequest request) {
+        if (request.isCanceled()) {
+            if (SLogType.REQUEST.isEnabled()) {
+                request.printLogW("canceled", "runDownload", "start download");
+            }
+            return null;
+        }
 
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String diskCacheKey = request.getUriInfo().getDiskCacheKey();
