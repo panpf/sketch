@@ -67,6 +67,11 @@ public class InstalledAppIconPreprocessor implements ImagePreprocessor.Preproces
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
         diskCacheEditLock.lock();
 
+        cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         PreProcessResult result = readInstalledAppIcon(context, uriInfo, diskCache);
 
         diskCacheEditLock.unlock();

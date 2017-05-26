@@ -80,11 +80,11 @@ public class ImagePreprocessor implements Identifier {
     }
 
     /**
-     * 判断请求是否需要预处理
+     * 根据uri判断是否需要预处理
      *
      * @param context Context
      * @param uriInfo 图片uri
-     * @return true：需要预处理，紧接着会调用process(LoadRequest)方法处理
+     * @return true：需要预处理，紧接着会调用 {@link #process(Context, UriInfo)} 方法处理
      */
     public boolean match(Context context, UriInfo uriInfo) {
         for (Preprocessor preprocessor : preprocessorList) {
@@ -97,7 +97,7 @@ public class ImagePreprocessor implements Identifier {
     }
 
     /**
-     * 预处理请求
+     * 执行预处理，返回处理结果
      *
      * @param context Context
      * @param uriInfo 图片uri
@@ -119,8 +119,22 @@ public class ImagePreprocessor implements Identifier {
     }
 
     public interface Preprocessor {
+        /**
+         * 根据uri判断是否需要预处理
+         *
+         * @param context Context
+         * @param uriInfo 图片uri
+         * @return true：需要预处理，紧接着会调用 {@link #process(Context, UriInfo)} 方法处理
+         */
         boolean match(Context context, UriInfo uriInfo);
 
+        /**
+         * 执行预处理，返回处理结果
+         *
+         * @param context Context
+         * @param uriInfo 图片uri
+         * @return 预处理结果
+         */
         PreProcessResult process(Context context, UriInfo uriInfo);
     }
 }

@@ -57,6 +57,11 @@ public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
+        cacheEntry = diskCache.get(diskCacheKey);
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         PreProcessResult result = readXpkIcon(uriInfo, diskCache);
 
         diskCacheEditLock.unlock();

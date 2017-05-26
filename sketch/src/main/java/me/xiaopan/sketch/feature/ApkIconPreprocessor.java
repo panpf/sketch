@@ -68,6 +68,11 @@ public class ApkIconPreprocessor implements ImagePreprocessor.Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
+        cacheEntry = diskCache.get(diskCacheKey);
+        if (cacheEntry != null) {
+            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
         PreProcessResult result = readApkIcon(context, uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
