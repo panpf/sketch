@@ -45,18 +45,18 @@ Scan a two-dimensional code to download a sample APP, or [click to download APK]
 1.Add dependencies to the dependencies node of the app's build.gradle file
 
 ```groovy
-compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
+compile 'me.xiaopan:sketch:$sketch_version'
 ```
 
-Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(Do not "v")`
+Replace `$sketch_version` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(Do not "v")`
 
 If you need to play GIF add sketch-gif dependencies
 
 ```groovy
-compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
+compile 'me.xiaopan:sketch-gif:$sketch_gif_version'
 ```
 
-Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
+Replace `$sketch_gif_version` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 

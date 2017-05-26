@@ -43,18 +43,18 @@ Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势�
 1.在app的build.gradle文件的dependencies节点中加入依赖
 
 ```groovy
-compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
+compile 'me.xiaopan:sketch:$sketch_version'
 ```
 
-请自行替换 `<SKETCH_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(不要"v")`
+请自行替换 `$sketch_version` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(不要"v")`
 
 如果需要播放GIF就添加sketch-gif的依赖
 
 ```groovy
-compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
+compile 'me.xiaopan:sketch-gif:$sketch_gif_version'
 ```
 
-请自行替换`<SKETCH_GIF_LAST_VERSION_NAME>` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(不要"v")`
+请自行替换`$sketch_gif_version` 为最新的版本 [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(不要"v")`
 
 `Android Studio会自动合并AAR中所包含的权限和混淆配置`
 
