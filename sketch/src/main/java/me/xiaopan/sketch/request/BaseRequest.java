@@ -204,19 +204,19 @@ public abstract class BaseRequest {
         }
     }
 
-    protected void printLogD(Object... items) {
+    public void printLogD(Object... items) {
         printLog(0, items);
     }
 
-    protected void printLogI(Object... items) {
+    public void printLogI(Object... items) {
         printLog(1, items);
     }
 
-    protected void printLogW(Object... items) {
+    public void printLogW(Object... items) {
         printLog(2, items);
     }
 
-    protected void printLogE(Object... items) {
+    public void printLogE(Object... items) {
         printLog(3, items);
     }
 

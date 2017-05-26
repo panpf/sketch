@@ -40,6 +40,7 @@ import me.xiaopan.sketch.feature.ProcessedImageCache;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
+import me.xiaopan.sketch.http.ImageDownloader;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
@@ -61,18 +62,19 @@ public final class Configuration {
 
     private HttpStack httpStack;
     private ImageDecoder imageDecoder;
-    private ImageDisplayer defaultImageDisplayer;
-    private ImageProcessor resizeImageProcessor;
-    private FreeRideManager freeRideManager;
-    private RequestExecutor requestExecutor;
-    private ResizeCalculator resizeCalculator;
+    private ImageDownloader imageDownloader;
     private ImagePreprocessor imagePreprocessor;
-    private ImageSizeCalculator imageSizeCalculator;
     private ImageOrientationCorrector imageOrientationCorrector;
 
+    private ImageDisplayer defaultImageDisplayer;
+    private ImageProcessor resizeImageProcessor;
+    private ResizeCalculator resizeCalculator;
+    private ImageSizeCalculator imageSizeCalculator;
+
+    private FreeRideManager freeRideManager;
+    private RequestExecutor requestExecutor;
     private HelperFactory helperFactory;
     private RequestFactory requestFactory;
-
     private ErrorTracker errorTracker;
 
     // TODO: 2017/4/15 搞一个通用的属性拦截器，把这些放到属性拦截器里
@@ -97,6 +99,7 @@ public final class Configuration {
         this.imageDecoder = new ImageDecoder();
         this.freeRideManager = new FreeRideManager();
         this.requestExecutor = new RequestExecutor();
+        this.imageDownloader = new ImageDownloader();
         this.resizeCalculator = new ResizeCalculator();
         this.imagePreprocessor = new ImagePreprocessor();
         this.imageSizeCalculator = new ImageSizeCalculator();
@@ -126,35 +129,6 @@ public final class Configuration {
      */
     public Context getContext() {
         return context;
-    }
-
-    /**
-     * 获取请求执行器
-     *
-     * @return RequestExecutor
-     */
-    public RequestExecutor getRequestExecutor() {
-        return requestExecutor;
-    }
-
-    /**
-     * 设置请求执行器
-     *
-     * @return Configuration. Convenient chain calls
-     */
-    @SuppressWarnings("unused")
-    public Configuration setRequestExecutor(RequestExecutor newRequestExecutor) {
-        if (newRequestExecutor != null) {
-            RequestExecutor oldRequestExecutor = requestExecutor;
-            requestExecutor = newRequestExecutor;
-            if (oldRequestExecutor != null) {
-                oldRequestExecutor.shutdown();
-            }
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setRequestExecutor. %s", requestExecutor.getKey());
-            }
-        }
-        return this;
     }
 
     /**
@@ -266,6 +240,33 @@ public final class Configuration {
         return this;
     }
 
+
+    /**
+     * 获取图片下载器
+     *
+     * @return HttpStack
+     */
+    @SuppressWarnings("unused")
+    public HttpStack getHttpStack() {
+        return httpStack;
+    }
+
+    /**
+     * 设置图片下载器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setHttpStack(HttpStack httpStack) {
+        if (httpStack != null) {
+            this.httpStack = httpStack;
+            if (SLogType.BASE.isEnabled()) {
+                SLog.fd(SLogType.BASE, LOG_NAME, "setHttpStack. %s", httpStack.getKey());
+            }
+        }
+        return this;
+    }
+
     /**
      * 获取图片解码器
      *
@@ -294,52 +295,79 @@ public final class Configuration {
     /**
      * 获取图片下载器
      *
-     * @return HttpStack
+     * @return ImageDownloader
      */
-    public HttpStack getHttpStack() {
-        return httpStack;
+    public ImageDownloader getImageDownloader() {
+        return imageDownloader;
     }
 
     /**
      * 设置图片下载器
      *
+     * @param imageDownloader 设置图片下载器
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setHttpStack(HttpStack httpStack) {
-        if (httpStack != null) {
-            this.httpStack = httpStack;
+    public Configuration setImageDownloader(ImageDownloader imageDownloader) {
+        if (imageDownloader != null) {
+            this.imageDownloader = imageDownloader;
             if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setHttpStack. %s", httpStack.getKey());
+                SLog.fd(SLogType.BASE, LOG_NAME, "setImageDownloader. %s", imageDownloader.getKey());
             }
         }
         return this;
     }
 
     /**
-     * 获取图片尺寸计算器
+     * 获取图片预处理器
      *
-     * @return ImageSizeCalculator
+     * @return ImagePreprocessor
      */
-    public ImageSizeCalculator getImageSizeCalculator() {
-        return imageSizeCalculator;
+    public ImagePreprocessor getImagePreprocessor() {
+        return imagePreprocessor;
     }
 
     /**
-     * 获取图片尺寸计算器
+     * 设置图片预处理器
      *
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
-        if (imageSizeCalculator != null) {
-            this.imageSizeCalculator = imageSizeCalculator;
+    public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
+        if (imagePreprocessor != null) {
+            this.imagePreprocessor = imagePreprocessor;
             if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
+                SLog.fd(SLogType.BASE, LOG_NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
             }
         }
         return this;
     }
+
+    /**
+     * 获取图片方向纠正器
+     *
+     * @return ImageOrientationCorrector
+     */
+    public ImageOrientationCorrector getImageOrientationCorrector() {
+        return imageOrientationCorrector;
+    }
+
+    /**
+     * 设置图片方向纠正器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setImageOrientationCorrector(ImageOrientationCorrector imageOrientationCorrector) {
+        if (imageOrientationCorrector != null) {
+            this.imageOrientationCorrector = imageOrientationCorrector;
+            if (SLogType.BASE.isEnabled()) {
+                SLog.fd(SLogType.BASE, LOG_NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
+            }
+        }
+        return this;
+    }
+
 
     /**
      * 获取默认的图片显示器
@@ -386,6 +414,112 @@ public final class Configuration {
             this.resizeImageProcessor = resizeImageProcessor;
             if (SLogType.BASE.isEnabled()) {
                 SLog.fd(SLogType.BASE, LOG_NAME, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 获取Resize计算器
+     *
+     * @return ResizeCalculator
+     */
+    public ResizeCalculator getResizeCalculator() {
+        return resizeCalculator;
+    }
+
+    /**
+     * 设置Resize计算器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
+        if (resizeCalculator != null) {
+            this.resizeCalculator = resizeCalculator;
+            if (SLogType.BASE.isEnabled()) {
+                SLog.fd(SLogType.BASE, LOG_NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 获取图片尺寸计算器
+     *
+     * @return ImageSizeCalculator
+     */
+    public ImageSizeCalculator getImageSizeCalculator() {
+        return imageSizeCalculator;
+    }
+
+    /**
+     * 获取图片尺寸计算器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
+        if (imageSizeCalculator != null) {
+            this.imageSizeCalculator = imageSizeCalculator;
+            if (SLogType.BASE.isEnabled()) {
+                SLog.fd(SLogType.BASE, LOG_NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
+            }
+        }
+        return this;
+    }
+
+
+    /**
+     * 获取顺风车管理器
+     *
+     * @return FreeRideManager
+     */
+    public FreeRideManager getFreeRideManager() {
+        return freeRideManager;
+    }
+
+    /**
+     * 设置顺风车管理器
+     *
+     * @param freeRideManager 顺风车管理器
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setFreeRideManager(FreeRideManager freeRideManager) {
+        if (freeRideManager != null) {
+            this.freeRideManager = freeRideManager;
+            if (SLogType.BASE.isEnabled()) {
+                SLog.fd(SLogType.BASE, LOG_NAME, "setFreeRideManager. %s", freeRideManager.getKey());
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 获取请求执行器
+     *
+     * @return RequestExecutor
+     */
+    public RequestExecutor getRequestExecutor() {
+        return requestExecutor;
+    }
+
+    /**
+     * 设置请求执行器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @SuppressWarnings("unused")
+    public Configuration setRequestExecutor(RequestExecutor newRequestExecutor) {
+        if (newRequestExecutor != null) {
+            RequestExecutor oldRequestExecutor = requestExecutor;
+            requestExecutor = newRequestExecutor;
+            if (oldRequestExecutor != null) {
+                oldRequestExecutor.shutdown();
+            }
+            if (SLogType.BASE.isEnabled()) {
+                SLog.fd(SLogType.BASE, LOG_NAME, "setRequestExecutor. %s", requestExecutor.getKey());
             }
         }
         return this;
@@ -442,50 +576,26 @@ public final class Configuration {
     }
 
     /**
-     * 获取Resize计算器
+     * 获取错误跟踪器
      *
-     * @return ResizeCalculator
+     * @return ErrorTracker
      */
-    public ResizeCalculator getResizeCalculator() {
-        return resizeCalculator;
+    @SuppressWarnings("unused")
+    public ErrorTracker getErrorTracker() {
+        return errorTracker;
     }
 
     /**
-     * 设置Resize计算器
+     * 设置错误跟踪器
      *
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
-        if (resizeCalculator != null) {
-            this.resizeCalculator = resizeCalculator;
+    public Configuration setErrorTracker(ErrorTracker errorTracker) {
+        if (errorTracker != null) {
+            this.errorTracker = errorTracker;
             if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 获取图片方向纠正器
-     *
-     * @return ImageOrientationCorrector
-     */
-    public ImageOrientationCorrector getImageOrientationCorrector() {
-        return imageOrientationCorrector;
-    }
-
-    /**
-     * 设置图片方向纠正器
-     *
-     * @return Configuration. Convenient chain calls
-     */
-    @SuppressWarnings("unused")
-    public Configuration setImageOrientationCorrector(ImageOrientationCorrector imageOrientationCorrector) {
-        if (imageOrientationCorrector != null) {
-            this.imageOrientationCorrector = imageOrientationCorrector;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
+                SLog.fd(SLogType.BASE, LOG_NAME, "setMonitor. %s", errorTracker.getKey());
             }
         }
         return this;
@@ -512,6 +622,7 @@ public final class Configuration {
         }
         return this;
     }
+
 
     /**
      * 全局暂停下载图片？开启后将不再从网络下载图片，只影响display请求和load请求
@@ -615,82 +726,30 @@ public final class Configuration {
         return this;
     }
 
-    /**
-     * 获取图片预处理器
-     *
-     * @return ImagePreprocessor
-     */
-    public ImagePreprocessor getImagePreprocessor() {
-        return imagePreprocessor;
-    }
-
-    /**
-     * 设置图片预处理器
-     *
-     * @return Configuration. Convenient chain calls
-     */
-    public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
-        if (imagePreprocessor != null) {
-            this.imagePreprocessor = imagePreprocessor;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 获取错误跟踪器
-     *
-     * @return ErrorTracker
-     */
-    @SuppressWarnings("unused")
-    public ErrorTracker getErrorTracker() {
-        return errorTracker;
-    }
-
-    /**
-     * 设置错误跟踪器
-     *
-     * @return Configuration. Convenient chain calls
-     */
-    @SuppressWarnings("unused")
-    public Configuration setErrorTracker(ErrorTracker errorTracker) {
-        if (errorTracker != null) {
-            this.errorTracker = errorTracker;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setMonitor. %s", errorTracker.getKey());
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 获取顺风车管理器
-     *
-     * @return FreeRideManager
-     */
-    public FreeRideManager getFreeRideManager() {
-        return freeRideManager;
-    }
-
     public String getInfo() {
         return LOG_NAME + ": " +
                 "\n" + "diskCache：" + diskCache.getKey() +
                 "\n" + "bitmapPool：" + bitmapPool.getKey() +
                 "\n" + "memoryCache：" + memoryCache.getKey() +
                 "\n" + "processedImageCache：" + processedImageCache.getKey() +
+
+                "\n" + "httpStack：" + httpStack.getKey() +
                 "\n" + "imageDecoder：" + imageDecoder.getKey() +
-                "\n" + "helperFactory：" + helperFactory.getKey() +
+                "\n" + "imageDownloader：" + imageDownloader.getKey() +
+                "\n" + "imagePreprocessor：" + imagePreprocessor.getKey() +
+                "\n" + "imageOrientationCorrector：" + imageOrientationCorrector.getKey() +
+
                 "\n" + "defaultImageDisplayer：" + defaultImageDisplayer.getKey() +
                 "\n" + "resizeImageProcessor：" + resizeImageProcessor.getKey() +
-                "\n" + "requestFactory：" + requestFactory.getKey() +
-                "\n" + "httpStack：" + httpStack.getKey() +
-                "\n" + "requestExecutor：" + requestExecutor.getKey() +
-                "\n" + "imageSizeCalculator：" + imageSizeCalculator.getKey() +
                 "\n" + "resizeCalculator：" + resizeCalculator.getKey() +
-                "\n" + "imagePreprocessor：" + imagePreprocessor.getKey() +
-                "\n" + "errorCallback：" + errorTracker.getKey() +
+                "\n" + "imageSizeCalculator：" + imageSizeCalculator.getKey() +
+
+                "\n" + "freeRideManager：" + freeRideManager.getKey() +
+                "\n" + "requestExecutor：" + requestExecutor.getKey() +
+                "\n" + "helperFactory：" + helperFactory.getKey() +
+                "\n" + "requestFactory：" + requestFactory.getKey() +
+                "\n" + "errorTracker：" + errorTracker.getKey() +
+
                 "\n" + "globalPauseLoad：" + globalPauseLoad +
                 "\n" + "globalPauseDownload：" + globalPauseDownload +
                 "\n" + "globalLowQualityImage：" + globalLowQualityImage +

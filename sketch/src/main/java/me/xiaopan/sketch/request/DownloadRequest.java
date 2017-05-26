@@ -16,20 +16,9 @@
 
 package me.xiaopan.sketch.request;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.http.HttpStack;
-import me.xiaopan.sketch.util.DiskLruCache;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 下载请求
@@ -161,256 +150,13 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
-        DiskCache diskCache = getConfiguration().getDiskCache();
-
-        // 使用磁盘缓存就必须要上锁
-        ReentrantLock diskCacheEditLock = null;
-        if (!getOptions().isCacheInDiskDisabled()) {
-            setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
-
-            diskCacheEditLock = diskCache.getEditLock(getUriInfo().getDiskCacheKey());
-            if (diskCacheEditLock != null) {
-                diskCacheEditLock.lock();
-            }
-        }
-
-        DownloadResult justDownloadResult = download(diskCache, getUriInfo().getDiskCacheKey());
-
-        // 解锁
-        if (diskCacheEditLock != null) {
-            diskCacheEditLock.unlock();
-        }
+        downloadResult = getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runDownload", "download after");
-            }
             return;
         }
 
-        downloadResult = justDownloadResult;
         downloadCompleted();
-    }
-
-    // TODO: 2017/5/25 将下载部分弄成一个ImageDownloader，Request部分值控制流程
-    private DownloadResult download(DiskCache diskCache, String diskCacheKey) {
-        if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runDownload", "get disk cache edit lock after");
-            }
-            return null;
-        }
-
-        // 检查磁盘缓存
-        if (!getOptions().isCacheInDiskDisabled()) {
-            setStatus(Status.CHECK_DISK_CACHE);
-            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
-            if (diskCacheEntry != null) {
-                return new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
-            }
-        }
-
-        // 下载
-        HttpStack httpStack = getConfiguration().getHttpStack();
-        int retryCount = 0;
-        int maxRetryCount = httpStack.getMaxRetryCount();
-        DownloadResult justDownloadResult = null;
-        while (true) {
-            try {
-                justDownloadResult = realDownload(httpStack, diskCache, diskCacheKey);
-                break;
-            } catch (Throwable e) {
-                e.printStackTrace();
-
-                getConfiguration().getErrorTracker().onDownloadError(this, e);
-
-                if (isCanceled()) {
-                    if (SLogType.REQUEST.isEnabled()) {
-                        printLogW("canceled", "runDownload", "download failed");
-                    }
-                    break;
-                }
-
-                if (httpStack.canRetry(e) && retryCount < maxRetryCount) {
-                    retryCount++;
-                    if (SLogType.REQUEST.isEnabled()) {
-                        printLogW("download failed", "runDownload", "retry");
-                    }
-                } else {
-                    if (SLogType.REQUEST.isEnabled()) {
-                        printLogE("download failed", "runDownload", "end");
-                    }
-                    break;
-                }
-            }
-        }
-
-        return justDownloadResult;
-    }
-
-    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey)
-            throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
-        setStatus(Status.CONNECTING);
-
-        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getUriInfo().getContent());
-        if (isCanceled()) {
-            httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runDownload", "connect after");
-            }
-            return null;
-        }
-
-        setStatus(Status.CHECK_RESPONSE);
-
-        // 检查状态码
-        int responseCode;
-        try {
-            responseCode = httpResponse.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-            httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
-            }
-            throw new IllegalStateException("get response code exception", e);
-        }
-        if (responseCode != 200) {
-            httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
-            }
-            throw new IllegalStateException("response code exception: " + responseCode);
-        }
-
-        // 检查内容长度
-        long contentLength = httpResponse.getContentLength();
-        if (contentLength <= 0 && !httpResponse.isContentChunked()) {
-            httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
-            }
-            throw new IllegalStateException("contentLength exception: " + contentLength + "responseHeaders: " + httpResponse.getResponseHeadersString());
-        }
-
-        setStatus(Status.READ_DATA);
-
-        // 获取输入流
-        InputStream inputStream = httpResponse.getContent();
-        if (isCanceled()) {
-            SketchUtils.close(inputStream);
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runDownload", "get input stream after");
-            }
-            return null;
-        }
-
-        DiskCache.Editor diskCacheEditor = null;
-        if (!getOptions().isCacheInDiskDisabled()) {
-            diskCacheEditor = diskCache.edit(diskCacheKey);
-        }
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (FileNotFoundException e) {
-                SketchUtils.close(inputStream);
-                diskCacheEditor.abort();
-                throw e;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
-        }
-
-        // 读取数据
-        int completedLength = 0;
-        boolean readFully;
-        try {
-            completedLength = readData(inputStream, outputStream, (int) contentLength);
-
-            readFully = contentLength <= 0 || completedLength == contentLength;
-            if (diskCacheEditor != null) {
-                if (readFully) {
-                    diskCacheEditor.commit();
-                } else {
-                    diskCacheEditor.abort();
-                }
-            }
-        } catch (IOException e) {
-            if (diskCacheEditor != null) {
-                diskCacheEditor.abort();
-                diskCacheEditor = null;
-            }
-            throw e;
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            throw e;
-        } catch (DiskLruCache.FileNotExistException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            throw e;
-        } finally {
-            SketchUtils.close(outputStream);
-            SketchUtils.close(inputStream);
-        }
-
-        if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runDownload", "read data after", readFully ? "read fully" : "not read fully");
-            }
-            return null;
-        }
-
-        if (SLogType.REQUEST.isEnabled()) {
-            printLogI("download success", "runDownload", "fileLength: " + completedLength + "/" + contentLength);
-        }
-
-        // 提交磁盘缓存并返回
-        if (diskCacheEditor != null) {
-            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
-            if (diskCacheEntry != null) {
-                return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
-            } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    printLogW("not found disk cache", "runDownload", "download after");
-                }
-                throw new IllegalStateException("not found disk cache entry, key is " + diskCacheKey);
-            }
-        } else {
-            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
-        }
-    }
-
-    private int readData(InputStream inputStream, OutputStream outputStream, int contentLength) throws IOException {
-        int realReadCount;
-        int completedLength = 0;
-        long lastCallbackTime = 0;
-        byte[] buffer = new byte[8 * 1024];
-        while (true) {
-            if (isCanceled()) {
-                break;
-            }
-
-            realReadCount = inputStream.read(buffer);
-            if (realReadCount != -1) {
-                outputStream.write(buffer, 0, realReadCount);
-                completedLength += realReadCount;
-
-                // 每秒钟回调一次进度
-                long currentTime = System.currentTimeMillis();
-                if (currentTime - lastCallbackTime >= 1000) {
-                    lastCallbackTime = currentTime;
-                    updateProgress(contentLength, completedLength);
-                }
-            } else {
-                // 结束的时候再次回调一下进度，确保页面上能显示100%
-                updateProgress(contentLength, completedLength);
-                break;
-            }
-        }
-        outputStream.flush();
-        return completedLength;
     }
 
     @Override
@@ -421,7 +167,7 @@ public class DownloadRequest extends AsyncRequest {
     /**
      * 更新进度
      */
-    private void updateProgress(int totalLength, int completedLength) {
+    public void updateProgress(int totalLength, int completedLength) {
         if (downloadProgressListener != null && totalLength > 0) {
             postRunUpdateProgress(totalLength, completedLength);
         }
