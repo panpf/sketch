@@ -63,6 +63,7 @@ public class MyImageView extends SketchImageView {
             onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS));
             onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD));
             onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_RETRY_ON_FAILED));
+            onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_PLAY_GIF));
             disabledRedisplay = false;
         }
     }
@@ -106,26 +107,29 @@ public class MyImageView extends SketchImageView {
     public void onEvent(AppConfigChangedEvent event) {
         if (AppConfig.Key.SHOW_GIF_FLAG.equals(event.key)) {
             if (useInList) {
-                boolean showGifFlag = AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_GIF_FLAG);
-                setShowGifFlag(showGifFlag ? getResources().getDrawable(R.drawable.ic_gif) : null);
+                setShowGifFlag(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_GIF_FLAG) ? R.drawable.ic_gif : 0);
             }
         } else if (AppConfig.Key.SHOW_IMAGE_FROM_FLAG.equals(event.key)) {
-            setShowImageFrom(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_IMAGE_FROM_FLAG));
+            setShowImageFrom(AppConfig.getBoolean(getContext(), event.key));
         } else if (AppConfig.Key.CLICK_SHOW_PRESSED_STATUS.equals(event.key)) {
             if (useInList) {
-                setShowPressedStatus(AppConfig.getBoolean(getContext(), AppConfig.Key.CLICK_SHOW_PRESSED_STATUS));
+                setShowPressedStatus(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS.equals(event.key)) {
             if (useInList) {
-                setShowDownloadProgress(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS));
+                setShowDownloadProgress(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD.equals(event.key)) {
             if (useInList) {
-                setClickRetryOnPauseDownload(AppConfig.getBoolean(getContext(), AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD));
+                setClickRetryOnPauseDownloadEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_FAILED.equals(event.key)) {
             if (useInList) {
-                setClickRetryOnError(AppConfig.getBoolean(getContext(), AppConfig.Key.CLICK_RETRY_ON_FAILED));
+                setClickRetryOnDisplayErrorEnabled(AppConfig.getBoolean(getContext(), event.key));
+            }
+        } else if (AppConfig.Key.CLICK_PLAY_GIF.equals(event.key)) {
+            if (useInList) {
+                setClickPlayGifEnabled(AppConfig.getBoolean(getContext(), event.key) ? R.drawable.ic_video_play : 0);
             }
 
 
@@ -140,7 +144,7 @@ public class MyImageView extends SketchImageView {
 
 
         } else if (AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION.equals(event.key)) {
-            final boolean correctImageOrientationDisabled = AppConfig.getBoolean(getContext(), AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION);
+            final boolean correctImageOrientationDisabled = AppConfig.getBoolean(getContext(), event.key);
             getOptions().setCorrectImageOrientationDisabled(correctImageOrientationDisabled);
 
             redisplay(new RedisplayListener() {
@@ -151,7 +155,7 @@ public class MyImageView extends SketchImageView {
             });
         } else if (AppConfig.Key.PLAY_GIF_ON_LIST.equals(event.key)) {
             if (useInList) {
-                final boolean playGifOnList = AppConfig.getBoolean(getContext(), AppConfig.Key.PLAY_GIF_ON_LIST);
+                final boolean playGifOnList = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setDecodeGifImage(playGifOnList);
 
                 redisplay(new RedisplayListener() {
@@ -163,7 +167,7 @@ public class MyImageView extends SketchImageView {
             }
         } else if (AppConfig.Key.THUMBNAIL_MODE.equals(event.key)) {
             if (useInList) {
-                final boolean thumbnailMode = AppConfig.getBoolean(getContext(), AppConfig.Key.THUMBNAIL_MODE);
+                final boolean thumbnailMode = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setThumbnailMode(thumbnailMode);
                 if (thumbnailMode) {
                     if (getOptions().getResize() == null && !getOptions().isResizeByFixedSize()) {
@@ -177,6 +181,7 @@ public class MyImageView extends SketchImageView {
                     @Override
                     public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
                         cacheOptions.setThumbnailMode(thumbnailMode);
+                        // TODO: 2017/5/27 优化这里的写法
                         if (thumbnailMode) {
                             if (cacheOptions.getResize() == null && !cacheOptions.isResizeByFixedSize()) {
                                 cacheOptions.setResizeByFixedSize(true);
@@ -188,7 +193,7 @@ public class MyImageView extends SketchImageView {
                 });
             }
         } else if (AppConfig.Key.CACHE_PROCESSED_IMAGE.equals(event.key)) {
-            final boolean cacheProcessedImageInDisk = AppConfig.getBoolean(getContext(), AppConfig.Key.CACHE_PROCESSED_IMAGE);
+            final boolean cacheProcessedImageInDisk = AppConfig.getBoolean(getContext(), event.key);
             getOptions().setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
 
             redisplay(new RedisplayListener() {

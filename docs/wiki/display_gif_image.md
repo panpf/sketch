@@ -16,7 +16,26 @@ sketImageView.getOptions().setDecodeGifImage(true);
 >* GifDrawable还不能使用内存缓存，因为GifDrawable需要依赖Callback才能播放，
 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
-SketchImageView还支持当显示的图片是gif图时在右下角显示一个图标，告诉用户这是一张gif图，详情请参考[SketchImageView详细使用说明.md](sketch_image_view.md)
+#### 显示gif图标识
+Sketch支持解码gif图，因此SketchImageView在发现显示的是gif图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张gif图，如下：
+
+```java
+sketchImageView.setShowGifFlag(R.drawable.ic_gif);
+```
+
+Sketch通过mimeType来识别gif图，所以即使你没有调用decodeGifImage()也会认为这是一张gif图，这个功能主要用来在列表中告诉用户这是一张gif图，然后点击图片到大图详情页再播放gif
+
+效果如下：
+
+![gif](../res/gif_flag_drawable.png)
+
+#### 配置点击播放gif
+
+在列表中显示gif的时候可以默认不自动播放，然后显示一个播放图标，用户点击后开始播放，如下开启功能即可：
+
+```java
+sketchImageView.setClickPlayGifEnabled(R.drawable.ic_video_play);
+```
 
 #### 页面不可见时停止播放
 GifDrawable默认是自动播放的，如果你在ViewPager中连续的显示多张gif的话，最少会有三张GIF同时在播放，但我们同一时间只能看到一张，因此需要控制只有页面显示的时候才播放gif

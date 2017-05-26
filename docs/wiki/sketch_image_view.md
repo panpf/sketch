@@ -157,20 +157,7 @@ sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
 sketchImaegView.setImageShapeCornerRadius(20);
 ```
 
-#### 7.显示gif图标识
-Sketch支持解码gif图，因此SketchImageView在发现显示的是gif图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张gif图，如下：
-
-```java
-sketchImageView.setGifFlagDrawable(R.drawable.ic_gif);
-```
-
-Sketch通过mimeType来识别gif图，所以即使你没有调用decodeGifImage()也会认为这是一张gif图，这个功能主要用来在列表中告诉用户这是一张gif图，然后点击图片到大图详情页再播放gif
-
-效果如下：
-
-![gif](../res/gif_flag_drawable.png)
-
-#### 8.显示图片来源
+#### 7.显示图片来源
 SketchImageView还支持显示图片来源，如下：
 ```
 sketchImageView.setShowFromFlag(true);
@@ -187,13 +174,13 @@ sketchImageView.setShowFromFlag(true);
 
 ![sample](../res/sample_debug_mode.jpeg)
 
-#### 9.失败时点击重新显示
+#### 8.失败时点击重新显示
 一句话开启即可
 ```java
-sketchImageView.setClickRetryOnError(true);
+sketchImageView.setClickRetryOnDisplayErrorEnabled(true);
 ```
 
-#### 10.暂停下载时点击强制显示
+#### 9.暂停下载时点击强制显示
 一句话开启即可
 ```java
 sketchImageView.setClickDisplayOnPauseDownload(true);

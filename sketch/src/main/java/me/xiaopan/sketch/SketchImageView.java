@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.feature.ClickPlayGifFunction;
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
 import me.xiaopan.sketch.feature.RecyclerCompatFunction;
@@ -56,6 +57,7 @@ import me.xiaopan.sketch.request.UriScheme;
  * 用来替代ImageView，另外还支持手势缩放和分块显示超大图，详细文档请参考 docs/wiki/sketch_image_view.md
  */
 public class SketchImageView extends ImageView implements ImageViewInterface {
+    // TODO: 2017/5/27 该弄一个专门的function管理类了，这里面东西太多了
     private DisplayListener wrapperDisplayListener;
     private DownloadProgressListener wrapperDownloadProgressListener;
     private PrivateDisplayListener displayListener;
@@ -72,6 +74,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private ClickRetryFunction clickRetryFunction;
     private ImageZoomFunction zoomFunction;
     private LargeImageFunction largeImageFunction;
+    private ClickPlayGifFunction clickPlayGifFunction;
+
+    private OnClickListenerProxy clickListenerProxy;
+    private View.OnClickListener wrapperClickListener;
 
     public SketchImageView(Context context) {
         super(context);
@@ -93,19 +99,23 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         recyclerCompatFunction = new RecyclerCompatFunction(this);
 
         imageShapeFunction = new ImageShapeFunction(this);
-        clickRetryFunction = new ClickRetryFunction(this, this);
 
         displayListener = new PrivateDisplayListener(this);
         downloadProgressListener = new PrivateProgressListener(this);
 
-        super.setOnClickListener(clickRetryFunction);
-
-        clickRetryFunction.updateClickable();
+        clickListenerProxy = new OnClickListenerProxy(this);
+        super.setOnClickListener(clickListenerProxy);
+        updateClickable();
     }
 
     @Override
     public void setOnClickListener(OnClickListener l) {
-        clickRetryFunction.setWrapperClickListener(l);
+        wrapperClickListener = l;
+        updateClickable();
+    }
+
+    public void updateClickable() {
+        setClickable(clickListenerProxy.isClickable());
     }
 
     @Override
@@ -141,6 +151,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (largeImageFunction != null) {
             largeImageFunction.onLayout(changed, left, top, right, bottom);
+        }
+        if (clickPlayGifFunction != null) {
+            clickPlayGifFunction.onLayout(changed, left, top, right, bottom);
         }
     }
 
@@ -178,6 +191,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onDraw(canvas);
         }
+        if (clickPlayGifFunction != null) {
+            clickPlayGifFunction.onDraw(canvas);
+        }
     }
 
     @Override
@@ -213,6 +229,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (largeImageFunction != null) {
             handled |= largeImageFunction.onTouchEvent(event);
+        }
+        if (clickPlayGifFunction != null) {
+            handled |= clickPlayGifFunction.onTouchEvent(event);
         }
 
         handled |= super.onTouchEvent(event);
@@ -254,6 +273,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (largeImageFunction != null) {
             largeImageFunction.onAttachedToWindow();
         }
+        if (clickPlayGifFunction != null) {
+            clickPlayGifFunction.onAttachedToWindow();
+        }
     }
 
     @Override
@@ -292,6 +314,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (largeImageFunction != null) {
             needSetImageNull |= largeImageFunction.onDetachedFromWindow();
+        }
+        if (clickPlayGifFunction != null) {
+            needSetImageNull |= clickPlayGifFunction.onDetachedFromWindow();
         }
 
         if (needSetImageNull) {
@@ -362,6 +387,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (zoomFunction != null) {
                 needInvokeInvalidate |= zoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
+            if (clickPlayGifFunction != null) {
+                needInvokeInvalidate |= clickPlayGifFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+            }
 
             if (needInvokeInvalidate) {
                 invalidate();
@@ -413,6 +441,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (largeImageFunction != null) {
             needInvokeInvalidate |= largeImageFunction.onReadyDisplay(uriScheme);
+        }
+        if (clickPlayGifFunction != null) {
+            needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uriScheme);
         }
 
         if (needInvokeInvalidate) {
@@ -546,6 +577,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (largeImageFunction != null) {
             largeImageFunction.onSizeChanged(w, h, oldw, oldh);
         }
+        if (clickPlayGifFunction != null) {
+            clickPlayGifFunction.onSizeChanged(w, h, oldw, oldh);
+        }
     }
 
     @Override
@@ -566,17 +600,90 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
+     * 是否开启了暂停下载时点击重试功能
+     */
+    @SuppressWarnings("unused")
+    public boolean isClickRetryOnPauseDownloadEnabled() {
+        return clickRetryFunction != null && clickRetryFunction.isPauseDownload();
+    }
+
+    /**
      * 设置当暂停下载的时候点击显示图片
      */
+    public void setClickRetryOnPauseDownloadEnabled(boolean clickRetryOnPauseDownloadEnabled) {
+        if (clickRetryFunction == null) {
+            clickRetryFunction = new ClickRetryFunction(this);
+        }
+        clickRetryFunction.setClickRetryOnPauseDownloadEnabled(clickRetryOnPauseDownloadEnabled);
+        updateClickable();
+    }
+
+    /**
+     * 设置当暂停下载的时候点击显示图片
+     */
+    @Deprecated
+    // TODO: 2017/5/27 类似的这种方法，改名
     public void setClickRetryOnPauseDownload(boolean clickRetryOnPauseDownload) {
-        clickRetryFunction.setClickRetryOnPauseDownloadEnabled(clickRetryOnPauseDownload);
+        setClickRetryOnPauseDownloadEnabled(clickRetryOnPauseDownload);
+    }
+
+    /**
+     * 是否开启了显示失败时点击重试功能
+     */
+    @SuppressWarnings("unused")
+    public boolean isClickRetryOnDisplayErrorEnabled() {
+        return clickRetryFunction != null && clickRetryFunction.isDisplayError();
     }
 
     /**
      * 设置当失败的时候点击重新显示图片
      */
+    public void setClickRetryOnDisplayErrorEnabled(boolean clickRetryOnDisplayErrorEnabled) {
+        if (clickRetryFunction == null) {
+            clickRetryFunction = new ClickRetryFunction(this);
+        }
+        clickRetryFunction.setClickRetryOnDisplayErrorEnabled(clickRetryOnDisplayErrorEnabled);
+        updateClickable();
+    }
+
+    /**
+     * 设置当失败的时候点击重新显示图片
+     */
+    @Deprecated
     public void setClickRetryOnError(boolean clickRetryOnError) {
-        clickRetryFunction.setClickRetryOnErrorEnabled(clickRetryOnError);
+        setClickRetryOnDisplayErrorEnabled(clickRetryOnError);
+    }
+
+    /**
+     * 是否开启了点击播放gif功能
+     */
+    @SuppressWarnings("unused")
+    public boolean isClickPlayGifEnabled() {
+        return clickPlayGifFunction != null;
+    }
+
+    /**
+     * 设置开启点击播放gif功能
+     *
+     * @param playIconResId 播放图标资源ID
+     */
+    public void setClickPlayGifEnabled(int playIconResId) {
+        setClickPlayGifEnabled(playIconResId > 0 ? getResources().getDrawable(playIconResId) : null);
+    }
+
+    /**
+     * 设置开启点击播放gif功能
+     *
+     * @param playIconDrawable 播放图标
+     */
+    public void setClickPlayGifEnabled(Drawable playIconDrawable) {
+        if (playIconDrawable != null) {
+            clickPlayGifFunction = new ClickPlayGifFunction(this, playIconDrawable);
+        } else {
+            clickPlayGifFunction = null;
+        }
+        updateClickable();
+        invalidate();
     }
 
     /**
@@ -676,15 +783,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 设置GIF标识图片
-     */
-    @SuppressWarnings("unused")
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        //noinspection deprecation
-        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
-    }
-
-    /**
      * 设置是否显示GIF标识
      */
     @SuppressWarnings("unused")
@@ -696,6 +794,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showGifFlagFunction = null;
         }
         invalidate();
+    }
+
+    /**
+     * 设置GIF标识图片
+     */
+    @SuppressWarnings("unused")
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        setShowGifFlag(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
     }
 
     /**
@@ -909,15 +1015,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         /**
-         * 设置ScaleType
-         *
-         * @param scaleType ScaleType
-         */
-        public void setScaleType(ScaleType scaleType) {
-
-        }
-
-        /**
          * 绘制
          *
          * @param canvas Canvas
@@ -1060,6 +1157,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageView.largeImageFunction != null) {
                 needInvokeInvalidate |= imageView.largeImageFunction.onDisplayStarted();
             }
+            if (imageView.clickPlayGifFunction != null) {
+                needInvokeInvalidate |= imageView.clickPlayGifFunction.onDisplayStarted();
+            }
 
             if (needInvokeInvalidate) {
                 imageView.invalidate();
@@ -1108,6 +1208,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
             if (imageView.largeImageFunction != null) {
                 needInvokeInvalidate |= imageView.largeImageFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
+            }
+            if (imageView.clickPlayGifFunction != null) {
+                needInvokeInvalidate |= imageView.clickPlayGifFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
             }
 
             if (needInvokeInvalidate) {
@@ -1158,6 +1261,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageView.largeImageFunction != null) {
                 needInvokeInvalidate |= imageView.largeImageFunction.onDisplayError(errorCause);
             }
+            if (imageView.clickPlayGifFunction != null) {
+                needInvokeInvalidate |= imageView.clickPlayGifFunction.onDisplayError(errorCause);
+            }
 
             if (needInvokeInvalidate) {
                 imageView.invalidate();
@@ -1206,6 +1312,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
             if (imageView.largeImageFunction != null) {
                 needInvokeInvalidate |= imageView.largeImageFunction.onDisplayCanceled(cancelCause);
+            }
+            if (imageView.clickPlayGifFunction != null) {
+                needInvokeInvalidate |= imageView.clickPlayGifFunction.onDisplayCanceled(cancelCause);
             }
 
             if (needInvokeInvalidate) {
@@ -1264,6 +1373,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageView.largeImageFunction != null) {
                 needInvokeInvalidate |= imageView.largeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
+            if (imageView.clickPlayGifFunction != null) {
+                needInvokeInvalidate |= imageView.clickPlayGifFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
 
             if (needInvokeInvalidate) {
                 imageView.invalidate();
@@ -1272,6 +1384,54 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageView.wrapperDownloadProgressListener != null) {
                 imageView.wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
+        }
+    }
+
+    // TODO: 2017/5/26 这里的点击注册和手势缩放里的点击是否冲突或者全部都会生效
+
+    private static class OnClickListenerProxy implements View.OnClickListener {
+        private WeakReference<SketchImageView> viewWeakReference;
+
+        public OnClickListenerProxy(SketchImageView view) {
+            this.viewWeakReference = new WeakReference<>(view);
+        }
+
+        @Override
+        public void onClick(View v) {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return;
+            }
+
+            if (imageView.clickRetryFunction != null && imageView.clickRetryFunction.onClick(v)) {
+                return;
+            }
+
+            if (imageView.clickPlayGifFunction != null && imageView.clickPlayGifFunction.onClick(v)) {
+                return;
+            }
+
+            if (imageView.wrapperClickListener != null) {
+                imageView.wrapperClickListener.onClick(v);
+            }
+        }
+
+        public boolean isClickable() {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return false;
+            }
+
+            if (imageView.clickRetryFunction != null && imageView.clickRetryFunction.isClickable()) {
+                return true;
+            }
+
+            //noinspection SimplifiableIfStatement
+            if (imageView.clickPlayGifFunction != null && imageView.clickPlayGifFunction.isClickable()) {
+                return true;
+            }
+
+            return imageView.wrapperClickListener != null;
         }
     }
 }

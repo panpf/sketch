@@ -49,7 +49,8 @@ public class AppConfig {
         LOG_LARGE("PREFERENCE_LOG_LARGE", false),
         LOG_TIME("PREFERENCE_LOG_TIME", false),
         SHOW_TOOLS_IN_IMAGE_DETAIL("PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL", false),
-        OUT_LOG_2_SDCARD("PREFERENCE_OUT_LOG_2_SDCARD", false),;
+        OUT_LOG_2_SDCARD("PREFERENCE_OUT_LOG_2_SDCARD", false),
+        CLICK_PLAY_GIF("PREFERENCE_CLICK_PLAY_GIF", false),;
 
         private String keyName;
         private boolean defaultValue;

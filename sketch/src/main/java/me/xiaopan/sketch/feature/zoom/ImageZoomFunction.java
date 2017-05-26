@@ -74,9 +74,7 @@ public class ImageZoomFunction extends SketchImageView.Function {
         return imageZoomer.getScaleType();
     }
 
-    @Override
     public void setScaleType(ImageView.ScaleType scaleType) {
-        super.setScaleType(scaleType);
         imageZoomer.setScaleType(scaleType);
     }
 

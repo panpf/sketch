@@ -50,6 +50,9 @@
 * :sparkles: SketchImageView新增displayContentImage(Uri)方法用来代替displayURIImage(Uri)
 * :hammer: getDisplayParams()方法改名为 getDisplayCache()
 * :fire: 修复在显示错误时点击重试的时候会意外的跳过移动网络暂停下载功能
+* :art: 新增setClickRetryOnDisplayErrorEnabled(boolean)方法代替setClickRetryOnError(boolean)方法
+* :art: 新增setClickRetryOnPauseDownloadEnabled(boolean)方法代替setClickRetryOnPauseDownload(boolean)方法
+* :art: 新增setClickPlayGifEnabled(Drawable)方法可开启点击播放gif功能
 
 ### SketchMonitor：
 * :hammer: 改名为ErrorTracker

@@ -22,7 +22,6 @@ import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.request.UriScheme;
@@ -30,21 +29,18 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
-public class ClickRetryFunction extends SketchImageView.Function implements View.OnClickListener {
-    private boolean clickRetryOnErrorEnabled;
+public class ClickRetryFunction extends SketchImageView.Function {
+    private boolean clickRetryOnDisplayErrorEnabled;
     private boolean clickRetryOnPauseDownloadEnabled;
-    private View.OnClickListener wrapperClickListener;
 
     private boolean displayError;
     private boolean pauseDownload;
 
-    private View view;
-    private ImageViewInterface imageViewInterface;
+    private SketchImageView imageView;
     private RedisplayListener redisplayListener;
 
-    public ClickRetryFunction(View view, ImageViewInterface imageViewInterface) {
-        this.view = view;
-        this.imageViewInterface = imageViewInterface;
+    public ClickRetryFunction(SketchImageView imageView) {
+        this.imageView = imageView;
     }
 
     @Override
@@ -53,8 +49,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
         displayError = false;
         pauseDownload = false;
 
-        updateClickable();
-
+        imageView.updateClickable();
         return false;
     }
 
@@ -64,7 +59,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
         displayError = false;
         pauseDownload = false;
 
-        updateClickable();
+        imageView.updateClickable();
         return false;
     }
 
@@ -72,32 +67,47 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     public boolean onDisplayError(ErrorCause errorCause) {
         // 正常的失败才能重试，因此要过滤一下失败原因
         displayError = errorCause != ErrorCause.URI_NULL_OR_EMPTY && errorCause != ErrorCause.URI_NO_SUPPORT;
-        updateClickable();
+
+        imageView.updateClickable();
         return false;
     }
 
     @Override
     public boolean onDisplayCanceled(CancelCause cancelCause) {
         pauseDownload = cancelCause == CancelCause.PAUSE_DOWNLOAD;
-        updateClickable();
+
+        imageView.updateClickable();
         return false;
     }
 
-    @Override
-    public void onClick(View v) {
-        if ((clickRetryOnErrorEnabled && displayError) || (clickRetryOnPauseDownloadEnabled && pauseDownload)) {
+    /**
+     * 点击事件
+     *
+     * @param v View
+     * @return true：已经消费了，不必往下传了
+     */
+    public boolean onClick(View v) {
+        if (isClickable()) {
             if (redisplayListener == null) {
                 redisplayListener = new RetryOnPauseDownloadRedisplayListener();
             }
 
-            if (imageViewInterface.redisplay(redisplayListener)) {
-                return;
-            }
+            return imageView.redisplay(redisplayListener);
         }
 
-        if (wrapperClickListener != null) {
-            wrapperClickListener.onClick(v);
-        }
+        return false;
+    }
+
+    public boolean isClickable() {
+        return (clickRetryOnDisplayErrorEnabled && displayError) || (clickRetryOnPauseDownloadEnabled && pauseDownload);
+    }
+
+    public boolean isDisplayError() {
+        return displayError;
+    }
+
+    public boolean isPauseDownload() {
+        return pauseDownload;
     }
 
     /**
@@ -105,26 +115,13 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
      */
     public void setClickRetryOnPauseDownloadEnabled(boolean clickRetryOnPauseDownloadEnabled) {
         this.clickRetryOnPauseDownloadEnabled = clickRetryOnPauseDownloadEnabled;
-        updateClickable();
     }
 
     /**
      * 设置当失败的时候点击重新显示图片
      */
-    public void setClickRetryOnErrorEnabled(boolean clickRetryOnErrorEnabled) {
-        this.clickRetryOnErrorEnabled = clickRetryOnErrorEnabled;
-        updateClickable();
-    }
-
-    public void setWrapperClickListener(View.OnClickListener wrapperClickListener) {
-        this.wrapperClickListener = wrapperClickListener;
-        updateClickable();
-    }
-
-    public void updateClickable() {
-        view.setClickable((clickRetryOnErrorEnabled && displayError)
-                || (clickRetryOnPauseDownloadEnabled && pauseDownload)
-                || wrapperClickListener != null);
+    public void setClickRetryOnDisplayErrorEnabled(boolean clickRetryOnDisplayErrorEnabled) {
+        this.clickRetryOnDisplayErrorEnabled = clickRetryOnDisplayErrorEnabled;
     }
 
     private class RetryOnPauseDownloadRedisplayListener implements RedisplayListener {
