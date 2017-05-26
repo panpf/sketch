@@ -25,12 +25,7 @@ import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 public class ResizeImageProcessor implements ImageProcessor {
-    private String logName = "ResizeImageProcessor";
-
-    @Override
-    public String getKey() {
-        return logName;
-    }
+    private static final String KEY = "ResizeImageProcessor";
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
@@ -62,5 +57,10 @@ public class ResizeImageProcessor implements ImageProcessor {
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null);
 
         return resizeBitmap;
+    }
+
+    @Override
+    public String getKey() {
+        return KEY;
     }
 }

@@ -11,7 +11,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 @SuppressWarnings("unused")
 public class FadeInImageDisplayer implements ImageDisplayer {
-    private String logName = "FadeInImageDisplayer";
+    private static final String KEY = "FadeInImageDisplayer";
 
     private int duration;
     private boolean alwaysUse;
@@ -58,6 +58,6 @@ public class FadeInImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getKey() {
-        return String.format("%s(duration=%d, alwaysUse=%s)", logName, duration, alwaysUse);
+        return String.format("%s(duration=%d, alwaysUse=%s)", KEY, duration, alwaysUse);
     }
 }
