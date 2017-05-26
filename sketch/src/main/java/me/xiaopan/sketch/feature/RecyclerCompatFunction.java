@@ -27,7 +27,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 由于RecyclerView在往回滚动的时候遇到可以直接使用的ItemView（位置没有变）会不走onBindViewHolder而直接走onAttachedToWindow然后显示，
  * <br>可是RequestFunction在onDetachedFromWindow的时候会主动清空Drawable导致没有重新走onBindViewHolder的ItemView会没有Drawable而显示空白
- * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayParams恢复之前的图片
+ * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayCache恢复之前的图片
  */
 public class RecyclerCompatFunction extends SketchImageView.Function {
     private static final String LOG_NAME = "RecyclerCompatFunction";
