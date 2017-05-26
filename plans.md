@@ -18,7 +18,6 @@
 * 集成Oblique，支持倾斜图片显示
 * 重新设计ImageShaper，感觉现在的很垃圾，限制很大
 * 集成unsplash的图片资源
-* 支持Base64格式的图片
 
 其它：
 * 参考Glide、Fresco和Picasso
@@ -190,6 +189,7 @@
 * （2017-05-10）demo长按出选项，点击关闭
 * （2017-05-10）将一个功能的所有处理代码都放到一个类中，例如缓存已处理图片的功能
 * （2017-05-10）通过ExifInterface读取图片方向信息，实现自动旋转方向不正的图片，新的ExifInterface支持库 http://developers.googleblog.cn/2017/01/exifinterface.html compile "com.android.support:exifinterface:25.1.0"
+* （2017-05-24）支持Base64格式的图片
 
 不必了：
 * （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
