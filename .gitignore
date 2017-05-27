@@ -30,9 +30,4 @@ build/
 # Mac files
 .DS_Store
 
-# coustom files
-TODOS.txt
-bugs.txt
-logs.txt
-
 captures/
