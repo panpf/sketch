@@ -90,7 +90,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
-        AppListFragment.GetAppListTagStripListener, AboutFragment.TogglePageListener, ApplyBackgroundCallback {
+        AppListFragment.GetAppListTagStripListener, ApplyBackgroundCallback {
 
     @InjectView(R.id.layout_main_content)
     private View contentView;
@@ -120,7 +120,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(BuildConfig.DEBUG ? Page.IMAGE_ORIENTATION_TEST : Page.LARGE_IMAGE);
+        switchPage(Page.IMAGE_ORIENTATION_TEST);
     }
 
     private void initViews() {
@@ -446,11 +446,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         }
 
         super.onBackPressed();
-    }
-
-    @Override
-    public void onToggleToGifSample() {
-        switchPage(Page.SEARCH);
     }
 
     @Override
