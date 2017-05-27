@@ -19,14 +19,13 @@ package me.xiaopan.sketch.viewfun;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 显示GIF图标识功能，使用者指定一个小图标，如果当前显示的图片是GIF图就会在ImageView的右下角显示这个小图标
  */
-public class ShowGifFlagFunction extends SketchImageView.Function {
-    private SketchImageView imageView;
+public class ShowGifFlagFunction extends ViewFunction {
+    private FunctionCallbackView view;
     private Drawable gifFlagDrawable;
 
     private boolean gifImage;
@@ -36,8 +35,8 @@ public class ShowGifFlagFunction extends SketchImageView.Function {
     private int cacheViewWidth;
     private int cacheViewHeight;
 
-    public ShowGifFlagFunction(SketchImageView imageView, Drawable gifFlagDrawable) {
-        this.imageView = imageView;
+    public ShowGifFlagFunction(FunctionCallbackView view, Drawable gifFlagDrawable) {
+        this.view = view;
 
         this.gifFlagDrawable = gifFlagDrawable;
         this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
@@ -45,7 +44,7 @@ public class ShowGifFlagFunction extends SketchImageView.Function {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Drawable drawable = imageView.getDrawable();
+        Drawable drawable = view.getDrawable();
         if (drawable != lastDrawable) {
             gifImage = SketchUtils.isGifImage(drawable);
             lastDrawable = drawable;
@@ -55,11 +54,11 @@ public class ShowGifFlagFunction extends SketchImageView.Function {
             return;
         }
 
-        if (cacheViewWidth != imageView.getWidth() || cacheViewHeight != imageView.getHeight()) {
-            cacheViewWidth = imageView.getWidth();
-            cacheViewHeight = imageView.getHeight();
-            iconDrawLeft = imageView.getWidth() - imageView.getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-            iconDrawTop = imageView.getHeight() - imageView.getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
+        if (cacheViewWidth != view.getWidth() || cacheViewHeight != view.getHeight()) {
+            cacheViewWidth = view.getWidth();
+            cacheViewHeight = view.getHeight();
+            iconDrawLeft = view.getWidth() - view.getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+            iconDrawTop = view.getHeight() - view.getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
         }
 
         canvas.save();

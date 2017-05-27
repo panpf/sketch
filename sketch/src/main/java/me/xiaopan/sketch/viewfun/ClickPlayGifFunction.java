@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
@@ -30,8 +29,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 点击播放GIF功能
  */
-public class ClickPlayGifFunction extends SketchImageView.Function {
-    private SketchImageView imageView;
+public class ClickPlayGifFunction extends ViewFunction {
+    private FunctionCallbackView view;
     private Drawable playIconDrawable;
 
     private boolean canClickPlay;
@@ -43,8 +42,8 @@ public class ClickPlayGifFunction extends SketchImageView.Function {
 
     private PlayGifRedisplayListener redisplayListener;
 
-    public ClickPlayGifFunction(SketchImageView imageView, Drawable playIconDrawable) {
-        this.imageView = imageView;
+    public ClickPlayGifFunction(FunctionCallbackView view, Drawable playIconDrawable) {
+        this.view = view;
 
         this.playIconDrawable = playIconDrawable;
         this.playIconDrawable.setBounds(0, 0, playIconDrawable.getIntrinsicWidth(), playIconDrawable.getIntrinsicHeight());
@@ -52,7 +51,7 @@ public class ClickPlayGifFunction extends SketchImageView.Function {
 
     @Override
     public void onDraw(Canvas canvas) {
-        Drawable drawable = imageView.getDrawable();
+        Drawable drawable = view.getDrawable();
         if (drawable != lastDrawable) {
             canClickPlay = canClickPlay(drawable);
             lastDrawable = drawable;
@@ -62,11 +61,13 @@ public class ClickPlayGifFunction extends SketchImageView.Function {
             return;
         }
 
-        if (cacheViewWidth != imageView.getWidth() || cacheViewHeight != imageView.getHeight()) {
-            cacheViewWidth = imageView.getWidth();
-            cacheViewHeight = imageView.getHeight();
-            iconDrawLeft = imageView.getPaddingLeft() + ((imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight() - playIconDrawable.getBounds().width()) / 2);
-            iconDrawTop = imageView.getPaddingTop() + ((imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom() - playIconDrawable.getBounds().height()) / 2);
+        if (cacheViewWidth != view.getWidth() || cacheViewHeight != view.getHeight()) {
+            cacheViewWidth = view.getWidth();
+            cacheViewHeight = view.getHeight();
+            int availableWidth = view.getWidth() - view.getPaddingLeft() - view.getPaddingRight() - playIconDrawable.getBounds().width();
+            int availableHeight = view.getHeight() - view.getPaddingTop() - view.getPaddingBottom() - playIconDrawable.getBounds().height();
+            iconDrawLeft = view.getPaddingLeft() + (availableWidth / 2);
+            iconDrawTop = view.getPaddingTop() + (availableHeight / 2);
         }
 
         canvas.save();
@@ -81,12 +82,12 @@ public class ClickPlayGifFunction extends SketchImageView.Function {
      * @param v View
      * @return true：已经消费了，不必往下传了
      */
-    public boolean onClick(View v) {
+    public boolean onClick(@SuppressWarnings("UnusedParameters") View v) {
         if (isClickable()) {
             if (redisplayListener == null) {
                 redisplayListener = new PlayGifRedisplayListener();
             }
-            imageView.redisplay(redisplayListener);
+            view.redisplay(redisplayListener);
             return true;
         }
         return false;

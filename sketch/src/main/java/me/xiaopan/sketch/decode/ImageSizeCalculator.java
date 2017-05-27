@@ -19,7 +19,6 @@ package me.xiaopan.sketch.decode;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -41,22 +40,22 @@ public class ImageSizeCalculator implements Identifier {
     private int openGLMaxTextureSize = -1;
     private float targetSizeScale = 1.1f;
 
-    public static int getWidth(View imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
-        if (imageView == null) {
+    private static int getWidth(ImageViewInterface imageViewInterface, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
+        if (imageViewInterface == null) {
             return 0;
         }
 
         int width = 0;
-        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        final ViewGroup.LayoutParams params = imageViewInterface.getLayoutParams();
         if (params != null) {
             width = params.width;
-            if (subtractPadding && width > 0 && (width - imageView.getPaddingLeft() - imageView.getPaddingRight()) > 0) {
-                width -= imageView.getPaddingLeft() + imageView.getPaddingRight();
+            if (subtractPadding && width > 0 && (width - imageViewInterface.getPaddingLeft() - imageViewInterface.getPaddingRight()) > 0) {
+                width -= imageViewInterface.getPaddingLeft() + imageViewInterface.getPaddingRight();
                 return width;
             }
         }
         if (width <= 0 && checkMaxWidth) {
-            width = getViewFieldValue(imageView, "mMaxWidth");
+            width = getViewFieldValue(imageViewInterface, "mMaxWidth");
         }
         if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
             width = -1;
@@ -64,22 +63,22 @@ public class ImageSizeCalculator implements Identifier {
         return width;
     }
 
-    public static int getHeight(View imageView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
-        if (imageView == null) {
+    private static int getHeight(ImageViewInterface imageViewInterface, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
+        if (imageViewInterface == null) {
             return 0;
         }
 
         int height = 0;
-        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        final ViewGroup.LayoutParams params = imageViewInterface.getLayoutParams();
         if (params != null) {
             height = params.height;
-            if (subtractPadding && height > 0 && (height - imageView.getPaddingTop() - imageView.getPaddingBottom()) > 0) {
-                height -= imageView.getPaddingTop() + imageView.getPaddingBottom();
+            if (subtractPadding && height > 0 && (height - imageViewInterface.getPaddingTop() - imageViewInterface.getPaddingBottom()) > 0) {
+                height -= imageViewInterface.getPaddingTop() + imageViewInterface.getPaddingBottom();
                 return height;
             }
         }
         if (height <= 0 && checkMaxHeight) {
-            height = getViewFieldValue(imageView, "mMaxHeight");
+            height = getViewFieldValue(imageViewInterface, "mMaxHeight");
         }
         if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
             height = -1;
@@ -128,30 +127,26 @@ public class ImageSizeCalculator implements Identifier {
      * @return MaxSize
      */
     public MaxSize calculateImageMaxSize(ImageViewInterface imageViewInterface) {
-        View imageView = imageViewInterface.getSelf();
-        if (imageView == null) {
+        int width = getWidth(imageViewInterface, true, true, false);
+        int height = getHeight(imageViewInterface, true, true, false);
+
+        if (width <= 0 && height <= 0) {
             return null;
         }
 
-        int width = getWidth(imageView, true, true, false);
-        int height = getHeight(imageView, true, true, false);
-        if (width > 0 || height > 0) {
-            // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
-            DisplayMetrics displayMetrics = imageViewInterface.getSelf().getResources().getDisplayMetrics();
-            int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
-            int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
-            if (width > maxWidth || height > maxHeight) {
-                float widthScale = (float) width / maxWidth;
-                float heightScale = (float) height / maxHeight;
-                float finalScale = widthScale > heightScale ? widthScale : heightScale;
+        // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
+        DisplayMetrics displayMetrics = imageViewInterface.getResources().getDisplayMetrics();
+        int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
+        int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
+        if (width > maxWidth || height > maxHeight) {
+            float widthScale = (float) width / maxWidth;
+            float heightScale = (float) height / maxHeight;
+            float finalScale = widthScale > heightScale ? widthScale : heightScale;
 
-                width /= finalScale;
-                height /= finalScale;
-            }
-            return new MaxSize(width, height);
-        } else {
-            return null;
+            width /= finalScale;
+            height /= finalScale;
         }
+        return new MaxSize(width, height);
     }
 
     /**
@@ -173,18 +168,14 @@ public class ImageSizeCalculator implements Identifier {
      */
     @Deprecated
     public Resize calculateImageResize(ImageViewInterface imageViewInterface) {
-        View imageView = imageViewInterface.getSelf();
-        if (imageView == null) {
+        int width = getWidth(imageViewInterface, false, false, true);
+        int height = getHeight(imageViewInterface, false, false, true);
+
+        if (width <= 0 || height <= 0) {
             return null;
         }
 
-        int width = getWidth(imageView, false, false, true);
-        int height = getHeight(imageView, false, false, true);
-        if (width > 0 && height > 0) {
-            return new Resize(width, height, imageViewInterface.getScaleType());
-        } else {
-            return null;
-        }
+        return new Resize(width, height, imageViewInterface.getScaleType());
     }
 
     /**
@@ -194,27 +185,23 @@ public class ImageSizeCalculator implements Identifier {
      * @return FixedSize
      */
     public FixedSize calculateImageFixedSize(ImageViewInterface imageViewInterface) {
-        View imageView = imageViewInterface.getSelf();
-        if (imageView == null) {
+        ViewGroup.LayoutParams layoutParams = imageViewInterface.getLayoutParams();
+        if (layoutParams == null || layoutParams.width <= 0 || layoutParams.height <= 0) {
             return null;
         }
 
-        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        if (layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0) {
-            int fixedWidth = layoutParams.width - (imageView.getPaddingLeft() + imageView.getPaddingRight());
-            int fixedHeight = layoutParams.height - (imageView.getPaddingTop() + imageView.getPaddingBottom());
+        int fixedWidth = layoutParams.width - (imageViewInterface.getPaddingLeft() + imageViewInterface.getPaddingRight());
+        int fixedHeight = layoutParams.height - (imageViewInterface.getPaddingTop() + imageViewInterface.getPaddingBottom());
 
-            // 限制不能超过OpenGL所允许的最大尺寸
-            int maxSize = getOpenGLMaxTextureSize();
-            if (fixedWidth > maxSize || fixedHeight > maxSize) {
-                float finalScale = Math.max((float) fixedWidth / maxSize, (float) fixedHeight / maxSize);
+        // 限制不能超过OpenGL所允许的最大尺寸
+        int maxSize = getOpenGLMaxTextureSize();
+        if (fixedWidth > maxSize || fixedHeight > maxSize) {
+            float finalScale = Math.max((float) fixedWidth / maxSize, (float) fixedHeight / maxSize);
 
-                fixedWidth /= finalScale;
-                fixedHeight /= finalScale;
-            }
-            return new FixedSize(fixedWidth, fixedHeight);
+            fixedWidth /= finalScale;
+            fixedHeight /= finalScale;
         }
-        return null;
+        return new FixedSize(fixedWidth, fixedHeight);
     }
 
     /**
@@ -229,16 +216,17 @@ public class ImageSizeCalculator implements Identifier {
         if (maxSize1 == null || maxSize2 == null) {
             return 0;
         }
+
         return (maxSize1.getWidth() * maxSize1.getHeight()) - (maxSize2.getWidth() - maxSize2.getHeight());
     }
 
     /**
      * 计算InSampleSize
      *
-     * @param outWidth     原始宽
-     * @param outHeight    原始高
-     * @param targetWidth  目标宽
-     * @param targetHeight 目标高
+     * @param outWidth          原始宽
+     * @param outHeight         原始高
+     * @param targetWidth       目标宽
+     * @param targetHeight      目标高
      * @param supportLargeImage 是否支持大图，大图时会有特殊处理
      * @return 合适的InSampleSize
      */
@@ -301,21 +289,21 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 根据高度计算是否可以使用阅读模式
      */
-    public boolean canUseReadModeByHeight(int imageWidth, int imageHeight){
+    public boolean canUseReadModeByHeight(int imageWidth, int imageHeight) {
         return imageHeight > imageWidth * 2;
     }
 
     /**
      * 根据宽度度计算是否可以使用阅读模式
      */
-    public boolean canUseReadModeByWidth(int imageWidth, int imageHeight){
+    public boolean canUseReadModeByWidth(int imageWidth, int imageHeight) {
         return imageWidth > imageHeight * 3;
     }
 
     /**
      * 是否可以使用缩略图模式
      */
-    public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight){
+    public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight) {
         if (resizeWidth > outWidth && resizeHeight > outHeight) {
             return false;
         }

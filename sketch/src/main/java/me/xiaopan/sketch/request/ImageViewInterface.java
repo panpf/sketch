@@ -16,47 +16,37 @@
 
 package me.xiaopan.sketch.request;
 
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
 public interface ImageViewInterface {
-    /**
-     * 准备显示图片
-     */
-    void onReadyDisplay(UriScheme uriScheme);
 
-    /**
-     * 获取Drawable
-     */
     Drawable getDrawable();
 
-    /**
-     * 设置Drawable
-     */
     void setImageDrawable(Drawable drawable);
 
-    /**
-     * 获取自己
-     */
-    View getSelf();
-
-    /**
-     * 获取缩放方式
-     */
     ImageView.ScaleType getScaleType();
 
-    /**
-     * 清除动画
-     */
     void clearAnimation();
 
-    /**
-     * 执行动画
-     */
     void startAnimation(Animation animation);
+
+    ViewGroup.LayoutParams getLayoutParams();
+
+    Resources getResources();
+
+    int getPaddingLeft();
+
+    int getPaddingTop();
+
+    int getPaddingRight();
+
+    int getPaddingBottom();
+
 
     /**
      * 显示图片
@@ -107,6 +97,11 @@ public interface ImageViewInterface {
      * @param versionCode APP版本号
      */
     DisplayRequest displayInstalledAppIcon(String packageName, int versionCode);
+
+    /**
+     * 准备显示图片
+     */
+    void onReadyDisplay(UriScheme uriScheme);
 
     /**
      * 获取显示参数

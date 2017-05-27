@@ -26,12 +26,11 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SketchImageView;
 
 /**
  * 显示按下状态，按下后会在ImageView上显示一个黑色半透明的蒙层，松手后小时
  */
-public class ShowPressedFunction extends SketchImageView.Function {
+public class ShowPressedFunction extends ViewFunction {
     private static final String LOG_NAME = "ShowPressedFunction";
 
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;

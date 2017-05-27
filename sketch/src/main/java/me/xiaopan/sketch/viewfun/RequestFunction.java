@@ -19,7 +19,6 @@ package me.xiaopan.sketch.viewfun;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -34,7 +33,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 请求基本功能，更新图片显示引用计数和在onDetachedFromWindow的时候取消请求并清空图片
  */
-public class RequestFunction extends SketchImageView.Function {
+public class RequestFunction extends ViewFunction {
     private ImageViewInterface imageViewInterface;
 
     private DisplayOptions displayOptions = new DisplayOptions();

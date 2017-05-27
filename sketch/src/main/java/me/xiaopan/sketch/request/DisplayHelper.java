@@ -19,7 +19,6 @@ package me.xiaopan.sketch.request;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
@@ -27,6 +26,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
@@ -34,7 +34,6 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
-import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.state.StateImage;
@@ -610,8 +609,7 @@ public class DisplayHelper {
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
-                View imageView = imageViewInterface.getSelf();
-                ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = imageViewInterface.getLayoutParams();
                 String errorInfo = SketchUtils.concat(
                         "If you use TransitionImageDisplayer and loadingImage, " +
                                 "You must be setup ShapeSize or imageView width and height must be fixed",

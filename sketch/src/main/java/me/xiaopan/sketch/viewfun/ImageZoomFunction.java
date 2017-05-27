@@ -21,13 +21,12 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 
 /**
  * ImageView缩放功能
  */
-public class ImageZoomFunction extends SketchImageView.Function {
+public class ImageZoomFunction extends ViewFunction {
     private ImageView imageView;
 
     private ImageZoomer imageZoomer;

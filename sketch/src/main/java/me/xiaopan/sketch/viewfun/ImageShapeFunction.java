@@ -20,13 +20,12 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.view.View;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SketchImageView.ImageShape;
 
 /**
  * 定制图片形状功能，可以设置图片的形状，然后下载进度和按下效果蒙层就会根据此形状改变形状，以保证蒙层和图片的形状锲合
  */
-public class ImageShapeFunction extends SketchImageView.Function {
+public class ImageShapeFunction extends ViewFunction {
 
     protected Path clipPath;
     protected float[] cornerRadius;

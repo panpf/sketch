@@ -22,7 +22,6 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -39,7 +38,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <li>紫色：内存
  * </ul>
  */
-public class ShowImageFromFunction extends SketchImageView.Function {
+public class ShowImageFromFunction extends ViewFunction {
     private static final int FROM_FLAG_COLOR_MEMORY = 0x88A020F0;
     private static final int FROM_FLAG_COLOR_MEMORY_CACHE = 0x8800FF00;
     private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;

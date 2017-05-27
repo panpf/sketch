@@ -18,7 +18,6 @@ package me.xiaopan.sketch.viewfun;
 
 import android.view.View;
 
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
@@ -29,18 +28,18 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
-public class ClickRetryFunction extends SketchImageView.Function {
+public class ClickRetryFunction extends ViewFunction {
     private boolean clickRetryOnDisplayErrorEnabled;
     private boolean clickRetryOnPauseDownloadEnabled;
 
     private boolean displayError;
     private boolean pauseDownload;
 
-    private SketchImageView imageView;
+    private FunctionCallbackView view;
     private RedisplayListener redisplayListener;
 
-    public ClickRetryFunction(SketchImageView imageView) {
-        this.imageView = imageView;
+    public ClickRetryFunction(FunctionCallbackView view) {
+        this.view = view;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class ClickRetryFunction extends SketchImageView.Function {
         displayError = false;
         pauseDownload = false;
 
-        imageView.updateClickable();
+        view.updateClickable();
         return false;
     }
 
@@ -59,7 +58,7 @@ public class ClickRetryFunction extends SketchImageView.Function {
         displayError = false;
         pauseDownload = false;
 
-        imageView.updateClickable();
+        view.updateClickable();
         return false;
     }
 
@@ -68,7 +67,7 @@ public class ClickRetryFunction extends SketchImageView.Function {
         // 正常的失败才能重试，因此要过滤一下失败原因
         displayError = errorCause != ErrorCause.URI_NULL_OR_EMPTY && errorCause != ErrorCause.URI_NO_SUPPORT;
 
-        imageView.updateClickable();
+        view.updateClickable();
         return false;
     }
 
@@ -76,7 +75,7 @@ public class ClickRetryFunction extends SketchImageView.Function {
     public boolean onDisplayCanceled(CancelCause cancelCause) {
         pauseDownload = cancelCause == CancelCause.PAUSE_DOWNLOAD;
 
-        imageView.updateClickable();
+        view.updateClickable();
         return false;
     }
 
@@ -92,7 +91,7 @@ public class ClickRetryFunction extends SketchImageView.Function {
                 redisplayListener = new RetryOnPauseDownloadRedisplayListener();
             }
 
-            return imageView.redisplay(redisplayListener);
+            return view.redisplay(redisplayListener);
         }
 
         return false;
@@ -102,12 +101,12 @@ public class ClickRetryFunction extends SketchImageView.Function {
         return (clickRetryOnDisplayErrorEnabled && displayError) || (clickRetryOnPauseDownloadEnabled && pauseDownload);
     }
 
-    public boolean isDisplayError() {
-        return displayError;
+    public boolean isClickRetryOnDisplayErrorEnabled() {
+        return clickRetryOnDisplayErrorEnabled;
     }
 
-    public boolean isPauseDownload() {
-        return pauseDownload;
+    public boolean isClickRetryOnPauseDownloadEnabled() {
+        return clickRetryOnPauseDownloadEnabled;
     }
 
     /**

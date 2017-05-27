@@ -23,21 +23,20 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageType;
-import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 大图功能
  */
-public class LargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangeListener, LargeImageViewer.Callback {
+public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMatrixChangeListener, LargeImageViewer.Callback {
     private static final String NAME = "LargeImageFunction";
 
-    private SketchImageView imageView;
+    private FunctionPropertyView view;
     private LargeImageViewer largeImageViewer;
 
     private Matrix tempDrawMatrix;
@@ -45,9 +44,9 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     private String imageUri;
 
-    public LargeImageFunction(SketchImageView imageView) {
-        this.imageView = imageView;
-        this.largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
+    public LargeImageFunction(FunctionPropertyView view) {
+        this.view = view;
+        this.largeImageViewer = new LargeImageViewer(view.getContext(), this);
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             if (SLogType.LARGE.isEnabled()) {
@@ -151,7 +150,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             return;
         }
 
-        Drawable previewDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
+        Drawable previewDrawable = SketchUtils.getLastDrawable(view.getDrawable());
         SketchDrawable sketchDrawable = null;
         boolean drawableQualified = false;
         if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof SketchLoadingDrawable)) {
@@ -180,7 +179,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
         if (drawableQualified) {
             imageUri = sketchDrawable.getUri();
-            largeImageViewer.setImage(imageUri, imageView.getOptions().isCorrectImageOrientationDisabled());
+            largeImageViewer.setImage(imageUri, view.getOptions().isCorrectImageOrientationDisabled());
         } else {
             imageUri = null;
             largeImageViewer.setImage(null, false);
@@ -201,12 +200,12 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             return;
         }
 
-        imageView.invalidate();
+        view.invalidate();
     }
 
     @Override
     public void updateMatrix() {
-        ImageZoomer imageZoomer = imageView.isSupportZoom() ? imageView.getImageZoomer() : null;
+        ImageZoomer imageZoomer = view.isSupportZoom() ? view.getImageZoomer() : null;
         if (imageZoomer != null) {
             onMatrixChanged(imageZoomer);
         }
