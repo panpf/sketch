@@ -43,7 +43,7 @@ public class ViewInfo {
         if (imageViewInterface != null) {
             this.scaleType = imageViewInterface.getScaleType();
             this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(imageViewInterface);
-            this.supportLargeImage = imageViewInterface.isSupportLargeImage();
+            this.supportLargeImage = imageViewInterface.isBlockDisplayLargeImageEnabled();
         } else {
             this.scaleType = null;
             this.fixedSize = null;
@@ -59,7 +59,6 @@ public class ViewInfo {
         return scaleType;
     }
 
-    @SuppressWarnings("unused")
     public boolean isSupportLargeImage() {
         return supportLargeImage;
     }

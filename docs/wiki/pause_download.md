@@ -23,4 +23,4 @@ Sketch.with(getBaseContext()).getConfiguration().setMobileNetworkGlobalPauseDown
 
 Sketch还提供了pauseDownloadImage，通过DisplayOptions和DisplayHelper可以设置，当暂停下载的时候会自动显示pauseDownloadImage
 
-另外SketchImageView还提供了当暂停下载的时候点击直接下载并显示的功能，你只需调用其setClickRetryOnPauseDownload(true)开启即可
+另外SketchImageView还提供了当暂停下载的时候点击强制下载并显示的功能，你只需调用其setClickRetryOnPauseDownloadEnabled(true)开启即可

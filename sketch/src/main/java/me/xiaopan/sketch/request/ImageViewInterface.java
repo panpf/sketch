@@ -150,9 +150,9 @@ public interface ImageViewInterface {
     void setDisplayCache(DisplayCache displayCache);
 
     /**
-     * 是否支持大图片
+     * 是否开启了分块显示超大图功能
      */
-    boolean isSupportLargeImage();
+    boolean isBlockDisplayLargeImageEnabled();
 
     /**
      * 重新显示

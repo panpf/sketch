@@ -45,7 +45,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
 
 
     /**
-     * 是否开启了暂停下载时点击重试功能
+     * 是否开启了暂停下载的时候点击强制显示图片功能
      */
     @SuppressWarnings("unused")
     public boolean isClickRetryOnPauseDownloadEnabled() {
@@ -53,23 +53,24 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 设置当暂停下载的时候点击显示图片
+     * 开启暂停下载的时候点击强制显示图片功能
      */
-    public void setClickRetryOnPauseDownloadEnabled(boolean clickRetryOnPauseDownloadEnabled) {
+    public void setClickRetryOnPauseDownloadEnabled(boolean enabled) {
         if (getFunctions().clickRetryFunction == null) {
             getFunctions().clickRetryFunction = new ClickRetryFunction(this);
         }
-        getFunctions().clickRetryFunction.setClickRetryOnPauseDownloadEnabled(clickRetryOnPauseDownloadEnabled);
+        getFunctions().clickRetryFunction.setClickRetryOnPauseDownloadEnabled(enabled);
         updateClickable();
     }
 
     /**
-     * 设置当暂停下载的时候点击显示图片
+     * 开启暂停下载的时候点击强制显示图片功能
+     *
+     * @deprecated Please use {@link #setClickRetryOnPauseDownloadEnabled(boolean)}
      */
     @Deprecated
-    // TODO: 2017/5/27 类似的这种方法，改名
-    public void setClickRetryOnPauseDownload(boolean clickRetryOnPauseDownload) {
-        setClickRetryOnPauseDownloadEnabled(clickRetryOnPauseDownload);
+    public void setClickRetryOnPauseDownload(boolean enabled) {
+        setClickRetryOnPauseDownloadEnabled(enabled);
     }
 
     /**
@@ -81,22 +82,24 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 设置当失败的时候点击重新显示图片
+     * 开启显示失败时点击重试功能
      */
-    public void setClickRetryOnDisplayErrorEnabled(boolean clickRetryOnDisplayErrorEnabled) {
+    public void setClickRetryOnDisplayErrorEnabled(boolean enabled) {
         if (getFunctions().clickRetryFunction == null) {
             getFunctions().clickRetryFunction = new ClickRetryFunction(this);
         }
-        getFunctions().clickRetryFunction.setClickRetryOnDisplayErrorEnabled(clickRetryOnDisplayErrorEnabled);
+        getFunctions().clickRetryFunction.setClickRetryOnDisplayErrorEnabled(enabled);
         updateClickable();
     }
 
     /**
-     * 设置当失败的时候点击重新显示图片
+     * 开启显示失败时点击重试功能
+     *
+     * @deprecated Please use {@link #setClickRetryOnDisplayErrorEnabled(boolean)}
      */
     @Deprecated
-    public void setClickRetryOnError(boolean clickRetryOnError) {
-        setClickRetryOnDisplayErrorEnabled(clickRetryOnError);
+    public void setClickRetryOnError(boolean enabled) {
+        setClickRetryOnDisplayErrorEnabled(enabled);
     }
 
     /**
@@ -108,7 +111,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 设置开启点击播放gif功能
+     * 开启点击播放gif功能
      *
      * @param playIconDrawable 播放图标
      */
@@ -123,7 +126,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 设置开启点击播放gif功能
+     * 开启点击播放gif功能
      *
      * @param playIconResId 播放图标资源ID
      */
@@ -132,21 +135,42 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 是否显示下载进度
+     * 是否开启了显示下载进度功能
+     *
+     * @deprecated Please use {@link #isShowDownloadProgressEnabled()}
+     */
+    public boolean isShowDownloadProgress() {
+        return isShowDownloadProgressEnabled();
+    }
+
+    /**
+     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
+     *
+     * @deprecated Please use {@link #setShowDownloadProgressEnabled(boolean)}
+     */
+    @Deprecated
+    public void setShowDownloadProgress(boolean enabled) {
+        if (enabled) {
+            getFunctions().showProgressFunction = new ShowProgressFunction(this, getFunctions().imageShapeFunction);
+        } else {
+            getFunctions().showProgressFunction = null;
+        }
+    }
+
+    /**
+     * 是否开启了显示下载进度功能
      */
     @SuppressWarnings("unused")
-    public boolean isShowDownloadProgress() {
+    public boolean isShowDownloadProgressEnabled() {
         return getFunctions().showProgressFunction != null;
     }
 
     /**
-     * 设置是否显示下载进度，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
+     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
      */
-    public void setShowDownloadProgress(boolean showDownloadProgress) {
-        if (showDownloadProgress) {
-            if (getFunctions().showProgressFunction == null) {
-                getFunctions().showProgressFunction = new ShowProgressFunction(this, getFunctions().imageShapeFunction);
-            }
+    public void setShowDownloadProgressEnabled(boolean enabled) {
+        if (enabled) {
+            getFunctions().showProgressFunction = new ShowProgressFunction(this, getFunctions().imageShapeFunction);
         } else {
             getFunctions().showProgressFunction = null;
         }
@@ -163,21 +187,38 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 是否显示按下状态
+     * 是否开启了显示按下状态功能
+     *
+     * @deprecated Please use {@link #isShowPressedStatusEnabled()}
+     */
+    public boolean isShowPressedStatus() {
+        return isShowPressedStatusEnabled();
+    }
+
+    /**
+     * 开启显示按下状态功能，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
+     *
+     * @deprecated Please use {@link #setShowPressedStatusEnabled(boolean)}
+     */
+    @Deprecated
+    public void setShowPressedStatus(boolean showPressedStatus) {
+        setShowPressedStatusEnabled(showPressedStatus);
+    }
+
+    /**
+     * 是否开启了显示按下状态功能
      */
     @SuppressWarnings("unused")
-    public boolean isShowPressedStatus() {
+    public boolean isShowPressedStatusEnabled() {
         return getFunctions().showPressedFunction != null;
     }
 
     /**
-     * 设置是否显示按下状态，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
+     * 开启显示按下状态功能，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
      */
-    public void setShowPressedStatus(boolean showPressedStatus) {
-        if (showPressedStatus) {
-            if (getFunctions().showPressedFunction == null) {
-                getFunctions().showPressedFunction = new ShowPressedFunction(this, getFunctions().imageShapeFunction);
-            }
+    public void setShowPressedStatusEnabled(boolean enabled) {
+        if (enabled) {
+            getFunctions().showPressedFunction = new ShowPressedFunction(this, getFunctions().imageShapeFunction);
         } else {
             getFunctions().showPressedFunction = null;
         }
@@ -194,22 +235,44 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 是否显示图片来源
+     * 是否开启了显示图片来源功能
+     *
+     * @deprecated Please use {@link #isShowImageFromEnabled()}
+     */
+    @Deprecated
+    public boolean isShowImageFrom() {
+        return isShowImageFromEnabled();
+    }
+
+    /**
+     * 开启显示图片来源功能，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，
+     * 黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存缓存加载的，紫色代表是从内存加载的
+     *
+     * @deprecated Please use {@link #setShowImageFromEnabled(boolean)}
+     */
+    @Deprecated
+    public void setShowImageFrom(boolean showImageFrom) {
+        setShowImageFromEnabled(showImageFrom);
+    }
+
+    /**
+     * 是否开启了显示图片来源功能
      */
     @SuppressWarnings("unused")
-    public boolean isShowImageFrom() {
+    public boolean isShowImageFromEnabled() {
         return getFunctions().showImageFromFunction != null;
     }
 
     /**
-     * 设置是否显示图片来源，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存加载的
+     * 开启显示图片来源功能，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，
+     * 黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存缓存加载的，紫色代表是从内存加载的
      */
-    public void setShowImageFrom(boolean showImageFrom) {
+    public void setShowImageFromEnabled(boolean enabled) {
         ShowImageFromFunction oldShowImageFromFunction = getFunctions().showImageFromFunction;
 
-        if (showImageFrom) {
+        if (enabled) {
             getFunctions().showImageFromFunction = new ShowImageFromFunction(this);
-            getFunctions().showImageFromFunction.onDrawableChanged("setShowImageFrom", null, getDrawable());
+            getFunctions().showImageFromFunction.onDrawableChanged("setShowImageFromEnabled", null, getDrawable());
         } else {
             getFunctions().showImageFromFunction = null;
         }
@@ -220,26 +283,60 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 是否显示GIF标识
+     * 是否开启了显示GIF标识功能
+     *
+     * @deprecated Please use {@link #isShowGifFlagEnabled()}
+     */
+    @Deprecated
+    public boolean isShowGifFlag() {
+        return isShowGifFlagEnabled();
+    }
+
+    /**
+     * 开启显示GIF标识功能
+     *
+     * @deprecated Please use {@link #setShowGifFlagEnabled(int)}
+     */
+    @Deprecated
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        setShowGifFlagEnabled(gifFlagDrawableResId);
+    }
+
+    /**
+     * 开启显示GIF标识功能
+     *
+     * @deprecated Please use {@link #setShowGifFlagEnabled(Drawable)}
+     */
+    @Deprecated
+    public void setShowGifFlag(Drawable gifFlagDrawable) {
+        setShowGifFlagEnabled(gifFlagDrawable);
+    }
+
+    /**
+     * 是否开启了显示GIF标识功能
      */
     @SuppressWarnings("unused")
-    public boolean isShowGifFlag() {
+    public boolean isShowGifFlagEnabled() {
         return getFunctions().showGifFlagFunction != null;
     }
 
     /**
-     * 设置GIF标识图片
+     * 开启显示GIF标识功能
+     *
+     * @param gifFlagDrawableResId gif标识图标
      */
     @SuppressWarnings("unused")
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        setShowGifFlag(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
+    public void setShowGifFlagEnabled(int gifFlagDrawableResId) {
+        setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
     }
 
     /**
-     * 设置是否显示GIF标识
+     * 开启显示GIF标识功能
+     *
+     * @param gifFlagDrawable gif标识图标
      */
     @SuppressWarnings("unused")
-    public void setShowGifFlag(Drawable gifFlagDrawable) {
+    public void setShowGifFlagEnabled(Drawable gifFlagDrawable) {
         if (gifFlagDrawable != null) {
             getFunctions().showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
             getFunctions().showGifFlagFunction.onDrawableChanged("setShowGifFlag", null, getDrawable());
@@ -313,18 +410,38 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 是否支持缩放
+     * 是否开启了手势缩放功能
+     *
+     * @deprecated Please use {@link #isZoomEnabled()}
      */
+    @Deprecated
     public boolean isSupportZoom() {
+        return isZoomEnabled();
+    }
+
+    /**
+     * 开启手势缩放功能
+     *
+     * @deprecated Please use {@link #setZoomEnabled(boolean)}
+     */
+    @Deprecated
+    public void setSupportZoom(boolean supportZoom) {
+        setZoomEnabled(supportZoom);
+    }
+
+    /**
+     * 是否开启了手势缩放功能
+     */
+    public boolean isZoomEnabled() {
         return getFunctions().zoomFunction != null;
     }
 
     /**
-     * 设置是否支持缩放
+     * 开启手势缩放功能
      */
-    public void setSupportZoom(boolean supportZoom) {
-        if (!supportZoom && isSupportLargeImage()) {
-            SLog.w("You can't close the zoom function, because of large image function need it");
+    public void setZoomEnabled(boolean enabled) {
+        if (!enabled && isBlockDisplayLargeImageEnabled()) {
+            SLog.w("You can't close the gestures zoom function, because of large image function need it");
             return;
         }
 
@@ -332,11 +449,11 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             getFunctions().zoomFunction.setFromLargeImageFunction(false);
         }
 
-        if (supportZoom == isSupportZoom()) {
+        if (enabled == isZoomEnabled()) {
             return;
         }
 
-        if (supportZoom) {
+        if (enabled) {
             getFunctions().zoomFunction = new ImageZoomFunction(this);
             getFunctions().zoomFunction.onDrawableChanged("setSupportZoom", null, getDrawable());
         } else {
@@ -356,23 +473,43 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getImageZoomer() : null;
     }
 
-    @Override
+    /**
+     * 是否开启了分块显示超大图功能
+     *
+     * @deprecated Please use {@link #isBlockDisplayLargeImageEnabled()}
+     */
+    @Deprecated
     public boolean isSupportLargeImage() {
+        return isBlockDisplayLargeImageEnabled();
+    }
+
+    /**
+     * 开启分块显示超大图功能
+     *
+     * @deprecated Please use {@link #setBlockDisplayLargeImageEnabled(boolean)}
+     */
+    @Deprecated
+    public void setSupportLargeImage(boolean supportLargeImage) {
+        setBlockDisplayLargeImageEnabled(supportLargeImage);
+    }
+
+    @Override
+    public boolean isBlockDisplayLargeImageEnabled() {
         return getFunctions().largeImageFunction != null;
     }
 
     /**
-     * 设置是否支持大图片
+     * 开启分块显示超大图功能
      */
-    public void setSupportLargeImage(boolean supportLargeImage) {
-        if (supportLargeImage == isSupportLargeImage()) {
+    public void setBlockDisplayLargeImageEnabled(boolean enabled) {
+        if (enabled == isBlockDisplayLargeImageEnabled()) {
             return;
         }
 
-        if (supportLargeImage) {
+        if (enabled) {
             // 要想使用大图功能就必须开启缩放功能
-            if (!isSupportZoom()) {
-                setSupportZoom(true);
+            if (!isZoomEnabled()) {
+                setZoomEnabled(true);
                 getFunctions().zoomFunction.setFromLargeImageFunction(true);
             }
 
@@ -387,21 +524,20 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             getFunctions().largeImageFunction.recycle("setSupportLargeImage");
             getFunctions().largeImageFunction = null;
 
-            if (isSupportZoom()) {
+            if (isZoomEnabled()) {
                 // 大图功能关闭后对ImageZoomer计算缩放比例有影响，因此要重置一下
                 getFunctions().zoomFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
 
                 if (getFunctions().zoomFunction.isFromLargeImageFunction()) {
-                    setSupportZoom(false);
+                    setZoomEnabled(false);
                 }
             }
         }
     }
 
     /**
-     * 获取大图查看器
+     * 获取分块显示超大图功能控制对象
      */
-    @SuppressWarnings("unused")
     public LargeImageViewer getLargeImageViewer() {
         return getFunctions().largeImageFunction != null ? getFunctions().largeImageFunction.getLargeImageViewer() : null;
     }

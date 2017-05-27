@@ -20,7 +20,7 @@ sketImageView.getOptions().setDecodeGifImage(true);
 Sketch支持解码gif图，因此SketchImageView在发现显示的是gif图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张gif图，如下：
 
 ```java
-sketchImageView.setShowGifFlag(R.drawable.ic_gif);
+sketchImageView.setShowGifFlagEnabled(R.drawable.ic_gif);
 ```
 
 Sketch通过mimeType来识别gif图，所以即使你没有调用decodeGifImage()也会认为这是一张gif图，这个功能主要用来在列表中告诉用户这是一张gif图，然后点击图片到大图详情页再播放gif

@@ -4,7 +4,7 @@ Sketch通过LargeImageViewer可以让SketchImage支持分块显示超级大图�
 
 ```java
 SketchImageView sketchImageView = ...;
-sketchImageView.setSupportLargeImage(true);
+sketchImageView.setBlockDisplayLargeImageEnabled(true);
 ```
 
 LargeImageViewer需要依赖ImageZoomer，因此LargeImageViewer会自动开启ImageZoomer

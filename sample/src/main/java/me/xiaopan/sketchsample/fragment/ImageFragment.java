@@ -309,7 +309,7 @@ public class ImageFragment extends MyFragment {
 
     private class ImageZoomHelper {
         private void onViewCreated() {
-            imageView.setSupportZoom(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_ZOOM));
+            imageView.setZoomEnabled(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_ZOOM));
             onReadModeConfigChanged();
         }
 
@@ -318,7 +318,7 @@ public class ImageFragment extends MyFragment {
         }
 
         private void onReadModeConfigChanged() {
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 boolean readMode = AppConfig.getBoolean(getActivity(), AppConfig.Key.READ_MODE);
                 imageView.getImageZoomer().setReadMode(readMode);
             }
@@ -327,11 +327,11 @@ public class ImageFragment extends MyFragment {
 
     private class LargeImageHelper {
         private void onViewCreated() {
-            imageView.setSupportLargeImage(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE));
+            imageView.setBlockDisplayLargeImageEnabled(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE));
 
             // 初始化超大图查看器的暂停状态，这一步很重要
             if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)
-                    && imageView.isSupportLargeImage()) {
+                    && imageView.isBlockDisplayLargeImageEnabled()) {
                 imageView.getLargeImageViewer().setPause(!isVisibleToUser());
             }
         }
@@ -343,11 +343,11 @@ public class ImageFragment extends MyFragment {
         private void onUserVisibleChanged() {
             // 不可见的时候暂停超大图查看器，节省内存
             if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)) {
-                if (imageView.isSupportLargeImage()) {
+                if (imageView.isBlockDisplayLargeImageEnabled()) {
                     imageView.getLargeImageViewer().setPause(!isVisibleToUser());
                 }
             } else {
-                if (imageView.isSupportLargeImage()
+                if (imageView.isBlockDisplayLargeImageEnabled()
                         && isVisibleToUser() && imageView.getLargeImageViewer().isPaused()) {
                     imageView.getLargeImageViewer().setPause(false);
                 }
@@ -358,7 +358,7 @@ public class ImageFragment extends MyFragment {
     private class MappingHelper {
         private void onViewCreated() {
             // MappingView跟随碎片变化刷新碎片区域
-            if (imageView.isSupportLargeImage()) {
+            if (imageView.isBlockDisplayLargeImageEnabled()) {
                 imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
                     @Override
                     public void onTileChanged(LargeImageViewer largeImageViewer) {
@@ -368,7 +368,7 @@ public class ImageFragment extends MyFragment {
             }
 
             // MappingView跟随Matrix变化刷新显示区域
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 imageView.getImageZoomer().addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangeListener() {
                     Rect visibleRect = new Rect();
 
@@ -415,7 +415,7 @@ public class ImageFragment extends MyFragment {
         }
 
         private boolean location(float x, float y, boolean animate) {
-            if (!imageView.isSupportZoom()) {
+            if (!imageView.isZoomEnabled()) {
                 return false;
             }
 
@@ -427,7 +427,7 @@ public class ImageFragment extends MyFragment {
     private class SingleClickHelper {
         private void onViewCreated() {
             // 单击显示操作选项
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
                     @Override
                     public void onViewTap(View view, float x, float y) {
@@ -454,7 +454,7 @@ public class ImageFragment extends MyFragment {
     private class LongClickHelper {
 
         private void onViewCreated() {
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
                     @Override
                     public void onViewLongPress(View view, float x, float y) {
@@ -475,9 +475,9 @@ public class ImageFragment extends MyFragment {
         private void show() {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            final boolean supportZoom = imageView.isSupportZoom();
-            final ImageZoomer imageZoomer = supportZoom ? imageView.getImageZoomer() : null;
-            final boolean supportLargeImage = imageView.isSupportLargeImage();
+            final boolean zoomEnabled = imageView.isZoomEnabled();
+            final ImageZoomer imageZoomer = zoomEnabled ? imageView.getImageZoomer() : null;
+            final boolean blockDisplayLargeImageEnabled = imageView.isBlockDisplayLargeImageEnabled();
             final LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
             Drawable drawable = SketchUtils.getLastDrawable(imageView.getDrawable());
 
@@ -493,7 +493,7 @@ public class ImageFragment extends MyFragment {
             }
             menuItemList.add(new MenuItem(imageInfo, null));
 
-            String scaleTypeTitle = "切换ScaleType（" + (supportZoom ? imageZoomer.getScaleType() : imageView.getScaleType()) + "）";
+            String scaleTypeTitle = "切换ScaleType（" + (zoomEnabled ? imageZoomer.getScaleType() : imageView.getScaleType()) + "）";
             menuItemList.add(new MenuItem(scaleTypeTitle, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -501,7 +501,7 @@ public class ImageFragment extends MyFragment {
                 }
             }));
 
-            String largeImageTileTitle = supportLargeImage ? (largeImageViewer.isShowTileRect() ? "不显示分块区域" : "显示分块区域") : "分块区域（未开启大图功能）";
+            String largeImageTileTitle = blockDisplayLargeImageEnabled ? (largeImageViewer.isShowTileRect() ? "不显示分块区域" : "显示分块区域") : "分块区域（未开启大图功能）";
             menuItemList.add(new MenuItem(largeImageTileTitle, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -509,7 +509,7 @@ public class ImageFragment extends MyFragment {
                 }
             }));
 
-            String readModeTitle = supportZoom ? (imageZoomer.isReadMode() ? "关闭阅读模式" : "开启阅读模式") : ("阅读模式（未开启缩放功能）");
+            String readModeTitle = zoomEnabled ? (imageZoomer.isReadMode() ? "关闭阅读模式" : "开启阅读模式") : ("阅读模式（未开启缩放功能）");
             menuItemList.add(new MenuItem(readModeTitle, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -590,7 +590,7 @@ public class ImageFragment extends MyFragment {
                     .append("/").append(sketchDrawable.getBitmapConfig())
                     .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
 
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();
 
                 messageBuilder.append("\n");
@@ -602,7 +602,7 @@ public class ImageFragment extends MyFragment {
                 messageBuilder.append("/").append(visibleRect.toShortString());
             }
 
-            if (imageView.isSupportLargeImage()) {
+            if (imageView.isBlockDisplayLargeImageEnabled()) {
                 LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
                 if (largeImageViewer.isReady()) {
                     String tilesNeedMemory = Formatter.formatFileSize(getContext(), largeImageViewer.getTilesAllocationByteCount());
@@ -680,7 +680,7 @@ public class ImageFragment extends MyFragment {
         private void showMoreMenu() {
             final List<MenuItem> menuItemList = new LinkedList<MenuItem>();
 
-            String rotateTitle = imageView.isSupportZoom() ? ("顺时针旋转90度（" + imageView.getImageZoomer().getRotateDegrees() + "）") : "旋转图片（未开启缩放功能）";
+            String rotateTitle = imageView.isZoomEnabled() ? ("顺时针旋转90度（" + imageView.getImageZoomer().getRotateDegrees() + "）") : "旋转图片（未开启缩放功能）";
             menuItemList.add(new MenuItem(rotateTitle, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -740,7 +740,7 @@ public class ImageFragment extends MyFragment {
         }
 
         private void setShowTile() {
-            if (imageView.isSupportLargeImage()) {
+            if (imageView.isBlockDisplayLargeImageEnabled()) {
                 LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
                 boolean newShowTileRect = !largeImageViewer.isShowTileRect();
                 largeImageViewer.setShowTileRect(newShowTileRect);
@@ -750,7 +750,7 @@ public class ImageFragment extends MyFragment {
         }
 
         private void setReadMode() {
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();
                 boolean newReadMode = !imageZoomer.isReadMode();
                 imageZoomer.setReadMode(newReadMode);
@@ -760,7 +760,7 @@ public class ImageFragment extends MyFragment {
         }
 
         private void rotate() {
-            if (imageView.isSupportZoom()) {
+            if (imageView.isZoomEnabled()) {
                 if (!imageView.getImageZoomer().rotateBy(90)) {
                     Toast.makeText(getContext(), "旋转角度必须是90的倍数或开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show();
                 }

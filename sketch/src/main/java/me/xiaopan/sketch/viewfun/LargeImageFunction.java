@@ -205,7 +205,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
 
     @Override
     public void updateMatrix() {
-        ImageZoomer imageZoomer = view.isSupportZoom() ? view.getImageZoomer() : null;
+        ImageZoomer imageZoomer = view.isZoomEnabled() ? view.getImageZoomer() : null;
         if (imageZoomer != null) {
             onMatrixChanged(imageZoomer);
         }

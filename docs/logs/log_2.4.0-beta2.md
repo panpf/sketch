@@ -46,13 +46,26 @@
     这段代码，之前的效果decodeGifImage属性的值最终是true，因为合并时true优先。现在改为完全覆盖后最终的值就是false，因为options里decodeGifImage属性是false
 
 ### SketchImageView
-* :sparkles: SketchImageView新增redisplay(RedisplayListener)方法可按照上次的配置重新显示
-* :sparkles: SketchImageView新增displayContentImage(Uri)方法用来代替displayURIImage(Uri)
-* :hammer: getDisplayParams()方法改名为 getDisplayCache()
+* :hammer: getDisplayParams() 方法改名为 getDisplayCache()
 * :fire: 修复在显示错误时点击重试的时候会意外的跳过移动网络暂停下载功能
-* :sparkles: 新增setClickRetryOnDisplayErrorEnabled(boolean)方法代替setClickRetryOnError(boolean)方法
-* :sparkles: 新增setClickRetryOnPauseDownloadEnabled(boolean)方法代替setClickRetryOnPauseDownload(boolean)方法
-* :sparkles: 新增setClickPlayGifEnabled(Drawable)方法可开启点击播放gif功能
+* :sparkles: 新增 redisplay(RedisplayListener) 方法可按照上次的配置重新显示
+* :sparkles: 新增 displayContentImage(Uri) 方法代替 displayURIImage(Uri) 方法
+* :sparkles: 新增 setClickRetryOnDisplayErrorEnabled(boolean) 方法代替 setClickRetryOnError(boolean) 方法
+* :sparkles: 新增 setClickRetryOnPauseDownloadEnabled(boolean) 方法代替 setClickRetryOnPauseDownload(boolean) 方法
+* :sparkles: 新增 setClickPlayGifEnabled(Drawable) 方法可开启点击播放gif功能
+* :sparkles: 新增 isShowDownloadProgressEnabled() 方法代替 isShowDownloadProgress() 方法
+* :sparkles: 新增 setShowDownloadProgressEnabled(boolean) 方法代替 setShowDownloadProgress(boolean) 方法
+* :sparkles: 新增 isShowPressedStatusEnabled() 方法代替 isShowPressedStatus() 方法
+* :sparkles: 新增 setShowPressedStatusEnabled(boolean) 方法代替 setShowPressedStatus(boolean) 方法
+* :sparkles: 新增 isShowImageFromEnabled() 方法代替 isShowImageFrom() 方法
+* :sparkles: 新增 setShowImageFromEnabled(boolean) 方法代替 setShowImageFrom(boolean) 方法
+* :sparkles: 新增 isShowGifFlagEnabled() 方法代替 isShowGifFlag() 方法
+* :sparkles: 新增 setShowGifFlagEnabled(Drawable) 方法代替 setShowGifFlag(Drawable) 方法
+* :sparkles: 新增 setShowGifFlagEnabled(int) 方法代替 setShowGifFlag(int) 方法
+* :sparkles: 新增 isZoomEnabled() 方法代替 isSupportZoom() 方法
+* :sparkles: 新增 setZoomEnabled(boolean) 方法代替 setSupportZoom(boolean) 方法
+* :sparkles: 新增 isBlockDisplayLargeImageEnabled() 方法代替 isSupportLargeImage() 方法
+* :sparkles: 新增 setBlockDisplayLargeImageEnabled(boolean) 方法代替 setSupportLargeImage(boolean) 方法
 
 ### SketchMonitor：
 * :hammer: 改名为ErrorTracker

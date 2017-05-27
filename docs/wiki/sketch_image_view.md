@@ -114,7 +114,7 @@ sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
 #### 4.在SketchImageView上显示下载进度
 SketchImageView提供了一个简易版的显示进度的功能，你只需调用如下代码开启即可，这样你就无需在ImageView上面放一个ProgressBar来实现这种效果了。
 ```java
-sketchImageView.setShowDownloadProgress(true);
+sketchImageView.setShowDownloadProgressEnabled(true);
 ```
 ``同样一定要在displayImage()之前调用，否则不起作用``
 ``如果图片是圆角或者圆形的那么还需要通过ImageShape来改变进度蒙层的形状``[查看如何使用ImageShape](#ImageShape)
@@ -126,7 +126,7 @@ SketchImageView支持点击的时候在图片上面显示一层黑色半透明�
 sketchImageView.setOnClickListener(...);
 
 // 然后开启按下状态
-sketchImageView.setShowPressedStatus(true);
+sketchImageView.setShowPressedStatusEnabled(true);
 ```
 ``如果图片是圆角或者圆形的那么还需要通过ImageShape来改变按下蒙层的形状``[查看如何使用ImageShape](#ImageShape)
 
@@ -160,7 +160,7 @@ sketchImaegView.setImageShapeCornerRadius(20);
 #### 7.显示图片来源
 SketchImageView还支持显示图片来源，如下：
 ```
-sketchImageView.setShowFromFlag(true);
+sketchImageView.setShowImageFromEnabled(true);
 ```
 
 开启此功能后会在SketchImageView的左上角显示一个纯色的三角形，根据三角形的颜色你就可以知道图片是从哪里来的

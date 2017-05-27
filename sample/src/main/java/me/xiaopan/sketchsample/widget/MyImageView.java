@@ -18,9 +18,9 @@ import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
 import me.xiaopan.sketch.decode.DecodeException;
+import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
-import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriInfo;
@@ -107,17 +107,17 @@ public class MyImageView extends SketchImageView {
     public void onEvent(AppConfigChangedEvent event) {
         if (AppConfig.Key.SHOW_GIF_FLAG.equals(event.key)) {
             if (useInList) {
-                setShowGifFlag(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_GIF_FLAG) ? R.drawable.ic_gif : 0);
+                setShowGifFlagEnabled(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_GIF_FLAG) ? R.drawable.ic_gif : 0);
             }
         } else if (AppConfig.Key.SHOW_IMAGE_FROM_FLAG.equals(event.key)) {
-            setShowImageFrom(AppConfig.getBoolean(getContext(), event.key));
+            setShowImageFromEnabled(AppConfig.getBoolean(getContext(), event.key));
         } else if (AppConfig.Key.CLICK_SHOW_PRESSED_STATUS.equals(event.key)) {
             if (useInList) {
-                setShowPressedStatus(AppConfig.getBoolean(getContext(), event.key));
+                setShowPressedStatusEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS.equals(event.key)) {
             if (useInList) {
-                setShowDownloadProgress(AppConfig.getBoolean(getContext(), event.key));
+                setShowDownloadProgressEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD.equals(event.key)) {
             if (useInList) {
@@ -169,25 +169,16 @@ public class MyImageView extends SketchImageView {
             if (useInList) {
                 final boolean thumbnailMode = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setThumbnailMode(thumbnailMode);
-                if (thumbnailMode) {
-                    if (getOptions().getResize() == null && !getOptions().isResizeByFixedSize()) {
-                        getOptions().setResizeByFixedSize(true);
-                    }
-                } else {
-                    getOptions().setResizeByFixedSize(false);
+                if (getOptions().getResize() == null) {
+                    getOptions().setResizeByFixedSize(thumbnailMode);
                 }
 
                 redisplay(new RedisplayListener() {
                     @Override
                     public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
                         cacheOptions.setThumbnailMode(thumbnailMode);
-                        // TODO: 2017/5/27 优化这里的写法
-                        if (thumbnailMode) {
-                            if (cacheOptions.getResize() == null && !cacheOptions.isResizeByFixedSize()) {
-                                cacheOptions.setResizeByFixedSize(true);
-                            }
-                        } else {
-                            cacheOptions.setResizeByFixedSize(false);
+                        if (cacheOptions.getResize() == null) {
+                            cacheOptions.setResizeByFixedSize(thumbnailMode);
                         }
                     }
                 });
