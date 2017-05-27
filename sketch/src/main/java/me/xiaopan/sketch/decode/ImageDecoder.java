@@ -27,7 +27,6 @@ import java.util.List;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
-import me.xiaopan.sketch.feature.ImageOrientationCorrector;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.ExifInterface;
 

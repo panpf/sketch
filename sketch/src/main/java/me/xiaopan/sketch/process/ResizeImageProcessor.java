@@ -21,7 +21,7 @@ import android.graphics.Canvas;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.feature.ResizeCalculator;
+import me.xiaopan.sketch.decode.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 public class ResizeImageProcessor implements ImageProcessor {

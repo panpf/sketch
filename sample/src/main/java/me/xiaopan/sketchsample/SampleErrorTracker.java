@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
-import me.xiaopan.sketch.feature.large.Tile;
+import me.xiaopan.sketch.viewfun.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;

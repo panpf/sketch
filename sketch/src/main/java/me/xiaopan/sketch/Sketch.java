@@ -24,7 +24,7 @@ import android.os.Build;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.sketch.feature.InstalledAppIconPreprocessor;
+import me.xiaopan.sketch.preprocess.InstalledAppIconPreprocessor;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayOptions;

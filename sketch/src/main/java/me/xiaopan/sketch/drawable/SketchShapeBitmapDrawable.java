@@ -31,7 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feature.ResizeCalculator;
+import me.xiaopan.sketch.decode.ResizeCalculator;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;

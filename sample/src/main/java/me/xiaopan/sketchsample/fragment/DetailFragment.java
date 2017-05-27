@@ -32,7 +32,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter;
-import me.xiaopan.sketch.feature.zoom.ImageZoomer;
+import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;

@@ -34,7 +34,7 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
-import me.xiaopan.sketch.feature.ImageSizeCalculator;
+import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.state.StateImage;

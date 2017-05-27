@@ -27,7 +27,7 @@ import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.GifDecodeResult;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.feature.ProcessedImageCache;
+import me.xiaopan.sketch.decode.ProcessedImageCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**

@@ -25,7 +25,7 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.feature.ResizeCalculator;
+import me.xiaopan.sketch.decode.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 /**

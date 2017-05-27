@@ -16,8 +16,8 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.feature.ImagePreprocessor;
-import me.xiaopan.sketch.feature.PreProcessResult;
+import me.xiaopan.sketch.preprocess.PreProcessResult;
+import me.xiaopan.sketch.preprocess.Preprocessor;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
@@ -27,7 +27,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 解析XPK文件的图标
  */
-public class XpkIconPreprocessor implements ImagePreprocessor.Preprocessor {
+public class XpkIconPreprocessor implements Preprocessor {
 
     private static final String LOG_NAME = "XpkIconPreprocessor";
 

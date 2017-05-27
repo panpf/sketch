@@ -50,9 +50,9 @@
 * :sparkles: SketchImageView新增displayContentImage(Uri)方法用来代替displayURIImage(Uri)
 * :hammer: getDisplayParams()方法改名为 getDisplayCache()
 * :fire: 修复在显示错误时点击重试的时候会意外的跳过移动网络暂停下载功能
-* :art: 新增setClickRetryOnDisplayErrorEnabled(boolean)方法代替setClickRetryOnError(boolean)方法
-* :art: 新增setClickRetryOnPauseDownloadEnabled(boolean)方法代替setClickRetryOnPauseDownload(boolean)方法
-* :art: 新增setClickPlayGifEnabled(Drawable)方法可开启点击播放gif功能
+* :sparkles: 新增setClickRetryOnDisplayErrorEnabled(boolean)方法代替setClickRetryOnError(boolean)方法
+* :sparkles: 新增setClickRetryOnPauseDownloadEnabled(boolean)方法代替setClickRetryOnPauseDownload(boolean)方法
+* :sparkles: 新增setClickPlayGifEnabled(Drawable)方法可开启点击播放gif功能
 
 ### SketchMonitor：
 * :hammer: 改名为ErrorTracker
@@ -66,9 +66,15 @@
 * :sparkles: Sketch新增displayFromContent(Uri)方法用来代替displayFromURI(Uri)
 * :fire: 删除WRITE_EXTERNAL_STORAGE权限
 
+### 调整目录结构：
+* :hammer: 调整目录结构，SketchImageView的各种Function、LargeImageViewer以及ImageZoomer由me.xiaopan.sketch.feature移到me.xiaopan.sketch.viewfun
+* :hammer: 调整目录结构，ImagePreprocessor相关类由me.xiaopan.sketch.feature移到me.xiaopan.sketch.preprocess
+* :hammer: ImageSizeCalculator和ResizeCalculator由me.xiaopan.sketch.feature移到me.xiaopan.sketch.decode
+
 ### Sample App：
 * :sparkles: 增加自动纠正图片方向测试页面
 * :sparkles: 增加base64图片测试页面
 * :art: 优化侧滑选项的命名
 * :sparkles: drawable、asset、content来源的图片可以使用分享、保存和设置壁纸功能了
 * :sparkles: 可以在任意位置长按图片查看图片信息
+* :sparkles: 增加列表中点击播放gif选项

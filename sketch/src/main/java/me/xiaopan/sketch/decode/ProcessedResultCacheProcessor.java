@@ -16,7 +16,6 @@
 
 package me.xiaopan.sketch.decode;
 
-import me.xiaopan.sketch.feature.ProcessedImageCache;
 import me.xiaopan.sketch.request.LoadRequest;
 
 /**
