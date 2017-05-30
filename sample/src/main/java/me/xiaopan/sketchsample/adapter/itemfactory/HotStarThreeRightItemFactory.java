@@ -104,9 +104,9 @@ public class HotStarThreeRightItemFactory extends AssemblyRecyclerItemFactory<Ho
             oneImageView.setLayoutParams(params);
             oneImageView.setOptionsByName(ImageOptions.RECT);
 
-            oneImageView.setUseInList(true);
-            twoImageView.setUseInList(true);
-            threeImageView.setUseInList(true);
+            oneImageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
+            twoImageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
+            threeImageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
         }
 
         @Override

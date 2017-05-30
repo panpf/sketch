@@ -78,6 +78,7 @@ import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
+import me.xiaopan.sketchsample.fragment.UnsplashPhotosFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.util.DeviceUtils;
@@ -120,7 +121,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(Page.IMAGE_ORIENTATION_TEST);
+        switchPage(Page.UNSPLASH);
     }
 
     private void initViews() {
@@ -195,14 +196,14 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         };
 
-        menuList.add("综合页面");
+        menuList.add("Integrated Page");
         for (Page page : Page.getNormalPage()) {
             if (!page.isDisable()) {
                 menuList.add(page);
             }
         }
 
-        menuList.add("测试页面");
+        menuList.add("Test Page");
         for (Page page : Page.getTestPage()) {
             if (!page.isDisable()) {
                 menuList.add(page);
@@ -387,11 +388,11 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         }
         this.page = newPage;
 
-        if (page == Page.STAR) {
-            AnimationUtils.visibleViewByAlpha(starTabStrip);
-        } else {
+//        if (page == Page.STAR) {
+//            AnimationUtils.visibleViewByAlpha(starTabStrip);
+//        } else {
             AnimationUtils.invisibleViewByAlpha(starTabStrip);
-        }
+//        }
         if (page == Page.APP_LIST) {
             AnimationUtils.visibleViewByAlpha(appListTabStrip);
         } else {
@@ -467,20 +468,21 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     public enum Page {
-        STAR("明星图片", StarIndexFragment.class, false, false),
-        SEARCH("图片搜索", SearchFragment.class, false, false),
-        PHOTO_ALBUM("本地相册", PhotoAlbumFragment.class, false, false),
-        APP_LIST("本地APP", AppListFragment.class, false, false),
-        ABOUT("关于", AboutFragment.class, false, false),
+        UNSPLASH("Unsplash", UnsplashPhotosFragment.class, false, false),
+//        STAR("明星图片", StarIndexFragment.class, false, false),
+        SEARCH("GIF Search", SearchFragment.class, false, false),
+        PHOTO_ALBUM("Photo Album", PhotoAlbumFragment.class, false, false),
+        APP_LIST("My Apps", AppListFragment.class, false, false),
+        ABOUT("About Sketch", AboutFragment.class, false, false),
 
-        LARGE_IMAGE("超大图片测试", LargeImageTestFragment.class, true, false),
-        IMAGE_PROCESSOR_TEST("ImageProcessor测试", ImageProcessorTestFragment.class, true, false),
-        IMAGE_SHAPER_TESt("ImageShaper测试", ImageShaperTestFragment.class, true, false),
-        REPEAT_LOAD_OR_DOWNLOAD_TEST("重复加载/下载测试", RepeatLoadOrDownloadTestFragment.class, true, false),
-        IN_BITMAP_TESt("inBitmap测试", InBitmapTestFragment.class, true, false),
-        IMAGE_ORIENTATION_TEST("自动纠正图片方向测试", ImageOrientationTestHomeFragment.class, true, false),
-        BASE64_IMAGE_TESt("Base64图片测试", Base64ImageTestFragment.class, true, false),
-        OTHER_TEST("其它测试", OtherTestFragment.class, true, !BuildConfig.DEBUG),;
+        LARGE_IMAGE("Block Display Large Image", LargeImageTestFragment.class, true, false),
+        IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment.class, true, false),
+        IMAGE_SHAPER_TESt("Image Shaper Test", ImageShaperTestFragment.class, true, false),
+        REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment.class, true, false),
+        IN_BITMAP_TESt("inBitmap Test", InBitmapTestFragment.class, true, false),
+        IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment.class, true, false),
+        BASE64_IMAGE_TESt("Base64 Image Test", Base64ImageTestFragment.class, true, false),
+        OTHER_TEST("Other Test", OtherTestFragment.class, true, !BuildConfig.DEBUG),;
 
         private String name;
         private Class<? extends Fragment> fragmentClass;

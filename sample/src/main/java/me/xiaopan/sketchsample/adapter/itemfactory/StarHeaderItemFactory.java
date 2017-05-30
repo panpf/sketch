@@ -39,7 +39,7 @@ public class StarHeaderItemFactory extends AssemblyRecyclerItemFactory<StarHeade
             headerParams.height = (int) (headerParams.width / 3.2f);
             headImageView.setLayoutParams(headerParams);
 
-            headImageView.setUseInList(true);
+            headImageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
         }
 
         @Override

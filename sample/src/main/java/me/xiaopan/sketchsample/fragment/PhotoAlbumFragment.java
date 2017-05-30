@@ -91,14 +91,14 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
     }
 
     @Override
-    public void onClickImage(int position, String loadingImageOptionsId) {
+    public void onClickImage(int position, String optionsKey) {
         // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-        if (loadingImageOptionsId.contains("Resize")
-                || loadingImageOptionsId.contains("ImageProcessor")
-                || loadingImageOptionsId.contains("thumbnailMode")) {
-            loadingImageOptionsId = null;
+        if (optionsKey.contains("Resize")
+                || optionsKey.contains("ImageProcessor")
+                || optionsKey.contains("thumbnailMode")) {
+            optionsKey = null;
         }
-        DetailActivity.launch(getActivity(), (ArrayList<String>) adapter.getDataList(), loadingImageOptionsId, position);
+        DetailActivity.launch(getActivity(), (ArrayList<String>) adapter.getDataList(), optionsKey, position);
     }
 
     @Override

@@ -34,7 +34,7 @@ import me.xiaopan.sketchsample.event.CacheCleanEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 
 public class MyImageView extends SketchImageView {
-    private boolean useInList;    // 用于列表
+    private Page page;
     private boolean disabledRedisplay;
     private boolean disabledLongClickShowImageInfo;
 
@@ -82,13 +82,12 @@ public class MyImageView extends SketchImageView {
         disabledRedisplay = false;
     }
 
-    @SuppressWarnings("unused")
-    public boolean isUseInList() {
-        return useInList;
+    public Page getPage() {
+        return page;
     }
 
-    public void setUseInList(boolean useInList) {
-        this.useInList = useInList;
+    public void setPage(Page page) {
+        this.page = page;
     }
 
     @SuppressWarnings("unused")
@@ -108,29 +107,29 @@ public class MyImageView extends SketchImageView {
     @Subscribe
     public void onEvent(AppConfigChangedEvent event) {
         if (AppConfig.Key.SHOW_GIF_FLAG.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowGifFlagEnabled(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_GIF_FLAG) ? R.drawable.ic_gif : 0);
             }
         } else if (AppConfig.Key.SHOW_IMAGE_FROM_FLAG.equals(event.key)) {
             setShowImageFromEnabled(AppConfig.getBoolean(getContext(), event.key));
         } else if (AppConfig.Key.CLICK_SHOW_PRESSED_STATUS.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowPressedStatusEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowDownloadProgressEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickRetryOnPauseDownloadEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_FAILED.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickRetryOnDisplayErrorEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_PLAY_GIF.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickPlayGifEnabled(AppConfig.getBoolean(getContext(), event.key) ? R.drawable.ic_video_play : 0);
             }
 
@@ -156,7 +155,7 @@ public class MyImageView extends SketchImageView {
                 }
             });
         } else if (AppConfig.Key.PLAY_GIF_ON_LIST.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST) {
                 final boolean playGifOnList = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setDecodeGifImage(playGifOnList);
 
@@ -168,7 +167,7 @@ public class MyImageView extends SketchImageView {
                 });
             }
         } else if (AppConfig.Key.THUMBNAIL_MODE.equals(event.key)) {
-            if (useInList) {
+            if (page == Page.PHOTO_ALBUM_LIST) {
                 final boolean thumbnailMode = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setThumbnailMode(thumbnailMode);
                 if (getOptions().getResize() == null) {
@@ -208,6 +207,10 @@ public class MyImageView extends SketchImageView {
     protected void onDetachedFromWindow() {
         EventBus.getDefault().unregister(this);
         super.onDetachedFromWindow();
+    }
+
+    public enum Page {
+        PHOTO_ALBUM_LIST, UNSPLASH_LIST, SEARCH_LIST, APP_LIST, DETAIL, DEMO;
     }
 
     private class LongClickShowDrawableInfoListener implements View.OnLongClickListener {
@@ -294,6 +297,9 @@ public class MyImageView extends SketchImageView {
                     .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
 
             messageBuilder.append("\n");
+            messageBuilder.append("\n");
+            messageBuilder.append("KEY：")
+                    .append(sketchDrawable.getKey());
 
             return messageBuilder.toString();
         }

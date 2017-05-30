@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 需要包一层，要不然在代码里改ImageView的高度总会有偏差 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_unsplashImageItem_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.xiaopan.sketchsample.widget.MyImageView
+        android:id="@+id/image_unsplashImageItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <me.xiaopan.sketchsample.widget.MyImageView
+        android:id="@+id/image_unsplashImageItem_userProfile"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="12dp"
+        android:scaleType="centerCrop"
+        tools:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="62dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_unsplashImageItem_userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            tools:text="Joe Beck" />
+
+        <TextView
+            android:id="@+id/text_unsplashImageItem_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="2017年5月10日" />
+    </LinearLayout>
+
+</FrameLayout>

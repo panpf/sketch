@@ -32,4 +32,5 @@
         \n 3. Glide（BitmapPool）
         \n 4. http://image.baidu.com
     </string>
+    <string name="text_loadMore">LOADING...</string>
 </resources>

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 提示视图 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:clickable="true"
         android:gravity="center"
-        android:clickable="true">
+        android:orientation="vertical">
 
         <ViewSwitcher
             android:id="@+id/viewSwitcher_hint"
@@ -17,33 +18,46 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_gravity="center">
+                android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/progress_hint"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminateDrawable="@drawable/progressbar_indeterminate_spinner_blue" />
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminateDrawable="@drawable/progressbar_indeterminate_spinner_blue" />
+
+                    <TextView
+                        android:id="@+id/text_hint_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="12dp"
+                        tools:text="10%" />
+                </FrameLayout>
 
                 <TextView
+                    android:id="@+id/text_hint_loadingHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/text_hint_loadingHint"
-                    android:text="@string/loadingLater"
+                    android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:layout_marginTop="16dp" />
+                    tools:text="@string/loadingLater" />
             </LinearLayout>
 
             <TextView
+                android:id="@+id/text_hint_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/text_hint_hint"
-                android:gravity="center"
-                android:drawableTop="@drawable/ic_error"
                 android:layout_gravity="center"
-                android:drawablePadding="@dimen/padding_specialLarge" />
+                android:drawablePadding="@dimen/padding_specialLarge"
+                android:drawableTop="@drawable/ic_error"
+                android:gravity="center" />
         </ViewSwitcher>
 
         <Button

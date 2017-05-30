@@ -3,6 +3,7 @@ package me.xiaopan.sketchsample;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -91,7 +92,8 @@ public class SketchManager {
         }
     }
 
-    public void initDisplayOptions() {
+    public void initDisplayOptions(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         TransitionImageDisplayer transitionImageDisplayer = new TransitionImageDisplayer();
         Sketch.putOptions(ImageOptions.RECT, new DisplayOptions()
                 .setLoadingImage(R.drawable.image_loading)
@@ -105,7 +107,7 @@ public class SketchManager {
                 .setErrorImage(R.drawable.image_error)
                 .setPauseDownloadImage(R.drawable.image_pause_download)
                 .setImageDisplayer(transitionImageDisplayer)
-                .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 2)))
+                .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
                 .setShapeSizeByFixedSize(true));
 
         Sketch.putOptions(ImageOptions.ROUND_RECT, new DisplayOptions()
@@ -125,5 +127,12 @@ public class SketchManager {
                 .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,
                         context.getResources().getDisplayMetrics().heightPixels / 4)
                 .setImageDisplayer(new TransitionImageDisplayer(true)));
+
+        Sketch.putOptions(ImageOptions.LIST_FULL, new DisplayOptions()
+                .setLoadingImage(R.drawable.image_loading)
+                .setErrorImage(R.drawable.image_error)
+                .setPauseDownloadImage(R.drawable.image_pause_download)
+                .setMaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
+                .setImageDisplayer(transitionImageDisplayer));
     }
 }

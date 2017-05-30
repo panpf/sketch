@@ -56,7 +56,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
     }
 
     public interface OnImageClickListener {
-        void onClickImage(int position, String loadingImageOptionsId);
+        void onClickImage(int position, String optionsKey);
     }
 
     public class PhotoAlbumItem extends BindAssemblyRecyclerItem<String> {
@@ -93,7 +93,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                 imageView.setLayoutParams(layoutParams);
             }
 
-            imageView.setUseInList(true);
+            imageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
         }
 
         @Override

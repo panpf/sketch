@@ -28,7 +28,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
 
     @Override
     public StaggeredImageItem createAssemblyItem(ViewGroup viewGroup) {
-        return new StaggeredImageItem(R.layout.list_item_image, viewGroup);
+        return new StaggeredImageItem(R.layout.list_item_image_staggered, viewGroup);
     }
 
     public interface OnItemClickListener {
@@ -36,7 +36,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
     }
 
     public class StaggeredImageItem extends BindAssemblyRecyclerItem<StarImageRequest.Image> {
-        @BindView(R.id.image_imageItem)
+        @BindView(R.id.image_staggeredImageItem)
         MyImageView imageView;
 
         public StaggeredImageItem(int itemLayoutId, ViewGroup parent) {
@@ -55,7 +55,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
             });
             imageView.setOptionsByName(ImageOptions.RECT);
 
-            imageView.setUseInList(true);
+            imageView.setPage(MyImageView.Page.SEARCH_LIST);
         }
 
         @Override

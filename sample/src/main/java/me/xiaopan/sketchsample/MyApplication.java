@@ -36,7 +36,7 @@ public class MyApplication extends Application {
 
         SketchManager sketchManager = new SketchManager(getBaseContext());
         sketchManager.initConfig(getBaseContext());
-        sketchManager.initDisplayOptions();
+        sketchManager.initDisplayOptions(getBaseContext());
 
         if (!LeakCanary.isInAnalyzerProcess(this)) {
             LeakCanary.install(this);

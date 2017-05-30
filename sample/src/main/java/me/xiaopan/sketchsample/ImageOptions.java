@@ -36,4 +36,9 @@ public enum ImageOptions {
      * 圆角矩形
      */
     ROUND_RECT,
+
+    /**
+     * 充满列表
+     */
+    LIST_FULL,
 }

@@ -39,6 +39,7 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
+import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
@@ -158,17 +159,20 @@ public class ImageFragment extends MyFragment {
 
     }
 
-    private class ShowImageHelper implements DisplayListener {
+    private class ShowImageHelper implements DisplayListener, DownloadProgressListener {
         private void onViewCreated() {
             imageView.setDisabledLongClickShowImageInfo(true);
 
             imageView.setDisplayListener(this);
+            imageView.setDownloadProgressListener(this);
 
             initOptions();
             imageView.displayImage(imageUri);
         }
 
         private void initOptions() {
+            imageView.setPage(MyImageView.Page.DETAIL);
+
             DisplayOptions options = imageView.getOptions();
 
             // 允许播放GIF
@@ -176,11 +180,11 @@ public class ImageFragment extends MyFragment {
 
             // 有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
             if (!TextUtils.isEmpty(loadingImageOptionsId)) {
-                String loadingImageMemoryCacheKey = SketchUtils.makeRequestKey(imageUri, loadingImageOptionsId);
+                String memoryCacheKey = SketchUtils.makeRequestKey(imageUri, loadingImageOptionsId);
                 MemoryCache memoryCache = Sketch.with(getActivity()).getConfiguration().getMemoryCache();
-                SketchRefBitmap cachedRefBitmap = memoryCache.get(loadingImageMemoryCacheKey);
+                SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
                 if (cachedRefBitmap != null) {
-                    options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheKey, null));
+                    options.setLoadingImage(new MemoryCacheStateImage(memoryCacheKey, null));
                 } else {
                     options.setImageDisplayer(new FadeInImageDisplayer());
                 }
@@ -191,7 +195,7 @@ public class ImageFragment extends MyFragment {
 
         @Override
         public void onStarted() {
-            hintView.loading("正在加载图片，请稍后...");
+            hintView.loading(null);
         }
 
         @Override
@@ -266,6 +270,11 @@ public class ImageFragment extends MyFragment {
                     });
                     break;
             }
+        }
+
+        @Override
+        public void onUpdateDownloadProgress(int totalLength, int completedLength) {
+            hintView.setProgress(totalLength, completedLength);
         }
     }
 
@@ -589,6 +598,11 @@ public class ImageFragment extends MyFragment {
                     .append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight())
                     .append("/").append(sketchDrawable.getBitmapConfig())
                     .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
+
+            messageBuilder.append("\n");
+            messageBuilder.append("\n");
+            messageBuilder.append("KEY：")
+                    .append(sketchDrawable.getKey());
 
             if (imageView.isZoomEnabled()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();

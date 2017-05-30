@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -14,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -35,7 +36,7 @@ public class HintView extends LinearLayout {
     private Button actionButton;
     private TextView loadingHintTextView;
     private TextView hintTextView;
-    private ProgressBar progressBar;
+    private TextView progressTextView;
     private ViewSwitcher viewSwitcher;
     private Mode mode;
 
@@ -47,244 +48,6 @@ public class HintView extends LinearLayout {
     public HintView(Context context) {
         super(context);
         init();
-    }
-
-    private void init() {
-        try {
-            LayoutInflater.from(getContext()).inflate(R.layout.view_hint, this);
-            viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher_hint);
-            loadingHintTextView = (TextView) findViewById(R.id.text_hint_loadingHint);
-            hintTextView = (TextView) findViewById(R.id.text_hint_hint);
-            actionButton = (Button) findViewById(R.id.button_hint_action);
-            progressBar = (ProgressBar) findViewById(R.id.progress_hint);
-            setVisibility(View.GONE);
-        } catch (Throwable throwable) {
-
-        }
-    }
-
-    /**
-     * 显示加载中，将使用type格式化“正在加载%s，请稍后…”字符串
-     */
-    public void loading(String message) {
-        loadingHintTextView.setText(message);
-        if (mode != Mode.LOADING) {
-            if (mode == Mode.HINT) {
-                viewSwitcher.setInAnimation(getContext(), R.anim.slide_to_bottom_in);
-                viewSwitcher.setOutAnimation(getContext(), R.anim.slide_to_bottom_out);
-            } else {
-                viewSwitcher.setInAnimation(null);
-                viewSwitcher.setOutAnimation(null);
-            }
-            mode = Mode.LOADING;
-            actionButton.setVisibility(View.INVISIBLE);
-            viewSwitcher.setDisplayedChild(mode.index);
-            setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void setProgress(int totalLength, int completedLength) {
-        progressBar.setMax(totalLength);
-        progressBar.setProgress(completedLength);
-    }
-
-    /**
-     * 显示提示
-     *
-     * @param iconId              图标ID，如果不想显示图标的话，此参数传-1即可
-     * @param hintText            提示信息
-     * @param buttonName          按钮的名称
-     * @param buttonClickListener 按钮的按下事件
-     * @param transparent         是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @SuppressWarnings("deprecation")
-    public void hint(int iconId, String hintText, String buttonName, OnClickListener buttonClickListener, boolean transparent) {
-        if (iconId > 0) {
-            Drawable[] drawables = hintTextView.getCompoundDrawables();
-            hintTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], getResources().getDrawable(iconId), drawables[2], drawables[3]);
-        } else {
-            Drawable[] drawables = hintTextView.getCompoundDrawables();
-            hintTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, drawables[2], drawables[3]);
-        }
-
-        if (isNotEmpty(hintText)) {
-            hintTextView.setText(hintText);
-        } else {
-            hintTextView.setText(null);
-        }
-
-        if (isNotEmpty(buttonName) && buttonClickListener != null) {
-            actionButton.setText(buttonName);
-            actionButton.setOnClickListener(buttonClickListener);
-            visibleViewByAlpha(actionButton, true);
-        } else {
-            actionButton.setText(null);
-            actionButton.setOnClickListener(null);
-            actionButton.setVisibility(View.INVISIBLE);
-        }
-
-        if (transparent) {
-//			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-//				setBackground(null);
-//			}else{
-//				setBackgroundDrawable(null);
-//			}
-            setClickable(false);
-        } else {
-//			setBackgroundColor(getResources().getColor(R.color.page_background));
-            setClickable(true);
-        }
-
-        if (mode != Mode.HINT) {
-            if (mode != null) {
-                viewSwitcher.setInAnimation(getContext(), R.anim.slide_to_top_in);
-                viewSwitcher.setOutAnimation(getContext(), R.anim.slide_to_top_out);
-            } else {
-                viewSwitcher.setInAnimation(null);
-                viewSwitcher.setOutAnimation(null);
-            }
-            mode = Mode.HINT;
-            viewSwitcher.setDisplayedChild(1);
-            setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * 显示提示
-     *
-     * @param iconId              图标ID，如果不想显示图标的话，此参数传-1即可
-     * @param hintText            提示信息
-     * @param buttonName          按钮的名称
-     * @param buttonClickListener 按钮的按下事件
-     */
-    public void hint(int iconId, String hintText, String buttonName, OnClickListener buttonClickListener) {
-        hint(iconId, hintText, buttonName, buttonClickListener, false);
-    }
-
-    /**
-     * 显示提示
-     *
-     * @param iconId   图标ID，如果不想显示图标的话，此参数传-1即可
-     * @param hintText 提示信息
-     */
-    public void hint(int iconId, String hintText) {
-        hint(iconId, hintText, null, null, false);
-    }
-
-    /**
-     * 显示提示
-     *
-     * @param hintText            提示信息
-     * @param buttonName          按钮的名称
-     * @param buttonClickListener 按钮的按下事件
-     * @param transparent         是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
-     */
-    public void hint(String hintText, String buttonName, OnClickListener buttonClickListener, boolean transparent) {
-        hint(-1, hintText, buttonName, buttonClickListener, transparent);
-    }
-
-    /**
-     * 显示提示
-     *
-     * @param hintText            提示信息
-     * @param buttonName          按钮的名称
-     * @param buttonClickListener 按钮的按下事件
-     */
-    public void hint(String hintText, String buttonName, OnClickListener buttonClickListener) {
-        hint(-1, hintText, buttonName, buttonClickListener, false);
-    }
-
-    /**
-     * 显示提示，默认没有图标、没有按钮、背景不透明
-     *
-     * @param hintText    提示信息
-     * @param transparent 是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
-     */
-    public void hint(String hintText, boolean transparent) {
-        hint(-1, hintText, null, null, transparent);
-    }
-
-    /**
-     * 显示提示
-     *
-     * @param hintText 提示信息
-     */
-    public void hint(String hintText) {
-        hint(-1, hintText, null, null, false);
-    }
-
-    /**
-     * 失败
-     *
-     * @param failure                   失败了
-     * @param reloadButtonClickListener 重新加载按钮点击监听器
-     */
-    public void failed(HttpRequest.Failure failure, OnClickListener reloadButtonClickListener) {
-        String message;
-        if (failure != null) {
-            message = failure.getMessage();
-            if (failure.isException()) {
-                Throwable exception = failure.getException();
-                if (exception == null) {
-                    message = "网络连接异常【909】";
-                } else if (exception instanceof SecurityException) {
-                    message = "网络连接异常【101】";
-                } else if (exception instanceof UnknownHostException) {
-                    if (isConnectedByState(getContext())) {
-                        message = "网络连接异常【202】";
-                    } else {
-                        message = "没有网络连接";
-                    }
-                } else if (exception instanceof HttpHostConnectException && exception.getMessage() != null && exception.getMessage().contains("refused")) {
-                    message = "网络连接异常【202】";
-                } else if (exception instanceof SocketTimeoutException || exception instanceof ConnectTimeoutException) {
-                    message = "网络连接超时";
-                } else if (exception instanceof FileNotFoundException) {
-                    message = "网络连接异常【404】";
-                } else {
-                    message = "网络连接异常【909】";
-                }
-            }
-        } else {
-            message = "加载失败了";
-        }
-        hint(R.drawable.ic_error, message, "刷新", reloadButtonClickListener, false);
-    }
-
-    /**
-     * 空
-     *
-     * @param type
-     */
-    public void empty(String type) {
-        hint(R.drawable.ic_error, String.format("没有%s", type), null, null, false);
-    }
-
-    /**
-     * 隐藏
-     */
-    public void hidden() {
-        switch (viewSwitcher.getDisplayedChild()) {
-            case 0:
-                goneViewByAlpha(this, true);
-                break;
-            case 1:
-                setVisibility(View.GONE);
-                break;
-        }
-        mode = null;
-    }
-
-    private enum Mode {
-        LOADING(0),
-        HINT(1);
-
-        int index;
-
-        private Mode(int index) {
-            this.index = index;
-        }
     }
 
     public static boolean isEmpty(String string) {
@@ -455,5 +218,281 @@ public class HintView extends LinearLayout {
     public static boolean isConnectedByState(Context context) {
         NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         return networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED;
+    }
+
+    private void init() {
+        try {
+            LayoutInflater.from(getContext()).inflate(R.layout.view_hint, this);
+            viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher_hint);
+            loadingHintTextView = (TextView) findViewById(R.id.text_hint_loadingHint);
+            hintTextView = (TextView) findViewById(R.id.text_hint_hint);
+            actionButton = (Button) findViewById(R.id.button_hint_action);
+            progressTextView = (TextView) findViewById(R.id.text_hint_progress);
+            setVisibility(View.GONE);
+        } catch (Throwable throwable) {
+
+        }
+    }
+
+    /**
+     * 显示加载中，将使用type格式化“正在加载%s，请稍后…”字符串
+     */
+    public void loading(String message) {
+        loadingHintTextView.setText(message);
+        loadingHintTextView.setVisibility(TextUtils.isEmpty(message) ? GONE : VISIBLE);
+        setProgress(0, 0);
+
+        if (mode != Mode.LOADING) {
+            if (mode == Mode.HINT) {
+                viewSwitcher.setInAnimation(getContext(), R.anim.slide_to_bottom_in);
+                viewSwitcher.setOutAnimation(getContext(), R.anim.slide_to_bottom_out);
+            } else {
+                viewSwitcher.setInAnimation(null);
+                viewSwitcher.setOutAnimation(null);
+            }
+            mode = Mode.LOADING;
+            actionButton.setVisibility(View.INVISIBLE);
+            viewSwitcher.setDisplayedChild(mode.index);
+            setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setProgress(int totalLength, int completedLength) {
+        if (completedLength <= 0) {
+            progressTextView.setText(null);
+        } else {
+            int ratio = (int) (((float) completedLength / totalLength) * 100);
+            Log.e("setProgress", String.format("totalLength=%d, completedLength=%d. %d", totalLength, completedLength, ratio));
+            progressTextView.setText(String.format("%d%%", ratio));
+        }
+    }
+
+    /**
+     * 显示提示
+     *
+     * @param iconId              图标ID，如果不想显示图标的话，此参数传-1即可
+     * @param hintText            提示信息
+     * @param buttonName          按钮的名称
+     * @param buttonClickListener 按钮的按下事件
+     * @param transparent         是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @SuppressWarnings("deprecation")
+    public void hint(int iconId, String hintText, String buttonName, OnClickListener buttonClickListener, boolean transparent) {
+        if (iconId > 0) {
+            Drawable[] drawables = hintTextView.getCompoundDrawables();
+            hintTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], getResources().getDrawable(iconId), drawables[2], drawables[3]);
+        } else {
+            Drawable[] drawables = hintTextView.getCompoundDrawables();
+            hintTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, drawables[2], drawables[3]);
+        }
+
+        if (isNotEmpty(hintText)) {
+            hintTextView.setText(hintText);
+        } else {
+            hintTextView.setText(null);
+        }
+
+        if (isNotEmpty(buttonName) && buttonClickListener != null) {
+            actionButton.setText(buttonName);
+            actionButton.setOnClickListener(buttonClickListener);
+            visibleViewByAlpha(actionButton, true);
+        } else {
+            actionButton.setText(null);
+            actionButton.setOnClickListener(null);
+            actionButton.setVisibility(View.INVISIBLE);
+        }
+
+        if (transparent) {
+//			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+//				setBackground(null);
+//			}else{
+//				setBackgroundDrawable(null);
+//			}
+            setClickable(false);
+        } else {
+//			setBackgroundColor(getResources().getColor(R.color.page_background));
+            setClickable(true);
+        }
+
+        if (mode != Mode.HINT) {
+            if (mode != null) {
+                viewSwitcher.setInAnimation(getContext(), R.anim.slide_to_top_in);
+                viewSwitcher.setOutAnimation(getContext(), R.anim.slide_to_top_out);
+            } else {
+                viewSwitcher.setInAnimation(null);
+                viewSwitcher.setOutAnimation(null);
+            }
+            mode = Mode.HINT;
+            viewSwitcher.setDisplayedChild(1);
+            setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 显示提示
+     *
+     * @param iconId              图标ID，如果不想显示图标的话，此参数传-1即可
+     * @param hintText            提示信息
+     * @param buttonName          按钮的名称
+     * @param buttonClickListener 按钮的按下事件
+     */
+    public void hint(int iconId, String hintText, String buttonName, OnClickListener buttonClickListener) {
+        hint(iconId, hintText, buttonName, buttonClickListener, false);
+    }
+
+    /**
+     * 显示提示
+     *
+     * @param iconId   图标ID，如果不想显示图标的话，此参数传-1即可
+     * @param hintText 提示信息
+     */
+    public void hint(int iconId, String hintText) {
+        hint(iconId, hintText, null, null, false);
+    }
+
+    /**
+     * 显示提示
+     *
+     * @param hintText            提示信息
+     * @param buttonName          按钮的名称
+     * @param buttonClickListener 按钮的按下事件
+     * @param transparent         是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
+     */
+    public void hint(String hintText, String buttonName, OnClickListener buttonClickListener, boolean transparent) {
+        hint(-1, hintText, buttonName, buttonClickListener, transparent);
+    }
+
+    /**
+     * 显示提示
+     *
+     * @param hintText            提示信息
+     * @param buttonName          按钮的名称
+     * @param buttonClickListener 按钮的按下事件
+     */
+    public void hint(String hintText, String buttonName, OnClickListener buttonClickListener) {
+        hint(-1, hintText, buttonName, buttonClickListener, false);
+    }
+
+    /**
+     * 显示提示，默认没有图标、没有按钮、背景不透明
+     *
+     * @param hintText    提示信息
+     * @param transparent 是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
+     */
+    public void hint(String hintText, boolean transparent) {
+        hint(-1, hintText, null, null, transparent);
+    }
+
+    /**
+     * 显示提示
+     *
+     * @param hintText 提示信息
+     */
+    public void hint(String hintText) {
+        hint(-1, hintText, null, null, false);
+    }
+
+    /**
+     * 失败
+     *
+     * @param failure                   失败了
+     * @param reloadButtonClickListener 重新加载按钮点击监听器
+     */
+    public void failed(HttpRequest.Failure failure, OnClickListener reloadButtonClickListener) {
+        String message;
+        if (failure != null) {
+            message = failure.getMessage();
+            if (failure.isException()) {
+                Throwable exception = failure.getException();
+                if (exception == null) {
+                    message = "网络连接异常【909】";
+                } else if (exception instanceof SecurityException) {
+                    message = "网络连接异常【101】";
+                } else if (exception instanceof UnknownHostException) {
+                    if (isConnectedByState(getContext())) {
+                        message = "网络连接异常【202】";
+                    } else {
+                        message = "没有网络连接";
+                    }
+                } else if (exception instanceof HttpHostConnectException && exception.getMessage() != null && exception.getMessage().contains("refused")) {
+                    message = "网络连接异常【202】";
+                } else if (exception instanceof SocketTimeoutException || exception instanceof ConnectTimeoutException) {
+                    message = "网络连接超时";
+                } else if (exception instanceof FileNotFoundException) {
+                    message = "网络连接异常【404】";
+                } else {
+                    message = "网络连接异常【909】";
+                }
+            }
+        } else {
+            message = "加载失败了";
+        }
+        hint(R.drawable.ic_error, message, "刷新", reloadButtonClickListener, false);
+    }
+
+    /**
+     * 失败
+     *
+     * @param exception                 失败了
+     * @param reloadButtonClickListener 重新加载按钮点击监听器
+     */
+    public void failed(Throwable exception, OnClickListener reloadButtonClickListener) {
+        String message;
+        if (exception == null) {
+            message = "网络连接异常【909】";
+        } else if (exception instanceof SecurityException) {
+            message = "网络连接异常【101】";
+        } else if (exception instanceof UnknownHostException) {
+            if (isConnectedByState(getContext())) {
+                message = "网络连接异常【202】";
+            } else {
+                message = "没有网络连接";
+            }
+        } else if (exception instanceof HttpHostConnectException && exception.getMessage() != null && exception.getMessage().contains("refused")) {
+            message = "网络连接异常【202】";
+        } else if (exception instanceof SocketTimeoutException || exception instanceof ConnectTimeoutException) {
+            message = "网络连接超时";
+        } else if (exception instanceof FileNotFoundException) {
+            message = "网络连接异常【404】";
+        } else {
+            message = "网络连接异常【909】";
+        }
+        hint(R.drawable.ic_error, message, "重试", reloadButtonClickListener, false);
+    }
+
+    /**
+     * 空
+     *
+     * @param type
+     */
+    public void empty(String type) {
+        hint(R.drawable.ic_error, String.format("没有%s", type), null, null, false);
+    }
+
+    /**
+     * 隐藏
+     */
+    public void hidden() {
+        switch (viewSwitcher.getDisplayedChild()) {
+            case 0:
+                goneViewByAlpha(this, true);
+                break;
+            case 1:
+                setVisibility(View.GONE);
+                break;
+        }
+        mode = null;
+    }
+
+    private enum Mode {
+        LOADING(0),
+        HINT(1);
+
+        int index;
+
+        private Mode(int index) {
+            this.index = index;
+        }
     }
 }

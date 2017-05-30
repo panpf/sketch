@@ -86,8 +86,8 @@ public class HotStarTwoItemFactory extends AssemblyRecyclerItemFactory<HotStarTw
             twoImageView.setLayoutParams(params);
             twoImageView.setOptionsByName(ImageOptions.RECT);
 
-            oneImageView.setUseInList(true);
-            twoImageView.setUseInList(true);
+            oneImageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
+            twoImageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
         }
 
         @Override
