@@ -3,6 +3,7 @@ package me.xiaopan.sketchsample.widget;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
@@ -21,6 +22,7 @@ import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriInfo;
@@ -263,7 +265,13 @@ public class MyImageView extends SketchImageView {
             String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
 
             int previewDrawableByteCount = sketchDrawable.getByteCount();
-            int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+            int pixelByteCount;
+            if (drawable instanceof SketchShapeBitmapDrawable) {
+                Bitmap bitmap = ((SketchShapeBitmapDrawable) drawable).getBitmapDrawable().getBitmap();
+                pixelByteCount = previewDrawableByteCount / bitmap.getWidth() / bitmap.getHeight();
+            } else {
+                pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+            }
             int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
             String needMemory = Formatter.formatFileSize(getContext(), originImageByteCount);
             String mimeType = sketchDrawable.getMimeType();
