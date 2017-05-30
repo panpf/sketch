@@ -120,6 +120,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         super.onCreate(savedInstanceState);
 
         initViews();
+        initData();
         startService(new Intent(getBaseContext(), NotificationService.class));
         switchPage(Page.UNSPLASH);
     }
@@ -186,7 +187,26 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
             }
         });
+    }
 
+    private void initData() {
+        AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(makeMenuList());
+        adapter.addItemFactory(new MenuTitleItemFactory());
+        adapter.addItemFactory(new PageMenuItemFactory(new PageMenuItemFactory.OnClickItemListener() {
+            @Override
+            public void onClickItem(Page page) {
+                switchPage(page);
+            }
+        }));
+        adapter.addItemFactory(new CheckMenuItemFactory());
+        adapter.addItemFactory(new InfoMenuItemFactory());
+        menuRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        menuRecyclerView.setAdapter(adapter);
+
+        ImageOrientationCorrectTestFileGenerator.getInstance(getBaseContext()).onAppStart();
+    }
+
+    private List<Object> makeMenuList() {
         List<Object> menuList = new ArrayList<Object>();
 
         final View.OnClickListener menuClickListener = new View.OnClickListener() {
@@ -210,8 +230,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }
 
-        menuList.add("缓存");
-        menuList.add(new InfoMenu("内存缓存（点击清空）") {
+        menuList.add("Cache");
+        menuList.add(new InfoMenu("Memory Cache (Click Clean)") {
             @Override
             public String getInfo() {
                 MemoryCache memoryCache = Sketch.with(getBaseContext()).getConfiguration().getMemoryCache();
@@ -229,7 +249,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 EventBus.getDefault().post(new CacheCleanEvent());
             }
         });
-        menuList.add(new InfoMenu("BitmapPool（点击清空）") {
+        menuList.add(new InfoMenu("Bitmap Pool (Click Clean)") {
             @Override
             public String getInfo() {
                 BitmapPool bitmapPool = Sketch.with(getBaseContext()).getConfiguration().getBitmapPool();
@@ -247,7 +267,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 EventBus.getDefault().post(new CacheCleanEvent());
             }
         });
-        menuList.add(new InfoMenu("磁盘缓存（点击清空）") {
+        menuList.add(new InfoMenu("Disk Cache (Click Clean)") {
             @Override
             public String getInfo() {
                 DiskCache diskCache = Sketch.with(getBaseContext()).getConfiguration().getDiskCache();
@@ -276,12 +296,12 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 }.execute(0);
             }
         });
-        menuList.add(new CheckMenu(this, "全局禁用内存缓存", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "全局禁用BitmapPool", AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "全局禁用磁盘缓存", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Disable Memory Cache", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Disable Bitmap Pool", AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Disable Disk Cache", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
 
-        menuList.add("手势缩放");
-        menuList.add(new CheckMenu(this, "手势缩放（详情页）", AppConfig.Key.SUPPORT_ZOOM, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add("Gesture Zoom");
+        menuList.add(new CheckMenu(this, "Enabled Gesture Zoom In Detail Page", AppConfig.Key.SUPPORT_ZOOM, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChangedBefore(boolean checked) {
                 if (!checked && AppConfig.getBoolean(getBaseContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE)) {
@@ -294,11 +314,11 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
             }
         }, menuClickListener));
-        menuList.add(new CheckMenu(this, "阅读模式（详情页）", AppConfig.Key.READ_MODE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "定位时显示动画（详情页）", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener));
 
-        menuList.add("分块显示超大图");
-        menuList.add(new CheckMenu(this, "分块显示超大图（详情页）", AppConfig.Key.SUPPORT_LARGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add("Block Display Large Image");
+        menuList.add(new CheckMenu(this, "Enabled Block Display Large Image In Detail Page", AppConfig.Key.SUPPORT_LARGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChangedBefore(boolean checked) {
                 if (checked && !AppConfig.getBoolean(getBaseContext(), AppConfig.Key.SUPPORT_ZOOM)) {
@@ -311,53 +331,40 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
             }
         }, menuClickListener));
-        menuList.add(new CheckMenu(this, "仅可见时解码超大图（详情页）", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Visible To User Decode Large Image In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
 
         menuList.add("GIF");
-        menuList.add(new CheckMenu(this, "自动播放GIF（列表）", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示GIF标识（列表）", AppConfig.Key.SHOW_GIF_FLAG, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "点击播放GIF（列表）", AppConfig.Key.CLICK_PLAY_GIF, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Auto Play GIF In List", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Click Play GIF In List", AppConfig.Key.CLICK_PLAY_GIF, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Show GIF Flag In List", AppConfig.Key.SHOW_GIF_FLAG, null, menuClickListener));
 
-        menuList.add("解码");
-        menuList.add(new CheckMenu(this, "全局解码时质量优先", AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "全局使用低质量图片", AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "高清缩略图模式（列表）", AppConfig.Key.THUMBNAIL_MODE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "缓存处理过的图片", AppConfig.Key.CACHE_PROCESSED_IMAGE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "禁用纠正图片方向功能", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener));
+        menuList.add("Decode");
+        menuList.add(new CheckMenu(this, "In Prefer Quality Over Speed", AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Low Quality Bitmap", AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Enabled Thumbnail Mode In List", AppConfig.Key.THUMBNAIL_MODE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Cache Processed Image In Disk", AppConfig.Key.CACHE_PROCESSED_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Disabled Correct Image Orientation", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener));
 
-        menuList.add("其它");
-        menuList.add(new CheckMenu(this, "显示映射缩略图（详情页）", AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示按下状态（列表）", AppConfig.Key.CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示图片来源角标", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示图片下载进度（列表）", AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "暂停下载时点击显示图片（列表）", AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "失败时点击重试（列表）", AppConfig.Key.CLICK_RETRY_ON_FAILED, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "滑动时不加载新图片（列表）", AppConfig.Key.SCROLLING_PAUSE_LOAD, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "移动网络时不下载新图片", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add("Other");
+        menuList.add(new CheckMenu(this, "Show Mapping Thumbnail In Detail Page", AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Show Press Status In List", AppConfig.Key.CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Show Image From Corner Mark", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Show Download Progress In List", AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Click Show Image On Pause Download In List", AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Click Retry On Error In List", AppConfig.Key.CLICK_RETRY_ON_FAILED, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Scrolling Pause Load Image In List", AppConfig.Key.SCROLLING_PAUSE_LOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Mobile Network Pause Download Image", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
 
-        menuList.add("日志");
-        menuList.add(new CheckMenu(this, "请求日志", AppConfig.Key.LOG_REQUEST, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "缓存日志", AppConfig.Key.LOG_CACHE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "手势缩放日志", AppConfig.Key.LOG_ZOOM, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "分块显示超大图日志", AppConfig.Key.LOG_LARGE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "时间日志", AppConfig.Key.LOG_TIME, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "其它日志", AppConfig.Key.LOG_BASE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "同步输出日志到cache/sketch_log目录下", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener));
+        menuList.add("Log");
+        menuList.add(new CheckMenu(this, "Output Request Course Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Cache Log", AppConfig.Key.LOG_CACHE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Gesture Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Block Display Large Image Log", AppConfig.Key.LOG_LARGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Used Time Log", AppConfig.Key.LOG_TIME, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Other Log", AppConfig.Key.LOG_BASE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener));
 
-        AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(menuList);
-        adapter.addItemFactory(new MenuTitleItemFactory());
-        adapter.addItemFactory(new PageMenuItemFactory(new PageMenuItemFactory.OnClickItemListener() {
-            @Override
-            public void onClickItem(Page page) {
-                switchPage(page);
-            }
-        }));
-        adapter.addItemFactory(new CheckMenuItemFactory());
-        adapter.addItemFactory(new InfoMenuItemFactory());
-        menuRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-        menuRecyclerView.setAdapter(adapter);
-
-        ImageOrientationCorrectTestFileGenerator.getInstance(getBaseContext()).onAppStart();
+        return menuList;
     }
 
     @Override
@@ -391,7 +398,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 //        if (page == Page.STAR) {
 //            AnimationUtils.visibleViewByAlpha(starTabStrip);
 //        } else {
-            AnimationUtils.invisibleViewByAlpha(starTabStrip);
+        AnimationUtils.invisibleViewByAlpha(starTabStrip);
 //        }
         if (page == Page.APP_LIST) {
             AnimationUtils.visibleViewByAlpha(appListTabStrip);
@@ -469,7 +476,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
     public enum Page {
         UNSPLASH("Unsplash", UnsplashPhotosFragment.class, false, false),
-//        STAR("明星图片", StarIndexFragment.class, false, false),
+        //        STAR("明星图片", StarIndexFragment.class, false, false),
         SEARCH("GIF Search", SearchFragment.class, false, false),
         PHOTO_ALBUM("Photo Album", PhotoAlbumFragment.class, false, false),
         APP_LIST("My Apps", AppListFragment.class, false, false),
