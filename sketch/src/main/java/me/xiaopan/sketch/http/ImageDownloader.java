@@ -284,7 +284,7 @@ public class ImageDownloader implements Identifier {
 
                 // 每秒钟回调一次进度
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastCallbackTime >= 1000) {
+                if (currentTime - lastCallbackTime >= 100) {
                     lastCallbackTime = currentTime;
                     request.updateProgress(contentLength, completedLength);
                 }

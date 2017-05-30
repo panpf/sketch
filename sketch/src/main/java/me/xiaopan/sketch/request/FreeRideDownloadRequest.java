@@ -114,4 +114,17 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
             return false;
         }
     }
+
+    @Override
+    public void updateProgress(int totalLength, int completedLength) {
+        super.updateProgress(totalLength, completedLength);
+
+        if (downloadFreeRideSet != null && !downloadFreeRideSet.isEmpty()) {
+            for (FreeRideManager.DownloadFreeRide freeRide : downloadFreeRideSet) {
+                if (freeRide != null && freeRide instanceof DownloadRequest) {
+                    ((DownloadRequest) freeRide).updateProgress(totalLength, completedLength);
+                }
+            }
+        }
+    }
 }

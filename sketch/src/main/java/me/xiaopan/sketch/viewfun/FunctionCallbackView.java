@@ -217,7 +217,7 @@ public abstract class FunctionCallbackView extends ImageView implements ImageVie
 
     @Override
     public DownloadProgressListener getDownloadProgressListener() {
-        if (getFunctions().showProgressFunction != null || wrapperDisplayListener != null) {
+        if (getFunctions().showProgressFunction != null || wrapperProgressListener != null) {
             return progressListenerProxy;
         } else {
             return null;
