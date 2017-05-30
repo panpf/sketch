@@ -21,7 +21,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchTransitionDrawable;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -65,11 +67,19 @@ public class TransitionImageDisplayer implements ImageDisplayer {
             if (oldDrawable == null) {
                 oldDrawable = new ColorDrawable(Color.TRANSPARENT);
             }
-            TransitionDrawable transitionDrawable = new SketchTransitionDrawable(oldDrawable, newDrawable);
-            imageViewInterface.clearAnimation();
-            imageViewInterface.setImageDrawable(transitionDrawable);
-            transitionDrawable.setCrossFadeEnabled(true);
-            transitionDrawable.startTransition(duration);
+
+            if (oldDrawable instanceof SketchDrawable
+                    && !(oldDrawable instanceof SketchLoadingDrawable)
+                    && newDrawable instanceof SketchDrawable
+                    && ((SketchDrawable) oldDrawable).getKey().equals(((SketchDrawable) newDrawable).getKey())) {
+                imageViewInterface.setImageDrawable(newDrawable);
+            } else {
+                TransitionDrawable transitionDrawable = new SketchTransitionDrawable(oldDrawable, newDrawable);
+                imageViewInterface.clearAnimation();
+                imageViewInterface.setImageDrawable(transitionDrawable);
+                transitionDrawable.setCrossFadeEnabled(true);
+                transitionDrawable.startTransition(duration);
+            }
         }
     }
 
