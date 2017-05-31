@@ -84,6 +84,8 @@ import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
+// TODO: 2017/6/1 0001 去掉对android injector的依赖
+
 /**
  * 首页
  */
@@ -312,8 +314,8 @@ public class MainActivity extends MyBaseActivity implements AppListFragment.GetA
         menuList.add(new CheckMenu(this, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener));
 
-        menuList.add("Block Display Large BaiduSearchImage");
-        menuList.add(new CheckMenu(this, "Enabled Block Display Large BaiduSearchImage In Detail Page", AppConfig.Key.SUPPORT_LARGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add("Block Display Large Image");
+        menuList.add(new CheckMenu(this, "Enabled Block Display Large Image In Detail Page", AppConfig.Key.SUPPORT_LARGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChangedBefore(boolean checked) {
                 if (checked && !AppConfig.getBoolean(getBaseContext(), AppConfig.Key.SUPPORT_ZOOM)) {
@@ -326,7 +328,7 @@ public class MainActivity extends MyBaseActivity implements AppListFragment.GetA
 
             }
         }, menuClickListener));
-        menuList.add(new CheckMenu(this, "Visible To User Decode Large BaiduSearchImage In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Visible To User Decode Large Image In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
 
         menuList.add("GIF");
         menuList.add(new CheckMenu(this, "Auto Play GIF In List", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener));
@@ -337,24 +339,24 @@ public class MainActivity extends MyBaseActivity implements AppListFragment.GetA
         menuList.add(new CheckMenu(this, "In Prefer Quality Over Speed", AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Low Quality Bitmap", AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Enabled Thumbnail Mode In List", AppConfig.Key.THUMBNAIL_MODE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Cache Processed BaiduSearchImage In Disk", AppConfig.Key.CACHE_PROCESSED_IMAGE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Disabled Correct BaiduSearchImage Orientation", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Cache Processed Image In Disk", AppConfig.Key.CACHE_PROCESSED_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Disabled Correct Image Orientation", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener));
 
         menuList.add("Other");
         menuList.add(new CheckMenu(this, "Show Mapping Thumbnail In Detail Page", AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Press Status In List", AppConfig.Key.CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Show BaiduSearchImage From Corner Mark", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Show Image From Corner Mark", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Download Progress In List", AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Click Show BaiduSearchImage On Pause Download In List", AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Click Show Image On Pause Download In List", AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Click Retry On Error In List", AppConfig.Key.CLICK_RETRY_ON_FAILED, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Scrolling Pause Load BaiduSearchImage In List", AppConfig.Key.SCROLLING_PAUSE_LOAD, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Mobile Network Pause Download BaiduSearchImage", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Scrolling Pause Load Image In List", AppConfig.Key.SCROLLING_PAUSE_LOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Mobile Network Pause Download Image", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
 
         menuList.add("Log");
         menuList.add(new CheckMenu(this, "Output Request Course Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Cache Log", AppConfig.Key.LOG_CACHE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Gesture Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Output Block Display Large BaiduSearchImage Log", AppConfig.Key.LOG_LARGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Block Display Large Image Log", AppConfig.Key.LOG_LARGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Used Time Log", AppConfig.Key.LOG_TIME, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Other Log", AppConfig.Key.LOG_BASE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener));
@@ -466,13 +468,13 @@ public class MainActivity extends MyBaseActivity implements AppListFragment.GetA
         APP_LIST("My Apps", AppListFragment.class, false, false),
         ABOUT("About Sketch", AboutFragment.class, false, false),
 
-        LARGE_IMAGE("Block Display Large BaiduSearchImage", LargeImageTestFragment.class, true, false),
-        IMAGE_PROCESSOR_TEST("BaiduSearchImage Processor Test", ImageProcessorTestFragment.class, true, false),
-        IMAGE_SHAPER_TESt("BaiduSearchImage Shaper Test", ImageShaperTestFragment.class, true, false),
+        LARGE_IMAGE("Block Display Large Image", LargeImageTestFragment.class, true, false),
+        IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment.class, true, false),
+        IMAGE_SHAPER_TESt("Image Shaper Test", ImageShaperTestFragment.class, true, false),
         REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment.class, true, false),
         IN_BITMAP_TESt("inBitmap Test", InBitmapTestFragment.class, true, false),
-        IMAGE_ORIENTATION_TEST("BaiduSearchImage Orientation Test", ImageOrientationTestHomeFragment.class, true, false),
-        BASE64_IMAGE_TESt("Base64 BaiduSearchImage Test", Base64ImageTestFragment.class, true, false),
+        IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment.class, true, false),
+        BASE64_IMAGE_TESt("Base64 Image Test", Base64ImageTestFragment.class, true, false),
         OTHER_TEST("Other Test", OtherTestFragment.class, true, !BuildConfig.DEBUG),;
 
         private String name;

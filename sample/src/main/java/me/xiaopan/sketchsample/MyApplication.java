@@ -22,7 +22,6 @@ import android.os.Build;
 import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 
-import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.sketch.Sketch;
 
 public class MyApplication extends Application {
@@ -31,8 +30,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         CrashReport.initCrashReport(getBaseContext(), "900007777", BuildConfig.DEBUG);
-
-        GoHttp.with(getBaseContext()).setDebugMode(BuildConfig.DEBUG);
 
         SketchManager sketchManager = new SketchManager(getBaseContext());
         sketchManager.initConfig(getBaseContext());

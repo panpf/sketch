@@ -2,23 +2,16 @@ package me.xiaopan.sketchsample.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-// TODO: 2017/5/31 0031 跟baidusearchimage融合
 public class BaiduImage {
-    @SerializedName("thumbnail_url")
-    private String thumbUrl;
 
-    @SerializedName("image_url")
+    @SerializedName("thumbURL")
     private String sourceUrl;
 
-    @SerializedName("image_width")
+    @SerializedName("width")
     private int width;
 
-    @SerializedName("image_height")
+    @SerializedName("height")
     private int height;
-
-    public String getThumbUrl() {
-        return thumbUrl;
-    }
 
     public String getSourceUrl() {
         return sourceUrl;

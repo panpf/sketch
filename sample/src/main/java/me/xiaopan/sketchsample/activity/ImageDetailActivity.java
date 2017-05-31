@@ -36,6 +36,7 @@ import me.xiaopan.sketchsample.fragment.ImageDetailFragment;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
+// TODO: 2017/6/1 0001 支持清晰的和不清晰度两种分辨率的图片，然后加个选项控制，这样就可以显示unsplash超清原图了
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
 public class ImageDetailActivity extends MyBaseActivity implements ApplyBackgroundCallback {

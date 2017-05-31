@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.sketchsample.R;
 
 /**
@@ -391,44 +390,6 @@ public class HintView extends LinearLayout {
      */
     public void hint(String hintText) {
         hint(-1, hintText, null, null, false);
-    }
-
-    /**
-     * 失败
-     *
-     * @param failure                   失败了
-     * @param reloadButtonClickListener 重新加载按钮点击监听器
-     */
-    public void failed(HttpRequest.Failure failure, OnClickListener reloadButtonClickListener) {
-        String message;
-        if (failure != null) {
-            message = failure.getMessage();
-            if (failure.isException()) {
-                Throwable exception = failure.getException();
-                if (exception == null) {
-                    message = "网络连接异常【909】";
-                } else if (exception instanceof SecurityException) {
-                    message = "网络连接异常【101】";
-                } else if (exception instanceof UnknownHostException) {
-                    if (isConnectedByState(getContext())) {
-                        message = "网络连接异常【202】";
-                    } else {
-                        message = "没有网络连接";
-                    }
-                } else if (exception instanceof HttpHostConnectException && exception.getMessage() != null && exception.getMessage().contains("refused")) {
-                    message = "网络连接异常【202】";
-                } else if (exception instanceof SocketTimeoutException || exception instanceof ConnectTimeoutException) {
-                    message = "网络连接超时";
-                } else if (exception instanceof FileNotFoundException) {
-                    message = "网络连接异常【404】";
-                } else {
-                    message = "网络连接异常【909】";
-                }
-            }
-        } else {
-            message = "加载失败了";
-        }
-        hint(R.drawable.ic_error, message, "刷新", reloadButtonClickListener, false);
     }
 
     /**
