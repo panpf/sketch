@@ -20,37 +20,34 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.fragment.StarHomeFragment;
+import me.xiaopan.sketchsample.fragment.ImageDetailFragment;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-/**
- * 明星个人主页
- */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class StarHomeActivity extends MyBaseActivity implements ApplyBackgroundCallback {
+public class ImageDetailActivity extends MyBaseActivity implements ApplyBackgroundCallback {
 
     @InjectView(R.id.image_onlyFragment_background) MyImageView backgroundImageView;
     @InjectView(R.id.layout_onlyFragment_content) View contentView;
 
-    @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE)
-    private String starTitle;
-
-    public static void launch(Activity activity, String starName) {
-        Intent intent = new Intent(activity, StarHomeActivity.class);
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, starName);
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/" + starName);
+    public static void launch(Activity activity, ArrayList<String> imageUrlList, String loadingImageOptionsInfo, int defaultPosition) {
+        Intent intent = new Intent(activity, ImageDetailActivity.class);
+        intent.putStringArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
+        intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO, loadingImageOptionsInfo);
+        intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
     }
@@ -58,8 +55,6 @@ public class StarHomeActivity extends MyBaseActivity implements ApplyBackgroundC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             contentView.setPadding(contentView.getPaddingLeft(),
@@ -74,12 +69,14 @@ public class StarHomeActivity extends MyBaseActivity implements ApplyBackgroundC
 
         backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
 
-        StarHomeFragment starHomeFragment = new StarHomeFragment();
-        starHomeFragment.setArguments(getIntent().getExtras());
+        toolbar.setVisibility(View.GONE);
+
+        ImageDetailFragment imageDetailFragment = new ImageDetailFragment();
+        imageDetailFragment.setArguments(getIntent().getExtras());
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_onlyFragment_content, starHomeFragment)
+                .replace(R.id.frame_onlyFragment_content, imageDetailFragment)
                 .commit();
     }
 
@@ -89,8 +86,15 @@ public class StarHomeActivity extends MyBaseActivity implements ApplyBackgroundC
     }
 
     @Override
-    protected void onPreSetSupportActionBar() {
-        toolbar.setTitle(starTitle);
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        boolean result = true;
+        try {
+            result = super.dispatchTouchEvent(ev);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     @Override

@@ -46,7 +46,7 @@
 **Spear**
 >* ``优化``. 将一些配置移到了Configuration.java中，debugMode的设置直接改成了静态的
 >* ``新增``. 增加pause功能，你可以在列表滚动时调用pause()方法暂停加载新图片，在列表停止滚动后调用resume()方法恢复并刷新列表，通过这样的手段来提高列表滑动流畅度
->* ``修改``. image uri不再支持“file:///mnt/sdcard/image.png”，直接支持“/mnt/sdcard/image.png”
+>* ``修改``. baiduSearchImage uri不再支持“file:///mnt/sdcard/baiduSearchImage.png”，直接支持“/mnt/sdcard/baiduSearchImage.png”
 >* ``修复``. 修复了由于DisplayHelper、LoadHelper、DownloadHelper的options()方法参数为null时返回了一个null对象的BUG，这会导致使用SpearImageView时由于没有设置DisplayOptions而引起崩溃
 >* ``修改``. 修改DisplayHelper中loadFailedDrawable()方法的名称为loadFailDrawable()
 >* ``修复``. 修复DisplayHelper、LoadHelper、DownloadHelper中调用options()方法设置参数的时候会直接覆盖Helper中的参数的BUG，修改后的规则是如果helper中为null，且Options中的参数被设置过才会覆盖

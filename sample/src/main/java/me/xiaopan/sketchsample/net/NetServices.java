@@ -13,11 +13,10 @@ public class NetServices {
         if (unsplashService == null) {
             synchronized (NetServices.class) {
                 if (unsplashService == null) {
-                    Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.unsplash.com")
+                    unsplashService = new Retrofit.Builder()
+                            .baseUrl("https://api.unsplash.com")
                             .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    unsplashService = retrofit.create(UnsplashService.class);
+                            .build().create(UnsplashService.class);
                 }
             }
         }

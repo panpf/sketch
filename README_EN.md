@@ -11,21 +11,21 @@
 
 `by Google Translate`
 
-Sketch is a powerful and comprehensive image loader on Android, with support for GIF, gesture zooming, block display super large image
+Sketch is a powerful and comprehensive baiduSearchImage loader on Android, with support for GIF, gesture zooming, block display super large baiduSearchImage
 
 ![sample](docs/res/sample.jpg)
 
 ### Features
->* `Multiple URL support`. Support for `http:// or https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg or /sdcard/sample.jpg`、`drawable://`、`data:image/ or data:img/`6 kinds of URI
+>* `Multiple URL support`. Support for `http:// or https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg or /sdcard/sample.jpg`、`drawable://`、`data:baiduSearchImage/ or data:img/`6 kinds of URI
 >* `Support gif`. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
 >* `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
 >* `Support block display large picture`. Support block display large picture function, from then the big picture is not afraid
 >* `Support level 3 cache`. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
->* `Support correcting picture orientation`. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
+>* `Support correcting picture orientation`. Can correct the direction of the baiduSearchImage is not correct, and block display large map function also supports only jpeg format pictures
 >* `Support reading APK icon`. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
->* `Support Base64 image`. Support parse of Base64 format image
+>* `Support Base64 baiduSearchImage`. Support parse of Base64 format baiduSearchImage
 >* `Support various list`. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
->* `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
+>* `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the baiduSearchImage memory, the default for the ImageView layout_width and layout_height or screen size
 >* `Exclusive TransitionDrawable support`. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
 >* `Only to load or only to download`. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
 >* `Paused download on mobile network`. Built-in mobile network to download pictures under the suspended function, you can simply open
@@ -88,24 +88,24 @@ public class MyApplication extends Application {
 ```java
 SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
 
-// display image from net
+// display baiduSearchImage from net
 sketchImageView.displayImage("http://t.cn/RShdS1f");
 
-// display image from SDCard
+// display baiduSearchImage from SDCard
 sketchImageView.displayImage("/sdcard/sample.jpg");
 sketchImageView.displayImage("file:///sdcard/sample.jpg");
 
 // display resource drawable
 sketchImageView.displayResourceImage(R.drawable.sample);
 
-// display image from asset
+// display baiduSearchImage from asset
 sketchImageView.displayAssetImage("sample.jpg");
 
-// display image from content provider
+// display baiduSearchImage from content provider
 sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/last"));
 
-// display base64 image
-sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
+// display base64 baiduSearchImage
+sketchImageView.displayImage("data:baiduSearchImage/jpeg;base,/9j/4QaO...U7T/in//Z");
 
 // display apk icon from SDCard
 sketchImageView.displayImage("/sdcard/google_play.apk");
@@ -124,9 +124,9 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 |Content Provider|content:// |displayContentImage(Uri)|
 |Asset in app|asset:// |displayAssetImage(String)|
 |Resource in app|resource:// |displayResourceImage(int)|
-|Base64|data:image/, data:/img/ |displayImage(String)|
+|Base64|data:baiduSearchImage/, data:/img/ |displayImage(String)|
 
-#### Supported image types
+#### Supported baiduSearchImage types
 * jpeg：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
 * png：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
 * gif：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
@@ -135,9 +135,9 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 
 #### download()、load()、display()
 Sketch total display (), load (), download () three methods available, you can choose according to your needs appropriate method
->* Download () method will download the image to the local, and to achieve local cache
->* Load () method in the download () method on the basis of loading pictures into memory, and image processing
->* The display () method, based on the load () method, caches the image in memory and displays it on the ImageView
+>* Download () method will download the baiduSearchImage to the local, and to achieve local cache
+>* Load () method in the download () method on the basis of loading pictures into memory, and baiduSearchImage processing
+>* The display () method, based on the load () method, caches the baiduSearchImage in memory and displays it on the ImageView
 
 Examples:
 ```
@@ -176,18 +176,18 @@ Load () and download () also support synchronous execution, please refer to [Syn
 
 Basic functions:
 >* [SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
->* [Play gif image.md](docs/wiki/display_gif_image.md)
+>* [Play gif baiduSearchImage.md](docs/wiki/display_gif_image.md)
 >* [Gesture zoom, rotate the picture.md](docs/wiki/zoom.md)
 >* [Blocked display of large images.md](docs/wiki/large_image.md)
 >* [Configure various option and option management.md](docs/wiki/options.md)
->* [Use ShapeSize to change the size of the image when drawing.md](docs/wiki/shape_size.md)
+>* [Use ShapeSize to change the size of the baiduSearchImage when drawing.md](docs/wiki/shape_size.md)
 >* [Use ImageShaper to draw pictures in circles, rounded corners, and so on.md](docs/wiki/image_shaper.md)
->* [ImageProcessor through the image into a Gaussian fuzzy, reflection.md](docs/wiki/process_image.md)
+>* [ImageProcessor through the baiduSearchImage into a Gaussian fuzzy, reflection.md](docs/wiki/process_image.md)
 >* [Through the ImageDisplay to transition, fade, etc. to display pictures.md](docs/wiki/displayer.md)
 >* [Control the picture size by MaxSize.md](docs/wiki/max_size.md)
->* [Resize the image size by Resize.md](docs/wiki/resize.md)
->* [Flexible use of various images as loading image by StateImage.md](docs/wiki/state_image.md)
->* [Learn to automatically correct image orientation.md](docs/wiki/correct_image_orientation.md)
+>* [Resize the baiduSearchImage size by Resize.md](docs/wiki/resize.md)
+>* [Flexible use of various images as loading baiduSearchImage by StateImage.md](docs/wiki/state_image.md)
+>* [Learn to automatically correct baiduSearchImage orientation.md](docs/wiki/correct_image_orientation.md)
 
 To further enhance the user experience:
 >* [So that any size of the two pictures can use TransitionDrawable transition display.md](docs/wiki/transition_displayer.md)

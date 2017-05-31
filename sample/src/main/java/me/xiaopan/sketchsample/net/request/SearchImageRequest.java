@@ -13,6 +13,7 @@ import me.xiaopan.gohttp.requestobject.Method;
 import me.xiaopan.gohttp.requestobject.Param;
 import me.xiaopan.gohttp.requestobject.Request;
 import me.xiaopan.gohttp.requestobject.URL;
+import me.xiaopan.sketchsample.bean.BaiduSearchImage;
 
 /**
  * 搜索百度图片
@@ -96,41 +97,16 @@ public class SearchImageRequest implements Request {
     public static class Response {
         @SerializedName("listNum")
         private int total;
+
         @SerializedName("data")
-        private List<Image> images;
+        private List<BaiduSearchImage> baiduSearchImages;
 
         public int getTotal() {
             return total;
         }
 
-        public List<Image> getImages() {
-            return images;
-        }
-    }
-
-    public static class Image extends StarImageRequest.Image {
-        @SerializedName("thumbURL")
-        private String sourceUrl;
-        @SerializedName("width")
-        private int width;
-        @SerializedName("height")
-        private int height;
-
-        public String getSourceUrl() {
-            return sourceUrl;
-        }
-
-        @Override
-        public String getThumbUrl() {
-            return sourceUrl;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
+        public List<BaiduSearchImage> getBaiduSearchImages() {
+            return baiduSearchImages;
         }
     }
 
@@ -138,11 +114,11 @@ public class SearchImageRequest implements Request {
 
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, Response response, boolean b, boolean b2) throws Throwable {
-            if (response.getImages() != null) {
-                Iterator<Image> iterator = response.getImages().iterator();
+            if (response.getBaiduSearchImages() != null) {
+                Iterator<BaiduSearchImage> iterator = response.getBaiduSearchImages().iterator();
                 while (iterator.hasNext()) {
-                    Image image = iterator.next();
-                    if (image.sourceUrl == null || "".equals(image.sourceUrl)) {
+                    BaiduSearchImage baiduSearchImage = iterator.next();
+                    if (baiduSearchImage.getSourceUrl() == null || "".equals(baiduSearchImage.getSourceUrl())) {
                         iterator.remove();
                     }
                 }

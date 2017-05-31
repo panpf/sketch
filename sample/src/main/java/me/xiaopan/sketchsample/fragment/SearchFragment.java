@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -30,16 +31,16 @@ import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.gohttp.HttpRequestFuture;
 import me.xiaopan.gohttp.JsonHttpResponseHandler;
-import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
-import me.xiaopan.sketchsample.activity.DetailActivity;
+import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.StaggeredImageItemFactory;
+import me.xiaopan.sketchsample.bean.BaiduImage;
+import me.xiaopan.sketchsample.bean.BaiduSearchImage;
 import me.xiaopan.sketchsample.net.request.SearchImageRequest;
-import me.xiaopan.sketchsample.net.request.StarImageRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
 
@@ -47,11 +48,11 @@ import me.xiaopan.sketchsample.widget.HintView;
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, PullRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
+public class SearchFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
     @InjectView(R.id.refreshLayout_search)
-    PullRefreshLayout pullRefreshLayout;
+    private SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.list_search)
     private RecyclerView recyclerView;
     @InjectView(R.id.hintView_search)
@@ -144,7 +145,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        pullRefreshLayout.setOnRefreshListener(this);
+        refreshLayout.setOnRefreshListener(this);
 
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -153,7 +154,13 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
         recyclerView.setClipToPadding(false);
 
         if (adapter == null) {
-            pullRefreshLayout.startRefresh();
+            refreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.setRefreshing(true);
+                    onRefresh();
+                }
+            });
         } else {
             setAdapter(adapter);
         }
@@ -220,34 +227,24 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
                     return;
                 }
 
-                if (responseObject == null || responseObject.getImages() == null || responseObject.getImages().size() == 0) {
+                if (responseObject == null || responseObject.getBaiduSearchImages() == null || responseObject.getBaiduSearchImages().size() == 0) {
                     hintView.failed(new HttpRequest.Failure(0, "咦，图片去哪儿了？"), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            pullRefreshLayout.startRefresh();
+                            refreshLayout.setRefreshing(true);
                         }
                     });
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pullRefreshLayout.stopRefresh();
-                        }
-                    }, 500);
+                    refreshLayout.setRefreshing(false);
                 } else {
-                    AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getImages());
+                    AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getBaiduSearchImages());
                     adapter.addItemFactory(new StaggeredImageItemFactory(SearchFragment.this));
                     adapter.setLoadMoreItem(new LoadMoreItemFactory(SearchFragment.this).fullSpan(recyclerView));
                     setAdapter(adapter);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pullRefreshLayout.stopRefresh();
-                        }
-                    }, 500);
+                    refreshLayout.setRefreshing(false);
 
-                    if (responseObject.getImages().size() > 0) {
-                        changeBackground(responseObject.getImages().get(0).getSourceUrl());
+                    if (responseObject.getBaiduSearchImages().size() > 0) {
+                        changeBackground(responseObject.getBaiduSearchImages().get(0).getSourceUrl());
                     }
                 }
             }
@@ -257,17 +254,12 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
                 if (getActivity() == null) {
                     return;
                 }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullRefreshLayout.stopRefresh();
-                    }
-                }, 500);
+                refreshLayout.setRefreshing(false);
                 if (adapter == null) {
                     hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            pullRefreshLayout.startRefresh();
+                            refreshLayout.setRefreshing(true);
                         }
                     });
                 } else {
@@ -282,13 +274,13 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     }
 
     @Override
-    public void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo) {
-        List<StarImageRequest.Image> imageList = adapter.getDataList();
+    public void onItemClick(int position, BaiduImage image, String loadingImageOptionsInfo) {
+        List<BaiduImage> imageList = adapter.getDataList();
         ArrayList urlList = new ArrayList<String>();
-        for (StarImageRequest.Image imageItem : imageList) {
+        for (BaiduImage imageItem : imageList) {
             urlList.add(imageItem.getSourceUrl());
         }
-        DetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
+        ImageDetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
     }
 
     @Override
@@ -306,11 +298,11 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
                     return;
                 }
 
-                List<StarImageRequest.Image> newImageList = null;
-                if (responseObject.getImages() != null) {
-                    newImageList = new ArrayList<StarImageRequest.Image>();
-                    for (SearchImageRequest.Image image : responseObject.getImages()) {
-                        newImageList.add(image);
+                List<BaiduImage> newImageList = null;
+                if (responseObject.getBaiduSearchImages() != null) {
+                    newImageList = new ArrayList<BaiduImage>();
+                    for (BaiduSearchImage baiduSearchImage : responseObject.getBaiduSearchImages()) {
+                        newImageList.add(baiduSearchImage);
                     }
                 }
 

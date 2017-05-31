@@ -14,7 +14,7 @@ Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势�
 ![sample](docs/res/sample.jpg)
 
 ### 特性
->* `多种URI支持`. 支持`http://或https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg或/sdcard/sample.jpg`、`drawable://`、`data:image/或data:img/`等6种URI
+>* `多种URI支持`. 支持`http://或https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg或/sdcard/sample.jpg`、`drawable://`、`data:baiduSearchImage/或data:img/`等6种URI
 >* `支持gif图`. 集成了[android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
 >* `支持手势缩放`. 支持手势缩放功能，在[PhotoView](https://github.com/chrisbanes/PhotoView)的基础上进行了优化，增加了滚动条，定位等功能
 >* `支持分块显示超大图`. 支持分块显示超大图功能，从此再大的图片也不怕了
@@ -86,24 +86,24 @@ public class MyApplication extends Application {
 ```java
 SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
 
-// display image from net
+// display baiduSearchImage from net
 sketchImageView.displayImage("http://t.cn/RShdS1f");
 
-// display image from SDCard
+// display baiduSearchImage from SDCard
 sketchImageView.displayImage("/sdcard/sample.jpg");
 sketchImageView.displayImage("file:///sdcard/sample.jpg");
 
 // display resource drawable
 sketchImageView.displayResourceImage(R.drawable.sample);
 
-// display image from asset
+// display baiduSearchImage from asset
 sketchImageView.displayAssetImage("sample.jpg");
 
-// display image from content provider
+// display baiduSearchImage from content provider
 sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/last"));
 
-// display base64 image
-sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
+// display base64 baiduSearchImage
+sketchImageView.displayImage("data:baiduSearchImage/jpeg;base,/9j/4QaO...U7T/in//Z");
 
 // display apk icon from SDCard
 sketchImageView.displayImage("/sdcard/google_play.apk");
@@ -122,7 +122,7 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 |Content Provider|content:// |displayContentImage(Uri)|
 |Asset in app|asset:// |displayAssetImage(String)|
 |Resource in app|resource:// |displayResourceImage(int)|
-|Base64|data:image/, data:/img/ |displayImage(String)|
+|Base64|data:baiduSearchImage/, data:/img/ |displayImage(String)|
 
 #### 支持的图片类型
 * jpeg：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)

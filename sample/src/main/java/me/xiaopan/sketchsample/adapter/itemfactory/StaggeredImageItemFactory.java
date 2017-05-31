@@ -10,7 +10,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
-import me.xiaopan.sketchsample.net.request.StarImageRequest;
+import me.xiaopan.sketchsample.bean.BaiduImage;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<StaggeredImageItemFactory.StaggeredImageItem> {
@@ -23,7 +23,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
 
     @Override
     public boolean isTarget(Object o) {
-        return o instanceof StarImageRequest.Image;
+        return o instanceof BaiduImage;
     }
 
     @Override
@@ -32,10 +32,10 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo);
+        void onItemClick(int position, BaiduImage image, String loadingImageOptionsInfo);
     }
 
-    public class StaggeredImageItem extends BindAssemblyRecyclerItem<StarImageRequest.Image> {
+    public class StaggeredImageItem extends BindAssemblyRecyclerItem<BaiduImage> {
         @BindView(R.id.image_staggeredImageItem)
         MyImageView imageView;
 
@@ -59,7 +59,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
         }
 
         @Override
-        protected void onSetData(int i, StarImageRequest.Image image) {
+        protected void onSetData(int i, BaiduImage image) {
             if (itemWidth == 0) {
                 int screenWidth = imageView.getContext().getResources().getDisplayMetrics().widthPixels;
                 itemWidth = (screenWidth - (SketchUtils.dp2px(imageView.getContext(), 4) * 3)) / 2;

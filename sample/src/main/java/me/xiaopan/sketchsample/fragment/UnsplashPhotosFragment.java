@@ -20,7 +20,7 @@ import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
-import me.xiaopan.sketchsample.activity.DetailActivity;
+import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.UnsplashPhotosItemFactory;
 import me.xiaopan.sketchsample.bean.UnsplashImage;
@@ -118,7 +118,7 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
             urlList.add(unsplashImage.urls.regular);
         }
 
-        DetailActivity.launch(getActivity(), urlList, optionsKey, position);
+        ImageDetailActivity.launch(getActivity(), urlList, optionsKey, position);
     }
 
     @Override
