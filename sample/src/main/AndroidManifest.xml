@@ -25,10 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.DetailActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".activity.StarHomeActivity"
+            android:name=".activity.ImageDetailActivity"
             android:label="@string/app_name" />
 
         <service

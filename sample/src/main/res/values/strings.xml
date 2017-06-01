@@ -30,7 +30,7 @@
         \n 1. android-gif-drawable
         \n 2. PhotoView
         \n 3. Glide（BitmapPool）
-        \n 4. http://image.baidu.com
+        \n 4. http://baiduSearchImage.baidu.com
     </string>
     <string name="text_loadMore">LOADING...</string>
 </resources>

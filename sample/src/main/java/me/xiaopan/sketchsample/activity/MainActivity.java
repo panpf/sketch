@@ -77,7 +77,6 @@ import me.xiaopan.sketchsample.fragment.OtherTestFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
-import me.xiaopan.sketchsample.fragment.StarIndexFragment;
 import me.xiaopan.sketchsample.fragment.UnsplashPhotosFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.AppConfig;
@@ -85,18 +84,17 @@ import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
+// TODO: 2017/6/1 0001 去掉对android injector的依赖
+
 /**
  * 首页
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
-        AppListFragment.GetAppListTagStripListener, ApplyBackgroundCallback {
+public class MainActivity extends MyBaseActivity implements AppListFragment.GetAppListTagStripListener, ApplyBackgroundCallback {
 
     @InjectView(R.id.layout_main_content)
     private View contentView;
-    @InjectView(R.id.tabStrip_main_star)
-    private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList)
     private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content)
@@ -152,8 +150,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         getSupportActionBar().setHomeButtonEnabled(true);
         toggleDrawable = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
-        starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
-        appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
+        appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"APP", "PACKAGE"}, getBaseContext()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
@@ -395,11 +392,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         }
         this.page = newPage;
 
-//        if (page == Page.STAR) {
-//            AnimationUtils.visibleViewByAlpha(starTabStrip);
-//        } else {
-        AnimationUtils.invisibleViewByAlpha(starTabStrip);
-//        }
         if (page == Page.APP_LIST) {
             AnimationUtils.visibleViewByAlpha(appListTabStrip);
         } else {
@@ -432,11 +424,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         } else {
             return super.onKeyDown(keyCode, event);
         }
-    }
-
-    @Override
-    public PagerSlidingTabStrip onGetStarTabStrip() {
-        return starTabStrip;
     }
 
     @Override
@@ -476,7 +463,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
     public enum Page {
         UNSPLASH("Unsplash", UnsplashPhotosFragment.class, false, false),
-        //        STAR("明星图片", StarIndexFragment.class, false, false),
         SEARCH("GIF Search", SearchFragment.class, false, false),
         PHOTO_ALBUM("Photo Album", PhotoAlbumFragment.class, false, false),
         APP_LIST("My Apps", AppListFragment.class, false, false),

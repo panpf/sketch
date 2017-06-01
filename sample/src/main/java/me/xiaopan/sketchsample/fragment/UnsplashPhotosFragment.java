@@ -20,7 +20,7 @@ import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
-import me.xiaopan.sketchsample.activity.DetailActivity;
+import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.UnsplashPhotosItemFactory;
 import me.xiaopan.sketchsample.bean.UnsplashImage;
@@ -31,7 +31,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @InjectContentView(R.layout.fragment_recycler)
-public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnRecyclerLoadMoreListener {
+public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener,
+        OnRecyclerLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.hint_recyclerFragment)
     private HintView hintView;
@@ -62,12 +63,7 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadData(1);
-            }
-        });
+        refreshLayout.setOnRefreshListener(this);
 
         if (adapter != null) {
             recyclerView.setAdapter(adapter);
@@ -76,9 +72,9 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
                 @Override
                 public void run() {
                     refreshLayout.setRefreshing(true);
+                    onRefresh();
                 }
             });
-            loadData(1);
         }
     }
 
@@ -118,7 +114,7 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
             urlList.add(unsplashImage.urls.regular);
         }
 
-        DetailActivity.launch(getActivity(), urlList, optionsKey, position);
+        ImageDetailActivity.launch(getActivity(), urlList, optionsKey, position);
     }
 
     @Override
@@ -135,6 +131,15 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
     }
 
     @Override
+    public void onRefresh() {
+        if (adapter != null) {
+            adapter.setLoadMoreEnd(false);
+        }
+
+        loadData(1);
+    }
+
+    @Override
     public void onLoadMore(AssemblyRecyclerAdapter assemblyRecyclerAdapter) {
         loadData(pageIndex + 1);
     }
@@ -143,9 +148,13 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
         private WeakReference<UnsplashPhotosFragment> reference;
         private int pageIndex;
 
-        public LoadDataCallback(UnsplashPhotosFragment fragment, int pageIndex) {
+        LoadDataCallback(UnsplashPhotosFragment fragment, int pageIndex) {
             this.reference = new WeakReference<UnsplashPhotosFragment>(fragment);
             this.pageIndex = pageIndex;
+
+            if (pageIndex == 1) {
+                fragment.hintView.hidden();
+            }
         }
 
         @Override
@@ -160,6 +169,23 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
             } else {
                 loadMore(fragment, response);
             }
+
+            fragment.refreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void onFailure(Call<List<UnsplashImage>> call, Throwable t) {
+            final UnsplashPhotosFragment fragment = reference.get();
+            if (fragment == null) {
+                return;
+            }
+
+            fragment.hintView.failed(t, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragment.loadData(pageIndex);
+                }
+            });
 
             fragment.refreshLayout.setRefreshing(false);
         }
@@ -192,21 +218,6 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
             fragment.adapter.loadMoreFinished(images.size() < 20);
 
             fragment.changeBackground(images.get(0).urls.thumb);
-        }
-
-        @Override
-        public void onFailure(Call<List<UnsplashImage>> call, Throwable t) {
-            final UnsplashPhotosFragment fragment = reference.get();
-            if (fragment == null) {
-                return;
-            }
-
-            fragment.hintView.failed(t, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fragment.loadData(fragment.pageIndex);
-                }
-            });
         }
     }
 }

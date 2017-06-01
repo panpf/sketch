@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_specialLarge">16dp</dimen>
-    <dimen name="home_category_margin_border">8dp</dimen>
-    <dimen name="home_category_margin_border_2">4dp</dimen>
     <dimen name="image_title_padding">8dp</dimen>
 </resources>

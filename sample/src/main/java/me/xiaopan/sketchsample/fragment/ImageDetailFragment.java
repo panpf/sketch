@@ -42,11 +42,8 @@ import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
 import me.xiaopan.sketchsample.widget.ZoomOutPageTransformer;
 
-/**
- * 图片详情页面
- */
 @InjectContentView(R.layout.fragment_detail)
-public class DetailFragment extends MyFragment implements ImageZoomer.OnViewTapListener {
+public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnViewTapListener {
     public static final String PARAM_REQUIRED_STRING_ARRAY_LIST_URLS = "PARAM_REQUIRED_STRING_ARRAY_LIST_URLS";
     public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO";
     public static final String PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION";

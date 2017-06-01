@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <me.xiaopan.sketchsample.widget.MyPullRefreshLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout_photoAlbum"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -16,7 +16,7 @@
             android:divider="@null"
             android:listSelector="@null"
             android:scrollbars="vertical"/>
-    </me.xiaopan.sketchsample.widget.MyPullRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <me.xiaopan.sketchsample.widget.HintView
         android:id="@+id/hint_photoAlbum"

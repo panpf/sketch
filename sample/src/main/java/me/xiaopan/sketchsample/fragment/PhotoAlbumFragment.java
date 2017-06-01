@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -36,13 +37,12 @@ import java.util.List;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
-import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
-import me.xiaopan.sketchsample.activity.DetailActivity;
+import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.PhotoAlbumItemFactory;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
@@ -51,9 +51,9 @@ import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
  * 本地相册页面
  */
 @InjectContentView(R.layout.fragment_photo_album)
-public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFactory.OnImageClickListener, PullRefreshLayout.OnRefreshListener {
+public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
     @InjectView(R.id.refreshLayout_photoAlbum)
-    private PullRefreshLayout pullRefreshLayout;
+    private SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.recyclerView_photoAlbum_content)
     private RecyclerView recyclerView;
 
@@ -74,7 +74,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        pullRefreshLayout.setOnRefreshListener(this);
+        refreshLayout.setOnRefreshListener(this);
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
@@ -86,7 +86,13 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
             recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
         } else {
-            pullRefreshLayout.startRefresh();
+            refreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.setRefreshing(true);
+                    onRefresh();
+                }
+            });
         }
     }
 
@@ -98,7 +104,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
                 || optionsKey.contains("thumbnailMode")) {
             optionsKey = null;
         }
-        DetailActivity.launch(getActivity(), (ArrayList<String>) adapter.getDataList(), optionsKey, position);
+        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) adapter.getDataList(), optionsKey, position);
     }
 
     @Override
@@ -168,12 +174,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
             recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
             PhotoAlbumFragment.this.adapter = adapter;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    pullRefreshLayout.stopRefresh();
-                }
-            }, 500);
+            refreshLayout.setRefreshing(false);
             if (imageUriList != null && imageUriList.size() > 0) {
                 changeBackground(imageUriList.get(0));
             }

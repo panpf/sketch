@@ -3,8 +3,8 @@ package me.xiaopan.sketchsample.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
@@ -26,32 +26,32 @@ import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
-import me.xiaopan.gohttp.GoHttp;
-import me.xiaopan.gohttp.HttpRequest;
-import me.xiaopan.gohttp.HttpRequestFuture;
-import me.xiaopan.gohttp.JsonHttpResponseHandler;
-import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
-import me.xiaopan.sketchsample.activity.DetailActivity;
+import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.StaggeredImageItemFactory;
-import me.xiaopan.sketchsample.net.request.SearchImageRequest;
-import me.xiaopan.sketchsample.net.request.StarImageRequest;
+import me.xiaopan.sketchsample.bean.BaiduImage;
+import me.xiaopan.sketchsample.bean.BaiduImageSearchResult;
+import me.xiaopan.sketchsample.net.NetServices;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, PullRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
+public class SearchFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
+    private static final int PAGE_SIZE = 60;
 
     @InjectView(R.id.refreshLayout_search)
-    PullRefreshLayout pullRefreshLayout;
+    private SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.list_search)
     private RecyclerView recyclerView;
     @InjectView(R.id.hintView_search)
@@ -60,9 +60,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD)
     private String searchKeyword = "GIF";
 
-    private SearchImageRequest searchImageRequest;
-    private HttpRequestFuture refreshRequest;
-    private HttpRequestFuture loadMoreRequest;
+    private int pageIndex = 1;
     private AssemblyRecyclerAdapter adapter;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
@@ -79,7 +77,6 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        searchImageRequest = new SearchImageRequest(searchKeyword);
         setHasOptionsMenu(true);
     }
 
@@ -124,9 +121,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
                         .commit();
 
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-                        .hideSoftInputFromWindow(getActivity().getCurrentFocus()
-                                        .getWindowToken(),
-                                InputMethodManager.HIDE_NOT_ALWAYS);
+                        .hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 return true;
             }
@@ -144,7 +139,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        pullRefreshLayout.setOnRefreshListener(this);
+        refreshLayout.setOnRefreshListener(this);
 
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -153,7 +148,13 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
         recyclerView.setClipToPadding(false);
 
         if (adapter == null) {
-            pullRefreshLayout.startRefresh();
+            refreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.setRefreshing(true);
+                    onRefresh();
+                }
+            });
         } else {
             setAdapter(adapter);
         }
@@ -163,14 +164,6 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     public void onDestroyView() {
         setTitle("");
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDetach() {
-        if (refreshRequest != null && !refreshRequest.isFinished()) {
-            refreshRequest.cancel(true);
-        }
-        super.onDetach();
     }
 
     @Override
@@ -195,154 +188,124 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
 
     @Override
     public void onRefresh() {
-        if (refreshRequest != null && !refreshRequest.isFinished()) {
-            return;
-        }
-
-        if (loadMoreRequest != null && !loadMoreRequest.isFinished()) {
-            loadMoreRequest.cancel(true);
-        }
-
         if (adapter != null) {
             adapter.setLoadMoreEnd(false);
         }
 
-        searchImageRequest.setStart(0);
-        refreshRequest = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
-            @Override
-            public void onStarted(HttpRequest httpRequest) {
-                hintView.hidden();
-            }
-
-            @Override
-            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, SearchImageRequest.Response responseObject, boolean b, boolean b2) {
-                if (getActivity() == null) {
-                    return;
-                }
-
-                if (responseObject == null || responseObject.getImages() == null || responseObject.getImages().size() == 0) {
-                    hintView.failed(new HttpRequest.Failure(0, "咦，图片去哪儿了？"), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            pullRefreshLayout.startRefresh();
-                        }
-                    });
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pullRefreshLayout.stopRefresh();
-                        }
-                    }, 500);
-                } else {
-                    AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getImages());
-                    adapter.addItemFactory(new StaggeredImageItemFactory(SearchFragment.this));
-                    adapter.setLoadMoreItem(new LoadMoreItemFactory(SearchFragment.this).fullSpan(recyclerView));
-                    setAdapter(adapter);
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pullRefreshLayout.stopRefresh();
-                        }
-                    }, 500);
-
-                    if (responseObject.getImages().size() > 0) {
-                        changeBackground(responseObject.getImages().get(0).getSourceUrl());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                if (getActivity() == null) {
-                    return;
-                }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullRefreshLayout.stopRefresh();
-                    }
-                }, 500);
-                if (adapter == null) {
-                    hintView.failed(failure, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            pullRefreshLayout.startRefresh();
-                        }
-                    });
-                } else {
-                    Toast.makeText(getActivity(), "刷新失败", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCanceled(HttpRequest httpRequest) {
-            }
-        }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
+        loadData(1);
     }
 
     @Override
-    public void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo) {
-        List<StarImageRequest.Image> imageList = adapter.getDataList();
+    public void onItemClick(int position, BaiduImage image, String loadingImageOptionsInfo) {
+        List<BaiduImage> imageList = adapter.getDataList();
         ArrayList urlList = new ArrayList<String>();
-        for (StarImageRequest.Image imageItem : imageList) {
+        for (BaiduImage imageItem : imageList) {
             urlList.add(imageItem.getSourceUrl());
         }
-        DetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
+        ImageDetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
+    }
+
+    private void loadData(int pageIndex){
+        this.pageIndex = pageIndex;
+        int pageStart = (pageIndex - 1) * PAGE_SIZE;
+        NetServices.baiduImage().searchPhoto(searchKeyword, searchKeyword, pageStart, PAGE_SIZE).enqueue(new LoadDataCallback(this, pageIndex));
     }
 
     @Override
     public void onLoadMore(AssemblyRecyclerAdapter assemblyRecyclerAdapter) {
-        searchImageRequest.setStart(adapter.getDataCount());
-        loadMoreRequest = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
-            @Override
-            public void onStarted(HttpRequest httpRequest) {
+        loadData(pageIndex + 1);
+    }
 
+    private static class LoadDataCallback implements Callback<BaiduImageSearchResult> {
+
+        private WeakReference<SearchFragment> reference;
+        private int pageIndex;
+
+        LoadDataCallback(SearchFragment fragment, int pageIndex) {
+            this.reference = new WeakReference<SearchFragment>(fragment);
+            this.pageIndex = pageIndex;
+
+            if (pageIndex == 1) {
+                fragment.hintView.hidden();
+            }
+        }
+
+        @Override
+        public void onResponse(Call<BaiduImageSearchResult> call, Response<BaiduImageSearchResult> response) {
+            SearchFragment fragment = reference.get();
+            if (fragment == null) {
+                return;
             }
 
-            @Override
-            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, SearchImageRequest.Response responseObject, boolean b, boolean b2) {
-                if (getActivity() == null) {
-                    return;
-                }
+            filterEmptyImage(response);
 
-                List<StarImageRequest.Image> newImageList = null;
-                if (responseObject.getImages() != null) {
-                    newImageList = new ArrayList<StarImageRequest.Image>();
-                    for (SearchImageRequest.Image image : responseObject.getImages()) {
-                        newImageList.add(image);
+            if (pageIndex == 1) {
+                create(fragment, response);
+            } else {
+                loadMore(fragment, response);
+            }
+
+            fragment.refreshLayout.setRefreshing(false);
+        }
+
+        private void filterEmptyImage(Response<BaiduImageSearchResult> response){
+            List<BaiduImage> imageList = response.body().getImageList();
+            if (imageList != null) {
+                Iterator<BaiduImage> imageIterator = imageList.iterator();
+                while (imageIterator.hasNext()) {
+                    BaiduImage image = imageIterator.next();
+                    if (image.getSourceUrl() == null || "".equals(image.getSourceUrl())) {
+                        imageIterator.remove();
                     }
                 }
+            }
+        }
 
-                if (newImageList != null && newImageList.size() > 0) {
-                    adapter.addAll(newImageList);
-                    if (newImageList.size() < searchImageRequest.getSize()) {
-                        adapter.setLoadMoreEnd(true);
-                        Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
-                    } else {
-                        adapter.setLoadMoreEnd(false);
-                        Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    adapter.setLoadMoreEnd(true);
-                    Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
+        @Override
+        public void onFailure(Call<BaiduImageSearchResult> call, Throwable t) {
+            final SearchFragment fragment = reference.get();
+            if (fragment == null) {
+                return;
+            }
+
+            fragment.hintView.failed(t, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragment.loadData(pageIndex);
                 }
-                adapter.notifyDataSetChanged();
+            });
+
+            fragment.refreshLayout.setRefreshing(false);
+        }
+
+        private void create(SearchFragment fragment, Response<BaiduImageSearchResult> response) {
+            List<BaiduImage> images = response.body().getImageList();
+            if (images == null || images.size() == 0) {
+                fragment.hintView.empty("No photos");
+                return;
             }
 
-            @Override
-            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                if (getActivity() == null) {
-                    return;
-                }
-                adapter.loadMoreFailed();
-                Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
+            AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(images);
+            adapter.addItemFactory(new StaggeredImageItemFactory(fragment));
+            adapter.setLoadMoreItem(new LoadMoreItemFactory(fragment).fullSpan(fragment.recyclerView));
+
+            fragment.recyclerView.setAdapter(adapter);
+            fragment.adapter = adapter;
+
+            fragment.changeBackground(images.get(0).getSourceUrl());
+        }
+
+        private void loadMore(SearchFragment fragment, Response<BaiduImageSearchResult> response) {
+            List<BaiduImage> images = response.body().getImageList();
+            if (images == null || images.size() == 0) {
+                fragment.adapter.setLoadMoreEnd(true);
+                return;
             }
 
-            @Override
-            public void onCanceled(HttpRequest httpRequest) {
-                adapter.loadMoreFailed();
-            }
-        }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
+            fragment.adapter.addAll(images);
+            fragment.adapter.loadMoreFinished(images.size() < 20);
+
+            fragment.changeBackground(images.get(0).getSourceUrl());
+        }
     }
 }
