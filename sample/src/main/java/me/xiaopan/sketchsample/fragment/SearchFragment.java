@@ -35,6 +35,7 @@ import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.StaggeredImageItemFactory;
 import me.xiaopan.sketchsample.bean.BaiduImage;
 import me.xiaopan.sketchsample.bean.BaiduImageSearchResult;
+import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.net.NetServices;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
@@ -198,9 +199,9 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     @Override
     public void onItemClick(int position, BaiduImage image, String loadingImageOptionsInfo) {
         List<BaiduImage> imageList = adapter.getDataList();
-        ArrayList urlList = new ArrayList<String>();
+        ArrayList<Image> urlList = new ArrayList<Image>();
         for (BaiduImage imageItem : imageList) {
-            urlList.add(imageItem.getSourceUrl());
+            urlList.add(new Image(imageItem.getSourceUrl(), imageItem.getSourceUrl()));
         }
         ImageDetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
     }

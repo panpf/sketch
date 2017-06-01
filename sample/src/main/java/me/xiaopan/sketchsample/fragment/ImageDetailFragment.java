@@ -32,11 +32,12 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter;
-import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory;
+import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.util.PageNumberSetter;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
@@ -55,12 +56,11 @@ public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnVie
     @InjectView(R.id.text_detail_countItem)
     private TextView countTextView;
 
-    @InjectExtra(PARAM_REQUIRED_STRING_ARRAY_LIST_URLS)
-    private List<String> uris;
     @InjectExtra(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO)
     private String loadingImageOptionsInfo;
     @InjectExtra(PARAM_OPTIONAL_INT_DEFAULT_POSITION)
     private int position;
+    private List<Image> imageList;
 
     private Handler handler;
     private ViewPagerPlayer viewPagerPlayer;
@@ -72,6 +72,11 @@ public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnVie
         super.onCreate(savedInstanceState);
         handler = new Handler();
         startPlay = new StartPlay();
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            imageList = arguments.getParcelableArrayList(PARAM_REQUIRED_STRING_ARRAY_LIST_URLS);
+        }
     }
 
     @Override
@@ -91,13 +96,13 @@ public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnVie
             viewPager.setPageMargin(SketchUtils.dp2px(getActivity(), 8));
         }
 
-        if (uris != null) {
-            AssemblyFragmentStatePagerAdapter pagerAdapter = new AssemblyFragmentStatePagerAdapter(getChildFragmentManager(), uris);
+        if (imageList != null) {
+            AssemblyFragmentStatePagerAdapter pagerAdapter = new AssemblyFragmentStatePagerAdapter(getChildFragmentManager(), imageList);
             pagerAdapter.addItemFactory(new ImageFragmentItemFactory(getActivity(), loadingImageOptionsInfo));
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(position);
             currentItemTextView.setText(position + 1 + "");
-            countTextView.setText(String.valueOf(uris.size()));
+            countTextView.setText(String.valueOf(imageList.size()));
         }
 
         EventBus.getDefault().register(this);

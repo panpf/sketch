@@ -23,6 +23,7 @@ import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.UnsplashPhotosItemFactory;
+import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.bean.UnsplashImage;
 import me.xiaopan.sketchsample.net.NetServices;
 import me.xiaopan.sketchsample.widget.HintView;
@@ -109,12 +110,12 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
 
         //noinspection unchecked
         List<UnsplashImage> images = adapter.getDataList();
-        ArrayList<String> urlList = new ArrayList<String>(images.size());
+        ArrayList<Image> imageArrayList = new ArrayList<Image>(images.size());
         for (UnsplashImage unsplashImage : images) {
-            urlList.add(unsplashImage.urls.regular);
+            imageArrayList.add(new Image(unsplashImage.urls.regular, unsplashImage.urls.raw));
         }
 
-        ImageDetailActivity.launch(getActivity(), urlList, optionsKey, position);
+        ImageDetailActivity.launch(getActivity(), imageArrayList, optionsKey, position);
     }
 
     @Override

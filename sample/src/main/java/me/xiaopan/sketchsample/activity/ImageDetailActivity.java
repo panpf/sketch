@@ -32,6 +32,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.fragment.ImageDetailFragment;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -44,9 +45,9 @@ public class ImageDetailActivity extends MyBaseActivity implements ApplyBackgrou
     @InjectView(R.id.image_onlyFragment_background) MyImageView backgroundImageView;
     @InjectView(R.id.layout_onlyFragment_content) View contentView;
 
-    public static void launch(Activity activity, ArrayList<String> imageUrlList, String loadingImageOptionsInfo, int defaultPosition) {
+    public static void launch(Activity activity, ArrayList<Image> images, String loadingImageOptionsInfo, int defaultPosition) {
         Intent intent = new Intent(activity, ImageDetailActivity.class);
-        intent.putStringArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
+        intent.putParcelableArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, images);
         intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO, loadingImageOptionsInfo);
         intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);

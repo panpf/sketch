@@ -343,6 +343,7 @@ public class MainActivity extends MyBaseActivity implements AppListFragment.GetA
         menuList.add(new CheckMenu(this, "Disabled Correct Image Orientation", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener));
 
         menuList.add("Other");
+        menuList.add(new CheckMenu(this, "Show Unsplash Large Image In Detail Page", AppConfig.Key.SHOW_UNSPLASH_LARGE_IMAGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Mapping Thumbnail In Detail Page", AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Press Status In List", AppConfig.Key.CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Image From Corner Mark", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener));

@@ -23,7 +23,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -44,6 +43,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.PhotoAlbumItemFactory;
+import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 
@@ -104,7 +104,14 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
                 || optionsKey.contains("thumbnailMode")) {
             optionsKey = null;
         }
-        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) adapter.getDataList(), optionsKey, position);
+
+        List<String> urlList = adapter.getDataList();
+        ArrayList<Image> imageArrayList = new ArrayList<Image>(urlList.size());
+        for (String url : urlList) {
+            imageArrayList.add(new Image(url, url));
+        }
+
+        ImageDetailActivity.launch(getActivity(), imageArrayList, optionsKey, position);
     }
 
     @Override

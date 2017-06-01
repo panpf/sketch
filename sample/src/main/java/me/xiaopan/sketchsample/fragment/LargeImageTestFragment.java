@@ -13,6 +13,7 @@ import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.MainActivity;
+import me.xiaopan.sketchsample.bean.Image;
 
 /**
  * 大图页面，用来展示Sketch显示大图的能力
@@ -35,7 +36,8 @@ public class LargeImageTestFragment extends MyFragment {
             String[] largeAssetImageNames = AssetImage.LARGES;
             Fragment[] fragments = new Fragment[largeAssetImageNames.length];
             for(int w = 0; w < largeAssetImageNames.length; w++){
-                fragments[w] = ImageFragment.build(largeAssetImageNames[w], null, true);
+                String url = largeAssetImageNames[w];
+                fragments[w] = ImageFragment.build(new Image(url, url), null, true);
             }
             fragmentAdapter = new FragmentArrayPagerAdapter(getChildFragmentManager(), fragments);
         }

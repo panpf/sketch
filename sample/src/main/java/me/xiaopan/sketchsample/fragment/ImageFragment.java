@@ -32,19 +32,17 @@ import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
 import me.xiaopan.sketch.decode.DecodeException;
+import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
-import me.xiaopan.sketch.decode.ImageOrientationCorrector;
-import me.xiaopan.sketch.request.DownloadProgressListener;
-import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
-import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
@@ -52,9 +50,12 @@ import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
+import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
+import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
@@ -78,14 +79,15 @@ public class ImageFragment extends MyFragment {
     @InjectView(R.id.hint_imageFragment_hint)
     private HintView hintView;
 
-    @InjectExtra(PARAM_REQUIRED_STRING_IMAGE_URI)
-    private String imageUri;
+    private Image image;
 
     @InjectExtra(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
     private String loadingImageOptionsId;
 
     @InjectExtra(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
     private boolean showTools;
+
+    private String finalShowImageUrl;
 
     private SetWindowBackground setWindowBackground = new SetWindowBackground();
     private GifPlayFollowPageVisible gifPlayFollowPageVisible = new GifPlayFollowPageVisible();
@@ -96,9 +98,9 @@ public class ImageFragment extends MyFragment {
     private SingleClickHelper singleClickHelper = new SingleClickHelper();
     private LongClickHelper longClickHelper = new LongClickHelper();
 
-    public static ImageFragment build(String imageUri, String loadingImageOptionsId, boolean showTools) {
+    public static ImageFragment build(Image image, String loadingImageOptionsId, boolean showTools) {
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUIRED_STRING_IMAGE_URI, imageUri);
+        bundle.putParcelable(PARAM_REQUIRED_STRING_IMAGE_URI, image);
         bundle.putString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY, loadingImageOptionsId);
         bundle.putBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS, showTools);
         ImageFragment fragment = new ImageFragment();
@@ -110,11 +112,19 @@ public class ImageFragment extends MyFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setWindowBackground.onCreate(getActivity());
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            image = arguments.getParcelable(PARAM_REQUIRED_STRING_IMAGE_URI);
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        boolean showHighDefinitionImage = AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_UNSPLASH_LARGE_IMAGE);
+        finalShowImageUrl = showHighDefinitionImage && !TextUtils.isEmpty(image.highDefinitionUrl) ? image.highDefinitionUrl : image.regularUrl;
 
         imageZoomHelper.onViewCreated();
         largeImageHelper.onViewCreated();
@@ -167,7 +177,7 @@ public class ImageFragment extends MyFragment {
             imageView.setDownloadProgressListener(this);
 
             initOptions();
-            imageView.displayImage(imageUri);
+            imageView.displayImage(finalShowImageUrl);
         }
 
         private void initOptions() {
@@ -180,7 +190,7 @@ public class ImageFragment extends MyFragment {
 
             // 有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
             if (!TextUtils.isEmpty(loadingImageOptionsId)) {
-                String memoryCacheKey = SketchUtils.makeRequestKey(imageUri, loadingImageOptionsId);
+                String memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl, loadingImageOptionsId);
                 MemoryCache memoryCache = Sketch.with(getActivity()).getConfiguration().getMemoryCache();
                 SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
                 if (cachedRefBitmap != null) {
@@ -211,7 +221,7 @@ public class ImageFragment extends MyFragment {
             hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    imageView.displayImage(imageUri);
+                    imageView.displayImage(finalShowImageUrl);
                 }
             });
         }
@@ -229,7 +239,7 @@ public class ImageFragment extends MyFragment {
                         public void onClick(View v) {
                             RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
                             imageView.getOptions().setRequestLevel(RequestLevel.NET);
-                            imageView.displayImage(imageUri);
+                            imageView.displayImage(finalShowImageUrl);
                             imageView.getOptions().setRequestLevel(requestLevel);
                         }
                     });
@@ -240,7 +250,7 @@ public class ImageFragment extends MyFragment {
                         public void onClick(View v) {
                             RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
                             imageView.getOptions().setRequestLevel(RequestLevel.NET);
-                            imageView.displayImage(imageUri);
+                            imageView.displayImage(finalShowImageUrl);
                             imageView.getOptions().setRequestLevel(requestLevel);
                         }
                     });
@@ -253,7 +263,7 @@ public class ImageFragment extends MyFragment {
                         public void onClick(View v) {
                             RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
                             imageView.getOptions().setRequestLevel(RequestLevel.NET);
-                            imageView.displayImage(imageUri);
+                            imageView.displayImage(finalShowImageUrl);
                             imageView.getOptions().setRequestLevel(requestLevel);
                         }
                     });
@@ -264,7 +274,7 @@ public class ImageFragment extends MyFragment {
                         public void onClick(View v) {
                             RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
                             imageView.getOptions().setRequestLevel(RequestLevel.NET);
-                            imageView.displayImage(imageUri);
+                            imageView.displayImage(finalShowImageUrl);
                             imageView.getOptions().setRequestLevel(requestLevel);
                         }
                     });
@@ -289,7 +299,7 @@ public class ImageFragment extends MyFragment {
 
         private void onUserVisibleChanged() {
             if (applyBackgroundCallback != null && isVisibleToUser()) {
-                applyBackgroundCallback.onApplyBackground(imageUri);
+                applyBackgroundCallback.onApplyBackground(finalShowImageUrl);
             }
         }
 
@@ -418,7 +428,7 @@ public class ImageFragment extends MyFragment {
 
             mappingView.getOptions().setImageDisplayer(new FadeInImageDisplayer());
             mappingView.getOptions().setMaxSize(600, 600);
-            mappingView.displayImage(imageUri);
+            mappingView.displayImage(finalShowImageUrl);
 
             mappingView.setVisibility(showTools ? View.VISIBLE : View.GONE);
         }
