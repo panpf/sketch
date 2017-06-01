@@ -1,6 +1,5 @@
 package me.xiaopan.sketchsample.util;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 

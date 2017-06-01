@@ -5,21 +5,21 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RotateImageProcessor;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_rotate)
-public class RotateImageProcessorTestFragment extends MyFragment {
-    @InjectView(R.id.image_rotateFragment)
+@BindContentView(R.layout.fragment_rotate)
+public class RotateImageProcessorTestFragment extends BaseFragment {
+    @BindView(R.id.image_rotateFragment)
     MyImageView imageView;
 
-    @InjectView(R.id.button_rotateFragment)
+    @BindView(R.id.button_rotateFragment)
     Button rotateButton;
 
     private int degrees = 45;

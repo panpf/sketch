@@ -15,8 +15,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.Sketch;
@@ -29,37 +28,38 @@ import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 
-@InjectContentView(R.layout.fragment_in_bitmap_test)
-public class InBitmapTestFragment extends MyFragment {
+@BindContentView(R.layout.fragment_in_bitmap_test)
+public class InBitmapTestFragment extends BaseFragment {
 
-    @InjectView(R.id.image_inBitmapTestFragment)
+    @BindView(R.id.image_inBitmapTestFragment)
     ImageView imageView;
 
-    @InjectView(R.id.text_inBitmapTestFragment)
+    @BindView(R.id.text_inBitmapTestFragment)
     TextView textView;
 
-    @InjectView(R.id.button_inBitmapTestFragment_sizeSame)
+    @BindView(R.id.button_inBitmapTestFragment_sizeSame)
     Button sizeSameButton;
 
-    @InjectView(R.id.button_inBitmapTestFragment_largeSize)
+    @BindView(R.id.button_inBitmapTestFragment_largeSize)
     Button largeSizeButton;
 
-    @InjectView(R.id.button_inBitmapTestFragment_sizeNoSame)
+    @BindView(R.id.button_inBitmapTestFragment_sizeNoSame)
     Button sizeNoSameButton;
 
-    @InjectView(R.id.button_inBitmapTestFragment_inSampleSize)
+    @BindView(R.id.button_inBitmapTestFragment_inSampleSize)
     Button inSampleSizeButton;
 
-    @InjectView(R.id.view_inBitmapTestFragment_pageNumber)
+    @BindView(R.id.view_inBitmapTestFragment_pageNumber)
     TextView pageNumberTextView;
 
-    @InjectView(R.id.view_inBitmapTestFragment_last)
+    @BindView(R.id.view_inBitmapTestFragment_last)
     View lastView;
 
-    @InjectView(R.id.view_inBitmapTestFragment_next)
+    @BindView(R.id.view_inBitmapTestFragment_next)
     View nextView;
 
     int index = 0;

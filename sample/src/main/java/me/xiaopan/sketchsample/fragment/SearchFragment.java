@@ -21,13 +21,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectExtra;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.ImageDetailActivity;
@@ -46,19 +45,18 @@ import retrofit2.Response;
 /**
  * 图片搜索Fragment
  */
-@InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
+@BindContentView(R.layout.fragment_search)
+public class SearchFragment extends BaseFragment implements StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
     private static final int PAGE_SIZE = 60;
 
-    @InjectView(R.id.refreshLayout_search)
-    private SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.list_search)
-    private RecyclerView recyclerView;
-    @InjectView(R.id.hintView_search)
-    private HintView hintView;
+    @BindView(R.id.refreshLayout_search)
+    SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.list_search)
+    RecyclerView recyclerView;
+    @BindView(R.id.hintView_search)
+    HintView hintView;
 
-    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD)
     private String searchKeyword = "GIF";
 
     private int pageIndex = 1;
@@ -79,6 +77,14 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            searchKeyword = arguments.getString(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD);
+            if (searchKeyword == null) {
+                searchKeyword = "GIF";
+            }
+        }
     }
 
     @Override
@@ -144,7 +150,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
 
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        int padding  = SketchUtils.dp2px(getActivity(), 2);
+        int padding = SketchUtils.dp2px(getActivity(), 2);
         recyclerView.setPadding(padding, padding, padding, padding);
         recyclerView.setClipToPadding(false);
 
@@ -206,7 +212,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
         ImageDetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
     }
 
-    private void loadData(int pageIndex){
+    private void loadData(int pageIndex) {
         this.pageIndex = pageIndex;
         int pageStart = (pageIndex - 1) * PAGE_SIZE;
         NetServices.baiduImage().searchPhoto(searchKeyword, searchKeyword, pageStart, PAGE_SIZE).enqueue(new LoadDataCallback(this, pageIndex));
@@ -249,7 +255,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
             fragment.refreshLayout.setRefreshing(false);
         }
 
-        private void filterEmptyImage(Response<BaiduImageSearchResult> response){
+        private void filterEmptyImage(Response<BaiduImageSearchResult> response) {
             List<BaiduImage> imageList = response.body().getImageList();
             if (imageList != null) {
                 Iterator<BaiduImage> imageIterator = imageList.iterator();

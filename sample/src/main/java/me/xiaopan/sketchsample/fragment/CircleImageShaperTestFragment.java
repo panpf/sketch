@@ -6,24 +6,24 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.shaper.CircleImageShaper;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_circle_image_shaper)
-public class CircleImageShaperTestFragment extends MyFragment {
-    @InjectView(R.id.image_circleImageShaperFragment)
+@BindContentView(R.layout.fragment_circle_image_shaper)
+public class CircleImageShaperTestFragment extends BaseFragment {
+    @BindView(R.id.image_circleImageShaperFragment)
     MyImageView imageView;
 
-    @InjectView(R.id.seekBar_circleImageShaperFragment_stroke)
+    @BindView(R.id.seekBar_circleImageShaperFragment_stroke)
     SeekBar strokeSeekBar;
 
-    @InjectView(R.id.text_circleImageShaperFragment_stroke)
+    @BindView(R.id.text_circleImageShaperFragment_stroke)
     TextView strokeProgressTextView;
 
     private int strokeProgress = 5;

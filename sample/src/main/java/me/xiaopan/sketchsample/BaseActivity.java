@@ -19,6 +19,7 @@ package me.xiaopan.sketchsample;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,16 +27,22 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import me.xiaopan.androidinjector.InjectView;
-import me.xiaopan.androidinjector.app.InjectAppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public abstract class MyBaseActivity extends InjectAppCompatActivity {
-    @InjectView(R.id.toolbar)
+public abstract class BaseActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BindContentView bindContentView = getClass().getAnnotation(BindContentView.class);
+        if (bindContentView != null && bindContentView.value() > 0) {
+            setContentView(bindContentView.value());
+        }
+
         if (toolbar != null) {
             onPreSetSupportActionBar();
             setSupportActionBar(toolbar);
@@ -82,9 +89,12 @@ public abstract class MyBaseActivity extends InjectAppCompatActivity {
     @Override
     public void onContentChanged() {
         super.onContentChanged();
+
         if (!isDisableSetFitsSystemWindows()) {
             setFitsSystemWindows();
         }
+
+        ButterKnife.bind(this, this);
     }
 
     /**

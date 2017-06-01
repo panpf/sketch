@@ -28,13 +28,12 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectExtra;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
@@ -43,24 +42,24 @@ import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
 import me.xiaopan.sketchsample.widget.ZoomOutPageTransformer;
 
-@InjectContentView(R.layout.fragment_detail)
-public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnViewTapListener {
+@BindContentView(R.layout.fragment_detail)
+public class ImageDetailFragment extends BaseFragment implements ImageZoomer.OnViewTapListener {
     public static final String PARAM_REQUIRED_STRING_ARRAY_LIST_URLS = "PARAM_REQUIRED_STRING_ARRAY_LIST_URLS";
-    public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO";
+    public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY";
     public static final String PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION";
 
-    @InjectView(R.id.pager_detail_content)
-    private ViewPager viewPager;
-    @InjectView(R.id.text_detail_currentItem)
-    private TextView currentItemTextView;
-    @InjectView(R.id.text_detail_countItem)
-    private TextView countTextView;
+    @BindView(R.id.pager_detail_content)
+    ViewPager viewPager;
 
-    @InjectExtra(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO)
-    private String loadingImageOptionsInfo;
-    @InjectExtra(PARAM_OPTIONAL_INT_DEFAULT_POSITION)
-    private int position;
+    @BindView(R.id.text_detail_currentItem)
+    TextView currentItemTextView;
+
+    @BindView(R.id.text_detail_countItem)
+    TextView countTextView;
+
     private List<Image> imageList;
+    private String loadingImageOptionsKey;
+    private int position;
 
     private Handler handler;
     private ViewPagerPlayer viewPagerPlayer;
@@ -76,6 +75,8 @@ public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnVie
         Bundle arguments = getArguments();
         if (arguments != null) {
             imageList = arguments.getParcelableArrayList(PARAM_REQUIRED_STRING_ARRAY_LIST_URLS);
+            loadingImageOptionsKey = arguments.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY);
+            position = arguments.getInt(PARAM_OPTIONAL_INT_DEFAULT_POSITION);
         }
     }
 
@@ -98,7 +99,7 @@ public class ImageDetailFragment extends MyFragment implements ImageZoomer.OnVie
 
         if (imageList != null) {
             AssemblyFragmentStatePagerAdapter pagerAdapter = new AssemblyFragmentStatePagerAdapter(getChildFragmentManager(), imageList);
-            pagerAdapter.addItemFactory(new ImageFragmentItemFactory(getActivity(), loadingImageOptionsInfo));
+            pagerAdapter.addItemFactory(new ImageFragmentItemFactory(getActivity(), loadingImageOptionsKey));
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(position);
             currentItemTextView.setText(position + 1 + "");

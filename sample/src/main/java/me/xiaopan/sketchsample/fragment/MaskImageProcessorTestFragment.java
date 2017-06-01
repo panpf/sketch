@@ -7,24 +7,24 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.MaskImageProcessor;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_mask)
-public class MaskImageProcessorTestFragment extends MyFragment {
-    @InjectView(R.id.image_maskFragment)
+@BindContentView(R.layout.fragment_mask)
+public class MaskImageProcessorTestFragment extends BaseFragment {
+    @BindView(R.id.image_maskFragment)
     MyImageView imageView;
 
-    @InjectView(R.id.seekBar_maskFragment)
+    @BindView(R.id.seekBar_maskFragment)
     SeekBar seekBar;
 
-    @InjectView(R.id.text_maskFragment)
+    @BindView(R.id.text_maskFragment)
     TextView progressTextView;
 
     private int progress = 15;

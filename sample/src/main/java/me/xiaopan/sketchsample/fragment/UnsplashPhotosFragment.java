@@ -13,11 +13,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.ImageDetailActivity;
@@ -31,18 +31,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-@InjectContentView(R.layout.fragment_recycler)
-public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener,
+@BindContentView(R.layout.fragment_recycler)
+public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener,
         OnRecyclerLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.hint_recyclerFragment)
-    private HintView hintView;
+    @BindView(R.id.hint_recyclerFragment)
+    HintView hintView;
 
-    @InjectView(R.id.recycler_recyclerFragment_content)
-    private RecyclerView recyclerView;
+    @BindView(R.id.recycler_recyclerFragment_content)
+    RecyclerView recyclerView;
 
-    @InjectView(R.id.refresh_recyclerFragment)
-    private SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.refresh_recyclerFragment)
+    SwipeRefreshLayout refreshLayout;
 
     private AssemblyRecyclerAdapter adapter;
     private int pageIndex = 1;

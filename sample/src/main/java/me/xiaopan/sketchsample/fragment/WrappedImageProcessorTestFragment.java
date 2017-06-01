@@ -7,35 +7,35 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.MaskImageProcessor;
 import me.xiaopan.sketch.process.RotateImageProcessor;
 import me.xiaopan.sketch.process.RoundRectImageProcessor;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_wrapped)
-public class WrappedImageProcessorTestFragment extends MyFragment {
-    @InjectView(R.id.image_wrappedFragment)
+@BindContentView(R.layout.fragment_wrapped)
+public class WrappedImageProcessorTestFragment extends BaseFragment {
+    @BindView(R.id.image_wrappedFragment)
     MyImageView imageView;
 
-    @InjectView(R.id.seekBar_wrappedFragment_width)
+    @BindView(R.id.seekBar_wrappedFragment_width)
     SeekBar widthSeekBar;
 
-    @InjectView(R.id.text_wrappedFragment_width)
+    @BindView(R.id.text_wrappedFragment_width)
     TextView widthProgressTextView;
 
-    @InjectView(R.id.seekBar_wrappedFragment_height)
+    @BindView(R.id.seekBar_wrappedFragment_height)
     SeekBar heightSeekBar;
 
-    @InjectView(R.id.text_wrappedFragment_height)
+    @BindView(R.id.text_wrappedFragment_height)
     TextView heightProgressTextView;
 
-    @InjectView(R.id.button_wrappedFragment)
+    @BindView(R.id.button_wrappedFragment)
     View rotateButton;
 
     private int roundRectRadiusProgress = 30;

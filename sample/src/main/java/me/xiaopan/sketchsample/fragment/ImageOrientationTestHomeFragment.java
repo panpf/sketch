@@ -5,22 +5,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.FragmentArrayPagerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.MainActivity;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 
-@InjectContentView(R.layout.fragment_pager_tab)
-public class ImageOrientationTestHomeFragment extends MyFragment {
-    @InjectView(R.id.tab_pagerTabFragment_tabs)
-    private PagerSlidingTabStrip tabStrip;
+@BindContentView(R.layout.fragment_pager_tab)
+public class ImageOrientationTestHomeFragment extends BaseFragment {
+    @BindView(R.id.tab_pagerTabFragment_tabs)
+    PagerSlidingTabStrip tabStrip;
 
-    @InjectView(R.id.pager_pagerTabFragment_content)
-    private ViewPager viewPager;
+    @BindView(R.id.pager_pagerTabFragment_content)
+    ViewPager viewPager;
 
     private FragmentArrayPagerAdapter fragmentAdapter;
 

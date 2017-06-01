@@ -18,10 +18,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.AppItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.AppListHeaderItemFactory;
@@ -32,12 +32,14 @@ import me.xiaopan.sketchsample.widget.HintView;
 /**
  * 已安装APP列表
  */
-@InjectContentView(R.layout.fragment_installed_app)
-public class InstalledAppFragment extends MyFragment {
-    @InjectView(R.id.recyclerView_installedApp_content)
-    private RecyclerView contentRecyclerView;
-    @InjectView(R.id.hint_installedApp_hint)
-    private HintView hintView;
+@BindContentView(R.layout.fragment_installed_app)
+public class InstalledAppFragment extends BaseFragment {
+    @BindView(R.id.recyclerView_installedApp_content)
+    RecyclerView contentRecyclerView;
+
+    @BindView(R.id.hint_installedApp_hint)
+    HintView hintView;
+
     private AssemblyRecyclerAdapter adapter = null;
 
     @Override

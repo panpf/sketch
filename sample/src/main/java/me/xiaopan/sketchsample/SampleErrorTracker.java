@@ -16,7 +16,6 @@ import java.util.Locale;
 
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
-import me.xiaopan.sketch.viewfun.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -24,6 +23,7 @@ import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
+import me.xiaopan.sketch.viewfun.large.Tile;
 
 class SampleErrorTracker extends ErrorTracker {
 

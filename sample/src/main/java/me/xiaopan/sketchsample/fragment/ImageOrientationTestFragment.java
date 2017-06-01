@@ -4,20 +4,20 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 
-@InjectContentView(R.layout.fragment_image_orientation_test)
-public class ImageOrientationTestFragment extends MyFragment {
+@BindContentView(R.layout.fragment_image_orientation_test)
+public class ImageOrientationTestFragment extends BaseFragment {
     private static final String PARAM_REQUIRED_STRING_FILE_PATH = "PARAM_REQUIRED_STRING_FILE_PATH";
 
-    @InjectView(R.id.image_imageOrientationTestFragment_before)
+    @BindView(R.id.image_imageOrientationTestFragment_before)
     SketchImageView beforeImageView;
 
-    @InjectView(R.id.image_imageOrientationTestFragment_after)
+    @BindView(R.id.image_imageOrientationTestFragment_after)
     SketchImageView afterImageView;
 
     private String filePath;

@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.ImageDetailActivity;
@@ -50,12 +50,13 @@ import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 /**
  * 本地相册页面
  */
-@InjectContentView(R.layout.fragment_photo_album)
-public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
-    @InjectView(R.id.refreshLayout_photoAlbum)
-    private SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.recyclerView_photoAlbum_content)
-    private RecyclerView recyclerView;
+@BindContentView(R.layout.fragment_photo_album)
+public class PhotoAlbumFragment extends BaseFragment implements PhotoAlbumItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
+    @BindView(R.id.refreshLayout_photoAlbum)
+    SwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.recyclerView_photoAlbum_content)
+    RecyclerView recyclerView;
 
     private AssemblyRecyclerAdapter adapter;
 

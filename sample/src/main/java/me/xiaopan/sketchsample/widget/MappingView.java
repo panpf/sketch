@@ -28,14 +28,14 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
-import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
-import me.xiaopan.sketch.viewfun.large.Tile;
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
+import me.xiaopan.sketch.viewfun.large.Tile;
 
 public class MappingView extends SketchImageView {
 

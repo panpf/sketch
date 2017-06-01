@@ -5,19 +5,19 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_reflection)
-public class CircleImageProcessorTestFragment extends MyFragment{
-    @InjectView(R.id.image_reflectionFragment)
+@BindContentView(R.layout.fragment_reflection)
+public class CircleImageProcessorTestFragment extends BaseFragment {
+    @BindView(R.id.image_reflectionFragment)
     MyImageView imageView;
 
     @Override

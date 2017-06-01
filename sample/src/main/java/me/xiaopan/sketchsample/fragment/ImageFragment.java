@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectExtra;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.decode.DataSource;
@@ -52,7 +50,8 @@ import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.bean.Image;
@@ -64,27 +63,23 @@ import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_image)
-public class ImageFragment extends MyFragment {
+@BindContentView(R.layout.fragment_image)
+public class ImageFragment extends BaseFragment {
     public static final String PARAM_REQUIRED_STRING_IMAGE_URI = "PARAM_REQUIRED_STRING_IMAGE_URI";
     public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY";
     public static final String PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS = "PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS";
 
-    @InjectView(R.id.image_imageFragment_image)
-    private MyImageView imageView;
+    @BindView(R.id.image_imageFragment_image)
+    MyImageView imageView;
 
-    @InjectView(R.id.mapping_imageFragment)
-    private MappingView mappingView;
+    @BindView(R.id.mapping_imageFragment)
+    MappingView mappingView;
 
-    @InjectView(R.id.hint_imageFragment_hint)
-    private HintView hintView;
+    @BindView(R.id.hint_imageFragment_hint)
+    HintView hintView;
 
     private Image image;
-
-    @InjectExtra(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
-    private String loadingImageOptionsId;
-
-    @InjectExtra(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
+    private String loadingImageOptionsKey;
     private boolean showTools;
 
     private String finalShowImageUrl;
@@ -116,6 +111,8 @@ public class ImageFragment extends MyFragment {
         Bundle arguments = getArguments();
         if (arguments != null) {
             image = arguments.getParcelable(PARAM_REQUIRED_STRING_IMAGE_URI);
+            loadingImageOptionsKey = arguments.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY);
+            showTools = arguments.getBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS);
         }
     }
 
@@ -189,8 +186,8 @@ public class ImageFragment extends MyFragment {
             options.setDecodeGifImage(true);
 
             // 有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
-            if (!TextUtils.isEmpty(loadingImageOptionsId)) {
-                String memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl, loadingImageOptionsId);
+            if (!TextUtils.isEmpty(loadingImageOptionsKey)) {
+                String memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl, loadingImageOptionsKey);
                 MemoryCache memoryCache = Sketch.with(getActivity()).getConfiguration().getMemoryCache();
                 SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
                 if (cachedRefBitmap != null) {

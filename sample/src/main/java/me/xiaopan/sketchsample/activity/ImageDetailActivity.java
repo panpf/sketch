@@ -26,29 +26,26 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectParentMember;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
+import me.xiaopan.sketchsample.BaseActivity;
 import me.xiaopan.sketchsample.ImageOptions;
-import me.xiaopan.sketchsample.MyBaseActivity;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.fragment.ImageDetailFragment;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-// TODO: 2017/6/1 0001 支持清晰的和不清晰度两种分辨率的图片，然后加个选项控制，这样就可以显示unsplash超清原图了
-@InjectParentMember
-@InjectContentView(R.layout.activity_only_fragment)
-public class ImageDetailActivity extends MyBaseActivity implements ApplyBackgroundCallback {
+@BindContentView(R.layout.activity_only_fragment)
+public class ImageDetailActivity extends BaseActivity implements ApplyBackgroundCallback {
 
-    @InjectView(R.id.image_onlyFragment_background) MyImageView backgroundImageView;
-    @InjectView(R.id.layout_onlyFragment_content) View contentView;
+    @BindView(R.id.image_onlyFragment_background) MyImageView backgroundImageView;
+    @BindView(R.id.layout_onlyFragment_content) View contentView;
 
     public static void launch(Activity activity, ArrayList<Image> images, String loadingImageOptionsInfo, int defaultPosition) {
         Intent intent = new Intent(activity, ImageDetailActivity.class);
         intent.putParcelableArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, images);
-        intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO, loadingImageOptionsInfo);
+        intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY, loadingImageOptionsInfo);
         intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);

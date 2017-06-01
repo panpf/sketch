@@ -6,21 +6,21 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_base64_test)
-public class Base64ImageTestFragment extends MyFragment {
+@BindContentView(R.layout.fragment_base64_test)
+public class Base64ImageTestFragment extends BaseFragment {
 
-    @InjectView(R.id.edit_base64TestFragment)
-    private EditText editText;
+    @BindView(R.id.edit_base64TestFragment)
+    EditText editText;
 
-    @InjectView(R.id.image_base64TestFragment)
-    private MyImageView imageView;
+    @BindView(R.id.image_base64TestFragment)
+    MyImageView imageView;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

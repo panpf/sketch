@@ -22,11 +22,11 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.ZipFile;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.AppItemFactory;
 import me.xiaopan.sketchsample.adapter.itemfactory.AppListHeaderItemFactory;
@@ -38,12 +38,14 @@ import me.xiaopan.sketchsample.widget.HintView;
 /**
  * 本地安装包页面
  */
-@InjectContentView(R.layout.fragment_installed_app)
-public class AppPackageFragment extends MyFragment {
-    @InjectView(R.id.recyclerView_installedApp_content)
-    private RecyclerView contentRecyclerView;
-    @InjectView(R.id.hint_installedApp_hint)
-    private HintView hintView;
+@BindContentView(R.layout.fragment_installed_app)
+public class AppPackageFragment extends BaseFragment {
+    @BindView(R.id.recyclerView_installedApp_content)
+    RecyclerView contentRecyclerView;
+
+    @BindView(R.id.hint_installedApp_hint)
+    HintView hintView;
+
     private AssemblyRecyclerAdapter adapter = null;
 
     @Override

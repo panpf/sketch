@@ -6,24 +6,24 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RoundRectImageProcessor;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_round_rect_image_processor)
-public class RoundRectImageProcessorTestFragment extends MyFragment{
-    @InjectView(R.id.image_roundRectImageProcessor)
+@BindContentView(R.layout.fragment_round_rect_image_processor)
+public class RoundRectImageProcessorTestFragment extends BaseFragment {
+    @BindView(R.id.image_roundRectImageProcessor)
     MyImageView imageView;
 
-    @InjectView(R.id.seekBar_roundRectImageProcessor)
+    @BindView(R.id.seekBar_roundRectImageProcessor)
     SeekBar seekBar;
 
-    @InjectView(R.id.text_roundRectImageProcessor)
+    @BindView(R.id.text_roundRectImageProcessor)
     TextView progressTextView;
 
     private int progress = 30;

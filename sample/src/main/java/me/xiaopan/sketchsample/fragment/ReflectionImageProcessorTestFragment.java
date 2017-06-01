@@ -4,18 +4,18 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.ReflectionImageProcessor;
 import me.xiaopan.sketchsample.AssetImage;
-import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.BaseFragment;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_reflection)
-public class ReflectionImageProcessorTestFragment extends MyFragment{
-    @InjectView(R.id.image_reflectionFragment)
+@BindContentView(R.layout.fragment_reflection)
+public class ReflectionImageProcessorTestFragment extends BaseFragment {
+    @BindView(R.id.image_reflectionFragment)
     MyImageView imageView;
 
     @Override

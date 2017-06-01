@@ -80,7 +80,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
 
-    compile 'me.xiaopan:androidinjector:1.5.0'
     compile 'me.xiaopan:pagerslidingtabstrip:1.6.0'
     compile 'me.xiaopan:assemblyadapter:2.3.0'
 

@@ -43,9 +43,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.xiaopan.androidinjector.InjectContentView;
-import me.xiaopan.androidinjector.InjectParentMember;
-import me.xiaopan.androidinjector.InjectView;
+import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
@@ -53,9 +51,10 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.BaseActivity;
 import me.xiaopan.sketchsample.BuildConfig;
 import me.xiaopan.sketchsample.ImageOptions;
-import me.xiaopan.sketchsample.MyBaseActivity;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.CheckMenuItemFactory;
@@ -84,29 +83,26 @@ import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-// TODO: 2017/6/1 0001 去掉对android injector的依赖
-
 /**
  * 首页
  */
-@InjectParentMember
-@InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyBaseActivity implements AppListFragment.GetAppListTagStripListener, ApplyBackgroundCallback {
+@BindContentView(R.layout.activity_main)
+public class MainActivity extends BaseActivity implements AppListFragment.GetAppListTagStripListener, ApplyBackgroundCallback {
 
-    @InjectView(R.id.layout_main_content)
-    private View contentView;
-    @InjectView(R.id.tabStrip_main_appList)
-    private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.drawer_main_content)
-    private DrawerLayout drawerLayout;
-    @InjectView(R.id.recycler_main_menu)
-    private RecyclerView menuRecyclerView;
-    @InjectView(R.id.layout_main_leftMenu)
-    private ViewGroup leftMenuView;
-    @InjectView(R.id.image_main_background)
-    private MyImageView backgroundImageView;
-    @InjectView(R.id.image_main_menuBackground)
-    private MyImageView menuBackgroundImageView;
+    @BindView(R.id.layout_main_content)
+    View contentView;
+    @BindView(R.id.tabStrip_main_appList)
+    PagerSlidingTabStrip appListTabStrip;
+    @BindView(R.id.drawer_main_content)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.recycler_main_menu)
+    RecyclerView menuRecyclerView;
+    @BindView(R.id.layout_main_leftMenu)
+    ViewGroup leftMenuView;
+    @BindView(R.id.image_main_background)
+    MyImageView backgroundImageView;
+    @BindView(R.id.image_main_menuBackground)
+    MyImageView menuBackgroundImageView;
 
     private long lastClickBackTime;
     private Page page;
@@ -465,7 +461,7 @@ public class MainActivity extends MyBaseActivity implements AppListFragment.GetA
     public enum Page {
         UNSPLASH("Unsplash", UnsplashPhotosFragment.class, false, false),
         SEARCH("GIF Search", SearchFragment.class, false, false),
-        PHOTO_ALBUM("Photo Album", PhotoAlbumFragment.class, false, false),
+        PHOTO_ALBUM("My Photos", PhotoAlbumFragment.class, false, false),
         APP_LIST("My Apps", AppListFragment.class, false, false),
         ABOUT("About Sketch", AboutFragment.class, false, false),
 
