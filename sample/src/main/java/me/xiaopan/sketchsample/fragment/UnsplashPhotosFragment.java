@@ -123,9 +123,14 @@ public class UnsplashPhotosFragment extends MyFragment implements UnsplashPhotos
 
     @Override
     public void onClickUser(int position, UnsplashImage.User user) {
-        String userHomeUri = user.links.html + "?utm_source=SketchSample&utm_medium=referral&utm_campaign=api-credit";
+        Uri uri = Uri.parse(user.links.html)
+                .buildUpon()
+                .appendQueryParameter("utm_source", "SketchSample")
+                .appendQueryParameter("utm_medium", "referral")
+                .appendQueryParameter("utm_campaign", "api-credit")
+                .build();
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(userHomeUri));
+        intent.setData(uri);
         startActivity(intent);
     }
 
