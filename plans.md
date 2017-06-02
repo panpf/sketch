@@ -8,7 +8,6 @@
 * 支持一次设置两张图地址 分大图小图 WiFi下可直接大图
 * 再次考虑Drawable.setVisible
 * 4.3模拟器上模糊失效
-* gif点击播放
 * 长图只读取部分区域，参考百思不得姐
 * 参考高并发对象池，优化sketch里的同步锁与对象池
 * 加上面部识别功能，居中显示部分时可以以脸部为中心
@@ -17,7 +16,6 @@
 * 加一些常用的xml属性
 * 集成Oblique，支持倾斜图片显示
 * 重新设计ImageShaper，感觉现在的很垃圾，限制很大
-* 集成unsplash的图片资源
 
 其它：
 * 参考Glide、Fresco和Picasso
@@ -190,6 +188,8 @@
 * （2017-05-10）将一个功能的所有处理代码都放到一个类中，例如缓存已处理图片的功能
 * （2017-05-10）通过ExifInterface读取图片方向信息，实现自动旋转方向不正的图片，新的ExifInterface支持库 http://developers.googleblog.cn/2017/01/exifinterface.html compile "com.android.support:exifinterface:25.1.0"
 * （2017-05-24）支持Base64格式的图片
+* （2017-05-27）gif点击播放
+* （2017-05-30）集成unsplash的图片资源
 
 不必了：
 * （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
