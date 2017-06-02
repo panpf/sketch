@@ -8,7 +8,7 @@ import org.greenrobot.eventbus.Subscribe;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 
-public class InterceptCorrectImageOrientationConfigImageView extends MyImageView {
+public class InterceptCorrectImageOrientationConfigImageView extends SampleImageView {
 
     public InterceptCorrectImageOrientationConfigImageView(Context context) {
         super(context);

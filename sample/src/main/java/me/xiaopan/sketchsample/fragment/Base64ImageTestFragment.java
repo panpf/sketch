@@ -11,7 +11,7 @@ import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.BaseFragment;
 import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.fragment_base64_test)
 public class Base64ImageTestFragment extends BaseFragment {
@@ -20,7 +20,7 @@ public class Base64ImageTestFragment extends BaseFragment {
     EditText editText;
 
     @BindView(R.id.image_base64TestFragment)
-    MyImageView imageView;
+    SampleImageView imageView;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

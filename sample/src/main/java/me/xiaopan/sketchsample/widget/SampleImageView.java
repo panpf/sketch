@@ -33,16 +33,16 @@ import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.event.CacheCleanEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 
-public class MyImageView extends SketchImageView {
+public class SampleImageView extends SketchImageView {
     private Page page;
     private boolean disabledRedisplay;
     private boolean disabledLongClickShowImageInfo;
 
-    public MyImageView(Context context) {
+    public SampleImageView(Context context) {
         super(context);
     }
 
-    public MyImageView(Context context, AttributeSet attrs) {
+    public SampleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         setOnLongClickListener(new LongClickShowDrawableInfoListener());

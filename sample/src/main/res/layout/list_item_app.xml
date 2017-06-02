@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <me.xiaopan.sketchsample.widget.MyImageView
+    <me.xiaopan.sketchsample.widget.SampleImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:id="@+id/image_installedApp_icon"

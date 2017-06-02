@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <me.xiaopan.sketchsample.widget.MyImageView
+    <me.xiaopan.sketchsample.widget.SampleImageView
         android:id="@+id/image_reflectionFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -14,61 +14,61 @@ import butterknife.BindView;
 import me.xiaopan.sketchsample.BaseFragment;
 import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.fragment_repeat_load_or_download_test)
 public class RepeatLoadOrDownloadTestFragment extends BaseFragment {
 
     @BindView(R.id.image_repeatLoadOrDownloadTest_1)
-    MyImageView imageView1;
+    SampleImageView imageView1;
     @BindView(R.id.image_repeatLoadOrDownloadTest_2)
-    MyImageView imageView2;
+    SampleImageView imageView2;
     @BindView(R.id.image_repeatLoadOrDownloadTest_3)
-    MyImageView imageView3;
+    SampleImageView imageView3;
     @BindView(R.id.image_repeatLoadOrDownloadTest_4)
-    MyImageView imageView4;
+    SampleImageView imageView4;
     @BindView(R.id.image_repeatLoadOrDownloadTest_5)
-    MyImageView imageView5;
+    SampleImageView imageView5;
     @BindView(R.id.image_repeatLoadOrDownloadTest_6)
-    MyImageView imageView6;
+    SampleImageView imageView6;
     @BindView(R.id.image_repeatLoadOrDownloadTest_7)
-    MyImageView imageView7;
+    SampleImageView imageView7;
     @BindView(R.id.image_repeatLoadOrDownloadTest_8)
-    MyImageView imageView8;
+    SampleImageView imageView8;
 
     @BindView(R.id.image_repeatLoadOrDownloadTest_9)
-    MyImageView imageView9;
+    SampleImageView imageView9;
     @BindView(R.id.image_repeatLoadOrDownloadTest_10)
-    MyImageView imageView10;
+    SampleImageView imageView10;
     @BindView(R.id.image_repeatLoadOrDownloadTest_11)
-    MyImageView imageView11;
+    SampleImageView imageView11;
     @BindView(R.id.image_repeatLoadOrDownloadTest_12)
-    MyImageView imageView12;
+    SampleImageView imageView12;
     @BindView(R.id.image_repeatLoadOrDownloadTest_13)
-    MyImageView imageView13;
+    SampleImageView imageView13;
     @BindView(R.id.image_repeatLoadOrDownloadTest_14)
-    MyImageView imageView14;
+    SampleImageView imageView14;
     @BindView(R.id.image_repeatLoadOrDownloadTest_15)
-    MyImageView imageView15;
+    SampleImageView imageView15;
     @BindView(R.id.image_repeatLoadOrDownloadTest_16)
-    MyImageView imageView16;
+    SampleImageView imageView16;
 
     @BindView(R.id.image_repeatLoadOrDownloadTest_31)
-    MyImageView imageView31;
+    SampleImageView imageView31;
     @BindView(R.id.image_repeatLoadOrDownloadTest_32)
-    MyImageView imageView32;
+    SampleImageView imageView32;
     @BindView(R.id.image_repeatLoadOrDownloadTest_33)
-    MyImageView imageView33;
+    SampleImageView imageView33;
     @BindView(R.id.image_repeatLoadOrDownloadTest_34)
-    MyImageView imageView34;
+    SampleImageView imageView34;
     @BindView(R.id.image_repeatLoadOrDownloadTest_35)
-    MyImageView imageView35;
+    SampleImageView imageView35;
     @BindView(R.id.image_repeatLoadOrDownloadTest_36)
-    MyImageView imageView36;
+    SampleImageView imageView36;
     @BindView(R.id.image_repeatLoadOrDownloadTest_37)
-    MyImageView imageView37;
+    SampleImageView imageView37;
     @BindView(R.id.image_repeatLoadOrDownloadTest_38)
-    MyImageView imageView38;
+    SampleImageView imageView38;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

@@ -16,12 +16,12 @@ import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.BaseFragment;
 import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.fragment_wrapped)
 public class WrappedImageProcessorTestFragment extends BaseFragment {
     @BindView(R.id.image_wrappedFragment)
-    MyImageView imageView;
+    SampleImageView imageView;
 
     @BindView(R.id.seekBar_wrappedFragment_width)
     SeekBar widthSeekBar;

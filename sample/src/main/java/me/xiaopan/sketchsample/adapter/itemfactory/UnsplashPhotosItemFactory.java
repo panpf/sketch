@@ -11,7 +11,7 @@ import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.bean.UnsplashImage;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class UnsplashPhotosItemFactory extends AssemblyRecyclerItemFactory<UnsplashPhotosItemFactory.UnsplashPhotosItem> {
     private UnsplashPhotosItemEventListener unsplashPhotosItemEventListener;
@@ -38,9 +38,9 @@ public class UnsplashPhotosItemFactory extends AssemblyRecyclerItemFactory<Unspl
 
     public class UnsplashPhotosItem extends BindAssemblyRecyclerItem<UnsplashImage> {
         @BindView(R.id.image_unsplashImageItem)
-        MyImageView imageView;
+        SampleImageView imageView;
         @BindView(R.id.image_unsplashImageItem_userProfile)
-        MyImageView userProfileImageView;
+        SampleImageView userProfileImageView;
         @BindView(R.id.text_unsplashImageItem_userName)
         TextView userNameTextView;
         @BindView(R.id.text_unsplashImageItem_date)
@@ -64,7 +64,7 @@ public class UnsplashPhotosItemFactory extends AssemblyRecyclerItemFactory<Unspl
             });
             imageView.setOptionsByName(ImageOptions.LIST_FULL);
 
-            imageView.setPage(MyImageView.Page.UNSPLASH_LIST);
+            imageView.setPage(SampleImageView.Page.UNSPLASH_LIST);
 
             userProfileImageView.setOptionsByName(ImageOptions.CIRCULAR_STROKE);
 

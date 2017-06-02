@@ -13,12 +13,12 @@ import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.BaseFragment;
 import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.fragment_circle_image_shaper)
 public class CircleImageShaperTestFragment extends BaseFragment {
     @BindView(R.id.image_circleImageShaperFragment)
-    MyImageView imageView;
+    SampleImageView imageView;
 
     @BindView(R.id.seekBar_circleImageShaperFragment_stroke)
     SeekBar strokeSeekBar;

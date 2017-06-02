@@ -12,56 +12,56 @@
         android:paddingRight="8dp"
         android:orientation="vertical">
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_1"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_2"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_3"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_4"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_5"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_6"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_7"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_8"
             android:layout_width="90dp"
             android:layout_height="90dp"
@@ -77,56 +77,56 @@
         android:paddingRight="8dp"
         android:orientation="vertical">
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_9"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_10"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_11"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_12"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_13"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_14"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_15"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_16"
             android:layout_width="90dp"
             android:layout_height="90dp"
@@ -142,56 +142,56 @@
         android:paddingRight="8dp"
         android:orientation="vertical">
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_31"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_32"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_33"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_34"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_35"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_36"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_37"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_repeatLoadOrDownloadTest_38"
             android:layout_width="60dp"
             android:layout_height="60dp"

@@ -12,12 +12,12 @@ import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.BaseFragment;
 import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.fragment_rotate)
 public class RotateImageProcessorTestFragment extends BaseFragment {
     @BindView(R.id.image_rotateFragment)
-    MyImageView imageView;
+    SampleImageView imageView;
 
     @BindView(R.id.button_rotateFragment)
     Button rotateButton;

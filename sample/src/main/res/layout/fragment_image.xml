@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:paddingTop="8dp">
 
-    <me.xiaopan.sketchsample.widget.MyImageView
+    <me.xiaopan.sketchsample.widget.SampleImageView
         android:id="@+id/image_imageFragment_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

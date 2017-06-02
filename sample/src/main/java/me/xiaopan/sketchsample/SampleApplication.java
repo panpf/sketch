@@ -24,7 +24,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import me.xiaopan.sketch.Sketch;
 
-public class MyApplication extends Application {
+public class SampleApplication extends Application {
 
     @Override
     public void onCreate() {

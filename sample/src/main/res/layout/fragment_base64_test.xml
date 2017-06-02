@@ -22,7 +22,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <me.xiaopan.sketchsample.widget.MyImageView
+        <me.xiaopan.sketchsample.widget.SampleImageView
             android:id="@+id/image_base64TestFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -34,12 +34,12 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.fragment.ImageDetailFragment;
 import me.xiaopan.sketchsample.util.DeviceUtils;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.activity_only_fragment)
 public class ImageDetailActivity extends BaseActivity implements ApplyBackgroundCallback {
 
-    @BindView(R.id.image_onlyFragment_background) MyImageView backgroundImageView;
+    @BindView(R.id.image_onlyFragment_background) SampleImageView backgroundImageView;
     @BindView(R.id.layout_onlyFragment_content) View contentView;
 
     public static void launch(Activity activity, ArrayList<Image> images, String loadingImageOptionsInfo, int defaultPosition) {

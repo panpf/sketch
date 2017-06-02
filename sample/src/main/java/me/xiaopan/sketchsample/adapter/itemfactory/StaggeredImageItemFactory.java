@@ -11,7 +11,7 @@ import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.bean.BaiduImage;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<StaggeredImageItemFactory.StaggeredImageItem> {
     private OnItemClickListener onItemClickListener;
@@ -37,7 +37,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
 
     public class StaggeredImageItem extends BindAssemblyRecyclerItem<BaiduImage> {
         @BindView(R.id.image_staggeredImageItem)
-        MyImageView imageView;
+        SampleImageView imageView;
 
         public StaggeredImageItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
@@ -55,7 +55,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
             });
             imageView.setOptionsByName(ImageOptions.RECT);
 
-            imageView.setPage(MyImageView.Page.SEARCH_LIST);
+            imageView.setPage(SampleImageView.Page.SEARCH_LIST);
         }
 
         @Override

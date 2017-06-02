@@ -61,7 +61,7 @@ import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
 import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MappingView;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 @BindContentView(R.layout.fragment_image)
 public class ImageFragment extends BaseFragment {
@@ -70,7 +70,7 @@ public class ImageFragment extends BaseFragment {
     public static final String PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS = "PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS";
 
     @BindView(R.id.image_imageFragment_image)
-    MyImageView imageView;
+    SampleImageView imageView;
 
     @BindView(R.id.mapping_imageFragment)
     MappingView mappingView;
@@ -178,7 +178,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         private void initOptions() {
-            imageView.setPage(MyImageView.Page.DETAIL);
+            imageView.setPage(SampleImageView.Page.DETAIL);
 
             DisplayOptions options = imageView.getOptions();
 

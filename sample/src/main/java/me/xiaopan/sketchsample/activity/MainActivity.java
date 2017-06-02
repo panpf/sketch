@@ -81,7 +81,7 @@ import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 /**
  * 首页
@@ -100,9 +100,9 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
     @BindView(R.id.layout_main_leftMenu)
     ViewGroup leftMenuView;
     @BindView(R.id.image_main_background)
-    MyImageView backgroundImageView;
+    SampleImageView backgroundImageView;
     @BindView(R.id.image_main_menuBackground)
-    MyImageView menuBackgroundImageView;
+    SampleImageView menuBackgroundImageView;
 
     private long lastClickBackTime;
     private Page page;

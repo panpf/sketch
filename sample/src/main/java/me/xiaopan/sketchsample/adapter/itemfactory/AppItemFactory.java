@@ -13,7 +13,7 @@ import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.bean.AppInfo;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.AppItem> {
     @Override
@@ -28,7 +28,7 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
 
     public class AppItem extends BindAssemblyRecyclerItem<AppInfo> {
         @BindView(R.id.image_installedApp_icon)
-        MyImageView iconImageView;
+        SampleImageView iconImageView;
         @BindView(R.id.text_installedApp_name)
         TextView nameTextView;
         @BindView(R.id.text_installedApp_info)
@@ -41,7 +41,7 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
         @Override
         protected void onConfigViews(Context context) {
             iconImageView.setOptionsByName(ImageOptions.ROUND_RECT);
-            iconImageView.setPage(MyImageView.Page.APP_LIST);
+            iconImageView.setPage(SampleImageView.Page.APP_LIST);
 
             ImageShaper imageShaper = iconImageView.getOptions().getImageShaper();
             if (imageShaper instanceof RoundRectImageShaper) {

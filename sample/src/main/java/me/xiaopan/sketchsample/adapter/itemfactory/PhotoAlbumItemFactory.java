@@ -16,7 +16,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
-import me.xiaopan.sketchsample.widget.MyImageView;
+import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbumItemFactory.PhotoAlbumItem> {
 
@@ -61,7 +61,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
 
     public class PhotoAlbumItem extends BindAssemblyRecyclerItem<String> {
         @BindView(R.id.image_photoAlbumImageItem)
-        MyImageView imageView;
+        SampleImageView imageView;
 
         public PhotoAlbumItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
@@ -93,7 +93,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                 imageView.setLayoutParams(layoutParams);
             }
 
-            imageView.setPage(MyImageView.Page.PHOTO_ALBUM_LIST);
+            imageView.setPage(SampleImageView.Page.PHOTO_ALBUM_LIST);
         }
 
         @Override
