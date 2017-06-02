@@ -33,7 +33,7 @@ sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
     }
 });
 
-sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/baiduSearchImage/4/1366x768/1387347695254.jpg");
+sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 ```
 
 ``display()不支持设置listener和downloadProgressListener``

@@ -42,7 +42,7 @@ SketchImageView sketchImageView = ...;
 sketchImageView.setDisplayListener(new DisplayListener(){
     @Override
     public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs){
-        Log.d("Sketch", "baiduSearchImage exif orientation is " + imageAttrs.getExifOrientation());
+        Log.d("Sketch", "image exif orientation is " + imageAttrs.getExifOrientation());
     }
 
     ...
@@ -55,7 +55,7 @@ SketchImageView sketchImageView = ...;
 Drawable drawable = sketchImageView.getDrawable();
 if (drawable != null && drawable instanceof SketchDrawable){
     SketchDrawable sketchDrawable = (SketchDrawable) drawable;
-    Log.d("Sketch", "baiduSearchImage exif orientation is " + sketchDrawable.getExifOrientation());
+    Log.d("Sketch", "image exif orientation is " + sketchDrawable.getExifOrientation());
 }
 ```
 

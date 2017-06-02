@@ -51,5 +51,5 @@ if (params.width != 0 && params.height != 0) {
 // 开启缩略图模式
 options.setThumbnailMode(true);
 
-sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/baiduSearchImage/4/1366x768/1387347695254.jpg");
+sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 ```

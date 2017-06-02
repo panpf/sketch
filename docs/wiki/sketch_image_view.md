@@ -25,24 +25,24 @@ res/layout/item_user.xml
 ```java
 SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
 
-// display baiduSearchImage from net
+// display image from net
 sketchImageView.displayImage("http://t.cn/RShdS1f");
 
-// display baiduSearchImage from SDCard
+// display image from SDCard
 sketchImageView.displayImage("/sdcard/sample.jpg");
 sketchImageView.displayImage("file:///sdcard/sample.jpg");
 
 // display resource drawable
 sketchImageView.displayResourceImage(R.drawable.sample);
 
-// display baiduSearchImage from asset
+// display image from asset
 sketchImageView.displayAssetImage("sample.jpg");
 
-// display baiduSearchImage from content provider
+// display image from content provider
 sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/last"));
 
-// display base64 baiduSearchImage
-sketchImageView.displayImage("data:baiduSearchImage/jpeg;base,/9j/4QaO...U7T/in//Z");
+// display base64 image
+sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
 
 // display apk icon from SDCard
 sketchImageView.displayImage("/sdcard/google_play.apk");
