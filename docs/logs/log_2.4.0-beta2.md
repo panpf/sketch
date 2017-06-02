@@ -3,7 +3,7 @@
 :fire::fire::fire: 不能无痛升级 :fire::fire::fire:
 
 ### :sparkles: Base64格式图片支持
-* 新增支持Base64格式的图片，支持data:baiduSearchImage/和data:img/两种写法
+* 新增支持Base64格式的图片，支持data:image/和data:img/两种写法
 * 对于Base64格式的图片会首先会缓存到磁盘上再读取
 * 支持Sketch所有功能
 
