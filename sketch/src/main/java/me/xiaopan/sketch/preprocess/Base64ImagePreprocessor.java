@@ -56,12 +56,13 @@ public class Base64ImagePreprocessor implements Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
         diskCacheEditLock.lock();
 
+        PreProcessResult result;
         cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
         if (cacheEntry != null) {
-            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+            result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        } else {
+            result = cacheBase64Image(uriInfo, diskCache);
         }
-
-        PreProcessResult result = cacheBase64Image(uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;

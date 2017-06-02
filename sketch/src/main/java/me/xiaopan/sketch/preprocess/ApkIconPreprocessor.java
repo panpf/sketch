@@ -68,18 +68,19 @@ public class ApkIconPreprocessor implements Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
+        PreProcessResult result;
         cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
-            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+            result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        } else {
+            result = readApkIcon(context, uriInfo, diskCache, diskCacheKey);
         }
-
-        PreProcessResult result = readApkIcon(context, uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readApkIcon(Context context, UriInfo uriInfo, DiskCache diskCache) {
+    private PreProcessResult readApkIcon(Context context, UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriInfo.getContent(), false, LOG_NAME, bitmapPool);
         if (iconBitmap == null) {
@@ -92,7 +93,7 @@ public class ApkIconPreprocessor implements Preprocessor {
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
+        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -135,7 +136,7 @@ public class ApkIconPreprocessor implements Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {

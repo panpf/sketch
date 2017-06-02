@@ -57,18 +57,19 @@ public class XpkIconPreprocessor implements Preprocessor {
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
+        PreProcessResult result;
         cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
-            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+            result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+        } else {
+            result = readXpkIcon(uriInfo, diskCache, diskCacheKey);
         }
-
-        PreProcessResult result = readXpkIcon(uriInfo, diskCache);
 
         diskCacheEditLock.unlock();
         return result;
     }
 
-    private PreProcessResult readXpkIcon(UriInfo uriInfo, DiskCache diskCache) {
+    private PreProcessResult readXpkIcon(UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
         ZipFile zipFile;
         try {
             zipFile = new ZipFile(uriInfo.getContent());
@@ -92,7 +93,7 @@ public class XpkIconPreprocessor implements Preprocessor {
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
+        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -145,7 +146,7 @@ public class XpkIconPreprocessor implements Preprocessor {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
