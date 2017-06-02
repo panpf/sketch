@@ -716,7 +716,7 @@ public final class DiskLruCache implements Closeable {
         return journalWriter == null;
     }
 
-    private void checkNotClosed() throws ClosedException{
+    private void checkNotClosed() throws ClosedException {
         if (journalWriter == null) {
             throw new ClosedException("cache is closed");
         }

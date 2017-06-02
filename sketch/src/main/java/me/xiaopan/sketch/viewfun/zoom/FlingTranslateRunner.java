@@ -21,8 +21,8 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.viewfun.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingTranslateRunner implements Runnable {

@@ -24,17 +24,17 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayCache;
+import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 请求基本功能，更新图片显示引用计数和在onDetachedFromWindow的时候取消请求并清空图片
  */
 public class RequestFunction extends ViewFunction {
-    private ImageViewInterface imageViewInterface;
+    private SketchView sketchView;
 
     private DisplayOptions displayOptions = new DisplayOptions();
     private DisplayCache displayCache;
@@ -42,8 +42,8 @@ public class RequestFunction extends ViewFunction {
     private boolean oldDrawableFromSketch;
     private boolean newDrawableFromSketch;
 
-    public RequestFunction(ImageViewInterface imageViewInterface) {
-        this.imageViewInterface = imageViewInterface;
+    public RequestFunction(SketchView sketchView) {
+        this.sketchView = sketchView;
     }
 
     /**
@@ -92,13 +92,13 @@ public class RequestFunction extends ViewFunction {
     @Override
     public boolean onDetachedFromWindow() {
         // 主动取消请求
-        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
+        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             potentialRequest.cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
         }
 
         // 如果当前图片是来自Sketch，那么就有可能在这里被主动回收，因此要主动设置ImageView的drawable为null
-        final Drawable oldDrawable = imageViewInterface.getDrawable();
+        final Drawable oldDrawable = sketchView.getDrawable();
         return oldDrawable != null && notifyDrawable("onDetachedFromWindow", oldDrawable, false);
     }
 

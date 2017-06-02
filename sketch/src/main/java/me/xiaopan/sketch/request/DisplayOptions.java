@@ -18,6 +18,7 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
@@ -25,7 +26,7 @@ import me.xiaopan.sketch.state.DrawableStateImage;
 import me.xiaopan.sketch.state.StateImage;
 
 /**
- * 显示选项，适用于 {@link me.xiaopan.sketch.Sketch#display(String, ImageViewInterface)} 方法 和 {@link me.xiaopan.sketch.SketchImageView}
+ * 显示选项，适用于 {@link me.xiaopan.sketch.Sketch#display(String, SketchView)} 方法 和 {@link me.xiaopan.sketch.SketchImageView}
  */
 public class DisplayOptions extends LoadOptions {
     /**

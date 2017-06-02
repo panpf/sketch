@@ -23,8 +23,8 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -44,8 +44,8 @@ public class OldStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
-        Drawable drawable = SketchUtils.getLastDrawable(imageViewInterface.getDrawable());
+    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
+        Drawable drawable = SketchUtils.getLastDrawable(sketchView.getDrawable());
 
         if (drawable != null && drawable instanceof SketchLoadingDrawable) {
             drawable = ((SketchLoadingDrawable) drawable).getWrappedDrawable();
@@ -64,7 +64,7 @@ public class OldStateImage implements StateImage {
         }
 
         if (drawable == null && whenEmptyImage != null) {
-            drawable = whenEmptyImage.getDrawable(context, imageViewInterface, displayOptions);
+            drawable = whenEmptyImage.getDrawable(context, sketchView, displayOptions);
         }
 
         return drawable;

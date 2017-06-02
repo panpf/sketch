@@ -19,8 +19,8 @@ package me.xiaopan.sketch.viewfun;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.RedisplayListener;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
@@ -31,13 +31,13 @@ import me.xiaopan.sketch.request.UriScheme;
 public class RecyclerCompatFunction extends ViewFunction {
     private static final String LOG_NAME = "RecyclerCompatFunction";
 
-    private ImageViewInterface imageViewInterface;
+    private SketchView sketchView;
 
     private boolean isSetImage;
     private RedisplayListener redisplayListener;
 
-    public RecyclerCompatFunction(ImageViewInterface imageViewInterface) {
-        this.imageViewInterface = imageViewInterface;
+    public RecyclerCompatFunction(SketchView sketchView) {
+        this.sketchView = sketchView;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class RecyclerCompatFunction extends ViewFunction {
         if (redisplayListener == null) {
             redisplayListener = new RecyclerRedisplayListener();
         }
-        imageViewInterface.redisplay(redisplayListener);
+        sketchView.redisplay(redisplayListener);
     }
 
     @Override

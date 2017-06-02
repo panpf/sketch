@@ -18,6 +18,7 @@ package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 
 public class HelperFactory implements Identifier {
     private static final String KEY = "HelperFactory";
@@ -32,14 +33,14 @@ public class HelperFactory implements Identifier {
         return new LoadHelper(sketch, uri);
     }
 
-    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
+    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchView sketchView) {
         if (this.cacheDisplayHelper == null) {
             this.cacheDisplayHelper = new DisplayHelper();
         }
 
         DisplayHelper displayHelper = this.cacheDisplayHelper;
         this.cacheDisplayHelper = null;
-        displayHelper.init(sketch, uri, imageViewInterface);
+        displayHelper.init(sketch, uri, sketchView);
         return displayHelper;
     }
 

@@ -28,5 +28,6 @@ import me.xiaopan.sketch.request.ShapeSize;
  */
 public interface ImageShaper {
     void onUpdateShaderMatrix(Matrix matrix, Rect bounds, int bitmapWidth, int bitmapHeight, ShapeSize shapeSize, Rect srcRect);
+
     void draw(Canvas canvas, Paint paint, Rect bounds);
 }

@@ -152,11 +152,11 @@ public interface BitmapPool extends Identifier {
      * Trim memory
      *
      * @param level The context of the trim, giving a hint of the amount of
-     * trimming the application may like to perform.  May be
-     * {@link android.content.ComponentCallbacks2#TRIM_MEMORY_COMPLETE}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_MODERATE},
-     * {@link android.content.ComponentCallbacks2#TRIM_MEMORY_BACKGROUND}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_UI_HIDDEN},
-     * {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_CRITICAL}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_LOW},
-     * or {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_MODERATE}.
+     *              trimming the application may like to perform.  May be
+     *              {@link android.content.ComponentCallbacks2#TRIM_MEMORY_COMPLETE}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_MODERATE},
+     *              {@link android.content.ComponentCallbacks2#TRIM_MEMORY_BACKGROUND}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_UI_HIDDEN},
+     *              {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_CRITICAL}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_LOW},
+     *              or {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_MODERATE}.
      */
     void trimMemory(int level);
 

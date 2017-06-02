@@ -29,13 +29,13 @@ import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DownloadProgressListener;
-import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 这个类负责给function回调各种状态
  */
-public abstract class FunctionCallbackView extends ImageView implements ImageViewInterface {
+public abstract class FunctionCallbackView extends ImageView implements SketchView {
 
     OnClickListener wrapperClickListener;
     DisplayListener wrapperDisplayListener;

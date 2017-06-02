@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -23,7 +23,15 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
-public interface ImageViewInterface {
+import me.xiaopan.sketch.request.DisplayCache;
+import me.xiaopan.sketch.request.DisplayListener;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.DisplayRequest;
+import me.xiaopan.sketch.request.DownloadProgressListener;
+import me.xiaopan.sketch.request.RedisplayListener;
+import me.xiaopan.sketch.request.UriScheme;
+
+public interface SketchView {
 
     Drawable getDrawable();
 

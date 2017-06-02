@@ -22,8 +22,8 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
@@ -43,7 +43,7 @@ public class DrawableStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
+    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
         Drawable drawable = originDrawable;
         if (drawable == null && resId != -1) {
             drawable = context.getResources().getDrawable(resId);

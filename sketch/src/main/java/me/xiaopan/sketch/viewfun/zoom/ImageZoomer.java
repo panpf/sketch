@@ -38,18 +38,18 @@ import android.widget.ImageView.ScaleType;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
-import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
+import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
+import me.xiaopan.sketch.SketchView;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.zoom.gestures.ActionListener;
 import me.xiaopan.sketch.viewfun.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.viewfun.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.viewfun.zoom.gestures.ScaleDragGestureDetectorCompat;
-import me.xiaopan.sketch.request.ImageViewInterface;
-import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 @SuppressWarnings("SuspiciousNameCombination")
@@ -450,8 +450,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final int imageHeight;
         ImageView imageView = getImageView();
         Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
-        if (finalDrawable instanceof SketchDrawable && imageView instanceof ImageViewInterface &&
-                ((ImageViewInterface) imageView).isBlockDisplayLargeImageEnabled()) {
+        if (finalDrawable instanceof SketchDrawable && imageView instanceof SketchView &&
+                ((SketchView) imageView).isBlockDisplayLargeImageEnabled()) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
             imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
             imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
@@ -537,8 +537,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final int imageHeight;
         ImageView imageView = getImageView();
         Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
-        if (finalDrawable instanceof SketchDrawable && imageView instanceof ImageViewInterface &&
-                ((ImageViewInterface) imageView).isBlockDisplayLargeImageEnabled()) {
+        if (finalDrawable instanceof SketchDrawable && imageView instanceof SketchView &&
+                ((SketchView) imageView).isBlockDisplayLargeImageEnabled()) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
             imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
             imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
@@ -723,7 +723,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取边界名称，log专用
      */
-    private String getScrollEdgeName(int scrollEdge){
+    private String getScrollEdgeName(int scrollEdge) {
         if (scrollEdge == EDGE_NONE) {
             return "NONE";
         } else if (scrollEdge == EDGE_START) {
@@ -740,7 +740,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 初始化
      */
-    public void init(ImageView imageView, boolean provideTouchEvent){
+    public void init(ImageView imageView, boolean provideTouchEvent) {
         viewReference = new WeakReference<ImageView>(imageView);
 
         // from ImageView get ScaleType
@@ -808,7 +808,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         this.zooming = zooming;
     }
 
-    /** -----------可获取信息----------- **/
+    /**
+     * -----------可获取信息-----------
+     **/
 
     public boolean isWorking() {
         ImageView imageView = getImageView();
@@ -879,7 +881,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 图片是否可用，主要过滤掉占位图
      */
-    public boolean isUsableDrawable(){
+    public boolean isUsableDrawable() {
         return drawable != null && !(drawable instanceof SketchLoadingDrawable);
     }
 
@@ -1062,7 +1064,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取旋转角度
      */
-    public int getRotateDegrees(){
+    public int getRotateDegrees() {
         return rotateDegrees;
     }
 

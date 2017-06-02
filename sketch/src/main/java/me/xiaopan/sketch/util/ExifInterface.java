@@ -67,181 +67,357 @@ public class ExifInterface {
     private static final boolean DEBUG = false;
 
     // The Exif tag names. See Tiff 6.0 Section 3 and Section 8.
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_ARTIST = "Artist";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_BITS_PER_SAMPLE = "BitsPerSample";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_COMPRESSION = "Compression";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_COPYRIGHT = "Copyright";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_DATETIME = "DateTime";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_IMAGE_DESCRIPTION = "ImageDescription";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_IMAGE_LENGTH = "ImageLength";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_IMAGE_WIDTH = "ImageWidth";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_JPEG_INTERCHANGE_FORMAT = "JPEGInterchangeFormat";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_JPEG_INTERCHANGE_FORMAT_LENGTH = "JPEGInterchangeFormatLength";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_MAKE = "Make";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_MODEL = "Model";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_ORIENTATION = "Orientation";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_PHOTOMETRIC_INTERPRETATION = "PhotometricInterpretation";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_PLANAR_CONFIGURATION = "PlanarConfiguration";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_PRIMARY_CHROMATICITIES = "PrimaryChromaticities";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_REFERENCE_BLACK_WHITE = "ReferenceBlackWhite";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_RESOLUTION_UNIT = "ResolutionUnit";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_ROWS_PER_STRIP = "RowsPerStrip";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SAMPLES_PER_PIXEL = "SamplesPerPixel";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SOFTWARE = "Software";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_STRIP_BYTE_COUNTS = "StripByteCounts";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_STRIP_OFFSETS = "StripOffsets";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_TRANSFER_FUNCTION = "TransferFunction";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_WHITE_POINT = "WhitePoint";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_X_RESOLUTION = "XResolution";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_Y_CB_CR_COEFFICIENTS = "YCbCrCoefficients";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_Y_CB_CR_POSITIONING = "YCbCrPositioning";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_Y_CB_CR_SUB_SAMPLING = "YCbCrSubSampling";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_Y_RESOLUTION = "YResolution";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_APERTURE_VALUE = "ApertureValue";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_BRIGHTNESS_VALUE = "BrightnessValue";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_CFA_PATTERN = "CFAPattern";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_COLOR_SPACE = "ColorSpace";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_COMPONENTS_CONFIGURATION = "ComponentsConfiguration";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_COMPRESSED_BITS_PER_PIXEL = "CompressedBitsPerPixel";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_CONTRAST = "Contrast";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_CUSTOM_RENDERED = "CustomRendered";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_DATETIME_DIGITIZED = "DateTimeDigitized";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_DATETIME_ORIGINAL = "DateTimeOriginal";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_DEVICE_SETTING_DESCRIPTION = "DeviceSettingDescription";
-    /** Type is double. */
+    /**
+     * Type is double.
+     */
     public static final String TAG_DIGITAL_ZOOM_RATIO = "DigitalZoomRatio";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_EXIF_VERSION = "ExifVersion";
-    /** Type is double. */
+    /**
+     * Type is double.
+     */
     public static final String TAG_EXPOSURE_BIAS_VALUE = "ExposureBiasValue";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_EXPOSURE_INDEX = "ExposureIndex";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_EXPOSURE_MODE = "ExposureMode";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_EXPOSURE_PROGRAM = "ExposureProgram";
-    /** Type is double. */
+    /**
+     * Type is double.
+     */
     public static final String TAG_EXPOSURE_TIME = "ExposureTime";
-    /** Type is double. */
+    /**
+     * Type is double.
+     */
     public static final String TAG_F_NUMBER = "FNumber";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_FILE_SOURCE = "FileSource";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_FLASH = "Flash";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_FLASH_ENERGY = "FlashEnergy";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_FLASHPIX_VERSION = "FlashpixVersion";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_FOCAL_LENGTH = "FocalLength";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_FOCAL_LENGTH_IN_35MM_FILM = "FocalLengthIn35mmFilm";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_FOCAL_PLANE_RESOLUTION_UNIT = "FocalPlaneResolutionUnit";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_FOCAL_PLANE_X_RESOLUTION = "FocalPlaneXResolution";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_FOCAL_PLANE_Y_RESOLUTION = "FocalPlaneYResolution";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_GAIN_CONTROL = "GainControl";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_ISO_SPEED_RATINGS = "ISOSpeedRatings";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_IMAGE_UNIQUE_ID = "ImageUniqueID";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_LIGHT_SOURCE = "LightSource";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_MAKER_NOTE = "MakerNote";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_MAX_APERTURE_VALUE = "MaxApertureValue";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_METERING_MODE = "MeteringMode";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_NEW_SUBFILE_TYPE = "NewSubfileType";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_OECF = "OECF";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_PIXEL_X_DIMENSION = "PixelXDimension";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_PIXEL_Y_DIMENSION = "PixelYDimension";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_RELATED_SOUND_FILE = "RelatedSoundFile";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SATURATION = "Saturation";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SCENE_CAPTURE_TYPE = "SceneCaptureType";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SCENE_TYPE = "SceneType";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SENSING_METHOD = "SensingMethod";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SHARPNESS = "Sharpness";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_SHUTTER_SPEED_VALUE = "ShutterSpeedValue";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SPATIAL_FREQUENCY_RESPONSE = "SpatialFrequencyResponse";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SPECTRAL_SENSITIVITY = "SpectralSensitivity";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SUBFILE_TYPE = "SubfileType";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SUBSEC_TIME = "SubSecTime";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SUBSEC_TIME_DIGITIZED = "SubSecTimeDigitized";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_SUBSEC_TIME_ORIGINAL = "SubSecTimeOriginal";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SUBJECT_AREA = "SubjectArea";
-    /** Type is double. */
+    /**
+     * Type is double.
+     */
     public static final String TAG_SUBJECT_DISTANCE = "SubjectDistance";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SUBJECT_DISTANCE_RANGE = "SubjectDistanceRange";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_SUBJECT_LOCATION = "SubjectLocation";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_USER_COMMENT = "UserComment";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_WHITE_BALANCE = "WhiteBalance";
     /**
      * The altitude (in meters) based on the reference in TAG_GPS_ALTITUDE_REF.
@@ -253,81 +429,157 @@ public class ExifInterface {
      * level. Type is int.
      */
     public static final String TAG_GPS_ALTITUDE_REF = "GPSAltitudeRef";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_AREA_INFORMATION = "GPSAreaInformation";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_DOP = "GPSDOP";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_DATESTAMP = "GPSDateStamp";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_DEST_BEARING = "GPSDestBearing";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_DEST_BEARING_REF = "GPSDestBearingRef";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_DEST_DISTANCE = "GPSDestDistance";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_DEST_DISTANCE_REF = "GPSDestDistanceRef";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_DEST_LATITUDE = "GPSDestLatitude";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_DEST_LATITUDE_REF = "GPSDestLatitudeRef";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_DEST_LONGITUDE = "GPSDestLongitude";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_DEST_LONGITUDE_REF = "GPSDestLongitudeRef";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_GPS_DIFFERENTIAL = "GPSDifferential";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_IMG_DIRECTION = "GPSImgDirection";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_IMG_DIRECTION_REF = "GPSImgDirectionRef";
-    /** Type is rational. Format is "num1/denom1,num2/denom2,num3/denom3". */
+    /**
+     * Type is rational. Format is "num1/denom1,num2/denom2,num3/denom3".
+     */
     public static final String TAG_GPS_LATITUDE = "GPSLatitude";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_LATITUDE_REF = "GPSLatitudeRef";
-    /** Type is rational. Format is "num1/denom1,num2/denom2,num3/denom3". */
+    /**
+     * Type is rational. Format is "num1/denom1,num2/denom2,num3/denom3".
+     */
     public static final String TAG_GPS_LONGITUDE = "GPSLongitude";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_LONGITUDE_REF = "GPSLongitudeRef";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_MAP_DATUM = "GPSMapDatum";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_MEASURE_MODE = "GPSMeasureMode";
-    /** Type is String. Name of GPS processing method used for location finding. */
+    /**
+     * Type is String. Name of GPS processing method used for location finding.
+     */
     public static final String TAG_GPS_PROCESSING_METHOD = "GPSProcessingMethod";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_SATELLITES = "GPSSatellites";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_SPEED = "GPSSpeed";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_SPEED_REF = "GPSSpeedRef";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_STATUS = "GPSStatus";
-    /** Type is String. Format is "hh:mm:ss". */
+    /**
+     * Type is String. Format is "hh:mm:ss".
+     */
     public static final String TAG_GPS_TIMESTAMP = "GPSTimeStamp";
-    /** Type is rational. */
+    /**
+     * Type is rational.
+     */
     public static final String TAG_GPS_TRACK = "GPSTrack";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_TRACK_REF = "GPSTrackRef";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_GPS_VERSION_ID = "GPSVersionID";
-    /** Type is String. */
+    /**
+     * Type is String.
+     */
     public static final String TAG_INTEROPERABILITY_INDEX = "InteroperabilityIndex";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_THUMBNAIL_IMAGE_LENGTH = "ThumbnailImageLength";
-    /** Type is int. */
+    /**
+     * Type is int.
+     */
     public static final String TAG_THUMBNAIL_IMAGE_WIDTH = "ThumbnailImageWidth";
-    /** Type is int. DNG Specification 1.4.0.0. Section 4 */
+    /**
+     * Type is int. DNG Specification 1.4.0.0. Section 4
+     */
     public static final String TAG_DNG_VERSION = "DNGVersion";
-    /** Type is int. DNG Specification 1.4.0.0. Section 4 */
+    /**
+     * Type is int. DNG Specification 1.4.0.0. Section 4
+     */
     public static final String TAG_DEFAULT_CROP_SIZE = "DefaultCropSize";
-    /** Type is undefined. See Olympus MakerNote tags in http://www.exiv2.org/tags-olympus.html. */
+    /**
+     * Type is undefined. See Olympus MakerNote tags in http://www.exiv2.org/tags-olympus.html.
+     */
     public static final String TAG_ORF_THUMBNAIL_IMAGE = "ThumbnailImage";
-    /** Type is int. See Olympus Camera Settings tags in http://www.exiv2.org/tags-olympus.html. */
+    /**
+     * Type is int. See Olympus Camera Settings tags in http://www.exiv2.org/tags-olympus.html.
+     */
     public static final String TAG_ORF_PREVIEW_IMAGE_START = "PreviewImageStart";
-    /** Type is int. See Olympus Camera Settings tags in http://www.exiv2.org/tags-olympus.html. */
+    /**
+     * Type is int. See Olympus Camera Settings tags in http://www.exiv2.org/tags-olympus.html.
+     */
     public static final String TAG_ORF_PREVIEW_IMAGE_LENGTH = "PreviewImageLength";
-    /** Type is int. See Olympus Image Processing tags in http://www.exiv2.org/tags-olympus.html. */
+    /**
+     * Type is int. See Olympus Image Processing tags in http://www.exiv2.org/tags-olympus.html.
+     */
     public static final String TAG_ORF_ASPECT_FRAME = "AspectFrame";
     /**
      * Type is int. See PanasonicRaw tags in
@@ -402,7 +654,7 @@ public class ExifInterface {
     // Maximum size for checking file type signature (see image_type_recognition_lite.cc)
     private static final int SIGNATURE_CHECK_SIZE = 5000;
 
-    private static final byte[] JPEG_SIGNATURE = new byte[] {(byte) 0xff, (byte) 0xd8, (byte) 0xff};
+    private static final byte[] JPEG_SIGNATURE = new byte[]{(byte) 0xff, (byte) 0xd8, (byte) 0xff};
     private static final String RAF_SIGNATURE = "FUJIFILMCCD-RAW";
     private static final int RAF_OFFSET_TO_JPEG_IMAGE_OFFSET = 84;
     private static final int RAF_INFO_SIZE = 160;
@@ -414,9 +666,9 @@ public class ExifInterface {
     // There are two formats for Olympus Makernote Headers. Each has different identifiers and
     // offsets to the actual data.
     // See http://www.exiv2.org/makernote.html#R1
-    private static final byte[] ORF_MAKER_NOTE_HEADER_1 = new byte[] {(byte) 0x4f, (byte) 0x4c,
+    private static final byte[] ORF_MAKER_NOTE_HEADER_1 = new byte[]{(byte) 0x4f, (byte) 0x4c,
             (byte) 0x59, (byte) 0x4d, (byte) 0x50, (byte) 0x00}; // "OLYMP\0"
-    private static final byte[] ORF_MAKER_NOTE_HEADER_2 = new byte[] {(byte) 0x4f, (byte) 0x4c,
+    private static final byte[] ORF_MAKER_NOTE_HEADER_2 = new byte[]{(byte) 0x4f, (byte) 0x4c,
             (byte) 0x59, (byte) 0x4d, (byte) 0x50, (byte) 0x55, (byte) 0x53, (byte) 0x00,
             (byte) 0x49, (byte) 0x49}; // "OLYMPUS\0II"
     private static final int ORF_MAKER_NOTE_HEADER_1_SIZE = 8;
@@ -461,15 +713,15 @@ public class ExifInterface {
     // Format indicating a new IFD entry (See Adobe PageMaker® 6.0 TIFF Technical Notes, "New Tag")
     private static final int IFD_FORMAT_IFD = 13;
     // Names for the data formats for debugging purpose.
-    private static final String[] IFD_FORMAT_NAMES = new String[] {
+    private static final String[] IFD_FORMAT_NAMES = new String[]{
             "", "BYTE", "STRING", "USHORT", "ULONG", "URATIONAL", "SBYTE", "UNDEFINED", "SSHORT",
             "SLONG", "SRATIONAL", "SINGLE", "DOUBLE"
     };
     // Sizes of the components of each IFD value format
-    private static final int[] IFD_FORMAT_BYTES_PER_FORMAT = new int[] {
+    private static final int[] IFD_FORMAT_BYTES_PER_FORMAT = new int[]{
             0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8, 1
     };
-    private static final byte[] EXIF_ASCII_PREFIX = new byte[] {
+    private static final byte[] EXIF_ASCII_PREFIX = new byte[]{
             0x41, 0x53, 0x43, 0x49, 0x49, 0x0, 0x0, 0x0
     };
 
@@ -492,9 +744,9 @@ public class ExifInterface {
      * For RGB, see TIFF 6.0 Spec Section 6, Differences from Palette Color Images
      * For Greyscale, see TIFF 6.0 Spec Section 4, Differences from Bilevel Images
      */
-    private static final int[] BITS_PER_SAMPLE_RGB = new int[] { 8, 8, 8 };
-    private static final int[] BITS_PER_SAMPLE_GREYSCALE_1 = new int[] { 4 };
-    private static final int[] BITS_PER_SAMPLE_GREYSCALE_2 = new int[] { 8 };
+    private static final int[] BITS_PER_SAMPLE_RGB = new int[]{8, 8, 8};
+    private static final int[] BITS_PER_SAMPLE_GREYSCALE_1 = new int[]{4};
+    private static final int[] BITS_PER_SAMPLE_GREYSCALE_2 = new int[]{8};
 
     /**
      * Constants used for PhotometricInterpretation tag.
@@ -509,7 +761,7 @@ public class ExifInterface {
     /**
      * Constants used for NewSubfileType tag.
      * See TIFF 6.0 Spec Section 8
-     * */
+     */
     private static final int ORIGINAL_RESOLUTION_IMAGE = 0;
     private static final int REDUCED_RESOLUTION_IMAGE = 1;
 
@@ -562,7 +814,7 @@ public class ExifInterface {
         }
 
         public static ExifAttribute createUShort(int value, ByteOrder byteOrder) {
-            return createUShort(new int[] {value}, byteOrder);
+            return createUShort(new int[]{value}, byteOrder);
         }
 
         public static ExifAttribute createULong(long[] values, ByteOrder byteOrder) {
@@ -576,7 +828,7 @@ public class ExifInterface {
         }
 
         public static ExifAttribute createULong(long value, ByteOrder byteOrder) {
-            return createULong(new long[] {value}, byteOrder);
+            return createULong(new long[]{value}, byteOrder);
         }
 
         public static ExifAttribute createSLong(int[] values, ByteOrder byteOrder) {
@@ -590,13 +842,13 @@ public class ExifInterface {
         }
 
         public static ExifAttribute createSLong(int value, ByteOrder byteOrder) {
-            return createSLong(new int[] {value}, byteOrder);
+            return createSLong(new int[]{value}, byteOrder);
         }
 
         public static ExifAttribute createByte(String value) {
             // Exception for GPSAltitudeRef tag
             if (value.length() == 1 && value.charAt(0) >= '0' && value.charAt(0) <= '1') {
-                final byte[] bytes = new byte[] { (byte) (value.charAt(0) - '0') };
+                final byte[] bytes = new byte[]{(byte) (value.charAt(0) - '0')};
                 return new ExifAttribute(IFD_FORMAT_BYTE, bytes.length, bytes);
             }
             final byte[] ascii = value.getBytes(ASCII);
@@ -620,7 +872,7 @@ public class ExifInterface {
         }
 
         public static ExifAttribute createURational(Rational value, ByteOrder byteOrder) {
-            return createURational(new Rational[] {value}, byteOrder);
+            return createURational(new Rational[]{value}, byteOrder);
         }
 
         public static ExifAttribute createSRational(Rational[] values, ByteOrder byteOrder) {
@@ -635,7 +887,7 @@ public class ExifInterface {
         }
 
         public static ExifAttribute createSRational(Rational value, ByteOrder byteOrder) {
-            return createSRational(new Rational[] {value}, byteOrder);
+            return createSRational(new Rational[]{value}, byteOrder);
         }
 
         public static ExifAttribute createDouble(double[] values, ByteOrder byteOrder) {
@@ -649,7 +901,7 @@ public class ExifInterface {
         }
 
         public static ExifAttribute createDouble(double value, ByteOrder byteOrder) {
-            return createDouble(new double[] {value}, byteOrder);
+            return createDouble(new double[]{value}, byteOrder);
         }
 
         @Override
@@ -667,7 +919,7 @@ public class ExifInterface {
                     case IFD_FORMAT_SBYTE: {
                         // Exception for GPSAltitudeRef tag
                         if (bytes.length == 1 && bytes[0] >= 0 && bytes[0] <= 1) {
-                            return new String(new char[] { (char) (bytes[0] + '0') });
+                            return new String(new char[]{(char) (bytes[0] + '0')});
                         }
                         return new String(bytes, ASCII);
                     }
@@ -926,7 +1178,7 @@ public class ExifInterface {
     }
 
     // Primary image IFD TIFF tags (See JEITA CP-3451C Section 4.6.8 Tag Support Levels)
-    private static final ExifTag[] IFD_TIFF_TAGS = new ExifTag[] {
+    private static final ExifTag[] IFD_TIFF_TAGS = new ExifTag[]{
             // For below two, see TIFF 6.0 Spec Section 3: Bilevel Images.
             new ExifTag(TAG_NEW_SUBFILE_TYPE, 254, IFD_FORMAT_ULONG),
             new ExifTag(TAG_SUBFILE_TYPE, 255, IFD_FORMAT_ULONG),
@@ -975,7 +1227,7 @@ public class ExifInterface {
     };
 
     // Primary image IFD Exif Private tags (See JEITA CP-3451C Section 4.6.8 Tag Support Levels)
-    private static final ExifTag[] IFD_EXIF_TAGS = new ExifTag[] {
+    private static final ExifTag[] IFD_EXIF_TAGS = new ExifTag[]{
             new ExifTag(TAG_EXPOSURE_TIME, 33434, IFD_FORMAT_URATIONAL),
             new ExifTag(TAG_F_NUMBER, 33437, IFD_FORMAT_URATIONAL),
             new ExifTag(TAG_EXPOSURE_PROGRAM, 34850, IFD_FORMAT_USHORT),
@@ -1038,7 +1290,7 @@ public class ExifInterface {
     };
 
     // Primary image IFD GPS Info tags (See JEITA CP-3451C Section 4.6.8 Tag Support Levels)
-    private static final ExifTag[] IFD_GPS_TAGS = new ExifTag[] {
+    private static final ExifTag[] IFD_GPS_TAGS = new ExifTag[]{
             new ExifTag(TAG_GPS_VERSION_ID, 0, IFD_FORMAT_BYTE),
             new ExifTag(TAG_GPS_LATITUDE_REF, 1, IFD_FORMAT_STRING),
             new ExifTag(TAG_GPS_LATITUDE, 2, IFD_FORMAT_URATIONAL),
@@ -1072,11 +1324,11 @@ public class ExifInterface {
             new ExifTag(TAG_GPS_DIFFERENTIAL, 30, IFD_FORMAT_USHORT)
     };
     // Primary image IFD Interoperability tag (See JEITA CP-3451C Section 4.6.8 Tag Support Levels)
-    private static final ExifTag[] IFD_INTEROPERABILITY_TAGS = new ExifTag[] {
+    private static final ExifTag[] IFD_INTEROPERABILITY_TAGS = new ExifTag[]{
             new ExifTag(TAG_INTEROPERABILITY_INDEX, 1, IFD_FORMAT_STRING)
     };
     // IFD Thumbnail tags (See JEITA CP-3451C Section 4.6.8 Tag Support Levels)
-    private static final ExifTag[] IFD_THUMBNAIL_TAGS = new ExifTag[] {
+    private static final ExifTag[] IFD_THUMBNAIL_TAGS = new ExifTag[]{
             // For below two, see TIFF 6.0 Spec Section 3: Bilevel Images.
             new ExifTag(TAG_NEW_SUBFILE_TYPE, 254, IFD_FORMAT_ULONG),
             new ExifTag(TAG_SUBFILE_TYPE, 255, IFD_FORMAT_ULONG),
@@ -1123,20 +1375,20 @@ public class ExifInterface {
             new ExifTag(TAG_STRIP_OFFSETS, 273, IFD_FORMAT_USHORT);
 
     // ORF file tags (See http://www.exiv2.org/tags-olympus.html)
-    private static final ExifTag[] ORF_MAKER_NOTE_TAGS = new ExifTag[] {
+    private static final ExifTag[] ORF_MAKER_NOTE_TAGS = new ExifTag[]{
             new ExifTag(TAG_ORF_THUMBNAIL_IMAGE, 256, IFD_FORMAT_UNDEFINED),
             new ExifTag(TAG_ORF_CAMERA_SETTINGS_IFD_POINTER, 8224, IFD_FORMAT_ULONG),
             new ExifTag(TAG_ORF_IMAGE_PROCESSING_IFD_POINTER, 8256, IFD_FORMAT_ULONG)
     };
-    private static final ExifTag[] ORF_CAMERA_SETTINGS_TAGS = new ExifTag[] {
+    private static final ExifTag[] ORF_CAMERA_SETTINGS_TAGS = new ExifTag[]{
             new ExifTag(TAG_ORF_PREVIEW_IMAGE_START, 257, IFD_FORMAT_ULONG),
             new ExifTag(TAG_ORF_PREVIEW_IMAGE_LENGTH, 258, IFD_FORMAT_ULONG)
     };
-    private static final ExifTag[] ORF_IMAGE_PROCESSING_TAGS = new ExifTag[] {
+    private static final ExifTag[] ORF_IMAGE_PROCESSING_TAGS = new ExifTag[]{
             new ExifTag(TAG_ORF_ASPECT_FRAME, 4371, IFD_FORMAT_USHORT)
     };
     // PEF file tag (See http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Pentax.html)
-    private static final ExifTag[] PEF_TAGS = new ExifTag[] {
+    private static final ExifTag[] PEF_TAGS = new ExifTag[]{
             new ExifTag(TAG_COLOR_SPACE, 55, IFD_FORMAT_USHORT)
     };
 
@@ -1149,7 +1401,8 @@ public class ExifInterface {
     @IntDef({IFD_TYPE_PRIMARY, IFD_TYPE_EXIF, IFD_TYPE_GPS, IFD_TYPE_INTEROPERABILITY,
             IFD_TYPE_THUMBNAIL, IFD_TYPE_PREVIEW, IFD_TYPE_ORF_MAKER_NOTE,
             IFD_TYPE_ORF_CAMERA_SETTINGS, IFD_TYPE_ORF_IMAGE_PROCESSING, IFD_TYPE_PEF})
-    public @interface IfdType {}
+    public @interface IfdType {
+    }
 
     private static final int IFD_TYPE_PRIMARY = 0;
     private static final int IFD_TYPE_EXIF = 1;
@@ -1163,13 +1416,13 @@ public class ExifInterface {
     private static final int IFD_TYPE_PEF = 9;
 
     // List of Exif tag groups
-    private static final ExifTag[][] EXIF_TAGS = new ExifTag[][] {
+    private static final ExifTag[][] EXIF_TAGS = new ExifTag[][]{
             IFD_TIFF_TAGS, IFD_EXIF_TAGS, IFD_GPS_TAGS, IFD_INTEROPERABILITY_TAGS,
             IFD_THUMBNAIL_TAGS, IFD_TIFF_TAGS, ORF_MAKER_NOTE_TAGS, ORF_CAMERA_SETTINGS_TAGS,
             ORF_IMAGE_PROCESSING_TAGS, PEF_TAGS
     };
     // List of tags for pointing to the other image file directory offset.
-    private static final ExifTag[] EXIF_POINTER_TAGS = new ExifTag[] {
+    private static final ExifTag[] EXIF_POINTER_TAGS = new ExifTag[]{
             new ExifTag(TAG_SUB_IFD_POINTER, 330, IFD_FORMAT_ULONG),
             new ExifTag(TAG_EXIF_IFD_POINTER, 34665, IFD_FORMAT_ULONG),
             new ExifTag(TAG_GPS_INFO_IFD_POINTER, 34853, IFD_FORMAT_ULONG),
@@ -1384,7 +1637,7 @@ public class ExifInterface {
      * in the image file or the value cannot be parsed as integer, return
      * <var>defaultValue</var>.
      *
-     * @param tag the name of the tag.
+     * @param tag          the name of the tag.
      * @param defaultValue the value to return if the tag is not available.
      */
     public int getAttributeInt(String tag, int defaultValue) {
@@ -1405,7 +1658,7 @@ public class ExifInterface {
      * double-formatted value. If there is no such tag in the image file or the value cannot be
      * parsed as double, return <var>defaultValue</var>.
      *
-     * @param tag the name of the tag.
+     * @param tag          the name of the tag.
      * @param defaultValue the value to return if the tag is not available.
      */
     public double getAttributeDouble(String tag, double defaultValue) {
@@ -1424,7 +1677,7 @@ public class ExifInterface {
     /**
      * Set the value of the specified tag.
      *
-     * @param tag the name of the tag.
+     * @param tag   the name of the tag.
      * @param value the value of the tag.
      */
     public void setAttribute(String tag, String value) {
@@ -1449,7 +1702,7 @@ public class ExifInterface {
             }
         }
 
-        for (int i = 0 ; i < EXIF_TAGS.length; ++i) {
+        for (int i = 0; i < EXIF_TAGS.length; ++i) {
             if (i == IFD_TYPE_THUMBNAIL && !mHasThumbnail) {
                 continue;
             }
@@ -1565,13 +1818,13 @@ public class ExifInterface {
     /**
      * Update the values of the tags in the tag groups if any value for the tag already was stored.
      *
-     * @param tag the name of the tag.
+     * @param tag   the name of the tag.
      * @param value the value of the tag in a form of {@link ExifAttribute}.
      * @return Returns {@code true} if updating is placed.
      */
     private boolean updateAttribute(String tag, ExifAttribute value) {
         boolean updated = false;
-        for (int i = 0 ; i < EXIF_TAGS.length; ++i) {
+        for (int i = 0; i < EXIF_TAGS.length; ++i) {
             if (mAttributes[i].containsKey(tag)) {
                 mAttributes[i].put(tag, value);
                 updated = true;
@@ -1586,7 +1839,7 @@ public class ExifInterface {
      * @param tag the name of the tag.
      */
     private void removeAttribute(String tag) {
-        for (int i = 0 ; i < EXIF_TAGS.length; ++i) {
+        for (int i = 0; i < EXIF_TAGS.length; ++i) {
             mAttributes[i].remove(tag);
         }
     }
@@ -1678,7 +1931,7 @@ public class ExifInterface {
     /**
      * Save the tag data into the original image file. This is expensive because it involves
      * copying all the data from one file to another and deleting the old file and renaming the
-     * other. It's best to use {@link #setAttribute(String,String)} to set all attributes to write
+     * other. It's best to use {@link #setAttribute(String, String)} to set all attributes to write
      * and make a single call rather than multiple calls for each attribute.
      * <p>
      * This method is only supported for JPEG files.
@@ -1730,7 +1983,7 @@ public class ExifInterface {
      * Returns the JPEG compressed thumbnail inside the image file, or {@code null} if there is no
      * JPEG compressed thumbnail.
      * The returned data can be decoded using
-     * {@link BitmapFactory#decodeByteArray(byte[],int,int)}
+     * {@link BitmapFactory#decodeByteArray(byte[], int, int)}
      */
     public byte[] getThumbnail() {
         if (mThumbnailCompression == DATA_JPEG || mThumbnailCompression == DATA_JPEG_COMPRESSED) {
@@ -1835,7 +2088,7 @@ public class ExifInterface {
      * {@code null} if there is no thumbnail.
      *
      * @return two-element array, the offset in the first value, and length in
-     *         the second, or {@code null} if no thumbnail was found.
+     * the second, or {@code null} if no thumbnail was found.
      */
     public long[] getThumbnailRange() {
         if (!mHasThumbnail) {
@@ -1884,7 +2137,7 @@ public class ExifInterface {
             try {
                 double latitude = convertRationalLatLonToDouble(latValue, latRef);
                 double longitude = convertRationalLatLonToDouble(lngValue, lngRef);
-                return new double[] {latitude, longitude};
+                return new double[]{latitude, longitude};
             } catch (IllegalArgumentException e) {
                 Log.w(TAG, "Latitude/longitude values are not parseable. " +
                         String.format("latValue=%s, latRef=%s, lngValue=%s, lngRef=%s",
@@ -1897,8 +2150,8 @@ public class ExifInterface {
     /**
      * Sets the latitude and longitude values.
      *
-     * @param latitude the decimal value of latitude. Must be a valid double value between -90.0 and
-     *                 90.0.
+     * @param latitude  the decimal value of latitude. Must be a valid double value between -90.0 and
+     *                  90.0.
      * @param longitude the decimal value of longitude. Must be a valid double value between -180.0
      *                  and 180.0.
      * @throws IllegalArgumentException If {@code latitude} or {@code longitude} is outside the
@@ -1996,9 +2249,9 @@ public class ExifInterface {
 
     private static double convertRationalLatLonToDouble(String rationalString, String ref) {
         try {
-            String [] parts = rationalString.split(",");
+            String[] parts = rationalString.split(",");
 
-            String [] pair;
+            String[] pair;
             pair = parts[0].split("/");
             double degrees = Double.parseDouble(pair[0].trim())
                     / Double.parseDouble(pair[1].trim());
@@ -2124,9 +2377,9 @@ public class ExifInterface {
     /**
      * Loads EXIF attributes from a JPEG input stream.
      *
-     * @param in The input stream that starts with the JPEG data.
+     * @param in         The input stream that starts with the JPEG data.
      * @param jpegOffset The offset value in input stream for JPEG data.
-     * @param imageType The image type from which to retrieve metadata. Use IFD_TYPE_PRIMARY for
+     * @param imageType  The image type from which to retrieve metadata. Use IFD_TYPE_PRIMARY for
      *                   primary image, IFD_TYPE_PREVIEW for preview image, and
      *                   IFD_TYPE_THUMBNAIL for thumbnail image.
      * @throws IOException If the data contains invalid JPEG markers, offsets, or length values.
@@ -2644,7 +2897,7 @@ public class ExifInterface {
     }
 
     private void parseTiffHeaders(ByteOrderedDataInputStream dataInputStream,
-            int exifBytesLength) throws IOException {
+                                  int exifBytesLength) throws IOException {
         // Read byte order
         mExifByteOrder = readByteOrder(dataInputStream);
         // Set byte order
@@ -2671,7 +2924,7 @@ public class ExifInterface {
 
     // Reads image file directory, which is a tag group in EXIF.
     private void readImageFileDirectory(ByteOrderedDataInputStream dataInputStream,
-            @IfdType int ifdType) throws IOException {
+                                        @IfdType int ifdType) throws IOException {
         if (dataInputStream.mPosition + 2 > dataInputStream.mLength) {
             // Return if there is no data from the offset.
             return;
@@ -2700,7 +2953,7 @@ public class ExifInterface {
 
             if (DEBUG) {
                 Log.d(TAG, String.format("ifdType: %d, tagNumber: %d, tagName: %s, dataFormat: %d, "
-                        + "numberOfComponents: %d", ifdType, tagNumber,
+                                + "numberOfComponents: %d", ifdType, tagNumber,
                         tag != null ? tag.name : null, dataFormat, numberOfComponents));
             }
 
@@ -3112,10 +3365,10 @@ public class ExifInterface {
      * which results in larger values for TAG_IMAGE_WIDTH and TAG_IMAGE_LENGTH tags.
      * This method corrects those tag values by checking first the values of TAG_DEFAULT_CROP_SIZE
      * See DNG Specification 1.4.0.0. Section 4. (DefaultCropSize)
-     *
+     * <p>
      * If image is a RW2 file, valid image sizes are stored in SensorBorder tags.
      * See tiff_parser.cc GetFullDimension32()
-     * */
+     */
     private void updateImageSizeValues(ByteOrderedDataInputStream in, int imageType)
             throws IOException {
         // Uncompressed image valid image size values
@@ -3185,7 +3438,7 @@ public class ExifInterface {
 
     // Writes an Exif segment into the given output stream.
     private int writeExifSegment(ByteOrderedDataOutputStream dataOutputStream,
-            int exifOffsetFromBeginning) throws IOException {
+                                 int exifOffsetFromBeginning) throws IOException {
         // The following variables are for calculating each IFD tag group size in bytes.
         int[] ifdOffsets = new int[EXIF_TAGS.length];
         int[] ifdDataSizes = new int[EXIF_TAGS.length];
@@ -3362,7 +3615,7 @@ public class ExifInterface {
      *
      * @param entryValue The value to be determined.
      * @return Returns two data formats gussed as a pair in integer. If there is no two candidate
-               data formats for the given entry value, returns {@code -1} in the second of the pair.
+     * data formats for the given entry value, returns {@code -1} in the second of the pair.
      */
     private static Pair<Integer, Integer> guessDataFormat(String entryValue) {
         // See TIFF 6.0 Section 2, "Image File Directory".
@@ -3412,7 +3665,7 @@ public class ExifInterface {
                         return new Pair<>(IFD_FORMAT_URATIONAL, -1);
                     }
                     return new Pair<>(IFD_FORMAT_SRATIONAL, IFD_FORMAT_URATIONAL);
-                } catch (NumberFormatException e)  {
+                } catch (NumberFormatException e) {
                     // Ignored
                 }
             }

@@ -19,7 +19,7 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.SketchView;
 
 /**
  * 图片显示器，用来在加载完成后显示图片
@@ -30,7 +30,7 @@ public interface ImageDisplayer extends Identifier {
     /**
      * 显示
      */
-    void display(ImageViewInterface imageViewInterface, Drawable newDrawable);
+    void display(SketchView sketchView, Drawable newDrawable);
 
     /**
      * 获取持续时间，单位毫秒

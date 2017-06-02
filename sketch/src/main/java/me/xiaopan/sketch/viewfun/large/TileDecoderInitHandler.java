@@ -22,8 +22,8 @@ import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -118,7 +118,7 @@ class TileDecoderInitHandler extends Handler {
         removeMessages(WHAT_INIT);
     }
 
-    public static class Wrapper{
+    public static class Wrapper {
         public String imageUri;
         public KeyCounter keyCounter;
         public boolean correctImageOrientationDisabled;

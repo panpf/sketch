@@ -32,7 +32,6 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
 import me.xiaopan.sketch.request.DownloadOptions;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadOptions;
@@ -93,11 +92,12 @@ public class Sketch {
     /**
      * 取消请求
      *
-     * @param imageViewInterface 会通过ImageViewInterface的Drawable找到正在执行的请求，然后取消它
+     * @param sketchView 会通过ImageViewInterface的Drawable找到正在执行的请求，然后取消它
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
-    public static boolean cancel(ImageViewInterface imageViewInterface) {
-        final DisplayRequest displayRequest = SketchUtils.findDisplayRequest(imageViewInterface);
+    @SuppressWarnings("unused")
+    public static boolean cancel(SketchView sketchView) {
+        final DisplayRequest displayRequest = SketchUtils.findDisplayRequest(sketchView);
         if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel(CancelCause.BE_CANCELLED);
             return true;
@@ -113,7 +113,7 @@ public class Sketch {
         if (optionsMap == null) {
             synchronized (Sketch.class) {
                 if (optionsMap == null) {
-                    optionsMap = new HashMap<Enum<?>, Object>();
+                    optionsMap = new HashMap<>();
                 }
             }
         }
@@ -282,81 +282,81 @@ public class Sketch {
     /**
      * 显示图片
      *
-     * @param uri                图片Uri，支持以下几种
-     *                           <ul>
-     *                           <li>http://site.com/image.png    // from Web</li>
-     *                           <li>https://site.com/image.png   // from Web</li>
-     *                           <li>file:///mnt/sdcard/image.png // from SD card</li>
-     *                           <li>/mnt/sdcard/image.png    // from SD card</li>
-     *                           <li>/mnt/sdcard/app.apk  // from SD card apk file</li>
-     *                           <li>content://media/external/audio/albumart/13   // from content provider</li>
-     *                           <li>asset://image.png    // from assets</li>
-     *                           <li>"drawable://" + R.drawable.image // from drawables (only images, non-9patch)</li>
-     *                           </ul>
-     * @param imageViewInterface 默认实现是SketchImageView
+     * @param uri        图片Uri，支持以下几种
+     *                   <ul>
+     *                   <li>http://site.com/image.png    // from Web</li>
+     *                   <li>https://site.com/image.png   // from Web</li>
+     *                   <li>file:///mnt/sdcard/image.png // from SD card</li>
+     *                   <li>/mnt/sdcard/image.png    // from SD card</li>
+     *                   <li>/mnt/sdcard/app.apk  // from SD card apk file</li>
+     *                   <li>content://media/external/audio/albumart/13   // from content provider</li>
+     *                   <li>asset://image.png    // from assets</li>
+     *                   <li>"drawable://" + R.drawable.image // from drawables (only images, non-9patch)</li>
+     *                   </ul>
+     * @param sketchView 默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
-    public DisplayHelper display(String uri, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, imageViewInterface);
+    public DisplayHelper display(String uri, SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
     /**
      * 显示Asset中的图片
      *
-     * @param fileName           asset中图片文件的名称
-     * @param imageViewInterface 默认实现是SketchImageView
+     * @param fileName   asset中图片文件的名称
+     * @param sketchView 默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
-    public DisplayHelper displayFromAsset(String fileName, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), imageViewInterface);
+    public DisplayHelper displayFromAsset(String fileName, SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), sketchView);
     }
 
     /**
      * 显示资源中的图片
      *
-     * @param drawableResId      图片资源的ID
-     * @param imageViewInterface 默认实现是SketchImageView
+     * @param drawableResId 图片资源的ID
+     * @param sketchView    默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
-    public DisplayHelper displayFromResource(int drawableResId, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageViewInterface);
+    public DisplayHelper displayFromResource(int drawableResId, SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), sketchView);
     }
 
     /**
      * 显示来自ContentProvider的图片
      *
-     * @param uri                图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
-     * @param imageViewInterface 默认实现是SketchImageView
+     * @param uri        图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
+     * @param sketchView 默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
-    public DisplayHelper displayFromContent(Uri uri, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, imageViewInterface);
+    public DisplayHelper displayFromContent(Uri uri, SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, sketchView);
     }
 
     /**
      * 显示URI指向的图片
      *
-     * @param uri                图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
-     * @param imageViewInterface 默认实现是SketchImageView
+     * @param uri        图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
+     * @param sketchView 默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
-     * @see #displayFromContent(Uri, ImageViewInterface)}
-     * @deprecated Please use the {@link #displayFromContent(Uri, ImageViewInterface)} method
+     * @see #displayFromContent(Uri, SketchView)}
+     * @deprecated Please use the {@link #displayFromContent(Uri, SketchView)} method
      */
     @Deprecated
-    public DisplayHelper displayFromURI(Uri uri, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, imageViewInterface);
+    public DisplayHelper displayFromURI(Uri uri, SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, sketchView);
     }
 
     /**
      * 显示已安装APP的图标
      *
-     * @param packageName        已安装APP的包名
-     * @param versionCode        已安装APP的版本号
-     * @param imageViewInterface 默认实现是SketchImageView
+     * @param packageName 已安装APP的包名
+     * @param versionCode 已安装APP的版本号
+     * @param sketchView  默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
-    public DisplayHelper displayInstalledAppIcon(String packageName, int versionCode, ImageViewInterface imageViewInterface) {
-        return configuration.getHelperFactory().getDisplayHelper(this, createInstalledAppIconUri(packageName, versionCode), imageViewInterface);
+    public DisplayHelper displayInstalledAppIcon(String packageName, int versionCode, SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, createInstalledAppIconUri(packageName, versionCode), sketchView);
     }
 
     /**

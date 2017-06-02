@@ -21,13 +21,13 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
@@ -44,7 +44,7 @@ public class MemoryCacheStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
+    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
         MemoryCache memoryCache = Sketch.with(context).getConfiguration().getMemoryCache();
         SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
@@ -62,7 +62,7 @@ public class MemoryCacheStateImage implements StateImage {
             }
         }
 
-        return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, imageViewInterface, displayOptions) : null;
+        return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, sketchView, displayOptions) : null;
     }
 
     public String getMemoryCacheKey() {

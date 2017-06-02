@@ -19,8 +19,8 @@ package me.xiaopan.sketch.viewfun.large;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -81,7 +81,7 @@ public class Tile {
         keyCounter.refresh();
     }
 
-    public String getInfo(){
+    public String getInfo() {
         //noinspection StringBufferReplaceableByString
         StringBuilder builder = new StringBuilder();
         builder.append("(");

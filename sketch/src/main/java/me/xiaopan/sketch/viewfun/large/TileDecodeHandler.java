@@ -34,8 +34,8 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
-import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
+import me.xiaopan.sketch.decode.ImageType;
 
 /**
  * 解码处理器，运行在解码线程中，负责解码

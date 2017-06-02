@@ -19,6 +19,7 @@ package me.xiaopan.sketch.decode;
 import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.util.SketchUtils;
+
 public enum ImageType {
     JPEG("image/jpeg", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
     PNG("image/png", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),

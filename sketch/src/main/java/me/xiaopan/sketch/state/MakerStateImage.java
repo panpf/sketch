@@ -29,16 +29,16 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
-import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -59,7 +59,7 @@ public class MakerStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
+    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
         Drawable drawable = makeDrawable(Sketch.with(context), displayOptions);
 
         ShapeSize shapeSize = displayOptions.getShapeSize();

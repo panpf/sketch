@@ -28,10 +28,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.ErrorTracker;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;

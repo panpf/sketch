@@ -27,8 +27,8 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 创建一个指定半径和图层颜色的高斯模糊图片处理器
      *
-     * @param radius                 模糊半径，取值为0到100
-     * @param layerColor             图层颜色，在模糊后的图片上加一层颜色
+     * @param radius                模糊半径，取值为0到100
+     * @param layerColor            图层颜色，在模糊后的图片上加一层颜色
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
@@ -52,7 +52,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 创建一个图层颜色的高斯模糊图片处理器
      *
-     * @param layerColor             图层颜色，在模糊后的图片上加一层颜色
+     * @param layerColor            图层颜色，在模糊后的图片上加一层颜色
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
@@ -73,7 +73,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 创建一个指定半径的高斯模糊图片处理器
      *
-     * @param radius                 模糊半径，取值为0到100
+     * @param radius                模糊半径，取值为0到100
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */

@@ -2,7 +2,7 @@ package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.Sketch;
 
-abstract class AsyncRequest extends BaseRequest implements Runnable{
+abstract class AsyncRequest extends BaseRequest implements Runnable {
 
     private RunStatus runStatus;
     private boolean sync;
@@ -57,7 +57,7 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
         }
     }
 
-    private void executeDispatch(){
+    private void executeDispatch() {
         setStatus(Status.START_DISPATCH);
         runDispatch();
     }
@@ -74,7 +74,7 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
         }
     }
 
-    private void executeDownload(){
+    private void executeDownload() {
         setStatus(Status.START_DOWNLOAD);
         runDownload();
     }
@@ -91,7 +91,7 @@ abstract class AsyncRequest extends BaseRequest implements Runnable{
         }
     }
 
-    private void executeLoad(){
+    private void executeLoad() {
         setStatus(Status.START_LOAD);
         runLoad();
     }

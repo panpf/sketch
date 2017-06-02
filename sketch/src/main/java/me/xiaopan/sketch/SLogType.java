@@ -45,8 +45,7 @@ public enum SLogType {
     /**
      * 分块显示超大图
      */
-    LARGE,
-    ;
+    LARGE,;
 
     private boolean enabled;
 
@@ -60,7 +59,7 @@ public enum SLogType {
 
     @SuppressWarnings("unused")
     public void setAllEnabled(boolean enabled) {
-        for(SLogType type : values()){
+        for (SLogType type : values()) {
             type.setEnabled(enabled);
         }
     }

@@ -26,9 +26,9 @@ import java.lang.reflect.Field;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.FixedSize;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -40,22 +40,22 @@ public class ImageSizeCalculator implements Identifier {
     private int openGLMaxTextureSize = -1;
     private float targetSizeScale = 1.1f;
 
-    private static int getWidth(ImageViewInterface imageViewInterface, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
-        if (imageViewInterface == null) {
+    private static int getWidth(SketchView sketchView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
+        if (sketchView == null) {
             return 0;
         }
 
         int width = 0;
-        final ViewGroup.LayoutParams params = imageViewInterface.getLayoutParams();
+        final ViewGroup.LayoutParams params = sketchView.getLayoutParams();
         if (params != null) {
             width = params.width;
-            if (subtractPadding && width > 0 && (width - imageViewInterface.getPaddingLeft() - imageViewInterface.getPaddingRight()) > 0) {
-                width -= imageViewInterface.getPaddingLeft() + imageViewInterface.getPaddingRight();
+            if (subtractPadding && width > 0 && (width - sketchView.getPaddingLeft() - sketchView.getPaddingRight()) > 0) {
+                width -= sketchView.getPaddingLeft() + sketchView.getPaddingRight();
                 return width;
             }
         }
         if (width <= 0 && checkMaxWidth) {
-            width = getViewFieldValue(imageViewInterface, "mMaxWidth");
+            width = getViewFieldValue(sketchView, "mMaxWidth");
         }
         if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
             width = -1;
@@ -63,22 +63,22 @@ public class ImageSizeCalculator implements Identifier {
         return width;
     }
 
-    private static int getHeight(ImageViewInterface imageViewInterface, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
-        if (imageViewInterface == null) {
+    private static int getHeight(SketchView sketchView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
+        if (sketchView == null) {
             return 0;
         }
 
         int height = 0;
-        final ViewGroup.LayoutParams params = imageViewInterface.getLayoutParams();
+        final ViewGroup.LayoutParams params = sketchView.getLayoutParams();
         if (params != null) {
             height = params.height;
-            if (subtractPadding && height > 0 && (height - imageViewInterface.getPaddingTop() - imageViewInterface.getPaddingBottom()) > 0) {
-                height -= imageViewInterface.getPaddingTop() + imageViewInterface.getPaddingBottom();
+            if (subtractPadding && height > 0 && (height - sketchView.getPaddingTop() - sketchView.getPaddingBottom()) > 0) {
+                height -= sketchView.getPaddingTop() + sketchView.getPaddingBottom();
                 return height;
             }
         }
         if (height <= 0 && checkMaxHeight) {
-            height = getViewFieldValue(imageViewInterface, "mMaxHeight");
+            height = getViewFieldValue(sketchView, "mMaxHeight");
         }
         if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
             height = -1;
@@ -123,19 +123,19 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 计算MaxSize
      *
-     * @param imageViewInterface 你需要根据ImageView的宽高来计算
+     * @param sketchView 你需要根据ImageView的宽高来计算
      * @return MaxSize
      */
-    public MaxSize calculateImageMaxSize(ImageViewInterface imageViewInterface) {
-        int width = getWidth(imageViewInterface, true, true, false);
-        int height = getHeight(imageViewInterface, true, true, false);
+    public MaxSize calculateImageMaxSize(SketchView sketchView) {
+        int width = getWidth(sketchView, true, true, false);
+        int height = getHeight(sketchView, true, true, false);
 
         if (width <= 0 && height <= 0) {
             return null;
         }
 
         // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
-        DisplayMetrics displayMetrics = imageViewInterface.getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = sketchView.getResources().getDisplayMetrics();
         int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
         int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
         if (width > maxWidth || height > maxHeight) {
@@ -163,35 +163,35 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 计算Resize
      *
-     * @param imageViewInterface 你需要根据ImageView的宽高来计算
+     * @param sketchView 你需要根据ImageView的宽高来计算
      * @return Resize
      */
     @Deprecated
-    public Resize calculateImageResize(ImageViewInterface imageViewInterface) {
-        int width = getWidth(imageViewInterface, false, false, true);
-        int height = getHeight(imageViewInterface, false, false, true);
+    public Resize calculateImageResize(SketchView sketchView) {
+        int width = getWidth(sketchView, false, false, true);
+        int height = getHeight(sketchView, false, false, true);
 
         if (width <= 0 || height <= 0) {
             return null;
         }
 
-        return new Resize(width, height, imageViewInterface.getScaleType());
+        return new Resize(width, height, sketchView.getScaleType());
     }
 
     /**
      * 计算FixedSize
      *
-     * @param imageViewInterface 你需要根据ImageView的宽高来计算
+     * @param sketchView 你需要根据ImageView的宽高来计算
      * @return FixedSize
      */
-    public FixedSize calculateImageFixedSize(ImageViewInterface imageViewInterface) {
-        ViewGroup.LayoutParams layoutParams = imageViewInterface.getLayoutParams();
+    public FixedSize calculateImageFixedSize(SketchView sketchView) {
+        ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
         if (layoutParams == null || layoutParams.width <= 0 || layoutParams.height <= 0) {
             return null;
         }
 
-        int fixedWidth = layoutParams.width - (imageViewInterface.getPaddingLeft() + imageViewInterface.getPaddingRight());
-        int fixedHeight = layoutParams.height - (imageViewInterface.getPaddingTop() + imageViewInterface.getPaddingBottom());
+        int fixedWidth = layoutParams.width - (sketchView.getPaddingLeft() + sketchView.getPaddingRight());
+        int fixedHeight = layoutParams.height - (sketchView.getPaddingTop() + sketchView.getPaddingBottom());
 
         // 限制不能超过OpenGL所允许的最大尺寸
         int maxSize = getOpenGLMaxTextureSize();

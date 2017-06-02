@@ -14,31 +14,31 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * Keys {@link android.graphics.Bitmap Bitmaps} using both {@link android.graphics.Bitmap#getAllocationByteCount()} and
  * the {@link android.graphics.Bitmap.Config} returned from {@link android.graphics.Bitmap#getConfig()}.
- *
  * <p>
- *     Using both the config and the byte size allows us to safely re-use a greater variety of
- *     {@link android.graphics.Bitmap Bitmaps}, which increases the hit rate of the pool and therefore the performance
- *     of applications. This class works around #301 by only allowing re-use of {@link android.graphics.Bitmap Bitmaps}
- *     with a matching number of bytes per pixel.
+ * <p>
+ * Using both the config and the byte size allows us to safely re-use a greater variety of
+ * {@link android.graphics.Bitmap Bitmaps}, which increases the hit rate of the pool and therefore the performance
+ * of applications. This class works around #301 by only allowing re-use of {@link android.graphics.Bitmap Bitmaps}
+ * with a matching number of bytes per pixel.
  * </p>
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class SizeConfigStrategy implements LruPoolStrategy {
     private static final int MAX_SIZE_MULTIPLE = 8;
-    private static final Bitmap.Config[] ARGB_8888_IN_CONFIGS = new Bitmap.Config[] {
+    private static final Bitmap.Config[] ARGB_8888_IN_CONFIGS = new Bitmap.Config[]{
             Bitmap.Config.ARGB_8888,
             // The value returned by Bitmaps with the hidden Bitmap config.
             null,
     };
     // We probably could allow ARGB_4444 and RGB_565 to decode into each other, but ARGB_4444 is deprecated and we'd
     // rather be safe.
-    private static final Bitmap.Config[] RGB_565_IN_CONFIGS = new Bitmap.Config[] {
+    private static final Bitmap.Config[] RGB_565_IN_CONFIGS = new Bitmap.Config[]{
             Bitmap.Config.RGB_565
     };
-    private static final Bitmap.Config[] ARGB_4444_IN_CONFIGS = new Bitmap.Config[] {
+    private static final Bitmap.Config[] ARGB_4444_IN_CONFIGS = new Bitmap.Config[]{
             Bitmap.Config.ARGB_4444
     };
-    private static final Bitmap.Config[] ALPHA_8_IN_CONFIGS = new Bitmap.Config[] {
+    private static final Bitmap.Config[] ALPHA_8_IN_CONFIGS = new Bitmap.Config[]{
             Bitmap.Config.ALPHA_8
     };
 
@@ -238,7 +238,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
             case ALPHA_8:
                 return ALPHA_8_IN_CONFIGS;
             default:
-                return new Bitmap.Config[] { requested };
+                return new Bitmap.Config[]{requested};
         }
     }
 }

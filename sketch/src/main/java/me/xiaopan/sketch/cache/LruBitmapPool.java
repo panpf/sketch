@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.recycle.AttributeStrategy;
 import me.xiaopan.sketch.cache.recycle.LruPoolStrategy;
 import me.xiaopan.sketch.cache.recycle.SizeConfigStrategy;

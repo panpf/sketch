@@ -7,8 +7,8 @@ import android.os.Build;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 
 /**
  * A calculator that tries to intelligently determine cache sizes for a given device based on some constants and the
@@ -30,6 +30,7 @@ public class MemorySizeCalculator {
 
     interface ScreenDimensions {
         int getWidthPixels();
+
         int getHeightPixels();
     }
 

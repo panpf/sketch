@@ -18,8 +18,8 @@ package me.xiaopan.sketch.viewfun.large;
 
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**

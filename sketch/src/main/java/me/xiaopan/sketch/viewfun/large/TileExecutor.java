@@ -24,8 +24,8 @@ import android.os.Looper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**

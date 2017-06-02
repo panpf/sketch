@@ -25,7 +25,7 @@ import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchTransitionDrawable;
-import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -55,15 +55,15 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
+    public void display(SketchView sketchView, Drawable newDrawable) {
         if (newDrawable == null) {
             return;
         }
         if (newDrawable instanceof SketchGifDrawable) {
-            imageViewInterface.clearAnimation();
-            imageViewInterface.setImageDrawable(newDrawable);
+            sketchView.clearAnimation();
+            sketchView.setImageDrawable(newDrawable);
         } else {
-            Drawable oldDrawable = SketchUtils.getLastDrawable(imageViewInterface.getDrawable());
+            Drawable oldDrawable = SketchUtils.getLastDrawable(sketchView.getDrawable());
             if (oldDrawable == null) {
                 oldDrawable = new ColorDrawable(Color.TRANSPARENT);
             }
@@ -72,11 +72,11 @@ public class TransitionImageDisplayer implements ImageDisplayer {
                     && !(oldDrawable instanceof SketchLoadingDrawable)
                     && newDrawable instanceof SketchDrawable
                     && ((SketchDrawable) oldDrawable).getKey().equals(((SketchDrawable) newDrawable).getKey())) {
-                imageViewInterface.setImageDrawable(newDrawable);
+                sketchView.setImageDrawable(newDrawable);
             } else {
                 TransitionDrawable transitionDrawable = new SketchTransitionDrawable(oldDrawable, newDrawable);
-                imageViewInterface.clearAnimation();
-                imageViewInterface.setImageDrawable(transitionDrawable);
+                sketchView.clearAnimation();
+                sketchView.setImageDrawable(transitionDrawable);
                 transitionDrawable.setCrossFadeEnabled(true);
                 transitionDrawable.startTransition(duration);
             }

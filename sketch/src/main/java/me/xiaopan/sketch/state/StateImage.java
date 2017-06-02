@@ -20,11 +20,11 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.SketchView;
 
 /**
  * 专门用于加载中、失败、暂停图片
  */
 public interface StateImage {
-    Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions);
+    Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions);
 }

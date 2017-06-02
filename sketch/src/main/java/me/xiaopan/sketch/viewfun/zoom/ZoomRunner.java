@@ -16,8 +16,8 @@
 
 package me.xiaopan.sketch.viewfun.zoom;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 
 class ZoomRunner implements Runnable {
 

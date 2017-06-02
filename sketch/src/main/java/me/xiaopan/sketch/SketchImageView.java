@@ -22,14 +22,13 @@ import android.util.AttributeSet;
 
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.viewfun.FunctionPropertyView;
 
 /**
  * 用来替代ImageView，另外还支持手势缩放和分块显示超大图，详细文档请参考 docs/wiki/sketch_image_view.md
  */
-public class SketchImageView extends FunctionPropertyView implements ImageViewInterface {
+public class SketchImageView extends FunctionPropertyView {
 
     public SketchImageView(Context context) {
         super(context);

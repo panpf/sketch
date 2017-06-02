@@ -73,16 +73,16 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
+import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
-import me.xiaopan.sketch.decode.ImageOrientationCorrector;
-import me.xiaopan.sketch.viewfun.large.Tile;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.viewfun.large.Tile;
 
 public class SketchUtils {
 
@@ -620,9 +620,9 @@ public class SketchUtils {
     /**
      * 从ImageViewInterface上查找DisplayRequest
      */
-    public static DisplayRequest findDisplayRequest(ImageViewInterface imageViewInterface) {
-        if (imageViewInterface != null) {
-            final Drawable drawable = imageViewInterface.getDrawable();
+    public static DisplayRequest findDisplayRequest(SketchView sketchView) {
+        if (sketchView != null) {
+            final Drawable drawable = sketchView.getDrawable();
             if (drawable != null && drawable instanceof SketchLoadingDrawable) {
                 return ((SketchLoadingDrawable) drawable).getRequest();
             }

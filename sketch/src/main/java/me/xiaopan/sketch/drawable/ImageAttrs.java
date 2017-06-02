@@ -48,7 +48,7 @@ public class ImageAttrs {
         return width;
     }
 
-    public void resetSize(int width, int height){
+    public void resetSize(int width, int height) {
         this.width = width;
         this.height = height;
     }

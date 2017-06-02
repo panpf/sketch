@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
 
-import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.SketchView;
 
 /**
  * 渐入动画
@@ -34,16 +34,16 @@ public class FadeInImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
+    public void display(SketchView sketchView, Drawable newDrawable) {
         if (newDrawable == null) {
             return;
         }
         AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
         animation.setInterpolator(new DecelerateInterpolator());
         animation.setDuration(duration);
-        imageViewInterface.clearAnimation();
-        imageViewInterface.setImageDrawable(newDrawable);
-        imageViewInterface.startAnimation(animation);
+        sketchView.clearAnimation();
+        sketchView.setImageDrawable(newDrawable);
+        sketchView.startAnimation(animation);
     }
 
     @Override

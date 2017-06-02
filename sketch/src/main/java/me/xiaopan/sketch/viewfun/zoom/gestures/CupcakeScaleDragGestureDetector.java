@@ -21,8 +21,8 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 
 public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector {
     private static final String NAME = "CupcakeGestureDetector";

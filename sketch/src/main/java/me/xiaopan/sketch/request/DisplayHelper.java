@@ -26,6 +26,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
@@ -55,31 +56,31 @@ public class DisplayHelper {
     private DownloadProgressListener downloadProgressListener;
 
     private ViewInfo viewInfo = new ViewInfo();
-    private ImageViewInterface imageViewInterface;
+    private SketchView sketchView;
 
-    public DisplayHelper init(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
+    public DisplayHelper init(Sketch sketch, String uri, SketchView sketchView) {
         this.sketch = sketch;
         this.uriInfo = UriInfo.make(uri);
-        this.imageViewInterface = imageViewInterface;
+        this.sketchView = sketchView;
 
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().start(LOG_NAME + ". display use time");
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onReadyDisplay(uriInfo != null ? uriInfo.getScheme() : null);
+        this.sketchView.onReadyDisplay(uriInfo != null ? uriInfo.getScheme() : null);
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("onDisplay");
         }
 
-        viewInfo.reset(imageViewInterface, sketch);
-        displayOptions.copy(imageViewInterface.getOptions());
+        viewInfo.reset(sketchView, sketch);
+        displayOptions.copy(sketchView.getOptions());
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("init");
         }
 
-        displayListener = imageViewInterface.getDisplayListener();
-        downloadProgressListener = imageViewInterface.getDownloadProgressListener();
+        displayListener = sketchView.getDisplayListener();
+        downloadProgressListener = sketchView.getDownloadProgressListener();
 
         return this;
     }
@@ -96,7 +97,7 @@ public class DisplayHelper {
         displayListener = null;
         downloadProgressListener = null;
         viewInfo.reset(null, null);
-        imageViewInterface = null;
+        sketchView = null;
     }
 
     /**
@@ -120,6 +121,7 @@ public class DisplayHelper {
     /**
      * 设置请求Level
      */
+    @SuppressWarnings("unused")
     public DisplayHelper requestLevel(RequestLevel requestLevel) {
         if (requestLevel != null) {
             displayOptions.setRequestLevel(requestLevel);
@@ -375,7 +377,7 @@ public class DisplayHelper {
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
             SLog.fw(SLogType.REQUEST, LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
-                    Integer.toHexString(imageViewInterface.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
+                    Integer.toHexString(sketchView.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
             if (SLogType.TIME.isEnabled()) {
                 Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
             }
@@ -459,37 +461,37 @@ public class DisplayHelper {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
                 SLog.fe(SLogType.REQUEST, LOG_NAME, "uri is null or empty. viewHashCode=%s",
-                        Integer.toHexString(imageViewInterface.hashCode()));
+                        Integer.toHexString(sketchView.hashCode()));
             }
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
+                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
+                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             }
-            imageViewInterface.setImageDrawable(drawable);
+            sketchView.setImageDrawable(drawable);
 
             CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NULL_OR_EMPTY, false);
             return false;
         }
 
         if (uriInfo.getScheme() == null) {
-            String viewCode = Integer.toHexString(imageViewInterface.hashCode());
+            String viewCode = Integer.toHexString(sketchView.hashCode());
             SLog.fe(SLogType.REQUEST, LOG_NAME, "unknown uri scheme: %s. viewHashCode=%s. %s",
                     uriInfo.getUri(), viewCode, uriInfo.getUri());
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
+                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
+                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             }
-            imageViewInterface.setImageDrawable(drawable);
+            sketchView.setImageDrawable(drawable);
 
             CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
             return false;
@@ -520,7 +522,7 @@ public class DisplayHelper {
         }
 
         // 如果没有设置ScaleType的话就从ImageView身上取
-        if (shapeSize != null && shapeSize.getScaleType() == null && imageViewInterface != null) {
+        if (shapeSize != null && shapeSize.getScaleType() == null && sketchView != null) {
             shapeSize.setScaleType(viewInfo.getScaleType());
         }
 
@@ -543,7 +545,7 @@ public class DisplayHelper {
         }
 
         // 如果没有设置ScaleType的话就从ImageView身上取
-        if (resize != null && resize.getScaleType() == null && imageViewInterface != null) {
+        if (resize != null && resize.getScaleType() == null && sketchView != null) {
             resize.setScaleType(viewInfo.getScaleType());
         }
 
@@ -555,7 +557,7 @@ public class DisplayHelper {
 
         // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
         if (displayOptions.getMaxSize() == null) {
-            MaxSize maxSize = imageSizeCalculator.calculateImageMaxSize(imageViewInterface);
+            MaxSize maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView);
             if (maxSize == null) {
                 maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.getContext());
             }
@@ -609,7 +611,7 @@ public class DisplayHelper {
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
-                ViewGroup.LayoutParams layoutParams = imageViewInterface.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
                 String errorInfo = SketchUtils.concat(
                         "If you use TransitionImageDisplayer and loadingImage, " +
                                 "You must be setup ShapeSize or imageView width and height must be fixed",
@@ -617,7 +619,7 @@ public class DisplayHelper {
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.fd(SLogType.REQUEST, LOG_NAME, "%s. viewHashCode=%s. %s",
-                            errorInfo, Integer.toHexString(imageViewInterface.hashCode()), uriInfo.getUri());
+                            errorInfo, Integer.toHexString(sketchView.hashCode()), uriInfo.getUri());
                 }
                 throw new IllegalArgumentException(errorInfo);
             }
@@ -631,10 +633,10 @@ public class DisplayHelper {
      * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
      */
     private void saveParams() {
-        DisplayCache displayCache = imageViewInterface.getDisplayCache();
+        DisplayCache displayCache = sketchView.getDisplayCache();
         if (displayCache == null) {
             displayCache = new DisplayCache();
-            imageViewInterface.setDisplayCache(displayCache);
+            sketchView.setDisplayCache(displayCache);
         }
 
         displayCache.uri = uriInfo.getUri();
@@ -655,7 +657,7 @@ public class DisplayHelper {
         if (cachedRefBitmap.isRecycled()) {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
             if (SLogType.REQUEST.isEnabled()) {
-                String viewCode = Integer.toHexString(imageViewInterface.hashCode());
+                String viewCode = Integer.toHexString(sketchView.hashCode());
                 SLog.fe(SLogType.REQUEST, LOG_NAME, "memory cache drawable recycled. %s. viewHashCode=%s",
                         cachedRefBitmap.getInfo(), viewCode);
             }
@@ -666,7 +668,7 @@ public class DisplayHelper {
         cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", LOG_NAME), true);
 
         if (SLogType.REQUEST.isEnabled()) {
-            String viewCode = Integer.toHexString(imageViewInterface.hashCode());
+            String viewCode = Integer.toHexString(sketchView.hashCode());
             SLog.fi(SLogType.REQUEST, LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
                     ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
@@ -683,9 +685,9 @@ public class DisplayHelper {
 
         ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
         if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
-            imageDisplayer.display(imageViewInterface, finalDrawable);
+            imageDisplayer.display(sketchView, finalDrawable);
         } else {
-            imageViewInterface.setImageDrawable(finalDrawable);
+            sketchView.setImageDrawable(finalDrawable);
         }
         if (displayListener != null) {
             displayListener.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
@@ -703,16 +705,16 @@ public class DisplayHelper {
             if (SLogType.REQUEST.isEnabled()) {
                 SLog.fw(SLogType.REQUEST, LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
-                        Integer.toHexString(imageViewInterface.hashCode()), key);
+                        Integer.toHexString(sketchView.hashCode()), key);
             }
 
             Drawable loadingDrawable = null;
             if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
+                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             }
-            imageViewInterface.clearAnimation();
-            imageViewInterface.setImageDrawable(loadingDrawable);
+            sketchView.clearAnimation();
+            sketchView.setImageDrawable(loadingDrawable);
 
             CancelCause cancelCause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.REQUEST_LEVEL_IS_MEMORY;
             CallbackHandler.postCallbackCanceled(displayListener, cancelCause, false);
@@ -727,25 +729,25 @@ public class DisplayHelper {
             if (SLogType.REQUEST.isEnabled()) {
                 SLog.fd(SLogType.REQUEST, LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseDownload ? "pause download" : "requestLevel is local",
-                        Integer.toHexString(imageViewInterface.hashCode()), key);
+                        Integer.toHexString(sketchView.hashCode()), key);
             }
 
             // 显示暂停下载图片
             Drawable drawable = null;
             if (displayOptions.getPauseDownloadImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, imageViewInterface, displayOptions);
-                imageViewInterface.clearAnimation();
+                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, sketchView, displayOptions);
+                sketchView.clearAnimation();
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
+                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.fw(SLogType.REQUEST, LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
-                            Integer.toHexString(imageViewInterface.hashCode()), key);
+                            Integer.toHexString(sketchView.hashCode()), key);
                 }
             }
-            imageViewInterface.setImageDrawable(drawable);
+            sketchView.setImageDrawable(drawable);
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
             CallbackHandler.postCallbackCanceled(displayListener, cancelCause, false);
@@ -761,18 +763,18 @@ public class DisplayHelper {
      * @return DisplayRequest 非null：请求一模一样，无需取消；null：已经取消或没有已存在的请求
      */
     private DisplayRequest checkRepeatRequest() {
-        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
+        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.fd(SLogType.REQUEST, LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
-                            key, Integer.toHexString(imageViewInterface.hashCode()));
+                            key, Integer.toHexString(sketchView.hashCode()));
                 }
                 return potentialRequest;
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
                     SLog.fw(SLogType.REQUEST, LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
-                            key, potentialRequest.getKey(), Integer.toHexString(imageViewInterface.hashCode()));
+                            key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
             }
@@ -783,7 +785,7 @@ public class DisplayHelper {
 
     private DisplayRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(imageViewInterface);
+        RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
         DisplayRequest request = requestFactory.newDisplayRequest(sketch, uriInfo, key, displayOptions, viewInfo,
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (SLogType.TIME.isEnabled()) {
@@ -794,7 +796,7 @@ public class DisplayHelper {
         StateImage loadingImage = displayOptions.getLoadingImage();
         if (loadingImage != null) {
             Context context = sketch.getConfiguration().getContext();
-            Drawable drawable = loadingImage.getDrawable(context, imageViewInterface, displayOptions);
+            Drawable drawable = loadingImage.getDrawable(context, sketchView, displayOptions);
             loadingDrawable = new SketchLoadingDrawable(drawable, request);
         } else {
             loadingDrawable = new SketchLoadingDrawable(null, request);
@@ -803,14 +805,14 @@ public class DisplayHelper {
             Stopwatch.with().record("createLoadingImage");
         }
 
-        imageViewInterface.setImageDrawable(loadingDrawable);
+        sketchView.setImageDrawable(loadingDrawable);
         if (SLogType.TIME.isEnabled()) {
             Stopwatch.with().record("setLoadingImage");
         }
 
         if (SLogType.REQUEST.isEnabled()) {
             SLog.fd(SLogType.REQUEST, LOG_NAME, "submit request. viewHashCode=%s. %s",
-                    Integer.toHexString(imageViewInterface.hashCode()), key);
+                    Integer.toHexString(sketchView.hashCode()), key);
         }
 
         request.submit();

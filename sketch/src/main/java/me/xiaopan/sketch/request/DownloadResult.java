@@ -41,11 +41,11 @@ public class DownloadResult {
         return imageData;
     }
 
-    public ImageFrom getImageFrom(){
+    public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
-    public boolean hasData(){
+    public boolean hasData() {
         return diskCacheEntry != null || (imageData != null && imageData.length > 0);
     }
 }

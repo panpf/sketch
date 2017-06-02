@@ -18,8 +18,8 @@ package me.xiaopan.sketch.util;
 
 import java.text.DecimalFormat;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 
 public class Stopwatch {
     private static Stopwatch instance;

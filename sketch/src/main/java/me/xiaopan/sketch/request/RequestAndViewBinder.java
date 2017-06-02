@@ -18,6 +18,7 @@ package me.xiaopan.sketch.request;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -25,27 +26,27 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class RequestAndViewBinder {
     private DisplayRequest displayRequest;
-    private WeakReference<ImageViewInterface> imageViewReference;
+    private WeakReference<SketchView> imageViewReference;
 
-    public RequestAndViewBinder(ImageViewInterface imageView) {
-        this.imageViewReference = new WeakReference<ImageViewInterface>(imageView);
+    public RequestAndViewBinder(SketchView imageView) {
+        this.imageViewReference = new WeakReference<SketchView>(imageView);
     }
 
     public void setDisplayRequest(DisplayRequest displayRequest) {
         this.displayRequest = displayRequest;
     }
 
-    public ImageViewInterface getImageViewInterface() {
-        final ImageViewInterface imageViewInterface = imageViewReference.get();
+    public SketchView getImageViewInterface() {
+        final SketchView sketchView = imageViewReference.get();
         if (displayRequest != null) {
-            DisplayRequest holderDisplayRequest = SketchUtils.findDisplayRequest(imageViewInterface);
+            DisplayRequest holderDisplayRequest = SketchUtils.findDisplayRequest(sketchView);
             if (holderDisplayRequest != null && holderDisplayRequest == displayRequest) {
-                return imageViewInterface;
+                return sketchView;
             } else {
                 return null;
             }
         } else {
-            return imageViewInterface;
+            return sketchView;
         }
     }
 

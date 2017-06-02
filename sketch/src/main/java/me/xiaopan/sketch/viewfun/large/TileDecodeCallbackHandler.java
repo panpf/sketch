@@ -23,11 +23,11 @@ import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -131,8 +131,6 @@ class TileDecodeCallbackHandler extends Handler {
     }
 
 
-
-
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
@@ -228,7 +226,7 @@ class TileDecodeCallbackHandler extends Handler {
         }
     }
 
-    private static final class InitResult{
+    private static final class InitResult {
         public String imageUrl;
         public ImageRegionDecoder imageRegionDecoder;
         public KeyCounter keyCounter;

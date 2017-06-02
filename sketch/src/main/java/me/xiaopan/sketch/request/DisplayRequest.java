@@ -23,15 +23,16 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
-import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
-import me.xiaopan.sketch.drawable.SketchRefDrawable;
-import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.drawable.SketchRefDrawable;
+import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -298,7 +299,7 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getShapeSize(), displayOptions.getImageShaper());
         }
 
-        ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
+        SketchView viewInterface = requestAndViewBinder.getImageViewInterface();
         if (SLogType.REQUEST.isEnabled()) {
             String drawableInfo = "unknown";
             if (drawable instanceof SketchRefDrawable) {

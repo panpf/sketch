@@ -10,7 +10,7 @@ import java.util.Map;
  * of bitmaps rather than individual objects. The idea is to be able to find the LRU bitmap size, rather than the
  * LRU bitmap object. We can then remove bitmaps from the least recently used size of bitmap when we need to
  * reduce our cache size.
- *
+ * <p>
  * For the purposes of the LRU, we count gets for a particular size of bitmap as an access, even if no bitmaps
  * of that size are present. We do not count addition or removal of bitmaps as an access.
  */
@@ -139,7 +139,7 @@ class GroupedLinkedMap<K extends Poolable, V> {
             return values != null ? values.size() : 0;
         }
 
-        public boolean contains(V value){
+        public boolean contains(V value) {
             return values != null && values.contains(value);
         }
 

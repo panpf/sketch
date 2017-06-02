@@ -19,6 +19,7 @@ package me.xiaopan.sketch.request;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 
 public class ViewInfo {
     private ScaleType scaleType;
@@ -39,11 +40,11 @@ public class ViewInfo {
         this.supportLargeImage = viewInfo.supportLargeImage;
     }
 
-    public void reset(ImageViewInterface imageViewInterface, Sketch sketch) {
-        if (imageViewInterface != null) {
-            this.scaleType = imageViewInterface.getScaleType();
-            this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(imageViewInterface);
-            this.supportLargeImage = imageViewInterface.isBlockDisplayLargeImageEnabled();
+    public void reset(SketchView sketchView, Sketch sketch) {
+        if (sketchView != null) {
+            this.scaleType = sketchView.getScaleType();
+            this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchView);
+            this.supportLargeImage = sketchView.isBlockDisplayLargeImageEnabled();
         } else {
             this.scaleType = null;
             this.fixedSize = null;
