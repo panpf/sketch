@@ -77,7 +77,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                     }
                 }
             });
-            imageView.setOptionsByName(ImageOptions.RECT);
+            imageView.setOptions(ImageOptions.RECT);
 
             ImageShaper imageShaper = imageView.getOptions().getImageShaper();
             if (imageShaper != null && imageShaper instanceof RoundRectImageShaper) {

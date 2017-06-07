@@ -9,7 +9,7 @@ import android.net.NetworkInfo;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.Configuration;
 
 /**
  * 移动网络下全局暂停下载控制器
@@ -17,10 +17,12 @@ import me.xiaopan.sketch.Sketch;
 public class MobileNetworkGlobalPauseDownloadController {
     private NetworkChangedBroadcastReceiver receiver;
     private boolean opened;
+    private Configuration configuration;
 
-    public MobileNetworkGlobalPauseDownloadController(Context context) {
+    public MobileNetworkGlobalPauseDownloadController(Context context, Configuration configuration) {
         context = context.getApplicationContext();
         receiver = new NetworkChangedBroadcastReceiver(context, this);
+        this.configuration = configuration;
     }
 
     /**
@@ -45,7 +47,7 @@ public class MobileNetworkGlobalPauseDownloadController {
             updateStatus(receiver.context);
             receiver.register();
         } else {
-            Sketch.with(receiver.context).getConfiguration().setGlobalPauseDownload(false);
+            configuration.setGlobalPauseDownload(false);
             receiver.unregister();
         }
     }
@@ -58,7 +60,7 @@ public class MobileNetworkGlobalPauseDownloadController {
     private void updateStatus(Context context) {
         NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         boolean isPause = networkInfo != null && networkInfo.isAvailable() && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-        Sketch.with(context).getConfiguration().setGlobalPauseDownload(isPause);
+        configuration.setGlobalPauseDownload(isPause);
     }
 
     /**

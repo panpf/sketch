@@ -40,7 +40,7 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
 
         @Override
         protected void onConfigViews(Context context) {
-            iconImageView.setOptionsByName(ImageOptions.ROUND_RECT);
+            iconImageView.setOptions(ImageOptions.ROUND_RECT);
             iconImageView.setPage(SampleImageView.Page.APP_LIST);
 
             ImageShaper imageShaper = iconImageView.getOptions().getImageShaper();

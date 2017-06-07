@@ -53,7 +53,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
                     }
                 }
             });
-            imageView.setOptionsByName(ImageOptions.RECT);
+            imageView.setOptions(ImageOptions.RECT);
 
             imageView.setPage(SampleImageView.Page.SEARCH_LIST);
         }

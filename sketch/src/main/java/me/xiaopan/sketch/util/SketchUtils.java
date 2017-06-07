@@ -21,6 +21,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -68,8 +69,11 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
+import me.xiaopan.sketch.Initializer;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
@@ -80,7 +84,6 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.viewfun.large.Tile;
 
@@ -1221,5 +1224,49 @@ public class SketchUtils {
         }
 
         return String.format("%s.%s", Base64.encodeToString(uri.getBytes(), Base64.DEFAULT), options.outMimeType.replace("image/", ""));
+    }
+
+    public static Initializer findInitializer(Context context) {
+        ApplicationInfo appInfo;
+        try {
+            appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String initializerClassName = null;
+        if (appInfo.metaData != null) {
+            for (String key : appInfo.metaData.keySet()) {
+                if (Sketch.META_DATA_KEY_INITIALIZER.equals(appInfo.metaData.getString(key))) {
+                    initializerClassName = key;
+                    break;
+                }
+            }
+        }
+        if (TextUtils.isEmpty(initializerClassName)) {
+            return null;
+        }
+
+        Class<?> initializerClass;
+        try {
+            initializerClass = Class.forName(initializerClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (!Initializer.class.isAssignableFrom(initializerClass)) {
+            SLog.e(initializerClassName + " must be implements Initializer");
+            return null;
+        }
+        //noinspection TryWithIdenticalCatches
+        try {
+            return (Initializer) initializerClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -663,7 +663,7 @@ public final class Configuration {
         if (isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload) {
             if (mobileNetworkGlobalPauseDownload) {
                 if (this.mobileNetworkGlobalPauseDownloadController == null) {
-                    this.mobileNetworkGlobalPauseDownloadController = new MobileNetworkGlobalPauseDownloadController(context);
+                    this.mobileNetworkGlobalPauseDownloadController = new MobileNetworkGlobalPauseDownloadController(context, this);
                 }
                 this.mobileNetworkGlobalPauseDownloadController.setOpened(true);
             } else {

@@ -31,10 +31,6 @@ public class SampleApplication extends Application {
         super.onCreate();
         CrashReport.initCrashReport(getBaseContext(), "900007777", BuildConfig.DEBUG);
 
-        SketchManager sketchManager = new SketchManager(getBaseContext());
-        sketchManager.initConfig(getBaseContext());
-        sketchManager.initDisplayOptions(getBaseContext());
-
         if (!LeakCanary.isInAnalyzerProcess(this)) {
             LeakCanary.install(this);
         }

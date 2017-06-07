@@ -24,12 +24,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DownloadProgressListener;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
@@ -198,11 +197,6 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         } else {
             getFunctions().requestFunction.getDisplayOptions().copy(newDisplayOptions);
         }
-    }
-
-    @Override
-    public void setOptionsByName(Enum<?> optionsName) {
-        setOptions(Sketch.getDisplayOptions(optionsName));
     }
 
     @Override

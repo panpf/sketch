@@ -11,11 +11,11 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
+        android:name=".SampleApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".SampleApplication">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
@@ -31,5 +31,9 @@
         <service
             android:name=".NotificationService"
             android:process=":notification" />
+
+        <meta-data
+            android:name="me.xiaopan.sketchsample.SketchInitializer"
+            android:value="SKETCH_INITIALIZER" />
     </application>
 </manifest>

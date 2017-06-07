@@ -125,14 +125,14 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         layoutParams.height = getResources().getDisplayMetrics().heightPixels;
         backgroundImageView.setLayoutParams(layoutParams);
 
-        backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
+        backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND);
 
         layoutParams = menuBackgroundImageView.getLayoutParams();
         layoutParams.width = getResources().getDisplayMetrics().widthPixels;
         layoutParams.height = getResources().getDisplayMetrics().heightPixels;
         menuBackgroundImageView.setLayoutParams(layoutParams);
 
-        menuBackgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
+        menuBackgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND);
         menuBackgroundImageView.getOptions().setImageDisplayer(null);
 
         drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT);

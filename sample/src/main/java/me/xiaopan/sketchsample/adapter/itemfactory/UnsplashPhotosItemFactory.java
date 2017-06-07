@@ -62,11 +62,11 @@ public class UnsplashPhotosItemFactory extends AssemblyRecyclerItemFactory<Unspl
                     }
                 }
             });
-            imageView.setOptionsByName(ImageOptions.LIST_FULL);
+            imageView.setOptions(ImageOptions.LIST_FULL);
 
             imageView.setPage(SampleImageView.Page.UNSPLASH_LIST);
 
-            userProfileImageView.setOptionsByName(ImageOptions.CIRCULAR_STROKE);
+            userProfileImageView.setOptions(ImageOptions.CIRCULAR_STROKE);
 
             userProfileImageView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -158,7 +158,6 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
             refreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    refreshLayout.setRefreshing(true);
                     onRefresh();
                 }
             });
@@ -197,6 +196,10 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
     public void onRefresh() {
         if (adapter != null) {
             adapter.setLoadMoreEnd(false);
+        }
+
+        if (!refreshLayout.isRefreshing()) {
+            refreshLayout.setRefreshing(true);
         }
 
         loadData(1);
@@ -278,7 +281,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
             fragment.hintView.failed(t, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragment.loadData(pageIndex);
+                    fragment.onRefresh();
                 }
             });
 

@@ -191,15 +191,6 @@ public class LoadHelper {
     }
 
     /**
-     * 批量设置加载参数（完全覆盖），你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，
-     * 然后在这里指定其名称即可
-     */
-    @SuppressWarnings("unused")
-    public LoadHelper optionsByName(Enum<?> optionsName) {
-        return options(Sketch.getLoadOptions(optionsName));
-    }
-
-    /**
      * 设置加载监听器
      */
     public LoadHelper listener(LoadListener loadListener) {

@@ -21,20 +21,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.xiaopan.sketch.preprocess.InstalledAppIconPreprocessor;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
-import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
-import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.LoadListener;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -48,15 +42,20 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class Sketch {
     public static final String TAG = "Sketch";
+    public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
 
     private static Sketch instance;
-    private static Map<Enum<?>, Object> optionsMap;
 
     private Configuration configuration;
 
     private Sketch(Context context) {
         SLog.i(String.format("Version %s %s(%d)", BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
         this.configuration = new Configuration(context);
+
+        Initializer initializer = SketchUtils.findInitializer(context);
+        if (initializer != null) {
+            initializer.onInitialize(context.getApplicationContext(), this, configuration);
+        }
     }
 
     /**
@@ -104,81 +103,6 @@ public class Sketch {
         } else {
             return false;
         }
-    }
-
-    /**
-     * 安装选项Map
-     */
-    private static void installOptionsMap() {
-        if (optionsMap == null) {
-            synchronized (Sketch.class) {
-                if (optionsMap == null) {
-                    optionsMap = new HashMap<>();
-                }
-            }
-        }
-    }
-
-    /**
-     * 存入一个下载选项
-     *
-     * @param optionsName 选项名称
-     * @param options     下载选项
-     */
-    @SuppressWarnings("unused")
-    public static void putOptions(Enum<?> optionsName, DownloadOptions options) {
-        installOptionsMap();
-        optionsMap.put(optionsName, options);
-    }
-
-    /**
-     * 存入一个加载选项
-     *
-     * @param optionsName 选项名称
-     * @param options     加载选项
-     */
-    @SuppressWarnings("unused")
-    public static void putOptions(Enum<?> optionsName, LoadOptions options) {
-        installOptionsMap();
-        optionsMap.put(optionsName, options);
-    }
-
-    /**
-     * 存入一个显示选项
-     *
-     * @param optionsName 选项名称
-     * @param options     显示选项
-     */
-    public static void putOptions(Enum<?> optionsName, DisplayOptions options) {
-        installOptionsMap();
-        optionsMap.put(optionsName, options);
-    }
-
-    /**
-     * 获取之前存入的下载选项
-     *
-     * @param optionsName 选项名称
-     */
-    public static DownloadOptions getDownloadOptions(Enum<?> optionsName) {
-        return optionsMap != null ? (DownloadOptions) optionsMap.get(optionsName) : null;
-    }
-
-    /**
-     * 获取之前存入的加载选项
-     *
-     * @param optionsName 选项名称
-     */
-    public static LoadOptions getLoadOptions(Enum<?> optionsName) {
-        return optionsMap != null ? (LoadOptions) optionsMap.get(optionsName) : null;
-    }
-
-    /**
-     * 获取之前存入的显示选项
-     *
-     * @param optionsName 选项名称
-     */
-    public static DisplayOptions getDisplayOptions(Enum<?> optionsName) {
-        return optionsMap != null ? (DisplayOptions) optionsMap.get(optionsName) : null;
     }
 
     /**

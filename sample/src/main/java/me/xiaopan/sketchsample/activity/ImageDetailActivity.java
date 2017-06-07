@@ -66,7 +66,7 @@ public class ImageDetailActivity extends BaseActivity implements ApplyBackground
         layoutParams.height = getResources().getDisplayMetrics().heightPixels;
         backgroundImageView.setLayoutParams(layoutParams);
 
-        backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
+        backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND);
 
         toolbar.setVisibility(View.GONE);
 

@@ -28,6 +28,7 @@ import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.event.CacheCleanEvent;
@@ -80,6 +81,10 @@ public class SampleImageView extends SketchImageView {
         onEvent(new AppConfigChangedEvent(AppConfig.Key.THUMBNAIL_MODE));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.CACHE_PROCESSED_IMAGE));
         disabledRedisplay = false;
+    }
+
+    public void setOptions(@ImageOptions.Type int optionsId){
+        setOptions(ImageOptions.getDisplayOptions(getContext(), optionsId));
     }
 
     public Page getPage() {

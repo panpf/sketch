@@ -122,11 +122,6 @@ public interface SketchView {
     void setOptions(DisplayOptions newDisplayOptions);
 
     /**
-     * 批量设置显示参数，你只需要提前将DisplayOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可
-     */
-    void setOptionsByName(Enum<?> optionsName);
-
-    /**
      * 获取显示监听器
      */
     DisplayListener getDisplayListener();

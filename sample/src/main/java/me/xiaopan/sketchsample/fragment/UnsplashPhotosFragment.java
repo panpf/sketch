@@ -72,7 +72,6 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
             refreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    refreshLayout.setRefreshing(true);
                     onRefresh();
                 }
             });
@@ -137,6 +136,10 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
             adapter.setLoadMoreEnd(false);
         }
 
+        if (!refreshLayout.isRefreshing()) {
+            refreshLayout.setRefreshing(true);
+        }
+
         loadData(1);
     }
 
@@ -184,7 +187,7 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
             fragment.hintView.failed(t, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragment.loadData(pageIndex);
+                    fragment.onRefresh();
                 }
             });
 
