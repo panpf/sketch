@@ -129,7 +129,7 @@ public class MyImageView extends SketchImageView {
 ```
 参考[SampleImageView.java](../../sample/src/main/java/me/xiaopan/sketchsample/widget/SampleImageView.java)
 
-使用的时候就直接指定id即可：
+使用的时候指定id即可：
 ```java
 MyImageView imageView = ...;
 imageView.setOptions(ImageOptions.ROUND_RECT);
