@@ -189,6 +189,7 @@ Basic functions:
 >* [Resize the image size by Resize](docs/wiki/resize.md)
 >* [Flexible use of various images as loading image by StateImage](docs/wiki/state_image.md)
 >* [Learn to automatically correct image orientation](docs/wiki/correct_image_orientation.md)
+>* [Display video thumbnail](docs/wiki/display_video_thumbnail.md)
 
 To further enhance the user experience:
 >* [So that any size of the two pictures can use TransitionDrawable transition display](docs/wiki/transition_displayer.md)

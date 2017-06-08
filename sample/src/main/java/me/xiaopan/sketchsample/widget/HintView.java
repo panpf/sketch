@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.HttpHostConnectException;
 
 import java.io.FileNotFoundException;
 import java.net.SocketTimeoutException;
@@ -410,8 +409,6 @@ public class HintView extends LinearLayout {
             } else {
                 message = "没有网络连接";
             }
-        } else if (exception instanceof HttpHostConnectException && exception.getMessage() != null && exception.getMessage().contains("refused")) {
-            message = "网络连接异常【202】";
         } else if (exception instanceof SocketTimeoutException || exception instanceof ConnectTimeoutException) {
             message = "网络连接超时";
         } else if (exception instanceof FileNotFoundException) {

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
@@ -38,12 +39,15 @@ import me.xiaopan.sketchsample.widget.HintView;
 /**
  * 本地安装包页面
  */
-@BindContentView(R.layout.fragment_installed_app)
+@BindContentView(R.layout.fragment_recycler)
 public class AppPackageFragment extends BaseFragment {
-    @BindView(R.id.recyclerView_installedApp_content)
+    @BindView(R.id.refresh_recyclerFragment)
+    SwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.recycler_recyclerFragment_content)
     RecyclerView contentRecyclerView;
 
-    @BindView(R.id.hint_installedApp_hint)
+    @BindView(R.id.hint_recyclerFragment)
     HintView hintView;
 
     private AssemblyRecyclerAdapter adapter = null;
@@ -51,6 +55,8 @@ public class AppPackageFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        refreshLayout.setEnabled(false);
 
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
@@ -71,7 +77,7 @@ public class AppPackageFragment extends BaseFragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                hintView.loading("正在扫描本地APK文件，请稍后...");
+                hintView.loading(null);
                 time = System.currentTimeMillis();
             }
 

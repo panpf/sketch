@@ -12,6 +12,7 @@ import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
+import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
 import me.xiaopan.sketchsample.util.XpkIconPreprocessor;
 
 public class SketchInitializer implements Initializer {
@@ -45,6 +46,7 @@ public class SketchInitializer implements Initializer {
         onEvent(new AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY));
 
+        configuration.getImagePreprocessor().addPreprocessor(new VideoThumbnailPreprocessor());
         configuration.getImagePreprocessor().addPreprocessor(new XpkIconPreprocessor());
         configuration.setErrorTracker(new SampleErrorTracker(context));
     }

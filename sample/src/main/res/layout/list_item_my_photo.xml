@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 需要包一层，要不然在代码里改ImageView的高度总会有偏差 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <me.xiaopan.sketchsample.widget.SampleImageView
+        android:id="@+id/image_myPhotoItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"/>
+</FrameLayout>

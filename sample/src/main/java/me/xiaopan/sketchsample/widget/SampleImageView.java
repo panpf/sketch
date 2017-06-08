@@ -102,29 +102,29 @@ public class SampleImageView extends SketchImageView {
     @Subscribe
     public void onEvent(AppConfigChangedEvent event) {
         if (AppConfig.Key.SHOW_GIF_FLAG.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowGifFlagEnabled(AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_GIF_FLAG) ? R.drawable.ic_gif : 0);
             }
         } else if (AppConfig.Key.SHOW_IMAGE_FROM_FLAG.equals(event.key)) {
             setShowImageFromEnabled(AppConfig.getBoolean(getContext(), event.key));
         } else if (AppConfig.Key.CLICK_SHOW_PRESSED_STATUS.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowPressedStatusEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowDownloadProgressEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickRetryOnPauseDownloadEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_RETRY_ON_FAILED.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickRetryOnDisplayErrorEnabled(AppConfig.getBoolean(getContext(), event.key));
             }
         } else if (AppConfig.Key.CLICK_PLAY_GIF.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickPlayGifEnabled(AppConfig.getBoolean(getContext(), event.key) ? R.drawable.ic_video_play : 0);
             }
 
@@ -150,7 +150,7 @@ public class SampleImageView extends SketchImageView {
                 }
             });
         } else if (AppConfig.Key.PLAY_GIF_ON_LIST.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST) {
+            if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST) {
                 final boolean playGifOnList = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setDecodeGifImage(playGifOnList);
 
@@ -162,7 +162,7 @@ public class SampleImageView extends SketchImageView {
                 });
             }
         } else if (AppConfig.Key.THUMBNAIL_MODE.equals(event.key)) {
-            if (page == Page.PHOTO_ALBUM_LIST) {
+            if (page == Page.PHOTO_LIST) {
                 final boolean thumbnailMode = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setThumbnailMode(thumbnailMode);
                 if (getOptions().getResize() == null) {
@@ -205,7 +205,7 @@ public class SampleImageView extends SketchImageView {
     }
 
     public enum Page {
-        PHOTO_ALBUM_LIST, UNSPLASH_LIST, SEARCH_LIST, APP_LIST, DETAIL, DEMO;
+        PHOTO_LIST, UNSPLASH_LIST, SEARCH_LIST, APP_LIST, DETAIL, DEMO;
     }
 
     private class LongClickShowDrawableInfoListener implements View.OnLongClickListener {

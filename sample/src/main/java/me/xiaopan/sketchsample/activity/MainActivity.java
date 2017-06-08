@@ -52,9 +52,9 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.BaseActivity;
+import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.BuildConfig;
 import me.xiaopan.sketchsample.ImageOptions;
-import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.CheckMenuItemFactory;
@@ -72,8 +72,9 @@ import me.xiaopan.sketchsample.fragment.ImageProcessorTestFragment;
 import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
 import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
 import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
+import me.xiaopan.sketchsample.fragment.MyPhotosFragment;
+import me.xiaopan.sketchsample.fragment.MyVideoFragment;
 import me.xiaopan.sketchsample.fragment.OtherTestFragment;
-import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.UnsplashPhotosFragment;
@@ -461,7 +462,8 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
     public enum Page {
         UNSPLASH("Unsplash", UnsplashPhotosFragment.class, false, false),
         SEARCH("GIF Search", SearchFragment.class, false, false),
-        PHOTO_ALBUM("My Photos", PhotoAlbumFragment.class, false, false),
+        MY_PHOTOS("My Photos", MyPhotosFragment.class, false, false),
+        MY_VIDEOS("My Videos", MyVideoFragment.class, false, false),
         APP_LIST("My Apps", AppListFragment.class, false, false),
         ABOUT("About Sketch", AboutFragment.class, false, false),
 

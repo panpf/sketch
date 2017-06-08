@@ -32,12 +32,12 @@ import me.xiaopan.sketchsample.widget.HintView;
 /**
  * 已安装APP列表
  */
-@BindContentView(R.layout.fragment_installed_app)
+@BindContentView(R.layout.fragment_recycler)
 public class InstalledAppFragment extends BaseFragment {
-    @BindView(R.id.recyclerView_installedApp_content)
+    @BindView(R.id.recycler_recyclerFragment_content)
     RecyclerView contentRecyclerView;
 
-    @BindView(R.id.hint_installedApp_hint)
+    @BindView(R.id.hint_recyclerFragment)
     HintView hintView;
 
     private AssemblyRecyclerAdapter adapter = null;
@@ -64,7 +64,7 @@ public class InstalledAppFragment extends BaseFragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                hintView.loading("正在加载已安装列表，请稍后...");
+                hintView.loading(null);
             }
 
             @Override

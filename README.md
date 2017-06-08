@@ -184,6 +184,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [通过Resize修剪图片尺寸](docs/wiki/resize.md)
 >* [通过StateImage灵活的使用各种图片作为loadingImage](docs/wiki/state_image.md)
 >* [了解自动纠正图片方向功能](docs/wiki/correct_image_orientation.md)
+>* [显示视频缩略图](docs/wiki/display_video_thumbnail.md)
 
 进一步提升用户体验：
 >* [让任意尺寸的两张图片都能使用TransitionDrawable过渡显示](docs/wiki/transition_displayer.md)

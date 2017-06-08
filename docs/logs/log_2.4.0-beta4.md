@@ -21,3 +21,6 @@
 ### ImageZoomer
 * :art: 现在如果ImageZoomer已经消费了触摸事件就不再往下传递了
 * :art: 现在ImageZoomer可以回调ImageView的OnClickListener和OnLongClickListener，但OnViewTapListener和OnViewLongPressListener的优先级更高
+
+### Sample App
+* :sparkles: 增加我的视频列表，展示如何显示视频缩略图

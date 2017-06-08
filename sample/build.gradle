@@ -24,6 +24,10 @@ android {
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode VERSION_CODE.toInteger()
         versionName "${VERSION_NAME}"
+
+        ndk {
+            abiFilters 'armeabi'
+        }
     }
 
     signingConfigs {
@@ -45,6 +49,23 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+
+        x86Debug {
+            signingConfig jksFile != null && jksFile.exists() ? signingConfigs.release : signingConfig
+            ndk {
+                abiFilters "x86"
+            }
+        }
+
+        x86Release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            ndk {
+                abiFilters "x86"
+            }
         }
     }
 
@@ -70,8 +91,6 @@ android {
     aaptOptions {
         noCompress "bmp"
     }
-
-    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -99,6 +118,8 @@ dependencies {
 
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    compile 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
 }
 
 repositories {

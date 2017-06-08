@@ -1,19 +1,19 @@
 package me.xiaopan.sketchsample;
 
 public class AssetImage {
-    public static final String SAMPLE_JPG = "asset://sample.jpg";
-    public static final String SAMPLE_PNG = "asset://sample.png";
-    public static final String SAMPLE_gif = "asset://sample.gif";
-    public static final String SAMPLE_WEBP = "asset://sample.webp";
-    public static final String SAMPLE_BMP = "asset://sample.bmp";
+    public static final String SAMPLE_JPG = "http://or84z82rx.bkt.clouddn.com/sample.jpg";
+    public static final String SAMPLE_PNG = "http://or84z82rx.bkt.clouddn.com/sample.png";
+    public static final String SAMPLE_gif = "http://or84z82rx.bkt.clouddn.com/sample.gif";
+    public static final String SAMPLE_WEBP = "http://or84z82rx.bkt.clouddn.com/sample.webp";
+    public static final String SAMPLE_BMP = "http://or84z82rx.bkt.clouddn.com/sample.bmp";
 
-    public static final String LARGE_CHANG_WEI_BO = "asset://large_chang_wei_bo.jpg";
-    public static final String LARGE_QMSHT = "asset://large_qing_ming_shang_he_tu.jpg";
-    public static final String LARGE_CARD = "asset://large_card.png";
-    public static final String LARGE_WORLD_MAP = "asset://large_world_map.jpg";
+    public static final String LARGE_CHANG_WEI_BO = "http://or84z82rx.bkt.clouddn.com/large_chang_wei_bo.jpg";
+    public static final String LARGE_QMSHT = "http://or84z82rx.bkt.clouddn.com/large_qing_ming_shang_he_tu.jpg";
+    public static final String LARGE_CARD = "http://or84z82rx.bkt.clouddn.com/large_card.png";
+    public static final String LARGE_WORLD_MAP = "http://or84z82rx.bkt.clouddn.com/large_world_map.jpg";
 
     public static final String MEI_NV = "asset://mei_nv.jpg";
-    public static final String MASK = "asset://mask.png";
+    public static final String MASK = "http://or84z82rx.bkt.clouddn.com/mask.png";
 
     public static final String CHUNK = "http://nbachina.qq.com/media/img/players/head/260x190/201935.png";
     public static final String CHUNK2 = "http://static.yingyonghui.com/is/4398/4398642/256i.webp";

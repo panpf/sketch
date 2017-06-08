@@ -45,16 +45,18 @@ import retrofit2.Response;
 /**
  * 图片搜索Fragment
  */
-@BindContentView(R.layout.fragment_search)
+@BindContentView(R.layout.fragment_recycler)
 public class SearchFragment extends BaseFragment implements StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
     private static final int PAGE_SIZE = 60;
 
-    @BindView(R.id.refreshLayout_search)
+    @BindView(R.id.refresh_recyclerFragment)
     SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.list_search)
+
+    @BindView(R.id.recycler_recyclerFragment_content)
     RecyclerView recyclerView;
-    @BindView(R.id.hintView_search)
+
+    @BindView(R.id.hint_recyclerFragment)
     HintView hintView;
 
     private String searchKeyword = "GIF";
