@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -36,9 +37,10 @@ import me.xiaopan.sketch.request.UriScheme;
  */
 public abstract class FunctionCallbackView extends ImageView implements SketchView {
 
-    OnClickListener wrapperClickListener;
-    DisplayListener wrapperDisplayListener;
-    DownloadProgressListener wrapperProgressListener;
+    OnClickListener wrappedClickListener;
+    OnLongClickListener longClickListener;
+    DisplayListener wrappedDisplayListener;
+    DownloadProgressListener wrappedProgressListener;
 
     private ViewFunctions functions;
 
@@ -103,11 +105,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // TODO: 2017/5/27 这里是否考虑functionManager.onTouchEvent(event)返回true就不再执行super.onTouchEvent(event)了
-        // TODO: 2017/5/27 这样的话functionManager.onTouchEvent(event)里就要回调点击和长按了
-        boolean handled = getFunctions().onTouchEvent(event);
-        handled |= super.onTouchEvent(event);
-        return handled;
+        return getFunctions().onTouchEvent(event) || super.onTouchEvent(event);
     }
 
     @Override
@@ -133,10 +131,24 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         super.setScaleType(scaleType);
     }
 
+    public OnClickListener getOnClickListener() {
+        return clickListenerProxy;
+    }
+
     @Override
     public void setOnClickListener(OnClickListener l) {
-        wrapperClickListener = l;
+        wrappedClickListener = l;
         updateClickable();
+    }
+
+    public OnLongClickListener getOnLongClickListener() {
+        return longClickListener;
+    }
+
+    @Override
+    public void setOnLongClickListener(@Nullable OnLongClickListener l) {
+        super.setOnLongClickListener(l);
+        this.longClickListener = l;
     }
 
     void updateClickable() {
@@ -206,12 +218,12 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     @Override
     public void setDisplayListener(DisplayListener displayListener) {
-        this.wrapperDisplayListener = displayListener;
+        this.wrappedDisplayListener = displayListener;
     }
 
     @Override
     public DownloadProgressListener getDownloadProgressListener() {
-        if (getFunctions().showProgressFunction != null || wrapperProgressListener != null) {
+        if (getFunctions().showProgressFunction != null || wrappedProgressListener != null) {
             return progressListenerProxy;
         } else {
             return null;
@@ -220,7 +232,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     @Override
     public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
-        this.wrapperProgressListener = downloadProgressListener;
+        this.wrappedProgressListener = downloadProgressListener;
     }
 
     @Override

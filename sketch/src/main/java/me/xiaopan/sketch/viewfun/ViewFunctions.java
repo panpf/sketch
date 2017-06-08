@@ -194,42 +194,41 @@ class ViewFunctions {
      * @return true：事件已处理
      */
     boolean onTouchEvent(MotionEvent event) {
-        boolean handled = false;
-        if (showPressedFunction != null) {
-            //noinspection ConstantConditions
-            handled |= showPressedFunction.onTouchEvent(event);
+        if (showPressedFunction != null && showPressedFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (showProgressFunction != null) {
-            handled |= showProgressFunction.onTouchEvent(event);
+        if (showProgressFunction != null && showProgressFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (showImageFromFunction != null) {
-            handled |= showImageFromFunction.onTouchEvent(event);
+        if (showImageFromFunction != null && showImageFromFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (showGifFlagFunction != null) {
-            handled |= showGifFlagFunction.onTouchEvent(event);
+        if (showGifFlagFunction != null && showGifFlagFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (imageShapeFunction != null) {
-            handled |= imageShapeFunction.onTouchEvent(event);
+        if (imageShapeFunction != null && imageShapeFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (clickRetryFunction != null) {
-            handled |= clickRetryFunction.onTouchEvent(event);
+        if (clickRetryFunction != null && clickRetryFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (requestFunction != null) {
-            handled |= requestFunction.onTouchEvent(event);
+        if (requestFunction != null && requestFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (recyclerCompatFunction != null) {
-            handled |= recyclerCompatFunction.onTouchEvent(event);
+        if (recyclerCompatFunction != null && recyclerCompatFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (zoomFunction != null) {
-            handled |= zoomFunction.onTouchEvent(event);
+        if (largeImageFunction != null && largeImageFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (largeImageFunction != null) {
-            handled |= largeImageFunction.onTouchEvent(event);
+        if (clickPlayGifFunction != null && clickPlayGifFunction.onTouchEvent(event)) {
+            return true;
         }
-        if (clickPlayGifFunction != null) {
-            handled |= clickPlayGifFunction.onTouchEvent(event);
+        //noinspection RedundantIfStatement
+        if (zoomFunction != null && zoomFunction.onTouchEvent(event)) {
+            return true;
         }
-        return handled;
+        return false;
     }
 
     /**

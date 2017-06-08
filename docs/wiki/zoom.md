@@ -181,6 +181,8 @@ imageZoomer.setOnViewLongPressListener(OnViewLongPressListener)
 imageZoomer.setOnRotateChangeListener(OnRotateChangeListener)
 ```
 
+当没有注册OnViewTapListener或OnViewLongPressListener时，ImageZoomer会尝试回调ImageView的OnClickListener或OnLongClickListener
+
 #### ArrayIndexOutOfBoundsException与IllegalArgumentException：pointerIndex out of range
 
 由于是在PhotoView基础上做的不可避免的也有这个异常，这里推荐的处理方法是在Activity里拦截，如下：

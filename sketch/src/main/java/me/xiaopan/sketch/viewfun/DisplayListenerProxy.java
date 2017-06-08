@@ -45,8 +45,8 @@ class DisplayListenerProxy implements DisplayListener {
             view.invalidate();
         }
 
-        if (view.wrapperDisplayListener != null) {
-            view.wrapperDisplayListener.onStarted();
+        if (view.wrappedDisplayListener != null) {
+            view.wrappedDisplayListener.onStarted();
         }
     }
 
@@ -62,8 +62,8 @@ class DisplayListenerProxy implements DisplayListener {
             view.invalidate();
         }
 
-        if (view.wrapperDisplayListener != null) {
-            view.wrapperDisplayListener.onCompleted(drawable, imageFrom, imageAttrs);
+        if (view.wrappedDisplayListener != null) {
+            view.wrappedDisplayListener.onCompleted(drawable, imageFrom, imageAttrs);
         }
     }
 
@@ -79,8 +79,8 @@ class DisplayListenerProxy implements DisplayListener {
             view.invalidate();
         }
 
-        if (view.wrapperDisplayListener != null) {
-            view.wrapperDisplayListener.onError(errorCause);
+        if (view.wrappedDisplayListener != null) {
+            view.wrappedDisplayListener.onError(errorCause);
         }
     }
 
@@ -96,8 +96,8 @@ class DisplayListenerProxy implements DisplayListener {
             view.invalidate();
         }
 
-        if (view.wrapperDisplayListener != null) {
-            view.wrapperDisplayListener.onCanceled(cancelCause);
+        if (view.wrappedDisplayListener != null) {
+            view.wrappedDisplayListener.onCanceled(cancelCause);
         }
     }
 }

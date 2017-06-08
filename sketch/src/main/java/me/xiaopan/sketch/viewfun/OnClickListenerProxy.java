@@ -42,8 +42,8 @@ class OnClickListenerProxy implements View.OnClickListener {
             return;
         }
 
-        if (view.wrapperClickListener != null) {
-            view.wrapperClickListener.onClick(v);
+        if (view.wrappedClickListener != null) {
+            view.wrappedClickListener.onClick(v);
         }
     }
 
@@ -62,6 +62,6 @@ class OnClickListenerProxy implements View.OnClickListener {
             return true;
         }
 
-        return view.wrapperClickListener != null;
+        return view.wrappedClickListener != null;
     }
 }

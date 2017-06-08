@@ -30,7 +30,6 @@ import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
 import me.xiaopan.sketch.decode.DecodeException;
-import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -90,8 +89,7 @@ public class ImageFragment extends BaseFragment {
     private ImageZoomHelper imageZoomHelper = new ImageZoomHelper();
     private MappingHelper mappingHelper = new MappingHelper();
     private LargeImageHelper largeImageHelper = new LargeImageHelper();
-    private SingleClickHelper singleClickHelper = new SingleClickHelper();
-    private LongClickHelper longClickHelper = new LongClickHelper();
+    private ClickHelper clickHelper = new ClickHelper();
 
     public static ImageFragment build(Image image, String loadingImageOptionsId, boolean showTools) {
         Bundle bundle = new Bundle();
@@ -126,8 +124,7 @@ public class ImageFragment extends BaseFragment {
         imageZoomHelper.onViewCreated();
         largeImageHelper.onViewCreated();
         mappingHelper.onViewCreated();
-        longClickHelper.onViewCreated();
-        singleClickHelper.onViewCreated();
+        clickHelper.onViewCreated();
         showImageHelper.onViewCreated();
 
         EventBus.getDefault().register(this);
@@ -152,8 +149,6 @@ public class ImageFragment extends BaseFragment {
         if (AppConfig.Key.SUPPORT_ZOOM.equals(event.key)) {
             imageZoomHelper.onConfigChanged();
             mappingHelper.onViewCreated();
-            longClickHelper.onViewCreated();
-            singleClickHelper.onViewCreated();
         } else if (AppConfig.Key.READ_MODE.equals(event.key)) {
             imageZoomHelper.onReadModeConfigChanged();
         } else if (AppConfig.Key.SUPPORT_LARGE_IMAGE.equals(event.key)) {
@@ -168,8 +163,6 @@ public class ImageFragment extends BaseFragment {
 
     private class ShowImageHelper implements DisplayListener, DownloadProgressListener {
         private void onViewCreated() {
-            imageView.setDisabledLongClickShowImageInfo(true);
-
             imageView.setDisplayListener(this);
             imageView.setDownloadProgressListener(this);
 
@@ -440,52 +433,28 @@ public class ImageFragment extends BaseFragment {
         }
     }
 
-    private class SingleClickHelper {
-        private void onViewCreated() {
-            // 单击显示操作选项
-            if (imageView.isZoomEnabled()) {
-                imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
-                    @Override
-                    public void onViewTap(View view, float x, float y) {
-                        Fragment parentFragment = getParentFragment();
-                        if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
-                            ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(view, x, y);
-                        }
-                    }
-                });
-            } else {
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Fragment parentFragment = getParentFragment();
-                        if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
-                            ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(v, 0, 0);
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    private class LongClickHelper {
+    private class ClickHelper {
 
         private void onViewCreated() {
-            if (imageView.isZoomEnabled()) {
-                imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
-                    @Override
-                    public void onViewLongPress(View view, float x, float y) {
-                        show();
+            // 将单击事件传递给上层Activity
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
+                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(v, 0, 0);
                     }
-                });
-            } else {
-                imageView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        show();
-                        return true;
-                    }
-                });
-            }
+                }
+            });
+
+            // 长按显示图片信息与控制菜单
+            imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    show();
+                    return true;
+                }
+            });
         }
 
         private void show() {
@@ -503,7 +472,7 @@ public class ImageFragment extends BaseFragment {
             if (drawable instanceof SketchLoadingDrawable) {
                 imageInfo = "图片正在加载，请稍后";
             } else if (drawable instanceof SketchDrawable) {
-                imageInfo = makeImageInfo(drawable, (SketchDrawable) drawable);
+                imageInfo = makeImageInfoWithZoom(drawable, (SketchDrawable) drawable);
             } else {
                 imageInfo = "未知来源图片";
             }
@@ -562,54 +531,10 @@ public class ImageFragment extends BaseFragment {
             builder.show();
         }
 
-        private String makeImageInfo(Drawable drawable, SketchDrawable sketchDrawable) {
+        private String makeImageInfoWithZoom(Drawable drawable, SketchDrawable sketchDrawable) {
             StringBuilder messageBuilder = new StringBuilder();
 
-            messageBuilder.append("\n");
-            messageBuilder.append(sketchDrawable.getUri());
-
-            UriInfo uriInfo = UriInfo.make(sketchDrawable.getUri());
-            DataSource dataSource = null;
-            try {
-                dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
-            } catch (DecodeException e) {
-                e.printStackTrace();
-            }
-            long imageLength = 0;
-            try {
-                imageLength = dataSource != null ? dataSource.getLength() : 0;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
-
-            int previewDrawableByteCount = sketchDrawable.getByteCount();
-            int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
-            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
-            String needMemory = Formatter.formatFileSize(getContext(), originImageByteCount);
-
-            messageBuilder.append("\n");
-            messageBuilder.append("\n");
-            messageBuilder.append("原始图：")
-                    .append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight())
-                    .append("/").append(sketchDrawable.getMimeType().substring(6))
-                    .append("/").append(needDiskSpace);
-
-            messageBuilder.append("\n                ");
-            messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
-                    .append("/").append(needMemory);
-
-            messageBuilder.append("\n");
-            messageBuilder.append("预览图：")
-                    .append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight())
-                    .append("/").append(sketchDrawable.getBitmapConfig())
-                    .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
-
-            messageBuilder.append("\n");
-            messageBuilder.append("\n");
-            messageBuilder.append("KEY：")
-                    .append(sketchDrawable.getKey());
+            messageBuilder.append(imageView.makeImageInfo(drawable, sketchDrawable));
 
             if (imageView.isZoomEnabled()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();

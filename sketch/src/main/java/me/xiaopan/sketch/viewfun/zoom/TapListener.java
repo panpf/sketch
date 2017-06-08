@@ -18,9 +18,11 @@ package me.xiaopan.sketch.viewfun.zoom;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.viewfun.FunctionCallbackView;
 
 class TapListener extends GestureDetector.SimpleOnGestureListener {
 
@@ -33,11 +35,44 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         ImageView imageView = imageZoomer.getImageView();
-        if (imageView != null && imageZoomer.getOnViewTapListener() != null) {
-            imageZoomer.getOnViewTapListener().onViewTap(imageView, e.getX(), e.getY());
+
+        ImageZoomer.OnViewTapListener tapListener = imageZoomer.getOnViewTapListener();
+        if (imageView != null && tapListener != null) {
+            tapListener.onViewTap(imageView, e.getX(), e.getY());
+            return true;
+        }
+
+        if (imageView != null && imageView instanceof FunctionCallbackView) {
+            FunctionCallbackView functionCallbackView = (FunctionCallbackView) imageView;
+            View.OnClickListener clickListener = functionCallbackView.getOnClickListener();
+            if (clickListener != null && functionCallbackView.isClickable()) {
+                clickListener.onClick(imageView);
+                return true;
+            }
         }
 
         return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        super.onLongPress(e);
+
+        ImageView imageView = imageZoomer.getImageView();
+
+        ImageZoomer.OnViewLongPressListener longPressListener = imageZoomer.getOnViewLongPressListener();
+        if (imageView != null && longPressListener != null) {
+            longPressListener.onViewLongPress(imageView, e.getX(), e.getY());
+            return;
+        }
+
+        if (imageView != null && imageView instanceof FunctionCallbackView) {
+            FunctionCallbackView functionCallbackView = (FunctionCallbackView) imageView;
+            View.OnLongClickListener longClickListener = functionCallbackView.getOnLongClickListener();
+            if (longClickListener != null && functionCallbackView.isLongClickable()) {
+                longClickListener.onLongClick(imageView);
+            }
+        }
     }
 
     @Override
@@ -64,21 +99,5 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {
-        // Wait for the confirmed onDoubleTap() instead
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        super.onLongPress(e);
-
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView != null && imageZoomer.getOnViewLongPressListener() != null) {
-            imageZoomer.getOnViewLongPressListener().onViewLongPress(imageView, e.getX(), e.getY());
-        }
     }
 }

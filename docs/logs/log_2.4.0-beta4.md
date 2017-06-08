@@ -17,3 +17,7 @@
 
 ### Initializer
 :sparkles: 新增Initializer可以在AndroidManifest.xml中配置初始化类，这样就不用在Application中初始化了，可减轻Application的负担，也可百分之百保证第一时间完成Sketch的初始化，详情请参考[initializer.md](https://github.com/xiaopansky/sketch/blob/master/docs/wiki/initializer.md)
+
+### ImageZoomer
+* :art: 现在如果ImageZoomer已经消费了触摸事件就不再往下传递了
+* :art: 现在ImageZoomer可以回调ImageView的OnClickListener和OnLongClickListener，但OnViewTapListener和OnViewLongPressListener的优先级更高

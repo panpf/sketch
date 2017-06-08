@@ -39,8 +39,8 @@ class ProgressListenerProxy implements DownloadProgressListener {
             view.invalidate();
         }
 
-        if (view.wrapperProgressListener != null) {
-            view.wrapperProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
+        if (view.wrappedProgressListener != null) {
+            view.wrappedProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 }

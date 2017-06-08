@@ -37,7 +37,6 @@ import me.xiaopan.sketchsample.util.AppConfig;
 public class SampleImageView extends SketchImageView {
     private Page page;
     private boolean disabledRedisplay;
-    private boolean disabledLongClickShowImageInfo;
 
     public SampleImageView(Context context) {
         super(context);
@@ -83,7 +82,7 @@ public class SampleImageView extends SketchImageView {
         disabledRedisplay = false;
     }
 
-    public void setOptions(@ImageOptions.Type int optionsId){
+    public void setOptions(@ImageOptions.Type int optionsId) {
         setOptions(ImageOptions.getDisplayOptions(getContext(), optionsId));
     }
 
@@ -93,15 +92,6 @@ public class SampleImageView extends SketchImageView {
 
     public void setPage(Page page) {
         this.page = page;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isDisabledLongClickShowImageInfo() {
-        return disabledLongClickShowImageInfo;
-    }
-
-    public void setDisabledLongClickShowImageInfo(boolean disabledLongClickShowImageInfo) {
-        this.disabledLongClickShowImageInfo = disabledLongClickShowImageInfo;
     }
 
     @Override
@@ -221,14 +211,11 @@ public class SampleImageView extends SketchImageView {
     private class LongClickShowDrawableInfoListener implements View.OnLongClickListener {
         @Override
         public boolean onLongClick(View v) {
-            if (disabledLongClickShowImageInfo) {
-                return false;
-            }
-
             if (v.getContext() instanceof Activity) {
                 showInfo((Activity) v.getContext());
+                return true;
             }
-            return true;
+            return false;
         }
 
         private void showInfo(Activity activity) {
@@ -249,64 +236,64 @@ public class SampleImageView extends SketchImageView {
             builder.setNegativeButton("取消", null);
             builder.show();
         }
+    }
 
-        private String makeImageInfo(Drawable drawable, SketchDrawable sketchDrawable) {
-            StringBuilder messageBuilder = new StringBuilder();
+    public String makeImageInfo(Drawable drawable, SketchDrawable sketchDrawable) {
+        StringBuilder messageBuilder = new StringBuilder();
 
-            messageBuilder.append("\n");
-            messageBuilder.append(sketchDrawable.getUri());
+        messageBuilder.append("\n");
+        messageBuilder.append(sketchDrawable.getUri());
 
-            UriInfo uriInfo = UriInfo.make(sketchDrawable.getUri());
-            DataSource dataSource = null;
-            try {
-                dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
-            } catch (DecodeException e) {
-                e.printStackTrace();
-            }
-            long imageLength = 0;
-            try {
-                imageLength = dataSource != null ? dataSource.getLength() : 0;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
-
-            int previewDrawableByteCount = sketchDrawable.getByteCount();
-            int pixelByteCount;
-            if (drawable instanceof SketchShapeBitmapDrawable) {
-                Bitmap bitmap = ((SketchShapeBitmapDrawable) drawable).getBitmapDrawable().getBitmap();
-                pixelByteCount = previewDrawableByteCount / bitmap.getWidth() / bitmap.getHeight();
-            } else {
-                pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
-            }
-            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
-            String needMemory = Formatter.formatFileSize(getContext(), originImageByteCount);
-            String mimeType = sketchDrawable.getMimeType();
-
-            messageBuilder.append("\n");
-            messageBuilder.append("\n");
-            messageBuilder.append("原始图：")
-                    .append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight())
-                    .append("/").append(mimeType != null && mimeType.startsWith("image/") ? mimeType.substring(6) : "未知")
-                    .append("/").append(needDiskSpace);
-
-            messageBuilder.append("\n                ");
-            messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
-                    .append("/").append(needMemory);
-
-            messageBuilder.append("\n");
-            messageBuilder.append("预览图：")
-                    .append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight())
-                    .append("/").append(sketchDrawable.getBitmapConfig())
-                    .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
-
-            messageBuilder.append("\n");
-            messageBuilder.append("\n");
-            messageBuilder.append("KEY：")
-                    .append(sketchDrawable.getKey());
-
-            return messageBuilder.toString();
+        UriInfo uriInfo = UriInfo.make(sketchDrawable.getUri());
+        DataSource dataSource = null;
+        try {
+            dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
+        } catch (DecodeException e) {
+            e.printStackTrace();
         }
+        long imageLength = 0;
+        try {
+            imageLength = dataSource != null ? dataSource.getLength() : 0;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String needDiskSpace = imageLength > 0 ? Formatter.formatFileSize(getContext(), imageLength) : "未知";
+
+        int previewDrawableByteCount = sketchDrawable.getByteCount();
+        int pixelByteCount;
+        if (drawable instanceof SketchShapeBitmapDrawable) {
+            Bitmap bitmap = ((SketchShapeBitmapDrawable) drawable).getBitmapDrawable().getBitmap();
+            pixelByteCount = previewDrawableByteCount / bitmap.getWidth() / bitmap.getHeight();
+        } else {
+            pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+        }
+        int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
+        String needMemory = Formatter.formatFileSize(getContext(), originImageByteCount);
+        String mimeType = sketchDrawable.getMimeType();
+
+        messageBuilder.append("\n");
+        messageBuilder.append("\n");
+        messageBuilder.append("原始图：")
+                .append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight())
+                .append("/").append(mimeType != null && mimeType.startsWith("image/") ? mimeType.substring(6) : "未知")
+                .append("/").append(needDiskSpace);
+
+        messageBuilder.append("\n                ");
+        messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.getExifOrientation()))
+                .append("/").append(needMemory);
+
+        messageBuilder.append("\n");
+        messageBuilder.append("预览图：")
+                .append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight())
+                .append("/").append(sketchDrawable.getBitmapConfig())
+                .append("/").append(Formatter.formatFileSize(getContext(), previewDrawableByteCount));
+
+        messageBuilder.append("\n");
+        messageBuilder.append("\n");
+        messageBuilder.append("KEY：")
+                .append(sketchDrawable.getKey());
+
+        return messageBuilder.toString();
     }
 }
