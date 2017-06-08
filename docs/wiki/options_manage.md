@@ -115,7 +115,7 @@ public class ImageOptions {
 SketchImageView imageView = ...;
 imageView.setOptions(ImageOptions.getDisplayOptions(context, ImageOptions.ROUND_RECT));
 ```
-参考[ImageOptions.java](https://github.com/xiaopansky/sketch/blob/master/sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.java)
+参考[ImageOptions.java](../../sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.java)
 
 你还可以继承SketchImageView，然后重载setOptions()方法，如下：
 ```java
@@ -127,9 +127,9 @@ public class MyImageView extends SketchImageView {
     }
 }
 ```
-参考[SampleImageView.java](https://github.com/xiaopansky/sketch/blob/master/sample/src/main/java/me/xiaopan/sketchsample/widget/SampleImageView.java)
+参考[SampleImageView.java](../../sample/src/main/java/me/xiaopan/sketchsample/widget/SampleImageView.java)
 
-d使用的时候就直接指定id即可：
+使用的时候就直接指定id即可：
 ```java
 MyImageView imageView = ...;
 imageView.setOptions(ImageOptions.ROUND_RECT);
