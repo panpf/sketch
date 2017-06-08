@@ -73,7 +73,7 @@ import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
 import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
 import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
 import me.xiaopan.sketchsample.fragment.MyPhotosFragment;
-import me.xiaopan.sketchsample.fragment.MyVideoFragment;
+import me.xiaopan.sketchsample.fragment.MyVideosFragment;
 import me.xiaopan.sketchsample.fragment.OtherTestFragment;
 import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
@@ -463,7 +463,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         UNSPLASH("Unsplash", UnsplashPhotosFragment.class, false, false),
         SEARCH("GIF Search", SearchFragment.class, false, false),
         MY_PHOTOS("My Photos", MyPhotosFragment.class, false, false),
-        MY_VIDEOS("My Videos", MyVideoFragment.class, false, false),
+        MY_VIDEOS("My Videos", MyVideosFragment.class, false, false),
         APP_LIST("My Apps", AppListFragment.class, false, false),
         ABOUT("About Sketch", AboutFragment.class, false, false),
 

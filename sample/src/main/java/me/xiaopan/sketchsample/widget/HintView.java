@@ -422,10 +422,10 @@ public class HintView extends LinearLayout {
     /**
      * 空
      *
-     * @param type
+     * @param message
      */
-    public void empty(String type) {
-        hint(R.drawable.ic_error, String.format("没有%s", type), null, null, false);
+    public void empty(String message) {
+        hint(R.drawable.ic_error, message, null, null, false);
     }
 
     /**

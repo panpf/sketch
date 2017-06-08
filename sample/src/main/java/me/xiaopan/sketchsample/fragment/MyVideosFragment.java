@@ -41,14 +41,18 @@ import me.xiaopan.sketchsample.adapter.itemfactory.MyVideoItemFactory;
 import me.xiaopan.sketchsample.bean.VideoItem;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
+import me.xiaopan.sketchsample.widget.HintView;
 
 @BindContentView(R.layout.fragment_recycler)
-public class MyVideoFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.refresh_recyclerFragment)
     SwipeRefreshLayout refreshLayout;
 
     @BindView(R.id.recycler_recyclerFragment_content)
     RecyclerView recyclerView;
+
+    @BindView(R.id.hint_recyclerFragment)
+    HintView hintView;
 
     private AssemblyRecyclerAdapter adapter;
 
@@ -118,6 +122,13 @@ public class MyVideoFragment extends BaseFragment implements SwipeRefreshLayout.
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            hintView.hidden();
+        }
+
+        @Override
         protected List<VideoItem> doInBackground(Void[] params) {
             Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                     new String[]{
@@ -154,15 +165,20 @@ public class MyVideoFragment extends BaseFragment implements SwipeRefreshLayout.
                 return;
             }
 
+            if (imageUriList == null || imageUriList.isEmpty()) {
+                hintView.empty("No videos");
+                return;
+            }
+
             AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(imageUriList);
             adapter.addItemFactory(new MyVideoItemFactory());
+
             recyclerView.setAdapter(adapter);
+            MyVideosFragment.this.adapter = adapter;
+
             recyclerView.scheduleLayoutAnimation();
-            MyVideoFragment.this.adapter = adapter;
             refreshLayout.setRefreshing(false);
-            if (imageUriList != null && imageUriList.size() > 0) {
-                changeBackground(VideoThumbnailPreprocessor.createUri(imageUriList.get(0).path));
-            }
+            changeBackground(VideoThumbnailPreprocessor.createUri(imageUriList.get(0).path));
         }
     }
 }
