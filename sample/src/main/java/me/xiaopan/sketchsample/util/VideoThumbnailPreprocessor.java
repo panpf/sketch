@@ -103,7 +103,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
         int finalWidth = SketchUtils.ceil(videoWidth, inSampleSize);
         int finalHeight = SketchUtils.ceil(videoHeight, inSampleSize);
 
-        // 大于60分钟的一般是电影，电影一般都有片头需要跳过
+        // 大于30分钟的一般是电影或电视剧，这类视频开头一般都一样显示出来也没有意义，所以显示中间的部分
         long timeUs;
         long duration = metadata.getLong(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION);
         int second = (int) (duration / 1000);
@@ -116,7 +116,8 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
 
         Bitmap frameBitmap = mediaMetadataRetriever.getScaledFrameAtTime(timeUs, finalWidth, finalHeight);
 
-        if (frameBitmap == null) {
+        // 偶尔会有读取中间帧失败的情况，这时候换到三分之一处再读一次
+        if (frameBitmap == null && timeUs != -1) {
             timeUs = duration / 3 * 1000;
             frameBitmap = mediaMetadataRetriever.getScaledFrameAtTime(timeUs, finalWidth, finalHeight);
         }
