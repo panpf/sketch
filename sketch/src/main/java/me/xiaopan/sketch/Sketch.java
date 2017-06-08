@@ -51,11 +51,6 @@ public class Sketch {
     private Sketch(Context context) {
         SLog.i(String.format("Version %s %s(%d)", BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
         this.configuration = new Configuration(context);
-
-        Initializer initializer = SketchUtils.findInitializer(context);
-        if (initializer != null) {
-            initializer.onInitialize(context.getApplicationContext(), this, configuration);
-        }
     }
 
     /**
@@ -69,6 +64,11 @@ public class Sketch {
             synchronized (Sketch.class) {
                 if (instance == null) {
                     instance = new Sketch(context);
+                }
+
+                Initializer initializer = SketchUtils.findInitializer(context);
+                if (initializer != null) {
+                    initializer.onInitialize(context.getApplicationContext(), instance, instance.configuration);
                 }
             }
         }
