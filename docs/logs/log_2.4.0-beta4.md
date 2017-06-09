@@ -24,3 +24,5 @@
 
 ### Sample App
 * :sparkles: 增加我的视频列表，展示如何显示视频缩略图
+* :zap: 提升扫描本地apk的速度
+* :lipstick: 我的相册页面改为每行三个 
