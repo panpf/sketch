@@ -45,4 +45,17 @@ public class FileUtils {
 
         return builder.toString();
     }
+
+    public static String subSuffix(String fileNameOrPath) {
+        if (fileNameOrPath == null) {
+            return null;
+        }
+
+        int dotIndex = fileNameOrPath.lastIndexOf('.');
+        if (dotIndex == -1) {
+            return null;
+        }
+
+        return fileNameOrPath.substring(dotIndex);
+    }
 }

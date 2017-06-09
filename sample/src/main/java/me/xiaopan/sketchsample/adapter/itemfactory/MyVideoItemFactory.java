@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.adapter.itemfactory;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -13,7 +14,12 @@ import me.xiaopan.sketchsample.bean.VideoItem;
 import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
 import me.xiaopan.sketchsample.widget.SampleImageView;
 
-public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemFactory.AppItem> {
+public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemFactory.MyVideoItem> {
+    private MyVideoItemListener listener;
+
+    public MyVideoItemFactory(MyVideoItemListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public boolean isTarget(Object o) {
@@ -21,11 +27,15 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
     }
 
     @Override
-    public AppItem createAssemblyItem(ViewGroup viewGroup) {
-        return new AppItem(R.layout.list_item_my_video, viewGroup);
+    public MyVideoItem createAssemblyItem(ViewGroup viewGroup) {
+        return new MyVideoItem(R.layout.list_item_my_video, viewGroup);
     }
 
-    public class AppItem extends BindAssemblyRecyclerItem<VideoItem> {
+    public interface MyVideoItemListener {
+        void onClickVideo(int position, VideoItem videoItem);
+    }
+
+    public class MyVideoItem extends BindAssemblyRecyclerItem<VideoItem> {
         @BindView(R.id.image_myVideoItem_icon)
         SampleImageView iconImageView;
 
@@ -41,7 +51,7 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
         @BindView(R.id.text_myVideoItem_duration)
         TextView durationTextView;
 
-        public AppItem(int itemLayoutId, ViewGroup parent) {
+        public MyVideoItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
         }
 
@@ -49,6 +59,22 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
         protected void onConfigViews(Context context) {
             iconImageView.setOptions(ImageOptions.RECT);
             iconImageView.setPage(SampleImageView.Page.PHOTO_LIST);
+
+            getItemView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onClickVideo(getPosition(), getData());
+                    }
+                }
+            });
+
+            iconImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getItemView().performClick();
+                }
+            });
         }
 
         @Override

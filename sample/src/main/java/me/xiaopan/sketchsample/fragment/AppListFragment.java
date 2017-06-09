@@ -54,7 +54,7 @@ public class AppListFragment extends BaseFragment {
         if (fragmentAdapter == null) {
             Fragment[] fragments = new Fragment[2];
             fragments[0] = new InstalledAppFragment();
-            fragments[1] = new AppPackageFragment();
+            fragments[1] = new AppPackageListFragment();
             fragmentAdapter = new FragmentArrayPagerAdapter(getChildFragmentManager(), fragments);
         }
         viewPager.setAdapter(fragmentAdapter);

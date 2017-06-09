@@ -44,6 +44,7 @@ import me.xiaopan.sketchsample.adapter.itemfactory.MyPhotoItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.widget.HintView;
 
 /**
  * 本地相册页面
@@ -55,6 +56,9 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
 
     @BindView(R.id.recycler_recyclerFragment_content)
     RecyclerView recyclerView;
+
+    @BindView(R.id.hint_recyclerFragment)
+    HintView hintView;
 
     private AssemblyRecyclerAdapter adapter;
 
@@ -74,9 +78,9 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
         super.onViewCreated(view, savedInstanceState);
 
         refreshLayout.setOnRefreshListener(this);
-        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        recyclerView.addOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         int padding = SketchUtils.dp2px(getActivity(), 2);
         recyclerView.setPadding(padding, padding, padding, padding);
         recyclerView.setClipToPadding(false);
@@ -104,8 +108,9 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
             optionsKey = null;
         }
 
+        //noinspection unchecked
         List<String> urlList = adapter.getDataList();
-        ArrayList<Image> imageArrayList = new ArrayList<Image>(urlList.size());
+        ArrayList<Image> imageArrayList = new ArrayList<>(urlList.size());
         for (String url : urlList) {
             imageArrayList.add(new Image(url, url));
         }
@@ -142,15 +147,22 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            hintView.hidden();
+        }
+
+        @Override
         protected List<String> doInBackground(Void[] params) {
             Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     new String[]{
                             MediaStore.Images.Media.DATA,
-                            MediaStore.Images.Media.DATE_MODIFIED
+                            MediaStore.Images.Media.DATE_TAKEN
                     },
                     null,
                     null,
-                    MediaStore.Images.Media.DATE_MODIFIED + " DESC");
+                    MediaStore.Images.Media.DATE_TAKEN + " DESC");
             if (cursor == null) {
                 return null;
             }
@@ -158,7 +170,7 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
             ImageOrientationCorrectTestFileGenerator generator = ImageOrientationCorrectTestFileGenerator.getInstance(context);
             String[] testFilePaths = generator.getFilePaths();
 
-            List<String> imagePathList = new ArrayList<String>(cursor.getCount() + AssetImage.ALL.length + testFilePaths.length);
+            List<String> imagePathList = new ArrayList<>(cursor.getCount() + AssetImage.ALL.length + testFilePaths.length);
             Collections.addAll(imagePathList, AssetImage.ALL);
             Collections.addAll(imagePathList, testFilePaths);
             while (cursor.moveToNext()) {
@@ -174,15 +186,23 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
                 return;
             }
 
+            refreshLayout.setRefreshing(false);
+
+            if (imageUriList == null || imageUriList.isEmpty()) {
+                hintView.empty("No videos");
+                recyclerView.setAdapter(null);
+                return;
+            }
+
             AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(imageUriList);
             adapter.addItemFactory(new MyPhotoItemFactory(MyPhotosFragment.this));
+
             recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
+
             MyPhotosFragment.this.adapter = adapter;
-            refreshLayout.setRefreshing(false);
-            if (imageUriList != null && imageUriList.size() > 0) {
-                changeBackground(imageUriList.get(0));
-            }
+
+            changeBackground(imageUriList.get(0));
         }
     }
 }

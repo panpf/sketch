@@ -9,6 +9,7 @@ import java.util.Date;
 public class VideoItem {
     public String title;
     public String path;
+    public String mimeType;
     public long duration;
     public long date;
     public long size;

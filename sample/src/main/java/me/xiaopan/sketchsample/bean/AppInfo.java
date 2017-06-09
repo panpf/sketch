@@ -1,16 +1,20 @@
 package me.xiaopan.sketchsample.bean;
 
+import me.xiaopan.sketchsample.util.FileScanner;
+
 /**
  * App信息
  */
-public class AppInfo {
+public class AppInfo implements FileScanner.FileItem{
     private String name;
+    private String packageName;
     private String id;
     private String versionName;
-    private String appSize;
+    private String formattedAppSize;
     private String sortName;
     private String apkFilePath;
     private int versionCode;
+    private long appSize;
     private boolean tempInstalled;
 
     public AppInfo(boolean tempInstalled) {
@@ -23,6 +27,14 @@ public class AppInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public String getId() {
@@ -41,12 +53,12 @@ public class AppInfo {
         this.versionName = versionName;
     }
 
-    public String getAppSize() {
-        return appSize;
+    public String getFormattedAppSize() {
+        return formattedAppSize;
     }
 
-    public void setAppSize(String appSize) {
-        this.appSize = appSize;
+    public void setFormattedAppSize(String formattedAppSize) {
+        this.formattedAppSize = formattedAppSize;
     }
 
     public String getSortName() {
@@ -75,5 +87,23 @@ public class AppInfo {
 
     public boolean isTempInstalled() {
         return tempInstalled;
+    }
+
+    public long getAppSize() {
+        return appSize;
+    }
+
+    public void setAppSize(long appSize) {
+        this.appSize = appSize;
+    }
+
+    @Override
+    public String getFilePath() {
+        return apkFilePath;
+    }
+
+    @Override
+    public long getFileLength() {
+        return appSize;
     }
 }

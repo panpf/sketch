@@ -150,7 +150,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
 
         refreshLayout.setOnRefreshListener(this);
 
-        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        recyclerView.addOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         int padding = SketchUtils.dp2px(getActivity(), 2);
         recyclerView.setPadding(padding, padding, padding, padding);
@@ -209,8 +209,9 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
 
     @Override
     public void onItemClick(int position, BaiduImage image, String loadingImageOptionsInfo) {
+        //noinspection unchecked
         List<BaiduImage> imageList = adapter.getDataList();
-        ArrayList<Image> urlList = new ArrayList<Image>();
+        ArrayList<Image> urlList = new ArrayList<>();
         for (BaiduImage imageItem : imageList) {
             urlList.add(new Image(imageItem.getSourceUrl(), imageItem.getSourceUrl()));
         }
@@ -234,7 +235,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
         private int pageIndex;
 
         LoadDataCallback(SearchFragment fragment, int pageIndex) {
-            this.reference = new WeakReference<SearchFragment>(fragment);
+            this.reference = new WeakReference<>(fragment);
             this.pageIndex = pageIndex;
 
             if (pageIndex == 1) {
@@ -261,6 +262,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
         }
 
         private void filterEmptyImage(Response<BaiduImageSearchResult> response) {
+            //noinspection ConstantConditions
             List<BaiduImage> imageList = response.body().getImageList();
             if (imageList != null) {
                 Iterator<BaiduImage> imageIterator = imageList.iterator();
@@ -291,6 +293,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
         }
 
         private void create(SearchFragment fragment, Response<BaiduImageSearchResult> response) {
+            //noinspection ConstantConditions
             List<BaiduImage> images = response.body().getImageList();
             if (images == null || images.size() == 0) {
                 fragment.hintView.empty("No photos");
@@ -308,6 +311,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
         }
 
         private void loadMore(SearchFragment fragment, Response<BaiduImageSearchResult> response) {
+            //noinspection ConstantConditions
             List<BaiduImage> images = response.body().getImageList();
             if (images == null || images.size() == 0) {
                 fragment.adapter.setLoadMoreEnd(true);

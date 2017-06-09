@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.adapter.itemfactory;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,6 +17,12 @@ import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.AppItem> {
+    private AppItemListener listener;
+
+    public AppItemFactory(AppItemListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public boolean isTarget(Object o) {
         return o instanceof AppInfo;
@@ -24,6 +31,10 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
     @Override
     public AppItem createAssemblyItem(ViewGroup viewGroup) {
         return new AppItem(R.layout.list_item_app, viewGroup);
+    }
+
+    public interface AppItemListener {
+        void onClickApp(int position, AppInfo appInfo);
     }
 
     public class AppItem extends BindAssemblyRecyclerItem<AppInfo> {
@@ -49,6 +60,15 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
                 iconImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
                 iconImageView.setImageShapeCornerRadius(roundRectImageShaper.getOuterRadii());
             }
+
+            getItemView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onClickApp(getPosition(), getData());
+                    }
+                }
+            });
         }
 
         @Override
@@ -59,7 +79,7 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
                 iconImageView.displayImage(appInfo.getApkFilePath());
             }
             nameTextView.setText(appInfo.getName());
-            infoTextView.setText(String.format("v%s  |  %s", appInfo.getVersionName(), appInfo.getAppSize()));
+            infoTextView.setText(String.format("v%s  |  %s", appInfo.getVersionName(), appInfo.getFormattedAppSize()));
         }
     }
 }

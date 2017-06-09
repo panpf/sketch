@@ -18,7 +18,9 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,7 +28,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +48,7 @@ import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
 import me.xiaopan.sketchsample.widget.HintView;
 
 @BindContentView(R.layout.fragment_recycler)
-public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, MyVideoItemFactory.MyVideoItemListener {
     @BindView(R.id.refresh_recyclerFragment)
     SwipeRefreshLayout refreshLayout;
 
@@ -72,7 +76,7 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
         super.onViewCreated(view, savedInstanceState);
 
         refreshLayout.setOnRefreshListener(this);
-        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        recyclerView.addOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         int padding = SketchUtils.dp2px(getActivity(), 2);
@@ -114,6 +118,22 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
         }
     }
 
+    @Override
+    public void onClickVideo(int position, VideoItem videoItem) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.fromFile(new File(videoItem.path)));
+        intent.setType(videoItem.mimeType);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast.makeText(getContext(), "Not found can play video app", Toast.LENGTH_LONG).show();
+        }
+    }
+
     private class LoadVideoListTask extends AsyncTask<Void, Integer, List<VideoItem>> {
         private Context context;
 
@@ -136,23 +156,25 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
                             MediaStore.Video.Media.DATA,
                             MediaStore.Video.Media.SIZE,
                             MediaStore.Video.Media.DURATION,
-                            MediaStore.Video.Media.DATE_ADDED,
+                            MediaStore.Video.Media.DATE_TAKEN,
+                            MediaStore.Video.Media.MIME_TYPE,
                     },
                     null,
                     null,
-                    MediaStore.Video.Media.DATE_ADDED + " DESC");
+                    MediaStore.Video.Media.DATE_TAKEN + " DESC");
             if (cursor == null) {
                 return null;
             }
 
-            List<VideoItem> imagePathList = new ArrayList<VideoItem>(cursor.getCount());
+            List<VideoItem> imagePathList = new ArrayList<>(cursor.getCount());
             while (cursor.moveToNext()) {
                 VideoItem video = new VideoItem();
                 video.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
                 video.path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                video.mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE));
                 video.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
                 video.duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
-                video.date = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED));
+                video.date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_TAKEN));
                 imagePathList.add(video);
             }
             cursor.close();
@@ -165,19 +187,22 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
                 return;
             }
 
+            refreshLayout.setRefreshing(false);
+
             if (imageUriList == null || imageUriList.isEmpty()) {
                 hintView.empty("No videos");
+                recyclerView.setAdapter(null);
                 return;
             }
 
             AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(imageUriList);
-            adapter.addItemFactory(new MyVideoItemFactory());
+            adapter.addItemFactory(new MyVideoItemFactory(MyVideosFragment.this));
 
             recyclerView.setAdapter(adapter);
+            recyclerView.scheduleLayoutAnimation();
+
             MyVideosFragment.this.adapter = adapter;
 
-            recyclerView.scheduleLayoutAnimation();
-            refreshLayout.setRefreshing(false);
             changeBackground(VideoThumbnailPreprocessor.createUri(imageUriList.get(0).path));
         }
     }
