@@ -50,23 +50,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
-
-        x86Debug {
-            signingConfig jksFile != null && jksFile.exists() ? signingConfigs.release : signingConfig
-            ndk {
-                abiFilters "x86"
-            }
-        }
-
-        x86Release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-            ndk {
-                abiFilters "x86"
-            }
-        }
     }
 
     productFlavors {
@@ -74,9 +57,21 @@ android {
 
         }
 
+        normalX86 {
+            ndk {
+                abiFilters "x86"
+            }
+        }
+
         // 为了测试没有导入sketch-gif时是否可以正常运行
         nogiflib {
+        }
 
+        // 为了测试没有导入sketch-gif时是否可以正常运行
+        nogiflibX86 {
+            ndk {
+                abiFilters "x86"
+            }
         }
     }
 
@@ -85,7 +80,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     aaptOptions {
