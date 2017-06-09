@@ -140,7 +140,7 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
                     },
                     null,
                     null,
-                    MediaStore.Images.Media.DATE_ADDED + " DESC");
+                    MediaStore.Video.Media.DATE_ADDED + " DESC");
             if (cursor == null) {
                 return null;
             }
