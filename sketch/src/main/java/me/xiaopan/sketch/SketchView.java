@@ -88,17 +88,6 @@ public interface SketchView {
     DisplayRequest displayContentImage(Uri uri);
 
     /**
-     * 显示URI指向的图片
-     *
-     * @param uri 图片URI
-     * @see #displayContentImage(Uri)
-     * @deprecated Please use the {@link #displayContentImage(Uri)} method
-     */
-    @SuppressWarnings("unused")
-    @Deprecated
-    DisplayRequest displayURIImage(Uri uri);
-
-    /**
      * 显示已安装APP的图标
      *
      * @param packageName APP包名

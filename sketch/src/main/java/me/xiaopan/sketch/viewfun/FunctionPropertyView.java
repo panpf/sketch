@@ -64,16 +64,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 开启暂停下载的时候点击强制显示图片功能
-     *
-     * @deprecated Please use {@link #setClickRetryOnPauseDownloadEnabled(boolean)}
-     */
-    @Deprecated
-    public void setClickRetryOnPauseDownload(boolean enabled) {
-        setClickRetryOnPauseDownloadEnabled(enabled);
-    }
-
-    /**
      * 是否开启了显示失败时点击重试功能
      */
     @SuppressWarnings("unused")
@@ -90,16 +80,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         }
         getFunctions().clickRetryFunction.setClickRetryOnDisplayErrorEnabled(enabled);
         updateClickable();
-    }
-
-    /**
-     * 开启显示失败时点击重试功能
-     *
-     * @deprecated Please use {@link #setClickRetryOnDisplayErrorEnabled(boolean)}
-     */
-    @Deprecated
-    public void setClickRetryOnError(boolean enabled) {
-        setClickRetryOnDisplayErrorEnabled(enabled);
     }
 
     /**
@@ -136,29 +116,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
 
     /**
      * 是否开启了显示下载进度功能
-     *
-     * @deprecated Please use {@link #isShowDownloadProgressEnabled()}
-     */
-    public boolean isShowDownloadProgress() {
-        return isShowDownloadProgressEnabled();
-    }
-
-    /**
-     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
-     *
-     * @deprecated Please use {@link #setShowDownloadProgressEnabled(boolean)}
-     */
-    @Deprecated
-    public void setShowDownloadProgress(boolean enabled) {
-        if (enabled) {
-            getFunctions().showProgressFunction = new ShowProgressFunction(this, getFunctions().imageShapeFunction);
-        } else {
-            getFunctions().showProgressFunction = null;
-        }
-    }
-
-    /**
-     * 是否开启了显示下载进度功能
      */
     @SuppressWarnings("unused")
     public boolean isShowDownloadProgressEnabled() {
@@ -184,25 +141,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         if (getFunctions().showProgressFunction != null) {
             getFunctions().showProgressFunction.setDownloadProgressColor(downloadProgressColor);
         }
-    }
-
-    /**
-     * 是否开启了显示按下状态功能
-     *
-     * @deprecated Please use {@link #isShowPressedStatusEnabled()}
-     */
-    public boolean isShowPressedStatus() {
-        return isShowPressedStatusEnabled();
-    }
-
-    /**
-     * 开启显示按下状态功能，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
-     *
-     * @deprecated Please use {@link #setShowPressedStatusEnabled(boolean)}
-     */
-    @Deprecated
-    public void setShowPressedStatus(boolean showPressedStatus) {
-        setShowPressedStatusEnabled(showPressedStatus);
     }
 
     /**
@@ -236,27 +174,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
 
     /**
      * 是否开启了显示图片来源功能
-     *
-     * @deprecated Please use {@link #isShowImageFromEnabled()}
-     */
-    @Deprecated
-    public boolean isShowImageFrom() {
-        return isShowImageFromEnabled();
-    }
-
-    /**
-     * 开启显示图片来源功能，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，
-     * 黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存缓存加载的，紫色代表是从内存加载的
-     *
-     * @deprecated Please use {@link #setShowImageFromEnabled(boolean)}
-     */
-    @Deprecated
-    public void setShowImageFrom(boolean showImageFrom) {
-        setShowImageFromEnabled(showImageFrom);
-    }
-
-    /**
-     * 是否开启了显示图片来源功能
      */
     @SuppressWarnings("unused")
     public boolean isShowImageFromEnabled() {
@@ -280,36 +197,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         if (oldShowImageFromFunction != getFunctions().showImageFromFunction) {
             invalidate();
         }
-    }
-
-    /**
-     * 是否开启了显示GIF标识功能
-     *
-     * @deprecated Please use {@link #isShowGifFlagEnabled()}
-     */
-    @Deprecated
-    public boolean isShowGifFlag() {
-        return isShowGifFlagEnabled();
-    }
-
-    /**
-     * 开启显示GIF标识功能
-     *
-     * @deprecated Please use {@link #setShowGifFlagEnabled(int)}
-     */
-    @Deprecated
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        setShowGifFlagEnabled(gifFlagDrawableResId);
-    }
-
-    /**
-     * 开启显示GIF标识功能
-     *
-     * @deprecated Please use {@link #setShowGifFlagEnabled(Drawable)}
-     */
-    @Deprecated
-    public void setShowGifFlag(Drawable gifFlagDrawable) {
-        setShowGifFlagEnabled(gifFlagDrawable);
     }
 
     /**
@@ -411,26 +298,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
 
     /**
      * 是否开启了手势缩放功能
-     *
-     * @deprecated Please use {@link #isZoomEnabled()}
-     */
-    @Deprecated
-    public boolean isSupportZoom() {
-        return isZoomEnabled();
-    }
-
-    /**
-     * 开启手势缩放功能
-     *
-     * @deprecated Please use {@link #setZoomEnabled(boolean)}
-     */
-    @Deprecated
-    public void setSupportZoom(boolean supportZoom) {
-        setZoomEnabled(supportZoom);
-    }
-
-    /**
-     * 是否开启了手势缩放功能
      */
     public boolean isZoomEnabled() {
         return getFunctions().zoomFunction != null;
@@ -471,26 +338,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     public ImageZoomer getImageZoomer() {
         return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getImageZoomer() : null;
-    }
-
-    /**
-     * 是否开启了分块显示超大图功能
-     *
-     * @deprecated Please use {@link #isBlockDisplayLargeImageEnabled()}
-     */
-    @Deprecated
-    public boolean isSupportLargeImage() {
-        return isBlockDisplayLargeImageEnabled();
-    }
-
-    /**
-     * 开启分块显示超大图功能
-     *
-     * @deprecated Please use {@link #setBlockDisplayLargeImageEnabled(boolean)}
-     */
-    @Deprecated
-    public void setSupportLargeImage(boolean supportLargeImage) {
-        setBlockDisplayLargeImageEnabled(supportLargeImage);
     }
 
     @Override

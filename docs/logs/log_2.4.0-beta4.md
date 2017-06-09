@@ -1,4 +1,4 @@
-:fire::fire::fire: 如果使用了根据枚举存储和获取Options的功能就不能无痛升级 :fire::fire::fire:
+:fire::fire::fire: 如果使用了根据枚举存储和获取Options的功能或已删除的一些过时方法就不能无痛升级 :fire::fire::fire:
 
 ### Options
 :fire: 整个移除使用枚举存储和获取Options的功能，涉及以下方法
@@ -21,6 +21,29 @@
 ### ImageZoomer
 * :art: 现在如果ImageZoomer已经消费了触摸事件就不再往下传递了
 * :art: 现在ImageZoomer可以回调ImageView的OnClickListener和OnLongClickListener，但OnViewTapListener和OnViewLongPressListener的优先级更高
+
+
+### Other
+* :fire: 删除所有过时的方法
+    * SketchImageView.displayURIImage(Uri)
+    * SketchImageView.setClickRetryOnError(boolean)
+    * SketchImageView.setClickRetryOnPauseDownload(boolean)
+    * SketchImageView.isShowDownloadProgress()
+    * SketchImageView.setShowDownloadProgress(boolean)
+    * SketchImageView.isShowPressedStatus()
+    * SketchImageView.setShowPressedStatus(boolean)
+    * SketchImageView.isShowImageFrom()
+    * SketchImageView.setShowImageFrom(boolean)
+    * SketchImageView.isShowGifFlag()
+    * SketchImageView.setShowGifFlag(Drawable)
+    * SketchImageView.setShowGifFlag(int)
+    * SketchImageView.isSupportZoom()
+    * SketchImageView.setSupportZoom(boolean)
+    * SketchImageView.isSupportLargeImage()
+    * SketchImageView.setSupportLargeImage(boolean)
+    * Sketch.displayFromURI(Uri)
+    * ImageSizeCalculator.calculateImageResize(SketchView)
+    * ImageSizeCalculator.compareMaxSize(MaxSize, MaxSize)
 
 ### Sample App
 * :sparkles: 增加我的视频列表，展示如何显示视频缩略图

@@ -25,10 +25,9 @@ import android.widget.ImageView;
 import java.lang.reflect.Field;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -161,24 +160,6 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 计算Resize
-     *
-     * @param sketchView 你需要根据ImageView的宽高来计算
-     * @return Resize
-     */
-    @Deprecated
-    public Resize calculateImageResize(SketchView sketchView) {
-        int width = getWidth(sketchView, false, false, true);
-        int height = getHeight(sketchView, false, false, true);
-
-        if (width <= 0 || height <= 0) {
-            return null;
-        }
-
-        return new Resize(width, height, sketchView.getScaleType());
-    }
-
-    /**
      * 计算FixedSize
      *
      * @param sketchView 你需要根据ImageView的宽高来计算
@@ -202,22 +183,6 @@ public class ImageSizeCalculator implements Identifier {
             fixedHeight /= finalScale;
         }
         return new FixedSize(fixedWidth, fixedHeight);
-    }
-
-    /**
-     * 比较两个maxSize的大小，在使用options()方法批量设置属性的时候会使用此方法比较Options的maxSize和已有的maxSize，如果前者小于后者就会使用前者代替后者
-     *
-     * @param maxSize1 maxSize1
-     * @param maxSize2 maxSize2
-     * @return 等于0：两者相等；小于0：maxSize1小于maxSize2；大于0：maxSize1大于maxSize2
-     */
-    @Deprecated
-    public int compareMaxSize(MaxSize maxSize1, MaxSize maxSize2) {
-        if (maxSize1 == null || maxSize2 == null) {
-            return 0;
-        }
-
-        return (maxSize1.getWidth() * maxSize1.getHeight()) - (maxSize2.getWidth() - maxSize2.getHeight());
     }
 
     /**

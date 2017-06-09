@@ -258,20 +258,6 @@ public class Sketch {
     }
 
     /**
-     * 显示URI指向的图片
-     *
-     * @param uri        图片Uri，会通过ContentResolver().openInputStream(Uri)方法来读取图片
-     * @param sketchView 默认实现是SketchImageView
-     * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
-     * @see #displayFromContent(Uri, SketchView)}
-     * @deprecated Please use the {@link #displayFromContent(Uri, SketchView)} method
-     */
-    @Deprecated
-    public DisplayHelper displayFromURI(Uri uri, SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, sketchView);
-    }
-
-    /**
      * 显示已安装APP的图标
      *
      * @param packageName 已安装APP的包名

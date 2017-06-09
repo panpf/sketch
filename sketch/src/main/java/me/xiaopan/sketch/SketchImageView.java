@@ -63,12 +63,6 @@ public class SketchImageView extends FunctionPropertyView {
     }
 
     @Override
-    @Deprecated
-    public DisplayRequest displayURIImage(Uri uri) {
-        return Sketch.with(getContext()).displayFromURI(uri, this).commit();
-    }
-
-    @Override
     public DisplayRequest displayInstalledAppIcon(String packageName, int versionCode) {
         return Sketch.with(getContext()).displayInstalledAppIcon(packageName, versionCode, this).commit();
     }

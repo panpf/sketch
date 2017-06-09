@@ -221,7 +221,6 @@ public class SketchUtils {
         return builder.toString();
     }
 
-    @SuppressWarnings("unused")
     @Deprecated
     public static void mapping(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight, Rect rect) {
         float widthScale = (float) sourceWidth / targetWidth;
