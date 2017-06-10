@@ -1,3 +1,5 @@
+
+
 :fire::fire::fire: 如果使用了根据枚举存储和获取Options的功能或已删除的一些过时方法就不能无痛升级 :fire::fire::fire:
 
 ### Options
@@ -21,7 +23,6 @@
 ### ImageZoomer
 * :art: 现在如果ImageZoomer已经消费了触摸事件就不再往下传递了
 * :art: 现在ImageZoomer可以回调ImageView的OnClickListener和OnLongClickListener，但OnViewTapListener和OnViewLongPressListener的优先级更高
-
 
 ### Other
 * :fire: 删除所有过时的方法
