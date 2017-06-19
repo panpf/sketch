@@ -24,6 +24,7 @@
         \n14. 自动选择合适的Bitmap.Config
         \n15. 特殊文件预处理</string>
     <string name="text_version">v%s</string>
+    <string name="text_types">%1$s - %2$s</string>
     <string name="text_project_url">http://github.com/xiaopansky/sketch</string>
     <string name="text_powered">
         Powered by：
