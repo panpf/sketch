@@ -72,10 +72,11 @@ public class ProcessedImageCache implements Identifier {
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
-        boolean exist = diskCache.exist(processedImageDiskCacheKey);
-
-        editLock.unlock();
-        return exist;
+        try {
+            return diskCache.exist(processedImageDiskCacheKey);
+        } finally {
+            editLock.unlock();
+        }
     }
 
     /**
@@ -85,15 +86,14 @@ public class ProcessedImageCache implements Identifier {
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
-        DiskCache.Entry diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
-
-        editLock.unlock();
-
-        if (diskCacheEntry != null) {
-            return new ProcessedCacheDataSource(diskCacheEntry);
+        DiskCache.Entry diskCacheEntry;
+        try {
+            diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
+        } finally {
+            editLock.unlock();
         }
 
-        return null;
+        return diskCacheEntry != null ? new ProcessedCacheDataSource(diskCacheEntry) : null;
     }
 
     /**
@@ -103,37 +103,40 @@ public class ProcessedImageCache implements Identifier {
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
-        DiskCache.Entry diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
+        try {
+            DiskCache.Entry diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
 
-        if (diskCacheEntry != null) {
-            diskCacheEntry.delete();
-        }
-
-        DiskCache.Editor diskCacheEditor = diskCache.edit(processedImageDiskCacheKey);
-        if (diskCacheEditor != null) {
-            BufferedOutputStream outputStream = null;
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-                bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.getConfig()), 100, outputStream);
-                diskCacheEditor.commit();
-            } catch (DiskLruCache.EditorChangedException e) {
-                e.printStackTrace();
-                diskCacheEditor.abort();
-            } catch (IOException e) {
-                e.printStackTrace();
-                diskCacheEditor.abort();
-            } catch (DiskLruCache.ClosedException e) {
-                e.printStackTrace();
-                diskCacheEditor.abort();
-            } catch (DiskLruCache.FileNotExistException e) {
-                e.printStackTrace();
-                diskCacheEditor.abort();
-            } finally {
-                SketchUtils.close(outputStream);
+            if (diskCacheEntry != null) {
+                diskCacheEntry.delete();
             }
-        }
 
-        editLock.unlock();
+            DiskCache.Editor diskCacheEditor = diskCache.edit(processedImageDiskCacheKey);
+            if (diskCacheEditor != null) {
+                BufferedOutputStream outputStream = null;
+                //noinspection TryWithIdenticalCatches
+                try {
+                    outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+                    bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.getConfig()), 100, outputStream);
+                    diskCacheEditor.commit();
+                } catch (DiskLruCache.EditorChangedException e) {
+                    e.printStackTrace();
+                    diskCacheEditor.abort();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    diskCacheEditor.abort();
+                } catch (DiskLruCache.ClosedException e) {
+                    e.printStackTrace();
+                    diskCacheEditor.abort();
+                } catch (DiskLruCache.FileNotExistException e) {
+                    e.printStackTrace();
+                    diskCacheEditor.abort();
+                } finally {
+                    SketchUtils.close(outputStream);
+                }
+            }
+        } finally {
+            editLock.unlock();
+        }
     }
 
     @Override

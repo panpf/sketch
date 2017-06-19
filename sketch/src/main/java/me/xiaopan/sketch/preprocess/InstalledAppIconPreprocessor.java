@@ -68,14 +68,17 @@ public class InstalledAppIconPreprocessor implements Preprocessor {
         diskCacheEditLock.lock();
 
         PreProcessResult result;
-        cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
-        if (cacheEntry != null) {
-            result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
-        } else {
-            result = readInstalledAppIcon(context, uriInfo, diskCache);
+        try {
+            cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            if (cacheEntry != null) {
+                result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+            } else {
+                result = readInstalledAppIcon(context, uriInfo, diskCache);
+            }
+        } finally {
+            diskCacheEditLock.unlock();
         }
 
-        diskCacheEditLock.unlock();
         return result;
     }
 

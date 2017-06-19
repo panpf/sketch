@@ -251,11 +251,6 @@ public abstract class BaseRequest {
         START_DOWNLOAD("startDownload"),
 
         /**
-         * 获取磁盘缓存编辑锁
-         */
-        GET_DISK_CACHE_EDIT_LOCK("getDiskCacheEditLock"),
-
-        /**
          * 检查磁盘缓存
          */
         CHECK_DISK_CACHE("checkDiskCache"),

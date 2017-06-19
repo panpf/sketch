@@ -146,6 +146,9 @@ public class DownloadRequest extends AsyncRequest {
         downloadResult = getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
+            if (SLogType.REQUEST.isEnabled()) {
+                printLogW("canceled", "runDownload", "download after");
+            }
             return;
         }
 

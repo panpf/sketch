@@ -54,40 +54,34 @@ public class ImageDownloader implements Identifier {
         // 使用磁盘缓存就必须要上锁
         ReentrantLock diskCacheEditLock = null;
         if (!request.getOptions().isCacheInDiskDisabled()) {
-            request.setStatus(BaseRequest.Status.GET_DISK_CACHE_EDIT_LOCK);
-
             diskCacheEditLock = diskCache.getEditLock(request.getUriInfo().getDiskCacheKey());
-            if (diskCacheEditLock != null) {
-                diskCacheEditLock.lock();
-            }
+        }
+        if (diskCacheEditLock != null) {
+            diskCacheEditLock.lock();
+        }
 
-            if (request.isCanceled()) {
+        DownloadResult justDownloadResult;
+        try {
+            if (diskCacheEditLock != null && request.isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
                     request.printLogW("canceled", "runDownload", "get disk cache edit lock after");
                 }
                 return null;
             }
 
-            // 检查磁盘缓存
-            request.setStatus(BaseRequest.Status.CHECK_DISK_CACHE);
-            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
-            if (diskCacheEntry != null) {
-                return new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
+            if (diskCacheEditLock != null) {
+                request.setStatus(BaseRequest.Status.CHECK_DISK_CACHE);
+                DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
+                if (diskCacheEntry != null) {
+                    return new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
+                }
             }
-        }
 
-        DownloadResult justDownloadResult = loopRetryDownload(request, diskCache, diskCacheKey);
-
-        // 解锁
-        if (diskCacheEditLock != null) {
-            diskCacheEditLock.unlock();
-        }
-
-        if (request.isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogW("canceled", "runDownload", "download after");
+            justDownloadResult = loopRetryDownload(request, diskCache, diskCacheKey);
+        } finally {
+            if (diskCacheEditLock != null) {
+                diskCacheEditLock.unlock();
             }
-            return null;
         }
 
         return justDownloadResult;
