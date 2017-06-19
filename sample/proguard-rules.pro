@@ -57,3 +57,7 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 ##---------------End: Retrofit
+
+##---------------Begain: FFmpegMediaMetadataRetriever
+-keep public class wseemann.media.**{*;}
+##---------------End: FFmpegMediaMetadataRetriever

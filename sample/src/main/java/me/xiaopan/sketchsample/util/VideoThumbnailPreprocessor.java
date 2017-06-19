@@ -73,20 +73,23 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
         diskCacheEditLock.lock();
 
         PreProcessResult result;
-        cacheEntry = diskCache.get(diskCacheKey);
-        if (cacheEntry != null) {
-            result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
-        } else {
-            FFmpegMediaMetadataRetriever mediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
-            mediaMetadataRetriever.setDataSource(path);
-            try {
-                result = readVideoThumbnail(context, uriInfo, diskCache, diskCacheKey, mediaMetadataRetriever);
-            } finally {
-                mediaMetadataRetriever.release();
+        try {
+            cacheEntry = diskCache.get(diskCacheKey);
+            if (cacheEntry != null) {
+                result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+            } else {
+                FFmpegMediaMetadataRetriever mediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
+                mediaMetadataRetriever.setDataSource(path);
+                try {
+                    result = readVideoThumbnail(context, uriInfo, diskCache, diskCacheKey, mediaMetadataRetriever);
+                } finally {
+                    mediaMetadataRetriever.release();
+                }
             }
+        } finally {
+            diskCacheEditLock.unlock();
         }
 
-        diskCacheEditLock.unlock();
         return result;
     }
 
