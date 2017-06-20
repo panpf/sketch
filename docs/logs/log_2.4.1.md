@@ -8,3 +8,5 @@
 Sample APP
 * :bug: 修复release版本混淆后找不到FFmpegMediaMetadataRetriever类的bug
 * :bug: 修复由于VideoThumbnailPreprocessor在遇到异常后没有释放缓存编辑锁，导致阻塞了所有的本地解码线程的bug
+
+如果你使用了demo中的 [VideoThumbnailPreprocessor.java](../../sample/src/main/java/me/xiaopan/sketchsample/util/VideoThumbnailPreprocessor.java)  那么强烈建议你更新一下 VideoThumbnailPreprocessor 的源码
