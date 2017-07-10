@@ -134,7 +134,7 @@ sketchImageView.displayImage("/sdcard/google_play.apk");
 sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 ```
 
-### 更多功能
+#### 更多功能
 
 基础功能：
 >* [SketchImageView 详细使用说明](docs/wiki/sketch_image_view.md)
