@@ -1,8 +1,8 @@
 修复BUG：
->* [#4](https://github.com/xiaopansky/sketch/issues/4) 修复由于在内存中缓存了Drawable，导致同一个缓存Drawable在两个不同的地方使用时bounds被改变从而图片大小显示异常，常见的表现为点击图片进入图片详情页后再回来发现图片变小了
->* [#11](https://github.com/xiaopansky/sketch/issues/11) 修复最后一条磁盘缓存无效的BUG，这是DiskLruCache的BUG，因为在commit的时候没有持久化操作记录导致的
->* [#13](https://github.com/xiaopansky/sketch/issues/13) 修复SketchBitmapDrawable由于没有设置TargetDensity而始终以160的默认像素密度来缩小图片最终导致通过getIntrinsicWidth()得到的尺寸始终比Bitmap实际尺寸小的BUG
->* [#14](https://github.com/xiaopansky/sketch/issues/14) ImageHolder直接缓存了Drawable导致同一个Drawable在多个FIX_XY的ImageView上显示时大小异常的BUG
+>* [#4](https://github.com/panpf/sketch/issues/4) 修复由于在内存中缓存了Drawable，导致同一个缓存Drawable在两个不同的地方使用时bounds被改变从而图片大小显示异常，常见的表现为点击图片进入图片详情页后再回来发现图片变小了
+>* [#11](https://github.com/panpf/sketch/issues/11) 修复最后一条磁盘缓存无效的BUG，这是DiskLruCache的BUG，因为在commit的时候没有持久化操作记录导致的
+>* [#13](https://github.com/panpf/sketch/issues/13) 修复SketchBitmapDrawable由于没有设置TargetDensity而始终以160的默认像素密度来缩小图片最终导致通过getIntrinsicWidth()得到的尺寸始终比Bitmap实际尺寸小的BUG
+>* [#14](https://github.com/panpf/sketch/issues/14) ImageHolder直接缓存了Drawable导致同一个Drawable在多个FIX_XY的ImageView上显示时大小异常的BUG
 
 新功能：
 >* ``Decode``. [缩略图模式](../wiki/thumbnail_mode.md)，通过缩略图模式你可以在列表中更加清晰的显示那些宽高相差特别大的图片

@@ -10,7 +10,7 @@
 * 自定义 ImagePreprocessor
 
 ### :sparkles: 自动纠正图片方向
-* 新增纠正图片方向功能 [了解更多](https://github.com/xiaopansky/sketch/blob/master/docs/wiki/correct_image_orientation.md)
+* 新增纠正图片方向功能 [了解更多](https://github.com/panpf/sketch/blob/master/docs/wiki/correct_image_orientation.md)
 * 功能默认开启，可通过 `correctImageOrientationDisabled` 属性关闭
 * 一般的图片支持自动纠正方向，分块显示超大图也支持
 * 可通过 SketchDrawable.getExifOrientation() 方法获得图片的 exif 方向
@@ -21,7 +21,7 @@
 * 支持 Sketch 所有功能，ImageProcessor、MaxSize、Resize等
 
 ### :sparkles: Initializer
-* 新增 Initializer 可以在 AndroidManifest.xml 中指定配置类，这样就不用再在 Application 中配置了，可减轻 Application 的负担，也可百分之百保证第一时间完成对 Sketch 的配置，详情请参考[initializer.md](https://github.com/xiaopansky/sketch/blob/master/docs/wiki/initializer.md)
+* 新增 Initializer 可以在 AndroidManifest.xml 中指定配置类，这样就不用再在 Application 中配置了，可减轻 Application 的负担，也可百分之百保证第一时间完成对 Sketch 的配置，详情请参考[initializer.md](https://github.com/panpf/sketch/blob/master/docs/wiki/initializer.md)
 
 ### ImageDisplayer
 * :art: 现在TransitionDisplayer遇到两张一模一样的图片时不再执行过渡动画
@@ -98,7 +98,7 @@
 * :hammer: 新增 onNotFoundGifSoError(Throwable) 方法，用于准确通报找不到 gif so 文件错误，onDecodeGifImageError(Throwable, LoadRequest, int, int, String) 方法将不会再收到找不到 gif so 文件错误
 
 ### Options
-:fire: 整个移除使用枚举存储和获取Options的功能。为何要移除？经实际使用发现，即使在Application中第一时间存储Options，也会出现取不到本应该存在的Options的情况，因此推荐改用懒加载的方式管理Options，详情可参考Demo里的 [ImageOptions.java](https://github.com/xiaopansky/sketch/blob/master/sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.java) 或 [如何管理多个Options.md](https://github.com/xiaopansky/sketch/blob/master/docs/wiki/options_manage.md)。涉及以下方法
+:fire: 整个移除使用枚举存储和获取Options的功能。为何要移除？经实际使用发现，即使在Application中第一时间存储Options，也会出现取不到本应该存在的Options的情况，因此推荐改用懒加载的方式管理Options，详情可参考Demo里的 [ImageOptions.java](https://github.com/panpf/sketch/blob/master/sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.java) 或 [如何管理多个Options.md](https://github.com/panpf/sketch/blob/master/docs/wiki/options_manage.md)。涉及以下方法
   * DisplayHelper.optionsByName(Enum<?>)
   * LoadHelper.optionsByName(Enum<?>)
   * DownloadHelper.optionsByName(Enum<?>)

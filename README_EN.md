@@ -1,21 +1,25 @@
-# ![Logo](docs/res/logo.png) Sketch
+# ![Logo](docs/res/logo.png) Sketch Image Loader
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
-[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Logs](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=Logs)](https://github.com/xiaopansky/sketch/releases)
-[![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files)
+![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-orange.svg?style=true)](https://android-arsenal.com/details/1/4165)
+[![License](https://img.shields.io/badge/License-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Logs](https://img.shields.io/github/release/panpf/sketch.svg?label=Logs&colorB=4AC41C)](https://github.com/panpf/sketch/releases)
+[![Version](https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C)](https://bintray.com/panpf/maven/sketch/_latestVersion#files)
 [![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
 ![QQ Group](https://img.shields.io/badge/QQ%20Gruop-529630740-red.svg)
 
-[Chinese version of the README.md](README.md)
+[中文版本 README.md](README.md)
 
-`by Google Translate`
+Sketch is a powerful and comprehensive picture loader on Android, in addition to the necessary features to load the picture, but also supports GIF, gesture zoom, block display large picture, automatically correct the direction of the picture, display video thumbnails and other functions
 
-Sketch is a powerful and comprehensive image loader on Android, with support for GIF, gesture zooming, block display super large image
+### Sample APP
 
-![sample](docs/res/sample.jpg)
+![SampleApp](docs/sketch-sample.png)
 
-### Features
+Scan a two-dimensional code to download a sample APP, or [click to download APK](docs/sketch-sample.apk)
+
+### Supported Features
+
 >* `Multiple URL support`. Support for `http:// or https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg or /sdcard/sample.jpg`、`drawable://`、`data:image/ or data:img/`6 kinds of URI
 >* `Support gif`. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
 >* `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
@@ -33,14 +37,30 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 >* `Special file preprocessing`. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
 >* `Powerful and flexible customization`. Can be customized to download, cache, decoding, processing, display, placeholder and other links
 
-### Example APP
-![SampleApp](docs/sketch-sample.png)
+### Supported URI
 
-Scan a two-dimensional code to download a sample APP, or [click to download APK](docs/sketch-sample.apk)
+|Type|Scheme|Method In SketchImageView|
+|:---|:---|:---|
+|File in network|http://, https:// |displayImage(String)|
+|File in SDCard|/, file:// |displayImage(String)|
+|Content Provider|content:// |displayContentImage(Uri)|
+|Asset in app|asset:// |displayAssetImage(String)|
+|Resource in app|resource:// |displayResourceImage(int)|
+|Base64|data:image/, data:/img/ |displayImage(String)|
 
-### Guide
+### Supported Image Format
 
-#### Import
+|Image Type|Supported Version|
+|:---|:---|
+|jpeg|[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)|
+|png|[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)|
+|gif|[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)|
+|bmp|[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)|
+|webp|[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)|
+
+### Getting Started
+
+#### Import Sketch
 
 1.Add dependencies to the dependencies node of the app's build.gradle file
 
@@ -48,7 +68,7 @@ Scan a two-dimensional code to download a sample APP, or [click to download APK]
 compile 'me.xiaopan:sketch:$sketch_version'
 ```
 
-Replace `$sketch_version` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files) `(Do not "v")`
+Replace `$sketch_version` with the latest version [![Version](https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C)](https://bintray.com/panpf/maven/sketch/_latestVersion#files) `(Do not "v")`
 
 If you need to play GIF add sketch-gif dependencies
 
@@ -56,11 +76,12 @@ If you need to play GIF add sketch-gif dependencies
 compile 'me.xiaopan:sketch-gif:$sketch_gif_version'
 ```
 
-Replace `$sketch_gif_version` with the latest version [![Version](https://img.shields.io/github/release/xiaopansky/sketch.svg?label=JCenter&colorB=green)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
+Replace `$sketch_gif_version` with the latest version [![Version](https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C)](https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 
-2.If your APP wants to be compatible with API 13 (Android 3.2) and below, then you need to call in your Application to release the cache method (Android 4.0 above can be directly through the Context registration and callback)
+2.If need compatible with API 13 (Android 3.2) and below, then need to call release cache method in Application (Android 4.0 above can be directly through the Context registration and callback)
+
 ```java
 public class MyApplication extends Application {    
 
@@ -84,7 +105,8 @@ public class MyApplication extends Application {
 }
 ```
 
-#### Display Image
+#### Use SketchImageView Display Image
+
 ```java
 SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
 
@@ -107,80 +129,21 @@ sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/las
 // display base64 image
 sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
 
-// display apk icon from SDCard
+// display apk/app icon
 sketchImageView.displayImage("/sdcard/google_play.apk");
-
-// display installed app icon
 sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 ```
 
-[SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
-
-#### Supported URIs
-|Type|Scheme|Method In SketchImageView|
-|:---|:---|:---|
-|File in network|http://, https:// |displayImage(String)|
-|File in SDCard|/, file:// |displayImage(String)|
-|Content Provider|content:// |displayContentImage(Uri)|
-|Asset in app|asset:// |displayAssetImage(String)|
-|Resource in app|resource:// |displayResourceImage(int)|
-|Base64|data:image/, data:/img/ |displayImage(String)|
-
-#### Supported image types
-* jpeg：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
-* png：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
-* gif：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
-* bmp：[![API](https://img.shields.io/badge/API-10%2B-orange.svg)](https://android-arsenal.com/api?level=10)
-* webp：[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
-
-#### download()、load()、display()
-Sketch total display (), load (), download () three methods available, you can choose according to your needs appropriate method
->* Download () method will download the image to the local, and to achieve local cache
->* Load () method in the download () method on the basis of loading pictures into memory, and image processing
->* The display () method, based on the load () method, caches the image in memory and displays it on the ImageView
-
-Examples:
-```
-// Display
-Sketch.with(context).display("http://t.cn/RShdS1f", sketchImageView)
-    .loadingImage(R.drawable.image_loading)
-    .commit();
-
-// Load
-Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
-    @Override
-    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
-
-    }
-
-    @Override
-    public void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
-
-    }
-	...
-}).maxSize(100, 100).commit();
-
-// Download
-Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
-    @Override
-    public void onCompleted(File cacheFile, boolean isFromNetwork) {
-
-    }
-	...
-}).commit();
-```
-
-Load () and download () also support synchronous execution, please refer to [Synchronize load and download.md](docs/wiki/sync.md)
-
-#### You may also be interested in the features:
+#### More Features:
 
 Basic functions:
 >* [SketchImageView Detailed Instructions](docs/wiki/sketch_image_view.md)
+>* [Config Options](docs/wiki/options_config.md)
+>* [Manage Options](docs/wiki/options_manage.md)
+>* [Just load the picture into memory or just download the picture to the local](docs/wiki/load_and_download.md)
 >* [Play gif image](docs/wiki/display_gif_image.md)
 >* [Gesture zoom, rotate the picture](docs/wiki/zoom.md)
 >* [Blocked display of large images](docs/wiki/large_image.md)
->* [Config Options](docs/wiki/options_config.md)
->* [Manage Options](docs/wiki/options_manage.md)
 >* [Use ShapeSize to change the size of the image when drawing](docs/wiki/shape_size.md)
 >* [Use ImageShaper to draw pictures in circles, rounded corners, and so on](docs/wiki/image_shaper.md)
 >* [ImageProcessor through the image into a Gaussian fuzzy, reflection](docs/wiki/process_image.md)
@@ -202,7 +165,6 @@ To further enhance the user experience:
 >* [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture](docs/wiki/memory_cache_state_image.md)
 
 More:
->* [Synchronize load and download](docs/wiki/sync.md)
 >* [Learn about inSampleSize Calculation Rule](docs/wiki/in_sample_size.md)
 >* [Understanding and Configuring Bitmap Pool](docs/wiki/bitmap_pool.md)
 >* [Understanding and Configuring Memory Cache](docs/wiki/memory_cache.md)
@@ -222,6 +184,12 @@ More:
 [chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
 
 [bumptech](https://github.com/bumptech) - [glide](https://github.com/bumptech/glide) （BitmapPool）
+
+### Contact Me
+
+* ![Email](https://img.shields.io/badge/Email-sky@xiaopan.me-red.svg)
+
+* ![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
