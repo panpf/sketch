@@ -1237,7 +1237,7 @@ public class SketchUtils {
         String initializerClassName = null;
         if (appInfo.metaData != null) {
             for (String key : appInfo.metaData.keySet()) {
-                if (Sketch.META_DATA_KEY_INITIALIZER.equals(appInfo.metaData.getString(key))) {
+                if (Sketch.META_DATA_KEY_INITIALIZER.equals(appInfo.metaData.get(key))) {
                     initializerClassName = key;
                     break;
                 }
