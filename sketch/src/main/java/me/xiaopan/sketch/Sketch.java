@@ -44,7 +44,7 @@ public class Sketch {
     public static final String TAG = "Sketch";
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
 
-    private static Sketch instance;
+    private static volatile Sketch instance;
 
     private Configuration configuration;
 
@@ -63,13 +63,14 @@ public class Sketch {
         if (instance == null) {
             synchronized (Sketch.class) {
                 if (instance == null) {
-                    instance = new Sketch(context);
+                    Sketch newInstance = new Sketch(context);
+                    Initializer initializer = SketchUtils.findInitializer(context);
+                    if (initializer != null) {
+                        initializer.onInitialize(context.getApplicationContext(), newInstance, newInstance.configuration);
+                    }
+                    instance = newInstance;
                 }
 
-                Initializer initializer = SketchUtils.findInitializer(context);
-                if (initializer != null) {
-                    initializer.onInitialize(context.getApplicationContext(), instance, instance.configuration);
-                }
             }
         }
         return instance;
