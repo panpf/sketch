@@ -147,7 +147,7 @@ public class HurlStack implements HttpStack {
 
         connection.connect();
 
-        return new HttpUrlConnectionResponse(connection);
+        return new HurlResponse(connection);
     }
 
     protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
@@ -155,10 +155,10 @@ public class HurlStack implements HttpStack {
 
     }
 
-    private static class HttpUrlConnectionResponse implements ImageHttpResponse {
+    private static class HurlResponse implements ImageHttpResponse {
         private HttpURLConnection connection;
 
-        HttpUrlConnectionResponse(HttpURLConnection connection) {
+        HurlResponse(HttpURLConnection connection) {
             this.connection = connection;
         }
 
