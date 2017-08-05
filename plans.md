@@ -16,6 +16,10 @@
 * 加一些常用的xml属性
 * 集成Oblique，支持倾斜图片显示
 * 重新设计ImageShaper，感觉现在的很垃圾，限制很大
+* 支持请求优先级
+* 磁盘缓存支持设置像Glide一样的缓存策略（只缓存原图或缓存全部的变种或只缓存最终的变种）
+* 支持类似Glide的缩略图（Glide.thumbnail）
+* 单元测试&集成测试
 
 其它：
 * 参考Glide、Fresco和Picasso
