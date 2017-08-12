@@ -173,7 +173,7 @@ public class ImageDownloader implements Identifier {
             if (SLogType.REQUEST.isEnabled()) {
                 request.printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
-            throw new IllegalStateException("contentLength exception: " + contentLength + "responseHeaders: " + httpResponse.getResponseHeadersString());
+            throw new IllegalStateException("contentLength exception: " + contentLength + ", responseHeaders: " + httpResponse.getResponseHeadersString());
         }
 
         request.setStatus(BaseRequest.Status.READ_DATA);
