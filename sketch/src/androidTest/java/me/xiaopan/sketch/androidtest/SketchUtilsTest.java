@@ -1,6 +1,8 @@
 package me.xiaopan.sketch.androidtest;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.test.InstrumentationRegistry;
@@ -12,44 +14,33 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class SketchUtilsTest {
+    /**
+     * Test SketchUtils.readApkIcon(Context, String, boolean, String, BitmapPool) method
+     */
     @Test
     public void testReadApkIcon() {
         Context context = InstrumentationRegistry.getContext();
-        File backupFile = new File(SketchUtils.getAppCacheDir(context), "test_app.apk");
-        if (backupFile.exists()) {
-            backupFile.delete();
-        }
-
-        InputStream inputStream = null;
+        PackageInfo packageInfo;
         try {
-            inputStream = context.getAssets().open("jiekuan.apk");
-            TestUitls.copyFile(inputStream, backupFile);
-        } catch (IOException e) {
+            packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            Assert.fail("Not found asset resource 'jiekuan.apk'. " + e.getClass().getName() + ": " + e.getMessage());
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Assert.fail(e.getMessage());
+            return;
+        }
+        String apkPath = packageInfo.applicationInfo.sourceDir;
+
+        if (!new File(apkPath).exists()) {
+            Assert.fail("Backup test app failed. " + apkPath);
         }
 
-        if (!backupFile.exists()) {
-            Assert.fail("Backup test app failed. " + backupFile.getPath());
-        }
-
-        Bitmap highApkIconBitmap = SketchUtils.readApkIcon(context, backupFile.getPath(), false, "testReadApkIcon", null);
+        Bitmap highApkIconBitmap = SketchUtils.readApkIcon(context, apkPath, false, "testReadApkIcon", null);
         if (highApkIconBitmap == null) {
             Assert.fail("Read high apk icon result is null");
         }
@@ -57,7 +48,7 @@ public class SketchUtilsTest {
             Assert.fail("High apk icon bitmap recycled");
         }
 
-        Bitmap lowApkIconBitmap = SketchUtils.readApkIcon(context, backupFile.getPath(), true, "testReadApkIcon", null);
+        Bitmap lowApkIconBitmap = SketchUtils.readApkIcon(context, apkPath, true, "testReadApkIcon", null);
         if (lowApkIconBitmap == null) {
             Assert.fail("Read low apk icon result is null");
         }
