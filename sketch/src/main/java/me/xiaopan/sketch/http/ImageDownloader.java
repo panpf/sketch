@@ -276,7 +276,7 @@ public class ImageDownloader implements Identifier {
                 outputStream.write(buffer, 0, realReadCount);
                 completedLength += realReadCount;
 
-                // 每秒钟回调一次进度
+                // 每100毫秒回调一次进度
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastCallbackTime >= 100) {
                     lastCallbackTime = currentTime;

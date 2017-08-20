@@ -92,7 +92,13 @@ public class SketchUtils {
     private static final float[] MATRIX_VALUES = new float[9];
 
     /**
-     * 读取APK的图标
+     * Read apk file icon. Although the PackageManager will cache the icon, the bitmap returned by this method every time
+     *
+     * @param context         {@link Context}
+     * @param apkFilePath     Apk file path
+     * @param lowQualityImage If set true use ARGB_4444 create bitmap, KITKAT is above is invalid
+     * @param logName         Print log is used identify log type
+     * @param bitmapPool      Try to find Reusable bitmap from bitmapPool
      */
     public static Bitmap readApkIcon(Context context, String apkFilePath, boolean lowQualityImage, String logName, BitmapPool bitmapPool) {
         PackageManager packageManager = context.getPackageManager();
@@ -124,7 +130,7 @@ public class SketchUtils {
     }
 
     /**
-     * Drawable转成Bitmap
+     * Drawable into Bitmap. Each time a new bitmap is drawn
      */
     public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage, BitmapPool bitmapPool) {
         if (drawable == null || drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
