@@ -1,4 +1,4 @@
-package me.xiaopan.sketch.androidtest;
+package me.xiaopan.sketch.test;
 
 import android.util.Log;
 
