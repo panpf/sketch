@@ -49,7 +49,7 @@ public class ErrorTracker implements Identifier {
      */
     public void onNotFoundGifSoError(Throwable e) {
         SLog.e(LOG_NAME, "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
-                "Please go to “https://github.com/xiaopansky/sketch” find how to import the sketch-gif library");
+                "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
 
         String abis;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

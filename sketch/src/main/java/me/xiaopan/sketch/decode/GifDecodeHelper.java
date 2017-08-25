@@ -34,7 +34,7 @@ public class GifDecodeHelper extends DecodeHelper {
             if (SketchGifFactory.isExistGifLibrary()) {
                 return true;
             } else {
-                SLog.e("GifDecodeHelper", "Not found sketch-gif library. Please go to “https://github.com/xiaopansky/sketch” find how to import the sketch-gif library");
+                SLog.e("GifDecodeHelper", "Not found sketch-gif library. Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
             }
         }
         return false;

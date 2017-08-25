@@ -1,5 +1,5 @@
 ### :sparkles: 纠正图片方向功能
-* 新增纠正图片方向功能 [了解更多](https://github.com/xiaopansky/sketch/blob/master/docs/wiki/correct_image_orientation.md)
+* 新增纠正图片方向功能 [了解更多](https://github.com/panpf/sketch/blob/master/docs/wiki/correct_image_orientation.md)
 * 默认关闭，通过correctImageOrientation属性开启
 * 一般的图片支持自动纠正方向，分块显示超大图也支持
 * 可通过SketchDrawable.getOrientation()方法获得图片的方向
