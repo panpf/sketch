@@ -23,342 +23,375 @@ import android.util.Log;
  * Sketch日志
  */
 public class SLog {
-    private static final String TAG_NAME = "%s-%s";
-    private static final String DEFAULT_FORMAL = "%s";
-    private static SLogTracker logTracker;
+    private static final String FORMAT_TAG = "%s-%s";
+    private static final String FORMAT_MESSAGE_DEFAULT = "%s";
+
+    static SLogProxy proxy = new SLogProxyImpl();
+
+    public static int fv(SLogType type, String name, String format, Object... args) {
+        if (type != null && !type.isEnabled()) {
+            return 0;
+        }
+
+        String tag = Sketch.TAG;
+        if (!TextUtils.isEmpty(name)) {
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
+        }
+
+        if (TextUtils.isEmpty(format)) {
+            format = FORMAT_MESSAGE_DEFAULT;
+        }
+
+        String msg = String.format(format, args);
+        return proxy.v(tag, msg);
+    }
 
     @SuppressWarnings("unused")
-    public static SLogTracker getLogTracker() {
-        return logTracker;
+    public static int fv(SLogType type, String format, Object... args) {
+        return fv(type, null, format, args);
     }
 
     @SuppressWarnings("unused")
-    public static void setLogTracker(SLogTracker logTracker) {
-        if (SLog.logTracker != logTracker) {
-            if (SLog.logTracker != null) {
-                SLog.logTracker.close();
-            }
-
-            SLog.logTracker = logTracker;
-        }
+    public static int fv(String name, String format, Object... args) {
+        return fv(null, name, format, args);
     }
 
-    public static void fv(SLogType type, String name, String format, Object... args) {
+    @SuppressWarnings("unused")
+    public static int fv(String format, Object... args) {
+        return fv(null, null, format, args);
+    }
+
+    public static int v(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
+        }
+
+        return proxy.v(tag, msg);
+    }
+
+    public static int v(SLogType type, String msg) {
+        return v(type, null, msg);
+    }
+
+    public static int v(String name, String msg) {
+        return v(null, name, msg);
+    }
+
+    public static int v(String msg) {
+        return v(null, null, msg);
+    }
+
+
+    public static int fi(SLogType type, String name, String format, Object... args) {
+        if (type != null && !type.isEnabled()) {
+            return 0;
+        }
+
+        String tag = Sketch.TAG;
+        if (!TextUtils.isEmpty(name)) {
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
         if (TextUtils.isEmpty(format)) {
-            format = DEFAULT_FORMAL;
+            format = FORMAT_MESSAGE_DEFAULT;
         }
 
         String msg = String.format(format, args);
-        Log.v(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.v(tag, msg);
-        }
+        return proxy.i(tag, msg);
     }
 
-    public static void fv(SLogType type, String format, Object... args) {
-        fv(type, null, format, args);
+    public static int fi(SLogType type, String format, Object... args) {
+        return fi(type, null, format, args);
     }
 
-    public static void fv(String name, String format, Object... args) {
-        fv(null, name, format, args);
+    public static int fi(String name, String format, Object... args) {
+        return fi(null, name, format, args);
     }
 
-    public static void fv(String format, Object... args) {
-        fv(null, null, format, args);
+    public static int fi(String format, Object... args) {
+        return fi(null, null, format, args);
     }
 
-    public static void v(SLogType type, String name, String msg) {
+    public static int i(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
-        Log.v(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.v(tag, msg);
-        }
+        return proxy.i(tag, msg);
     }
 
-    public static void v(SLogType type, String msg) {
-        v(type, null, msg);
+    public static int i(SLogType type, String msg) {
+        return i(type, null, msg);
     }
 
-    public static void v(String name, String msg) {
-        v(null, name, msg);
+    public static int i(String name, String msg) {
+        return i(null, name, msg);
     }
 
-    public static void v(String msg) {
-        v(null, null, msg);
+    public static int i(String msg) {
+        return i(null, null, msg);
     }
 
 
-    public static void fi(SLogType type, String name, String format, Object... args) {
+    public static int fd(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
         if (TextUtils.isEmpty(format)) {
-            format = DEFAULT_FORMAL;
+            format = FORMAT_MESSAGE_DEFAULT;
         }
 
         String msg = String.format(format, args);
-        Log.i(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.i(tag, msg);
-        }
+        return proxy.d(tag, msg);
     }
 
-    public static void fi(SLogType type, String format, Object... args) {
-        fi(type, null, format, args);
+    public static int fd(SLogType type, String format, Object... args) {
+        return fd(type, null, format, args);
     }
 
-    public static void fi(String name, String format, Object... args) {
-        fi(null, name, format, args);
+    public static int fd(String name, String format, Object... args) {
+        return fd(null, name, format, args);
     }
 
-    public static void fi(String format, Object... args) {
-        fi(null, null, format, args);
+    public static int fd(String format, Object... args) {
+        return fd(null, null, format, args);
     }
 
-    public static void i(SLogType type, String name, String msg) {
+    public static int d(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
-        Log.i(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.i(tag, msg);
-        }
+        return proxy.d(tag, msg);
     }
 
-    public static void i(SLogType type, String msg) {
-        i(type, null, msg);
+    public static int d(SLogType type, String msg) {
+        return d(type, null, msg);
     }
 
-    public static void i(String name, String msg) {
-        i(null, name, msg);
+    public static int d(String name, String msg) {
+        return d(null, name, msg);
     }
 
-    public static void i(String msg) {
-        i(null, null, msg);
+    public static int d(String msg) {
+        return d(null, null, msg);
     }
 
 
-    public static void fd(SLogType type, String name, String format, Object... args) {
+    public static int fw(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
         if (TextUtils.isEmpty(format)) {
-            format = DEFAULT_FORMAL;
+            format = FORMAT_MESSAGE_DEFAULT;
         }
 
         String msg = String.format(format, args);
-        Log.d(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.d(tag, msg);
-        }
+        return proxy.w(tag, msg);
     }
 
-    public static void fd(SLogType type, String format, Object... args) {
-        fd(type, null, format, args);
+    public static int fw(SLogType type, String format, Object... args) {
+        return fw(type, null, format, args);
     }
 
-    public static void fd(String name, String format, Object... args) {
-        fd(null, name, format, args);
+    public static int fw(String name, String format, Object... args) {
+        return fw(null, name, format, args);
     }
 
-    public static void fd(String format, Object... args) {
-        fd(null, null, format, args);
+    public static int fw(String format, Object... args) {
+        return fw(null, null, format, args);
     }
 
-    public static void d(SLogType type, String name, String msg) {
+    public static int w(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
-        Log.d(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.d(tag, msg);
-        }
+        return proxy.w(tag, msg);
     }
 
-    public static void d(SLogType type, String msg) {
-        d(type, null, msg);
+    public static int w(SLogType type, String msg) {
+        return w(type, null, msg);
     }
 
-    public static void d(String name, String msg) {
-        d(null, name, msg);
+    public static int w(String name, String msg) {
+        return w(null, name, msg);
     }
 
-    public static void d(String msg) {
-        d(null, null, msg);
+    public static int w(String msg) {
+        return w(null, null, msg);
     }
 
 
-    public static void fw(SLogType type, String name, String format, Object... args) {
+    public static int fe(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
         if (TextUtils.isEmpty(format)) {
-            format = DEFAULT_FORMAL;
+            format = FORMAT_MESSAGE_DEFAULT;
         }
 
         String msg = String.format(format, args);
-        Log.w(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.w(tag, msg);
-        }
+        return proxy.e(tag, msg);
     }
 
-    public static void fw(SLogType type, String format, Object... args) {
-        fw(type, null, format, args);
+    @SuppressWarnings("unused")
+    public static int fe(SLogType type, String format, Object... args) {
+        return fe(type, null, format, args);
     }
 
-    public static void fw(String name, String format, Object... args) {
-        fw(null, name, format, args);
+    public static int fe(String name, String format, Object... args) {
+        return fe(null, name, format, args);
     }
 
-    public static void fw(String format, Object... args) {
-        fw(null, null, format, args);
+    @SuppressWarnings("unused")
+    public static int fe(String format, Object... args) {
+        return fe(null, null, format, args);
     }
 
-    public static void w(SLogType type, String name, String msg) {
+    public static int e(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
-            return;
+            return 0;
         }
 
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
         }
 
-        Log.w(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.w(tag, msg);
-        }
+        return proxy.e(tag, msg);
     }
 
-    public static void w(SLogType type, String msg) {
-        w(type, null, msg);
+    public static int e(SLogType type, String msg) {
+        return e(type, null, msg);
     }
 
-    public static void w(String name, String msg) {
-        w(null, name, msg);
+    public static int e(String name, String msg) {
+        return e(null, name, msg);
     }
 
-    public static void w(String msg) {
-        w(null, null, msg);
+    public static int e(String msg) {
+        return e(null, null, msg);
     }
 
+    static class SLogProxyImpl implements SLogProxy {
 
-    public static void fe(SLogType type, String name, String format, Object... args) {
-        if (type != null && !type.isEnabled()) {
-            return;
+        @Override
+        public int v(String tag, String msg) {
+            return Log.v(tag, msg);
         }
 
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+        @Override
+        public int v(String tag, String msg, Throwable tr) {
+            return Log.v(tag, msg, tr);
         }
 
-        if (TextUtils.isEmpty(format)) {
-            format = DEFAULT_FORMAL;
+        @Override
+        public int d(String tag, String msg) {
+            return Log.d(tag, msg);
         }
 
-        String msg = String.format(format, args);
-        Log.e(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.e(tag, msg);
-        }
-    }
-
-    public static void fe(SLogType type, String format, Object... args) {
-        fe(type, null, format, args);
-    }
-
-    public static void fe(String name, String format, Object... args) {
-        fe(null, name, format, args);
-    }
-
-    public static void fe(String format, Object... args) {
-        fe(null, null, format, args);
-    }
-
-    public static void e(SLogType type, String name, String msg) {
-        if (type != null && !type.isEnabled()) {
-            return;
+        @Override
+        public int d(String tag, String msg, Throwable tr) {
+            return Log.d(tag, msg, tr);
         }
 
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(TAG_NAME, Sketch.TAG, name);
+        @Override
+        public int i(String tag, String msg) {
+            return Log.i(tag, msg);
         }
 
-        Log.e(tag, msg);
-
-        if (logTracker != null) {
-            logTracker.e(tag, msg);
+        @Override
+        public int i(String tag, String msg, Throwable tr) {
+            return Log.i(tag, msg, tr);
         }
-    }
 
-    public static void e(SLogType type, String msg) {
-        e(type, null, msg);
-    }
+        @Override
+        public int w(String tag, String msg) {
+            return Log.w(tag, msg);
+        }
 
-    public static void e(String name, String msg) {
-        e(null, name, msg);
-    }
+        @Override
+        public int w(String tag, String msg, Throwable tr) {
+            return Log.w(tag, msg, tr);
+        }
 
-    public static void e(String msg) {
-        e(null, null, msg);
+        @Override
+        public int w(String tag, Throwable tr) {
+            return Log.w(tag, tr);
+        }
+
+        @Override
+        public int e(String tag, String msg) {
+            return Log.e(tag, msg);
+        }
+
+        @Override
+        public int e(String tag, String msg, Throwable tr) {
+            return Log.e(tag, msg, tr);
+        }
+
+        @Override
+        public int wtf(String tag, String msg) {
+            return Log.wtf(tag, msg);
+        }
+
+        @Override
+        public int wtf(String tag, Throwable tr) {
+            return Log.wtf(tag, tr);
+        }
+
+        @Override
+        public int wtf(String tag, String msg, Throwable tr) {
+            return Log.wtf(tag, msg, tr);
+        }
+
+        @Override
+        public int println(int priority, String tag, String msg) {
+            return Log.println(priority, tag, msg);
+        }
+
+        @Override
+        public void onReplaced() {
+            // do nothing
+        }
     }
 }

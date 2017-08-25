@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -260,7 +259,6 @@ public class HintView extends LinearLayout {
             progressTextView.setText(null);
         } else {
             int ratio = (int) (((float) completedLength / totalLength) * 100);
-            Log.e("setProgress", String.format("totalLength=%d, completedLength=%d. %d", totalLength, completedLength, ratio));
             progressTextView.setText(String.format("%d%%", ratio));
         }
     }

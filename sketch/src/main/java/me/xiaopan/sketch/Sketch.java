@@ -40,6 +40,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <li>download()：下载图片到磁盘上</li>
  * </ul>
  */
+// TODO: 2017/8/25 重新审查所有的 log 输出，选择合适的 level
 public class Sketch {
     public static final String TAG = "Sketch";
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
@@ -70,7 +71,6 @@ public class Sketch {
                     }
                     instance = newInstance;
                 }
-
             }
         }
         return instance;
@@ -103,6 +103,18 @@ public class Sketch {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * 设置日志代理，你可以借此自定义日志的输出方式
+     *
+     * @param proxy null: 恢复为默认的日志代理
+     */
+    public static void setLogProxy(SLogProxy proxy) {
+        if (SLog.proxy != proxy) {
+            SLog.proxy.onReplaced();
+            SLog.proxy = proxy != null ? proxy : new SLog.SLogProxyImpl();
         }
     }
 

@@ -20,22 +20,22 @@ Scan a two-dimensional code to download a sample APP, or [click to download APK]
 
 ### Supported Features
 
->* `Multiple URL support`. Support for `http:// or https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg or /sdcard/sample.jpg`、`drawable://`、`data:image/ or data:img/`6 kinds of URI
->* `Support gif`. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
->* `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
->* `Support block display large picture`. Support block display large picture function, from then the big picture is not afraid
->* `Support level 3 cache`. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
->* `Support correcting picture orientation`. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
->* `Support reading APK icon`. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
->* `Support Base64 image`. Support parse of Base64 format image
->* `Support various list`. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
->* `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
->* `Exclusive TransitionDrawable support`. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
->* `Only to load or only to download`. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
->* `Paused download on mobile network`. Built-in mobile network to download pictures under the suspended function, you can simply open
->* `Automatically select the appropriate Bitmap.Config`. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
->* `Special file preprocessing`. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
->* `Powerful and flexible customization`. Can be customized to download, cache, decoding, processing, display, placeholder and other links
+* `Multiple URL support`. Support for `http://` or `https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg` or `/sdcard/sample.jpg`、`drawable://`、`data:image/` or  `data:img/`6 kinds of URI
+* `Support gif`. Integrated [android-gif-drawable] 1.2.6 can be easily displayed gif pictures, thanks [koral--]
+* `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
+* `Support block display large picture`. Support block display large picture function, from then the big picture is not afraid
+* `Support level 3 cache`. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
+* `Support correcting picture orientation`. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
+* `Support reading APK icon`. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
+* `Support Base64 image`. Support parse of Base64 format image
+* `Support various list`. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
+* `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
+* `Exclusive TransitionDrawable support`. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
+* `Only to load or only to download`. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
+* `Paused download on mobile network`. Built-in mobile network to download pictures under the suspended function, you can simply open
+* `Automatically select the appropriate Bitmap.Config`. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
+* `Special file preprocessing`. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
+* `Powerful and flexible customization`. Can be customized to download, cache, decoding, processing, display, placeholder and other links
 
 ### Supported URI
 
@@ -137,59 +137,56 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 #### More Features:
 
 Basic functions:
->* [SketchImageView Detailed Instructions](docs/wiki/sketch_image_view.md)
->* [Config Options](docs/wiki/options_config.md)
->* [Manage Options](docs/wiki/options_manage.md)
->* [Just load the picture into memory or just download the picture to the local](docs/wiki/load_and_download.md)
->* [Play gif image](docs/wiki/display_gif_image.md)
->* [Gesture zoom, rotate the picture](docs/wiki/zoom.md)
->* [Blocked display of large images](docs/wiki/large_image.md)
->* [Use ShapeSize to change the size of the image when drawing](docs/wiki/shape_size.md)
->* [Use ImageShaper to draw pictures in circles, rounded corners, and so on](docs/wiki/image_shaper.md)
->* [ImageProcessor through the image into a Gaussian fuzzy, reflection](docs/wiki/process_image.md)
->* [Through the ImageDisplay to transition, fade, etc. to display pictures](docs/wiki/displayer.md)
->* [Control the picture size by MaxSize](docs/wiki/max_size.md)
->* [Resize the image size by Resize](docs/wiki/resize.md)
->* [Flexible use of various images as loading image by StateImage](docs/wiki/state_image.md)
->* [Learn to automatically correct image orientation](docs/wiki/correct_image_orientation.md)
->* [Display video thumbnail](docs/wiki/display_video_thumbnail.md)
+* [SketchImageView Detailed Instructions](docs/wiki/sketch_image_view.md)
+* [Config Options](docs/wiki/options_config.md)
+* [Manage Options](docs/wiki/options_manage.md)
+* [Just load the picture into memory or just download the picture to the local](docs/wiki/load_and_download.md)
+* [Play gif image](docs/wiki/display_gif_image.md)
+* [Gesture zoom, rotate the picture](docs/wiki/zoom.md)
+* [Blocked display of large images](docs/wiki/large_image.md)
+* [Use ShapeSize to change the size of the image when drawing](docs/wiki/shape_size.md)
+* [Use ImageShaper to draw pictures in circles, rounded corners, and so on](docs/wiki/image_shaper.md)
+* [ImageProcessor through the image into a Gaussian fuzzy, reflection](docs/wiki/process_image.md)
+* [Through the ImageDisplay to transition, fade, etc. to display pictures](docs/wiki/displayer.md)
+* [Control the picture size by MaxSize](docs/wiki/max_size.md)
+* [Resize the image size by Resize](docs/wiki/resize.md)
+* [Flexible use of various images as loading image by StateImage](docs/wiki/state_image.md)
+* [Learn to automatically correct image orientation](docs/wiki/correct_image_orientation.md)
+* [Display video thumbnail](docs/wiki/display_video_thumbnail.md)
 
 To further enhance the user experience:
->* [So that any size of the two pictures can use TransitionDrawable transition display](docs/wiki/transition_displayer.md)
->* [thumbnailMode property to show clearer thumbnails](docs/wiki/thumbnail_mode.md)
->* [cacheProcessedImageInDisk property cache through the need for complex processing of pictures, to enhance the display speed](docs/wiki/cache_processed_image_in_disk.md)
->* [Mobile network to suspend downloading pictures, save traffic](docs/wiki/pause_download.md)
->* [Pause loading of images while sliding the list to improve fluency](docs/wiki/pause_load.md)
->* [Display APK or installed APP icon](docs/wiki/display_apk_or_app_icon.md)
->* [Displaying images in special files with Image Preprocessor (eg video, MP3)](docs/wiki/pre_process_image.md)
->* [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture](docs/wiki/memory_cache_state_image.md)
+* [So that any size of the two pictures can use TransitionDrawable transition display](docs/wiki/transition_displayer.md)
+* [thumbnailMode property to show clearer thumbnails](docs/wiki/thumbnail_mode.md)
+* [cacheProcessedImageInDisk property cache through the need for complex processing of pictures, to enhance the display speed](docs/wiki/cache_processed_image_in_disk.md)
+* [Mobile network to suspend downloading pictures, save traffic](docs/wiki/pause_download.md)
+* [Pause loading of images while sliding the list to improve fluency](docs/wiki/pause_load.md)
+* [Display APK or installed APP icon](docs/wiki/display_apk_or_app_icon.md)
+* [Displaying images in special files with Image Preprocessor (eg video, MP3)](docs/wiki/pre_process_image.md)
+* [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture](docs/wiki/memory_cache_state_image.md)
 
 More:
->* [Learn about inSampleSize Calculation Rule](docs/wiki/in_sample_size.md)
->* [Understanding and Configuring Bitmap Pool](docs/wiki/bitmap_pool.md)
->* [Understanding and Configuring Memory Cache](docs/wiki/memory_cache.md)
->* [Understanding and Configuring Local Cache](docs/wiki/disk_cache.md)
->* [Learn and configure HttpStack](docs/wiki/http_stack.md)
->* [Listen for loading start, success, failure, and download progress](docs/wiki/listener.md)
->* [Learn when to cancel a request and how to cancel the request](docs/wiki/cancel_request.md)
->* [The Sketch exception is monitored by ErrorTracker](docs/wiki/error_tracker.md)
->* [Synchronize the output of the Sketch run log to the SD card](docs/wiki/sync_out_log_to_disk.md)
->* [Delay config Sketch](docs/wiki/initializer.md)
->* [Configuration confusing (Proguard)](docs/wiki/proguard_config.md)
+* [Learn about inSampleSize Calculation Rule](docs/wiki/in_sample_size.md)
+* [Understanding and Configuring Bitmap Pool](docs/wiki/bitmap_pool.md)
+* [Understanding and Configuring Memory Cache](docs/wiki/memory_cache.md)
+* [Understanding and Configuring Local Cache](docs/wiki/disk_cache.md)
+* [Learn and configure HttpStack](docs/wiki/http_stack.md)
+* [Listen for loading start, success, failure, and download progress](docs/wiki/listener.md)
+* [Learn when to cancel a request and how to cancel the request](docs/wiki/cancel_request.md)
+* [The Sketch exception is monitored by ErrorTracker](docs/wiki/error_tracker.md)
+* [Learn about Sketch logs](docs/wiki/log.md)
+* [Delay config Sketch](docs/wiki/initializer.md)
+* [Configuration confusing (Proguard)](docs/wiki/proguard_config.md)
 
 ### Thanks
 
-[koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
-
-[chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
-
-[bumptech](https://github.com/bumptech) - [glide](https://github.com/bumptech/glide) （BitmapPool）
+* [koral--] - [android-gif-drawable]
+* [chrisbanes] - [PhotoView]
+* [bumptech] - [glide]（BitmapPool）
 
 ### Contact Me
 
 * ![Email](https://img.shields.io/badge/Email-sky@xiaopan.me-red.svg)
-
-* ![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
+* ![QQ Group](https://img.shields.io/badge/QQ%20Group-529630740-red.svg)
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
@@ -205,3 +202,10 @@ More:
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+[koral--]: https://github.com/koral--
+[android-gif-drawable]: https://github.com/koral--/android-gif-drawable
+[chrisbanes]: https://github.com/chrisbanes
+[PhotoView]: https://github.com/chrisbanes/PhotoView
+[bumptech]: https://github.com/bumptech
+[glide]: https://github.com/bumptech/glide

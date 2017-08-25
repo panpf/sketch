@@ -5,152 +5,147 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import me.xiaopan.sketch.SLogTracker;
+import me.xiaopan.sketch.SLogProxy;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class SampleLogTracker implements SLogTracker {
-    private Context context;
+public class SampleLogProxy implements SLogProxy {
     private OutLog2SDCard outLog2SDCard;
-    private ObjectPool<LogEntry> logEntryObjectPool;
-    private SimpleDateFormat logTimeDateFormat;
 
-    private boolean closed;
-
-    public SampleLogTracker(Context context) {
-        this.context = context.getApplicationContext();
-    }
-
-    private void install() {
-        if (outLog2SDCard == null) {
-            synchronized (this) {
-                if (outLog2SDCard == null) {
-                    outLog2SDCard = new OutLog2SDCard(context);
-                }
-            }
-        }
-
-        if (logEntryObjectPool == null) {
-            synchronized (this) {
-                if (logEntryObjectPool == null) {
-                    logEntryObjectPool = new ObjectPool<LogEntry>(new ObjectPool.ObjectFactory<LogEntry>() {
-                        @Override
-                        public LogEntry newObject() {
-                            return new LogEntry(logEntryObjectPool);
-                        }
-                    });
-                }
-            }
-        }
-
-        if (logTimeDateFormat == null) {
-            synchronized (this) {
-                if (logTimeDateFormat == null) {
-
-                    logTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.US);
-                }
-            }
-        }
-    }
-
-    public void close() {
-        closed = true;
-
-        if (outLog2SDCard != null) {
-            outLog2SDCard.close();
-            outLog2SDCard = null;
-        }
-
-        if (logEntryObjectPool != null) {
-            logEntryObjectPool.clear();
-            logEntryObjectPool = null;
-        }
+    public SampleLogProxy(Context context) {
+        outLog2SDCard = new OutLog2SDCard(context);
     }
 
     @Override
-    public boolean isClosed() {
-        return closed;
+    public int v(String tag, String msg) {
+        outLog2SDCard.out("V", tag, msg, null);
+        return Log.v(tag, msg);
     }
 
     @Override
-    public void v(String tag, String msg) {
-        if (closed) {
-            return;
-        }
-
-        install();
-        String time = logTimeDateFormat.format(new Date());
-
-        LogEntry logEntry = logEntryObjectPool.get();
-        logEntry.set(time, "V", tag, msg);
-        outLog2SDCard.outLog(logEntry);
+    public int v(String tag, String msg, Throwable tr) {
+        outLog2SDCard.out("V", tag, msg, tr);
+        return Log.v(tag, msg, tr);
     }
 
     @Override
-    public void i(String tag, String msg) {
-        if (closed) {
-            return;
-        }
-
-        install();
-        String time = logTimeDateFormat.format(new Date());
-
-        LogEntry logEntry = logEntryObjectPool.get();
-        logEntry.set(time, "I", tag, msg);
-        outLog2SDCard.outLog(logEntry);
+    public int d(String tag, String msg) {
+        outLog2SDCard.out("D", tag, msg, null);
+        return Log.d(tag, msg);
     }
 
     @Override
-    public void d(String tag, String msg) {
-        if (closed) {
-            return;
-        }
-
-        install();
-        String time = logTimeDateFormat.format(new Date());
-
-        LogEntry logEntry = logEntryObjectPool.get();
-        logEntry.set(time, "D", tag, msg);
-        outLog2SDCard.outLog(logEntry);
+    public int d(String tag, String msg, Throwable tr) {
+        outLog2SDCard.out("D", tag, msg, tr);
+        return Log.d(tag, msg, tr);
     }
 
     @Override
-    public void w(String tag, String msg) {
-        if (closed) {
-            return;
-        }
-
-        install();
-        String time = logTimeDateFormat.format(new Date());
-
-        LogEntry logEntry = logEntryObjectPool.get();
-        logEntry.set(time, "W", tag, msg);
-        outLog2SDCard.outLog(logEntry);
+    public int i(String tag, String msg) {
+        outLog2SDCard.out("I", tag, msg, null);
+        return Log.i(tag, msg);
     }
 
     @Override
-    public void e(String tag, String msg) {
-        if (closed) {
-            return;
+    public int i(String tag, String msg, Throwable tr) {
+        outLog2SDCard.out("I", tag, msg, tr);
+        return Log.i(tag, msg, tr);
+    }
+
+    @Override
+    public int w(String tag, String msg) {
+        outLog2SDCard.out("W", tag, msg, null);
+        return Log.w(tag, msg);
+    }
+
+    @Override
+    public int w(String tag, String msg, Throwable tr) {
+        outLog2SDCard.out("W", tag, msg, tr);
+        return Log.w(tag, msg, tr);
+    }
+
+    @Override
+    public int w(String tag, Throwable tr) {
+        outLog2SDCard.out("W", tag, null, tr);
+        return Log.w(tag, tr);
+    }
+
+    @Override
+    public int e(String tag, String msg) {
+        outLog2SDCard.out("E", tag, msg, null);
+        return Log.e(tag, msg);
+    }
+
+    @Override
+    public int e(String tag, String msg, Throwable tr) {
+        outLog2SDCard.out("E", tag, msg, tr);
+        return Log.e(tag, msg, tr);
+    }
+
+    @Override
+    public int wtf(String tag, String msg) {
+        outLog2SDCard.out("WTF", tag, msg, null);
+        return Log.wtf(tag, msg);
+    }
+
+    @Override
+    public int wtf(String tag, Throwable tr) {
+        outLog2SDCard.out("WTF", tag, null, tr);
+        return Log.wtf(tag, tr);
+    }
+
+    @Override
+    public int wtf(String tag, String msg, Throwable tr) {
+        outLog2SDCard.out("WTF", tag, msg, tr);
+        return Log.wtf(tag, msg, tr);
+    }
+
+    @Override
+    public int println(int priority, String tag, String msg) {
+        switch (priority) {
+            case Log.VERBOSE:
+                outLog2SDCard.out("V", tag, msg, null);
+                break;
+            case Log.DEBUG:
+                outLog2SDCard.out("D", tag, msg, null);
+                break;
+            case Log.INFO:
+                outLog2SDCard.out("I", tag, msg, null);
+                break;
+            case Log.WARN:
+                outLog2SDCard.out("W", tag, msg, null);
+                break;
+            case Log.ERROR:
+                outLog2SDCard.out("E", tag, msg, null);
+                break;
+            case Log.ASSERT:
+                outLog2SDCard.out("A", tag, msg, null);
+                break;
         }
+        return Log.println(priority, tag, msg);
+    }
 
-        install();
-        String time = logTimeDateFormat.format(new Date());
-
-        LogEntry logEntry = logEntryObjectPool.get();
-        logEntry.set(time, "E", tag, msg);
-        outLog2SDCard.outLog(logEntry);
+    @Override
+    public void onReplaced() {
+        outLog2SDCard.close();
     }
 
     private static class OutLog2SDCard {
+
+        private ObjectPool<LogEntry> logEntryObjectPool;
+        private SimpleDateFormat logTimeDateFormat;
+
         private Context context;
 
         private Handler handler;
@@ -164,6 +159,45 @@ public class SampleLogTracker implements SLogTracker {
 
         public OutLog2SDCard(Context context) {
             this.context = context.getApplicationContext();
+            logEntryObjectPool = new ObjectPool<>(new ObjectPool.ObjectFactory<LogEntry>() {
+                @Override
+                public LogEntry newObject() {
+                    return new LogEntry(logEntryObjectPool);
+                }
+            });
+            logTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.US);
+        }
+
+        private void out(String level, String tag, String msg, Throwable tr) {
+            if (closed) {
+                return;
+            }
+
+            String time = logTimeDateFormat.format(new Date());
+
+            LogEntry logEntry = logEntryObjectPool.get();
+            logEntry.set(time, level, tag, msg, tr);
+
+            if (handler == null) {
+                synchronized (this) {
+                    if (handler == null) {
+                        handlerThread = new HandlerThread("OutLogThread");
+                        handlerThread.start();
+                        handler = new Handler(handlerThread.getLooper(), new Handler.Callback() {
+                            @Override
+                            public boolean handleMessage(Message msg) {
+                                if (msg.obj instanceof LogEntry) {
+                                    writeLog((LogEntry) msg.obj);
+                                    return true;
+                                }
+                                return false;
+                            }
+                        });
+                    }
+                }
+            }
+
+            handler.obtainMessage(0, logEntry).sendToTarget();
         }
 
         private void close() {
@@ -186,33 +220,11 @@ public class SampleLogTracker implements SLogTracker {
                 }
                 fileWriter = null;
             }
-        }
 
-        public void outLog(LogEntry entry) {
-            if (closed) {
-                return;
+            if (logEntryObjectPool != null) {
+                logEntryObjectPool.clear();
+                logEntryObjectPool = null;
             }
-
-            if (handler == null) {
-                synchronized (this) {
-                    if (handler == null) {
-                        handlerThread = new HandlerThread("OutLogThread");
-                        handlerThread.start();
-                        handler = new Handler(handlerThread.getLooper(), new Handler.Callback() {
-                            @Override
-                            public boolean handleMessage(Message msg) {
-                                if (msg.obj instanceof LogEntry) {
-                                    writeLog((LogEntry) msg.obj);
-                                    return true;
-                                }
-                                return false;
-                            }
-                        });
-                    }
-                }
-            }
-
-            handler.obtainMessage(0, entry).sendToTarget();
         }
 
         private File makeLogFile(String newLogFileName) {
@@ -275,8 +287,14 @@ public class SampleLogTracker implements SLogTracker {
                 fileWriter.write(entry.level);
                 fileWriter.write(" ");
                 fileWriter.write(entry.tag);
-                fileWriter.write(" ");
-                fileWriter.write(entry.message);
+                if (!TextUtils.isEmpty(entry.message)) {
+                    fileWriter.write(" ");
+                    fileWriter.write(entry.message);
+                }
+                if (entry.tr != null) {
+                    fileWriter.write("\n");
+                    entry.tr.printStackTrace(new PrintWriter(fileWriter));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -306,6 +324,7 @@ public class SampleLogTracker implements SLogTracker {
         public String level;
         public String tag;
         public String message;
+        public Throwable tr;
 
         private ObjectPool<LogEntry> logEntryObjectPool;
 
@@ -313,15 +332,16 @@ public class SampleLogTracker implements SLogTracker {
             this.logEntryObjectPool = logEntryObjectPool;
         }
 
-        public void set(String time, String level, String tag, String message) {
+        public void set(String time, String level, String tag, String message, Throwable tr) {
             this.time = time;
             this.level = level;
             this.tag = tag;
             this.message = message;
+            this.tr = tr;
         }
 
         public void recycle() {
-            set(null, null, null, null);
+            set(null, null, null, null, null);
             logEntryObjectPool.put(this);
         }
     }

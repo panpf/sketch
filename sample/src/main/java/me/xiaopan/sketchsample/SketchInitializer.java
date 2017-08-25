@@ -7,7 +7,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Initializer;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
@@ -55,7 +54,7 @@ public class SketchInitializer implements Initializer {
     @Subscribe
     public void onEvent(AppConfigChangedEvent event) {
         if (AppConfig.Key.OUT_LOG_2_SDCARD.equals(event.key)) {
-            SLog.setLogTracker(AppConfig.getBoolean(context, AppConfig.Key.OUT_LOG_2_SDCARD) ? new SampleLogTracker(context) : null);
+            Sketch.setLogProxy(AppConfig.getBoolean(context, AppConfig.Key.OUT_LOG_2_SDCARD) ? new SampleLogProxy(context) : null);
         } else if (AppConfig.Key.LOG_BASE.equals(event.key)) {
             SLogType.BASE.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_BASE));
         } else if (AppConfig.Key.LOG_TIME.equals(event.key)) {
