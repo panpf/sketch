@@ -107,18 +107,6 @@ public class Sketch {
     }
 
     /**
-     * 设置日志代理，你可以借此自定义日志的输出方式
-     *
-     * @param proxy null: 恢复为默认的日志代理
-     */
-    public static void setLogProxy(SLogProxy proxy) {
-        if (SLog.proxy != proxy) {
-            SLog.proxy.onReplaced();
-            SLog.proxy = proxy != null ? proxy : new SLog.SLogProxyImpl();
-        }
-    }
-
-    /**
      * 获取配置
      *
      * @return Configuration

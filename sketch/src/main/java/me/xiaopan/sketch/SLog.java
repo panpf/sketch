@@ -20,13 +20,28 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * Sketch日志
+ * Sketch 日志
  */
 public class SLog {
     private static final String FORMAT_TAG = "%s-%s";
     private static final String FORMAT_MESSAGE_DEFAULT = "%s";
 
-    static SLogProxy proxy = new SLogProxyImpl();
+    static Proxy proxy = new ProxyImpl();
+
+    /**
+     * 设置日志代理，你可以借此自定义日志的输出方式
+     *
+     * @param proxy null: 恢复为默认的日志代理
+     */
+    public static void setProxy(Proxy proxy) {
+        if (SLog.proxy != proxy) {
+            SLog.proxy.onReplaced();
+            SLog.proxy = proxy != null ? proxy : new ProxyImpl();
+        }
+    }
+
+    // TODO: 2017/8/25 加入 level 控制，所有的日志点 都要过滤level，并且梳理所有日志，选择合适的类型
+    // TODO: 2017/8/25 梳理日志方法，省略所有tag，type 不再绑定到tag上，name 改叫 scope
 
     public static int fv(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
@@ -312,7 +327,36 @@ public class SLog {
         return e(null, null, msg);
     }
 
-    static class SLogProxyImpl implements SLogProxy {
+    /**
+     * Log 代理器，你可以借此自定义日志的输出方式
+     */
+    public interface Proxy {
+        int v(String tag, String msg);
+
+        int v(String tag, String msg, Throwable tr);
+
+        int d(String tag, String msg);
+
+        int d(String tag, String msg, Throwable tr);
+
+        int i(String tag, String msg);
+
+        int i(String tag, String msg, Throwable tr);
+
+        int w(String tag, String msg);
+
+        int w(String tag, String msg, Throwable tr);
+
+        int w(String tag, Throwable tr);
+
+        int e(String tag, String msg);
+
+        int e(String tag, String msg, Throwable tr);
+
+        void onReplaced();
+    }
+
+    private static class ProxyImpl implements Proxy {
 
         @Override
         public int v(String tag, String msg) {

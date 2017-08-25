@@ -16,11 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import me.xiaopan.sketch.SLogProxy;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class SampleLogProxy implements SLogProxy {
+public class SampleLogProxy implements SLog.Proxy {
     private OutLog2SDCard outLog2SDCard;
 
     public SampleLogProxy(Context context) {

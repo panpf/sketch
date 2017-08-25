@@ -1,11 +1,11 @@
 Sketch 运行时的全部日志通过 [SLog] 来打印，[SLog] 默认使用 [android.util.Log] 来打印日志，
 
 ### 接管日志打印工作
-如果你想在日志打印到控制台的同时将日志保存到本地文件，那么你可以通过 [SLogProxy] 来接管日志打印工作实现你的个性化需求
+如果你想在日志打印到控制台的同时将日志保存到本地文件，那么你可以通过 [SLog.Proxy] 来接管日志打印工作实现你的个性化需求
 
-1.首先你需要实现 [SLogProxy] 接口，可参考 sample app 中的 [SampleLogProxy]
-* [SLogProxy] 接口中定义的大部分方法跟 [android.util.Log] 是一样的
-* 一个特殊的方法 onReplaced() 会在旧的 [SLogProxy] 被替换时调用
+1.首先你需要实现 [SLog.Proxy] 接口，可参考 sample app 中的 [SampleLogProxy]
+* [SLog.Proxy] 接口中定义的大部分方法跟 [android.util.Log] 是一样的
+* 一个特殊的方法 onReplaced() 会在旧的 [SLog.Proxy] 被替换时调用
 
 2.然后通过 Sketch.setLogProxy(SLogProxy) 方法应用即可
 
@@ -34,6 +34,6 @@ SLogType.CACHE.setEnabled(false);
 
 [SLog]: ../../sketch/src/main/java/me/xiaopan/sketch/SLog.java
 [SLogType]: ../../sketch/src/main/java/me/xiaopan/sketch/SLogType.java
-[SLogProxy]: ../../sketch/src/main/java/me/xiaopan/sketch/SLogProxy.java
+[SLog.Proxy]: ../../sketch/src/main/java/me/xiaopan/sketch/SLog.java
 [SampleLogProxy]: ../../sample/src/main/java/me/xiaopan/sketchsample/SampleLogProxy.java
 [android.util.Log]: https://developer.android.com/reference/android/util/Log.html
