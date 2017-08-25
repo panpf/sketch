@@ -94,49 +94,6 @@ public class SampleLogProxy implements SLogProxy {
     }
 
     @Override
-    public int wtf(String tag, String msg) {
-        outLog2SDCard.out("WTF", tag, msg, null);
-        return Log.wtf(tag, msg);
-    }
-
-    @Override
-    public int wtf(String tag, Throwable tr) {
-        outLog2SDCard.out("WTF", tag, null, tr);
-        return Log.wtf(tag, tr);
-    }
-
-    @Override
-    public int wtf(String tag, String msg, Throwable tr) {
-        outLog2SDCard.out("WTF", tag, msg, tr);
-        return Log.wtf(tag, msg, tr);
-    }
-
-    @Override
-    public int println(int priority, String tag, String msg) {
-        switch (priority) {
-            case Log.VERBOSE:
-                outLog2SDCard.out("V", tag, msg, null);
-                break;
-            case Log.DEBUG:
-                outLog2SDCard.out("D", tag, msg, null);
-                break;
-            case Log.INFO:
-                outLog2SDCard.out("I", tag, msg, null);
-                break;
-            case Log.WARN:
-                outLog2SDCard.out("W", tag, msg, null);
-                break;
-            case Log.ERROR:
-                outLog2SDCard.out("E", tag, msg, null);
-                break;
-            case Log.ASSERT:
-                outLog2SDCard.out("A", tag, msg, null);
-                break;
-        }
-        return Log.println(priority, tag, msg);
-    }
-
-    @Override
     public void onReplaced() {
         outLog2SDCard.close();
     }

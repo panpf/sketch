@@ -370,26 +370,6 @@ public class SLog {
         }
 
         @Override
-        public int wtf(String tag, String msg) {
-            return Log.wtf(tag, msg);
-        }
-
-        @Override
-        public int wtf(String tag, Throwable tr) {
-            return Log.wtf(tag, tr);
-        }
-
-        @Override
-        public int wtf(String tag, String msg, Throwable tr) {
-            return Log.wtf(tag, msg, tr);
-        }
-
-        @Override
-        public int println(int priority, String tag, String msg) {
-            return Log.println(priority, tag, msg);
-        }
-
-        @Override
         public void onReplaced() {
             // do nothing
         }

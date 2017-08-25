@@ -42,13 +42,5 @@ public interface SLogProxy {
 
     int e(String tag, String msg, Throwable tr);
 
-    int wtf(String tag, String msg);
-
-    int wtf(String tag, Throwable tr);
-
-    int wtf(String tag, String msg, Throwable tr);
-
-    int println(int priority, String tag, String msg);
-
     void onReplaced();
 }
