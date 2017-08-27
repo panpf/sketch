@@ -162,7 +162,7 @@ public class DownloadHelper {
             DiskCache.Entry diskCacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fi(SLogType.REQUEST, LOG_NAME, "image download completed. %s", key);
+                    SLog.fi(LOG_NAME, "image download completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

@@ -660,7 +660,7 @@ public class DisplayHelper {
 
         if (SLogType.REQUEST.isEnabled()) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.fi(SLogType.REQUEST, LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
+            SLog.fi(LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
                     ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
 

@@ -43,11 +43,7 @@ public class SLog {
     // TODO: 2017/8/25 加入 level 控制，所有的日志点 都要过滤level，并且梳理所有日志，选择合适的类型
     // TODO: 2017/8/25 梳理日志方法，省略所有tag，type 不再绑定到tag上，name 改叫 scope
 
-    public static int fv(SLogType type, String name, String format, Object... args) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int fv(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -62,25 +58,11 @@ public class SLog {
     }
 
     @SuppressWarnings("unused")
-    public static int fv(SLogType type, String format, Object... args) {
-        return fv(type, null, format, args);
-    }
-
-    @SuppressWarnings("unused")
-    public static int fv(String name, String format, Object... args) {
-        return fv(null, name, format, args);
-    }
-
-    @SuppressWarnings("unused")
     public static int fv(String format, Object... args) {
-        return fv(null, null, format, args);
+        return fv(null, format, args);
     }
 
-    public static int v(SLogType type, String name, String msg) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int v(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -89,24 +71,12 @@ public class SLog {
         return proxy.v(tag, msg);
     }
 
-    public static int v(SLogType type, String msg) {
-        return v(type, null, msg);
-    }
-
-    public static int v(String name, String msg) {
-        return v(null, name, msg);
-    }
-
     public static int v(String msg) {
-        return v(null, null, msg);
+        return v(null, msg);
     }
 
 
-    public static int fi(SLogType type, String name, String format, Object... args) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int fi(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -120,16 +90,8 @@ public class SLog {
         return proxy.i(tag, msg);
     }
 
-    public static int fi(SLogType type, String format, Object... args) {
-        return fi(type, null, format, args);
-    }
-
-    public static int fi(String name, String format, Object... args) {
-        return fi(null, name, format, args);
-    }
-
     public static int fi(String format, Object... args) {
-        return fi(null, null, format, args);
+        return fi(null, format, args);
     }
 
     public static int i(SLogType type, String name, String msg) {

@@ -252,8 +252,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 //        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
 //                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)) {
         if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)) {
-            SLog.fi(SLogType.ZOOM, NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
-                    getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.fi(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+                        getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
+            }
             requestDisallowInterceptTouchEvent(false);
         } else {
             if (SLogType.ZOOM.isEnabled()) {

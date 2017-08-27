@@ -127,8 +127,10 @@ public class LruBitmapPool implements BitmapPool {
         puts++;
         currentSize += size;
 
-        SLog.fv(SLogType.CACHE, LOG_NAME, "Put bitmap in pool=%s,%s",
-                strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
+        if (SLogType.CACHE.isEnabled()) {
+            SLog.fv(LOG_NAME, "Put bitmap in pool=%s,%s",
+                    strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
+        }
         dump();
 
         evict();
@@ -155,7 +157,9 @@ public class LruBitmapPool implements BitmapPool {
             SLog.fw(SLogType.CACHE, LOG_NAME, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
             misses++;
         } else {
-            SLog.fi(SLogType.CACHE, LOG_NAME, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
+            if (SLogType.CACHE.isEnabled()) {
+                SLog.fi(LOG_NAME, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
+            }
             hits++;
             currentSize -= strategy.getSize(result);
             tracker.remove(result);
@@ -237,7 +241,7 @@ public class LruBitmapPool implements BitmapPool {
         if (disabled) {
             SLog.fw(SLogType.CACHE, LOG_NAME, "setDisabled. %s", true);
         } else {
-            SLog.fi(SLogType.CACHE, LOG_NAME, "setDisabled. %s", false);
+            SLog.fw(LOG_NAME, "setDisabled. %s", false);
         }
     }
 
@@ -310,9 +314,11 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private void dumpUnchecked() {
-        SLog.fv(SLogType.CACHE, LOG_NAME,
-                "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
-                hits, misses, puts, evictions, currentSize, maxSize, strategy);
+        if (SLogType.CACHE.isEnabled()) {
+            SLog.fv(LOG_NAME,
+                    "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
+                    hits, misses, puts, evictions, currentSize, maxSize, strategy);
+        }
     }
 
     @Override

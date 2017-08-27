@@ -278,7 +278,7 @@ public class LruDiskCache implements DiskCache {
         if (disabled) {
             SLog.fw(SLogType.CACHE, LOG_NAME, "setDisabled. %s", true);
         } else {
-            SLog.fi(SLogType.CACHE, LOG_NAME, "setDisabled. %s", false);
+            SLog.fw(LOG_NAME, "setDisabled. %s", false);
         }
     }
 
@@ -328,7 +328,7 @@ public class LruDiskCache implements DiskCache {
         if (editLockMap == null) {
             synchronized (this) {
                 if (editLockMap == null) {
-                    editLockMap = new WeakHashMap<String, ReentrantLock>();
+                    editLockMap = new WeakHashMap<>();
                 }
             }
         }
@@ -407,11 +407,7 @@ public class LruDiskCache implements DiskCache {
         public void abort() {
             try {
                 diskEditor.abort();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (DiskLruCache.EditorChangedException e) {
-                e.printStackTrace();
-            } catch (DiskLruCache.FileNotExistException e) {
+            } catch (IOException | DiskLruCache.FileNotExistException | DiskLruCache.EditorChangedException e) {
                 e.printStackTrace();
             }
         }

@@ -50,15 +50,17 @@ public class FreeRideManager implements Identifier {
             if (displayFreeRideProviderMap == null) {
                 synchronized (this) {
                     if (displayFreeRideProviderMap == null) {
-                        displayFreeRideProviderMap = new WeakHashMap<String, DisplayFreeRide>();
+                        displayFreeRideProviderMap = new WeakHashMap<>();
                     }
                 }
             }
 
             displayFreeRideProviderMap.put(provider.getDisplayFreeRideKey(), provider);
 
-            SLog.fv(SLogType.REQUEST, LOG_NAME, "display. register free ride provider. %s",
-                    provider.getDisplayFreeRideLog());
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.fv(LOG_NAME, "display. register free ride provider. %s",
+                        provider.getDisplayFreeRideLog());
+            }
         }
     }
 
@@ -121,8 +123,10 @@ public class FreeRideManager implements Identifier {
 
             freeRideProvider.byDisplayFreeRide(childFreeRide);
 
-            SLog.fi(SLogType.REQUEST, LOG_NAME, "display. by free ride. %s  ------>  %s",
-                    childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog());
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.fi(LOG_NAME, "display. by free ride. %s  ------>  %s",
+                        childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog());
+            }
             return true;
         }
     }
@@ -146,8 +150,10 @@ public class FreeRideManager implements Identifier {
 
             downloadFreeRideProviderMap.put(provider.getDownloadFreeRideKey(), provider);
 
-            SLog.fv(SLogType.REQUEST, LOG_NAME, "download. register free ride provider. %s",
-                    provider.getDownloadFreeRideLog());
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.fv(LOG_NAME, "download. register free ride provider. %s",
+                        provider.getDownloadFreeRideLog());
+            }
         }
     }
 
@@ -210,8 +216,10 @@ public class FreeRideManager implements Identifier {
 
             freeRideProvider.byDownloadFreeRide(childFreeRide);
 
-            SLog.fi(SLogType.REQUEST, LOG_NAME, "download. by free ride. %s  ------>  %s",
-                    childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog());
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.fi(LOG_NAME, "download. by free ride. %s  ------>  %s",
+                        childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog());
+            }
             return true;
         }
     }

@@ -211,7 +211,9 @@ public class LargeImageViewer {
                 clean("pause");
             }
         } else {
-            SLog.fi(SLogType.LARGE, NAME, "resume. %s", imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.fi(NAME, "resume. %s", imageUri);
+            }
 
             if (running) {
                 callback.updateMatrix();

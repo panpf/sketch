@@ -143,9 +143,11 @@ class TileManager {
         calculateSrcRect(newDrawSrcRect, newDrawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
         int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewWidth, viewHeight);
 
-        SLog.fi(SLogType.LARGE, NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
-                newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
-                inSampleSize, largeImageViewer.getZoomScale(), largeImageViewer.getLastZoomScale(), tileList.size());
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.fi(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
+                    newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
+                    inSampleSize, largeImageViewer.getZoomScale(), largeImageViewer.getLastZoomScale(), tileList.size());
+        }
 
         // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
         Rect newDecodeRect = rectPool.get();
@@ -629,7 +631,7 @@ class TileManager {
     void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
         if (SLogType.LARGE.isEnabled()) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            SLog.fi(SLogType.LARGE, NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
+            SLog.fi(NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
                     useTime, tile.getInfo(), bitmap.getWidth(), bitmap.getHeight(), bitmapConfig, tileList.size());
         }
 

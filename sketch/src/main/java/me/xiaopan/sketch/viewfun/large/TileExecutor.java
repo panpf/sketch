@@ -63,7 +63,9 @@ class TileExecutor {
                     handlerThread = new HandlerThread("ImageRegionDecodeThread" + THREAD_NUMBER.addAndGet(1));
                     handlerThread.start();
 
-                    SLog.fi(SLogType.LARGE, NAME, "image region decode thread %s started", handlerThread.getName());
+                    if (SLogType.LARGE.isEnabled()) {
+                        SLog.fi(NAME, "image region decode thread %s started", handlerThread.getName());
+                    }
 
                     tileDecodeHandler = new TileDecodeHandler(handlerThread.getLooper(), this);
                     tileDecoderInitHandler = new TileDecoderInitHandler(handlerThread.getLooper(), this);
