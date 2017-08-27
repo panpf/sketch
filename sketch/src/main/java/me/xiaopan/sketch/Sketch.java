@@ -287,7 +287,7 @@ public class Sketch {
             }
         }
 
-        SLog.w("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
+        SLog.fw("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
 
         configuration.getMemoryCache().trimMemory(level);
         configuration.getBitmapPool().trimMemory(level);
@@ -305,7 +305,7 @@ public class Sketch {
             }
         }
 
-        SLog.w("Memory is very low, clean memory cache and bitmap pool");
+        SLog.w(null, "Memory is very low, clean memory cache and bitmap pool");
 
         configuration.getMemoryCache().clear();
         configuration.getBitmapPool().clear();

@@ -30,6 +30,7 @@ import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
  * 这个类负责提供各种function开关和属性设置
  */
 public abstract class FunctionPropertyView extends FunctionCallbackView {
+    private static final String LOG_NAME = "FunctionPropertyView";
 
     public FunctionPropertyView(Context context) {
         super(context);
@@ -308,7 +309,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     public void setZoomEnabled(boolean enabled) {
         if (!enabled && isBlockDisplayLargeImageEnabled()) {
-            SLog.w("You can't close the gestures zoom function, because of large image function need it");
+            SLog.w(LOG_NAME, "You can't close the gestures zoom function, because of large image function need it");
             return;
         }
 

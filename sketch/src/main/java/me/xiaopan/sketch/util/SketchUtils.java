@@ -1250,7 +1250,7 @@ public class SketchUtils {
             return null;
         }
         if (!Initializer.class.isAssignableFrom(initializerClass)) {
-            SLog.e(initializerClassName + " must be implements Initializer");
+            SLog.e("findInitializer",  initializerClassName + " must be implements Initializer");
             return null;
         }
         //noinspection TryWithIdenticalCatches

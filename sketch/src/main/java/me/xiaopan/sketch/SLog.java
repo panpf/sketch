@@ -57,10 +57,6 @@ public class SLog {
         return proxy.v(tag, msg);
     }
 
-    public static int fv(String format, Object... args) {
-        return fv(null, format, args);
-    }
-
     public static int v(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
@@ -68,10 +64,6 @@ public class SLog {
         }
 
         return proxy.v(tag, msg);
-    }
-
-    public static int v(String msg) {
-        return v(null, msg);
     }
 
 
@@ -89,10 +81,6 @@ public class SLog {
         return proxy.d(tag, msg);
     }
 
-    public static int fd(String format, Object... args) {
-        return fd(null, format, args);
-    }
-
     public static int d(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
@@ -100,10 +88,6 @@ public class SLog {
         }
 
         return proxy.d(tag, msg);
-    }
-
-    public static int d(String msg) {
-        return d(null, msg);
     }
 
 
@@ -121,10 +105,6 @@ public class SLog {
         return proxy.i(tag, msg);
     }
 
-    public static int fi(String format, Object... args) {
-        return fi(null, format, args);
-    }
-
     public static int i(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
@@ -132,10 +112,6 @@ public class SLog {
         }
 
         return proxy.i(tag, msg);
-    }
-
-    public static int i(String msg) {
-        return i(null, msg);
     }
 
 
@@ -153,10 +129,6 @@ public class SLog {
         return proxy.w(tag, msg);
     }
 
-    public static int fw(String format, Object... args) {
-        return fw(null, format, args);
-    }
-
     public static int w(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
@@ -164,10 +136,6 @@ public class SLog {
         }
 
         return proxy.w(tag, msg);
-    }
-
-    public static int w(String msg) {
-        return w(null, msg);
     }
 
 
@@ -185,10 +153,6 @@ public class SLog {
         return proxy.e(tag, msg);
     }
 
-    public static int fe(String format, Object... args) {
-        return fe(null, format, args);
-    }
-
     public static int e(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
@@ -196,10 +160,6 @@ public class SLog {
         }
 
         return proxy.e(tag, msg);
-    }
-
-    public static int e(String msg) {
-        return e(null, msg);
     }
 
     /**
