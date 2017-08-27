@@ -30,7 +30,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 加载Helper，负责组织、收集、初始化加载参数，最后执行commit()提交请求
  */
 public class LoadHelper {
-    private static final String LOG_NAME = "LoadHelper";
+    private static final String NAME = "LoadHelper";
 
     private Sketch sketch;
     private boolean sync;
@@ -242,14 +242,14 @@ public class LoadHelper {
     private boolean checkUri() {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(LOG_NAME, "uri is null or empty");
+                SLog.e(NAME, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.fe(LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -320,7 +320,7 @@ public class LoadHelper {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fd(LOG_NAME, "canceled. %s. %s",
+                SLog.d(NAME, "canceled. %s. %s",
                         isPauseDownload ? "pause download" : "requestLevel is local", key);
             }
 

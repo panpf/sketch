@@ -32,7 +32,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
 
     private static final String URI_HOST = "video";
     private static final String PARAM_PATH = "path";
-    private static final String LOG_NAME = "VideoThumbnailPreprocessor";
+    private static final String NAME = "VideoThumbnailPreprocessor";
 
     /**
      * 创建用于显示视频缩略图的uri
@@ -130,7 +130,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
         }
         if (frameBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(LOG_NAME, "video thumbnail bitmap recycled. %s", uriInfo.getUri());
+                SLog.w(NAME, "video thumbnail bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -184,7 +184,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "not found video thumbnail cache file. %s", uriInfo.getUri());
+                    SLog.w(NAME, "not found video thumbnail cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

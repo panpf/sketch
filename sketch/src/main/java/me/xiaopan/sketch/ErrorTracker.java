@@ -20,7 +20,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.large.Tile;
 
 public class ErrorTracker implements Identifier {
-    private static final String LOG_NAME = "ErrorTracker";
+    private static final String NAME = "ErrorTracker";
 
     private Context context;
 
@@ -38,7 +38,7 @@ public class ErrorTracker implements Identifier {
      * @param cacheDir 默认的缓存目录
      */
     public void onInstallDiskCacheError(Exception e, File cacheDir) {
-        SLog.fe(LOG_NAME, "onInstallDiskCacheError. %s: %s. SDCardState: %s. cacheDir: %s",
+        SLog.e(NAME, "onInstallDiskCacheError. %s: %s. SDCardState: %s. cacheDir: %s",
                 e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
     }
 
@@ -48,7 +48,7 @@ public class ErrorTracker implements Identifier {
      * @param e UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
      */
     public void onNotFoundGifSoError(Throwable e) {
-        SLog.e(LOG_NAME, "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
+        SLog.e(NAME, "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
                 "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
 
         String abis;
@@ -57,7 +57,7 @@ public class ErrorTracker implements Identifier {
         } else {
             abis = Arrays.toString(new String[]{Build.CPU_ABI, Build.CPU_ABI2});
         }
-        SLog.fe(LOG_NAME, "abis=%s", abis);
+        SLog.e(NAME, "abis=%s", abis);
     }
 
     /**
@@ -70,7 +70,7 @@ public class ErrorTracker implements Identifier {
      * @param outMimeType 图片类型
      */
     public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
-        SLog.fe(LOG_NAME, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
+        SLog.e(NAME, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
                 outWidth, outHeight, outMimeType, request.getKey());
     }
 
@@ -91,11 +91,11 @@ public class ErrorTracker implements Identifier {
             String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
             String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
             String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            SLog.fe(LOG_NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+            SLog.e(NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
                     maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
         }
 
-        SLog.fe(LOG_NAME, "onDecodeNormalImageError. outWidth=%d, outHeight=%d, outMimeType=%s. %s",
+        SLog.e(NAME, "onDecodeNormalImageError. outWidth=%d, outHeight=%d, outMimeType=%s. %s",
                 outWidth, outHeight, outMimeType, request.getKey());
     }
 
@@ -114,11 +114,11 @@ public class ErrorTracker implements Identifier {
             String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
             String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
             String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            SLog.fd("OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+            SLog.d(NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
                     maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
         }
 
-        SLog.fe(LOG_NAME, "onProcessImageError. imageUri: %s. processor: %s",
+        SLog.e(NAME, "onProcessImageError. imageUri: %s. processor: %s",
                 imageUri, processor.getKey());
     }
 
@@ -143,14 +143,14 @@ public class ErrorTracker implements Identifier {
     public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e, List<Tile> tileList,
                                 @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
         String legacy = useLegacyMergeSort ? "useLegacyMergeSort. " : "";
-        SLog.fw(LOG_NAME, "onTileSortError. %s%s", legacy, SketchUtils.tileListToString(tileList));
+        SLog.w(NAME, "onTileSortError. %s%s", legacy, SketchUtils.tileListToString(tileList));
     }
 
     /**
      * 在即将显示时发现Bitmap被回收
      */
     public void onBitmapRecycledOnDisplay(DisplayRequest request, SketchRefDrawable refDrawable) {
-        SLog.fw(LOG_NAME, "onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
+        SLog.w(NAME, "onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
                 request.getUri(), refDrawable.getInfo());
     }
 
@@ -167,7 +167,7 @@ public class ErrorTracker implements Identifier {
      */
     public void onInBitmapDecodeError(String imageUri, int imageWidth, int imageHeight,
                                       String imageMimeType, Throwable throwable, int inSampleSize, Bitmap inBitmap) {
-        SLog.fw(LOG_NAME, "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
+        SLog.w(NAME, "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
                         "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
                 imageUri, imageWidth, imageHeight, imageMimeType, inSampleSize,
                 inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getByteCount(inBitmap));
@@ -185,12 +185,12 @@ public class ErrorTracker implements Identifier {
      */
     public void onDecodeRegionError(String imageUri, int imageWidth, int imageHeight,
                                     String imageMimeType, Throwable throwable, Rect srcRect, int inSampleSize) {
-        SLog.fw(LOG_NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
+        SLog.w(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
                 imageUri, imageWidth, imageHeight, imageMimeType, srcRect.toString(), inSampleSize);
     }
 
     @Override
     public String getKey() {
-        return LOG_NAME;
+        return NAME;
     }
 }

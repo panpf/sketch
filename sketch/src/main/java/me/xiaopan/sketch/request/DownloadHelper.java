@@ -26,7 +26,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 下载Helper，负责组织、收集、初始化下载参数，最后执行commit()提交请求
  */
 public class DownloadHelper {
-    private static final String LOG_NAME = "DownloadHelper";
+    private static final String NAME = "DownloadHelper";
 
     private Sketch sketch;
     private boolean sync;
@@ -123,21 +123,21 @@ public class DownloadHelper {
     private boolean checkUri() {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(LOG_NAME, "uri is null or empty");
+                SLog.e(NAME, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.fe(LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (uriInfo.getScheme() != UriScheme.NET) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fe(LOG_NAME, "only support http ot https. %s", uriInfo.getUri());
+                SLog.e(NAME, "only support http ot https. %s", uriInfo.getUri());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
@@ -162,7 +162,7 @@ public class DownloadHelper {
             DiskCache.Entry diskCacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fi(LOG_NAME, "image download completed. %s", key);
+                    SLog.i(NAME, "image download completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

@@ -69,13 +69,13 @@ class TileDecoderInitHandler extends Handler {
 
     private void init(TileExecutor decodeExecutor, String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
-            SLog.fw(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
+            SLog.w(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            SLog.fw(NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            SLog.w(NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             return;
         }
 
@@ -95,7 +95,7 @@ class TileDecoderInitHandler extends Handler {
 
         newKey = keyCounter.getKey();
         if (key != newKey) {
-            SLog.fw(NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            SLog.w(NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             decoder.recycle();
             return;
         }
@@ -104,7 +104,7 @@ class TileDecoderInitHandler extends Handler {
     }
 
     public void clean(String why) {
-        SLog.fw(NAME, "clean. %s", why);
+        SLog.w(NAME, "clean. %s", why);
 
         removeMessages(WHAT_INIT);
     }

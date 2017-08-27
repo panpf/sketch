@@ -69,7 +69,7 @@ class FlingTranslateRunner implements Runnable {
         }
 
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.fd(ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
+            SLog.d(ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
                     startX, startY, minX, minY, maxX, maxY);
         }
 

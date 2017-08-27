@@ -116,13 +116,13 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.fd(NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
+                SLog.d(NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
-            SLog.fw(NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
+            SLog.w(NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             return;
         }
 
@@ -162,12 +162,12 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
 
             if (drawableQualified) {
                 if (SLogType.LARGE.isEnabled()) {
-                    SLog.fd(NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                    SLog.d(NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
                 if (SLogType.LARGE.isEnabled()) {
-                    SLog.fd(NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                    SLog.d(NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }

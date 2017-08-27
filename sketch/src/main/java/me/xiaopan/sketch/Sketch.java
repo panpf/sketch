@@ -64,7 +64,7 @@ public class Sketch {
             synchronized (Sketch.class) {
                 if (instance == null) {
                     Sketch newInstance = new Sketch(context);
-                    SLog.fi("Version %s %s(%d)\n%s",
+                    SLog.i(null, "Version %s %s(%d) \n %s",
                             BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.getInfo());
 
                     Initializer initializer = SketchUtils.findInitializer(context);
@@ -287,7 +287,7 @@ public class Sketch {
             }
         }
 
-        SLog.fw("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
+        SLog.w(null, "Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
 
         configuration.getMemoryCache().trimMemory(level);
         configuration.getBitmapPool().trimMemory(level);

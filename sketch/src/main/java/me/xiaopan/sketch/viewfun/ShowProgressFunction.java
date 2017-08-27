@@ -33,7 +33,7 @@ import me.xiaopan.sketch.request.UriScheme;
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
 public class ShowProgressFunction extends ViewFunction {
-    private static final String LOG_NAME = "ShowProgressFunction";
+    private static final String NAME = "ShowProgressFunction";
 
     private static final int NONE = -1;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
@@ -68,7 +68,7 @@ public class ShowProgressFunction extends ViewFunction {
             try {
                 canvas.clipPath(imageShapeFunction.getClipPath());
             } catch (UnsupportedOperationException e) {
-                SLog.e(LOG_NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 }

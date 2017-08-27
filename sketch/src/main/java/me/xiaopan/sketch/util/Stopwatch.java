@@ -80,7 +80,7 @@ public class Stopwatch {
             useTimeCount += totalTime;
 
             if (SLogType.TIME.isEnabled()) {
-                SLog.fd(logName, "%s, average=%sms. %s",
+                SLog.d(logName, "%s, average=%sms. %s",
                         builder.toString(), decimalFormat.format((double) useTimeCount / decodeCount), requestId);
             }
             builder = null;

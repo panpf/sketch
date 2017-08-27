@@ -15,7 +15,7 @@ import me.xiaopan.sketch.SLogType;
  * devices screen density, width, and height.
  */
 public class MemorySizeCalculator {
-    private static final String LOG_NAME = "MemorySizeCalculator";
+    private static final String NAME = "MemorySizeCalculator";
 
     // Visible for testing.
     static final int BYTES_PER_ARGB_8888_PIXEL = 4;
@@ -62,7 +62,7 @@ public class MemorySizeCalculator {
         }
 
         if (SLogType.CACHE.isEnabled()) {
-            SLog.fd(LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
+            SLog.d(NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(memoryCacheSize), toMb(bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(maxSize), activityManager.getMemoryClass(), isLowMemoryDevice(activityManager));
         }
     }

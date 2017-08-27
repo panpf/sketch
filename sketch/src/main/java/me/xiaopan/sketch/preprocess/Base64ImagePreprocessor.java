@@ -37,7 +37,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 public class Base64ImagePreprocessor implements Preprocessor {
 
-    private static final String LOG_NAME = "Base64ImagePreprocessor";
+    private static final String NAME = "Base64ImagePreprocessor";
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
@@ -120,7 +120,7 @@ public class Base64ImagePreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.MEMORY);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "not found base64 image cache file. %s", uriInfo.getUri());
+                    SLog.w(NAME, "not found base64 image cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

@@ -51,7 +51,7 @@ import me.xiaopan.sketch.request.RequestFactory;
  * Sketch唯一配置类
  */
 public final class Configuration {
-    private static final String LOG_NAME = "Configuration";
+    private static final String NAME = "Configuration";
 
     private Context context;
 
@@ -149,7 +149,7 @@ public final class Configuration {
             if (oldDiskCache != null) {
                 oldDiskCache.close();
             }
-            SLog.fw(LOG_NAME, "setDiskCache. %s", diskCache.getKey());
+            SLog.w(NAME, "setDiskCache. %s", diskCache.getKey());
         }
         return this;
     }
@@ -177,7 +177,7 @@ public final class Configuration {
             if (oldBitmapPool != null) {
                 oldBitmapPool.close();
             }
-            SLog.fw(LOG_NAME, "setBitmapPool. %s", bitmapPool.getKey());
+            SLog.w(NAME, "setBitmapPool. %s", bitmapPool.getKey());
         }
         return this;
     }
@@ -204,7 +204,7 @@ public final class Configuration {
             if (oldMemoryCache != null) {
                 oldMemoryCache.close();
             }
-            SLog.fw(LOG_NAME, "setMemoryCache. %s", memoryCache.getKey());
+            SLog.w(NAME, "setMemoryCache. %s", memoryCache.getKey());
         }
         return this;
     }
@@ -250,7 +250,7 @@ public final class Configuration {
     public Configuration setHttpStack(HttpStack httpStack) {
         if (httpStack != null) {
             this.httpStack = httpStack;
-            SLog.fw(LOG_NAME, "setHttpStack. %s", httpStack.getKey());
+            SLog.w(NAME, "setHttpStack. %s", httpStack.getKey());
         }
         return this;
     }
@@ -273,7 +273,7 @@ public final class Configuration {
     public Configuration setImageDecoder(ImageDecoder imageDecoder) {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
-            SLog.fw(LOG_NAME, "setImageDecoder. %s", imageDecoder.getKey());
+            SLog.w(NAME, "setImageDecoder. %s", imageDecoder.getKey());
         }
         return this;
     }
@@ -297,7 +297,7 @@ public final class Configuration {
     public Configuration setImageDownloader(ImageDownloader imageDownloader) {
         if (imageDownloader != null) {
             this.imageDownloader = imageDownloader;
-            SLog.fw(LOG_NAME, "setImageDownloader. %s", imageDownloader.getKey());
+            SLog.w(NAME, "setImageDownloader. %s", imageDownloader.getKey());
         }
         return this;
     }
@@ -320,7 +320,7 @@ public final class Configuration {
     public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
-            SLog.fw(LOG_NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
+            SLog.w(NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
         }
         return this;
     }
@@ -343,7 +343,7 @@ public final class Configuration {
     public Configuration setImageOrientationCorrector(ImageOrientationCorrector imageOrientationCorrector) {
         if (imageOrientationCorrector != null) {
             this.imageOrientationCorrector = imageOrientationCorrector;
-            SLog.fw(LOG_NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
+            SLog.w(NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
         }
         return this;
     }
@@ -367,7 +367,7 @@ public final class Configuration {
     public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
-            SLog.fw(LOG_NAME, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
+            SLog.w(NAME, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
         }
         return this;
     }
@@ -390,7 +390,7 @@ public final class Configuration {
     public Configuration setResizeImageProcessor(ImageProcessor resizeImageProcessor) {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
-            SLog.fw(LOG_NAME, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
+            SLog.w(NAME, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
         }
         return this;
     }
@@ -413,7 +413,7 @@ public final class Configuration {
     public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
-            SLog.fw(LOG_NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
+            SLog.w(NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
         }
         return this;
     }
@@ -436,7 +436,7 @@ public final class Configuration {
     public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
-            SLog.fw(LOG_NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
+            SLog.w(NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
         }
         return this;
     }
@@ -461,7 +461,7 @@ public final class Configuration {
     public Configuration setFreeRideManager(FreeRideManager freeRideManager) {
         if (freeRideManager != null) {
             this.freeRideManager = freeRideManager;
-            SLog.fw(LOG_NAME, "setFreeRideManager. %s", freeRideManager.getKey());
+            SLog.w(NAME, "setFreeRideManager. %s", freeRideManager.getKey());
         }
         return this;
     }
@@ -488,7 +488,7 @@ public final class Configuration {
             if (oldRequestExecutor != null) {
                 oldRequestExecutor.shutdown();
             }
-            SLog.fw(LOG_NAME, "setRequestExecutor. %s", requestExecutor.getKey());
+            SLog.w(NAME, "setRequestExecutor. %s", requestExecutor.getKey());
         }
         return this;
     }
@@ -511,7 +511,7 @@ public final class Configuration {
     public Configuration setHelperFactory(HelperFactory helperFactory) {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
-            SLog.fw(LOG_NAME, "setHelperFactory. %s", helperFactory.getKey());
+            SLog.w(NAME, "setHelperFactory. %s", helperFactory.getKey());
         }
         return this;
     }
@@ -534,7 +534,7 @@ public final class Configuration {
     public Configuration setRequestFactory(RequestFactory requestFactory) {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
-            SLog.fw(LOG_NAME, "setRequestFactory. %s", requestFactory.getKey());
+            SLog.w(NAME, "setRequestFactory. %s", requestFactory.getKey());
         }
         return this;
     }
@@ -558,7 +558,7 @@ public final class Configuration {
     public Configuration setErrorTracker(ErrorTracker errorTracker) {
         if (errorTracker != null) {
             this.errorTracker = errorTracker;
-            SLog.fw(LOG_NAME, "setMonitor. %s", errorTracker.getKey());
+            SLog.w(NAME, "setMonitor. %s", errorTracker.getKey());
         }
         return this;
     }
@@ -578,7 +578,7 @@ public final class Configuration {
     public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
-            SLog.fw(LOG_NAME, "setGlobalPauseLoad. %s", globalPauseLoad);
+            SLog.w(NAME, "setGlobalPauseLoad. %s", globalPauseLoad);
         }
         return this;
     }
@@ -599,7 +599,7 @@ public final class Configuration {
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
-            SLog.fw(LOG_NAME, "setGlobalPauseDownload. %s", globalPauseDownload);
+            SLog.w(NAME, "setGlobalPauseDownload. %s", globalPauseDownload);
         }
         return this;
     }
@@ -630,7 +630,7 @@ public final class Configuration {
                 }
             }
 
-            SLog.fw(LOG_NAME, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
+            SLog.w(NAME, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
         }
         return this;
     }
@@ -650,7 +650,7 @@ public final class Configuration {
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
-            SLog.fw(LOG_NAME, "setGlobalLowQualityImage. %s", globalLowQualityImage);
+            SLog.w(NAME, "setGlobalLowQualityImage. %s", globalLowQualityImage);
         }
         return this;
     }
@@ -673,13 +673,13 @@ public final class Configuration {
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
-            SLog.fw(LOG_NAME, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
+            SLog.w(NAME, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
         }
         return this;
     }
 
     public String getInfo() {
-        return LOG_NAME + ": " +
+        return NAME + ": " +
                 "\n" + "diskCache：" + diskCache.getKey() +
                 "\n" + "bitmapPool：" + bitmapPool.getKey() +
                 "\n" + "memoryCache：" + memoryCache.getKey() +

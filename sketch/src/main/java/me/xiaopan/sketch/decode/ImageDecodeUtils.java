@@ -87,12 +87,12 @@ public class ImageDecodeUtils {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
-                SLog.fd(logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                SLog.d(logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                                 "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
                         sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
-                SLog.fd(logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+                SLog.d(logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
             }
         }
     }
@@ -101,10 +101,10 @@ public class ImageDecodeUtils {
         if (dataSource instanceof CacheFileDataSource) {
             DiskCache.Entry diskCacheEntry = ((CacheFileDataSource) dataSource).getDiskCacheEntry();
 
-            SLog.fe(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
+            SLog.e(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
 
             if (!diskCacheEntry.delete()) {
-                SLog.fe(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+                SLog.e(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
                         diskCacheEntry.getUri(), loadRequest.getKey());
             }
         }
@@ -115,10 +115,10 @@ public class ImageDecodeUtils {
 
         if (dataSource instanceof FileDataSource) {
             File file = ((FileDataSource) dataSource).getFile(null, null);
-            SLog.fe(logName, "decode failed. filePath=%s, fileLength=%d",
+            SLog.e(logName, "decode failed. filePath=%s, fileLength=%d",
                     file.getPath(), file.exists() ? file.length() : 0);
         } else {
-            SLog.fe(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
+            SLog.e(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
         }
     }
 

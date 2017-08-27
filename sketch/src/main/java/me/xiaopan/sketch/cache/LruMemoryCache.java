@@ -26,7 +26,7 @@ import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruMemoryCache implements MemoryCache {
-    private static final String LOG_NAME = "LruMemoryCache";
+    private static final String NAME = "LruMemoryCache";
 
     private final LruCache<String, SketchRefBitmap> cache;
     private Context context;
@@ -46,12 +46,12 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.fw(LOG_NAME, "Disabled. Unable put, key=%s", key);
+            SLog.w(NAME, "Disabled. Unable put, key=%s", key);
             return;
         }
 
         if (cache.get(key) != null) {
-            SLog.w(LOG_NAME, String.format("Exist. key=%s", key));
+            SLog.w(NAME, String.format("Exist. key=%s", key));
             return;
         }
 
@@ -63,7 +63,7 @@ public class LruMemoryCache implements MemoryCache {
         cache.put(key, refBitmap);
 
         if (SLogType.CACHE.isEnabled()) {
-            SLog.fi(LOG_NAME, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+            SLog.i(NAME, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
                     Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
                     Formatter.formatFileSize(context, cache.size()));
         }
@@ -76,7 +76,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.fw(LOG_NAME, "Disabled. Unable get, key=%s", key);
+            SLog.w(NAME, "Disabled. Unable get, key=%s", key);
             return null;
         }
 
@@ -90,13 +90,13 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.fw(LOG_NAME, "Disabled. Unable remove, key=%s", key);
+            SLog.w(NAME, "Disabled. Unable remove, key=%s", key);
             return null;
         }
 
         SketchRefBitmap refBitmap = cache.remove(key);
         if (SLogType.CACHE.isEnabled()) {
-            SLog.fi(LOG_NAME, "remove. memoryCacheSize: %s",
+            SLog.i(NAME, "remove. memoryCacheSize: %s",
                     Formatter.formatFileSize(context, cache.size()));
         }
         return refBitmap;
@@ -131,7 +131,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         long releasedSize = memoryCacheSize - getSize();
-        SLog.fw(LOG_NAME, "trimMemory. level=%s, released: %s",
+        SLog.w(NAME, "trimMemory. level=%s, released: %s",
                 SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
     }
 
@@ -144,9 +144,9 @@ public class LruMemoryCache implements MemoryCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.fw(LOG_NAME, "setDisabled. %s", true);
+            SLog.w(NAME, "setDisabled. %s", true);
         } else {
-            SLog.fw(LOG_NAME, "setDisabled. %s", false);
+            SLog.w(NAME, "setDisabled. %s", false);
         }
     }
 
@@ -156,7 +156,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        SLog.fw(LOG_NAME, "clear. before size: %s",
+        SLog.w(NAME, "clear. before size: %s",
                 Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }
@@ -178,7 +178,7 @@ public class LruMemoryCache implements MemoryCache {
 
     @Override
     public String getKey() {
-        return String.format("%s(maxSize=%s)", LOG_NAME, Formatter.formatFileSize(context, getMaxSize()));
+        return String.format("%s(maxSize=%s)", NAME, Formatter.formatFileSize(context, getMaxSize()));
     }
 
     private static class RefBitmapLruCache extends LruCache<String, SketchRefBitmap> {
@@ -189,7 +189,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         public SketchRefBitmap put(String key, SketchRefBitmap refBitmap) {
-            refBitmap.setIsCached(LOG_NAME + ":put", true);
+            refBitmap.setIsCached(NAME + ":put", true);
             return super.put(key, refBitmap);
         }
 
@@ -201,7 +201,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         protected void entryRemoved(boolean evicted, String key, SketchRefBitmap oldRefBitmap, SketchRefBitmap newRefBitmap) {
-            oldRefBitmap.setIsCached(LOG_NAME + ":entryRemoved", false);
+            oldRefBitmap.setIsCached(NAME + ":entryRemoved", false);
         }
     }
 }

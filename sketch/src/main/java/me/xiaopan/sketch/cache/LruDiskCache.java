@@ -38,7 +38,7 @@ import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
 
 public class LruDiskCache implements DiskCache {
-    private static final String LOG_NAME = "LruDiskCache";
+    private static final String NAME = "LruDiskCache";
 
     private int maxSize;
     private int appVersionCode;
@@ -101,7 +101,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (SLogType.CACHE.isEnabled()) {
-            SLog.fd(LOG_NAME, "diskCacheDir: %s", cacheDir.getPath());
+            SLog.d(NAME, "diskCacheDir: %s", cacheDir.getPath());
         }
 
         try {
@@ -120,7 +120,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(LOG_NAME, "Disabled. Unable judge exist, uri=%s", uri);
+            SLog.w(NAME, "Disabled. Unable judge exist, uri=%s", uri);
             return false;
         }
 
@@ -150,7 +150,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(LOG_NAME, "Disabled. Unable get, uri=%s", uri);
+            SLog.w(NAME, "Disabled. Unable get, uri=%s", uri);
             return null;
         }
 
@@ -177,7 +177,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(LOG_NAME, "Disabled. Unable edit, uri=%s", uri);
+            SLog.w(NAME, "Disabled. Unable edit, uri=%s", uri);
             return null;
         }
 
@@ -268,9 +268,9 @@ public class LruDiskCache implements DiskCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.fw(LOG_NAME, "setDisabled. %s", true);
+            SLog.w(NAME, "setDisabled. %s", true);
         } else {
-            SLog.fw(LOG_NAME, "setDisabled. %s", false);
+            SLog.w(NAME, "setDisabled. %s", false);
         }
     }
 
@@ -336,7 +336,7 @@ public class LruDiskCache implements DiskCache {
     @Override
     public String getKey() {
         return String.format("%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
-                LOG_NAME, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
+                NAME, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
     }
 
     public static class LruDiskCacheEntry implements Entry {

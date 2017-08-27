@@ -97,7 +97,7 @@ public class SketchUtils {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
-            SLog.fw(logName, "get packageInfo is null. %s", apkFilePath);
+            SLog.w(logName, "get packageInfo is null. %s", apkFilePath);
             return null;
         }
 
@@ -111,7 +111,7 @@ public class SketchUtils {
             e.printStackTrace();
         }
         if (drawable == null) {
-            SLog.fw(logName, "app icon is null. %s", apkFilePath);
+            SLog.w(logName, "app icon is null. %s", apkFilePath);
             return null;
         }
 

@@ -41,9 +41,11 @@ public class SLog {
     }
 
     // TODO: 2017/8/25 加入 level 控制，所有的日志点 都要过滤level，并且梳理所有日志，选择合适的类型
-    // TODO: 2017/8/25 梳理日志方法，省略所有tag，type 不再绑定到tag上，name 改叫 scope
+    // TODO: 2017/8/25 梳理日志方法，省略所有tag，name 不再绑定到tag上，name 改叫 scope
+    // TODO: 2017/8/27 所有的w和e日志不加过滤条件
+    // TODO: 2017/8/27 SLogType 挪进 SLog 并简化
 
-    public static int fv(String name, String format, Object... args) {
+    public static int v(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -53,21 +55,16 @@ public class SLog {
             format = FORMAT_MESSAGE_DEFAULT;
         }
 
-        String msg = String.format(format, args);
+        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
         return proxy.v(tag, msg);
     }
 
     public static int v(String name, String msg) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        return proxy.v(tag, msg);
+        return v(name, msg, (Object[]) null);
     }
 
 
-    public static int fd(String name, String format, Object... args) {
+    public static int d(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -77,21 +74,16 @@ public class SLog {
             format = FORMAT_MESSAGE_DEFAULT;
         }
 
-        String msg = String.format(format, args);
+        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
         return proxy.d(tag, msg);
     }
 
     public static int d(String name, String msg) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        return proxy.d(tag, msg);
+        return d(name, msg, (Object[]) null);
     }
 
 
-    public static int fi(String name, String format, Object... args) {
+    public static int i(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -101,21 +93,16 @@ public class SLog {
             format = FORMAT_MESSAGE_DEFAULT;
         }
 
-        String msg = String.format(format, args);
+        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
         return proxy.i(tag, msg);
     }
 
     public static int i(String name, String msg) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        return proxy.i(tag, msg);
+        return i(name, msg, (Object[]) null);
     }
 
 
-    public static int fw(String name, String format, Object... args) {
+    public static int w(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -125,21 +112,16 @@ public class SLog {
             format = FORMAT_MESSAGE_DEFAULT;
         }
 
-        String msg = String.format(format, args);
+        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
         return proxy.w(tag, msg);
     }
 
     public static int w(String name, String msg) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        return proxy.w(tag, msg);
+        return w(name, msg, (Object[]) null);
     }
 
 
-    public static int fe(String name, String format, Object... args) {
+    public static int e(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -149,17 +131,12 @@ public class SLog {
             format = FORMAT_MESSAGE_DEFAULT;
         }
 
-        String msg = String.format(format, args);
+        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
         return proxy.e(tag, msg);
     }
 
     public static int e(String name, String msg) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        return proxy.e(tag, msg);
+        return e(name, msg, (Object[]) null);
     }
 
     /**

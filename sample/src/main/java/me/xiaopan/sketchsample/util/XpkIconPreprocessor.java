@@ -29,7 +29,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class XpkIconPreprocessor implements Preprocessor {
 
-    private static final String LOG_NAME = "XpkIconPreprocessor";
+    private static final String NAME = "XpkIconPreprocessor";
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
@@ -83,9 +83,7 @@ public class XpkIconPreprocessor implements Preprocessor {
         InputStream inputStream;
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(LOG_NAME, "not found icon.png in. %s", uriInfo.getUri());
-            }
+            SLog.w(NAME, "not found icon.png in. %s", uriInfo.getUri());
             return null;
         }
 
@@ -154,7 +152,7 @@ public class XpkIconPreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
+                    SLog.w(NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

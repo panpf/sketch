@@ -40,7 +40,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 public class ApkIconPreprocessor implements Preprocessor {
 
-    private static final String LOG_NAME = "ApkIconPreprocessor";
+    private static final String NAME = "ApkIconPreprocessor";
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
@@ -85,13 +85,13 @@ public class ApkIconPreprocessor implements Preprocessor {
 
     private PreProcessResult readApkIcon(Context context, UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriInfo.getContent(), false, LOG_NAME, bitmapPool);
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriInfo.getContent(), false, NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(LOG_NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
+                SLog.w(NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -144,7 +144,7 @@ public class ApkIconPreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "not found apk icon cache file. %s", uriInfo.getUri());
+                    SLog.w(NAME, "not found apk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

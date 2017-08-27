@@ -46,7 +46,7 @@ public class InstalledAppIconPreprocessor implements Preprocessor {
     public static final String INSTALLED_APP_URI_PARAM_PACKAGE_NAME = "packageName";
     public static final String INSTALLED_APP_URI_PARAM_VERSION_CODE = "versionCode";
 
-    private static final String LOG_NAME = "InstalledAppIconPreprocessor";
+    private static final String NAME = "InstalledAppIconPreprocessor";
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
@@ -101,14 +101,14 @@ public class InstalledAppIconPreprocessor implements Preprocessor {
 
         String apkFilePath = packageInfo.applicationInfo.sourceDir;
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, false, LOG_NAME, bitmapPool);
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, false, NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
 
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(LOG_NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
+                SLog.w(NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -161,7 +161,7 @@ public class InstalledAppIconPreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "not found apk icon cache file. %s", uriInfo.getUri());
+                    SLog.w(NAME, "not found apk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

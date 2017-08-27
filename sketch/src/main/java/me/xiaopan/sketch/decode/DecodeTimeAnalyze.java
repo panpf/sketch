@@ -40,7 +40,7 @@ public class DecodeTimeAnalyze {
         if (decimalFormat == null) {
             decimalFormat = new DecimalFormat("#.##");
         }
-        SLog.fd(logName, "decode use time %dms, average %sms. %s",
+        SLog.d(logName, "decode use time %dms, average %sms. %s",
                 useTime, decimalFormat.format((double) useTimeCount / decodeCount), key);
     }
 }

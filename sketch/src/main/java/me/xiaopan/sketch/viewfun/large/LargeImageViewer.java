@@ -121,19 +121,19 @@ public class LargeImageViewer {
     public void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
-            SLog.fw(NAME, "not ready. %s", imageUri);
+            SLog.w(NAME, "not ready. %s", imageUri);
             return;
         }
 
         // 暂停中也不走了
         if (paused) {
-            SLog.fw(NAME, "not resuming. %s", imageUri);
+            SLog.w(NAME, "not resuming. %s", imageUri);
             return;
         }
 
         // 传进来的参数不能用就什么也不显示
         if (newVisibleRect.isEmpty() || previewDrawableSize.x == 0 || previewDrawableSize.y == 0 || imageViewSize.x == 0 || imageViewSize.y == 0) {
-            SLog.fw(NAME, "update params is empty. update. newVisibleRect=%s, previewDrawableSize=%dx%d, imageViewSize=%dx%d. %s",
+            SLog.w(NAME, "update params is empty. update. newVisibleRect=%s, previewDrawableSize=%dx%d, imageViewSize=%dx%d. %s",
                     newVisibleRect.toShortString(), previewDrawableSize.x, previewDrawableSize.y, imageViewSize.x, imageViewSize.y, imageUri);
             clean("update param is empty");
             return;
@@ -142,7 +142,7 @@ public class LargeImageViewer {
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.fd(NAME, "full display. update. newVisibleRect=%s. %s",
+                SLog.d(NAME, "full display. update. newVisibleRect=%s. %s",
                         newVisibleRect.toShortString(), imageUri);
             }
             clean("full display");
@@ -207,14 +207,14 @@ public class LargeImageViewer {
         paused = pause;
 
         if (paused) {
-            SLog.fw(NAME, "pause. %s", imageUri);
+            SLog.w(NAME, "pause. %s", imageUri);
 
             if (running) {
                 clean("pause");
             }
         } else {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.fi(NAME, "resume. %s", imageUri);
+                SLog.i(NAME, "resume. %s", imageUri);
             }
 
             if (running) {
@@ -398,7 +398,7 @@ public class LargeImageViewer {
         @Override
         public void onInitCompleted(String imageUri, ImageRegionDecoder decoder) {
             if (!running) {
-                SLog.fw(NAME, "stop running. initCompleted. %s", imageUri);
+                SLog.w(NAME, "stop running. initCompleted. %s", imageUri);
                 return;
             }
 
@@ -410,7 +410,7 @@ public class LargeImageViewer {
         @Override
         public void onInitError(String imageUri, Exception e) {
             if (!running) {
-                SLog.fw(NAME, "stop running. initError. %s", imageUri);
+                SLog.w(NAME, "stop running. initError. %s", imageUri);
                 return;
             }
 
@@ -420,7 +420,7 @@ public class LargeImageViewer {
         @Override
         public void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
             if (!running) {
-                SLog.fw(NAME, "stop running. decodeCompleted. tile=%s", tile.getInfo());
+                SLog.w(NAME, "stop running. decodeCompleted. tile=%s", tile.getInfo());
                 BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
                 return;
             }
@@ -431,7 +431,7 @@ public class LargeImageViewer {
         @Override
         public void onDecodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
             if (!running) {
-                SLog.fw(NAME, "stop running. decodeError. tile=%s", tile.getInfo());
+                SLog.w(NAME, "stop running. decodeError. tile=%s", tile.getInfo());
                 return;
             }
 

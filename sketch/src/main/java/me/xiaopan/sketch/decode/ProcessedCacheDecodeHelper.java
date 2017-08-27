@@ -32,7 +32,7 @@ import me.xiaopan.sketch.util.ExifInterface;
  * 解码经过处理的缓存图片时只需原封不动读取，然后读取原图的类型、宽高信息即可
  */
 public class ProcessedCacheDecodeHelper extends DecodeHelper {
-    private static final String LOG_NAME = "ProcessedCacheDecodeHelper";
+    private static final String NAME = "ProcessedCacheDecodeHelper";
 
     @Override
     public boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions) {
@@ -79,17 +79,16 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            SLog.fw(LOG_NAME,
-                    "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+            SLog.w(NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             bitmap.recycle();
-            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }
 
@@ -128,7 +127,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
 
         orientationCorrector.rotateSize(imageAttrs, imageAttrs.getExifOrientation());
 
-        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, LOG_NAME);
+        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, NAME);
         return new BitmapDecodeResult(imageAttrs, bitmap).setBanProcess(true);
     }
 }

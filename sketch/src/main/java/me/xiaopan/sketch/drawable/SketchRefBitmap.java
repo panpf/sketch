@@ -28,7 +28,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 引用Bitmap，能够计算缓存引用、显示引用以及等待显示引用
  */
 public class SketchRefBitmap extends SketchBitmap {
-    private static final String LOG_NAME = "SketchRefBitmap";
+    private static final String NAME = "SketchRefBitmap";
 
     private int memoryCacheRefCount;  // 内存缓存引用
     private int displayRefCount;    // 真正显示引用
@@ -44,10 +44,10 @@ public class SketchRefBitmap extends SketchBitmap {
     @Override
     public String getInfo() {
         if (isRecycled()) {
-            return String.format("%s(Recycled,%s)", LOG_NAME, getKey());
+            return String.format("%s(Recycled,%s)", NAME, getKey());
         } else {
             ImageAttrs imageAttrs = getAttrs();
-            return SketchUtils.makeImageInfo(LOG_NAME, imageAttrs.getWidth(), imageAttrs.getHeight(),
+            return SketchUtils.makeImageInfo(NAME, imageAttrs.getWidth(), imageAttrs.getHeight(),
                     imageAttrs.getMimeType(), imageAttrs.getExifOrientation(), bitmap, getByteCount(), getKey());
         }
     }
@@ -114,20 +114,20 @@ public class SketchRefBitmap extends SketchBitmap {
      */
     private void referenceChanged(String callingStation) {
         if (isRecycled()) {
-            SLog.fe(LOG_NAME, "Recycled. %s. %s", callingStation, getKey());
+            SLog.e(NAME, "Recycled. %s. %s", callingStation, getKey());
             return;
         }
 
         if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.fw(LOG_NAME, "Free. %s. %s", callingStation, getInfo());
+                SLog.w(NAME, "Free. %s. %s", callingStation, getInfo());
             }
 
             BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             bitmap = null;
         } else {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.fd(LOG_NAME, "Can't free. %s. references(%d,%d,%d). %s",
+                SLog.d(NAME, "Can't free. %s. references(%d,%d,%d). %s",
                         callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getInfo());
             }
         }

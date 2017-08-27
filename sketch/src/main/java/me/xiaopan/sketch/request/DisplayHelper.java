@@ -45,7 +45,7 @@ import me.xiaopan.sketch.util.Stopwatch;
  * 显示Helper，负责组织、收集、初始化显示参数，最后执行commit()提交请求
  */
 public class DisplayHelper {
-    private static final String LOG_NAME = "DisplayHelper";
+    private static final String NAME = "DisplayHelper";
 
     private Sketch sketch;
 
@@ -64,7 +64,7 @@ public class DisplayHelper {
         this.sketchView = sketchView;
 
         if (SLogType.TIME.isEnabled()) {
-            Stopwatch.with().start(LOG_NAME + ". display use time");
+            Stopwatch.with().start(NAME + ". display use time");
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
@@ -367,7 +367,7 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            SLog.fw(LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
+            SLog.w(NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
                     Integer.toHexString(sketchView.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
             if (SLogType.TIME.isEnabled()) {
                 Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
@@ -451,8 +451,7 @@ public class DisplayHelper {
     private boolean checkUri() {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fe(LOG_NAME, "uri is null or empty. viewHashCode=%s",
-                        Integer.toHexString(sketchView.hashCode()));
+                SLog.e(NAME, "uri is null or empty. viewHashCode=%s", Integer.toHexString(sketchView.hashCode()));
             }
 
             Drawable drawable = null;
@@ -471,8 +470,7 @@ public class DisplayHelper {
 
         if (uriInfo.getScheme() == null) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.fe(LOG_NAME, "unknown uri scheme: %s. viewHashCode=%s. %s",
-                    uriInfo.getUri(), viewCode, uriInfo.getUri());
+            SLog.e(NAME, "unknown uri scheme: %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -609,7 +607,7 @@ public class DisplayHelper {
                         ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fd(LOG_NAME, "%s. viewHashCode=%s. %s",
+                    SLog.d(NAME, "%s. viewHashCode=%s. %s",
                             errorInfo, Integer.toHexString(sketchView.hashCode()), uriInfo.getUri());
                 }
                 throw new IllegalArgumentException(errorInfo);
@@ -649,18 +647,17 @@ public class DisplayHelper {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
             if (SLogType.REQUEST.isEnabled()) {
                 String viewCode = Integer.toHexString(sketchView.hashCode());
-                SLog.fe(LOG_NAME, "memory cache drawable recycled. %s. viewHashCode=%s",
-                        cachedRefBitmap.getInfo(), viewCode);
+                SLog.e(NAME, "memory cache drawable recycled. %s. viewHashCode=%s", cachedRefBitmap.getInfo(), viewCode);
             }
             return true;
         }
 
         // 立马标记等待使用，防止被回收
-        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", LOG_NAME), true);
+        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", NAME), true);
 
         if (SLogType.REQUEST.isEnabled()) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.fi(LOG_NAME, "image display completed. %s. %s. viewHashCode=%s",
+            SLog.i(NAME, "image display completed. %s. %s. viewHashCode=%s",
                     ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
 
@@ -684,7 +681,7 @@ public class DisplayHelper {
             displayListener.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
         }
 
-        ((SketchRefDrawable) finalDrawable).setIsWaitingUse(String.format("%s:waitingUse:finish", LOG_NAME), false);
+        ((SketchRefDrawable) finalDrawable).setIsWaitingUse(String.format("%s:waitingUse:finish", NAME), false);
         return false;
     }
 
@@ -694,8 +691,7 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(LOG_NAME,
-                        "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
+                SLog.w(NAME, "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
                         Integer.toHexString(sketchView.hashCode()), key);
             }
 
@@ -718,9 +714,8 @@ public class DisplayHelper {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fd(LOG_NAME,
-                        "canceled. %s. viewHashCode=%s. %s", isPauseDownload ? "pause download" : "requestLevel is local",
-                        Integer.toHexString(sketchView.hashCode()), key);
+                String cancelCause = isPauseDownload ? "pause download" : "requestLevel is local";
+                SLog.d(NAME, "canceled. %s. viewHashCode=%s. %s", cancelCause, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             // 显示暂停下载图片
@@ -734,7 +729,7 @@ public class DisplayHelper {
                 drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
+                    SLog.w(NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
                             Integer.toHexString(sketchView.hashCode()), key);
                 }
             }
@@ -758,13 +753,13 @@ public class DisplayHelper {
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fd(LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
+                    SLog.d(NAME, "repeat request. newId=%s. viewHashCode=%s",
                             key, Integer.toHexString(sketchView.hashCode()));
                 }
                 return potentialRequest;
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
+                    SLog.w(NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
                             key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -802,7 +797,7 @@ public class DisplayHelper {
         }
 
         if (SLogType.REQUEST.isEnabled()) {
-            SLog.fd(LOG_NAME, "submit request. viewHashCode=%s. %s",
+            SLog.d(NAME, "submit request. viewHashCode=%s. %s",
                     Integer.toHexString(sketchView.hashCode()), key);
         }
 

@@ -29,7 +29,7 @@ import me.xiaopan.sketch.request.UriScheme;
  * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayCache恢复之前的图片
  */
 public class RecyclerCompatFunction extends ViewFunction {
-    private static final String LOG_NAME = "RecyclerCompatFunction";
+    private static final String NAME = "RecyclerCompatFunction";
 
     private SketchView sketchView;
 
@@ -69,7 +69,7 @@ public class RecyclerCompatFunction extends ViewFunction {
         @Override
         public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
             if (SLogType.BASE.isEnabled()) {
-                SLog.fd(LOG_NAME, "restore image on attached to window. %s", cacheUri);
+                SLog.d(NAME, "restore image on attached to window. %s", cacheUri);
             }
         }
     }

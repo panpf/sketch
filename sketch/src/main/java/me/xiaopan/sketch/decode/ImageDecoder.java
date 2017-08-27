@@ -34,7 +34,7 @@ import me.xiaopan.sketch.util.ExifInterface;
  * 图片解码器，读取bitmap之前执行计算采样比例、选择合适的config、读取方向、寻找可复用的bitmap等操作，之后进行方向纠正、处理、缓存等操作
  */
 public class ImageDecoder implements Identifier {
-    private static final String LOG_NAME = "ImageDecoder";
+    private static final String NAME = "ImageDecoder";
 
     private DecodeTimeAnalyze timeAnalyze = new DecodeTimeAnalyze();
     private List<DecodeHelper> decodeHelperList;
@@ -76,7 +76,7 @@ public class ImageDecoder implements Identifier {
         }
 
         if (SLogType.TIME.isEnabled()) {
-            timeAnalyze.decodeEnd(startTime, LOG_NAME, request.getKey());
+            timeAnalyze.decodeEnd(startTime, NAME, request.getKey());
         }
 
         if (result != null) {
@@ -114,16 +114,16 @@ public class ImageDecoder implements Identifier {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
-            SLog.fe(LOG_NAME, "decode bounds failed %s", request.getKey());
-            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
+            SLog.e(NAME, "decode bounds failed %s", request.getKey());
+            ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            SLog.fe(LOG_NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
+            SLog.e(NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
                     boundOptions.outWidth, boundOptions.outHeight, request.getKey());
-            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }
 
@@ -186,6 +186,6 @@ public class ImageDecoder implements Identifier {
 
     @Override
     public String getKey() {
-        return LOG_NAME;
+        return NAME;
     }
 }
