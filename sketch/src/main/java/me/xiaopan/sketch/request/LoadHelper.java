@@ -242,14 +242,14 @@ public class LoadHelper {
     private boolean checkUri() {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, LOG_NAME, "uri is null or empty");
+                SLog.e(LOG_NAME, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.fe(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            SLog.fe(LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }

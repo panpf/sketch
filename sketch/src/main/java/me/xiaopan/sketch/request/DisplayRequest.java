@@ -89,6 +89,7 @@ public class DisplayRequest extends LoadRequest {
 
         // 绑定关系已经断了就直接取消请求
         if (requestAndViewBinder.isBroken()) {
+            printLogD("The request and the connection to the view are interrupted");
             canceled(CancelCause.BIND_DISCONNECT);
             return true;
         }
@@ -131,7 +132,7 @@ public class DisplayRequest extends LoadRequest {
     protected void runLoad() {
         if (isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runLoad", "display request just started");
+                printLogD("canceled", "runLoad", "display request just started");
             }
             return;
         }
@@ -152,7 +153,7 @@ public class DisplayRequest extends LoadRequest {
     private boolean checkMemoryCache() {
         if (isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runDownload", "get memory cache edit lock after");
+                printLogD("canceled", "runDownload", "get memory cache edit lock after");
             }
             return true;
         }
@@ -177,9 +178,7 @@ public class DisplayRequest extends LoadRequest {
                     return true;
                 } else {
                     memoryCache.remove(getMemoryCacheKey());
-                    if (SLogType.REQUEST.isEnabled()) {
-                        printLogE("memory cache drawable recycled", "runLoad", "bitmap=" + cachedRefBitmap.getInfo());
-                    }
+                    printLogE("memory cache drawable recycled", "runLoad", "bitmap=" + cachedRefBitmap.getInfo());
                 }
             }
         }
@@ -194,14 +193,12 @@ public class DisplayRequest extends LoadRequest {
             Bitmap bitmap = loadResult.getBitmap();
 
             if (bitmap.isRecycled()) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    ImageAttrs imageAttrs = loadResult.getImageAttrs();
-                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
-                            imageAttrs.getHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                    printLogE("decode failed", "loadCompleted", "bitmap recycled",
-                            "bitmapInfo: ", imageInfo, loadResult.getImageFrom());
-                }
+                ImageAttrs imageAttrs = loadResult.getImageAttrs();
+                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
+                        imageAttrs.getHeight(), imageAttrs.getMimeType(),
+                        imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                printLogE("decode failed", "loadCompleted", "bitmap recycled",
+                        "bitmapInfo: ", imageInfo, loadResult.getImageFrom());
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
@@ -224,10 +221,8 @@ public class DisplayRequest extends LoadRequest {
             SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    printLogE("decode failed", "loadCompleted", "gif drawable recycled",
-                            "gifInfo=", gifDrawable.getInfo());
-                }
+                printLogE("decode failed", "loadCompleted", "gif drawable recycled",
+                        "gifInfo=", gifDrawable.getInfo());
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
@@ -238,10 +233,8 @@ public class DisplayRequest extends LoadRequest {
             displayResult = new DisplayResult((Drawable) gifDrawable, loadResult.getImageFrom(), loadResult.getImageAttrs());
             displayCompleted();
         } else {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogE("are all null", "loadCompleted");
-            }
-            error(ErrorCause.DECODE_FAIL);
+            printLogE("Not found data after load completed");
+            error(ErrorCause.DATA_LOST_AFTER_LOAD_COMPLETED);
         }
     }
 
@@ -270,7 +263,7 @@ public class DisplayRequest extends LoadRequest {
     private void displayImage(Drawable drawable) {
         if (isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runCompletedInMainThread");
+                printLogD("canceled", "runCompletedInMainThread");
             }
             return;
         }
@@ -325,7 +318,7 @@ public class DisplayRequest extends LoadRequest {
     protected void runErrorInMainThread() {
         if (isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                printLogW("canceled", "runErrorInMainThread");
+                printLogD("canceled", "runErrorInMainThread");
             }
             return;
         }
@@ -338,7 +331,7 @@ public class DisplayRequest extends LoadRequest {
             displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), errorDrawable);
         } else {
             if (SLogType.REQUEST.isEnabled()) {
-                printLogW("failedDrawable is null", "runErrorInMainThread");
+                printLogD("failedDrawable is null", "runErrorInMainThread");
             }
         }
 

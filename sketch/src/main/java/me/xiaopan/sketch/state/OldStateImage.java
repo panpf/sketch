@@ -20,11 +20,11 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ShapeSize;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 

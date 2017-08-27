@@ -123,21 +123,21 @@ public class DownloadHelper {
     private boolean checkUri() {
         if (uriInfo == null) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.e(SLogType.REQUEST, LOG_NAME, "uri is null or empty");
+                SLog.e(LOG_NAME, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.fe(SLogType.REQUEST, LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            SLog.fe(LOG_NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (uriInfo.getScheme() != UriScheme.NET) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fe(SLogType.REQUEST, LOG_NAME, "only support http ot https. %s", uriInfo.getUri());
+                SLog.fe(LOG_NAME, "only support http ot https. %s", uriInfo.getUri());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;

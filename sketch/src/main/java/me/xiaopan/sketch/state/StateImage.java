@@ -19,8 +19,8 @@ package me.xiaopan.sketch.state;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.SketchView;
+import me.xiaopan.sketch.request.DisplayOptions;
 
 /**
  * 专门用于加载中、失败、暂停图片

@@ -31,14 +31,19 @@ public enum ErrorCause {
     URI_NO_SUPPORT,
 
     /**
-     * 下载失败
+     * 下载完成之后数据丢失
      */
-    DOWNLOAD_FAIL,
+    DATA_LOST_AFTER_DOWNLOAD_COMPLETED,
 
     /**
-     * 解码失败
+     * 加载完成之后数据丢失
      */
-    DECODE_FAIL,
+    DATA_LOST_AFTER_LOAD_COMPLETED,
+
+    /**
+     * 解码之后数据丢失
+     */
+    DATA_LOST_AFTER_DECODE,
 
     /**
      * Bitmap已回收

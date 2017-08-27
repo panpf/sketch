@@ -57,7 +57,6 @@ public class SLog {
         return proxy.v(tag, msg);
     }
 
-    @SuppressWarnings("unused")
     public static int fv(String format, Object... args) {
         return fv(null, format, args);
     }
@@ -172,11 +171,7 @@ public class SLog {
     }
 
 
-    public static int fe(SLogType type, String name, String format, Object... args) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int fe(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -190,25 +185,11 @@ public class SLog {
         return proxy.e(tag, msg);
     }
 
-    @SuppressWarnings("unused")
-    public static int fe(SLogType type, String format, Object... args) {
-        return fe(type, null, format, args);
-    }
-
-    public static int fe(String name, String format, Object... args) {
-        return fe(null, name, format, args);
-    }
-
-    @SuppressWarnings("unused")
     public static int fe(String format, Object... args) {
-        return fe(null, null, format, args);
+        return fe(null, format, args);
     }
 
-    public static int e(SLogType type, String name, String msg) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int e(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -217,16 +198,8 @@ public class SLog {
         return proxy.e(tag, msg);
     }
 
-    public static int e(SLogType type, String msg) {
-        return e(type, null, msg);
-    }
-
-    public static int e(String name, String msg) {
-        return e(null, name, msg);
-    }
-
     public static int e(String msg) {
-        return e(null, null, msg);
+        return e(null, msg);
     }
 
     /**

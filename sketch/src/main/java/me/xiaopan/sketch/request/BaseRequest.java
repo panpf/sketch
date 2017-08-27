@@ -97,9 +97,9 @@ public abstract class BaseRequest {
         this.status = status;
         if (SLogType.REQUEST.isEnabled()) {
             if (status == Status.FAILED) {
-                printLogW("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
+                printLogD("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
             } else if (status == Status.CANCELED) {
-                printLogW("new status", status.getLog(), cancelCause != null ? cancelCause.name() : null);
+                printLogD("new status", status.getLog(), cancelCause != null ? cancelCause.name() : null);
             } else {
                 printLogD("new status", (status != null ? status.getLog() : null));
             }
@@ -160,6 +160,7 @@ public abstract class BaseRequest {
     /**
      * 取消了
      */
+    // TODO: 2017/8/27 重新梳理这个canceled方法和cancel方法，现在看来设计的不够清晰
     protected void canceled(CancelCause cancelCause) {
         setCancelCause(cancelCause);
         setStatus(Status.CANCELED);
@@ -179,6 +180,7 @@ public abstract class BaseRequest {
         }
     }
 
+    // TODO: 2017/8/27 拆解这个方法
     private void printLog(int level, Object... items) {
         StringBuilder builder = new StringBuilder();
         if (items != null && items.length > 0) {
@@ -200,7 +202,7 @@ public abstract class BaseRequest {
         } else if (level == 2) {
             SLog.w(getLogName(), builder.toString());
         } else if (level == 3) {
-            SLog.e(SLogType.REQUEST, getLogName(), builder.toString());
+            SLog.e(getLogName(), builder.toString());
         }
     }
 

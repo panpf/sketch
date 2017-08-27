@@ -19,6 +19,7 @@ package me.xiaopan.sketch.viewfun;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -27,7 +28,6 @@ import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**

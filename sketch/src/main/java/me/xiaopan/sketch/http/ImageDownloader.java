@@ -43,7 +43,7 @@ public class ImageDownloader implements Identifier {
     public DownloadResult download(DownloadRequest request) {
         if (request.isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                request.printLogW("canceled", "runDownload", "start download");
+                request.printLogD("canceled", "runDownload", "start download");
             }
             return null;
         }
@@ -62,9 +62,9 @@ public class ImageDownloader implements Identifier {
 
         DownloadResult justDownloadResult;
         try {
-            if (diskCacheEditLock != null && request.isCanceled()) {
+            if (request.isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    request.printLogW("canceled", "runDownload", "get disk cache edit lock after");
+                    request.printLogD("canceled", "runDownload", "get disk cache edit lock after");
                 }
                 return null;
             }
@@ -106,20 +106,16 @@ public class ImageDownloader implements Identifier {
 
                 if (request.isCanceled()) {
                     if (SLogType.REQUEST.isEnabled()) {
-                        request.printLogW("canceled", "runDownload", "download failed");
+                        request.printLogD("canceled", "runDownload", "download failed");
                     }
                     break;
                 }
 
                 if (httpStack.canRetry(e) && retryCount < maxRetryCount) {
                     retryCount++;
-                    if (SLogType.REQUEST.isEnabled()) {
-                        request.printLogW("download failed", "runDownload", "retry");
-                    }
+                    request.printLogW("download failed", "runDownload", "retry");
                 } else {
-                    if (SLogType.REQUEST.isEnabled()) {
-                        request.printLogE("download failed", "runDownload", "end");
-                    }
+                    request.printLogW("download failed", "runDownload", "end");
                     break;
                 }
             }
@@ -139,7 +135,7 @@ public class ImageDownloader implements Identifier {
         if (request.isCanceled()) {
             httpResponse.releaseConnection();
             if (SLogType.REQUEST.isEnabled()) {
-                request.printLogW("canceled", "runDownload", "connect after");
+                request.printLogD("canceled", "runDownload", "connect after");
             }
             return null;
         }
@@ -153,16 +149,12 @@ public class ImageDownloader implements Identifier {
         } catch (IOException e) {
             e.printStackTrace();
             httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
-            }
+            request.printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             throw new IllegalStateException("get response code exception", e);
         }
         if (responseCode != 200) {
             httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
-            }
+            request.printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             throw new IllegalStateException("response code exception: " + responseCode);
         }
 
@@ -170,9 +162,7 @@ public class ImageDownloader implements Identifier {
         long contentLength = httpResponse.getContentLength();
         if (contentLength <= 0 && !httpResponse.isContentChunked()) {
             httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
-            }
+            request.printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
             throw new IllegalStateException("contentLength exception: " + contentLength + ", responseHeaders: " + httpResponse.getResponseHeadersString());
         }
 
@@ -183,7 +173,7 @@ public class ImageDownloader implements Identifier {
         if (request.isCanceled()) {
             SketchUtils.close(inputStream);
             if (SLogType.REQUEST.isEnabled()) {
-                request.printLogW("canceled", "runDownload", "get input stream after");
+                request.printLogD("canceled", "runDownload", "get input stream after");
             }
             return null;
         }
@@ -236,7 +226,7 @@ public class ImageDownloader implements Identifier {
 
         if (request.isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                request.printLogW("canceled", "runDownload", "read data after", readFully ? "read fully" : "not read fully");
+                request.printLogD("canceled", "runDownload", "read data after", readFully ? "read fully" : "not read fully");
             }
             return null;
         }
@@ -251,9 +241,7 @@ public class ImageDownloader implements Identifier {
             if (diskCacheEntry != null) {
                 return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    request.printLogW("not found disk cache", "runDownload", "download after");
-                }
+                request.printLogW("not found disk cache", "runDownload", "download after");
                 throw new IllegalStateException("not found disk cache entry, key is " + diskCacheKey);
             }
         } else {

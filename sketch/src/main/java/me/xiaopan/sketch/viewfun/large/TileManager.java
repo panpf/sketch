@@ -113,7 +113,7 @@ class TileManager {
         newDrawRect.bottom = Math.min(previewImageHeight, newVisibleRect.bottom + drawHeightAdd);
 
         if (newDrawRect.isEmpty()) {
-            SLog.fe(SLogType.LARGE, NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
+            SLog.fe(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
             return;
         }
 
@@ -123,7 +123,7 @@ class TileManager {
         final int tileHeight = newDrawRect.height() / finalTiles;
 
         if (tileWidth <= 0 || tileHeight <= 0) {
-            SLog.fe(SLogType.LARGE, NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
+            SLog.fe(NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
             return;
         }
 
@@ -180,13 +180,13 @@ class TileManager {
                     onTileChangedListener.onTileChanged(largeImageViewer);
                 }
 
-                SLog.fe(SLogType.LARGE, NAME, "update finished, newDecodeRect=%s, tiles=%d",
+                SLog.fe(NAME, "update finished, newDecodeRect=%s, tiles=%d",
                         newDecodeRect.toShortString(), tileList.size());
             } else {
-                SLog.e(SLogType.LARGE, NAME, "update finished draw rect no change");
+                SLog.e(NAME, "update finished draw rect no change");
             }
         } else {
-            SLog.fe(SLogType.LARGE, NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
+            SLog.fe(NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
                     newDecodeRect.toShortString());
         }
 

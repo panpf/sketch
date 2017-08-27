@@ -21,11 +21,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchTransitionDrawable;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**

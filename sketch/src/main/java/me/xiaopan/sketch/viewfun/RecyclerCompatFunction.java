@@ -18,9 +18,9 @@ package me.xiaopan.sketch.viewfun;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
-import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**

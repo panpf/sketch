@@ -60,12 +60,12 @@ public class BitmapPoolUtils {
         }
 
         if (outWidth == 0 || outHeight == 0) {
-            SLog.e(SLogType.REQUEST, "outWidth or ourHeight is 0");
+            SLog.e("outWidth or ourHeight is 0");
             return false;
         }
 
         if (TextUtils.isEmpty(outMimeType)) {
-            SLog.e(SLogType.REQUEST, "outMimeType is empty");
+            SLog.e("outMimeType is empty");
             return false;
         }
 
