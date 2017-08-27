@@ -121,13 +121,17 @@ public class LargeImageViewer {
     public void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
-            SLog.w(NAME, "not ready. %s", imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.d(NAME, "not ready. %s", imageUri);
+            }
             return;
         }
 
         // 暂停中也不走了
         if (paused) {
-            SLog.w(NAME, "not resuming. %s", imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.d(NAME, "paused. %s", imageUri);
+            }
             return;
         }
 
@@ -207,14 +211,16 @@ public class LargeImageViewer {
         paused = pause;
 
         if (paused) {
-            SLog.w(NAME, "pause. %s", imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.d(NAME, "pause. %s", imageUri);
+            }
 
             if (running) {
                 clean("pause");
             }
         } else {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.i(NAME, "resume. %s", imageUri);
+                SLog.d(NAME, "resume. %s", imageUri);
             }
 
             if (running) {

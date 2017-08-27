@@ -53,10 +53,12 @@ android {
     }
 
     productFlavors {
+
         normal {
 
         }
 
+        // todo: x86 系列不会包含gif so 了，得改改
         normalX86 {
             ndk {
                 abiFilters "x86"

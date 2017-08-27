@@ -78,8 +78,10 @@ public class FreeRideManager implements Identifier {
             if (displayFreeRideProviderMap != null) {
                 freeRideProvider = displayFreeRideProviderMap.remove(provider.getDisplayFreeRideKey());
                 if (freeRideProvider != null) {
-                    SLog.w(NAME, "display. unregister free ride provider. %s",
-                            freeRideProvider.getDisplayFreeRideLog());
+                    if (SLogType.REQUEST.isEnabled()) {
+                        SLog.d(NAME, "display. unregister free ride provider. %s",
+                                freeRideProvider.getDisplayFreeRideLog());
+                    }
                 }
             }
         }
@@ -174,8 +176,10 @@ public class FreeRideManager implements Identifier {
             if (downloadFreeRideProviderMap != null) {
                 freeRideProvider = downloadFreeRideProviderMap.remove(provider.getDownloadFreeRideKey());
                 if (freeRideProvider != null) {
-                    SLog.w(NAME, "download. unregister free ride provider. %s",
-                            freeRideProvider.getDownloadFreeRideLog());
+                    if (SLogType.REQUEST.isEnabled()) {
+                        SLog.d(NAME, "download. unregister free ride provider. %s",
+                                freeRideProvider.getDownloadFreeRideLog());
+                    }
                 }
             }
         }

@@ -65,7 +65,9 @@ class ScrollBar {
 
     void drawScrollBar(Canvas canvas) {
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. drawScrollBar");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.v(ImageZoomer.NAME, "not working. drawScrollBar");
+            }
             return;
         }
 

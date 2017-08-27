@@ -40,7 +40,9 @@ class ZoomRunner implements Runnable {
     @Override
     public void run() {
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. zoom run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.v(ImageZoomer.NAME, "not working. zoom run");
+            }
             return;
         }
 

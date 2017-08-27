@@ -76,15 +76,19 @@ class TileManager {
 
     void update(Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
         if (zooming) {
-            SLog.w(NAME, "zooming. newVisibleRect=%s, tiles=%d",
-                    newVisibleRect.toShortString(), tileList.size());
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.d(NAME, "zooming. newVisibleRect=%s, tiles=%d",
+                        newVisibleRect.toShortString(), tileList.size());
+            }
             return;
         }
 
         // 过滤掉重复的刷新
         if (visibleRect.equals(newVisibleRect)) {
-            SLog.w(NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
-                    newVisibleRect.toShortString(), visibleRect.toShortString());
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.d(NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
+                        newVisibleRect.toShortString(), visibleRect.toShortString());
+            }
             return;
         }
         visibleRect.set(newVisibleRect);
@@ -180,14 +184,20 @@ class TileManager {
                     onTileChangedListener.onTileChanged(largeImageViewer);
                 }
 
-                SLog.e(NAME, "update finished, newDecodeRect=%s, tiles=%d",
-                        newDecodeRect.toShortString(), tileList.size());
+                if (SLogType.LARGE.isEnabled()) {
+                    SLog.d(NAME, "update finished, newDecodeRect=%s, tiles=%d",
+                            newDecodeRect.toShortString(), tileList.size());
+                }
             } else {
-                SLog.e(NAME, "update finished draw rect no change");
+                if (SLogType.LARGE.isEnabled()) {
+                    SLog.d(NAME, "update finished draw rect no change");
+                }
             }
         } else {
-            SLog.e(NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
-                    newDecodeRect.toShortString());
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.d(NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
+                        newDecodeRect.toShortString());
+            }
         }
 
         drawRect.set(newDrawRect);
@@ -662,7 +672,9 @@ class TileManager {
             tile.refreshKey();
             tile.clean(bitmapPool);
             tilePool.put(tile);
-            SLog.w(NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.d(NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
+            }
         }
         tileList.clear();
         visibleRect.setEmpty();

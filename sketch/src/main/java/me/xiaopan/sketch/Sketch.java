@@ -42,7 +42,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 // TODO: 2017/8/25 重新审查所有的 log 输出，选择合适的 level
 public class Sketch {
-    public static final String TAG = "Sketch";
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
 
     private static volatile Sketch instance;

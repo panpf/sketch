@@ -73,13 +73,17 @@ class TileDecoder {
     }
 
     void clean(String why) {
-        SLog.w(NAME, "clean. %s", why);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.d(NAME, "clean. %s", why);
+        }
 
         initKeyCounter.refresh();
     }
 
     void recycle(String why) {
-        SLog.w(NAME, "recycle. %s", why);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.d(NAME, "recycle. %s", why);
+        }
 
         if (decoder != null) {
             decoder.recycle();

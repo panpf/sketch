@@ -38,11 +38,9 @@ class TileExecutor {
     private final Object handlerThreadLock = new Object();
 
     Callback callback;
-
-    private HandlerThread handlerThread;
-
-    private TileDecoderInitHandler tileDecoderInitHandler;
     TileDecodeCallbackHandler tileDecodeCallbackHandler;
+    private HandlerThread handlerThread;
+    private TileDecoderInitHandler tileDecoderInitHandler;
     private TileDecodeHandler tileDecodeHandler;
 
     public TileExecutor(Callback callback) {
@@ -64,7 +62,7 @@ class TileExecutor {
                     handlerThread.start();
 
                     if (SLogType.LARGE.isEnabled()) {
-                        SLog.i(NAME, "image region decode thread %s started", handlerThread.getName());
+                        SLog.d(NAME, "image region decode thread %s started", handlerThread.getName());
                     }
 
                     tileDecodeHandler = new TileDecodeHandler(handlerThread.getLooper(), this);
@@ -133,7 +131,9 @@ class TileExecutor {
                     handlerThread.quit();
                 }
 
-                SLog.w(NAME, "image region decode thread %s quit", handlerThread.getName());
+                if (SLogType.LARGE.isEnabled()) {
+                    SLog.d(NAME, "image region decode thread %s quit", handlerThread.getName());
+                }
 
                 handlerThread = null;
             }

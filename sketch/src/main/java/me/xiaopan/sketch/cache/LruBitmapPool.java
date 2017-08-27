@@ -153,11 +153,13 @@ public class LruBitmapPool implements BitmapPool {
         // null as the requested config here. See issue #194.
         final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
         if (result == null) {
-            SLog.w(NAME, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
+            if (SLogType.CACHE.isEnabled()) {
+                SLog.d(NAME, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
+            }
             misses++;
         } else {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.i(NAME, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
+                SLog.d(NAME, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
             }
             hits++;
             currentSize -= strategy.getSize(result);
@@ -309,8 +311,10 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private void dumpUnchecked() {
-        SLog.v(NAME, "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
-                hits, misses, puts, evictions, currentSize, maxSize, strategy);
+        if (SLogType.CACHE.isEnabled()) {
+            SLog.i(NAME, "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
+                    hits, misses, puts, evictions, currentSize, maxSize, strategy);
+        }
     }
 
     @Override

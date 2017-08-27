@@ -23,8 +23,7 @@ import android.util.Log;
  * Sketch 日志
  */
 public class SLog {
-    private static final String FORMAT_TAG = "%s-%s";
-    private static final String FORMAT_MESSAGE_DEFAULT = "%s";
+    private static final String TAG = "Sketch";
 
     static Proxy proxy = new ProxyImpl();
 
@@ -40,6 +39,27 @@ public class SLog {
         }
     }
 
+    private static String transformLog(String name, String format, Object... args) {
+        if (format == null) {
+            format = "";
+        }
+
+        if (args != null && args.length > 0) {
+            if (!TextUtils.isEmpty(name)) {
+                return name + ". " + String.format(format, args);
+            } else {
+                return String.format(format, args);
+            }
+        } else {
+            // args 为空说明 format 就是日志
+            if (!TextUtils.isEmpty(name)) {
+                return name + ". " + format;
+            } else {
+                return format;
+            }
+        }
+    }
+
     // TODO: 2017/8/25 加入 level 控制，所有的日志点 都要过滤level，并且梳理所有日志，选择合适的类型
     // TODO: 2017/8/25 梳理日志方法，省略所有tag，name 不再绑定到tag上，name 改叫 scope
     // TODO: 2017/8/27 所有的w和e日志不加过滤条件
@@ -47,97 +67,47 @@ public class SLog {
     // TODO: 2017/8/27 大量 ImageZoomer 中的 not working 应该属于 debug 日志，得加过滤
 
     public static int v(String name, String format, Object... args) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        if (TextUtils.isEmpty(format)) {
-            format = FORMAT_MESSAGE_DEFAULT;
-        }
-
-        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
-        return proxy.v(tag, msg);
+        return proxy.v(TAG, transformLog(name, format, args));
     }
 
     public static int v(String name, String msg) {
-        return v(name, msg, (Object[]) null);
+        return proxy.v(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int d(String name, String format, Object... args) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        if (TextUtils.isEmpty(format)) {
-            format = FORMAT_MESSAGE_DEFAULT;
-        }
-
-        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
-        return proxy.d(tag, msg);
+        return proxy.d(TAG, transformLog(name, format, args));
     }
 
     public static int d(String name, String msg) {
-        return d(name, msg, (Object[]) null);
+        return proxy.d(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int i(String name, String format, Object... args) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        if (TextUtils.isEmpty(format)) {
-            format = FORMAT_MESSAGE_DEFAULT;
-        }
-
-        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
-        return proxy.i(tag, msg);
+        return proxy.i(TAG, transformLog(name, format, args));
     }
 
     public static int i(String name, String msg) {
-        return i(name, msg, (Object[]) null);
+        return proxy.i(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int w(String name, String format, Object... args) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        if (TextUtils.isEmpty(format)) {
-            format = FORMAT_MESSAGE_DEFAULT;
-        }
-
-        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
-        return proxy.w(tag, msg);
+        return proxy.w(TAG, transformLog(name, format, args));
     }
 
     public static int w(String name, String msg) {
-        return w(name, msg, (Object[]) null);
+        return proxy.w(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int e(String name, String format, Object... args) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        if (TextUtils.isEmpty(format)) {
-            format = FORMAT_MESSAGE_DEFAULT;
-        }
-
-        String msg = args != null && args.length > 0 ? String.format(format, args) : format;
-        return proxy.e(tag, msg);
+        return proxy.e(TAG, transformLog(name, format, args));
     }
 
     public static int e(String name, String msg) {
-        return e(name, msg, (Object[]) null);
+        return proxy.e(TAG, transformLog(name, msg, (Object[]) null));
     }
 
     /**

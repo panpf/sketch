@@ -37,7 +37,9 @@ class FlingTranslateRunner implements Runnable {
 
     void fling(int velocityX, int velocityY) {
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. fling");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.v(ImageZoomer.NAME, "not working. fling");
+            }
             return;
         }
 
@@ -97,7 +99,9 @@ class FlingTranslateRunner implements Runnable {
         }
 
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. fling run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.v(ImageZoomer.NAME, "not working. fling run");
+            }
             return;
         }
 

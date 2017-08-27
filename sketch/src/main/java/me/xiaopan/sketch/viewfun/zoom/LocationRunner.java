@@ -63,7 +63,9 @@ class LocationRunner implements Runnable {
         }
 
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. location run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.v(ImageZoomer.NAME, "not working. location run");
+            }
             mScroller.forceFinished(true);
             return;
         }
