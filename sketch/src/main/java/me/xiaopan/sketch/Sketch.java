@@ -50,7 +50,6 @@ public class Sketch {
     private Configuration configuration;
 
     private Sketch(Context context) {
-        SLog.i(String.format("Version %s %s(%d)", BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
         this.configuration = new Configuration(context);
     }
 
@@ -65,6 +64,9 @@ public class Sketch {
             synchronized (Sketch.class) {
                 if (instance == null) {
                     Sketch newInstance = new Sketch(context);
+                    SLog.fi("Version %s %s(%d)\n%s",
+                            BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.getInfo());
+
                     Initializer initializer = SketchUtils.findInitializer(context);
                     if (initializer != null) {
                         initializer.onInitialize(context.getApplicationContext(), newInstance, newInstance.configuration);

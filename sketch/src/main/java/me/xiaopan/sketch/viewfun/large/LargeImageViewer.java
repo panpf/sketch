@@ -141,8 +141,10 @@ public class LargeImageViewer {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
-            SLog.fd(SLogType.LARGE, NAME, "full display. update. newVisibleRect=%s. %s",
-                    newVisibleRect.toShortString(), imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.fd(NAME, "full display. update. newVisibleRect=%s. %s",
+                        newVisibleRect.toShortString(), imageUri);
+            }
             clean("full display");
             return;
         }

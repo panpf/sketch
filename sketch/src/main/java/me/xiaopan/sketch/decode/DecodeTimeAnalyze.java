@@ -19,7 +19,6 @@ package me.xiaopan.sketch.decode;
 import java.text.DecimalFormat;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 
 public class DecodeTimeAnalyze {
     private volatile static long decodeCount;
@@ -41,7 +40,7 @@ public class DecodeTimeAnalyze {
         if (decimalFormat == null) {
             decimalFormat = new DecimalFormat("#.##");
         }
-        SLog.fd(SLogType.REQUEST, logName, "decode use time %dms, average %sms. %s",
+        SLog.fd(logName, "decode use time %dms, average %sms. %s",
                 useTime, decimalFormat.format((double) useTimeCount / decodeCount), key);
     }
 }

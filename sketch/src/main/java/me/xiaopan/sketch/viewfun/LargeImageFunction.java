@@ -166,7 +166,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
 
             if (drawableQualified) {
                 if (SLogType.LARGE.isEnabled()) {
-                    SLog.fd(SLogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                    SLog.fd(NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {

@@ -233,7 +233,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.fd(SLogType.ZOOM, NAME, "drag. dx: %s, dy: %s", dx, dy);
+            SLog.fd(NAME, "drag. dx: %s, dy: %s", dx, dy);
         }
 
         supportMatrix.postTranslate(dx, dy);
@@ -279,7 +279,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     @Override
     public void onScale(float scaleFactor, float focusX, float focusY) {
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.fd(SLogType.ZOOM, NAME, "scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY);
+            SLog.fd(NAME, "scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY);
         }
 
         tempLastScaleFocusX = focusX;
@@ -321,7 +321,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     @Override
     public boolean onScaleBegin() {
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.d(SLogType.ZOOM, NAME, "scale begin");
+            SLog.d(NAME, "scale begin");
         }
 
         setZooming(true);
@@ -331,7 +331,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     @Override
     public void onScaleEnd() {
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.d(SLogType.ZOOM, NAME, "scale end");
+            SLog.d(NAME, "scale end");
         }
 
         float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
@@ -1132,7 +1132,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final int endY = trimCenterLocationY;
 
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.fd(SLogType.ZOOM, ImageZoomer.NAME, "location. start=%dx%d, end=%dx%d", startX, startY, endX, endY);
+            SLog.fd(ImageZoomer.NAME, "location. start=%dx%d, end=%dx%d", startX, startY, endX, endY);
         }
 
         if (animate) {

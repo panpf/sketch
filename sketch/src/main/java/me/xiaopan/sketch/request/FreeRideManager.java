@@ -94,8 +94,11 @@ public class FreeRideManager implements Identifier {
             String providerId = freeRideProvider.getDisplayFreeRideLog();
             for (DisplayFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDisplayFreeRide();
-                SLog.fd(SLogType.REQUEST, LOG_NAME, "display. callback free ride. %s. %s  <------  %s",
-                        success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
+
+                if (SLogType.REQUEST.isEnabled()) {
+                    SLog.fd(LOG_NAME, "display. callback free ride. %s. %s  <------  %s",
+                            success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
+                }
             }
             freeRideSet.clear();
         }
@@ -187,8 +190,11 @@ public class FreeRideManager implements Identifier {
             String providerId = freeRideProvider.getDownloadFreeRideLog();
             for (DownloadFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDownloadFreeRide();
-                SLog.fd(SLogType.REQUEST, LOG_NAME, "download. callback free ride. %s. %s  <------  %s",
-                        success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
+
+                if (SLogType.REQUEST.isEnabled()) {
+                    SLog.fd(LOG_NAME, "download. callback free ride. %s. %s  <------  %s",
+                            success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
+                }
             }
             freeRideSet.clear();
         }

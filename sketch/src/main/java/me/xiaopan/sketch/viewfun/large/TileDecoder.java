@@ -94,7 +94,7 @@ class TileDecoder {
 
     void initCompleted(String imageUri, ImageRegionDecoder decoder) {
         if (SLogType.LARGE.isEnabled()) {
-            SLog.fd(SLogType.LARGE, NAME, "init completed. %s", imageUri);
+            SLog.fd(NAME, "init completed. %s", imageUri);
         }
 
         initializing = false;
@@ -103,7 +103,7 @@ class TileDecoder {
 
     void initError(String imageUri, Exception e) {
         if (SLogType.LARGE.isEnabled()) {
-            SLog.fd(SLogType.LARGE, NAME, "init failed. %s. %s", e.getMessage(), imageUri);
+            SLog.fd(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 
         initializing = false;

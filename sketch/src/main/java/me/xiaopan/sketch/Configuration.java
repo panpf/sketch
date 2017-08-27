@@ -113,10 +113,6 @@ public final class Configuration {
 
         this.errorTracker = new ErrorTracker(context);
 
-        if (SLogType.BASE.isEnabled()) {
-            SLog.d(SLogType.BASE, getInfo());
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(context));
         }
@@ -153,9 +149,7 @@ public final class Configuration {
             if (oldDiskCache != null) {
                 oldDiskCache.close();
             }
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setDiskCache. %s", diskCache.getKey());
-            }
+            SLog.fw(LOG_NAME, "setDiskCache. %s", diskCache.getKey());
         }
         return this;
     }
@@ -183,9 +177,7 @@ public final class Configuration {
             if (oldBitmapPool != null) {
                 oldBitmapPool.close();
             }
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setBitmapPool. %s", bitmapPool.getKey());
-            }
+            SLog.fw(LOG_NAME, "setBitmapPool. %s", bitmapPool.getKey());
         }
         return this;
     }
@@ -212,9 +204,7 @@ public final class Configuration {
             if (oldMemoryCache != null) {
                 oldMemoryCache.close();
             }
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setMemoryCache. %s", memoryCache.getKey());
-            }
+            SLog.fw(LOG_NAME, "setMemoryCache. %s", memoryCache.getKey());
         }
         return this;
     }
@@ -260,9 +250,7 @@ public final class Configuration {
     public Configuration setHttpStack(HttpStack httpStack) {
         if (httpStack != null) {
             this.httpStack = httpStack;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setHttpStack. %s", httpStack.getKey());
-            }
+            SLog.fw(LOG_NAME, "setHttpStack. %s", httpStack.getKey());
         }
         return this;
     }
@@ -285,9 +273,7 @@ public final class Configuration {
     public Configuration setImageDecoder(ImageDecoder imageDecoder) {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImageDecoder. %s", imageDecoder.getKey());
-            }
+            SLog.fw(LOG_NAME, "setImageDecoder. %s", imageDecoder.getKey());
         }
         return this;
     }
@@ -311,9 +297,7 @@ public final class Configuration {
     public Configuration setImageDownloader(ImageDownloader imageDownloader) {
         if (imageDownloader != null) {
             this.imageDownloader = imageDownloader;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImageDownloader. %s", imageDownloader.getKey());
-            }
+            SLog.fw(LOG_NAME, "setImageDownloader. %s", imageDownloader.getKey());
         }
         return this;
     }
@@ -336,9 +320,7 @@ public final class Configuration {
     public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
-            }
+            SLog.fw(LOG_NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
         }
         return this;
     }
@@ -361,9 +343,7 @@ public final class Configuration {
     public Configuration setImageOrientationCorrector(ImageOrientationCorrector imageOrientationCorrector) {
         if (imageOrientationCorrector != null) {
             this.imageOrientationCorrector = imageOrientationCorrector;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
-            }
+            SLog.fw(LOG_NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
         }
         return this;
     }
@@ -387,9 +367,7 @@ public final class Configuration {
     public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
-            }
+            SLog.fw(LOG_NAME, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
         }
         return this;
     }
@@ -412,9 +390,7 @@ public final class Configuration {
     public Configuration setResizeImageProcessor(ImageProcessor resizeImageProcessor) {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
-            }
+            SLog.fw(LOG_NAME, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
         }
         return this;
     }
@@ -437,9 +413,7 @@ public final class Configuration {
     public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
-            }
+            SLog.fw(LOG_NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
         }
         return this;
     }
@@ -462,9 +436,7 @@ public final class Configuration {
     public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
-            }
+            SLog.fw(LOG_NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
         }
         return this;
     }
@@ -489,9 +461,7 @@ public final class Configuration {
     public Configuration setFreeRideManager(FreeRideManager freeRideManager) {
         if (freeRideManager != null) {
             this.freeRideManager = freeRideManager;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setFreeRideManager. %s", freeRideManager.getKey());
-            }
+            SLog.fw(LOG_NAME, "setFreeRideManager. %s", freeRideManager.getKey());
         }
         return this;
     }
@@ -518,9 +488,7 @@ public final class Configuration {
             if (oldRequestExecutor != null) {
                 oldRequestExecutor.shutdown();
             }
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setRequestExecutor. %s", requestExecutor.getKey());
-            }
+            SLog.fw(LOG_NAME, "setRequestExecutor. %s", requestExecutor.getKey());
         }
         return this;
     }
@@ -543,9 +511,7 @@ public final class Configuration {
     public Configuration setHelperFactory(HelperFactory helperFactory) {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setHelperFactory. %s", helperFactory.getKey());
-            }
+            SLog.fw(LOG_NAME, "setHelperFactory. %s", helperFactory.getKey());
         }
         return this;
     }
@@ -568,9 +534,7 @@ public final class Configuration {
     public Configuration setRequestFactory(RequestFactory requestFactory) {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setRequestFactory. %s", requestFactory.getKey());
-            }
+            SLog.fw(LOG_NAME, "setRequestFactory. %s", requestFactory.getKey());
         }
         return this;
     }
@@ -594,9 +558,7 @@ public final class Configuration {
     public Configuration setErrorTracker(ErrorTracker errorTracker) {
         if (errorTracker != null) {
             this.errorTracker = errorTracker;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setMonitor. %s", errorTracker.getKey());
-            }
+            SLog.fw(LOG_NAME, "setMonitor. %s", errorTracker.getKey());
         }
         return this;
     }
@@ -616,9 +578,7 @@ public final class Configuration {
     public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setGlobalPauseLoad. %s", globalPauseLoad);
-            }
+            SLog.fw(LOG_NAME, "setGlobalPauseLoad. %s", globalPauseLoad);
         }
         return this;
     }
@@ -639,9 +599,7 @@ public final class Configuration {
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setGlobalPauseDownload. %s", globalPauseDownload);
-            }
+            SLog.fw(LOG_NAME, "setGlobalPauseDownload. %s", globalPauseDownload);
         }
         return this;
     }
@@ -672,9 +630,7 @@ public final class Configuration {
                 }
             }
 
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
-            }
+            SLog.fw(LOG_NAME, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
         }
         return this;
     }
@@ -694,9 +650,7 @@ public final class Configuration {
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setGlobalLowQualityImage. %s", globalLowQualityImage);
-            }
+            SLog.fw(LOG_NAME, "setGlobalLowQualityImage. %s", globalLowQualityImage);
         }
         return this;
     }
@@ -719,9 +673,7 @@ public final class Configuration {
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
-            if (SLogType.BASE.isEnabled()) {
-                SLog.fd(SLogType.BASE, LOG_NAME, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
-            }
+            SLog.fw(LOG_NAME, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
         }
         return this;
     }

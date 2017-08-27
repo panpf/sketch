@@ -609,7 +609,7 @@ public class DisplayHelper {
                         ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fd(SLogType.REQUEST, LOG_NAME, "%s. viewHashCode=%s. %s",
+                    SLog.fd(LOG_NAME, "%s. viewHashCode=%s. %s",
                             errorInfo, Integer.toHexString(sketchView.hashCode()), uriInfo.getUri());
                 }
                 throw new IllegalArgumentException(errorInfo);
@@ -718,7 +718,7 @@ public class DisplayHelper {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fd(SLogType.REQUEST, LOG_NAME,
+                SLog.fd(LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseDownload ? "pause download" : "requestLevel is local",
                         Integer.toHexString(sketchView.hashCode()), key);
             }
@@ -758,7 +758,7 @@ public class DisplayHelper {
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fd(SLogType.REQUEST, LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
+                    SLog.fd(LOG_NAME, "repeat request. newId=%s. viewHashCode=%s",
                             key, Integer.toHexString(sketchView.hashCode()));
                 }
                 return potentialRequest;
@@ -802,7 +802,7 @@ public class DisplayHelper {
         }
 
         if (SLogType.REQUEST.isEnabled()) {
-            SLog.fd(SLogType.REQUEST, LOG_NAME, "submit request. viewHashCode=%s. %s",
+            SLog.fd(LOG_NAME, "submit request. viewHashCode=%s. %s",
                     Integer.toHexString(sketchView.hashCode()), key);
         }
 

@@ -194,7 +194,7 @@ public abstract class BaseRequest {
         builder.append(". ").append(getKey());
 
         if (level == 0) {
-            SLog.d(SLogType.REQUEST, getLogName(), builder.toString());
+            SLog.d(getLogName(), builder.toString());
         } else if (level == 1) {
             SLog.i(SLogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 2) {

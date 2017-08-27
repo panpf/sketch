@@ -120,11 +120,7 @@ public class SLog {
     }
 
 
-    public static int fd(SLogType type, String name, String format, Object... args) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int fd(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -138,23 +134,11 @@ public class SLog {
         return proxy.d(tag, msg);
     }
 
-    public static int fd(SLogType type, String format, Object... args) {
-        return fd(type, null, format, args);
-    }
-
-    public static int fd(String name, String format, Object... args) {
-        return fd(null, name, format, args);
-    }
-
     public static int fd(String format, Object... args) {
-        return fd(null, null, format, args);
+        return fd(null, format, args);
     }
 
-    public static int d(SLogType type, String name, String msg) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
+    public static int d(String name, String msg) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
             tag = String.format(FORMAT_TAG, Sketch.TAG, name);
@@ -163,16 +147,8 @@ public class SLog {
         return proxy.d(tag, msg);
     }
 
-    public static int d(SLogType type, String msg) {
-        return d(type, null, msg);
-    }
-
-    public static int d(String name, String msg) {
-        return d(null, name, msg);
-    }
-
     public static int d(String msg) {
-        return d(null, null, msg);
+        return d(null, msg);
     }
 
 

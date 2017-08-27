@@ -79,8 +79,10 @@ public class Stopwatch {
             decodeCount++;
             useTimeCount += totalTime;
 
-            SLog.fd(SLogType.TIME, logName, "%s, average=%sms. %s",
-                    builder.toString(), decimalFormat.format((double) useTimeCount / decodeCount), requestId);
+            if (SLogType.TIME.isEnabled()) {
+                SLog.fd(logName, "%s, average=%sms. %s",
+                        builder.toString(), decimalFormat.format((double) useTimeCount / decodeCount), requestId);
+            }
             builder = null;
         }
     }

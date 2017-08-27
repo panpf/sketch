@@ -71,7 +71,7 @@ class FlingTranslateRunner implements Runnable {
         }
 
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.fd(SLogType.ZOOM, ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
+            SLog.fd(ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
                     startX, startY, minX, minY, maxX, maxY);
         }
 
@@ -125,7 +125,7 @@ class FlingTranslateRunner implements Runnable {
     @SuppressWarnings("WeakerAccess")
     public void cancelFling() {
         if (SLogType.ZOOM.isEnabled()) {
-            SLog.d(SLogType.ZOOM, ImageZoomer.NAME, "cancel fling");
+            SLog.d(ImageZoomer.NAME, "cancel fling");
         }
 
         if (mScroller != null) {

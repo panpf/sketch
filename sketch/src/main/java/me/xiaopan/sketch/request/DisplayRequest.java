@@ -284,8 +284,10 @@ public class DisplayRequest extends LoadRequest {
                 errorTracker.onBitmapRecycledOnDisplay(this, drawable instanceof SketchRefDrawable ? (SketchRefDrawable) drawable : null);
 
                 // 图片不可用
-                printLogD("image display exception", "bitmap recycled",
-                        ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom());
+                if (SLogType.REQUEST.isEnabled()) {
+                    printLogD("image display exception", "bitmap recycled",
+                            ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom());
+                }
 
                 runErrorInMainThread();
                 return;

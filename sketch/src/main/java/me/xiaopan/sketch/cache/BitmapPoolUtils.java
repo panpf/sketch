@@ -89,7 +89,7 @@ public class BitmapPoolUtils {
 
         if (inBitmap != null && SLogType.CACHE.isEnabled()) {
             int sizeInBytes = SketchUtils.computeByteCount(outWidth, outHeight, options.inPreferredConfig);
-            SLog.fd(SLogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+            SLog.fd("setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     outWidth, outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
                     Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
         }
@@ -117,17 +117,17 @@ public class BitmapPoolUtils {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(SLogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fd("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+                        element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
         } else {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.w(SLogType.CACHE, String.format("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fw(SLogType.CACHE, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+                        element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
             bitmap.recycle();
         }
@@ -157,7 +157,7 @@ public class BitmapPoolUtils {
         if (inBitmap != null) {
             if (SLogType.CACHE.isEnabled()) {
                 int sizeInBytes = SketchUtils.computeByteCount(finalWidth, finalHeight, config);
-                SLog.fd(SLogType.CACHE, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                SLog.fd("setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                         finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
                         Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
             }
@@ -188,18 +188,18 @@ public class BitmapPoolUtils {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.w(SLogType.CACHE, String.format("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fw(SLogType.CACHE, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+                        element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
             bitmap.recycle();
         } else {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(SLogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fd("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+                        element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
         }
         return success;

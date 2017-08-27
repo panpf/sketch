@@ -83,19 +83,17 @@ public class ImageDecodeUtils {
     }
 
     static void decodeSuccess(Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
-        if (!SLogType.REQUEST.isEnabled()) {
-            return;
-        }
-
-        if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-            MaxSize maxSize = loadRequest.getOptions().getMaxSize();
-            ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
-            SLog.fd(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                            "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
-                    outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                    sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
-        } else {
-            SLog.fd(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+        if (SLogType.REQUEST.isEnabled()) {
+            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
+                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
+                ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getImageSizeCalculator();
+                SLog.fd(logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
+                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
+                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
+            } else {
+                SLog.fd(logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+            }
         }
     }
 

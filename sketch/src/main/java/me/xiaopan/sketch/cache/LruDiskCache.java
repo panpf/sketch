@@ -94,21 +94,15 @@ public class LruDiskCache implements DiskCache {
         // 创建缓存目录，然后检查空间并创建个文件测试一下
         try {
             cacheDir = SketchUtils.buildCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
-        } catch (NoSpaceException e) {
-            e.printStackTrace();
-            configuration.getErrorTracker().onInstallDiskCacheError(e, cacheDir);
-            return;
-        } catch (UnableCreateDirException e) {
-            e.printStackTrace();
-            configuration.getErrorTracker().onInstallDiskCacheError(e, cacheDir);
-            return;
-        } catch (UnableCreateFileException e) {
+        } catch (NoSpaceException | UnableCreateDirException | UnableCreateFileException e) {
             e.printStackTrace();
             configuration.getErrorTracker().onInstallDiskCacheError(e, cacheDir);
             return;
         }
 
-        SLog.fd(SLogType.CACHE, LOG_NAME, "diskCacheDir: %s", cacheDir.getPath());
+        if (SLogType.CACHE.isEnabled()) {
+            SLog.fd(LOG_NAME, "diskCacheDir: %s", cacheDir.getPath());
+        }
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);

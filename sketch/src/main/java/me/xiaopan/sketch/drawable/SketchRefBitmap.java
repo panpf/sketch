@@ -129,7 +129,7 @@ public class SketchRefBitmap extends SketchBitmap {
             bitmap = null;
         } else {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.fd(SLogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). %s",
+                SLog.fd(LOG_NAME, "Can't free. %s. references(%d,%d,%d). %s",
                         callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getInfo());
             }
         }
