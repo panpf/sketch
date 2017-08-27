@@ -76,50 +76,6 @@ public class SLog {
     }
 
 
-    public static int fi(String name, String format, Object... args) {
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        if (TextUtils.isEmpty(format)) {
-            format = FORMAT_MESSAGE_DEFAULT;
-        }
-
-        String msg = String.format(format, args);
-        return proxy.i(tag, msg);
-    }
-
-    public static int fi(String format, Object... args) {
-        return fi(null, format, args);
-    }
-
-    public static int i(SLogType type, String name, String msg) {
-        if (type != null && !type.isEnabled()) {
-            return 0;
-        }
-
-        String tag = Sketch.TAG;
-        if (!TextUtils.isEmpty(name)) {
-            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
-        }
-
-        return proxy.i(tag, msg);
-    }
-
-    public static int i(SLogType type, String msg) {
-        return i(type, null, msg);
-    }
-
-    public static int i(String name, String msg) {
-        return i(null, name, msg);
-    }
-
-    public static int i(String msg) {
-        return i(null, null, msg);
-    }
-
-
     public static int fd(String name, String format, Object... args) {
         String tag = Sketch.TAG;
         if (!TextUtils.isEmpty(name)) {
@@ -149,6 +105,38 @@ public class SLog {
 
     public static int d(String msg) {
         return d(null, msg);
+    }
+
+
+    public static int fi(String name, String format, Object... args) {
+        String tag = Sketch.TAG;
+        if (!TextUtils.isEmpty(name)) {
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
+        }
+
+        if (TextUtils.isEmpty(format)) {
+            format = FORMAT_MESSAGE_DEFAULT;
+        }
+
+        String msg = String.format(format, args);
+        return proxy.i(tag, msg);
+    }
+
+    public static int fi(String format, Object... args) {
+        return fi(null, format, args);
+    }
+
+    public static int i(String name, String msg) {
+        String tag = Sketch.TAG;
+        if (!TextUtils.isEmpty(name)) {
+            tag = String.format(FORMAT_TAG, Sketch.TAG, name);
+        }
+
+        return proxy.i(tag, msg);
+    }
+
+    public static int i(String msg) {
+        return i(null, msg);
     }
 
 

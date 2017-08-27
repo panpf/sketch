@@ -193,9 +193,9 @@ public class LruBitmapPool implements BitmapPool {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.i(SLogType.CACHE, String.format("Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fi("Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         result.getWidth(), result.getHeight(), result.getConfig(), SketchUtils.toHexString(result),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+                        element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
         }
 
