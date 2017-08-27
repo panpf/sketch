@@ -53,7 +53,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         }
 
         // 只有原始图片的宽高比和resize的宽高比相差3倍的时候才能使用缩略图方式读取图片
-        ImageSizeCalculator sizeCalculator = request.getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator sizeCalculator = request.getConfiguration().getSizeCalculator();
         return sizeCalculator.canUseThumbnailMode(boundOptions.outWidth, boundOptions.outHeight,
                 resize.getWidth(), resize.getHeight());
     }
@@ -62,7 +62,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions,
                                BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
 
-        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();
         orientationCorrector.rotateSize(boundOptions, exifOrientation);
 
         // 缩略图模式强制质量优先
@@ -81,7 +81,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageType);
 
         // 根据resize的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
-        ImageSizeCalculator sizeCalculator = request.getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator sizeCalculator = request.getConfiguration().getSizeCalculator();
         decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(mapping.srcRect.width(), mapping.srcRect.height(),
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
 

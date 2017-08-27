@@ -42,8 +42,8 @@ import me.xiaopan.sketch.preprocess.ImagePreprocessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
+import me.xiaopan.sketch.request.GlobalMobileNetworkPauseDownloadController;
 import me.xiaopan.sketch.request.HelperFactory;
-import me.xiaopan.sketch.request.MobileNetworkGlobalPauseDownloadController;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
 
@@ -61,18 +61,18 @@ public final class Configuration {
     private ProcessedImageCache processedImageCache;
 
     private HttpStack httpStack;
-    private ImageDecoder imageDecoder;
-    private ImageDownloader imageDownloader;
+    private ImageDecoder decoder;
+    private ImageDownloader downloader;
     private ImagePreprocessor imagePreprocessor;
-    private ImageOrientationCorrector imageOrientationCorrector;
+    private ImageOrientationCorrector orientationCorrector;
 
-    private ImageDisplayer defaultImageDisplayer;
-    private ImageProcessor resizeImageProcessor;
+    private ImageDisplayer defaultDisplayer;
+    private ImageProcessor resizeProcessor;
     private ResizeCalculator resizeCalculator;
-    private ImageSizeCalculator imageSizeCalculator;
+    private ImageSizeCalculator sizeCalculator;
 
+    private RequestExecutor executor;
     private FreeRideManager freeRideManager;
-    private RequestExecutor requestExecutor;
     private HelperFactory helperFactory;
     private RequestFactory requestFactory;
     private ErrorTracker errorTracker;
@@ -82,7 +82,7 @@ public final class Configuration {
     private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalInPreferQualityOverSpeed;   // false:全局解码时优先考虑速度；true:全局解码时优先考虑质量
-    private MobileNetworkGlobalPauseDownloadController mobileNetworkGlobalPauseDownloadController;
+    private GlobalMobileNetworkPauseDownloadController globalMobileNetworkPauseDownloadController;
 
     Configuration(Context context) {
         context = context.getApplicationContext();
@@ -90,23 +90,23 @@ public final class Configuration {
 
         MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
 
-        // 由于默认的缓存文件名称从URLEncoder加密变成了MD5所以这里要升级一下版本号，好清除旧的缓存
+        // 由于默认的缓存文件名称从 URLEncoder 加密变成了 MD5 所以这里要升级一下版本号，好清除旧的缓存
         this.diskCache = new LruDiskCache(context, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
         this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
         this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
 
+        this.decoder = new ImageDecoder();
+        this.executor = new RequestExecutor();
         this.httpStack = new HurlStack();
-        this.imageDecoder = new ImageDecoder();
+        this.downloader = new ImageDownloader();
+        this.sizeCalculator = new ImageSizeCalculator();
         this.freeRideManager = new FreeRideManager();
-        this.requestExecutor = new RequestExecutor();
-        this.imageDownloader = new ImageDownloader();
+        this.resizeProcessor = new ResizeImageProcessor();
         this.resizeCalculator = new ResizeCalculator();
+        this.defaultDisplayer = new DefaultImageDisplayer();
         this.imagePreprocessor = new ImagePreprocessor();
-        this.imageSizeCalculator = new ImageSizeCalculator();
         this.processedImageCache = new ProcessedImageCache();
-        this.resizeImageProcessor = new ResizeImageProcessor();
-        this.defaultImageDisplayer = new DefaultImageDisplayer();
-        this.imageOrientationCorrector = new ImageOrientationCorrector();
+        this.orientationCorrector = new ImageOrientationCorrector();
 
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
@@ -149,7 +149,7 @@ public final class Configuration {
             if (oldDiskCache != null) {
                 oldDiskCache.close();
             }
-            SLog.w(NAME, "setDiskCache. %s", diskCache.getKey());
+            SLog.w(NAME, "diskCache=%s", diskCache.getKey());
         }
         return this;
     }
@@ -177,7 +177,7 @@ public final class Configuration {
             if (oldBitmapPool != null) {
                 oldBitmapPool.close();
             }
-            SLog.w(NAME, "setBitmapPool. %s", bitmapPool.getKey());
+            SLog.w(NAME, "bitmapPool = %s", bitmapPool.getKey());
         }
         return this;
     }
@@ -204,7 +204,7 @@ public final class Configuration {
             if (oldMemoryCache != null) {
                 oldMemoryCache.close();
             }
-            SLog.w(NAME, "setMemoryCache. %s", memoryCache.getKey());
+            SLog.w(NAME, "memoryCache=", memoryCache.getKey());
         }
         return this;
     }
@@ -250,7 +250,7 @@ public final class Configuration {
     public Configuration setHttpStack(HttpStack httpStack) {
         if (httpStack != null) {
             this.httpStack = httpStack;
-            SLog.w(NAME, "setHttpStack. %s", httpStack.getKey());
+            SLog.w(NAME, "httpStack=", httpStack.getKey());
         }
         return this;
     }
@@ -260,8 +260,8 @@ public final class Configuration {
      *
      * @return ImageDecoder
      */
-    public ImageDecoder getImageDecoder() {
-        return imageDecoder;
+    public ImageDecoder getDecoder() {
+        return decoder;
     }
 
     /**
@@ -270,10 +270,10 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setImageDecoder(ImageDecoder imageDecoder) {
-        if (imageDecoder != null) {
-            this.imageDecoder = imageDecoder;
-            SLog.w(NAME, "setImageDecoder. %s", imageDecoder.getKey());
+    public Configuration setDecoder(ImageDecoder decoder) {
+        if (decoder != null) {
+            this.decoder = decoder;
+            SLog.w(NAME, "decoder=%s", decoder.getKey());
         }
         return this;
     }
@@ -283,21 +283,21 @@ public final class Configuration {
      *
      * @return ImageDownloader
      */
-    public ImageDownloader getImageDownloader() {
-        return imageDownloader;
+    public ImageDownloader getDownloader() {
+        return downloader;
     }
 
     /**
      * 设置图片下载器
      *
-     * @param imageDownloader 设置图片下载器
+     * @param downloader 设置图片下载器
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setImageDownloader(ImageDownloader imageDownloader) {
-        if (imageDownloader != null) {
-            this.imageDownloader = imageDownloader;
-            SLog.w(NAME, "setImageDownloader. %s", imageDownloader.getKey());
+    public Configuration setDownloader(ImageDownloader downloader) {
+        if (downloader != null) {
+            this.downloader = downloader;
+            SLog.w(NAME, "downloader=%s", downloader.getKey());
         }
         return this;
     }
@@ -320,7 +320,7 @@ public final class Configuration {
     public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
-            SLog.w(NAME, "setImagePreprocessor. %s", imagePreprocessor.getKey());
+            SLog.w(NAME, "imagePreprocessor=%s", imagePreprocessor.getKey());
         }
         return this;
     }
@@ -330,8 +330,8 @@ public final class Configuration {
      *
      * @return ImageOrientationCorrector
      */
-    public ImageOrientationCorrector getImageOrientationCorrector() {
-        return imageOrientationCorrector;
+    public ImageOrientationCorrector getOrientationCorrector() {
+        return orientationCorrector;
     }
 
     /**
@@ -340,10 +340,10 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setImageOrientationCorrector(ImageOrientationCorrector imageOrientationCorrector) {
-        if (imageOrientationCorrector != null) {
-            this.imageOrientationCorrector = imageOrientationCorrector;
-            SLog.w(NAME, "setImageOrientationCorrector. %s", imageOrientationCorrector.getKey());
+    public Configuration setOrientationCorrector(ImageOrientationCorrector orientationCorrector) {
+        if (orientationCorrector != null) {
+            this.orientationCorrector = orientationCorrector;
+            SLog.w(NAME, "orientationCorrector=%s", orientationCorrector.getKey());
         }
         return this;
     }
@@ -354,31 +354,31 @@ public final class Configuration {
      *
      * @return ImageDisplayer
      */
-    public ImageDisplayer getDefaultImageDisplayer() {
-        return defaultImageDisplayer;
+    public ImageDisplayer getDefaultDisplayer() {
+        return defaultDisplayer;
     }
 
     /**
-     * 设置默认的图片处理器
+     * 设置默认的图片显示器
      *
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
-        if (defaultImageDisplayer != null) {
-            this.defaultImageDisplayer = defaultImageDisplayer;
-            SLog.w(NAME, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
+    public Configuration setDefaultDisplayer(ImageDisplayer defaultDisplayer) {
+        if (defaultDisplayer != null) {
+            this.defaultDisplayer = defaultDisplayer;
+            SLog.w(NAME, "defaultDisplayer=%s", defaultDisplayer.getKey());
         }
         return this;
     }
 
     /**
-     * 获取Resize图片处理器
+     * 获取 Resize 图片处理器
      *
      * @return ImageProcessor
      */
-    public ImageProcessor getResizeImageProcessor() {
-        return resizeImageProcessor;
+    public ImageProcessor getResizeProcessor() {
+        return resizeProcessor;
     }
 
     /**
@@ -387,16 +387,16 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setResizeImageProcessor(ImageProcessor resizeImageProcessor) {
-        if (resizeImageProcessor != null) {
-            this.resizeImageProcessor = resizeImageProcessor;
-            SLog.w(NAME, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
+    public Configuration setResizeProcessor(ImageProcessor resizeProcessor) {
+        if (resizeProcessor != null) {
+            this.resizeProcessor = resizeProcessor;
+            SLog.w(NAME, "resizeProcessor=%s", resizeProcessor.getKey());
         }
         return this;
     }
 
     /**
-     * 获取Resize计算器
+     * 获取 Resize 计算器
      *
      * @return ResizeCalculator
      */
@@ -413,7 +413,7 @@ public final class Configuration {
     public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
-            SLog.w(NAME, "setResizeCalculator. %s", resizeCalculator.getKey());
+            SLog.w(NAME, "resizeCalculator=%s", resizeCalculator.getKey());
         }
         return this;
     }
@@ -423,8 +423,8 @@ public final class Configuration {
      *
      * @return ImageSizeCalculator
      */
-    public ImageSizeCalculator getImageSizeCalculator() {
-        return imageSizeCalculator;
+    public ImageSizeCalculator getSizeCalculator() {
+        return sizeCalculator;
     }
 
     /**
@@ -433,10 +433,10 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
-        if (imageSizeCalculator != null) {
-            this.imageSizeCalculator = imageSizeCalculator;
-            SLog.w(NAME, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
+    public Configuration setSizeCalculator(ImageSizeCalculator sizeCalculator) {
+        if (sizeCalculator != null) {
+            this.sizeCalculator = sizeCalculator;
+            SLog.w(NAME, "sizeCalculator=%s", sizeCalculator.getKey());
         }
         return this;
     }
@@ -461,7 +461,7 @@ public final class Configuration {
     public Configuration setFreeRideManager(FreeRideManager freeRideManager) {
         if (freeRideManager != null) {
             this.freeRideManager = freeRideManager;
-            SLog.w(NAME, "setFreeRideManager. %s", freeRideManager.getKey());
+            SLog.w(NAME, "freeRideManager=%s", freeRideManager.getKey());
         }
         return this;
     }
@@ -471,8 +471,8 @@ public final class Configuration {
      *
      * @return RequestExecutor
      */
-    public RequestExecutor getRequestExecutor() {
-        return requestExecutor;
+    public RequestExecutor getExecutor() {
+        return executor;
     }
 
     /**
@@ -481,14 +481,14 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public Configuration setRequestExecutor(RequestExecutor newRequestExecutor) {
+    public Configuration setExecutor(RequestExecutor newRequestExecutor) {
         if (newRequestExecutor != null) {
-            RequestExecutor oldRequestExecutor = requestExecutor;
-            requestExecutor = newRequestExecutor;
+            RequestExecutor oldRequestExecutor = executor;
+            executor = newRequestExecutor;
             if (oldRequestExecutor != null) {
                 oldRequestExecutor.shutdown();
             }
-            SLog.w(NAME, "setRequestExecutor. %s", requestExecutor.getKey());
+            SLog.w(NAME, "executor=%s", executor.getKey());
         }
         return this;
     }
@@ -511,7 +511,7 @@ public final class Configuration {
     public Configuration setHelperFactory(HelperFactory helperFactory) {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
-            SLog.w(NAME, "setHelperFactory. %s", helperFactory.getKey());
+            SLog.w(NAME, "helperFactory=%s", helperFactory.getKey());
         }
         return this;
     }
@@ -534,7 +534,7 @@ public final class Configuration {
     public Configuration setRequestFactory(RequestFactory requestFactory) {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
-            SLog.w(NAME, "setRequestFactory. %s", requestFactory.getKey());
+            SLog.w(NAME, "requestFactory=%s", requestFactory.getKey());
         }
         return this;
     }
@@ -558,7 +558,7 @@ public final class Configuration {
     public Configuration setErrorTracker(ErrorTracker errorTracker) {
         if (errorTracker != null) {
             this.errorTracker = errorTracker;
-            SLog.w(NAME, "setMonitor. %s", errorTracker.getKey());
+            SLog.w(NAME, "errorTracker=%s", errorTracker.getKey());
         }
         return this;
     }
@@ -578,7 +578,7 @@ public final class Configuration {
     public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
-            SLog.w(NAME, "setGlobalPauseLoad. %s", globalPauseLoad);
+            SLog.w(NAME, "globalPauseLoad=%s", globalPauseLoad);
         }
         return this;
     }
@@ -599,38 +599,38 @@ public final class Configuration {
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
-            SLog.w(NAME, "setGlobalPauseDownload. %s", globalPauseDownload);
+            SLog.w(NAME, "globalPauseDownload=%s", globalPauseDownload);
         }
         return this;
     }
 
     /**
-     * 移动网络下全局暂停下载？只影响display请求和load请求
+     * 全局移动网络下暂停下载？只影响display请求和load请求
      */
     @SuppressWarnings("unused")
-    public boolean isMobileNetworkGlobalPauseDownload() {
-        return mobileNetworkGlobalPauseDownloadController != null && mobileNetworkGlobalPauseDownloadController.isOpened();
+    public boolean isGlobalMobileNetworkGlobalPauseDownload() {
+        return globalMobileNetworkPauseDownloadController != null && globalMobileNetworkPauseDownloadController.isOpened();
     }
 
     /**
-     * 设置开启移动网络下暂停下载的功能，只影响display请求和load请求
+     * 设置开启移动网络下暂停下载的功能，只影响 display 请求和 load 请求
      *
      * @return Configuration. Convenient chain calls
      */
-    public Configuration setMobileNetworkGlobalPauseDownload(boolean mobileNetworkGlobalPauseDownload) {
-        if (isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload) {
-            if (mobileNetworkGlobalPauseDownload) {
-                if (this.mobileNetworkGlobalPauseDownloadController == null) {
-                    this.mobileNetworkGlobalPauseDownloadController = new MobileNetworkGlobalPauseDownloadController(context, this);
+    public Configuration setGlobalMobileNetworkPauseDownload(boolean globalMobileNetworkPauseDownload) {
+        if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
+            if (globalMobileNetworkPauseDownload) {
+                if (this.globalMobileNetworkPauseDownloadController == null) {
+                    this.globalMobileNetworkPauseDownloadController = new GlobalMobileNetworkPauseDownloadController(context, this);
                 }
-                this.mobileNetworkGlobalPauseDownloadController.setOpened(true);
+                this.globalMobileNetworkPauseDownloadController.setOpened(true);
             } else {
-                if (this.mobileNetworkGlobalPauseDownloadController != null) {
-                    this.mobileNetworkGlobalPauseDownloadController.setOpened(false);
+                if (this.globalMobileNetworkPauseDownloadController != null) {
+                    this.globalMobileNetworkPauseDownloadController.setOpened(false);
                 }
             }
 
-            SLog.w(NAME, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
+            SLog.w(NAME, "globalMobileNetworkPauseDownload=%s", isGlobalMobileNetworkGlobalPauseDownload());
         }
         return this;
     }
@@ -650,7 +650,7 @@ public final class Configuration {
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
-            SLog.w(NAME, "setGlobalLowQualityImage. %s", globalLowQualityImage);
+            SLog.w(NAME, "globalLowQualityImage=%s", globalLowQualityImage);
         }
         return this;
     }
@@ -673,7 +673,7 @@ public final class Configuration {
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
-            SLog.w(NAME, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
+            SLog.w(NAME, "globalInPreferQualityOverSpeed=%s", globalInPreferQualityOverSpeed);
         }
         return this;
     }
@@ -686,18 +686,18 @@ public final class Configuration {
                 "\n" + "processedImageCache：" + processedImageCache.getKey() +
 
                 "\n" + "httpStack：" + httpStack.getKey() +
-                "\n" + "imageDecoder：" + imageDecoder.getKey() +
-                "\n" + "imageDownloader：" + imageDownloader.getKey() +
+                "\n" + "decoder：" + decoder.getKey() +
+                "\n" + "downloader：" + downloader.getKey() +
                 "\n" + "imagePreprocessor：" + imagePreprocessor.getKey() +
-                "\n" + "imageOrientationCorrector：" + imageOrientationCorrector.getKey() +
+                "\n" + "orientationCorrector：" + orientationCorrector.getKey() +
 
-                "\n" + "defaultImageDisplayer：" + defaultImageDisplayer.getKey() +
-                "\n" + "resizeImageProcessor：" + resizeImageProcessor.getKey() +
+                "\n" + "defaultDisplayer：" + defaultDisplayer.getKey() +
+                "\n" + "resizeProcessor：" + resizeProcessor.getKey() +
                 "\n" + "resizeCalculator：" + resizeCalculator.getKey() +
-                "\n" + "imageSizeCalculator：" + imageSizeCalculator.getKey() +
+                "\n" + "sizeCalculator：" + sizeCalculator.getKey() +
 
                 "\n" + "freeRideManager：" + freeRideManager.getKey() +
-                "\n" + "requestExecutor：" + requestExecutor.getKey() +
+                "\n" + "executor：" + executor.getKey() +
                 "\n" + "helperFactory：" + helperFactory.getKey() +
                 "\n" + "requestFactory：" + requestFactory.getKey() +
                 "\n" + "errorTracker：" + errorTracker.getKey() +
@@ -706,7 +706,7 @@ public final class Configuration {
                 "\n" + "globalPauseDownload：" + globalPauseDownload +
                 "\n" + "globalLowQualityImage：" + globalLowQualityImage +
                 "\n" + "globalInPreferQualityOverSpeed：" + globalInPreferQualityOverSpeed +
-                "\n" + "mobileNetworkGlobalPauseDownload：" + isMobileNetworkGlobalPauseDownload();
+                "\n" + "globalMobileNetworkPauseDownload：" + isGlobalMobileNetworkGlobalPauseDownload();
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

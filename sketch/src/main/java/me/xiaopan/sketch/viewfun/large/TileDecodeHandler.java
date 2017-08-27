@@ -57,7 +57,7 @@ class TileDecodeHandler extends Handler {
         Configuration configuration = Sketch.with(executor.callback.getContext()).getConfiguration();
         this.bitmapPool = configuration.getBitmapPool();
         this.errorTracker = configuration.getErrorTracker();
-        this.orientationCorrector = configuration.getImageOrientationCorrector();
+        this.orientationCorrector = configuration.getOrientationCorrector();
     }
 
     @Override

@@ -110,7 +110,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
             }
         }
 
-        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();
 
         ImageAttrs imageAttrs;
         if (originImageOptions != null && !TextUtils.isEmpty(originImageOptions.outMimeType)) {

@@ -100,7 +100,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
         int videoHeight = metadata.getInt(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
 
         // 限制读取的帧的尺寸
-        ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
         MaxSize maxSize = sizeCalculator.getDefaultImageMaxSize(context);
         int inSampleSize = sizeCalculator.calculateInSampleSize(videoWidth, videoHeight, maxSize.getWidth(), maxSize.getHeight(), false);
         int finalWidth = SketchUtils.ceil(videoWidth, inSampleSize);

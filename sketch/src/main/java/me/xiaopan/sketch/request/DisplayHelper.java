@@ -494,7 +494,7 @@ public class DisplayHelper {
      */
     protected void preProcess() {
         Configuration configuration = sketch.getConfiguration();
-        ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
         FixedSize fixedSize = viewInfo.getFixedSize();
 
 
@@ -562,7 +562,7 @@ public class DisplayHelper {
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
         if (displayOptions.getImageProcessor() == null && resize != null) {
-            displayOptions.setImageProcessor(configuration.getResizeImageProcessor());
+            displayOptions.setImageProcessor(configuration.getResizeProcessor());
         }
 
 
@@ -591,7 +591,7 @@ public class DisplayHelper {
 
         // ImageDisplayer必须得有
         if (displayOptions.getImageDisplayer() == null) {
-            displayOptions.setImageDisplayer(configuration.getDefaultImageDisplayer());
+            displayOptions.setImageDisplayer(configuration.getDefaultDisplayer());
         }
 
         // 使用过渡图片显示器的时候，如果使用了loadingImage的话就必须配合ShapeSize才行，如果没有ShapeSize就取ImageView的宽高作为ShapeSize

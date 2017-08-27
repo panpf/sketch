@@ -463,7 +463,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
             minZoomScale = fullZoomScale;
 
-            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
             if (readMode && (sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight) ||
                     sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight))) {
                 // 阅读模式下保证阅读效果最重要
@@ -533,7 +533,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         boolean imageThanViewLarge = previewWidth > viewWidth || previewHeight > viewHeight;
 
         if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
-            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
             if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
                 baseMatrix.postScale(widthScale, widthScale);
             } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
@@ -547,7 +547,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             baseMatrix.postTranslate((viewWidth - previewWidth * scale) / 2F, (viewHeight - previewHeight * scale) / 2F);
         } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
-            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
             if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
                 baseMatrix.postScale(widthScale, widthScale);
             } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {

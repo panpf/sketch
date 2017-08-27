@@ -272,7 +272,7 @@ public class LoadHelper {
 
         // 没有设置maxSize的话，就用默认的maxSize
         if (loadOptions.getMaxSize() == null) {
-            loadOptions.setMaxSize(configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
+            loadOptions.setMaxSize(configuration.getSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
         }
 
         // 检查MaxSize的宽或高大于0即可
@@ -284,7 +284,7 @@ public class LoadHelper {
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
         if (loadOptions.getImageProcessor() == null && resize != null) {
-            loadOptions.setImageProcessor(configuration.getResizeImageProcessor());
+            loadOptions.setImageProcessor(configuration.getResizeProcessor());
         }
 
 

@@ -24,4 +24,4 @@ BitmapFactory提供了一个Options来配置读取图片的相关选项，其中
 
 #### 自定义maxSize计算规则
 如果你对现有的maxSize计算规则不满意，那么你可以继承ImageSizeCalculator类重写calculateImageMaxSize()方法实现你自己的计算规则
-然后调用Sketch.with(context).getConfiguration().setImageSizeCalculator(ImageSizeCalculator)方法来使用你自定义的ImageSizeCalculator
+然后调用Sketch.with(context).getConfiguration().setSizeCalculator(ImageSizeCalculator)方法来使用你自定义的ImageSizeCalculator

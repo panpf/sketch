@@ -130,7 +130,7 @@ public class ImageDecoder implements Identifier {
         // Read image orientation
         int exifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
         if (!request.getOptions().isCorrectImageOrientationDisabled()) {
-            ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+            ImageOrientationCorrector imageOrientationCorrector = request.getConfiguration().getOrientationCorrector();
             exifOrientation = imageOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource);
         }
 

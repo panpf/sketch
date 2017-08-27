@@ -236,11 +236,13 @@ public class LruBitmapPool implements BitmapPool {
 
     @Override
     public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-        if (disabled) {
-            SLog.w(NAME, "setDisabled. %s", true);
-        } else {
-            SLog.w(NAME, "setDisabled. %s", false);
+        if (this.disabled != disabled) {
+            this.disabled = disabled;
+            if (disabled) {
+                SLog.w(NAME, "setDisabled. %s", true);
+            } else {
+                SLog.w(NAME, "setDisabled. %s", false);
+            }
         }
     }
 

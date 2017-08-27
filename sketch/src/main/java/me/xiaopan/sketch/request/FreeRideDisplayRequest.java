@@ -58,7 +58,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
         return !memoryCache.isClosed() && !memoryCache.isDisabled()
                 && !getOptions().isCacheInMemoryDisabled()
                 && !getOptions().isDecodeGifImage()
-                && !isSync() && !getConfiguration().getRequestExecutor().isShutdown();
+                && !isSync() && !getConfiguration().getExecutor().isShutdown();
     }
 
     @Override

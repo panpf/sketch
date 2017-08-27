@@ -41,14 +41,14 @@ public class NormalDecodeHelper extends DecodeHelper {
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
                                BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
 
-        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getImageOrientationCorrector();
+        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();
         orientationCorrector.rotateSize(boundOptions, exifOrientation);
 
         // Calculate inSampleSize according to max size
         MaxSize maxSize = request.getOptions().getMaxSize();
         if (maxSize != null) {
             boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageType);
-            ImageSizeCalculator imageSizeCalculator = request.getConfiguration().getImageSizeCalculator();
+            ImageSizeCalculator imageSizeCalculator = request.getConfiguration().getSizeCalculator();
             decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundOptions.outWidth, boundOptions.outHeight,
                     maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
         }

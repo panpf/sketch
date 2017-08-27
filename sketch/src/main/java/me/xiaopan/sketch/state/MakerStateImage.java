@@ -115,7 +115,7 @@ public class MakerStateImage implements StateImage {
         // 处理图片
         //noinspection ConstantConditions
         if (processor == null && resize != null) {
-            processor = sketch.getConfiguration().getResizeImageProcessor();
+            processor = sketch.getConfiguration().getResizeProcessor();
             if (processor == null) {
                 processor = new ResizeImageProcessor();
             }

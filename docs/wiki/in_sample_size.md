@@ -70,4 +70,4 @@ public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, i
 
 #### 自定义inSampleSize计算规则
 如果你想自定义inSampleSize的话，你只需继承ImageSizeCalculator，并重写calculateInSampleSize(int, int, int, int)方法，
-然后调用Sketch.with(context).getConfiguration().setImageSizeCalculator(ImageSizeCalculator)方法应用即可
+然后调用Sketch.with(context).getConfiguration().setSizeCalculator(ImageSizeCalculator)方法应用即可

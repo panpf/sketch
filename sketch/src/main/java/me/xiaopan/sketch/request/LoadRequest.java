@@ -147,7 +147,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         setStatus(Status.DECODING);
         DecodeResult decodeResult;
         try {
-            decodeResult = getConfiguration().getImageDecoder().decode(this);
+            decodeResult = getConfiguration().getDecoder().decode(this);
         } catch (DecodeException e) {
             e.printStackTrace();
             error(e.getErrorCause());

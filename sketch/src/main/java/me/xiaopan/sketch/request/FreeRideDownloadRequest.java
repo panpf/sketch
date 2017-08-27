@@ -50,7 +50,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         DiskCache diskCache = getConfiguration().getDiskCache();
         return !diskCache.isClosed() && !diskCache.isDisabled()
                 && !getOptions().isCacheInDiskDisabled()
-                && !isSync() && !getConfiguration().getRequestExecutor().isShutdown();
+                && !isSync() && !getConfiguration().getExecutor().isShutdown();
     }
 
     @Override

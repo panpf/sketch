@@ -141,7 +141,7 @@ public class DownloadRequest extends AsyncRequest {
 
     @Override
     protected void runDownload() {
-        downloadResult = getConfiguration().getImageDownloader().download(this);
+        downloadResult = getConfiguration().getDownloader().download(this);
 
         if (isCanceled()) {
             if (SLogType.REQUEST.isEnabled()) {

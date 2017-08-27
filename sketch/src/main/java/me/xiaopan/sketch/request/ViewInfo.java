@@ -43,7 +43,7 @@ public class ViewInfo {
     public void reset(SketchView sketchView, Sketch sketch) {
         if (sketchView != null) {
             this.scaleType = sketchView.getScaleType();
-            this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchView);
+            this.fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
             this.supportLargeImage = sketchView.isBlockDisplayLargeImageEnabled();
         } else {
             this.scaleType = null;

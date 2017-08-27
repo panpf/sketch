@@ -226,9 +226,8 @@ class TileManager {
         int targetWidth = Math.round(viewWidth * targetSizeScale);
         int targetHeight = Math.round(viewHeight * targetSizeScale);
 
-        ImageSizeCalculator imageSizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
-
-        return imageSizeCalculator.calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight, false);
+        ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
+        return sizeCalculator.calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight, false);
     }
 
     /**

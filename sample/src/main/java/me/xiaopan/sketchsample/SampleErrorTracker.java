@@ -42,6 +42,11 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
+    public String getKey() {
+        return "SampleErrorTracker";
+    }
+
+    @Override
     public void onNotFoundGifSoError(Throwable e) {
         super.onNotFoundGifSoError(e);
 

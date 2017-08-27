@@ -77,7 +77,7 @@ public class ImageRegionDecoder {
 
         // 读取图片方向并根据方向改变尺寸
         Configuration configuration = Sketch.with(context).getConfiguration();
-        ImageOrientationCorrector orientationCorrector = configuration.getImageOrientationCorrector();
+        ImageOrientationCorrector orientationCorrector = configuration.getOrientationCorrector();
         int exifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
         if (!correctImageOrientationDisabled) {
             exifOrientation = orientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource);
