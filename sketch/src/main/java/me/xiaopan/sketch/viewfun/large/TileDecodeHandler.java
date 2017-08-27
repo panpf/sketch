@@ -29,7 +29,6 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -88,9 +87,7 @@ class TileDecodeHandler extends Handler {
 
     private void decode(TileExecutor executor, int key, Tile tile) {
         if (executor == null) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
-            }
+            SLog.fw(NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
             return;
         }
 
@@ -186,9 +183,7 @@ class TileDecodeHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (SLogType.LARGE.isEnabled()) {
-            SLog.w(SLogType.LARGE, NAME, "clean. %s" + why);
-        }
+        SLog.w(NAME, "clean. %s" + why);
 
         removeMessages(WHAT_DECODE);
     }

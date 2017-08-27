@@ -64,9 +64,7 @@ class TileDecoder {
      */
     void decodeTile(Tile tile) {
         if (!isReady()) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "not ready. decodeTile. %s", tile.getInfo());
-            }
+            SLog.fw(NAME, "not ready. decodeTile. %s", tile.getInfo());
             return;
         }
 
@@ -75,17 +73,13 @@ class TileDecoder {
     }
 
     void clean(String why) {
-        if (SLogType.LARGE.isEnabled()) {
-            SLog.fw(SLogType.LARGE, NAME, "clean. %s", why);
-        }
+        SLog.fw(NAME, "clean. %s", why);
 
         initKeyCounter.refresh();
     }
 
     void recycle(String why) {
-        if (SLogType.LARGE.isEnabled()) {
-            SLog.fw(SLogType.LARGE, NAME, "recycle. %s", why);
-        }
+        SLog.fw(NAME, "recycle. %s", why);
 
         if (decoder != null) {
             decoder.recycle();

@@ -172,7 +172,7 @@ public class MappingView extends SketchImageView {
     public void update(Point newDrawableSize, Rect newVisibleRect) {
         if (newDrawableSize.x == 0 || newDrawableSize.y == 0 || newVisibleRect.isEmpty()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.fw(SLogType.ZOOM, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
+                SLog.fw("MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
                         getImageUri(), newDrawableSize.toString(), newVisibleRect.toShortString());
             }
 
@@ -191,7 +191,7 @@ public class MappingView extends SketchImageView {
 
         if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, "MappingView. update. view size is 0 or getDrawable() is null. %s", getImageUri());
+                SLog.w("MappingView. update. view size is 0 or getDrawable() is null. %s", getImageUri());
             }
 
             if (!visibleMappingRect.isEmpty()) {

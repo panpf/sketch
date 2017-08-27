@@ -125,7 +125,7 @@ public class BitmapPoolUtils {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.fw(SLogType.CACHE, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fw("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
@@ -188,7 +188,7 @@ public class BitmapPoolUtils {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.fw(SLogType.CACHE, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.fd("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }

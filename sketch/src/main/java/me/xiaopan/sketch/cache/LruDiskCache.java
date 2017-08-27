@@ -120,7 +120,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable judge exist, uri=%s", uri);
+            SLog.fw(LOG_NAME, "Disabled. Unable judge exist, uri=%s", uri);
             return false;
         }
 
@@ -150,7 +150,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable get, uri=%s", uri);
+            SLog.fw(LOG_NAME, "Disabled. Unable get, uri=%s", uri);
             return null;
         }
 
@@ -164,9 +164,7 @@ public class LruDiskCache implements DiskCache {
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {
             snapshot = cache.getSimpleSnapshot(uriToDiskCacheKey(uri));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DiskLruCache.ClosedException e) {
+        } catch (IOException | DiskLruCache.ClosedException e) {
             e.printStackTrace();
         }
         return snapshot != null ? new LruDiskCacheEntry(uri, snapshot) : null;
@@ -179,7 +177,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable edit, uri=%s", uri);
+            SLog.fw(LOG_NAME, "Disabled. Unable edit, uri=%s", uri);
             return null;
         }
 
@@ -270,7 +268,7 @@ public class LruDiskCache implements DiskCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "setDisabled. %s", true);
+            SLog.fw(LOG_NAME, "setDisabled. %s", true);
         } else {
             SLog.fw(LOG_NAME, "setDisabled. %s", false);
         }

@@ -24,7 +24,6 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -134,18 +133,14 @@ class TileDecodeCallbackHandler extends Handler {
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
-            }
+            SLog.fw(NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
             decoder.recycle();
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
-            }
+            SLog.fw(NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
             decoder.recycle();
             return;
         }
@@ -156,17 +151,13 @@ class TileDecodeCallbackHandler extends Handler {
     private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
-            }
+            SLog.fw(NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
-            }
+            SLog.fw(NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
             return;
         }
 
@@ -176,9 +167,7 @@ class TileDecodeCallbackHandler extends Handler {
     private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
-            }
+            SLog.fw(NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
         }
@@ -195,9 +184,7 @@ class TileDecodeCallbackHandler extends Handler {
     private void decodeError(int key, Tile tile, TileDecodeHandler.DecodeErrorException exception) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
-            }
+            SLog.fw(NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
             return;
         }
 

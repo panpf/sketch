@@ -49,9 +49,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
         this.largeImageViewer = new LargeImageViewer(view.getContext(), this);
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.w(SLogType.LARGE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
-            }
+            SLog.w(NAME, "large image function the minimum support to GINGERBREAD_MR1");
         }
     }
 
@@ -118,15 +116,13 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
             if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
+                SLog.fd(NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
-            }
+            SLog.fw(NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             return;
         }
 
@@ -171,7 +167,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
                 }
             } else {
                 if (SLogType.LARGE.isEnabled()) {
-                    SLog.fw(SLogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                    SLog.fd(NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }

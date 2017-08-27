@@ -71,7 +71,6 @@ import javax.microedition.khronos.egl.EGLSurface;
 
 import me.xiaopan.sketch.Initializer;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -98,9 +97,7 @@ public class SketchUtils {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(SLogType.REQUEST, logName, "get packageInfo is null. %s", apkFilePath);
-            }
+            SLog.fw(logName, "get packageInfo is null. %s", apkFilePath);
             return null;
         }
 
@@ -114,9 +111,7 @@ public class SketchUtils {
             e.printStackTrace();
         }
         if (drawable == null) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(SLogType.REQUEST, logName, "app icon is null. %s", apkFilePath);
-            }
+            SLog.fw(logName, "app icon is null. %s", apkFilePath);
             return null;
         }
 

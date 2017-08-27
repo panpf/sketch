@@ -367,7 +367,7 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            SLog.fw(SLogType.REQUEST, LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
+            SLog.fw(LOG_NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
                     Integer.toHexString(sketchView.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
             if (SLogType.TIME.isEnabled()) {
                 Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
@@ -694,7 +694,7 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(SLogType.REQUEST, LOG_NAME,
+                SLog.fw(LOG_NAME,
                         "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
                         Integer.toHexString(sketchView.hashCode()), key);
             }
@@ -734,7 +734,7 @@ public class DisplayHelper {
                 drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(SLogType.REQUEST, LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
+                    SLog.fw(LOG_NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
                             Integer.toHexString(sketchView.hashCode()), key);
                 }
             }
@@ -764,7 +764,7 @@ public class DisplayHelper {
                 return potentialRequest;
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(SLogType.REQUEST, LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
+                    SLog.fw(LOG_NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
                             key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);

@@ -23,7 +23,6 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -70,17 +69,13 @@ class TileDecoderInitHandler extends Handler {
 
     private void init(TileExecutor decodeExecutor, String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
-            }
+            SLog.fw(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
-            }
+            SLog.fw(NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             return;
         }
 
@@ -100,9 +95,7 @@ class TileDecoderInitHandler extends Handler {
 
         newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
-            }
+            SLog.fw(NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             decoder.recycle();
             return;
         }
@@ -111,9 +104,7 @@ class TileDecoderInitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (SLogType.LARGE.isEnabled()) {
-            SLog.fw(SLogType.LARGE, NAME, "clean. %s", why);
-        }
+        SLog.fw(NAME, "clean. %s", why);
 
         removeMessages(WHAT_INIT);
     }

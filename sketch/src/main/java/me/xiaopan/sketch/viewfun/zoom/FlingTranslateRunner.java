@@ -37,9 +37,7 @@ class FlingTranslateRunner implements Runnable {
 
     void fling(int velocityX, int velocityY) {
         if (!imageZoomer.isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. fling");
-            }
+            SLog.w(ImageZoomer.NAME, "not working. fling");
             return;
         }
 
@@ -93,22 +91,18 @@ class FlingTranslateRunner implements Runnable {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "finished. fling run");
+                SLog.d(ImageZoomer.NAME, "finished. fling run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. fling run");
-            }
+            SLog.w(ImageZoomer.NAME, "not working. fling run");
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "scroll finished. fling run");
-            }
+            SLog.d(ImageZoomer.NAME, "scroll finished. fling run");
             return;
         }
 

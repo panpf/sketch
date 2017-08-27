@@ -130,7 +130,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
         }
         if (frameBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(SLogType.REQUEST, LOG_NAME, "video thumbnail bitmap recycled. %s", uriInfo.getUri());
+                SLog.fw(LOG_NAME, "video thumbnail bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -184,7 +184,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(SLogType.REQUEST, LOG_NAME, "not found video thumbnail cache file. %s", uriInfo.getUri());
+                    SLog.fw(LOG_NAME, "not found video thumbnail cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

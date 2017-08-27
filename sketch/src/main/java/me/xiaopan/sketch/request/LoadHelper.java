@@ -320,7 +320,7 @@ public class LoadHelper {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(SLogType.REQUEST, LOG_NAME, "canceled. %s. %s",
+                SLog.fd(LOG_NAME, "canceled. %s. %s",
                         isPauseDownload ? "pause download" : "requestLevel is local", key);
             }
 

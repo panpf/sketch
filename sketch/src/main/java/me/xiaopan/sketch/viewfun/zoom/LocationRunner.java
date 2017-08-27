@@ -57,22 +57,20 @@ class LocationRunner implements Runnable {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "finished. location run");
+                SLog.d(ImageZoomer.NAME, "finished. location run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. location run");
-            }
+            SLog.w(ImageZoomer.NAME, "not working. location run");
             mScroller.forceFinished(true);
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "scroll finished. location run");
+                SLog.d(ImageZoomer.NAME, "scroll finished. location run");
             }
             return;
         }

@@ -198,7 +198,7 @@ public abstract class BaseRequest {
         } else if (level == 1) {
             SLog.i(getLogName(), builder.toString());
         } else if (level == 2) {
-            SLog.w(SLogType.REQUEST, getLogName(), builder.toString());
+            SLog.w(getLogName(), builder.toString());
         } else if (level == 3) {
             SLog.e(SLogType.REQUEST, getLogName(), builder.toString());
         }

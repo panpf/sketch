@@ -108,7 +108,7 @@ public class InstalledAppIconPreprocessor implements Preprocessor {
 
         if (iconBitmap.isRecycled()) {
             if (SLogType.REQUEST.isEnabled()) {
-                SLog.fw(SLogType.REQUEST, LOG_NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
+                SLog.fw(LOG_NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
             }
             return null;
         }
@@ -161,7 +161,7 @@ public class InstalledAppIconPreprocessor implements Preprocessor {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
                 if (SLogType.REQUEST.isEnabled()) {
-                    SLog.fw(SLogType.REQUEST, LOG_NAME, "not found apk icon cache file. %s", uriInfo.getUri());
+                    SLog.fw(LOG_NAME, "not found apk icon cache file. %s", uriInfo.getUri());
                 }
                 return null;
             }

@@ -122,7 +122,7 @@ public class SketchRefBitmap extends SketchBitmap {
 
         if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             if (SLogType.CACHE.isEnabled()) {
-                SLog.fw(SLogType.CACHE, LOG_NAME, "Free. %s. %s", callingStation, getInfo());
+                SLog.fw(LOG_NAME, "Free. %s. %s", callingStation, getInfo());
             }
 
             BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);

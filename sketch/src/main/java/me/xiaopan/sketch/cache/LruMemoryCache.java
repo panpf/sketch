@@ -46,12 +46,12 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable put, key=%s", key);
+            SLog.fw(LOG_NAME, "Disabled. Unable put, key=%s", key);
             return;
         }
 
         if (cache.get(key) != null) {
-            SLog.w(SLogType.CACHE, LOG_NAME, String.format("Exist. key=%s", key));
+            SLog.w(LOG_NAME, String.format("Exist. key=%s", key));
             return;
         }
 
@@ -76,7 +76,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable get, key=%s", key);
+            SLog.fw(LOG_NAME, "Disabled. Unable get, key=%s", key);
             return null;
         }
 
@@ -90,7 +90,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "Disabled. Unable remove, key=%s", key);
+            SLog.fw(LOG_NAME, "Disabled. Unable remove, key=%s", key);
             return null;
         }
 
@@ -131,7 +131,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         long releasedSize = memoryCacheSize - getSize();
-        SLog.fw(SLogType.CACHE, LOG_NAME, "trimMemory. level=%s, released: %s",
+        SLog.fw(LOG_NAME, "trimMemory. level=%s, released: %s",
                 SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
     }
 
@@ -144,7 +144,7 @@ public class LruMemoryCache implements MemoryCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.fw(SLogType.CACHE, LOG_NAME, "setDisabled. %s", true);
+            SLog.fw(LOG_NAME, "setDisabled. %s", true);
         } else {
             SLog.fw(LOG_NAME, "setDisabled. %s", false);
         }
@@ -156,7 +156,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        SLog.fw(SLogType.CACHE, LOG_NAME, "clear. before size: %s",
+        SLog.fw(LOG_NAME, "clear. before size: %s",
                 Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }

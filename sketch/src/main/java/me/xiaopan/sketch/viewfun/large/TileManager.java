@@ -76,14 +76,14 @@ class TileManager {
 
     void update(Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
         if (zooming) {
-            SLog.fw(SLogType.LARGE, NAME, "zooming. newVisibleRect=%s, tiles=%d",
+            SLog.fw(NAME, "zooming. newVisibleRect=%s, tiles=%d",
                     newVisibleRect.toShortString(), tileList.size());
             return;
         }
 
         // 过滤掉重复的刷新
         if (visibleRect.equals(newVisibleRect)) {
-            SLog.fw(SLogType.LARGE, NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
+            SLog.fw(NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
                     newVisibleRect.toShortString(), visibleRect.toShortString());
             return;
         }
@@ -572,7 +572,7 @@ class TileManager {
                     tilePool.put(tile);
                 } else {
                     if (SLogType.LARGE.isEnabled()) {
-                        SLog.fw(SLogType.LARGE, NAME, "recycle loading tile and refresh key. tile=%s", tile.getInfo());
+                        SLog.fd(NAME, "recycle loading tile and refresh key. tile=%s", tile.getInfo());
                     }
                     tile.refreshKey();
                     tileIterator.remove();
@@ -612,7 +612,7 @@ class TileManager {
                     largeImageViewer.getTileDecoder().decodeTile(loadTile);
                 } else {
                     if (SLogType.LARGE.isEnabled()) {
-                        SLog.fw(SLogType.LARGE, NAME, "repeated tile. tileDrawRect=%d, %d, %d, %d",
+                        SLog.fd(NAME, "repeated tile. tileDrawRect=%d, %d, %d, %d",
                                 Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
                     }
                 }
@@ -649,10 +649,8 @@ class TileManager {
     }
 
     void decodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
-        if (SLogType.LARGE.isEnabled()) {
-            SLog.fw(SLogType.LARGE, NAME, "decode failed. %s. tile=%s, tiles=%d",
-                    exception.getCauseMessage(), tile.getInfo(), tileList.size());
-        }
+        SLog.fw(NAME, "decode failed. %s. tile=%s, tiles=%d",
+                exception.getCauseMessage(), tile.getInfo(), tileList.size());
 
         tileList.remove(tile);
 
@@ -665,9 +663,7 @@ class TileManager {
             tile.refreshKey();
             tile.clean(bitmapPool);
             tilePool.put(tile);
-            if (SLogType.LARGE.isEnabled()) {
-                SLog.fw(SLogType.LARGE, NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
-            }
+            SLog.fw(NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
         }
         tileList.clear();
         visibleRect.setEmpty();

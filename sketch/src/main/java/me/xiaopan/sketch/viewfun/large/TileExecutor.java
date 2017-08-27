@@ -133,7 +133,7 @@ class TileExecutor {
                     handlerThread.quit();
                 }
 
-                SLog.fw(SLogType.LARGE, NAME, "image region decode thread %s quit", handlerThread.getName());
+                SLog.fw(NAME, "image region decode thread %s quit", handlerThread.getName());
 
                 handlerThread = null;
             }

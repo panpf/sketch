@@ -65,9 +65,7 @@ class ScrollBar {
 
     void drawScrollBar(Canvas canvas) {
         if (!imageZoomer.isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. drawScrollBar");
-            }
+            SLog.w(ImageZoomer.NAME, "not working. drawScrollBar");
             return;
         }
 
@@ -75,7 +73,7 @@ class ScrollBar {
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.fw(SLogType.ZOOM, ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
+                SLog.fd(ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
             }
             return;
         }
@@ -88,7 +86,7 @@ class ScrollBar {
 
         if (viewWidth <= 0 || viewHeight <= 0 || displayWidth == 0 || displayHeight == 0) {
             if (SLogType.ZOOM.isEnabled()) {
-                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "size is 0. drawScrollBar" +
+                SLog.d(ImageZoomer.NAME, "size is 0. drawScrollBar" +
                         ". viewSize=" + viewWidth + "x" + viewHeight +
                         ", displaySize=" + displayWidth + "x" + displayHeight);
             }
