@@ -64,7 +64,6 @@ public class SLog {
     // TODO: 2017/8/25 梳理日志方法，省略所有tag，name 不再绑定到tag上，name 改叫 scope
     // TODO: 2017/8/27 所有的w和e日志不加过滤条件
     // TODO: 2017/8/27 SLogType 挪进 SLog 并简化
-    // TODO: 2017/8/27 大量 ImageZoomer 中的 not working 应该属于 debug 日志，得加过滤
 
     public static int v(String name, String format, Object... args) {
         return proxy.v(TAG, transformLog(name, format, args));

@@ -1067,9 +1067,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     @SuppressWarnings("unused")
     public boolean location(float x, float y, boolean animate) {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.v(NAME, "not working. location");
-            }
+            SLog.w(NAME, "not working. location");
             return false;
         }
 
@@ -1154,9 +1152,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public boolean zoom(float scale, float focalX, float focalY, boolean animate) {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.v(NAME, "not working. zoom");
-            }
+            SLog.w(NAME, "not working. zoom(float, float, float, boolean)");
             return false;
         }
 
@@ -1185,9 +1181,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public boolean zoom(float scale, boolean animate) {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.v(NAME, "not working. zoom");
-            }
+            SLog.w(NAME, "not working. zoom(float, boolean)");
             return false;
         }
 
@@ -1212,9 +1206,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     // TODO: 16/10/19 研究任意角度旋转和旋转时不清空位移以及缩放信息
     public boolean rotateTo(int degrees) {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.v(NAME, "not working. rotateTo");
-            }
+            SLog.w(NAME, "not working. rotateTo");
             return false;
         }
 

@@ -19,6 +19,8 @@ package me.xiaopan.sketch.request;
 /**
  * 支持的协议类型
  */
+
+// TODO: 2017/8/28 重构UriScheme，好让支持的协议能够让使用者扩展，例如注册一个以 video://开头的东西，然后提供一套相应的处理
 public enum UriScheme {
     NET("http://", "https://") {
         @Override
