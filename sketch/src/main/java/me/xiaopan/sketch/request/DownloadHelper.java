@@ -122,7 +122,7 @@ public class DownloadHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            if (SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.ERROR)) {
                 SLog.e(NAME, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
@@ -130,13 +130,15 @@ public class DownloadHelper {
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (uriInfo.getScheme() != UriScheme.NET) {
-            if (SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.ERROR)) {
                 SLog.e(NAME, "only support http ot https. %s", uriInfo.getUri());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);

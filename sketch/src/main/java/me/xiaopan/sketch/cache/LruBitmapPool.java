@@ -296,8 +296,10 @@ public class LruBitmapPool implements BitmapPool {
                 return;
             }
 
-            SLog.e(NAME, "Evicting bitmap=%s,%s",
-                    strategy.logBitmap(removed), SketchUtils.toHexString(removed));
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "Evicting bitmap=%s,%s",
+                        strategy.logBitmap(removed), SketchUtils.toHexString(removed));
+            }
             tracker.remove(removed);
             currentSize -= strategy.getSize(removed);
             removed.recycle();

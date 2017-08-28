@@ -38,8 +38,10 @@ public class ErrorTracker implements Identifier {
      * @param cacheDir 默认的缓存目录
      */
     public void onInstallDiskCacheError(Exception e, File cacheDir) {
-        SLog.e(NAME, "onInstallDiskCacheError. %s: %s. SDCardState: %s. cacheDir: %s",
-                e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
+        if (SLog.isLoggable(SLog.ERROR)) {
+            SLog.e(NAME, "onInstallDiskCacheError. %s: %s. SDCardState: %s. cacheDir: %s",
+                    e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
+        }
     }
 
     /**
@@ -48,16 +50,18 @@ public class ErrorTracker implements Identifier {
      * @param e UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
      */
     public void onNotFoundGifSoError(Throwable e) {
-        SLog.e(NAME, "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
-                "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
+        if (SLog.isLoggable(SLog.ERROR)) {
+            SLog.e(NAME, "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
+                    "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
 
-        String abis;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            abis = Arrays.toString(Build.SUPPORTED_ABIS);
-        } else {
-            abis = Arrays.toString(new String[]{Build.CPU_ABI, Build.CPU_ABI2});
+            String abis;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                abis = Arrays.toString(Build.SUPPORTED_ABIS);
+            } else {
+                abis = Arrays.toString(new String[]{Build.CPU_ABI, Build.CPU_ABI2});
+            }
+            SLog.e(NAME, "abis=%s", abis);
         }
-        SLog.e(NAME, "abis=%s", abis);
     }
 
     /**
@@ -70,8 +74,10 @@ public class ErrorTracker implements Identifier {
      * @param outMimeType 图片类型
      */
     public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
-        SLog.e(NAME, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
-                outWidth, outHeight, outMimeType, request.getKey());
+        if (SLog.isLoggable(SLog.ERROR)) {
+            SLog.e(NAME, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
+                    outWidth, outHeight, outMimeType, request.getKey());
+        }
     }
 
     /**
@@ -84,19 +90,21 @@ public class ErrorTracker implements Identifier {
      * @param outMimeType 图片类型
      */
     public void onDecodeNormalImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
-        if (throwable instanceof OutOfMemoryError) {
-            long maxMemory = Runtime.getRuntime().maxMemory();
-            long freeMemory = Runtime.getRuntime().freeMemory();
-            long totalMemory = Runtime.getRuntime().totalMemory();
-            String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
-            String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
-            String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            SLog.e(NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
-                    maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
-        }
+        if (SLog.isLoggable(SLog.ERROR)) {
+            if (throwable instanceof OutOfMemoryError) {
+                long maxMemory = Runtime.getRuntime().maxMemory();
+                long freeMemory = Runtime.getRuntime().freeMemory();
+                long totalMemory = Runtime.getRuntime().totalMemory();
+                String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
+                String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
+                String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
+                SLog.e(NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                        maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
+            }
 
-        SLog.e(NAME, "onDecodeNormalImageError. outWidth=%d, outHeight=%d, outMimeType=%s. %s",
-                outWidth, outHeight, outMimeType, request.getKey());
+            SLog.e(NAME, "onDecodeNormalImageError. outWidth=%d, outHeight=%d, outMimeType=%s. %s",
+                    outWidth, outHeight, outMimeType, request.getKey());
+        }
     }
 
     /**
@@ -107,19 +115,21 @@ public class ErrorTracker implements Identifier {
      * @param processor 所使用的处理器
      */
     public void onProcessImageError(Throwable e, String imageUri, ImageProcessor processor) {
-        if (e instanceof OutOfMemoryError) {
-            long maxMemory = Runtime.getRuntime().maxMemory();
-            long freeMemory = Runtime.getRuntime().freeMemory();
-            long totalMemory = Runtime.getRuntime().totalMemory();
-            String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
-            String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
-            String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            SLog.d(NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
-                    maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
-        }
+        if (SLog.isLoggable(SLog.ERROR)) {
+            if (e instanceof OutOfMemoryError) {
+                long maxMemory = Runtime.getRuntime().maxMemory();
+                long freeMemory = Runtime.getRuntime().freeMemory();
+                long totalMemory = Runtime.getRuntime().totalMemory();
+                String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
+                String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
+                String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
+                SLog.d(NAME, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                        maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
+            }
 
-        SLog.e(NAME, "onProcessImageError. imageUri: %s. processor: %s",
-                imageUri, processor.getKey());
+            SLog.e(NAME, "onProcessImageError. imageUri: %s. processor: %s",
+                    imageUri, processor.getKey());
+        }
     }
 
     /**

@@ -48,7 +48,9 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         Resize resize = loadOptions.getResize();
         if (resize == null) {
-            SLog.e(LOG_NAME, "thumbnailMode need resize ");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(LOG_NAME, "thumbnailMode need resize ");
+            }
             return false;
         }
 

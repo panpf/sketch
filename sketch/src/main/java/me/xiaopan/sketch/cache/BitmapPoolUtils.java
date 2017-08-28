@@ -62,12 +62,16 @@ public class BitmapPoolUtils {
         }
 
         if (outWidth == 0 || outHeight == 0) {
-            SLog.e(NAME, "outWidth or ourHeight is 0");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "outWidth or ourHeight is 0");
+            }
             return false;
         }
 
         if (TextUtils.isEmpty(outMimeType)) {
-            SLog.e(NAME, "outMimeType is empty");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "outMimeType is empty");
+            }
             return false;
         }
 

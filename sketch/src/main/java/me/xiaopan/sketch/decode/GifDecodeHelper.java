@@ -34,7 +34,9 @@ public class GifDecodeHelper extends DecodeHelper {
             if (SketchGifFactory.isExistGifLibrary()) {
                 return true;
             } else {
-                SLog.e("GifDecodeHelper", "Not found libpl_droidsonroids_gif.so. Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
+                if (SLog.isLoggable(SLog.ERROR)) {
+                    SLog.e("GifDecodeHelper", "Not found libpl_droidsonroids_gif.so. Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
+                }
             }
         }
         return false;

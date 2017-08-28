@@ -114,7 +114,9 @@ public class SketchRefBitmap extends SketchBitmap {
      */
     private void referenceChanged(String callingStation) {
         if (isRecycled()) {
-            SLog.e(NAME, "Recycled. %s. %s", callingStation, getKey());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "Recycled. %s. %s", callingStation, getKey());
+            }
             return;
         }
 

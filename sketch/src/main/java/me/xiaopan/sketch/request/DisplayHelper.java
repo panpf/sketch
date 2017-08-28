@@ -450,7 +450,7 @@ public class DisplayHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            if (SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.ERROR)) {
                 SLog.e(NAME, "uri is null or empty. viewHashCode=%s", Integer.toHexString(sketchView.hashCode()));
             }
 
@@ -470,7 +470,9 @@ public class DisplayHelper {
 
         if (uriInfo.getScheme() == null) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.e(NAME, "unknown uri scheme: %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "unknown uri scheme: %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
+            }
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -645,7 +647,7 @@ public class DisplayHelper {
 
         if (cachedRefBitmap.isRecycled()) {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
-            if (SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.ERROR)) {
                 String viewCode = Integer.toHexString(sketchView.hashCode());
                 SLog.e(NAME, "memory cache drawable recycled. %s. viewHashCode=%s", cachedRefBitmap.getInfo(), viewCode);
             }

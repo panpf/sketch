@@ -101,11 +101,15 @@ public class ImageDecodeUtils {
         if (dataSource instanceof CacheFileDataSource) {
             DiskCache.Entry diskCacheEntry = ((CacheFileDataSource) dataSource).getDiskCacheEntry();
 
-            SLog.e(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
+            }
 
             if (!diskCacheEntry.delete()) {
-                SLog.e(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
-                        diskCacheEntry.getUri(), loadRequest.getKey());
+                if (SLog.isLoggable(SLog.ERROR)) {
+                    SLog.e(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+                            diskCacheEntry.getUri(), loadRequest.getKey());
+                }
             }
         }
 
@@ -113,12 +117,14 @@ public class ImageDecodeUtils {
             return;
         }
 
-        if (dataSource instanceof FileDataSource) {
-            File file = ((FileDataSource) dataSource).getFile(null, null);
-            SLog.e(logName, "decode failed. filePath=%s, fileLength=%d",
-                    file.getPath(), file.exists() ? file.length() : 0);
-        } else {
-            SLog.e(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
+        if (SLog.isLoggable(SLog.ERROR)) {
+            if (dataSource instanceof FileDataSource) {
+                File file = ((FileDataSource) dataSource).getFile(null, null);
+                SLog.e(logName, "decode failed. filePath=%s, fileLength=%d",
+                        file.getPath(), file.exists() ? file.length() : 0);
+            } else {
+                SLog.e(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
+            }
         }
     }
 

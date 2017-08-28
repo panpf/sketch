@@ -68,7 +68,9 @@ public class ShowProgressFunction extends ViewFunction {
             try {
                 canvas.clipPath(imageShapeFunction.getClipPath());
             } catch (UnsupportedOperationException e) {
-                SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                if (SLog.isLoggable(SLog.ERROR)) {
+                    SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 }

@@ -117,7 +117,9 @@ class TileManager {
         newDrawRect.bottom = Math.min(previewImageHeight, newVisibleRect.bottom + drawHeightAdd);
 
         if (newDrawRect.isEmpty()) {
-            SLog.e(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
+            }
             return;
         }
 
@@ -127,7 +129,9 @@ class TileManager {
         final int tileHeight = newDrawRect.height() / finalTiles;
 
         if (tileWidth <= 0 || tileHeight <= 0) {
-            SLog.e(NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
+            }
             return;
         }
 

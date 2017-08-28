@@ -409,7 +409,9 @@ public class SketchUtils {
         try {
             getVolumePathsMethod = StorageManager.class.getMethod("getVolumePaths");
         } catch (NoSuchMethodException e) {
-            SLog.e("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
+            }
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 return new String[]{Environment.getExternalStorageDirectory().getPath()};
             } else {
@@ -1250,7 +1252,9 @@ public class SketchUtils {
             return null;
         }
         if (!Initializer.class.isAssignableFrom(initializerClass)) {
-            SLog.e("findInitializer",  initializerClassName + " must be implements Initializer");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e("findInitializer",  initializerClassName + " must be implements Initializer");
+            }
             return null;
         }
         //noinspection TryWithIdenticalCatches

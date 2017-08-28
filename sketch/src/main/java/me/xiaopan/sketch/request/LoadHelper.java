@@ -241,7 +241,7 @@ public class LoadHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            if (SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.ERROR)) {
                 SLog.e(NAME, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
@@ -249,7 +249,9 @@ public class LoadHelper {
         }
 
         if (uriInfo.getScheme() == null) {
-            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
+            }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
