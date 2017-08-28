@@ -16,16 +16,36 @@
 
 package me.xiaopan.sketch;
 
+import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.Log;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Sketch 日志
  */
 public class SLog {
-    private static final String TAG = "Sketch";
 
-    static Proxy proxy = new ProxyImpl();
+    @SuppressWarnings("WeakerAccess")
+    public static final int VERBOSE = 2;
+    @SuppressWarnings("WeakerAccess")
+    public static final int DEBUG = 3;
+    @SuppressWarnings("WeakerAccess")
+    public static final int INFO = 4;
+    @SuppressWarnings("WeakerAccess")
+    public static final int WARNING = 5;
+    @SuppressWarnings("WeakerAccess")
+    public static final int ERROR = 6;
+    @SuppressWarnings("WeakerAccess")
+    public static final int NONE = 8;
+
+    private static final String TAG = "Sketch";
+    private static int level = INFO;
+    private static Proxy proxy = new ProxyImpl();
 
     /**
      * 设置日志代理，你可以借此自定义日志的输出方式
@@ -37,6 +57,33 @@ public class SLog {
             SLog.proxy.onReplaced();
             SLog.proxy = proxy != null ? proxy : new ProxyImpl();
         }
+    }
+
+    /**
+     * 获取日志级别
+     */
+    @LogLevel
+    public static int getLevel() {
+        return level;
+    }
+
+    /**
+     * 设置日志级别，用于过滤日志
+     */
+    public static void setLevel(@LogLevel int level) {
+        if (SLog.level != level) {
+            final int oldLevel = SLog.level;
+            SLog.level = level;
+            android.util.Log.w("DSLog", "new log level is " + level + ", old log level is " + oldLevel);
+        }
+    }
+
+    /**
+     * 指定的 log 级别是否可用
+     */
+    @SuppressWarnings("WeakerAccess")
+    public static boolean isLoggable(@LogLevel int level) {
+        return SLog.level <= level;
     }
 
     private static String transformLog(String name, String format, Object... args) {
@@ -66,47 +113,92 @@ public class SLog {
     // TODO: 2017/8/27 SLogType 挪进 SLog 并简化
 
     public static int v(String name, String format, Object... args) {
+        if (!isLoggable(VERBOSE)) {
+            return 0;
+        }
         return proxy.v(TAG, transformLog(name, format, args));
     }
 
     public static int v(String name, String msg) {
+        if (!isLoggable(VERBOSE)) {
+            return 0;
+        }
         return proxy.v(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int d(String name, String format, Object... args) {
+        if (!isLoggable(DEBUG)) {
+            return 0;
+        }
         return proxy.d(TAG, transformLog(name, format, args));
     }
 
     public static int d(String name, String msg) {
+        if (!isLoggable(DEBUG)) {
+            return 0;
+        }
         return proxy.d(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int i(String name, String format, Object... args) {
+        if (!isLoggable(INFO)) {
+            return 0;
+        }
         return proxy.i(TAG, transformLog(name, format, args));
     }
 
     public static int i(String name, String msg) {
+        if (!isLoggable(INFO)) {
+            return 0;
+        }
         return proxy.i(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int w(String name, String format, Object... args) {
+        if (!isLoggable(WARNING)) {
+            return 0;
+        }
         return proxy.w(TAG, transformLog(name, format, args));
     }
 
     public static int w(String name, String msg) {
+        if (!isLoggable(WARNING)) {
+            return 0;
+        }
         return proxy.w(TAG, transformLog(name, msg, (Object[]) null));
     }
 
 
     public static int e(String name, String format, Object... args) {
+        if (!isLoggable(ERROR)) {
+            return 0;
+        }
         return proxy.e(TAG, transformLog(name, format, args));
     }
 
     public static int e(String name, String msg) {
+        if (!isLoggable(ERROR)) {
+            return 0;
+        }
         return proxy.e(TAG, transformLog(name, msg, (Object[]) null));
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+    @IntDef({
+            VERBOSE,
+            DEBUG,
+            INFO,
+            WARNING,
+            ERROR,
+            NONE,
+    })
+    public @interface LogLevel {
+
     }
 
     /**
