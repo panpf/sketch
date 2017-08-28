@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.BaseRequest;
@@ -35,15 +36,16 @@ import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class ImageDownloader implements Identifier {
-    private static final String KEY = "ImageDownloader";
+    private static final String NAME = "ImageDownloader";
 
     /**
      * 下载，这个方法主要实现缓存锁与检查缓存
      */
     public DownloadResult download(DownloadRequest request) {
         if (request.isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogD("canceled", "runDownload", "start download");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(NAME, "canceled. runDownload. start download. %s. %s",
+                        Thread.currentThread().getName(), request.getKey());
             }
             return null;
         }
@@ -63,8 +65,9 @@ public class ImageDownloader implements Identifier {
         DownloadResult justDownloadResult;
         try {
             if (request.isCanceled()) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    request.printLogD("canceled", "runDownload", "get disk cache edit lock after");
+                if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                    SLog.d(NAME, "canceled. runDownload. get disk cache edit lock after. %s. %s",
+                            Thread.currentThread().getName(), request.getKey());
                 }
                 return null;
             }
@@ -105,17 +108,24 @@ public class ImageDownloader implements Identifier {
                 request.getConfiguration().getErrorTracker().onDownloadError(request, e);
 
                 if (request.isCanceled()) {
-                    if (SLogType.REQUEST.isEnabled()) {
-                        request.printLogD("canceled", "runDownload", "download failed");
+                    if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                        SLog.d(NAME, "canceled. runDownload. download failed. %s. %s",
+                                Thread.currentThread().getName(), request.getKey());
                     }
                     break;
                 }
 
                 if (httpStack.canRetry(e) && retryCount < maxRetryCount) {
                     retryCount++;
-                    request.printLogW("download failed", "runDownload", "retry");
+                    if (SLog.isLoggable(SLog.WARNING)) {
+                        SLog.w(NAME, "download failed. runDownload. retry. %s. %s",
+                                Thread.currentThread().getName(), request.getKey());
+                    }
                 } else {
-                    request.printLogW("download failed", "runDownload", "end");
+                    if (SLog.isLoggable(SLog.WARNING)) {
+                        SLog.w(NAME, "download failed. runDownload. end. %s. %s",
+                                Thread.currentThread().getName(), request.getKey());
+                    }
                     break;
                 }
             }
@@ -134,8 +144,9 @@ public class ImageDownloader implements Identifier {
         HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(request.getUriInfo().getContent());
         if (request.isCanceled()) {
             httpResponse.releaseConnection();
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogD("canceled", "runDownload", "connect after");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(NAME, "canceled. runDownload. connect after. %s. %s",
+                        Thread.currentThread().getName(), request.getKey());
             }
             return null;
         }
@@ -149,12 +160,18 @@ public class ImageDownloader implements Identifier {
         } catch (IOException e) {
             e.printStackTrace();
             httpResponse.releaseConnection();
-            request.printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "get response code failed. runDownload. responseHeaders: %s. %s. %s",
+                        httpResponse.getResponseHeadersString(), Thread.currentThread().getName(), request.getKey());
+            }
             throw new IllegalStateException("get response code exception", e);
         }
         if (responseCode != 200) {
             httpResponse.releaseConnection();
-            request.printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "response code exception. runDownload. responseHeaders: %s. %s. %s",
+                        httpResponse.getResponseHeadersString(), Thread.currentThread().getName(), request.getKey());
+            }
             throw new IllegalStateException("response code exception: " + responseCode);
         }
 
@@ -162,7 +179,10 @@ public class ImageDownloader implements Identifier {
         long contentLength = httpResponse.getContentLength();
         if (contentLength <= 0 && !httpResponse.isContentChunked()) {
             httpResponse.releaseConnection();
-            request.printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(NAME, "content length exception. runDownload. contentLength: %d. responseHeaders: %s. %s. %s",
+                        contentLength, httpResponse.getResponseHeadersString(), Thread.currentThread().getName(), request.getKey());
+            }
             throw new IllegalStateException("contentLength exception: " + contentLength + ", responseHeaders: " + httpResponse.getResponseHeadersString());
         }
 
@@ -172,8 +192,9 @@ public class ImageDownloader implements Identifier {
         InputStream inputStream = httpResponse.getContent();
         if (request.isCanceled()) {
             SketchUtils.close(inputStream);
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogD("canceled", "runDownload", "get input stream after");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(NAME, "canceled. runDownload. get input stream after. %s. %s",
+                        Thread.currentThread().getName(), request.getKey());
             }
             return null;
         }
@@ -225,14 +246,16 @@ public class ImageDownloader implements Identifier {
         }
 
         if (request.isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                request.printLogD("canceled", "runDownload", "read data after", readFully ? "read fully" : "not read fully");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(NAME, "canceled. runDownload. read data after. %s. %s. %s",
+                        readFully ? "read fully" : "not read fully", Thread.currentThread().getName(), request.getKey());
             }
             return null;
         }
 
-        if (SLogType.REQUEST.isEnabled()) {
-            request.printLogI("download success", "runDownload", "fileLength: " + completedLength + "/" + contentLength);
+        if (SLog.isLoggable(SLog.INFO) && SLogType.REQUEST.isEnabled()) {
+            SLog.i(NAME, "download success. runDownload. fileLength: %d/%d. %s. %s",
+                    completedLength, contentLength, Thread.currentThread().getName(), request.getKey());
         }
 
         // 提交磁盘缓存并返回
@@ -241,7 +264,10 @@ public class ImageDownloader implements Identifier {
             if (diskCacheEntry != null) {
                 return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
-                request.printLogW("not found disk cache", "runDownload", "download after");
+                if (SLog.isLoggable(SLog.ERROR)) {
+                    SLog.e(NAME, "not found disk cache. runDownload. download after. %s. %s",
+                            Thread.currentThread().getName(), request.getKey());
+                }
                 throw new IllegalStateException("not found disk cache entry, key is " + diskCacheKey);
             }
         } else {
@@ -282,6 +308,6 @@ public class ImageDownloader implements Identifier {
 
     @Override
     public String getKey() {
-        return KEY;
+        return NAME;
     }
 }

@@ -95,13 +95,13 @@ public abstract class BaseRequest {
      */
     public void setStatus(Status status) {
         this.status = status;
-        if (SLogType.REQUEST.isEnabled()) {
+        if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
             if (status == Status.FAILED) {
-                printLogD("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
+                SLog.d(getLogName(), "new status. %s. %s", status.getLog(), errorCause != null ? errorCause.name() : "");
             } else if (status == Status.CANCELED) {
-                printLogD("new status", status.getLog(), cancelCause != null ? cancelCause.name() : null);
+                SLog.d(getLogName(), "new status. %s. %s", status.getLog(), cancelCause != null ? cancelCause.name() : "");
             } else {
-                printLogD("new status", (status != null ? status.getLog() : null));
+                SLog.d(getLogName(), "new status. %s", (status != null ? status.getLog() : ""));
             }
         }
     }
@@ -178,48 +178,6 @@ public abstract class BaseRequest {
         } else {
             return false;
         }
-    }
-
-    // TODO: 2017/8/27 拆解这个方法
-    private void printLog(int level, Object... items) {
-        StringBuilder builder = new StringBuilder();
-        if (items != null && items.length > 0) {
-            for (Object item : items) {
-                if (builder.length() > 0) {
-                    builder.append(". ");
-                }
-                builder.append(item);
-            }
-        }
-
-        builder.append(". ").append(Thread.currentThread().getName());
-        builder.append(". ").append(getKey());
-
-        if (level == 0) {
-            SLog.d(getLogName(), builder.toString());
-        } else if (level == 1) {
-            SLog.i(getLogName(), builder.toString());
-        } else if (level == 2) {
-            SLog.w(getLogName(), builder.toString());
-        } else if (level == 3) {
-            SLog.e(getLogName(), builder.toString());
-        }
-    }
-
-    public void printLogD(Object... items) {
-        printLog(0, items);
-    }
-
-    public void printLogI(Object... items) {
-        printLog(1, items);
-    }
-
-    public void printLogW(Object... items) {
-        printLog(2, items);
-    }
-
-    public void printLogE(Object... items) {
-        printLog(3, items);
     }
 
     /**

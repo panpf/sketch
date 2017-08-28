@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -95,8 +96,9 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runDispatch() {
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runDispatch", "download request just start");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runDispatch. download request just start. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -108,8 +110,9 @@ public class DownloadRequest extends AsyncRequest {
             DiskCache diskCache = getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(getUriInfo().getDiskCacheKey());
             if (diskCacheEntry != null) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    printLogD("from diskCache", "runDispatch");
+                if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                    SLog.d(getLogName(), "from diskCache. runDispatch. %s. %s",
+                            Thread.currentThread().getName(), getKey());
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
                 downloadCompleted();
@@ -124,8 +127,8 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         // 下载
-        if (SLogType.REQUEST.isEnabled()) {
-            printLogD("download", "runDispatch");
+        if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+            SLog.d(getLogName(), "download. runDispatch. %s. %s", Thread.currentThread().getName(), getKey());
         }
         submitRunDownload();
     }
@@ -135,7 +138,10 @@ public class DownloadRequest extends AsyncRequest {
      */
     void requestLevelIsLocal() {
         boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
-        printLogD("canceled", "runDispatch", isPauseDownload ? "pause download" : "requestLevel is local");
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.d(getLogName(), "canceled. runDispatch. %s. %s. %s",
+                    isPauseDownload ? "pause download" : "requestLevel is local", Thread.currentThread().getName(), getKey());
+        }
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL);
     }
 
@@ -144,8 +150,9 @@ public class DownloadRequest extends AsyncRequest {
         downloadResult = getConfiguration().getDownloader().download(this);
 
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runDownload", "download after");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runDownload. download after. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -174,7 +181,10 @@ public class DownloadRequest extends AsyncRequest {
         if (downloadResult != null && downloadResult.hasData()) {
             postRunCompleted();
         } else {
-            printLogE("Not found data after download completed");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(getLogName(), "Not found data after download completed. %s. %s",
+                        Thread.currentThread().getName(), getKey());
+            }
             error(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
         }
     }
@@ -182,8 +192,9 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("finished", "runUpdateProgressInMainThread");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "finished. runUpdateProgressInMainThread. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -196,8 +207,9 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runCompletedInMainThread");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runCompletedInMainThread. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -212,8 +224,9 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runErrorInMainThread() {
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runErrorInMainThread");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runErrorInMainThread. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }

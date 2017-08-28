@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
@@ -111,7 +112,10 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
         SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
         if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
             memoryCache.remove(getMemoryCacheKey());
-            printLogE("memory cache drawable recycled", "processFreeRideRequests", "bitmap=" + cachedRefBitmap.getInfo());
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(getLogName(), "memory cache drawable recycled. processFreeRideRequests. bitmap=%s. %s. %s",
+                        cachedRefBitmap.getInfo(), Thread.currentThread().getName(), getKey());
+            }
             cachedRefBitmap = null;
         }
 

@@ -18,6 +18,7 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -92,8 +93,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runDispatch() {
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runDispatch", "load request just start");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runDispatch. load request just start. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -102,8 +104,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
         if (getUriInfo().getScheme() != UriScheme.NET) {
             // 本地请求直接执行加载
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("local thread", "local image", "runDispatch");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             submitRunLoad();
             return;
@@ -112,8 +115,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
             // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
             if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(
                     getConfiguration().getDiskCache(), getProcessedImageDiskCacheKey())) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    printLogD("local thread", "disk cache image", "runDispatch");
+                if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                    SLog.d(getLogName(), "local thread. disk cache image. runDispatch. %s. %s",
+                            Thread.currentThread().getName(), getKey());
                 }
                 submitRunLoad();
                 return;
@@ -129,7 +133,10 @@ public class LoadRequest extends FreeRideDownloadRequest {
         if (downloadResult != null && downloadResult.hasData()) {
             submitRunLoad();
         } else {
-            printLogE("Not found data after download completed");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(getLogName(), "Not found data after download completed. %s. %s",
+                        Thread.currentThread().getName(), getKey());
+            }
             error(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
         }
     }
@@ -137,8 +144,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runLoad() {
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runLoad", "load request just start");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runLoad. load request just start. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -158,30 +166,34 @@ public class LoadRequest extends FreeRideDownloadRequest {
             Bitmap bitmap = ((BitmapDecodeResult) decodeResult).getBitmap();
 
             if (bitmap.isRecycled()) {
-                ImageAttrs imageAttrs = decodeResult.getImageAttrs();
-                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
-                        imageAttrs.getHeight(), imageAttrs.getMimeType(),
-                        imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: ", imageInfo);
-                error(ErrorCause.BITMAP_RECYCLED);
-                return;
-            }
-
-            if (SLogType.REQUEST.isEnabled()) {
-                ImageAttrs imageAttrs = decodeResult.getImageAttrs();
-                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
-                        imageAttrs.getHeight(), imageAttrs.getMimeType(),
-                        imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                printLogI("decode success", "runLoad", "bitmapInfo: ", imageInfo);
-            }
-
-            if (isCanceled()) {
-                if (SLogType.REQUEST.isEnabled()) {
+                if (SLog.isLoggable(SLog.ERROR)) {
                     ImageAttrs imageAttrs = decodeResult.getImageAttrs();
                     String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
                             imageAttrs.getHeight(), imageAttrs.getMimeType(),
                             imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                    printLogD("canceled", "runLoad", "decode after", "bitmapInfo: ", imageInfo);
+                    SLog.e(getLogName(), "decode failed. runLoad. bitmap recycled. bitmapInfo: %s. %s. %s",
+                            imageInfo, Thread.currentThread().getName(), getKey());
+                }
+                error(ErrorCause.BITMAP_RECYCLED);
+                return;
+            }
+
+            if (SLog.isLoggable(SLog.INFO) && SLogType.REQUEST.isEnabled()) {
+                ImageAttrs imageAttrs = decodeResult.getImageAttrs();
+                String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
+                        imageAttrs.getHeight(), imageAttrs.getMimeType(),
+                        imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                SLog.i(getLogName(), "decode success. runLoad. bitmapInfo: %s. %s. %s", imageInfo, Thread.currentThread().getName(), getKey());
+            }
+
+            if (isCanceled()) {
+                if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                    ImageAttrs imageAttrs = decodeResult.getImageAttrs();
+                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
+                            imageAttrs.getHeight(), imageAttrs.getMimeType(),
+                            imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
+                    SLog.d(getLogName(), "canceled. runLoad. decode after. bitmapInfo: %s. %s. %s",
+                            imageInfo, Thread.currentThread().getName(), getKey());
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());
                 return;
@@ -193,18 +205,23 @@ public class LoadRequest extends FreeRideDownloadRequest {
             SketchGifDrawable gifDrawable = ((GifDecodeResult) decodeResult).getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
-                printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + gifDrawable.getInfo());
+                if (SLog.isLoggable(SLog.ERROR)) {
+                    SLog.e(getLogName(), "decode failed. runLoad. gif drawable recycled. gifInfo: %s. %s. %s",
+                            gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
+                }
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogI("decode gif success", "runLoad", "gifInfo: " + gifDrawable.getInfo());
+            if (SLog.isLoggable(SLog.INFO) && SLogType.REQUEST.isEnabled()) {
+                SLog.i(getLogName(), "decode gif success. runLoad. gifInfo: %s. %s. %s",
+                        gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
             }
 
-            if (isCanceled()) {
+            if (SLog.isLoggable(SLog.DEBUG) && isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogD("runLoad", "runLoad", "decode after", "gifInfo: " + gifDrawable.getInfo());
+                    SLog.d(getLogName(), "canceled. runLoad. decode after. gifInfo: %s. %s. %s",
+                            gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
                 }
                 gifDrawable.recycle();
                 return;
@@ -213,7 +230,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadResult = new LoadResult(gifDrawable, decodeResult);
             loadCompleted();
         } else {
-            printLogE("Not found data after decode");
+            if (SLog.isLoggable(SLog.ERROR)) {
+                SLog.e(getLogName(), "Not found data after decode. %s. %s", Thread.currentThread().getName(), getKey());
+            }
             error(ErrorCause.DATA_LOST_AFTER_DECODE);
         }
     }
@@ -234,8 +253,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     loadResult.getGifDrawable().recycle();
                 }
             }
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runCompletedInMainThread");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runCompletedInMainThread. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
@@ -250,8 +270,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runErrorInMainThread() {
         if (isCanceled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                printLogD("canceled", "runErrorInMainThread");
+            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+                SLog.d(getLogName(), "canceled. runErrorInMainThread. %s. %s",
+                        Thread.currentThread().getName(), getKey());
             }
             return;
         }
