@@ -127,7 +127,7 @@ sketchImageView.displayAssetImage("sample.jpg");
 sketchImageView.displayContentImage(Uri.parse("content://com.android.gallery/last"));
 
 // display base64 image
-sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
+sketchImageView.displayImage("data:image/jpeg;base64,/9j/4QaO...U7T/in//Z");
 
 // display apk/app icon
 sketchImageView.displayImage("/sdcard/google_play.apk");
