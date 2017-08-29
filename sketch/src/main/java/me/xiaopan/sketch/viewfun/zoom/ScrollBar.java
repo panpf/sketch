@@ -29,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.SketchUtils;
 
 class ScrollBar {
@@ -65,7 +64,7 @@ class ScrollBar {
 
     void drawScrollBar(Canvas canvas) {
         if (!imageZoomer.isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
                 SLog.v(ImageZoomer.NAME, "not working. drawScrollBar");
             }
             return;
@@ -74,7 +73,7 @@ class ScrollBar {
         final RectF drawRectF = tempDisplayRectF;
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
             }
             return;
@@ -87,7 +86,7 @@ class ScrollBar {
         final float displayHeight = drawRectF.height();
 
         if (viewWidth <= 0 || viewHeight <= 0 || displayWidth == 0 || displayHeight == 0) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "size is 0. drawScrollBar. viewSize=%dx%d, displaySize=%sx%s",
                         viewWidth, viewHeight, displayWidth, displayHeight);
             }

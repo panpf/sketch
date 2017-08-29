@@ -22,7 +22,6 @@ import java.util.WeakHashMap;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 
 /**
  * 顺风车管理器，主要用于解决重复下载、重复加载
@@ -57,8 +56,8 @@ public class FreeRideManager implements Identifier {
 
             displayFreeRideProviderMap.put(provider.getDisplayFreeRideKey(), provider);
 
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.v(NAME, "display. register free ride provider. %s",
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(NAME, "display. register free ride provider. %s",
                         provider.getDisplayFreeRideLog());
             }
         }
@@ -78,7 +77,7 @@ public class FreeRideManager implements Identifier {
             if (displayFreeRideProviderMap != null) {
                 freeRideProvider = displayFreeRideProviderMap.remove(provider.getDisplayFreeRideKey());
                 if (freeRideProvider != null) {
-                    if (SLogType.REQUEST.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                         SLog.d(NAME, "display. unregister free ride provider. %s",
                                 freeRideProvider.getDisplayFreeRideLog());
                     }
@@ -97,7 +96,7 @@ public class FreeRideManager implements Identifier {
             for (DisplayFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDisplayFreeRide();
 
-                if (SLogType.REQUEST.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(NAME, "display. callback free ride. %s. %s  <------  %s",
                             success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
                 }
@@ -128,8 +127,8 @@ public class FreeRideManager implements Identifier {
 
             freeRideProvider.byDisplayFreeRide(childFreeRide);
 
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.i(NAME, "display. by free ride. %s -> %s",
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(NAME, "display. by free ride. %s -> %s",
                         childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog());
             }
             return true;
@@ -155,8 +154,8 @@ public class FreeRideManager implements Identifier {
 
             downloadFreeRideProviderMap.put(provider.getDownloadFreeRideKey(), provider);
 
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.v(NAME, "download. register free ride provider. %s",
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(NAME, "download. register free ride provider. %s",
                         provider.getDownloadFreeRideLog());
             }
         }
@@ -176,7 +175,7 @@ public class FreeRideManager implements Identifier {
             if (downloadFreeRideProviderMap != null) {
                 freeRideProvider = downloadFreeRideProviderMap.remove(provider.getDownloadFreeRideKey());
                 if (freeRideProvider != null) {
-                    if (SLogType.REQUEST.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                         SLog.d(NAME, "download. unregister free ride provider. %s",
                                 freeRideProvider.getDownloadFreeRideLog());
                     }
@@ -195,7 +194,7 @@ public class FreeRideManager implements Identifier {
             for (DownloadFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDownloadFreeRide();
 
-                if (SLogType.REQUEST.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(NAME, "download. callback free ride. %s. %s  <------  %s",
                             success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
                 }
@@ -226,8 +225,8 @@ public class FreeRideManager implements Identifier {
 
             freeRideProvider.byDownloadFreeRide(childFreeRide);
 
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.i(NAME, "download. by free ride. %s -> %s",
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(NAME, "download. by free ride. %s -> %s",
                         childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog());
             }
             return true;

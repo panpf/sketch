@@ -26,7 +26,6 @@ import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.ExifInterface;
 
@@ -62,7 +61,7 @@ public class ImageDecoder implements Identifier {
      */
     public DecodeResult decode(LoadRequest request) throws DecodeException {
         long startTime = 0;
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             startTime = timeAnalyze.decodeStart();
         }
 
@@ -75,7 +74,7 @@ public class ImageDecoder implements Identifier {
             e.printStackTrace();
         }
 
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             timeAnalyze.decodeEnd(startTime, NAME, request.getKey());
         }
 
@@ -114,19 +113,15 @@ public class ImageDecoder implements Identifier {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "decode bounds failed %s", request.getKey());
-            }
+            SLog.e(NAME, "decode bounds failed %s", request.getKey());
             ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
-                        boundOptions.outWidth, boundOptions.outHeight, request.getKey());
-            }
+            SLog.e(NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
+                    boundOptions.outWidth, boundOptions.outHeight, request.getKey());
             ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }

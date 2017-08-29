@@ -19,7 +19,6 @@ package me.xiaopan.sketch.viewfun.large;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -73,7 +72,7 @@ class TileDecoder {
     }
 
     void clean(String why) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             SLog.d(NAME, "clean. %s", why);
         }
 
@@ -81,7 +80,7 @@ class TileDecoder {
     }
 
     void recycle(String why) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             SLog.d(NAME, "recycle. %s", why);
         }
 
@@ -91,7 +90,7 @@ class TileDecoder {
     }
 
     void initCompleted(String imageUri, ImageRegionDecoder decoder) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             SLog.d(NAME, "init completed. %s", imageUri);
         }
 
@@ -100,7 +99,7 @@ class TileDecoder {
     }
 
     void initError(String imageUri, Exception e) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             SLog.d(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 

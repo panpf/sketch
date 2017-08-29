@@ -20,7 +20,6 @@ import android.content.Context;
 import android.text.format.Formatter;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -56,14 +55,14 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         int oldCacheSize = 0;
-        if (SLogType.CACHE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
             oldCacheSize = cache.size();
         }
 
         cache.put(key, refBitmap);
 
-        if (SLogType.CACHE.isEnabled()) {
-            SLog.i(NAME, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            SLog.d(NAME, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
                     Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
                     Formatter.formatFileSize(context, cache.size()));
         }
@@ -95,8 +94,8 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         SketchRefBitmap refBitmap = cache.remove(key);
-        if (SLogType.CACHE.isEnabled()) {
-            SLog.i(NAME, "remove. memoryCacheSize: %s",
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            SLog.d(NAME, "remove. memoryCacheSize: %s",
                     Formatter.formatFileSize(context, cache.size()));
         }
         return refBitmap;
@@ -158,8 +157,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        SLog.w(NAME, "clear. before size: %s",
-                Formatter.formatFileSize(context, cache.size()));
+        SLog.w(NAME, "clear. before size: %s", Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }
 

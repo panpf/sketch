@@ -8,6 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:textColor="@color/default_text_color_normal"
         android:text="纠正前：" />
 
     <me.xiaopan.sketchsample.widget.InterceptCorrectImageOrientationConfigImageView
@@ -20,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:textColor="@color/default_text_color_normal"
         android:text="纠正后：" />
 
     <me.xiaopan.sketchsample.widget.InterceptCorrectImageOrientationConfigImageView

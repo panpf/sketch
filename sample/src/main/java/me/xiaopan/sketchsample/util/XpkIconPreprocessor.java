@@ -13,7 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.preprocess.PreProcessResult;
@@ -151,9 +150,7 @@ public class XpkIconPreprocessor implements Preprocessor {
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
-                }
+                SLog.e(NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
                 return null;
             }
         } else {

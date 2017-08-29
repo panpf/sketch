@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -104,7 +103,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         DiskCache.Entry diskCacheEntry = diskCache.get(getUriInfo().getDiskCacheKey());
 
         if (diskCacheEntry != null) {
-            if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "from diskCache. processDownloadFreeRide. %s. %s",
                         Thread.currentThread().getName(), getKey());
             }

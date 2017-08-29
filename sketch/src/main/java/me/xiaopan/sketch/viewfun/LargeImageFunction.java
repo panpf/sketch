@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -49,7 +48,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
         this.largeImageViewer = new LargeImageViewer(view.getContext(), this);
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            SLog.w(NAME, "large image function the minimum support to GINGERBREAD_MR1");
+            SLog.e(NAME, "large image function the minimum support to GINGERBREAD_MR1");
         }
     }
 
@@ -115,7 +114,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
         }
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
@@ -161,12 +160,12 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }

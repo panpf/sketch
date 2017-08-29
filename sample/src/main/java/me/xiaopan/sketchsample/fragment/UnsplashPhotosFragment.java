@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -153,7 +154,7 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
         private int pageIndex;
 
         LoadDataCallback(UnsplashPhotosFragment fragment, int pageIndex) {
-            this.reference = new WeakReference<UnsplashPhotosFragment>(fragment);
+            this.reference = new WeakReference<>(fragment);
             this.pageIndex = pageIndex;
 
             if (pageIndex == 1) {
@@ -184,12 +185,16 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
                 return;
             }
 
-            fragment.hintView.failed(t, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fragment.onRefresh();
-                }
-            });
+            if (pageIndex == 1) {
+                fragment.hintView.failed(t, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fragment.onRefresh();
+                    }
+                });
+            } else {
+                Toast.makeText(fragment.getActivity(), HintView.getCauseByException(fragment.getActivity(), t), Toast.LENGTH_LONG).show();
+            }
 
             fragment.refreshLayout.setRefreshing(false);
         }

@@ -16,7 +16,9 @@
 
 package me.xiaopan.sketchsample.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
@@ -46,6 +49,7 @@ import java.util.List;
 import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -351,12 +355,38 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuList.add(new CheckMenu(this, "Mobile Network Pause Download Image", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
 
         menuList.add("Log");
-        menuList.add(new CheckMenu(this, "Output Request Course Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener));
+        menuList.add(new InfoMenu("Log Level") {
+            @Override
+            @SuppressLint("SwitchIntDef")
+            public String getInfo() {
+                switch (SLog.getLevel()) {
+                    case SLog.LEVEL_VERBOSE:
+                        return "VERBOSE";
+                    case SLog.LEVEL_DEBUG:
+                        return "DEBUG";
+                    case SLog.LEVEL_INFO:
+                        return "INFO";
+                    case SLog.LEVEL_WARNING:
+                        return "WARNING";
+                    case SLog.LEVEL_ERROR:
+                        return "ERROR";
+                    case SLog.LEVEL_NONE:
+                        return "NONE";
+                    default:
+                        return "Unknown";
+                }
+            }
+
+            @Override
+            public void onClick(AssemblyRecyclerAdapter adapter) {
+                switchLogLevel();
+            }
+        });
+        menuList.add(new CheckMenu(this, "Output Flow Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Cache Log", AppConfig.Key.LOG_CACHE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Output Gesture Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Block Display Large Image Log", AppConfig.Key.LOG_LARGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Used Time Log", AppConfig.Key.LOG_TIME, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Output Other Log", AppConfig.Key.LOG_BASE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener));
 
         return menuList;
@@ -457,6 +487,47 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
     public void onApplyBackground(String imageUri) {
         backgroundImageView.displayImage(imageUri);
         menuBackgroundImageView.displayImage(imageUri);
+    }
+
+    private void switchLogLevel() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Switch Log Level");
+        String[] items = new String[]{
+                "VERBOSE" + (SLog.getLevel() == SLog.LEVEL_VERBOSE ? " (*)" : ""),
+                "DEBUG" + (SLog.getLevel() == SLog.LEVEL_DEBUG ? " (*)" : ""),
+                "INFO" + (SLog.getLevel() == SLog.LEVEL_INFO ? " (*)" : ""),
+                "WARNING" + (SLog.getLevel() == SLog.LEVEL_WARNING ? " (*)" : ""),
+                "ERROR" + (SLog.getLevel() == SLog.LEVEL_ERROR ? " (*)" : ""),
+                "NONE" + (SLog.getLevel() == SLog.LEVEL_NONE ? " (*)" : ""),
+        };
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        AppConfig.putString(getBaseContext(), AppConfig.Key.LOG_LEVEL, "VERBOSE");
+                        break;
+                    case 1:
+                        AppConfig.putString(getBaseContext(), AppConfig.Key.LOG_LEVEL, "DEBUG");
+                        break;
+                    case 2:
+                        AppConfig.putString(getBaseContext(), AppConfig.Key.LOG_LEVEL, "INFO");
+                        break;
+                    case 3:
+                        AppConfig.putString(getBaseContext(), AppConfig.Key.LOG_LEVEL, "WARNING");
+                        break;
+                    case 4:
+                        AppConfig.putString(getBaseContext(), AppConfig.Key.LOG_LEVEL, "ERROR");
+                        break;
+                    case 5:
+                        AppConfig.putString(getBaseContext(), AppConfig.Key.LOG_LEVEL, "NONE");
+                        break;
+                }
+                menuRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+        });
+        builder.setPositiveButton("Cancel", null);
+        builder.show();
     }
 
     public enum Page {

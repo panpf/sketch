@@ -29,7 +29,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.NoSpaceException;
 import me.xiaopan.sketch.util.SketchMD5Utils;
@@ -100,7 +99,7 @@ public class LruDiskCache implements DiskCache {
             return;
         }
 
-        if (SLogType.CACHE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
             SLog.d(NAME, "diskCacheDir: %s", cacheDir.getPath());
         }
 

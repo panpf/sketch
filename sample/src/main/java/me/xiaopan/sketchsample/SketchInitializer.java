@@ -8,7 +8,6 @@ import org.greenrobot.eventbus.Subscribe;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Initializer;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
@@ -32,7 +31,7 @@ public class SketchInitializer implements Initializer {
 
     private void initConfig() {
         onEvent(new AppConfigChangedEvent(AppConfig.Key.OUT_LOG_2_SDCARD));
-        onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_BASE));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_LEVEL));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_TIME));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_REQUEST));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_CACHE));
@@ -56,18 +55,61 @@ public class SketchInitializer implements Initializer {
     public void onEvent(AppConfigChangedEvent event) {
         if (AppConfig.Key.OUT_LOG_2_SDCARD.equals(event.key)) {
             SLog.setProxy(AppConfig.getBoolean(context, AppConfig.Key.OUT_LOG_2_SDCARD) ? new SampleLogProxy(context) : null);
-        } else if (AppConfig.Key.LOG_BASE.equals(event.key)) {
-            SLogType.BASE.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_BASE));
+        } else if (AppConfig.Key.LOG_LEVEL.equals(event.key)) {
+            String levelValue = AppConfig.getString(context, AppConfig.Key.LOG_LEVEL);
+            if (levelValue == null) {
+                levelValue = "";
+            }
+            switch (levelValue) {
+                case "VERBOSE":
+                    SLog.setLoggable(SLog.LEVEL_VERBOSE);
+                    break;
+                case "DEBUG":
+                    SLog.setLoggable(SLog.LEVEL_DEBUG);
+                    break;
+                case "INFO":
+                    SLog.setLoggable(SLog.LEVEL_INFO);
+                    break;
+                case "ERROR":
+                    SLog.setLoggable(SLog.LEVEL_ERROR);
+                    break;
+                case "WARNING":
+                    SLog.setLoggable(SLog.LEVEL_WARNING);
+                    break;
+                case "NONE":
+                    SLog.setLoggable(SLog.LEVEL_NONE);
+                    break;
+            }
         } else if (AppConfig.Key.LOG_TIME.equals(event.key)) {
-            SLogType.TIME.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_TIME));
+            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_TIME)) {
+                SLog.setLoggable(SLog.TYPE_TIME);
+            } else {
+                SLog.removeLoggable(SLog.TYPE_TIME);
+            }
         } else if (AppConfig.Key.LOG_REQUEST.equals(event.key)) {
-            SLogType.REQUEST.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_REQUEST));
+            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_REQUEST)) {
+                SLog.setLoggable(SLog.TYPE_FLOW);
+            } else {
+                SLog.removeLoggable(SLog.TYPE_FLOW);
+            }
         } else if (AppConfig.Key.LOG_CACHE.equals(event.key)) {
-            SLogType.CACHE.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_CACHE));
+            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_CACHE)) {
+                SLog.setLoggable(SLog.TYPE_CACHE);
+            } else {
+                SLog.removeLoggable(SLog.TYPE_CACHE);
+            }
         } else if (AppConfig.Key.LOG_ZOOM.equals(event.key)) {
-            SLogType.ZOOM.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_ZOOM));
+            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_ZOOM)) {
+                SLog.setLoggable(SLog.TYPE_ZOOM);
+            } else {
+                SLog.removeLoggable(SLog.TYPE_ZOOM);
+            }
         } else if (AppConfig.Key.LOG_LARGE.equals(event.key)) {
-            SLogType.LARGE.setEnabled(AppConfig.getBoolean(context, AppConfig.Key.LOG_LARGE));
+            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_LARGE)) {
+                SLog.setLoggable(SLog.TYPE_LARGE);
+            } else {
+                SLog.removeLoggable(SLog.TYPE_LARGE);
+            }
         } else if (AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(event.key)) {
             configuration.setGlobalMobileNetworkPauseDownload(AppConfig.getBoolean(context, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD));
         } else if (AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE.equals(event.key)) {

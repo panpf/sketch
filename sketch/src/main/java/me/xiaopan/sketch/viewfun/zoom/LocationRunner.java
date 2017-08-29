@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 
 /**
  * 定位执行器
@@ -56,7 +55,7 @@ class LocationRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "finished. location run");
             }
             return;
@@ -69,7 +68,7 @@ class LocationRunner implements Runnable {
         }
 
         if (!mScroller.computeScrollOffset()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "scroll finished. location run");
             }
             return;

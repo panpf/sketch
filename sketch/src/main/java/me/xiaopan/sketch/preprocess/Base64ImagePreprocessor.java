@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -119,9 +118,7 @@ public class Base64ImagePreprocessor implements Preprocessor {
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.MEMORY);
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(NAME, "not found base64 image cache file. %s", uriInfo.getUri());
-                }
+                SLog.e(NAME, "not found base64 image cache file. %s", uriInfo.getUri());
                 return null;
             }
         } else {

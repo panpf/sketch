@@ -29,7 +29,6 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -184,7 +183,7 @@ class TileDecodeHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             SLog.d(NAME, "clean. %s", why);
         }
 

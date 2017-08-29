@@ -30,22 +30,69 @@ import java.lang.annotation.Target;
  */
 public class SLog {
 
-    @SuppressWarnings("WeakerAccess")
-    public static final int VERBOSE = 2;
-    @SuppressWarnings("WeakerAccess")
-    public static final int DEBUG = 3;
-    @SuppressWarnings("WeakerAccess")
-    public static final int INFO = 4;
-    @SuppressWarnings("WeakerAccess")
-    public static final int WARNING = 5;
-    @SuppressWarnings("WeakerAccess")
-    public static final int ERROR = 6;
-    @SuppressWarnings("WeakerAccess")
-    public static final int NONE = 8;
+    /**
+     * 日志级别 - 最详细的
+     */
+    public static final int LEVEL_VERBOSE = 0x01;
+
+    /**
+     * 日志级别 - 输出 debug 以上日志
+     */
+    public static final int LEVEL_DEBUG = 0x01 << 1;
+
+    /**
+     * 日志级别 - 输出 info 以上日志
+     */
+    public static final int LEVEL_INFO = 0x01 << 2;
+
+    /**
+     * 日志级别 - 输出 warning 以上日志
+     */
+    public static final int LEVEL_WARNING = 0x01 << 3;
+
+    /**
+     * 日志级别 - 输出 error 以上日志
+     */
+    public static final int LEVEL_ERROR = 0x01 << 4;
+
+    /**
+     * 日志级别 - 啥日志也不输出
+     */
+    public static final int LEVEL_NONE = 0x01 << 5;
+
+    /**
+     * 日志类型 - 执行流程相关日志
+     */
+    public static final int TYPE_FLOW = 0x01 << 16;
+
+    /**
+     * 日志类型 - 内存缓存、bitmap pool、磁盘缓存相关日志
+     */
+    public static final int TYPE_CACHE = 0x01 << 17;
+
+    /**
+     * 日志类型 - commit()和解码耗时相关日志
+     */
+    public static final int TYPE_TIME = 0x01 << 18;
+
+    /**
+     * 日志类型 - 缩放相关日志
+     */
+    public static final int TYPE_ZOOM = 0x01 << 19;
+
+    /**
+     * 日志类型 - 超大图片分块显示相关日志
+     */
+    public static final int TYPE_LARGE = 0x01 << 20;
 
     private static final String TAG = "Sketch";
-    private static int level = INFO;
+    private static final String NAME = "SLog";
+    private static int loggableFlags;
     private static Proxy proxy = new ProxyImpl();
+
+    static {
+        setLoggable(LEVEL_INFO);
+    }
 
     /**
      * 设置日志代理，你可以借此自定义日志的输出方式
@@ -60,30 +107,161 @@ public class SLog {
     }
 
     /**
-     * 获取日志级别
+     * 设置都开启哪些类型或级别的日志
+     *
+     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
      */
-    @LogLevel
-    public static int getLevel() {
-        return level;
+    public static void setLoggable(@Loggable int mask) {
+            /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
+
+        int oldFlags = SLog.loggableFlags;
+
+        int low16BitsMask = 0xFFFF;
+        //noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+        int maskLow16Bits = low16One(mask & low16BitsMask); // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
+        int maskHigh16Bits = mask & high16BitsMask; // 取出 mask 的高 16 位
+
+        int newFlag = SLog.loggableFlags;
+
+        if (maskLow16Bits != 0) {
+            int resetLow16BitFlags = newFlag & high16BitsMask;   // 因为低 16 位是单选互斥关系，所以原 flag 要清空 低 16 位，保留高 16 位，以此作为新 flag 的基础
+            newFlag = resetLow16BitFlags | maskLow16Bits; // 低 16 位赋值
+        }
+        if (maskHigh16Bits != 0) {
+            newFlag = newFlag | maskHigh16Bits; // 高 16 位赋值
+        }
+
+        SLog.loggableFlags = newFlag;
+
+        android.util.Log.w(TAG, String.format("%s. setLoggable: mask(%s), %s -> %s",
+                NAME, Integer.toBinaryString(mask), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.loggableFlags)));
     }
 
     /**
-     * 设置日志级别，用于过滤日志
+     * 指定类型或级别的日志是否可用
+     *
+     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
      */
-    public static void setLevel(@LogLevel int level) {
-        if (SLog.level != level) {
-            final int oldLevel = SLog.level;
-            SLog.level = level;
-            android.util.Log.w("DSLog", "new log level is " + level + ", old log level is " + oldLevel);
+    public static boolean isLoggable(int mask) {
+        /* 高 16 位，低 16 位分开判断。因为低 16 位是互斥并且区分大小关系，高 16 位是共存关系 */
+        int low16BitsMask = 0xFFFF;
+        //noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+        int maskLow16Bits = low16One(mask & low16BitsMask); // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
+        int maskHigh16Bits = mask & high16BitsMask; // 取出 mask 的高 16 位
+
+        int flagLow16Bits = SLog.loggableFlags & low16BitsMask; // 取出 flag 的低 16 位
+        int flagHigh16Bits = SLog.loggableFlags & high16BitsMask; // 取出 flag 的高 16 位
+
+        boolean low16BitsCheckResult = maskLow16Bits == 0 || flagLow16Bits != 0 && maskLow16Bits >= flagLow16Bits;
+        boolean high16BitsCheckResult = maskHigh16Bits == 0 || flagHigh16Bits != 0 && (flagHigh16Bits & maskHigh16Bits) == maskHigh16Bits;
+        return low16BitsCheckResult && high16BitsCheckResult;
+    }
+
+    /**
+     * 关闭指定类型的日志（不能删除日志级别）
+     *
+     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
+     */
+    public static void removeLoggable(@Loggable int mask) {
+        //noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+        int oldFlags = SLog.loggableFlags;
+        int maskHigh16Bits = mask & high16BitsMask; // 取出 mask 的高 16 位
+
+        //noinspection WrongConstant
+        SLog.loggableFlags &= ~maskHigh16Bits;
+
+        android.util.Log.w(TAG, String.format("%s. removeLoggable: mask(%s), %s -> %s",
+                NAME, Integer.toBinaryString(mask), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.loggableFlags)));
+    }
+
+    /**
+     * 获取日志级别
+     *
+     * @return 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}, 0
+     */
+    @Loggable
+    public static int getLevel() {
+        if (isLoggable(LEVEL_VERBOSE)) {
+            return LEVEL_VERBOSE;
+        } else if (isLoggable(LEVEL_DEBUG)) {
+            return LEVEL_DEBUG;
+        } else if (isLoggable(LEVEL_INFO)) {
+            return LEVEL_INFO;
+        } else if (isLoggable(LEVEL_WARNING)) {
+            return LEVEL_WARNING;
+        } else if (isLoggable(LEVEL_ERROR)) {
+            return LEVEL_ERROR;
+        } else if (isLoggable(LEVEL_NONE)) {
+            return LEVEL_NONE;
+        } else {
+            //noinspection WrongConstant
+            return 0;
         }
     }
 
+    public static void cleanLevel() {
+        //noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+    }
+
     /**
-     * 指定的 log 级别是否可用
+     * 低 16 位只能有一个 1
      */
-    @SuppressWarnings("WeakerAccess")
-    public static boolean isLoggable(@LogLevel int level) {
-        return SLog.level <= level;
+    private static int low16One(int mask) {
+        int maskLow16Bits = mask & 0xFFFF;
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("1");
+
+        int low16StringLength = Integer.toBinaryString(maskLow16Bits).length();
+        for (int index = 1, length = low16StringLength - 1; index <= length; index++) {
+            builder.append("0");
+        }
+        String fixLow16MaskString = builder.toString();
+        int fixLow16Mask = parseUnsignedInt(fixLow16MaskString, 2);
+
+        int finalLow16 = mask & fixLow16Mask;
+        //noinspection NumericOverflow
+        int high16 = mask & (0xFFFF << 16);
+        return high16 | finalLow16;
+    }
+
+    public static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
+        if (s == null) {
+            throw new NumberFormatException("null");
+        }
+
+        int len = s.length();
+        if (len > 0) {
+            char firstChar = s.charAt(0);
+            if (firstChar == '-') {
+                throw new NumberFormatException(String.format("Illegal leading minus sign on unsigned string %s.", s));
+            } else {
+                if (len <= 5 || // Integer.MAX_VALUE in Character.MAX_RADIX is 6 digits
+                        (radix == 10 && len <= 9)) { // Integer.MAX_VALUE in base 10 is 10 digits
+                    return Integer.parseInt(s, radix);
+                } else {
+                    long ell = Long.parseLong(s, radix);
+                    if ((ell & 0xffff_ffff_0000_0000L) == 0) {
+                        return (int) ell;
+                    } else {
+                        throw new NumberFormatException(String.format("String value %s exceeds range of unsigned int.", s));
+                    }
+                }
+            }
+        } else {
+            throw new NumberFormatException("For input string: \"" + s + "\"");
+        }
     }
 
     private static String transformLog(String name, String format, Object... args) {
@@ -107,20 +285,15 @@ public class SLog {
         }
     }
 
-    // TODO: 2017/8/25 加入 level 控制，所有的日志点 都要过滤level，并且梳理所有日志，选择合适的类型
-    // TODO: 2017/8/25 梳理日志方法，省略所有tag，name 不再绑定到tag上，name 改叫 scope
-    // TODO: 2017/8/27 所有的w和e日志不加过滤条件
-    // TODO: 2017/8/27 SLogType 挪进 SLog 并简化
-
     public static int v(String name, String format, Object... args) {
-        if (!isLoggable(VERBOSE)) {
+        if (!isLoggable(LEVEL_VERBOSE)) {
             return 0;
         }
         return proxy.v(TAG, transformLog(name, format, args));
     }
 
     public static int v(String name, String msg) {
-        if (!isLoggable(VERBOSE)) {
+        if (!isLoggable(LEVEL_VERBOSE)) {
             return 0;
         }
         return proxy.v(TAG, transformLog(name, msg, (Object[]) null));
@@ -128,14 +301,14 @@ public class SLog {
 
 
     public static int d(String name, String format, Object... args) {
-        if (!isLoggable(DEBUG)) {
+        if (!isLoggable(LEVEL_DEBUG)) {
             return 0;
         }
         return proxy.d(TAG, transformLog(name, format, args));
     }
 
     public static int d(String name, String msg) {
-        if (!isLoggable(DEBUG)) {
+        if (!isLoggable(LEVEL_DEBUG)) {
             return 0;
         }
         return proxy.d(TAG, transformLog(name, msg, (Object[]) null));
@@ -143,14 +316,14 @@ public class SLog {
 
 
     public static int i(String name, String format, Object... args) {
-        if (!isLoggable(INFO)) {
+        if (!isLoggable(LEVEL_INFO)) {
             return 0;
         }
         return proxy.i(TAG, transformLog(name, format, args));
     }
 
     public static int i(String name, String msg) {
-        if (!isLoggable(INFO)) {
+        if (!isLoggable(LEVEL_INFO)) {
             return 0;
         }
         return proxy.i(TAG, transformLog(name, msg, (Object[]) null));
@@ -158,14 +331,14 @@ public class SLog {
 
 
     public static int w(String name, String format, Object... args) {
-        if (!isLoggable(WARNING)) {
+        if (!isLoggable(LEVEL_WARNING)) {
             return 0;
         }
         return proxy.w(TAG, transformLog(name, format, args));
     }
 
     public static int w(String name, String msg) {
-        if (!isLoggable(WARNING)) {
+        if (!isLoggable(LEVEL_WARNING)) {
             return 0;
         }
         return proxy.w(TAG, transformLog(name, msg, (Object[]) null));
@@ -173,14 +346,14 @@ public class SLog {
 
 
     public static int e(String name, String format, Object... args) {
-        if (!isLoggable(ERROR)) {
+        if (!isLoggable(LEVEL_ERROR)) {
             return 0;
         }
         return proxy.e(TAG, transformLog(name, format, args));
     }
 
     public static int e(String name, String msg) {
-        if (!isLoggable(ERROR)) {
+        if (!isLoggable(LEVEL_ERROR)) {
             return 0;
         }
         return proxy.e(TAG, transformLog(name, msg, (Object[]) null));
@@ -190,14 +363,19 @@ public class SLog {
     @Retention(RetentionPolicy.CLASS)
     @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
     @IntDef({
-            VERBOSE,
-            DEBUG,
-            INFO,
-            WARNING,
-            ERROR,
-            NONE,
+            LEVEL_VERBOSE,
+            LEVEL_DEBUG,
+            LEVEL_INFO,
+            LEVEL_WARNING,
+            LEVEL_ERROR,
+            LEVEL_NONE,
+            TYPE_CACHE,
+            TYPE_LARGE,
+            TYPE_FLOW,
+            TYPE_TIME,
+            TYPE_ZOOM,
     })
-    public @interface LogLevel {
+    public @interface Loggable {
 
     }
 

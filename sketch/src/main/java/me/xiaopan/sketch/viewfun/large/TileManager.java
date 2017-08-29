@@ -30,7 +30,6 @@ import java.util.List;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
@@ -76,7 +75,7 @@ class TileManager {
 
     void update(Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
         if (zooming) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "zooming. newVisibleRect=%s, tiles=%d",
                         newVisibleRect.toShortString(), tileList.size());
             }
@@ -85,7 +84,7 @@ class TileManager {
 
         // 过滤掉重复的刷新
         if (visibleRect.equals(newVisibleRect)) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
                         newVisibleRect.toShortString(), visibleRect.toShortString());
             }
@@ -117,9 +116,7 @@ class TileManager {
         newDrawRect.bottom = Math.min(previewImageHeight, newVisibleRect.bottom + drawHeightAdd);
 
         if (newDrawRect.isEmpty()) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
-            }
+            SLog.e(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
             return;
         }
 
@@ -129,9 +126,7 @@ class TileManager {
         final int tileHeight = newDrawRect.height() / finalTiles;
 
         if (tileWidth <= 0 || tileHeight <= 0) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
-            }
+            SLog.e(NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
             return;
         }
 
@@ -151,8 +146,8 @@ class TileManager {
         calculateSrcRect(newDrawSrcRect, newDrawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
         int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewWidth, viewHeight);
 
-        if (SLogType.LARGE.isEnabled()) {
-            SLog.i(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+            SLog.d(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
                     newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
                     inSampleSize, largeImageViewer.getZoomScale(), largeImageViewer.getLastZoomScale(), tileList.size());
         }
@@ -179,7 +174,7 @@ class TileManager {
                     loadTiles(emptyRectList, tileWidth, tileHeight, imageWidth, imageHeight,
                             originWidthScale, originHeightScale, inSampleSize, newDecodeRect);
                 } else {
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "not found empty rect");
                     }
                 }
@@ -188,17 +183,17 @@ class TileManager {
                     onTileChangedListener.onTileChanged(largeImageViewer);
                 }
 
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "update finished, newDecodeRect=%s, tiles=%d",
                             newDecodeRect.toShortString(), tileList.size());
                 }
             } else {
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "update finished draw rect no change");
                 }
             }
         } else {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
                         newDecodeRect.toShortString());
             }
@@ -272,7 +267,7 @@ class TileManager {
             if (newDrawRect.left == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.left = 0;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect left to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
             } else if (leftSpace > leftAndRightEdge || newDecodeRect.left - drawTileWidth <= 0) {
@@ -280,7 +275,7 @@ class TileManager {
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.left > newDrawRect.left) {
                     newDecodeRect.left = Math.max(0, newDecodeRect.left - drawTileWidth);
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "decode rect left expand %d, newDecodeRect=%s",
                                 drawTileWidth, newDecodeRect.toShortString());
                     }
@@ -293,7 +288,7 @@ class TileManager {
             if (newDrawRect.top == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.top = 0;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect top to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
             } else if (topSpace > topAndBottomEdge || newDecodeRect.top - drawTileHeight <= 0) {
@@ -301,7 +296,7 @@ class TileManager {
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.top > newDrawRect.top) {
                     newDecodeRect.top = Math.max(0, newDecodeRect.top - drawTileHeight);
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "decode rect top expand %d, newDecodeRect=%s",
                                 drawTileHeight, newDecodeRect.toShortString());
                     }
@@ -315,7 +310,7 @@ class TileManager {
             if (newDrawRect.right == maxDrawWidth) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.right = maxDrawWidth;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect right to %d, newDecodeRect=%s",
                             maxDrawWidth, newDecodeRect.toShortString());
                 }
@@ -324,7 +319,7 @@ class TileManager {
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.right < newDrawRect.right) {
                     newDecodeRect.right = Math.min(maxDrawWidth, newDecodeRect.right + drawTileWidth);
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "decode rect right expand %d, newDecodeRect=%s",
                                 drawTileWidth, newDecodeRect.toShortString());
                     }
@@ -337,7 +332,7 @@ class TileManager {
             if (newDrawRect.bottom > maxDrawHeight) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.bottom = maxDrawHeight;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect bottom to %d, newDecodeRect=%s",
                             maxDrawHeight, newDecodeRect.toShortString());
                 }
@@ -346,7 +341,7 @@ class TileManager {
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.bottom < newDrawRect.bottom) {
                     newDecodeRect.bottom = Math.min(maxDrawHeight, newDecodeRect.bottom + drawTileHeight);
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "decode rect bottom expand %d, newDecodeRect=%s",
                                 drawTileHeight, newDecodeRect.toShortString());
                     }
@@ -361,28 +356,28 @@ class TileManager {
                 newDecodeRect.bottom - drawTileHeight > newDrawRect.bottom) {
             if (newDecodeRect.left + drawTileWidth < newDrawRect.left) {
                 newDecodeRect.left += drawTileWidth;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect left reduced %d, newDecodeRect=%s",
                             drawTileWidth, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.top + drawTileHeight < newDrawRect.top) {
                 newDecodeRect.top += drawTileHeight;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect top reduced %d, newDecodeRect=%s",
                             drawTileHeight, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.right - drawTileWidth > newDrawRect.right) {
                 newDecodeRect.right -= drawTileWidth;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect right reduced %d, newDecodeRect=%s",
                             drawTileWidth, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.bottom - drawTileHeight > newDrawRect.bottom) {
                 newDecodeRect.bottom -= drawTileHeight;
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "decode rect bottom reduced %d, newDecodeRect=%s",
                             drawTileHeight, newDecodeRect.toShortString());
                 }
@@ -577,14 +572,14 @@ class TileManager {
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
             if (largeImageViewer.getZoomScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
                 if (!tile.isEmpty()) {
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "recycle tile. tile=%s", tile.getInfo());
                     }
                     tileIterator.remove();
                     tile.clean(bitmapPool);
                     tilePool.put(tile);
                 } else {
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "recycle loading tile and refresh key. tile=%s", tile.getInfo());
                     }
                     tile.refreshKey();
@@ -598,7 +593,7 @@ class TileManager {
                            int imageWidth, int imageHeight, float originWidthScale, float originHeightScale,
                            int inSampleSize, Rect newDecodeRect) {
         for (Rect emptyRect : emptyRectList) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "load emptyRect=%s", emptyRect.toShortString());
             }
 
@@ -616,7 +611,7 @@ class TileManager {
                     calculateSrcRect(loadTile.srcRect, loadTile.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
 
                     tileList.add(loadTile);
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "submit and refresh key. newDecodeRect=%s, tile=%s",
                                 newDecodeRect.toShortString(), loadTile.getInfo());
                     }
@@ -624,7 +619,7 @@ class TileManager {
                     loadTile.refreshKey();
                     largeImageViewer.getTileDecoder().decodeTile(loadTile);
                 } else {
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "repeated tile. tileDrawRect=%d, %d, %d, %d",
                                 Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
                     }
@@ -644,9 +639,9 @@ class TileManager {
     }
 
     void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            SLog.i(NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
+            SLog.d(NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
                     useTime, tile.getInfo(), bitmap.getWidth(), bitmap.getHeight(), bitmapConfig, tileList.size());
         }
 
@@ -676,7 +671,7 @@ class TileManager {
             tile.refreshKey();
             tile.clean(bitmapPool);
             tilePool.put(tile);
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
             }
         }

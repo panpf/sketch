@@ -22,7 +22,6 @@ import android.os.Build;
 
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -48,9 +47,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         Resize resize = loadOptions.getResize();
         if (resize == null) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(LOG_NAME, "thumbnailMode need resize ");
-            }
+            SLog.e(LOG_NAME, "thumbnailMode need resize ");
             return false;
         }
 
@@ -131,10 +128,8 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(LOG_NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
-                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
-            }
+            SLog.w(LOG_NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+                    boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             bitmap.recycle();
             ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
             return null;

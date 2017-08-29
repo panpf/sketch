@@ -37,13 +37,11 @@ public class ShowProgressFunction extends ViewFunction {
 
     private static final int NONE = -1;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
-
-    private View view;
-    private ImageShapeFunction imageShapeFunction;
-
     protected int downloadProgressColor = DEFAULT_PROGRESS_COLOR;
     protected Paint progressPaint;
     protected float progress = NONE;
+    private View view;
+    private ImageShapeFunction imageShapeFunction;
 
     public ShowProgressFunction(View view, ImageShapeFunction imageShapeFunction) {
         this.view = view;
@@ -68,9 +66,7 @@ public class ShowProgressFunction extends ViewFunction {
             try {
                 canvas.clipPath(imageShapeFunction.getClipPath());
             } catch (UnsupportedOperationException e) {
-                if (SLog.isLoggable(SLog.ERROR)) {
-                    SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                }
+                SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 }

@@ -10,3 +10,6 @@ bugs:
 * :hammer: Configuration.getImageSizeCalculator() 方法改名为 getSizeCalculator
 * :hammer: Configuration.setMobileNetworkGlobalPauseDownload(boolean) 方法改名为 setGlobalMobileNetworkPauseDownload
 * :hammer: Configuration.istMobileNetworkGlobalPauseDownload() 方法改名为 isGlobalMobileNetworkPauseDownload
+
+移除：
+* :fire: 移除 SLogType 类，其功能整合到了 SLog 中

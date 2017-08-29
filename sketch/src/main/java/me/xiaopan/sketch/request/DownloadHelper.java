@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -122,25 +121,19 @@ public class DownloadHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "uri is null or empty");
-            }
+            SLog.e(NAME, "uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (uriInfo.getScheme() == null) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
-            }
+            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (uriInfo.getScheme() != UriScheme.NET) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "only support http ot https. %s", uriInfo.getUri());
-            }
+            SLog.e(NAME, "only support http ot https. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -163,8 +156,8 @@ public class DownloadHelper {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.i(NAME, "image download completed. %s", key);
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                    SLog.d(NAME, "image download completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

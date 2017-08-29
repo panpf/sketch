@@ -19,6 +19,15 @@ public class AppConfig {
         EventBus.getDefault().post(new AppConfigChangedEvent(key));
     }
 
+    public static String getString(Context context, Key key) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(key.getKeyName(), null);
+    }
+
+    public static void putString(Context context, Key key, String newValue) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(key.getKeyName(), newValue).apply();
+        EventBus.getDefault().post(new AppConfigChangedEvent(key));
+    }
+
     public enum Key {
         SCROLLING_PAUSE_LOAD("PREFERENCE_SCROLLING_PAUSE_LOAD", false),
         SHOW_IMAGE_DOWNLOAD_PROGRESS("PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS", false),
@@ -42,7 +51,7 @@ public class AppConfig {
         PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE("PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE", true),
         PLAY_GIF_ON_LIST("PREFERENCE_PLAY_GIF_ON_LIST", false),
         SHOW_GIF_FLAG("PREFERENCE_SHOW_GIF_FLAG", true),
-        LOG_BASE("PREFERENCE_LOG_BASE", false),
+        LOG_LEVEL("PREFERENCE_LOG_level", false),
         LOG_REQUEST("PREFERENCE_LOG_REQUEST", BuildConfig.DEBUG),
         LOG_CACHE("PREFERENCE_LOG_CACHE", false),
         LOG_ZOOM("PREFERENCE_LOG_ZOOM", false),
@@ -51,8 +60,7 @@ public class AppConfig {
         SHOW_TOOLS_IN_IMAGE_DETAIL("PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL", false),
         OUT_LOG_2_SDCARD("PREFERENCE_OUT_LOG_2_SDCARD", false),
         CLICK_PLAY_GIF("PREFERENCE_CLICK_PLAY_GIF", false),
-        SHOW_UNSPLASH_LARGE_IMAGE("PREFERENCE_SHOW_UNSPLASH_LARGE_IMAGE", false),
-        ;
+        SHOW_UNSPLASH_LARGE_IMAGE("PREFERENCE_SHOW_UNSPLASH_LARGE_IMAGE", false),;
 
         private String keyName;
         private boolean defaultValue;

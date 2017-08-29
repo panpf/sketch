@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -90,9 +89,7 @@ public class ApkIconPreprocessor implements Preprocessor {
             return null;
         }
         if (iconBitmap.isRecycled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
-            }
+            SLog.w(NAME, "apk icon bitmap recycled. %s", uriInfo.getUri());
             return null;
         }
 
@@ -143,9 +140,7 @@ public class ApkIconPreprocessor implements Preprocessor {
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(NAME, "not found apk icon cache file. %s", uriInfo.getUri());
-                }
+                SLog.e(NAME, "not found apk icon cache file. %s", uriInfo.getUri());
                 return null;
             }
         } else {

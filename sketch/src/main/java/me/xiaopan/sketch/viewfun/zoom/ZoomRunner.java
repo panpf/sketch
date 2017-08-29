@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.viewfun.zoom;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 
 class ZoomRunner implements Runnable {
 
@@ -56,7 +55,7 @@ class ZoomRunner implements Runnable {
         if (continueZoom) {
             CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
         } else {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "finished. zoom run");
             }
         }

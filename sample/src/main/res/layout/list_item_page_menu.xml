@@ -5,4 +5,5 @@
     style="@style/menu_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:textColor="@color/default_text_color_normal"
     tools:text="明星图片" />

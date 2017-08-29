@@ -39,7 +39,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
@@ -147,7 +146,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         // 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner.isRunning()) {
-                if (SLogType.ZOOM.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                     SLog.d(NAME, "disallow parent intercept touch event. location running");
                 }
                 requestDisallowInterceptTouchEvent(true);
@@ -179,7 +178,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         tempLastScaleFocusY = 0;
 
         // 上来就禁止父View拦截事件
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "disallow parent intercept touch event. action down");
         }
         requestDisallowInterceptTouchEvent(true);
@@ -223,7 +222,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "drag. dx: %s, dy: %s", dx, dy);
         }
 
@@ -231,7 +230,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         checkAndApplyMatrix();
 
         if (!allowParentInterceptOnEdge || scaleDragGestureDetector.isScaling() || disallowParentInterceptTouchEvent) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s",
                         allowParentInterceptOnEdge, scaleDragGestureDetector.isScaling(), disallowParentInterceptTouchEvent);
             }
@@ -243,13 +242,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 //        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
 //                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)) {
         if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)) {
-            if (SLogType.ZOOM.isEnabled()) {
-                SLog.i(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
+                SLog.d(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
             requestDisallowInterceptTouchEvent(false);
         } else {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
@@ -269,7 +268,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public void onScale(float scaleFactor, float focusX, float focusY) {
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY);
         }
 
@@ -311,7 +310,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public boolean onScaleBegin() {
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "scale begin");
         }
 
@@ -321,7 +320,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public void onScaleEnd() {
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "scale end");
         }
 
@@ -429,7 +428,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         doubleClickZoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES;
 
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
                 SLog.v(NAME, "not working. resetZoomScales");
             }
             return;
@@ -516,7 +515,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         baseMatrix.reset();
 
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
                 SLog.v(NAME, "not working. resetBaseMatrix");
             }
             return;
@@ -597,7 +596,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     private boolean checkMatrixBounds() {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
                 SLog.v(NAME, "not working. checkMatrixBounds");
             }
             horScrollEdge = EDGE_NONE;
@@ -890,7 +889,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public void getDrawRect(RectF rectF) {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
                 SLog.v(NAME, "not working. getDrawRect");
             }
             rectF.setEmpty();
@@ -908,7 +907,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public void getVisibleRect(Rect rect) {
         if (!isWorking()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
                 SLog.v(NAME, "not working. getVisibleRect");
             }
             rect.setEmpty();
@@ -1118,7 +1117,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         //noinspection UnnecessaryLocalVariable
         final int endY = trimCenterLocationY;
 
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "location. start=%dx%d, end=%dx%d", startX, startY, endX, endY);
         }
 

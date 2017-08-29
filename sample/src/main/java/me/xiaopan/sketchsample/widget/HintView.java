@@ -389,20 +389,14 @@ public class HintView extends LinearLayout {
         hint(-1, hintText, null, null, false);
     }
 
-    /**
-     * 失败
-     *
-     * @param exception                 失败了
-     * @param reloadButtonClickListener 重新加载按钮点击监听器
-     */
-    public void failed(Throwable exception, OnClickListener reloadButtonClickListener) {
+    public static String getCauseByException(Context context, Throwable exception){
         String message;
         if (exception == null) {
             message = "网络连接异常【909】";
         } else if (exception instanceof SecurityException) {
             message = "网络连接异常【101】";
         } else if (exception instanceof UnknownHostException) {
-            if (isConnectedByState(getContext())) {
+            if (isConnectedByState(context)) {
                 message = "网络连接异常【202】";
             } else {
                 message = "没有网络连接";
@@ -414,7 +408,17 @@ public class HintView extends LinearLayout {
         } else {
             message = "网络连接异常【909】";
         }
-        hint(R.drawable.ic_error, message, "重试", reloadButtonClickListener, false);
+        return message;
+    }
+
+    /**
+     * 失败
+     *
+     * @param exception                 失败了
+     * @param reloadButtonClickListener 重新加载按钮点击监听器
+     */
+    public void failed(Throwable exception, OnClickListener reloadButtonClickListener) {
+        hint(R.drawable.ic_error, getCauseByException(getContext(), exception), "重试", reloadButtonClickListener, false);
     }
 
     /**

@@ -20,7 +20,6 @@ import android.content.Context;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 
 public abstract class BaseRequest {
@@ -95,7 +94,7 @@ public abstract class BaseRequest {
      */
     public void setStatus(Status status) {
         this.status = status;
-        if (SLog.isLoggable(SLog.DEBUG) && SLogType.REQUEST.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             if (status == Status.FAILED) {
                 SLog.d(getLogName(), "new status. %s. %s", status.getLog(), errorCause != null ? errorCause.name() : "");
             } else if (status == Status.CANCELED) {

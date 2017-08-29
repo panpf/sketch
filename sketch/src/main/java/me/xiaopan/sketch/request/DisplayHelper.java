@@ -24,7 +24,6 @@ import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
@@ -63,19 +62,19 @@ public class DisplayHelper {
         this.uriInfo = UriInfo.make(uri);
         this.sketchView = sketchView;
 
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().start(NAME + ". display use time");
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
         this.sketchView.onReadyDisplay(uriInfo != null ? uriInfo.getScheme() : null);
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("onDisplay");
         }
 
         viewInfo.reset(sketchView, sketch);
         displayOptions.copy(sketchView.getOptions());
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("init");
         }
 
@@ -369,7 +368,7 @@ public class DisplayHelper {
         if (!SketchUtils.isMainThread()) {
             SLog.w(NAME, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
                     Integer.toHexString(sketchView.hashCode()), uriInfo != null ? uriInfo.getUri() : "");
-            if (SLogType.TIME.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -377,16 +376,16 @@ public class DisplayHelper {
         }
 
         CallbackHandler.postCallbackStarted(displayListener, false);
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("callbackStarted");
         }
 
         boolean checkResult = checkUri();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkUri");
         }
         if (!checkResult) {
-            if (SLogType.TIME.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(uriInfo != null ? uriInfo.getUri() : "");
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -394,21 +393,21 @@ public class DisplayHelper {
         }
 
         preProcess();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("preProcess");
         }
 
         saveParams();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("saveParams");
         }
 
         checkResult = checkMemoryCache();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkMemoryCache");
         }
         if (!checkResult) {
-            if (SLogType.TIME.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(key);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -416,11 +415,11 @@ public class DisplayHelper {
         }
 
         checkResult = checkRequestLevel();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkRequestLevel");
         }
         if (!checkResult) {
-            if (SLogType.TIME.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(key);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -428,11 +427,11 @@ public class DisplayHelper {
         }
 
         DisplayRequest potentialRequest = checkRepeatRequest();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkRepeatRequest");
         }
         if (potentialRequest != null) {
-            if (SLogType.TIME.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(key);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -441,7 +440,7 @@ public class DisplayHelper {
 
         DisplayRequest request = submitRequest();
 
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().print(key);
         }
         sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -450,9 +449,7 @@ public class DisplayHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "uri is null or empty. viewHashCode=%s", Integer.toHexString(sketchView.hashCode()));
-            }
+            SLog.e(NAME, "uri is empty. viewHashCode=%s", Integer.toHexString(sketchView.hashCode()));
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -470,9 +467,7 @@ public class DisplayHelper {
 
         if (uriInfo.getScheme() == null) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "unknown uri scheme: %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
-            }
+            SLog.e(NAME, "unknown uri scheme: %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -608,7 +603,7 @@ public class DisplayHelper {
                                 "You must be setup ShapeSize or imageView width and height must be fixed",
                         ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
-                if (SLogType.REQUEST.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(NAME, "%s. viewHashCode=%s. %s",
                             errorInfo, Integer.toHexString(sketchView.hashCode()), uriInfo.getUri());
                 }
@@ -647,19 +642,17 @@ public class DisplayHelper {
 
         if (cachedRefBitmap.isRecycled()) {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
-            if (SLog.isLoggable(SLog.ERROR)) {
-                String viewCode = Integer.toHexString(sketchView.hashCode());
-                SLog.e(NAME, "memory cache drawable recycled. %s. viewHashCode=%s", cachedRefBitmap.getInfo(), viewCode);
-            }
+            String viewCode = Integer.toHexString(sketchView.hashCode());
+            SLog.e(NAME, "memory cache drawable recycled. %s. viewHashCode=%s", cachedRefBitmap.getInfo(), viewCode);
             return true;
         }
 
         // 立马标记等待使用，防止被回收
         cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", NAME), true);
 
-        if (SLogType.REQUEST.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.i(NAME, "image display completed. %s. %s. viewHashCode=%s",
+            SLog.d(NAME, "image display completed. %s. %s. viewHashCode=%s",
                     ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
 
@@ -692,8 +685,8 @@ public class DisplayHelper {
         if (displayOptions.getRequestLevel() == RequestLevel.MEMORY) {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(NAME, "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(NAME, "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
                         Integer.toHexString(sketchView.hashCode()), key);
             }
 
@@ -715,7 +708,7 @@ public class DisplayHelper {
                 && !sketch.getConfiguration().getDiskCache().exist(uriInfo.getDiskCacheKey())) {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
-            if (SLogType.REQUEST.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 String cancelCause = isPauseDownload ? "pause download" : "requestLevel is local";
                 SLog.d(NAME, "canceled. %s. viewHashCode=%s. %s", cancelCause, Integer.toHexString(sketchView.hashCode()), key);
             }
@@ -730,8 +723,8 @@ public class DisplayHelper {
                 Context context = sketch.getConfiguration().getContext();
                 drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                    SLog.d(NAME, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
                             Integer.toHexString(sketchView.hashCode()), key);
                 }
             }
@@ -754,14 +747,14 @@ public class DisplayHelper {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
-                if (SLogType.REQUEST.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(NAME, "repeat request. newId=%s. viewHashCode=%s",
                             key, Integer.toHexString(sketchView.hashCode()));
                 }
                 return potentialRequest;
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                    SLog.d(NAME, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
                             key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -776,7 +769,7 @@ public class DisplayHelper {
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
         DisplayRequest request = requestFactory.newDisplayRequest(sketch, uriInfo, key, displayOptions, viewInfo,
                 requestAndViewBinder, displayListener, downloadProgressListener);
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("createRequest");
         }
 
@@ -789,22 +782,22 @@ public class DisplayHelper {
         } else {
             loadingDrawable = new SketchLoadingDrawable(null, request);
         }
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("createLoadingImage");
         }
 
         sketchView.setImageDrawable(loadingDrawable);
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("setLoadingImage");
         }
 
-        if (SLogType.REQUEST.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             SLog.d(NAME, "submit request. viewHashCode=%s. %s",
                     Integer.toHexString(sketchView.hashCode()), key);
         }
 
         request.submit();
-        if (SLogType.TIME.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("submitRequest");
         }
 

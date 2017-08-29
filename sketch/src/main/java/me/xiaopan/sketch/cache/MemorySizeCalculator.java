@@ -8,7 +8,6 @@ import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 
 /**
  * A calculator that tries to intelligently determine cache sizes for a given device based on some constants and the
@@ -61,7 +60,7 @@ public class MemorySizeCalculator {
             bitmapPoolSize = BitmapPoolUtils.sdkSupportInBitmap() ? part * BITMAP_POOL_TARGET_SCREENS : 0;
         }
 
-        if (SLogType.CACHE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
             SLog.d(NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(memoryCacheSize), toMb(bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(maxSize), activityManager.getMemoryClass(), isLowMemoryDevice(activityManager));
         }

@@ -12,7 +12,6 @@ import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -129,9 +128,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
             return null;
         }
         if (frameBitmap.isRecycled()) {
-            if (SLogType.REQUEST.isEnabled()) {
-                SLog.w(NAME, "video thumbnail bitmap recycled. %s", uriInfo.getUri());
-            }
+            SLog.e(NAME, "video thumbnail bitmap recycled. %s", uriInfo.getUri());
             return null;
         }
 
@@ -183,9 +180,7 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
             if (cacheEntry != null) {
                 return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
             } else {
-                if (SLogType.REQUEST.isEnabled()) {
-                    SLog.w(NAME, "not found video thumbnail cache file. %s", uriInfo.getUri());
-                }
+                SLog.e(NAME, "not found video thumbnail cache file. %s", uriInfo.getUri());
                 return null;
             }
         } else {

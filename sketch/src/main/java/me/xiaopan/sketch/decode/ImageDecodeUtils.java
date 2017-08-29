@@ -29,7 +29,6 @@ import java.io.InputStream;
 
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -83,7 +82,7 @@ public class ImageDecodeUtils {
     }
 
     static void decodeSuccess(Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
-        if (SLogType.REQUEST.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getSizeCalculator();
@@ -101,30 +100,20 @@ public class ImageDecodeUtils {
         if (dataSource instanceof CacheFileDataSource) {
             DiskCache.Entry diskCacheEntry = ((CacheFileDataSource) dataSource).getDiskCacheEntry();
 
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
-            }
+            SLog.e(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
 
             if (!diskCacheEntry.delete()) {
-                if (SLog.isLoggable(SLog.ERROR)) {
-                    SLog.e(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
-                            diskCacheEntry.getUri(), loadRequest.getKey());
-                }
+                SLog.e(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+                        diskCacheEntry.getUri(), loadRequest.getKey());
             }
         }
 
-        if (!SLogType.REQUEST.isEnabled()) {
-            return;
-        }
-
-        if (SLog.isLoggable(SLog.ERROR)) {
-            if (dataSource instanceof FileDataSource) {
-                File file = ((FileDataSource) dataSource).getFile(null, null);
-                SLog.e(logName, "decode failed. filePath=%s, fileLength=%d",
-                        file.getPath(), file.exists() ? file.length() : 0);
-            } else {
-                SLog.e(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
-            }
+        if (dataSource instanceof FileDataSource) {
+            File file = ((FileDataSource) dataSource).getFile(null, null);
+            SLog.e(logName, "decode failed. filePath=%s, fileLength=%d",
+                    file.getPath(), file.exists() ? file.length() : 0);
+        } else {
+            SLog.e(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
         }
     }
 

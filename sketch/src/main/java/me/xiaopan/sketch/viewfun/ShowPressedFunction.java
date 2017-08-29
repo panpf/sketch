@@ -34,10 +34,6 @@ public class ShowPressedFunction extends ViewFunction {
     private static final String NAME = "ShowPressedFunction";
 
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
-
-    private View view;
-    private ImageShapeFunction imageShapeFunction;
-
     protected int touchX;
     protected int touchY;
     protected int pressedStatusColor = DEFAULT_PRESSED_STATUS_COLOR;
@@ -47,6 +43,8 @@ public class ShowPressedFunction extends ViewFunction {
     protected Paint pressedStatusPaint;
     protected GestureDetector gestureDetector;
     protected boolean showRect;
+    private View view;
+    private ImageShapeFunction imageShapeFunction;
 
     public ShowPressedFunction(View view, ImageShapeFunction imageShapeFunction) {
         this.view = view;
@@ -79,9 +77,7 @@ public class ShowPressedFunction extends ViewFunction {
                 try {
                     canvas.clipPath(imageShapeFunction.getClipPath());
                 } catch (UnsupportedOperationException e) {
-                    if (SLog.isLoggable(SLog.ERROR)) {
-                        SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                    }
+                    SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                     }

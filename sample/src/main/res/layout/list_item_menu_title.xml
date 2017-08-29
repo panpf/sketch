@@ -11,6 +11,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="页面"
+        android:textColor="@color/default_text_color_normal"
         android:textSize="18sp"
         android:textStyle="bold" />
 

@@ -23,7 +23,6 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -105,7 +104,7 @@ class TileDecoderInitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (SLogType.LARGE.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
             SLog.d(NAME, "clean. %s", why);
         }
 

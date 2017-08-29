@@ -28,12 +28,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/default_text_color_normal"
             android:text="宽" />
 
         <TextView
             android:id="@+id/text_resizeFragment_width"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/default_text_color_normal"
             android:gravity="right" />
     </LinearLayout>
 
@@ -56,12 +58,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/default_text_color_normal"
             android:text="高" />
 
         <TextView
             android:id="@+id/text_resizeFragment_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/default_text_color_normal"
             android:gravity="right" />
     </LinearLayout>
 

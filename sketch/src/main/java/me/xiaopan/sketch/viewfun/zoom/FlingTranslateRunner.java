@@ -22,7 +22,6 @@ import android.graphics.RectF;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.viewfun.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingTranslateRunner implements Runnable {
@@ -68,7 +67,7 @@ class FlingTranslateRunner implements Runnable {
             minY = maxY = startY;
         }
 
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
                     startX, startY, minX, minY, maxX, maxY);
         }
@@ -90,7 +89,7 @@ class FlingTranslateRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            if (SLogType.ZOOM.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "finished. fling run");
             }
             return;
@@ -102,7 +101,9 @@ class FlingTranslateRunner implements Runnable {
         }
 
         if (!mScroller.computeScrollOffset()) {
-            SLog.d(ImageZoomer.NAME, "scroll finished. fling run");
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
+                SLog.d(ImageZoomer.NAME, "scroll finished. fling run");
+            }
             return;
         }
 
@@ -118,7 +119,7 @@ class FlingTranslateRunner implements Runnable {
 
     @SuppressWarnings("WeakerAccess")
     public void cancelFling() {
-        if (SLogType.ZOOM.isEnabled()) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(ImageZoomer.NAME, "cancel fling");
         }
 

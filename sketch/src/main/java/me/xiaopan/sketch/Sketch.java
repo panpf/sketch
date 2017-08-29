@@ -40,7 +40,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <li>download()：下载图片到磁盘上</li>
  * </ul>
  */
-// TODO: 2017/8/25 重新审查所有的 log 输出，选择合适的 level
 public class Sketch {
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
 

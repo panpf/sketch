@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.viewfun;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
@@ -68,7 +67,7 @@ public class RecyclerCompatFunction extends ViewFunction {
 
         @Override
         public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
-            if (SLogType.BASE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(NAME, "restore image on attached to window. %s", cacheUri);
             }
         }

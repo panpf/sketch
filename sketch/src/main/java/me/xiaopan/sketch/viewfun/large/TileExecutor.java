@@ -25,7 +25,6 @@ import android.os.Looper;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -61,7 +60,7 @@ class TileExecutor {
                     handlerThread = new HandlerThread("ImageRegionDecodeThread" + THREAD_NUMBER.addAndGet(1));
                     handlerThread.start();
 
-                    if (SLogType.LARGE.isEnabled()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                         SLog.d(NAME, "image region decode thread %s started", handlerThread.getName());
                     }
 
@@ -131,7 +130,7 @@ class TileExecutor {
                     handlerThread.quit();
                 }
 
-                if (SLogType.LARGE.isEnabled()) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                     SLog.d(NAME, "image region decode thread %s quit", handlerThread.getName());
                 }
 

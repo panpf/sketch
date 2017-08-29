@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.recycle.AttributeStrategy;
 import me.xiaopan.sketch.cache.recycle.LruPoolStrategy;
 import me.xiaopan.sketch.cache.recycle.SizeConfigStrategy;
@@ -126,9 +125,8 @@ public class LruBitmapPool implements BitmapPool {
         puts++;
         currentSize += size;
 
-        if (SLogType.CACHE.isEnabled()) {
-            SLog.v(NAME, "Put bitmap in pool=%s,%s",
-                    strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            SLog.d(NAME, "Put bitmap in pool=%s,%s", strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
         }
         dump();
 
@@ -144,8 +142,7 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable get, bitmap=%s,%s",
-                    strategy.logBitmap(width, height, config));
+            SLog.w(NAME, "Disabled. Unable get, bitmap=%s,%s", strategy.logBitmap(width, height, config));
             return null;
         }
 
@@ -153,12 +150,12 @@ public class LruBitmapPool implements BitmapPool {
         // null as the requested config here. See issue #194.
         final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
         if (result == null) {
-            if (SLogType.CACHE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
                 SLog.d(NAME, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
             }
             misses++;
         } else {
-            if (SLogType.CACHE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
                 SLog.d(NAME, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
             }
             hits++;
@@ -191,10 +188,11 @@ public class LruBitmapPool implements BitmapPool {
         Bitmap result = get(width, height, config);
         if (result == null) {
             result = Bitmap.createBitmap(width, height, config);
-            if (SLogType.CACHE.isEnabled()) {
+
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.i(NAME, "Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.d(NAME, "Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         result.getWidth(), result.getHeight(), result.getConfig(), SketchUtils.toHexString(result),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
@@ -260,8 +258,7 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         String releasedSize = Formatter.formatFileSize(context, size - getSize());
-        SLog.w(NAME, "trimMemory. level=%s, released: %s",
-                SketchUtils.getTrimLevelName(level), releasedSize);
+        SLog.w(NAME, "trimMemory. level=%s, released: %s", SketchUtils.getTrimLevelName(level), releasedSize);
     }
 
     @Override
@@ -296,10 +293,7 @@ public class LruBitmapPool implements BitmapPool {
                 return;
             }
 
-            if (SLog.isLoggable(SLog.ERROR)) {
-                SLog.e(NAME, "Evicting bitmap=%s,%s",
-                        strategy.logBitmap(removed), SketchUtils.toHexString(removed));
-            }
+            SLog.e(NAME, "Evicting bitmap=%s,%s", strategy.logBitmap(removed), SketchUtils.toHexString(removed));
             tracker.remove(removed);
             currentSize -= strategy.getSize(removed);
             removed.recycle();
@@ -313,8 +307,8 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private void dumpUnchecked() {
-        if (SLogType.CACHE.isEnabled()) {
-            SLog.i(NAME, "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            SLog.d(NAME, "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
                     hits, misses, puts, evictions, currentSize, maxSize, strategy);
         }
     }

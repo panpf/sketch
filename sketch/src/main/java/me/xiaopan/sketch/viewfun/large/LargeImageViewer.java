@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import java.util.List;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageType;
@@ -121,7 +120,7 @@ public class LargeImageViewer {
     public void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "not ready. %s", imageUri);
             }
             return;
@@ -129,7 +128,7 @@ public class LargeImageViewer {
 
         // 暂停中也不走了
         if (paused) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "paused. %s", imageUri);
             }
             return;
@@ -145,7 +144,7 @@ public class LargeImageViewer {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "full display. update. newVisibleRect=%s. %s",
                         newVisibleRect.toShortString(), imageUri);
             }
@@ -211,7 +210,7 @@ public class LargeImageViewer {
         paused = pause;
 
         if (paused) {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "pause. %s", imageUri);
             }
 
@@ -219,7 +218,7 @@ public class LargeImageViewer {
                 clean("pause");
             }
         } else {
-            if (SLogType.LARGE.isEnabled()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
                 SLog.d(NAME, "resume. %s", imageUri);
             }
 

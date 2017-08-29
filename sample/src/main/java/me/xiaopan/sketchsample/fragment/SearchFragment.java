@@ -282,12 +282,16 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
                 return;
             }
 
-            fragment.hintView.failed(t, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fragment.onRefresh();
-                }
-            });
+            if (pageIndex == 1) {
+                fragment.hintView.failed(t, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fragment.onRefresh();
+                    }
+                });
+            } else {
+                Toast.makeText(fragment.getActivity(), HintView.getCauseByException(fragment.getActivity(), t), Toast.LENGTH_LONG).show();
+            }
 
             fragment.refreshLayout.setRefreshing(false);
         }
