@@ -94,7 +94,12 @@ public class AppPackageListFragment extends BaseFragment implements AppItemFacto
 
             @Override
             protected String[] doInBackground(String... params) {
-                return SketchUtils.getAllAvailableSdcardPath(getContext());
+                Context context = getContext();
+                if (context == null) {
+                    return null;
+                }
+
+                return SketchUtils.getAllAvailableSdcardPath(context);
             }
 
             @Override

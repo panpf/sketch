@@ -430,7 +430,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
                 .replace(R.id.frame_main_content, page.getFragment())
-                .commit();
+                .commitAllowingStateLoss();
 
         drawerLayout.post(new Runnable() {
             @Override
