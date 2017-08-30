@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Sketch 日志
+ * Sketch 日志，分为两个维度来控制日志的开关，一个级别，一个是类型，级别之间单选互斥，类型之间多选共存
  */
 public class SLog {
 
@@ -109,11 +109,12 @@ public class SLog {
     /**
      * 设置都开启哪些类型或级别的日志
      *
-     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
+     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
+     *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
      *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
      */
     public static void setLoggable(@Loggable int mask) {
-            /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
+        /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
 
         int oldFlags = SLog.loggableFlags;
 
@@ -121,14 +122,18 @@ public class SLog {
         //noinspection NumericOverflow
         int high16BitsMask = 0xFFFF << 16;
 
-        int maskLow16Bits = low16One(mask & low16BitsMask); // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
-        int maskHigh16Bits = mask & high16BitsMask; // 取出 mask 的高 16 位
+        // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
+        int maskLow16Bits = low16One(mask & low16BitsMask);
+        // 取出 mask 的高 16 位
+        int maskHigh16Bits = mask & high16BitsMask;
 
         int newFlag = SLog.loggableFlags;
 
         if (maskLow16Bits != 0) {
-            int resetLow16BitFlags = newFlag & high16BitsMask;   // 因为低 16 位是单选互斥关系，所以原 flag 要清空 低 16 位，保留高 16 位，以此作为新 flag 的基础
-            newFlag = resetLow16BitFlags | maskLow16Bits; // 低 16 位赋值
+            // 因为低 16 位是单选互斥关系，所以原 flag 要清空 低 16 位，保留高 16 位，以此作为新 flag 的基础
+            int resetLow16BitFlags = newFlag & high16BitsMask;
+            // 低 16 位赋值
+            newFlag = resetLow16BitFlags | maskLow16Bits;
         }
         if (maskHigh16Bits != 0) {
             newFlag = newFlag | maskHigh16Bits; // 高 16 位赋值
@@ -143,20 +148,26 @@ public class SLog {
     /**
      * 指定类型或级别的日志是否可用
      *
-     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
+     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
+     *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
      *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
      */
     public static boolean isLoggable(int mask) {
         /* 高 16 位，低 16 位分开判断。因为低 16 位是互斥并且区分大小关系，高 16 位是共存关系 */
+
         int low16BitsMask = 0xFFFF;
         //noinspection NumericOverflow
         int high16BitsMask = 0xFFFF << 16;
 
-        int maskLow16Bits = low16One(mask & low16BitsMask); // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
-        int maskHigh16Bits = mask & high16BitsMask; // 取出 mask 的高 16 位
+        // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
+        int maskLow16Bits = low16One(mask & low16BitsMask);
+        // 取出 mask 的高 16 位
+        int maskHigh16Bits = mask & high16BitsMask;
 
-        int flagLow16Bits = SLog.loggableFlags & low16BitsMask; // 取出 flag 的低 16 位
-        int flagHigh16Bits = SLog.loggableFlags & high16BitsMask; // 取出 flag 的高 16 位
+        // 取出 flag 的低 16 位
+        int flagLow16Bits = SLog.loggableFlags & low16BitsMask;
+        // 取出 flag 的高 16 位
+        int flagHigh16Bits = SLog.loggableFlags & high16BitsMask;
 
         boolean low16BitsCheckResult = maskLow16Bits == 0 || flagLow16Bits != 0 && maskLow16Bits >= flagLow16Bits;
         boolean high16BitsCheckResult = maskHigh16Bits == 0 || flagHigh16Bits != 0 && (flagHigh16Bits & maskHigh16Bits) == maskHigh16Bits;
@@ -166,7 +177,8 @@ public class SLog {
     /**
      * 关闭指定类型的日志（不能删除日志级别）
      *
-     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
+     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
+     *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
      *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
      */
     public static void removeLoggable(@Loggable int mask) {
@@ -186,7 +198,8 @@ public class SLog {
     /**
      * 获取日志级别
      *
-     * @return 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO}, {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}, 0
+     * @return 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
+     * {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}, 0
      */
     @Loggable
     public static int getLevel() {
@@ -208,14 +221,8 @@ public class SLog {
         }
     }
 
-    public static void cleanLevel() {
-        //noinspection NumericOverflow
-        int high16BitsMask = 0xFFFF << 16;
-
-    }
-
     /**
-     * 低 16 位只能有一个 1
+     * 低 16 位只能有一个 1，保留最高的一个
      */
     private static int low16One(int mask) {
         int maskLow16Bits = mask & 0xFFFF;
@@ -236,6 +243,14 @@ public class SLog {
         return high16 | finalLow16;
     }
 
+    /**
+     * 将二进制字符串转成整型
+     *
+     * @param s     待转换的二进制字符串
+     * @param radix 一般为2
+     * @return 整型
+     * @throws NumberFormatException 字符串异常
+     */
     public static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
         if (s == null) {
             throw new NumberFormatException("null");
@@ -264,99 +279,182 @@ public class SLog {
         }
     }
 
-    private static String transformLog(String name, String format, Object... args) {
+    /**
+     * 组装最终的日志，将 scope 和 log 连接起来
+     *
+     * @param scope  表示当前日志所处的位置
+     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args   用于填充 format 格式化模板的数据集合
+     * @return args 不为 null 且长度大于 0 时返回 "${scope}. ${String.format(format, args)}"，否则返回 "${scope}. ${format}"
+     */
+    private static String assembleLog(String scope, String format, Object... args) {
         if (format == null) {
             format = "";
         }
 
         if (args != null && args.length > 0) {
-            if (!TextUtils.isEmpty(name)) {
-                return name + ". " + String.format(format, args);
+            if (!TextUtils.isEmpty(scope)) {
+                return scope + ". " + String.format(format, args);
             } else {
                 return String.format(format, args);
             }
         } else {
             // args 为空说明 format 就是日志
-            if (!TextUtils.isEmpty(name)) {
-                return name + ". " + format;
+            if (!TextUtils.isEmpty(scope)) {
+                return scope + ". " + format;
             } else {
                 return format;
             }
         }
     }
 
-    public static int v(String name, String format, Object... args) {
+    /**
+     * 输出 VERBOSE 级别的日志，受 isLoggable(LEVEL_VERBOSE) 控制
+     *
+     * @param scope  表示当前日志所处的位置
+     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args   用于填充 format 格式化模板的数据集合
+     * @return 总共输出了多少个字符
+     */
+    public static int v(String scope, String format, Object... args) {
         if (!isLoggable(LEVEL_VERBOSE)) {
             return 0;
         }
-        return proxy.v(TAG, transformLog(name, format, args));
+        return proxy.v(TAG, assembleLog(scope, format, args));
     }
 
-    public static int v(String name, String msg) {
+    /**
+     * 输出 VERBOSE 级别的日志，受 isLoggable(LEVEL_VERBOSE) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int v(String scope, String log) {
         if (!isLoggable(LEVEL_VERBOSE)) {
             return 0;
         }
-        return proxy.v(TAG, transformLog(name, msg, (Object[]) null));
+        return proxy.v(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
 
-    public static int d(String name, String format, Object... args) {
+    /**
+     * 输出 DEBUG 级别的日志，受 isLoggable(LEVEL_DEBUG) 控制
+     *
+     * @param scope  表示当前日志所处的位置
+     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args   用于填充 format 格式化模板的数据集合
+     * @return 总共输出了多少个字符
+     */
+    public static int d(String scope, String format, Object... args) {
         if (!isLoggable(LEVEL_DEBUG)) {
             return 0;
         }
-        return proxy.d(TAG, transformLog(name, format, args));
+        return proxy.d(TAG, assembleLog(scope, format, args));
     }
 
-    public static int d(String name, String msg) {
+    /**
+     * 输出 DEBUG 级别的日志，受 isLoggable(LEVEL_DEBUG) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int d(String scope, String log) {
         if (!isLoggable(LEVEL_DEBUG)) {
             return 0;
         }
-        return proxy.d(TAG, transformLog(name, msg, (Object[]) null));
+        return proxy.d(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
 
-    public static int i(String name, String format, Object... args) {
+    /**
+     * 输出 INFO 级别的日志，受 isLoggable(LEVEL_INFO) 控制
+     *
+     * @param scope  表示当前日志所处的位置
+     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args   用于填充 format 格式化模板的数据集合
+     * @return 总共输出了多少个字符
+     */
+    public static int i(String scope, String format, Object... args) {
         if (!isLoggable(LEVEL_INFO)) {
             return 0;
         }
-        return proxy.i(TAG, transformLog(name, format, args));
+        return proxy.i(TAG, assembleLog(scope, format, args));
     }
 
-    public static int i(String name, String msg) {
+    /**
+     * 输出 INFO 级别的日志，受 isLoggable(LEVEL_INFO) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int i(String scope, String log) {
         if (!isLoggable(LEVEL_INFO)) {
             return 0;
         }
-        return proxy.i(TAG, transformLog(name, msg, (Object[]) null));
+        return proxy.i(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
 
-    public static int w(String name, String format, Object... args) {
+    /**
+     * 输出 WARNING 级别的日志，受 isLoggable(LEVEL_WARNING) 控制
+     *
+     * @param scope  表示当前日志所处的位置
+     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args   用于填充 format 格式化模板的数据集合
+     * @return 总共输出了多少个字符
+     */
+    public static int w(String scope, String format, Object... args) {
         if (!isLoggable(LEVEL_WARNING)) {
             return 0;
         }
-        return proxy.w(TAG, transformLog(name, format, args));
+        return proxy.w(TAG, assembleLog(scope, format, args));
     }
 
-    public static int w(String name, String msg) {
+    /**
+     * 输出 WARNING 级别的日志，受 isLoggable(LEVEL_WARNING) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int w(String scope, String log) {
         if (!isLoggable(LEVEL_WARNING)) {
             return 0;
         }
-        return proxy.w(TAG, transformLog(name, msg, (Object[]) null));
+        return proxy.w(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
 
-    public static int e(String name, String format, Object... args) {
+    /**
+     * 输出 ERROR 级别的日志，受 isLoggable(LEVEL_ERROR) 控制
+     *
+     * @param scope  表示当前日志所处的位置
+     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args   用于填充 format 格式化模板的数据集合
+     * @return 总共输出了多少个字符
+     */
+    public static int e(String scope, String format, Object... args) {
         if (!isLoggable(LEVEL_ERROR)) {
             return 0;
         }
-        return proxy.e(TAG, transformLog(name, format, args));
+        return proxy.e(TAG, assembleLog(scope, format, args));
     }
 
-    public static int e(String name, String msg) {
+    /**
+     * 输出 ERROR 级别的日志，受 isLoggable(LEVEL_ERROR) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int e(String scope, String log) {
         if (!isLoggable(LEVEL_ERROR)) {
             return 0;
         }
-        return proxy.e(TAG, transformLog(name, msg, (Object[]) null));
+        return proxy.e(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
     @SuppressWarnings("WeakerAccess")

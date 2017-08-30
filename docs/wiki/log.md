@@ -57,7 +57,7 @@ SLog.setLoggable(SLog.TYPE_CACHE);
 // 判断当前是否可以输出 CACHE 类型的日志
 SLog.isLoggable(SLog.TYPE_CACHE) == true
 
-// 关闭 CACHE 类型日志
+// 关闭 CACHE 类型日志（此方法只能删除日志分类）
 SLog.removeLoggable(SLog.TYPE_CACHE)
 ```
 
