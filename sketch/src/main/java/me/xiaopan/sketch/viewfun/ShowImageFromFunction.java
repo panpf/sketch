@@ -25,7 +25,7 @@ import android.view.View;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -56,7 +56,7 @@ public class ShowImageFromFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriModel uriModel) {
         imageFrom = null;
         return true;
     }

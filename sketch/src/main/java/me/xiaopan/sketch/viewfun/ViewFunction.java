@@ -24,7 +24,7 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 public abstract class ViewFunction {
     /**
@@ -89,7 +89,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onReadyDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriModel uriModel) {
         return false;
     }
 

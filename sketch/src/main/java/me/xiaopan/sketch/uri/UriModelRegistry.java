@@ -30,12 +30,12 @@ public class UriModelRegistry {
         this.uriModelList.add(new HttpUriModel());
         this.uriModelList.add(new HttpsUriModel());
         this.uriModelList.add(new FileUriModel());
-        this.uriModelList.add(new FileSchemeUriModel());
+        this.uriModelList.add(new FileVariantUriModel());
         this.uriModelList.add(new AssetUriModel());
         this.uriModelList.add(new DrawableUriModel());
         this.uriModelList.add(new ContentUriModel());
         this.uriModelList.add(new Base64UriModel());
-        this.uriModelList.add(new Base642UriModel());
+        this.uriModelList.add(new Base64VariantUriModel());
 //        this.uriModelList.add(new AndroidResourceUriModel());
     }
 

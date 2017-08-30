@@ -24,7 +24,7 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 class ViewFunctions {
     RequestFunction requestFunction;
@@ -322,42 +322,42 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onReadyDisplay(UriScheme uriScheme) {
+    boolean onReadyDisplay(UriModel uriModel) {
         boolean needInvokeInvalidate = false;
 
         if (requestFunction != null) {
             //noinspection ConstantConditions
-            needInvokeInvalidate |= requestFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= requestFunction.onReadyDisplay(uriModel);
         }
         if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= recyclerCompatFunction.onReadyDisplay(uriModel);
         }
         if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uriModel);
         }
         if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= showProgressFunction.onReadyDisplay(uriModel);
         }
         if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uriModel);
         }
         if (showImageFromFunction != null) {
-            needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uriModel);
         }
         if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= imageShapeFunction.onReadyDisplay(uriModel);
         }
         if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uriModel);
         }
         if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= zoomFunction.onReadyDisplay(uriModel);
         }
         if (hugeImageFunction != null) {
-            needInvokeInvalidate |= hugeImageFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= hugeImageFunction.onReadyDisplay(uriModel);
         }
         if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uriScheme);
+            needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uriModel);
         }
 
         return needInvokeInvalidate;

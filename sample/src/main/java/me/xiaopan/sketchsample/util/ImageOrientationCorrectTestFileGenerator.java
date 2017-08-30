@@ -17,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.AssetUriModel;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
@@ -107,7 +107,7 @@ public class ImageOrientationCorrectTestFileGenerator {
 
                 InputStream inputStream;
                 try {
-                    inputStream = assetManager.open(UriScheme.ASSET.cropContent(AssetImage.MEI_NV));
+                    inputStream = assetManager.open(new AssetUriModel().getUriContent(AssetImage.MEI_NV));
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;

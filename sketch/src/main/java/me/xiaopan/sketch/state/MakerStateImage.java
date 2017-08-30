@@ -39,8 +39,8 @@ import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.request.ShapeSize;
-import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.shaper.ImageShaper;
+import me.xiaopan.sketch.uri.DrawableUriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -127,7 +127,7 @@ public class MakerStateImage implements StateImage {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             ErrorTracker errorTracker = sketch.getConfiguration().getErrorTracker();
-            errorTracker.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
+            errorTracker.onProcessImageError(e, DrawableUriModel.makeUri(resId), processor);
             if (allowRecycle) {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             }
@@ -155,7 +155,7 @@ public class MakerStateImage implements StateImage {
             boundsOptions.inJustDecodeBounds = true;
             BitmapFactory.decodeResource(configuration.getContext().getResources(), resId, boundsOptions);
 
-            String uri = UriScheme.DRAWABLE.createUri(String.valueOf(resId));
+            String uri = DrawableUriModel.makeUri(resId);
             ImageAttrs imageAttrs = new ImageAttrs(boundsOptions.outMimeType, boundsOptions.outWidth, boundsOptions.outHeight, 0);
 
             SketchRefBitmap newRefBitmap = new SketchRefBitmap(bitmap, memoryCacheKey, uri, imageAttrs, bitmapPool);

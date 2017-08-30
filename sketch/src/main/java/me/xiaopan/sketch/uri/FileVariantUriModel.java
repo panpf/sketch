@@ -16,11 +16,27 @@
 
 package me.xiaopan.sketch.uri;
 
-public class Base642UriModel extends Base64UriModel {
-    private static final String SCHEME = "data:img/";
+import android.text.TextUtils;
+
+public class FileVariantUriModel extends FileUriModel {
+
+    public static final String SCHEME = "file://";
+
+    @SuppressWarnings("unused")
+    public static String makeUri(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return null;
+        }
+        return !filePath.startsWith(SCHEME) ? SCHEME + filePath : filePath;
+    }
 
     @Override
     public boolean match(String uri) {
-        return uri != null && uri.startsWith(SCHEME);
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    }
+
+    @Override
+    public String getUriContent(String uri) {
+        return !TextUtils.isEmpty(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 }

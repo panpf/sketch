@@ -29,7 +29,7 @@ import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.request.RedisplayListener;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 public interface SketchView {
 
@@ -98,7 +98,7 @@ public interface SketchView {
     /**
      * 准备显示图片
      */
-    void onReadyDisplay(UriScheme uriScheme);
+    void onReadyDisplay(UriModel uriModel);
 
     /**
      * 获取显示参数

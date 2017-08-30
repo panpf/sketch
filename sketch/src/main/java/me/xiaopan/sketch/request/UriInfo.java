@@ -16,10 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.uri.UriModelRegistry;
 
@@ -62,12 +60,8 @@ public class UriInfo {
         return content;
     }
 
-    /**
-     * 获取uri协议
-     */
-    @Deprecated
-    public UriScheme getScheme() {
-        return uriModel != null ? uriModel.getUriScheme() : null;
+    public UriModel getUriModel() {
+        return uriModel;
     }
 
     /**

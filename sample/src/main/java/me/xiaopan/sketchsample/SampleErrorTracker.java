@@ -15,11 +15,13 @@ import java.util.List;
 import java.util.Locale;
 
 import me.xiaopan.sketch.ErrorTracker;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.DrawableUriModel;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
@@ -284,10 +286,10 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     private String decodeUri(Context context, String imageUri) {
-        UriScheme scheme = UriScheme.valueOfUri(imageUri);
-        if (scheme != null && scheme == UriScheme.DRAWABLE) {
+        UriModel uriModel = Sketch.with(context).getConfiguration().getUriModelRegistry().match(imageUri);
+        if (uriModel != null && uriModel instanceof DrawableUriModel) {
             try {
-                int resId = Integer.parseInt(UriScheme.DRAWABLE.cropContent(imageUri));
+                int resId = ((DrawableUriModel) uriModel).getResId(imageUri);
                 return context.getResources().getResourceName(resId);
             } catch (Exception e) {
                 e.printStackTrace();

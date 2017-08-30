@@ -27,7 +27,7 @@ import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.UriInfo;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
@@ -72,8 +72,8 @@ public class SampleImageView extends SketchImageView {
     }
 
     @Override
-    public void onReadyDisplay(UriScheme uriScheme) {
-        super.onReadyDisplay(uriScheme);
+    public void onReadyDisplay(UriModel uriModel) {
+        super.onReadyDisplay(uriModel);
 
         disabledRedisplay = true;
         onEvent(new AppConfigChangedEvent(AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION));

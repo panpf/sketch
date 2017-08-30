@@ -83,7 +83,8 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.Base64UriModel;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.viewfun.huge.Tile;
 
 public class SketchUtils {
@@ -1014,13 +1015,13 @@ public class SketchUtils {
     /**
      * 生成请求KEY
      *
-     * @param imageUri  图片地址
-     * @param uriScheme UriScheme
-     * @param options   选项
+     * @param imageUri 图片地址
+     * @param uriModel UriScheme
+     * @param options  选项
      */
-    public static String makeRequestKey(String imageUri, UriScheme uriScheme, DownloadOptions options) {
+    public static String makeRequestKey(String imageUri, UriModel uriModel, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
-        if (uriScheme == UriScheme.BASE64) {
+        if (uriModel != null && uriModel instanceof Base64UriModel) {
             builder.append(SketchMD5Utils.md5(imageUri));
         } else {
             builder.append(imageUri);

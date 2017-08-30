@@ -67,7 +67,7 @@ public class DisplayHelper {
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.sketchView.onReadyDisplay(uriInfo != null ? uriInfo.getScheme() : null);
+        this.sketchView.onReadyDisplay(uriInfo != null ? uriInfo.getUriModel() : null);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("onDisplay");
         }
@@ -449,7 +449,7 @@ public class DisplayHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            SLog.e(NAME, "uri is empty. viewHashCode=%s", Integer.toHexString(sketchView.hashCode()));
+            SLog.e(NAME, "Uri is empty. viewHashCode=%s", Integer.toHexString(sketchView.hashCode()));
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -465,9 +465,9 @@ public class DisplayHelper {
             return false;
         }
 
-        if (uriInfo.getScheme() == null) {
+        if (uriInfo.getUriModel() == null) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.e(NAME, "unknown uri scheme: %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
+            SLog.e(NAME, "Not support uri. %s. viewHashCode=%s. %s", uriInfo.getUri(), viewCode, uriInfo.getUri());
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -612,7 +612,7 @@ public class DisplayHelper {
         }
 
         // 根据URI和显示选项生成请求key
-        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getScheme(), displayOptions);
+        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getUriModel(), displayOptions);
     }
 
     /**
@@ -704,7 +704,7 @@ public class DisplayHelper {
         }
 
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
-        if (displayOptions.getRequestLevel() == RequestLevel.LOCAL && uriInfo.getScheme() == UriScheme.NET
+        if (displayOptions.getRequestLevel() == RequestLevel.LOCAL && uriInfo.getUriModel().isFromNet()
                 && !sketch.getConfiguration().getDiskCache().exist(uriInfo.getDiskCacheKey())) {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 

@@ -101,7 +101,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
         setStatus(Status.INTERCEPT_LOCAL_TASK);
 
-        if (getUriInfo().getScheme() != UriScheme.NET) {
+        if (!getUriInfo().getUriModel().isFromNet()) {
             // 本地请求直接执行加载
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",

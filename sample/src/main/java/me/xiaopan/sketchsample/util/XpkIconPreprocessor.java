@@ -19,7 +19,7 @@ import me.xiaopan.sketch.preprocess.PreProcessResult;
 import me.xiaopan.sketch.preprocess.Preprocessor;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriInfo;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.FileUriModel;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -32,7 +32,8 @@ public class XpkIconPreprocessor implements Preprocessor {
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
-        return uriInfo.getScheme() == UriScheme.FILE
+        // TODO: 2017/8/31 这些都代表需要预处理，后续用 UriModel 实现即可
+        return uriInfo.getUriModel() instanceof FileUriModel
                 && uriInfo.getContent() != null
                 && SketchUtils.checkSuffix(uriInfo.getContent(), ".xpk");
     }

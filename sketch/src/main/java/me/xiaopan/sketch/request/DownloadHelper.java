@@ -121,19 +121,19 @@ public class DownloadHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            SLog.e(NAME, "uri is empty");
+            SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
-        if (uriInfo.getScheme() == null) {
-            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
+        if (uriInfo.getUriModel() == null) {
+            SLog.e(NAME, "Not support uri. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
-        if (uriInfo.getScheme() != UriScheme.NET) {
-            SLog.e(NAME, "only support http ot https. %s", uriInfo.getUri());
+        if (!uriInfo.getUriModel().isFromNet()) {
+            SLog.e(NAME, "Only support http ot https. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -148,7 +148,7 @@ public class DownloadHelper {
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
         // 根据URI和下载选项生成请求key
-        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getScheme(), downloadOptions);
+        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getUriModel(), downloadOptions);
     }
 
     private boolean checkDiskCache() {

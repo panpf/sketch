@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 下载选项，适用于 {@link me.xiaopan.sketch.Sketch#download(String, DownloadListener)} 方法
@@ -137,7 +138,7 @@ public class DownloadOptions {
      * 生成选项KEY，用于组装请求或内存缓存key
      *
      * @see SketchImageView#getOptionsKey()
-     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriScheme, DownloadOptions)
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, DownloadOptions)
      */
     public StringBuilder makeKey(StringBuilder builder) {
         return builder;

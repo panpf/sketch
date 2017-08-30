@@ -240,13 +240,13 @@ public class LoadHelper {
 
     private boolean checkUri() {
         if (uriInfo == null) {
-            SLog.e(NAME, "uri is empty");
+            SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
-        if (uriInfo.getScheme() == null) {
-            SLog.e(NAME, "unknown uri scheme. %s", uriInfo.getUri());
+        if (uriInfo.getUriModel() == null) {
+            SLog.e(NAME, "Not support uri. %s", uriInfo.getUri());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -306,13 +306,13 @@ public class LoadHelper {
         }
 
         // 根据URI和加载选项生成请求ID
-        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getScheme(), loadOptions);
+        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getUriModel(), loadOptions);
     }
 
     private boolean checkRequestLevel() {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (loadOptions.getRequestLevel() == RequestLevel.LOCAL
-                && uriInfo.getScheme() == UriScheme.NET
+                && uriInfo.getUriModel().isFromNet()
                 && !sketch.getConfiguration().getDiskCache().exist(uriInfo.getDiskCacheKey())) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 

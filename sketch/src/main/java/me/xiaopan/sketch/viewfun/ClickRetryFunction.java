@@ -23,7 +23,7 @@ import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.RequestLevel;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
@@ -43,7 +43,7 @@ public class ClickRetryFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriModel uriModel) {
         // 重新走了一遍显示流程，这些要重置
         displayError = false;
         pauseDownload = false;

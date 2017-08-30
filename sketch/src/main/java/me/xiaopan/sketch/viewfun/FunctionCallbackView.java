@@ -30,7 +30,7 @@ import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DownloadProgressListener;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 这个类负责给function回调各种状态
@@ -191,8 +191,8 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public void onReadyDisplay(UriScheme uriScheme) {
-        if (getFunctions().onReadyDisplay(uriScheme)) {
+    public void onReadyDisplay(UriModel uriModel) {
+        if (getFunctions().onReadyDisplay(uriModel)) {
             invalidate();
         }
     }

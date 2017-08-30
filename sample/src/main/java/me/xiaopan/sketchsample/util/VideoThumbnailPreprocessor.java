@@ -22,7 +22,8 @@ import me.xiaopan.sketch.preprocess.Preprocessor;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.request.UriInfo;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.FileUriModel;
+import me.xiaopan.sketch.uri.FileVariantUriModel;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 import wseemann.media.FFmpegMediaMetadataRetriever;
@@ -39,12 +40,13 @@ public class VideoThumbnailPreprocessor implements Preprocessor {
      * @param path 视频文件路径
      */
     public static String createUri(String path) {
-        return String.format("%s%s?%s=%s", UriScheme.FILE.getSecondaryUriPrefix(), URI_HOST, PARAM_PATH, path);
+        return String.format("%s%s?%s=%s", FileVariantUriModel.SCHEME, URI_HOST, PARAM_PATH, path);
     }
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
-        return uriInfo.getScheme() == UriScheme.FILE
+        // TODO: 2017/8/31 这些都代表需要预处理，后续用 UriModel 实现即可
+        return uriInfo.getUriModel() instanceof FileUriModel
                 && uriInfo.getContent() != null
                 && uriInfo.getContent().startsWith(URI_HOST);
     }

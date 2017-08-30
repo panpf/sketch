@@ -20,7 +20,7 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 由于RecyclerView在往回滚动的时候遇到可以直接使用的ItemView（位置没有变）会不走onBindViewHolder而直接走onAttachedToWindow然后显示，
@@ -52,7 +52,7 @@ public class RecyclerCompatFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriModel uriModel) {
         isSetImage = true;
         return false;
     }

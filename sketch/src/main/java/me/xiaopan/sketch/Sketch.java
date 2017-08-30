@@ -29,7 +29,9 @@ import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
 import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.LoadListener;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.AssetUriModel;
+import me.xiaopan.sketch.uri.DrawableUriModel;
+import me.xiaopan.sketch.uri.FileVariantUriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -84,7 +86,7 @@ public class Sketch {
      * @return 用于显示已安装APP图标的uri
      */
     public static String createInstalledAppIconUri(String packageName, int versionCode) {
-        return String.format("%s%s?%s=%s&%s=%d", UriScheme.FILE.getSecondaryUriPrefix(),
+        return String.format("%s%s?%s=%s&%s=%d", FileVariantUriModel.SCHEME,
                 InstalledAppIconPreprocessor.INSTALLED_APP_URI_HOST, InstalledAppIconPreprocessor.INSTALLED_APP_URI_PARAM_PACKAGE_NAME,
                 packageName, InstalledAppIconPreprocessor.INSTALLED_APP_URI_PARAM_VERSION_CODE, versionCode);
     }
@@ -155,13 +157,13 @@ public class Sketch {
     /**
      * 加载Asset中的图片
      *
-     * @param fileName asset中图片文件的名称
-     * @param listener 监听加载过程
+     * @param assetResName asset中图片文件的名称
+     * @param listener     监听加载过程
      * @return LoadHelper 你可以继续通过LoadHelper设置一下参数，最后调用其commit()方法提交即可
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadFromAsset(String fileName, LoadListener listener) {
-        String uri = UriScheme.ASSET.createUri(fileName);
+    public LoadHelper loadFromAsset(String assetResName, LoadListener listener) {
+        String uri = AssetUriModel.makeUri(assetResName);
         return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
     }
 
@@ -174,7 +176,7 @@ public class Sketch {
      */
     @SuppressWarnings("unused")
     public LoadHelper loadFromResource(int drawableResId, LoadListener listener) {
-        String uri = UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId));
+        String uri = DrawableUriModel.makeUri(drawableResId);
         return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
     }
 
@@ -228,12 +230,13 @@ public class Sketch {
     /**
      * 显示Asset中的图片
      *
-     * @param fileName   asset中图片文件的名称
-     * @param sketchView 默认实现是SketchImageView
+     * @param assetResName asset中图片文件的名称
+     * @param sketchView   默认实现是SketchImageView
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
-    public DisplayHelper displayFromAsset(String fileName, SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), sketchView);
+    public DisplayHelper displayFromAsset(String assetResName, SketchView sketchView) {
+        String uri = AssetUriModel.makeUri(assetResName);
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
     /**
@@ -244,7 +247,8 @@ public class Sketch {
      * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
      */
     public DisplayHelper displayFromResource(int drawableResId, SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), sketchView);
+        String uri = DrawableUriModel.makeUri(drawableResId);
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
     /**

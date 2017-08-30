@@ -70,7 +70,7 @@ public class InBitmapTestFragment extends BaseFragment {
 
     private static Bitmap decodeImage(Context context, String imageUri, BitmapFactory.Options options) {
         UriInfo uriInfo = UriInfo.make(Sketch.with(context).getConfiguration().getUriModelRegistry(), imageUri);
-        if (uriInfo == null || uriInfo.getScheme() == null) {
+        if (uriInfo == null || uriInfo.getUriModel() == null) {
             return null;
         }
         DataSource dataSource;

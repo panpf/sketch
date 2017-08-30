@@ -16,16 +16,14 @@
 
 package me.xiaopan.sketch.uri;
 
-public class FileSchemeUriModel extends FileUriModel {
-    private static final String SCHEME = "file://";
+import android.text.TextUtils;
+
+public class Base64VariantUriModel extends Base64UriModel {
+
+    public static final String SCHEME = "data:img/";
 
     @Override
     public boolean match(String uri) {
-        return uri != null && uri.startsWith(SCHEME);
-    }
-
-    @Override
-    public String getUriContent(String uri) {
-        return uri.substring(SCHEME.length());
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 }

@@ -16,11 +16,14 @@
 
 package me.xiaopan.sketch.uri;
 
+import android.text.TextUtils;
+
 public class HttpsUriModel extends HttpUriModel {
-    private static final String SCHEME = "https://";
+
+    public static final String SCHEME = "https://";
 
     @Override
     public boolean match(String uri) {
-        return uri != null && uri.startsWith(SCHEME);
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 }

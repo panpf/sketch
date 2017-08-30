@@ -30,7 +30,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriInfo;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.Base64UriModel;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -40,7 +40,8 @@ public class Base64ImagePreprocessor implements Preprocessor {
 
     @Override
     public boolean match(Context context, UriInfo uriInfo) {
-        return uriInfo.getScheme() == UriScheme.BASE64;
+        // TODO: 2017/8/31 这些都代表需要预处理，后续用 UriModel 实现即可
+        return uriInfo.getUriModel() instanceof Base64UriModel;
     }
 
     @Override

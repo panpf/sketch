@@ -44,8 +44,8 @@ import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.request.UriInfo;
-import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.state.MemoryCacheStateImage;
+import me.xiaopan.sketch.uri.FileUriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
@@ -721,7 +721,7 @@ public class ImageFragment extends BaseFragment {
             }
 
             UriInfo uriInfo = UriInfo.make(Sketch.with(getContext()).getConfiguration().getUriModelRegistry(), imageUri);
-            if (uriInfo == null || uriInfo.getScheme() == null) {
+            if (uriInfo == null || uriInfo.getUriModel() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return null;
             }
@@ -809,12 +809,12 @@ public class ImageFragment extends BaseFragment {
             }
 
             UriInfo uriInfo = UriInfo.make(Sketch.with(getContext()).getConfiguration().getUriModelRegistry(), imageUri);
-            if (uriInfo == null || uriInfo.getScheme() == null) {
+            if (uriInfo == null || uriInfo.getUriModel() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if (uriInfo.getScheme() == UriScheme.FILE) {
+            if (uriInfo.getUriModel() instanceof FileUriModel) {
                 Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
                 return;
             }

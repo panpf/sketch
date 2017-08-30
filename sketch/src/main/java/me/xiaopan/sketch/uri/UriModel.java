@@ -16,14 +16,22 @@
 
 package me.xiaopan.sketch.uri;
 
-import me.xiaopan.sketch.request.UriScheme;
+import android.content.Context;
+
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DecodeException;
+import me.xiaopan.sketch.request.DownloadResult;
+import me.xiaopan.sketch.request.UriInfo;
 
 public interface UriModel {
-    boolean match(String uri);
 
-    UriScheme getUriScheme();
+    boolean match(String uri);
 
     String getUriContent(String uri);
 
     String getDiskCacheKey(String uri);
+
+    boolean isFromNet();
+
+    DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException;
 }

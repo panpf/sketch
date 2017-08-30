@@ -113,7 +113,7 @@ public class ImageDecoder implements Identifier {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
-            SLog.e(NAME, "decode bounds failed %s", request.getKey());
+            SLog.e(NAME, "decode bounds failed %s", request.getKey(), e);
             ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }

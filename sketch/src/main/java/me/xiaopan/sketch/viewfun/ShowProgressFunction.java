@@ -27,7 +27,7 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
@@ -49,8 +49,8 @@ public class ShowProgressFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriScheme uriScheme) {
-        progress = uriScheme == UriScheme.NET ? 0 : NONE;
+    public boolean onReadyDisplay(UriModel uriModel) {
+        progress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
         return true;
     }
 
