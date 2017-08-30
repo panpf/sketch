@@ -187,7 +187,9 @@ public class MappingView extends SketchImageView {
         visibleRect.set(newVisibleRect);
 
         if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
-            SLog.w("MappingView. update. view size is 0 or getDrawable() is null. %s", getImageUri());
+            if (SLog.isLoggable(SLog.LEVEL_VERBOSE)) {
+                SLog.v("MappingView", "update. view size is 0 or getDrawable() is null. %s", getImageUri());
+            }
 
             if (!visibleMappingRect.isEmpty()) {
                 visibleMappingRect.setEmpty();
