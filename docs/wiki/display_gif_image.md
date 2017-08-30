@@ -8,7 +8,7 @@ Sketch默认不解码gif图，只会通过BitmapFactory读取其第一帧作为�
 ```
 sketImageView.getOptions().setDecodeGifImage(true);
 ```
-属性配置请参考[配置各种属性.md](options.md)
+属性配置请参考[配置各种属性.md](options_config.md)
 
 注意：
 >* Sketch会根据mimeType判断是否是gif图，因此不用担心识别不了伪装成jpg的gif图
