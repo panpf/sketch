@@ -59,7 +59,7 @@ public class DisplayHelper {
 
     public DisplayHelper init(Sketch sketch, String uri, SketchView sketchView) {
         this.sketch = sketch;
-        this.uriInfo = UriInfo.make(uri);
+        this.uriInfo = UriInfo.make(sketch.getConfiguration().getUriModelRegistry(), uri);
         this.sketchView = sketchView;
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {

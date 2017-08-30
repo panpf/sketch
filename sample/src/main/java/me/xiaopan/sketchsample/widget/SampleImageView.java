@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
@@ -244,7 +245,7 @@ public class SampleImageView extends SketchImageView {
         messageBuilder.append("\n");
         messageBuilder.append(sketchDrawable.getUri());
 
-        UriInfo uriInfo = UriInfo.make(sketchDrawable.getUri());
+        UriInfo uriInfo = UriInfo.make(Sketch.with(getContext()).getConfiguration().getUriModelRegistry(), sketchDrawable.getUri());
         DataSource dataSource = null;
         try {
             dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);

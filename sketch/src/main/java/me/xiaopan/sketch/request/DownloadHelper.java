@@ -38,7 +38,7 @@ public class DownloadHelper {
 
     public DownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.uriInfo = UriInfo.make(uri);
+        this.uriInfo = UriInfo.make(sketch.getConfiguration().getUriModelRegistry(), uri);
     }
 
     /**

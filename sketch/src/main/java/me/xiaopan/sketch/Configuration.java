@@ -46,6 +46,7 @@ import me.xiaopan.sketch.request.GlobalMobileNetworkPauseDownloadController;
 import me.xiaopan.sketch.request.HelperFactory;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
+import me.xiaopan.sketch.uri.UriModelRegistry;
 
 /**
  * Sketch唯一配置类
@@ -54,6 +55,8 @@ public final class Configuration {
     private static final String NAME = "Configuration";
 
     private Context context;
+
+    private UriModelRegistry uriModelRegistry;
 
     private DiskCache diskCache;
     private BitmapPool bitmapPool;
@@ -88,10 +91,11 @@ public final class Configuration {
         context = context.getApplicationContext();
         this.context = context;
 
-        MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
+        this.uriModelRegistry = new UriModelRegistry();
 
         // 由于默认的缓存文件名称从 URLEncoder 加密变成了 MD5 所以这里要升级一下版本号，好清除旧的缓存
         this.diskCache = new LruDiskCache(context, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
+        MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
         this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
         this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
 
@@ -119,12 +123,21 @@ public final class Configuration {
     }
 
     /**
-     * 获取Context
+     * 获取 Context
      *
      * @return Context
      */
     public Context getContext() {
         return context;
+    }
+
+    /**
+     * 获取 UriModel 管理器
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    public UriModelRegistry getUriModelRegistry() {
+        return uriModelRegistry;
     }
 
     /**
@@ -155,7 +168,7 @@ public final class Configuration {
     }
 
     /**
-     * 获取Bitmap缓存器
+     * 获取 Bitmap 缓存器
      *
      * @return BitmapPool
      */
@@ -165,7 +178,7 @@ public final class Configuration {
     }
 
     /**
-     * 设置Bitmap缓存器
+     * 设置 Bitmap 缓存器
      *
      * @return Configuration. Convenient chain calls
      */

@@ -16,28 +16,35 @@
 
 package me.xiaopan.sketch.request;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.uri.UriModel;
+import me.xiaopan.sketch.uri.UriModelRegistry;
+
+// TODO: 2017/8/30 采用 UriModel 之后似乎就没有存在的必要了
+@Deprecated
 public class UriInfo {
     private String uri;
     private String content;
-    private UriScheme scheme;
+    private UriModel uriModel;
 
     private UriInfo() {
 
     }
 
-    public static UriInfo make(String uri) {
+    public static UriInfo make(UriModelRegistry uriModelRegistry, String uri) {
         if (TextUtils.isEmpty(uri)) {
             return null;
         }
 
-        UriScheme uriScheme = UriScheme.valueOfUri(uri);
+        UriModel uriModel = uriModelRegistry.match(uri);
 
         UriInfo uriInfo = new UriInfo();
         uriInfo.uri = uri;
-        uriInfo.scheme = uriScheme;
-        uriInfo.content = uriScheme != null ? uriScheme.cropContent(uri) : null;
+        uriInfo.uriModel = uriModel;
+        uriInfo.content = uriModel != null ? uriModel.getUriContent(uri) : null;
         return uriInfo;
     }
 
@@ -58,14 +65,16 @@ public class UriInfo {
     /**
      * 获取uri协议
      */
+    @Deprecated
     public UriScheme getScheme() {
-        return scheme;
+        return uriModel != null ? uriModel.getUriScheme() : null;
     }
 
     /**
      * 获取磁盘缓存key
      */
+    @Deprecated
     public String getDiskCacheKey() {
-        return scheme == UriScheme.BASE64 && !TextUtils.isEmpty(content) ? content : uri;
+        return uriModel != null ? uriModel.getDiskCacheKey(uri) : uri;
     }
 }

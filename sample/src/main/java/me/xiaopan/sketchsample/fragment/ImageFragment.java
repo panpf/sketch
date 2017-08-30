@@ -720,7 +720,7 @@ public class ImageFragment extends BaseFragment {
                 return null;
             }
 
-            UriInfo uriInfo = UriInfo.make(imageUri);
+            UriInfo uriInfo = UriInfo.make(Sketch.with(getContext()).getConfiguration().getUriModelRegistry(), imageUri);
             if (uriInfo == null || uriInfo.getScheme() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return null;
@@ -808,7 +808,7 @@ public class ImageFragment extends BaseFragment {
                 return;
             }
 
-            UriInfo uriInfo = UriInfo.make(imageUri);
+            UriInfo uriInfo = UriInfo.make(Sketch.with(getContext()).getConfiguration().getUriModelRegistry(), imageUri);
             if (uriInfo == null || uriInfo.getScheme() == null) {
                 Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show();
                 return;

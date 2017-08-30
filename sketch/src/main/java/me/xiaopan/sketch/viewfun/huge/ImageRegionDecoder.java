@@ -62,7 +62,7 @@ public class ImageRegionDecoder {
 
     public static ImageRegionDecoder build(Context context, final String imageUri,
                                            final boolean correctImageOrientationDisabled) throws DecodeException, IOException {
-        UriInfo uriInfo = UriInfo.make(imageUri);
+        UriInfo uriInfo = UriInfo.make(Sketch.with(context).getConfiguration().getUriModelRegistry(), imageUri);
         if (uriInfo == null || uriInfo.getScheme() == null) {
             throw new IllegalArgumentException("Unknown scheme uri: " + imageUri);
         }
