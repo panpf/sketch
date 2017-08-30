@@ -87,11 +87,11 @@ public class SLog {
 
     private static final String TAG = "Sketch";
     private static final String NAME = "SLog";
-    private static int loggableFlags;
+    private static int levelAndTypeFlags;
     private static Proxy proxy = new ProxyImpl();
 
     static {
-        setLoggable(LEVEL_INFO);
+        setLevel(LEVEL_INFO);
     }
 
     /**
@@ -107,46 +107,7 @@ public class SLog {
     }
 
     /**
-     * 设置都开启哪些类型或级别的日志
-     *
-     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
-     *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
-     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
-     */
-    public static void setLoggable(@Loggable int mask) {
-        /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
-
-        int oldFlags = SLog.loggableFlags;
-
-        int low16BitsMask = 0xFFFF;
-        //noinspection NumericOverflow
-        int high16BitsMask = 0xFFFF << 16;
-
-        // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
-        int maskLow16Bits = low16One(mask & low16BitsMask);
-        // 取出 mask 的高 16 位
-        int maskHigh16Bits = mask & high16BitsMask;
-
-        int newFlag = SLog.loggableFlags;
-
-        if (maskLow16Bits != 0) {
-            // 因为低 16 位是单选互斥关系，所以原 flag 要清空 低 16 位，保留高 16 位，以此作为新 flag 的基础
-            int resetLow16BitFlags = newFlag & high16BitsMask;
-            // 低 16 位赋值
-            newFlag = resetLow16BitFlags | maskLow16Bits;
-        }
-        if (maskHigh16Bits != 0) {
-            newFlag = newFlag | maskHigh16Bits; // 高 16 位赋值
-        }
-
-        SLog.loggableFlags = newFlag;
-
-        android.util.Log.w(TAG, String.format("%s. setLoggable: mask(%s), %s -> %s",
-                NAME, Integer.toBinaryString(mask), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.loggableFlags)));
-    }
-
-    /**
-     * 指定类型或级别的日志是否可用
+     * 判断指定类型或级别的日志是否可用
      *
      * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
      *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
@@ -165,9 +126,9 @@ public class SLog {
         int maskHigh16Bits = mask & high16BitsMask;
 
         // 取出 flag 的低 16 位
-        int flagLow16Bits = SLog.loggableFlags & low16BitsMask;
+        int flagLow16Bits = SLog.levelAndTypeFlags & low16BitsMask;
         // 取出 flag 的高 16 位
-        int flagHigh16Bits = SLog.loggableFlags & high16BitsMask;
+        int flagHigh16Bits = SLog.levelAndTypeFlags & high16BitsMask;
 
         boolean low16BitsCheckResult = maskLow16Bits == 0 || flagLow16Bits != 0 && maskLow16Bits >= flagLow16Bits;
         boolean high16BitsCheckResult = maskHigh16Bits == 0 || flagHigh16Bits != 0 && (flagHigh16Bits & maskHigh16Bits) == maskHigh16Bits;
@@ -175,33 +136,12 @@ public class SLog {
     }
 
     /**
-     * 关闭指定类型的日志（不能删除日志级别）
-     *
-     * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
-     *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
-     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
-     */
-    public static void removeLoggable(@Loggable int mask) {
-        //noinspection NumericOverflow
-        int high16BitsMask = 0xFFFF << 16;
-
-        int oldFlags = SLog.loggableFlags;
-        int maskHigh16Bits = mask & high16BitsMask; // 取出 mask 的高 16 位
-
-        //noinspection WrongConstant
-        SLog.loggableFlags &= ~maskHigh16Bits;
-
-        android.util.Log.w(TAG, String.format("%s. removeLoggable: mask(%s), %s -> %s",
-                NAME, Integer.toBinaryString(mask), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.loggableFlags)));
-    }
-
-    /**
      * 获取日志级别
      *
      * @return 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
-     * {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}, 0
+     * {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}
      */
-    @Loggable
+    @Level
     public static int getLevel() {
         if (isLoggable(LEVEL_VERBOSE)) {
             return LEVEL_VERBOSE;
@@ -219,6 +159,83 @@ public class SLog {
             //noinspection WrongConstant
             return 0;
         }
+    }
+
+    /**
+     * 设置日志级别
+     *
+     * @param level 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
+     *              {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}
+     */
+    public static void setLevel(@Level int level) {
+        /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
+
+        int low16BitsMask = 0xFFFF;
+        // noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+        // 取出 mask 的低 16 位并处理一下，因为低 16 是互斥的关系，因此只能保留最高的一个 1
+        int maskLow16Bits = low16One(level & low16BitsMask);
+
+        int newFlag = SLog.levelAndTypeFlags;
+        if (maskLow16Bits != 0) {
+            // 因为低 16 位是单选互斥关系，所以原 flag 要清空 低 16 位，保留高 16 位，以此作为新 flag 的基础
+            int resetLow16BitFlags = newFlag & high16BitsMask;
+            // 低 16 位赋值
+            newFlag = resetLow16BitFlags | maskLow16Bits;
+        }
+
+        int oldFlags = SLog.levelAndTypeFlags;
+        SLog.levelAndTypeFlags = newFlag;
+
+        android.util.Log.w(TAG, String.format("%s. setLevel: level(%s), %s -> %s",
+                NAME, Integer.toBinaryString(level), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.levelAndTypeFlags)));
+    }
+
+    /**
+     * 开启指定类型的日志
+     *
+     * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
+     */
+    public static void openType(@Type int type) {
+        /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
+
+        //noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+        // 取出 mask 的高 16 位
+        int maskHigh16Bits = type & high16BitsMask;
+
+        int newFlag = SLog.levelAndTypeFlags;
+        if (maskHigh16Bits != 0) {
+            newFlag = newFlag | maskHigh16Bits; // 高 16 位赋值
+        }
+
+        int oldFlags = SLog.levelAndTypeFlags;
+        SLog.levelAndTypeFlags = newFlag;
+
+        android.util.Log.w(TAG, String.format("%s. openType: type(%s), %s -> %s",
+                NAME, Integer.toBinaryString(type), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.levelAndTypeFlags)));
+    }
+
+    /**
+     * 关闭指定类型的日志
+     *
+     * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
+     */
+    public static void closeType(@Type int type) {
+        //noinspection NumericOverflow
+        int high16BitsMask = 0xFFFF << 16;
+
+        // 取出 mask 的高 16 位
+        int maskHigh16Bits = type & high16BitsMask;
+
+        int oldFlags = SLog.levelAndTypeFlags;
+        //noinspection WrongConstant
+        SLog.levelAndTypeFlags &= ~maskHigh16Bits;
+
+        android.util.Log.w(TAG, String.format("%s. closeType: type(%s), %s -> %s",
+                NAME, Integer.toBinaryString(type), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.levelAndTypeFlags)));
     }
 
     /**
@@ -458,7 +475,7 @@ public class SLog {
     }
 
     @SuppressWarnings("WeakerAccess")
-    @Retention(RetentionPolicy.CLASS)
+    @Retention(RetentionPolicy.SOURCE)
     @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
     @IntDef({
             LEVEL_VERBOSE,
@@ -467,13 +484,22 @@ public class SLog {
             LEVEL_WARNING,
             LEVEL_ERROR,
             LEVEL_NONE,
+    })
+    public @interface Level {
+
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    @Retention(RetentionPolicy.SOURCE)
+    @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+    @IntDef({
             TYPE_CACHE,
             TYPE_HUGE_IMAGE,
             TYPE_FLOW,
             TYPE_TIME,
             TYPE_ZOOM,
     })
-    public @interface Loggable {
+    public @interface Type {
 
     }
 

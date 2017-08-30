@@ -62,53 +62,53 @@ public class SketchInitializer implements Initializer {
             }
             switch (levelValue) {
                 case "VERBOSE":
-                    SLog.setLoggable(SLog.LEVEL_VERBOSE);
+                    SLog.setLevel(SLog.LEVEL_VERBOSE);
                     break;
                 case "DEBUG":
-                    SLog.setLoggable(SLog.LEVEL_DEBUG);
+                    SLog.setLevel(SLog.LEVEL_DEBUG);
                     break;
                 case "INFO":
-                    SLog.setLoggable(SLog.LEVEL_INFO);
+                    SLog.setLevel(SLog.LEVEL_INFO);
                     break;
                 case "ERROR":
-                    SLog.setLoggable(SLog.LEVEL_ERROR);
+                    SLog.setLevel(SLog.LEVEL_ERROR);
                     break;
                 case "WARNING":
-                    SLog.setLoggable(SLog.LEVEL_WARNING);
+                    SLog.setLevel(SLog.LEVEL_WARNING);
                     break;
                 case "NONE":
-                    SLog.setLoggable(SLog.LEVEL_NONE);
+                    SLog.setLevel(SLog.LEVEL_NONE);
                     break;
             }
         } else if (AppConfig.Key.LOG_TIME.equals(event.key)) {
             if (AppConfig.getBoolean(context, AppConfig.Key.LOG_TIME)) {
-                SLog.setLoggable(SLog.TYPE_TIME);
+                SLog.openType(SLog.TYPE_TIME);
             } else {
-                SLog.removeLoggable(SLog.TYPE_TIME);
+                SLog.closeType(SLog.TYPE_TIME);
             }
         } else if (AppConfig.Key.LOG_REQUEST.equals(event.key)) {
             if (AppConfig.getBoolean(context, AppConfig.Key.LOG_REQUEST)) {
-                SLog.setLoggable(SLog.TYPE_FLOW);
+                SLog.openType(SLog.TYPE_FLOW);
             } else {
-                SLog.removeLoggable(SLog.TYPE_FLOW);
+                SLog.closeType(SLog.TYPE_FLOW);
             }
         } else if (AppConfig.Key.LOG_CACHE.equals(event.key)) {
             if (AppConfig.getBoolean(context, AppConfig.Key.LOG_CACHE)) {
-                SLog.setLoggable(SLog.TYPE_CACHE);
+                SLog.openType(SLog.TYPE_CACHE);
             } else {
-                SLog.removeLoggable(SLog.TYPE_CACHE);
+                SLog.closeType(SLog.TYPE_CACHE);
             }
         } else if (AppConfig.Key.LOG_ZOOM.equals(event.key)) {
             if (AppConfig.getBoolean(context, AppConfig.Key.LOG_ZOOM)) {
-                SLog.setLoggable(SLog.TYPE_ZOOM);
+                SLog.openType(SLog.TYPE_ZOOM);
             } else {
-                SLog.removeLoggable(SLog.TYPE_ZOOM);
+                SLog.closeType(SLog.TYPE_ZOOM);
             }
         } else if (AppConfig.Key.LOG_HUGE_IMAGE.equals(event.key)) {
             if (AppConfig.getBoolean(context, AppConfig.Key.LOG_HUGE_IMAGE)) {
-                SLog.setLoggable(SLog.TYPE_HUGE_IMAGE);
+                SLog.openType(SLog.TYPE_HUGE_IMAGE);
             } else {
-                SLog.removeLoggable(SLog.TYPE_HUGE_IMAGE);
+                SLog.closeType(SLog.TYPE_HUGE_IMAGE);
             }
         } else if (AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(event.key)) {
             configuration.setGlobalMobileNetworkPauseDownload(AppConfig.getBoolean(context, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD));
