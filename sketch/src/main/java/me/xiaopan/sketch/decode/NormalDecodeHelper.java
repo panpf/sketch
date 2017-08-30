@@ -47,10 +47,10 @@ public class NormalDecodeHelper extends DecodeHelper {
         // Calculate inSampleSize according to max size
         MaxSize maxSize = request.getOptions().getMaxSize();
         if (maxSize != null) {
-            boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageType);
+            boolean hugeImageEnabled = SketchUtils.supportHugeImage(request, imageType);
             ImageSizeCalculator imageSizeCalculator = request.getConfiguration().getSizeCalculator();
             decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundOptions.outWidth, boundOptions.outHeight,
-                    maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
+                    maxSize.getWidth(), maxSize.getHeight(), hugeImageEnabled);
         }
 
         // Set inBitmap from bitmap pool

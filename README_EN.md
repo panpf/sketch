@@ -10,7 +10,7 @@
 
 [中文版本 README.md](README.md)
 
-Sketch is a powerful and comprehensive picture loader on Android, in addition to the necessary features to load the picture, but also supports GIF, gesture zoom, block display large picture, automatically correct the direction of the picture, display video thumbnails and other functions
+Sketch is a powerful and comprehensive picture loader on Android, in addition to the necessary features to load the picture, but also supports GIF, gesture zoom, block display huge image, automatically correct the direction of the picture, display video thumbnails and other functions
 
 ### Sample APP
 
@@ -23,9 +23,9 @@ Scan a two-dimensional code to download a sample APP, or [click to download APK]
 * `Multiple URL support`. Support for `http://` or `https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg` or `/sdcard/sample.jpg`、`drawable://`、`data:image/` or  `data:img/`6 kinds of URI
 * `Support gif`. Integrated [android-gif-drawable] 1.2.6 can be easily displayed gif pictures, thanks [koral--]
 * `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
-* `Support block display large picture`. Support block display large picture function, from then the big picture is not afraid
+* `Support block display huge image`. Support block display huge image function, from then the huge image is not afraid
 * `Support level 3 cache`. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
-* `Support correcting picture orientation`. Can correct the direction of the image is not correct, and block display large map function also supports only jpeg format pictures
+* `Support correcting picture orientation`. Can correct the direction of the image is not correct, and block display huge image function also supports only jpeg format pictures
 * `Support reading APK icon`. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
 * `Support Base64 image`. Support parse of Base64 format image
 * `Support various list`. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
@@ -143,7 +143,7 @@ Basic functions:
 * [Just load the picture into memory or just download the picture to the local](docs/wiki/load_and_download.md)
 * [Play gif image](docs/wiki/display_gif_image.md)
 * [Gesture zoom, rotate the picture](docs/wiki/zoom.md)
-* [Blocked display of large images](docs/wiki/large_image.md)
+* [Blocked display of huge image](docs/wiki/huge_image.md)
 * [Use ShapeSize to change the size of the image when drawing](docs/wiki/shape_size.md)
 * [Use ImageShaper to draw pictures in circles, rounded corners, and so on](docs/wiki/image_shaper.md)
 * [ImageProcessor through the image into a Gaussian fuzzy, reflection](docs/wiki/process_image.md)

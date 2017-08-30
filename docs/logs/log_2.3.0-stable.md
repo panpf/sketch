@@ -88,7 +88,7 @@
 
 #### 全新功能
 >* :sparkles: `Gesture Zoom`. 新增[手势缩放](../wiki/zoom.md)功能，参照PhotoVie，SketchImageView内置了手势缩放功能，比PhotoView功能更强大，体验更好，新增了定位、阅读模式等特色功能
->* :sparkles: `Super Large Image`. 新增[分块显示超大图](../wiki/large_image.md)功能，SketchImageVie内置了分块显示超大图功能，长微博、高清妹子图什么的不再是问题
+>* :sparkles: `Super Large Image`. 新增[分块显示超大图](../wiki/huge_image.md)功能，SketchImageVie内置了分块显示超大图功能，长微博、高清妹子图什么的不再是问题
 >* :sparkles: `ImageShaper` 新增[ImageShaper](../wiki/image_shaper.md)，可以在绘制时修改图片的形状，避免同一张图片有不同的形状需求时通过ImageProcessor实现会产生多张图片，从而浪费内存缓存的情况
 
 #### 相对于2.3.0-beta10：

@@ -30,7 +30,7 @@ public class ImageZoomFunction extends ViewFunction {
     private ImageView imageView;
 
     private ImageZoomer imageZoomer;
-    private boolean fromLargeImageFunction;
+    private boolean fromHugeImageFunction;
 
     public ImageZoomFunction(ImageView imageView) {
         this.imageView = imageView;
@@ -86,11 +86,11 @@ public class ImageZoomFunction extends ViewFunction {
         return imageZoomer;
     }
 
-    public boolean isFromLargeImageFunction() {
-        return fromLargeImageFunction;
+    public boolean isFromHugeImageFunction() {
+        return fromHugeImageFunction;
     }
 
-    public void setFromLargeImageFunction(boolean fromLargeImageFunction) {
-        this.fromLargeImageFunction = fromLargeImageFunction;
+    public void setFromHugeImageFunction(boolean fromHugeImageFunction) {
+        this.fromHugeImageFunction = fromHugeImageFunction;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.viewfun.large;
+package me.xiaopan.sketch.viewfun.huge;
 
 import android.text.TextUtils;
 
@@ -30,12 +30,12 @@ class TileDecoder {
 
     private KeyCounter initKeyCounter;
     private ImageRegionDecoder decoder;
-    private LargeImageViewer largeImageViewer;
+    private HugeImageViewer hugeImageViewer;
     private boolean running;
     private boolean initializing;
 
-    public TileDecoder(LargeImageViewer largeImageViewer) {
-        this.largeImageViewer = largeImageViewer;
+    public TileDecoder(HugeImageViewer hugeImageViewer) {
+        this.hugeImageViewer = hugeImageViewer;
         this.initKeyCounter = new KeyCounter();
     }
 
@@ -52,7 +52,7 @@ class TileDecoder {
 
         if (!TextUtils.isEmpty(imageUri)) {
             running = initializing = true;
-            largeImageViewer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
+            hugeImageViewer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
         } else {
             running = initializing = false;
         }
@@ -68,11 +68,11 @@ class TileDecoder {
         }
 
         tile.decoder = decoder;
-        largeImageViewer.getTileExecutor().submitDecodeTile(tile.getKey(), tile);
+        hugeImageViewer.getTileExecutor().submitDecodeTile(tile.getKey(), tile);
     }
 
     void clean(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "clean. %s", why);
         }
 
@@ -80,7 +80,7 @@ class TileDecoder {
     }
 
     void recycle(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "recycle. %s", why);
         }
 
@@ -90,7 +90,7 @@ class TileDecoder {
     }
 
     void initCompleted(String imageUri, ImageRegionDecoder decoder) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "init completed. %s", imageUri);
         }
 
@@ -99,7 +99,7 @@ class TileDecoder {
     }
 
     void initError(String imageUri, Exception e) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 

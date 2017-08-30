@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.viewfun.large;
+package me.xiaopan.sketch.viewfun.huge;
 
 import android.graphics.Bitmap;
 import android.os.Handler;

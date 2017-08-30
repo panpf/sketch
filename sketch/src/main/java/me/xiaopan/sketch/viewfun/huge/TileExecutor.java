@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.viewfun.large;
+package me.xiaopan.sketch.viewfun.huge;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -60,7 +60,7 @@ class TileExecutor {
                     handlerThread = new HandlerThread("ImageRegionDecodeThread" + THREAD_NUMBER.addAndGet(1));
                     handlerThread.start();
 
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                         SLog.d(NAME, "image region decode thread %s started", handlerThread.getName());
                     }
 
@@ -130,7 +130,7 @@ class TileExecutor {
                     handlerThread.quit();
                 }
 
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                     SLog.d(NAME, "image region decode thread %s quit", handlerThread.getName());
                 }
 

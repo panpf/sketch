@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.viewfun.large;
+package me.xiaopan.sketch.viewfun.huge;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -104,7 +104,7 @@ class TileDecoderInitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "clean. %s", why);
         }
 

@@ -24,7 +24,7 @@ import me.xiaopan.sketch.SketchView;
 public class ViewInfo {
     private ScaleType scaleType;
     private FixedSize fixedSize;
-    private boolean supportLargeImage;
+    private boolean hugeImageEnabled;
 
     public ViewInfo() {
 
@@ -37,18 +37,18 @@ public class ViewInfo {
     public void copy(ViewInfo viewInfo) {
         this.scaleType = viewInfo.scaleType;
         this.fixedSize = viewInfo.fixedSize;
-        this.supportLargeImage = viewInfo.supportLargeImage;
+        this.hugeImageEnabled = viewInfo.hugeImageEnabled;
     }
 
     public void reset(SketchView sketchView, Sketch sketch) {
         if (sketchView != null) {
             this.scaleType = sketchView.getScaleType();
             this.fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
-            this.supportLargeImage = sketchView.isBlockDisplayLargeImageEnabled();
+            this.hugeImageEnabled = sketchView.isHugeImageEnabled();
         } else {
             this.scaleType = null;
             this.fixedSize = null;
-            this.supportLargeImage = false;
+            this.hugeImageEnabled = false;
         }
     }
 
@@ -60,7 +60,7 @@ public class ViewInfo {
         return scaleType;
     }
 
-    public boolean isSupportLargeImage() {
-        return supportLargeImage;
+    public boolean isHugeImageEnabled() {
+        return hugeImageEnabled;
     }
 }

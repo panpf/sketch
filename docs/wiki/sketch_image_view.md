@@ -74,7 +74,7 @@ sketchImageView.setOptions(displayOptions)
 
 [点我了解手势缩放功能](zoom.md)
 
-[点我了解分块显示超大图功能](large_image.md)
+[点我了解分块显示超大图功能](huge_image.md)
 
 #### 3.监听显示过程和下载进度
 ```java

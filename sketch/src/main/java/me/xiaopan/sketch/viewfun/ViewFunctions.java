@@ -37,7 +37,7 @@ class ViewFunctions {
     ImageShapeFunction imageShapeFunction;
     ClickRetryFunction clickRetryFunction;
     ImageZoomFunction zoomFunction;
-    LargeImageFunction largeImageFunction;
+    HugeImageFunction hugeImageFunction;
     ClickPlayGifFunction clickPlayGifFunction;
 
     ViewFunctions(FunctionCallbackView view) {
@@ -74,8 +74,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             zoomFunction.onAttachedToWindow();
         }
-        if (largeImageFunction != null) {
-            largeImageFunction.onAttachedToWindow();
+        if (hugeImageFunction != null) {
+            hugeImageFunction.onAttachedToWindow();
         }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onAttachedToWindow();
@@ -110,8 +110,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             zoomFunction.onLayout(changed, left, top, right, bottom);
         }
-        if (largeImageFunction != null) {
-            largeImageFunction.onLayout(changed, left, top, right, bottom);
+        if (hugeImageFunction != null) {
+            hugeImageFunction.onLayout(changed, left, top, right, bottom);
         }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onLayout(changed, left, top, right, bottom);
@@ -146,8 +146,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             zoomFunction.onSizeChanged(w, h, oldw, oldh);
         }
-        if (largeImageFunction != null) {
-            largeImageFunction.onSizeChanged(w, h, oldw, oldh);
+        if (hugeImageFunction != null) {
+            hugeImageFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onSizeChanged(w, h, oldw, oldh);
@@ -155,8 +155,8 @@ class ViewFunctions {
     }
 
     void onDraw(Canvas canvas) {
-        if (largeImageFunction != null) {
-            largeImageFunction.onDraw(canvas);
+        if (hugeImageFunction != null) {
+            hugeImageFunction.onDraw(canvas);
         }
         if (zoomFunction != null) {
             zoomFunction.onDraw(canvas);
@@ -218,7 +218,7 @@ class ViewFunctions {
         if (recyclerCompatFunction != null && recyclerCompatFunction.onTouchEvent(event)) {
             return true;
         }
-        if (largeImageFunction != null && largeImageFunction.onTouchEvent(event)) {
+        if (hugeImageFunction != null && hugeImageFunction.onTouchEvent(event)) {
             return true;
         }
         if (clickPlayGifFunction != null && clickPlayGifFunction.onTouchEvent(event)) {
@@ -262,8 +262,8 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
         }
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
@@ -309,8 +309,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needSetImageNull |= zoomFunction.onDetachedFromWindow();
         }
-        if (largeImageFunction != null) {
-            needSetImageNull |= largeImageFunction.onDetachedFromWindow();
+        if (hugeImageFunction != null) {
+            needSetImageNull |= hugeImageFunction.onDetachedFromWindow();
         }
         if (clickPlayGifFunction != null) {
             needSetImageNull |= clickPlayGifFunction.onDetachedFromWindow();
@@ -353,8 +353,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onReadyDisplay(uriScheme);
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onReadyDisplay(uriScheme);
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onReadyDisplay(uriScheme);
         }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uriScheme);
@@ -397,8 +397,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onDisplayStarted();
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onDisplayStarted();
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onDisplayStarted();
         }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayStarted();
@@ -441,8 +441,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
@@ -485,8 +485,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onDisplayError(errorCause);
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onDisplayError(errorCause);
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onDisplayError(errorCause);
         }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayError(errorCause);
@@ -529,8 +529,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onDisplayCanceled(cancelCause);
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onDisplayCanceled(cancelCause);
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onDisplayCanceled(cancelCause);
         }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayCanceled(cancelCause);
@@ -573,8 +573,8 @@ class ViewFunctions {
         if (zoomFunction != null) {
             needInvokeInvalidate |= zoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
-        if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
+        if (hugeImageFunction != null) {
+            needInvokeInvalidate |= hugeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onUpdateDownloadProgress(totalLength, completedLength);

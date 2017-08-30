@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.viewfun.large;
+package me.xiaopan.sketch.viewfun.huge;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,11 +35,11 @@ import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 大图片查看器
+ * 超级大图片查看器
  */
 // TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
-public class LargeImageViewer {
-    private static final String NAME = "LargeImageViewer";
+public class HugeImageViewer {
+    private static final String NAME = "HugeImageViewer";
 
     private Context context;
     private Callback callback;
@@ -60,7 +60,7 @@ public class LargeImageViewer {
     private boolean paused;
     private String imageUri;
 
-    public LargeImageViewer(Context context, Callback callback) {
+    public HugeImageViewer(Context context, Callback callback) {
         context = context.getApplicationContext();
         this.context = context;
         this.callback = callback;
@@ -120,7 +120,7 @@ public class LargeImageViewer {
     public void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                 SLog.d(NAME, "not ready. %s", imageUri);
             }
             return;
@@ -128,7 +128,7 @@ public class LargeImageViewer {
 
         // 暂停中也不走了
         if (paused) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                 SLog.d(NAME, "paused. %s", imageUri);
             }
             return;
@@ -144,7 +144,7 @@ public class LargeImageViewer {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                 SLog.d(NAME, "full display. update. newVisibleRect=%s. %s",
                         newVisibleRect.toShortString(), imageUri);
             }
@@ -210,7 +210,7 @@ public class LargeImageViewer {
         paused = pause;
 
         if (paused) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                 SLog.d(NAME, "pause. %s", imageUri);
             }
 
@@ -218,7 +218,7 @@ public class LargeImageViewer {
                 clean("pause");
             }
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                 SLog.d(NAME, "resume. %s", imageUri);
             }
 
@@ -361,7 +361,7 @@ public class LargeImageViewer {
     /**
      * 获取碎片变化监听器
      */
-    public void setOnTileChangedListener(LargeImageViewer.OnTileChangedListener onTileChangedListener) {
+    public void setOnTileChangedListener(HugeImageViewer.OnTileChangedListener onTileChangedListener) {
         tileManager.onTileChangedListener = onTileChangedListener;
     }
 
@@ -390,7 +390,7 @@ public class LargeImageViewer {
     }
 
     public interface OnTileChangedListener {
-        void onTileChanged(LargeImageViewer largeImageViewer);
+        void onTileChanged(HugeImageViewer hugeImageViewer);
     }
 
     private class ExecutorCallback implements TileExecutor.Callback {

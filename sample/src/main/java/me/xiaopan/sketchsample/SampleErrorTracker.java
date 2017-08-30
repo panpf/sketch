@@ -23,7 +23,7 @@ import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
-import me.xiaopan.sketch.viewfun.large.Tile;
+import me.xiaopan.sketch.viewfun.huge.Tile;
 
 class SampleErrorTracker extends ErrorTracker {
 

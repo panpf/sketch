@@ -84,7 +84,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.viewfun.large.Tile;
+import me.xiaopan.sketch.viewfun.huge.Tile;
 
 public class SketchUtils {
 
@@ -913,9 +913,9 @@ public class SketchUtils {
     /**
      * 根据请求和图片类型判断是否支持大图功能
      */
-    public static boolean supportLargeImage(LoadRequest loadRequest, ImageType imageType) {
+    public static boolean supportHugeImage(LoadRequest loadRequest, ImageType imageType) {
         return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).getViewInfo().isSupportLargeImage() &&
+                ((DisplayRequest) loadRequest).getViewInfo().isHugeImageEnabled() &&
                 SketchUtils.sdkSupportBitmapRegionDecoder() &&
                 formatSupportBitmapRegionDecoder(imageType);
     }

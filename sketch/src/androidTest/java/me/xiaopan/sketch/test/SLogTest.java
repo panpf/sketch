@@ -14,7 +14,7 @@ import static me.xiaopan.sketch.SLog.LEVEL_VERBOSE;
 import static me.xiaopan.sketch.SLog.LEVEL_WARNING;
 import static me.xiaopan.sketch.SLog.TYPE_CACHE;
 import static me.xiaopan.sketch.SLog.TYPE_FLOW;
-import static me.xiaopan.sketch.SLog.TYPE_LARGE;
+import static me.xiaopan.sketch.SLog.TYPE_HUGE_IMAGE;
 import static me.xiaopan.sketch.SLog.TYPE_TIME;
 import static me.xiaopan.sketch.SLog.TYPE_ZOOM;
 import static me.xiaopan.sketch.SLog.isLoggable;
@@ -57,14 +57,14 @@ public class SLogTest {
     @Test
     public void testAssembleLoggable() {
         //noinspection WrongConstant
-        setLoggable(LEVEL_VERBOSE | LEVEL_ERROR | TYPE_LARGE | TYPE_TIME);
+        setLoggable(LEVEL_VERBOSE | LEVEL_ERROR | TYPE_HUGE_IMAGE | TYPE_TIME);
         assertTrue("level error invalid", isLoggable(LEVEL_ERROR));
-        assertTrue("time large invalid", isLoggable(TYPE_LARGE));
+        assertTrue("time huge image invalid", isLoggable(TYPE_HUGE_IMAGE));
         assertTrue("time time invalid", isLoggable(TYPE_TIME));
 
         //noinspection WrongConstant
-        removeLoggable(TYPE_LARGE);
-        assertFalse("time large valid", isLoggable(TYPE_LARGE));
+        removeLoggable(TYPE_HUGE_IMAGE);
+        assertFalse("time huge image valid", isLoggable(TYPE_HUGE_IMAGE));
 
         //noinspection WrongConstant
         setLoggable(LEVEL_WARNING | TYPE_ZOOM);
@@ -74,8 +74,8 @@ public class SLogTest {
 
     @Test
     public void testTemp(){
-        setLoggable(TYPE_LARGE);
+        setLoggable(TYPE_HUGE_IMAGE);
         assertTrue("level verbose invalid", isLoggable(LEVEL_INFO));
-        assertTrue("type large invalid", isLoggable(TYPE_LARGE));
+        assertTrue("type huge image invalid", isLoggable(TYPE_HUGE_IMAGE));
     }
 }

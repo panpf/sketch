@@ -7,10 +7,10 @@ public class AssetImage {
     public static final String SAMPLE_WEBP = "http://or84z82rx.bkt.clouddn.com/sample.webp";
     public static final String SAMPLE_BMP = "http://or84z82rx.bkt.clouddn.com/sample.bmp";
 
-    public static final String LARGE_CHANG_WEI_BO = "http://or84z82rx.bkt.clouddn.com/large_chang_wei_bo.jpg";
-    public static final String LARGE_QMSHT = "http://or84z82rx.bkt.clouddn.com/large_qing_ming_shang_he_tu.jpg";
-    public static final String LARGE_CARD = "http://or84z82rx.bkt.clouddn.com/large_card.png";
-    public static final String LARGE_WORLD_MAP = "http://or84z82rx.bkt.clouddn.com/large_world_map.jpg";
+    public static final String HUGE_CHANG_WEI_BO = "http://or84z82rx.bkt.clouddn.com/large_chang_wei_bo.jpg";
+    public static final String HUGE_QMSHT = "http://or84z82rx.bkt.clouddn.com/large_qing_ming_shang_he_tu.jpg";
+    public static final String HUGE_CARD = "http://or84z82rx.bkt.clouddn.com/large_card.png";
+    public static final String HUGE_WORLD_MAP = "http://or84z82rx.bkt.clouddn.com/large_world_map.jpg";
 
     public static final String MEI_NV = "asset://mei_nv.jpg";
     public static final String MASK = "http://or84z82rx.bkt.clouddn.com/mask.png";
@@ -26,11 +26,11 @@ public class AssetImage {
             SAMPLE_BMP,
     };
 
-    public static final String[] LARGES = new String[]{
-            LARGE_WORLD_MAP,
-            LARGE_QMSHT,
-            LARGE_CHANG_WEI_BO,
-            LARGE_CARD,
+    public static final String[] HUGE_IMAGES = new String[]{
+            HUGE_WORLD_MAP,
+            HUGE_QMSHT,
+            HUGE_CHANG_WEI_BO,
+            HUGE_CARD,
     };
 
     public static final String[] ALL = new String[]{
@@ -40,10 +40,10 @@ public class AssetImage {
             SAMPLE_WEBP,
             SAMPLE_BMP,
 
-            LARGE_WORLD_MAP,
-            LARGE_QMSHT,
-            LARGE_CHANG_WEI_BO,
-            LARGE_CARD,
+            HUGE_WORLD_MAP,
+            HUGE_QMSHT,
+            HUGE_CHANG_WEI_BO,
+            HUGE_CARD,
 
             MEI_NV,
             MASK,

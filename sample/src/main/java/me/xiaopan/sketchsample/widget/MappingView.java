@@ -33,12 +33,12 @@ import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
-import me.xiaopan.sketch.viewfun.large.Tile;
+import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
+import me.xiaopan.sketch.viewfun.huge.Tile;
 
 public class MappingView extends SketchImageView {
 
-    private LargeImageViewer largeImageViewer;
+    private HugeImageViewer hugeImageViewer;
 
     private Rect visibleMappingRect;
     private Paint visiblePaint;
@@ -100,11 +100,11 @@ public class MappingView extends SketchImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (largeImageViewer != null && largeImageViewer.isReady()) {
-            float widthScale = (float) largeImageViewer.getImageSize().x / getWidth();
-            float heightScale = (float) largeImageViewer.getImageSize().y / getHeight();
+        if (hugeImageViewer != null && hugeImageViewer.isReady()) {
+            float widthScale = (float) hugeImageViewer.getImageSize().x / getWidth();
+            float heightScale = (float) hugeImageViewer.getImageSize().y / getHeight();
 
-            for (Tile tile : largeImageViewer.getTileList()) {
+            for (Tile tile : hugeImageViewer.getTileList()) {
                 if (!tile.isEmpty()) {
                     canvas.drawRect((tile.srcRect.left + 1) / widthScale,
                             (tile.srcRect.top + 1) / heightScale,
@@ -118,7 +118,7 @@ public class MappingView extends SketchImageView {
                 }
             }
 
-            Rect drawSrcRect = largeImageViewer.getDrawSrcRect();
+            Rect drawSrcRect = hugeImageViewer.getDrawSrcRect();
             if (!drawSrcRect.isEmpty()) {
                 canvas.drawRect((drawSrcRect.left) / widthScale,
                         (drawSrcRect.top) / heightScale,
@@ -126,7 +126,7 @@ public class MappingView extends SketchImageView {
                         (drawSrcRect.bottom) / heightScale, originSrcRectPaint);
             }
 
-            Rect decodeSrcRect = largeImageViewer.getDecodeSrcRect();
+            Rect decodeSrcRect = hugeImageViewer.getDecodeSrcRect();
             if (!decodeSrcRect.isEmpty()) {
                 canvas.drawRect((decodeSrcRect.left) / widthScale,
                         (decodeSrcRect.top) / heightScale,
@@ -203,8 +203,8 @@ public class MappingView extends SketchImageView {
         invalidate();
     }
 
-    public void tileChanged(LargeImageViewer largeImageViewer) {
-        this.largeImageViewer = largeImageViewer;
+    public void tileChanged(HugeImageViewer hugeImageViewer) {
+        this.hugeImageViewer = hugeImageViewer;
         invalidate();
     }
 

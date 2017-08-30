@@ -66,17 +66,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private static final int EDGE_START = 0;
     private static final int EDGE_END = 1;
     private static final int EDGE_BOTH = 2;
-    private final Rect tempViewBounds = new Rect(); // 缓存ImageView的left、top、right、bottom，在其变化时对比使用
-    private final RectF tempDisplayRectF = new RectF();
-    // Matrix
-    private final Matrix baseMatrix = new Matrix(); // 存储基础缩放、移动
-    private final Matrix supportMatrix = new Matrix(); // 存储用户产生的缩放、拖拽和旋转信息
-    private final Matrix drawMatrix = new Matrix(); // 存储baseMatrix和supportMatrix融合后的信息，用于绘制
-    private final Point drawableSize = new Point();
-    private final Point imageViewSize = new Point();
+
     // incoming
     private Context context;
     private WeakReference<ImageView> viewReference;
+
     // zoom configurable options
     private int zoomDuration = DEFAULT_ZOOM_DURATION;   // 双击缩放动画持续时间
     private float minZoomScale = DEFAULT_MINIMUM_SCALE;
@@ -84,10 +78,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
     private boolean zoomable = true;    // 是否可以缩放
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
+
     // other configurable options
     private int rotateDegrees; // 旋转角度
     private boolean allowParentInterceptOnEdge = true;  // 允许父ViewGroup在滑动到边缘时拦截事件
     private ScaleType scaleType = ScaleType.FIT_CENTER; // ImageView的ScaleType
+
     // listeners
     private OnViewTapListener onViewTapListener;
     private OnDragFlingListener onDragFlingListener;
@@ -95,12 +91,14 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private OnRotateChangeListener onRotateChangeListener;
     private OnViewLongPressListener onViewLongPressListener;
     private ArrayList<OnMatrixChangeListener> onMatrixChangeListenerList;
+
     // zoom properties
     private float fullZoomScale; // 能够看到图片全貌的缩放比例
     private float fillZoomScale;    // 能够让图片填满宽或高的缩放比例
     private float originZoomScale;  // 能够让图片按照真实尺寸一比一显示的缩放比例
     private float[] doubleClickZoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES; // 双击缩放所使用的比例
     private boolean zooming;    // 缩放中状态
+
     // other properties
     private int horScrollEdge = EDGE_NONE; // 横向滚动边界
     private int verScrollEdge = EDGE_NONE; // 竖向滚动边界
@@ -110,10 +108,21 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private ScaleDragGestureDetector scaleDragGestureDetector;  // 缩放和拖拽手势识别器
     private boolean disallowParentInterceptTouchEvent;  // 控制滑动或缩放中到达边缘了依然禁止父类拦截事件
     private ScrollBar scrollBar;    // 绘制滚动条
+
     // info caches
     private float tempLastScaleFocusX, tempLastScaleFocusY;  // 缓存最后一次缩放手势的坐标，在恢复缩放比例时使用
+    private final Rect tempViewBounds = new Rect(); // 缓存ImageView的left、top、right、bottom，在其变化时对比使用
+    private final RectF tempDisplayRectF = new RectF();
+
+    // Matrix
+    private final Matrix baseMatrix = new Matrix(); // 存储基础缩放、移动
+    private final Matrix supportMatrix = new Matrix(); // 存储用户产生的缩放、拖拽和旋转信息
+    private final Matrix drawMatrix = new Matrix(); // 存储baseMatrix和supportMatrix融合后的信息，用于绘制
+
     // drawable and view info
     private Drawable drawable;
+    private final Point drawableSize = new Point();
+    private final Point imageViewSize = new Point();
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext().getApplicationContext();
@@ -443,7 +452,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         ImageView imageView = getImageView();
         Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
         if (finalDrawable instanceof SketchDrawable && imageView instanceof SketchView &&
-                ((SketchView) imageView).isBlockDisplayLargeImageEnabled()) {
+                ((SketchView) imageView).isHugeImageEnabled()) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
             imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
             imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
@@ -530,7 +539,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         ImageView imageView = getImageView();
         Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
         if (finalDrawable instanceof SketchDrawable && imageView instanceof SketchView &&
-                ((SketchView) imageView).isBlockDisplayLargeImageEnabled()) {
+                ((SketchView) imageView).isHugeImageEnabled()) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
             imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
             imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();

@@ -23,7 +23,7 @@ import android.util.AttributeSet;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
+import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 
 /**
@@ -308,13 +308,13 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 开启手势缩放功能
      */
     public void setZoomEnabled(boolean enabled) {
-        if (!enabled && isBlockDisplayLargeImageEnabled()) {
-            SLog.w(NAME, "You can't close the gestures zoom function, because of large image function need it");
+        if (!enabled && isHugeImageEnabled()) {
+            SLog.w(NAME, "You can't close the gestures zoom function, because of huge image function need it");
             return;
         }
 
         if (getFunctions().zoomFunction != null) {
-            getFunctions().zoomFunction.setFromLargeImageFunction(false);
+            getFunctions().zoomFunction.setFromHugeImageFunction(false);
         }
 
         if (enabled == isZoomEnabled()) {
@@ -342,15 +342,15 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     @Override
-    public boolean isBlockDisplayLargeImageEnabled() {
-        return getFunctions().largeImageFunction != null;
+    public boolean isHugeImageEnabled() {
+        return getFunctions().hugeImageFunction != null;
     }
 
     /**
      * 开启分块显示超大图功能
      */
-    public void setBlockDisplayLargeImageEnabled(boolean enabled) {
-        if (enabled == isBlockDisplayLargeImageEnabled()) {
+    public void setHugeImageEnabled(boolean enabled) {
+        if (enabled == isHugeImageEnabled()) {
             return;
         }
 
@@ -358,25 +358,25 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             // 要想使用大图功能就必须开启缩放功能
             if (!isZoomEnabled()) {
                 setZoomEnabled(true);
-                getFunctions().zoomFunction.setFromLargeImageFunction(true);
+                getFunctions().zoomFunction.setFromHugeImageFunction(true);
             }
 
-            getFunctions().largeImageFunction = new LargeImageFunction(this);
-            getFunctions().largeImageFunction.bindImageZoomer(getImageZoomer());
+            getFunctions().hugeImageFunction = new HugeImageFunction(this);
+            getFunctions().hugeImageFunction.bindImageZoomer(getImageZoomer());
 
             // 大图功能开启后对ImageZoomer计算缩放比例有影响，因此要重置一下
-            getFunctions().zoomFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
+            getFunctions().zoomFunction.onDrawableChanged("setHugeImageEnabled", null, getDrawable());
 
-            getFunctions().largeImageFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
+            getFunctions().hugeImageFunction.onDrawableChanged("setHugeImageEnabled", null, getDrawable());
         } else {
-            getFunctions().largeImageFunction.recycle("setSupportLargeImage");
-            getFunctions().largeImageFunction = null;
+            getFunctions().hugeImageFunction.recycle("setHugeImageEnabled");
+            getFunctions().hugeImageFunction = null;
 
             if (isZoomEnabled()) {
                 // 大图功能关闭后对ImageZoomer计算缩放比例有影响，因此要重置一下
-                getFunctions().zoomFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
+                getFunctions().zoomFunction.onDrawableChanged("setHugeImageEnabled", null, getDrawable());
 
-                if (getFunctions().zoomFunction.isFromLargeImageFunction()) {
+                if (getFunctions().zoomFunction.isFromHugeImageFunction()) {
                     setZoomEnabled(false);
                 }
             }
@@ -386,7 +386,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 获取分块显示超大图功能控制对象
      */
-    public LargeImageViewer getLargeImageViewer() {
-        return getFunctions().largeImageFunction != null ? getFunctions().largeImageFunction.getLargeImageViewer() : null;
+    public HugeImageViewer getHugeImageViewer() {
+        return getFunctions().hugeImageFunction != null ? getFunctions().hugeImageFunction.getHugeImageViewer() : null;
     }
 }

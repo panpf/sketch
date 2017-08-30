@@ -143,7 +143,7 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 * [只加载图片到内存或只下载图片到本地](docs/wiki/load_and_download.md)
 * [播放 GIF 图片](docs/wiki/display_gif_image.md)
 * [手势缩放、旋转图片](docs/wiki/zoom.md)
-* [分块显示超大图片](docs/wiki/large_image.md)
+* [分块显示超大图片](docs/wiki/huge_image.md.md)
 * [通过 ShapeSize 在绘制时改变图片的尺寸](docs/wiki/shape_size.md)
 * [通过 ImageShaper 在绘制时以圆形、圆角等形状显示图片](docs/wiki/image_shaper.md)
 * [通过 ImageProcessor 将图片变成高斯模糊的、倒影的](docs/wiki/process_image.md)

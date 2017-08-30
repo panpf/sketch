@@ -19,7 +19,7 @@ import me.xiaopan.sketchsample.bean.Image;
  * 大图页面，用来展示Sketch显示大图的能力
  */
 @BindContentView(R.layout.fragment_pager_tab)
-public class LargeImageTestFragment extends BaseFragment {
+public class HugeImageTestFragment extends BaseFragment {
     @BindView(R.id.tab_pagerTabFragment_tabs)
     PagerSlidingTabStrip tabStrip;
 
@@ -33,10 +33,10 @@ public class LargeImageTestFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (fragmentAdapter == null) {
-            String[] largeAssetImageNames = AssetImage.LARGES;
-            Fragment[] fragments = new Fragment[largeAssetImageNames.length];
-            for(int w = 0; w < largeAssetImageNames.length; w++){
-                String url = largeAssetImageNames[w];
+            String[] hugeAssetImageNames = AssetImage.HUGE_IMAGES;
+            Fragment[] fragments = new Fragment[hugeAssetImageNames.length];
+            for(int w = 0; w < hugeAssetImageNames.length; w++){
+                String url = hugeAssetImageNames[w];
                 fragments[w] = ImageFragment.build(new Image(url, url), null, true);
             }
             fragmentAdapter = new FragmentArrayPagerAdapter(getChildFragmentManager(), fragments);

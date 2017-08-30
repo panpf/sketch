@@ -81,9 +81,9 @@ public class SLog {
     public static final int TYPE_ZOOM = 0x01 << 19;
 
     /**
-     * 日志类型 - 超大图片分块显示相关日志
+     * 日志类型 - 分块显示大图片相关日志
      */
-    public static final int TYPE_LARGE = 0x01 << 20;
+    public static final int TYPE_HUGE_IMAGE = 0x01 << 20;
 
     private static final String TAG = "Sketch";
     private static final String NAME = "SLog";
@@ -111,7 +111,7 @@ public class SLog {
      *
      * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
      *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
-     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
      */
     public static void setLoggable(@Loggable int mask) {
         /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
@@ -150,7 +150,7 @@ public class SLog {
      *
      * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
      *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
-     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
      */
     public static boolean isLoggable(int mask) {
         /* 高 16 位，低 16 位分开判断。因为低 16 位是互斥并且区分大小关系，高 16 位是共存关系 */
@@ -179,7 +179,7 @@ public class SLog {
      *
      * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
      *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
-     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_LARGE}
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
      */
     public static void removeLoggable(@Loggable int mask) {
         //noinspection NumericOverflow
@@ -468,7 +468,7 @@ public class SLog {
             LEVEL_ERROR,
             LEVEL_NONE,
             TYPE_CACHE,
-            TYPE_LARGE,
+            TYPE_HUGE_IMAGE,
             TYPE_FLOW,
             TYPE_TIME,
             TYPE_ZOOM,

@@ -188,14 +188,14 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 计算InSampleSize
      *
-     * @param outWidth          原始宽
-     * @param outHeight         原始高
-     * @param targetWidth       目标宽
-     * @param targetHeight      目标高
-     * @param supportLargeImage 是否支持大图，大图时会有特殊处理
+     * @param outWidth         原始宽
+     * @param outHeight        原始高
+     * @param targetWidth      目标宽
+     * @param targetHeight     目标高
+     * @param hugeImageEnabled 是否支持大图，大图时会有特殊处理
      * @return 合适的InSampleSize
      */
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean supportLargeImage) {
+    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean hugeImageEnabled) {
         targetWidth *= targetSizeScale;
         targetHeight *= targetSizeScale;
 
@@ -243,7 +243,7 @@ public class ImageSizeCalculator implements Identifier {
             }
 
             // 最后如果是为大图功能加载预览图的话，当缩小2倍的话为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
-            if (supportLargeImage && inSampleSize == 2) {
+            if (hugeImageEnabled && inSampleSize == 2) {
                 inSampleSize = 4;
             }
         }

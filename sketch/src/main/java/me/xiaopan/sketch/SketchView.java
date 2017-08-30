@@ -144,7 +144,7 @@ public interface SketchView {
     /**
      * 是否开启了分块显示超大图功能
      */
-    boolean isBlockDisplayLargeImageEnabled();
+    boolean isHugeImageEnabled();
 
     /**
      * 重新显示

@@ -7,7 +7,7 @@
 新功能：
 >* ``Decode``. [缩略图模式](../wiki/thumbnail_mode.md)，通过缩略图模式你可以在列表中更加清晰的显示那些宽高相差特别大的图片
 >* ``Gesture Zoom``. [手势缩放功能](../wiki/zoom.md)，参照PhotoVie，SketchImageView内置了手势缩放功能，比PhotoView功能更强大，体验更好，新增了定位、阅读模式等特色功能
->* ``Super Large Image``. [分块显示超大图功能](../wiki/large_image.md)，SketchImageVie内置了分块显示超大图功能，长微博、高清妹子图什么的不再是问题
+>* ``Super Large Image``. [分块显示超大图功能](../wiki/huge_image.md)，SketchImageVie内置了分块显示超大图功能，长微博、高清妹子图什么的不再是问题
 >* ``ModeImage``. 新增ModeImage替代ImageHolder，现在可以用任意类型的drawable或者内存缓存中的图片来作为loading占位图了
 
 优化：

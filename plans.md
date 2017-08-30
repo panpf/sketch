@@ -21,6 +21,8 @@
 * 支持类似Glide的缩略图（Glide.thumbnail）
 * 单元测试&集成测试
 * 加入放大时点击位置在右下角，缩小时点击位置在左上角，那么缩小动画就会不太自然
+* 抽离图片缩放和巨大图片支持成一个单独的项目
+* 支持 ContentResolver.SCHEME_ANDROID_RESOURCE android.resource://
 
 其它：
 * 参考Glide、Fresco和Picasso

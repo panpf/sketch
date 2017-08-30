@@ -36,7 +36,7 @@ public class SketchInitializer implements Initializer {
         onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_REQUEST));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_CACHE));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_ZOOM));
-        onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_LARGE));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.LOG_HUGE_IMAGE));
 
         onEvent(new AppConfigChangedEvent(AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE));
@@ -104,11 +104,11 @@ public class SketchInitializer implements Initializer {
             } else {
                 SLog.removeLoggable(SLog.TYPE_ZOOM);
             }
-        } else if (AppConfig.Key.LOG_LARGE.equals(event.key)) {
-            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_LARGE)) {
-                SLog.setLoggable(SLog.TYPE_LARGE);
+        } else if (AppConfig.Key.LOG_HUGE_IMAGE.equals(event.key)) {
+            if (AppConfig.getBoolean(context, AppConfig.Key.LOG_HUGE_IMAGE)) {
+                SLog.setLoggable(SLog.TYPE_HUGE_IMAGE);
             } else {
-                SLog.removeLoggable(SLog.TYPE_LARGE);
+                SLog.removeLoggable(SLog.TYPE_HUGE_IMAGE);
             }
         } else if (AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(event.key)) {
             configuration.setGlobalMobileNetworkPauseDownload(AppConfig.getBoolean(context, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD));

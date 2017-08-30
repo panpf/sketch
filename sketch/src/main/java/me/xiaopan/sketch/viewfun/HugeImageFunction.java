@@ -26,29 +26,29 @@ import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
+import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 
 /**
- * 大图功能
+ * 超级大图功能
  */
-public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMatrixChangeListener, LargeImageViewer.Callback {
-    private static final String NAME = "LargeImageFunction";
+public class HugeImageFunction extends ViewFunction implements ImageZoomer.OnMatrixChangeListener, HugeImageViewer.Callback {
+    private static final String NAME = "HugeImageFunction";
 
     private FunctionPropertyView view;
-    private LargeImageViewer largeImageViewer;
+    private HugeImageViewer hugeImageViewer;
 
     private Matrix tempDrawMatrix;
     private Rect tempVisibleRect;
 
     private String imageUri;
 
-    public LargeImageFunction(FunctionPropertyView view) {
+    public HugeImageFunction(FunctionPropertyView view) {
         this.view = view;
-        this.largeImageViewer = new LargeImageViewer(view.getContext(), this);
+        this.hugeImageViewer = new HugeImageViewer(view.getContext(), this);
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            SLog.e(NAME, "large image function the minimum support to GINGERBREAD_MR1");
+            SLog.e(NAME, "huge image function the minimum support to GINGERBREAD_MR1");
         }
     }
 
@@ -82,8 +82,8 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
             return;
         }
 
-        if (largeImageViewer.isReady()) {
-            largeImageViewer.draw(canvas);
+        if (hugeImageViewer.isReady()) {
+            hugeImageViewer.draw(canvas);
         }
     }
 
@@ -113,9 +113,9 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
             return;
         }
 
-        if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
-                SLog.d(NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
+        if (!hugeImageViewer.isReady() && !hugeImageViewer.isInitializing()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                SLog.d(NAME, "hugeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
@@ -136,7 +136,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
         imageZoomer.getDrawMatrix(tempDrawMatrix);
         imageZoomer.getVisibleRect(tempVisibleRect);
 
-        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, imageZoomer.getDrawableSize(),
+        hugeImageViewer.update(tempDrawMatrix, tempVisibleRect, imageZoomer.getDrawableSize(),
                 imageZoomer.getImageViewSize(), imageZoomer.isZooming());
     }
 
@@ -160,13 +160,13 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
-                    SLog.d(NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    SLog.d(NAME, "Use huge image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_LARGE)) {
-                    SLog.d(NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    SLog.d(NAME, "Don't need to use huge image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }
@@ -174,10 +174,10 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
 
         if (drawableQualified) {
             imageUri = sketchDrawable.getUri();
-            largeImageViewer.setImage(imageUri, view.getOptions().isCorrectImageOrientationDisabled());
+            hugeImageViewer.setImage(imageUri, view.getOptions().isCorrectImageOrientationDisabled());
         } else {
             imageUri = null;
-            largeImageViewer.setImage(null, false);
+            hugeImageViewer.setImage(null, false);
         }
     }
 
@@ -186,7 +186,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
             return;
         }
 
-        largeImageViewer.recycle(why);
+        hugeImageViewer.recycle(why);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class LargeImageFunction extends ViewFunction implements ImageZoomer.OnMa
         }
     }
 
-    public LargeImageViewer getLargeImageViewer() {
-        return largeImageViewer;
+    public HugeImageViewer getHugeImageViewer() {
+        return hugeImageViewer;
     }
 }

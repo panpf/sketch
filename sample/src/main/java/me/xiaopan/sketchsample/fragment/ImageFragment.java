@@ -47,7 +47,7 @@ import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.viewfun.large.LargeImageViewer;
+import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 import me.xiaopan.sketchsample.BaseFragment;
 import me.xiaopan.sketchsample.BindContentView;
@@ -88,7 +88,7 @@ public class ImageFragment extends BaseFragment {
     private ShowImageHelper showImageHelper = new ShowImageHelper();
     private ImageZoomHelper imageZoomHelper = new ImageZoomHelper();
     private MappingHelper mappingHelper = new MappingHelper();
-    private LargeImageHelper largeImageHelper = new LargeImageHelper();
+    private HugeImageHelper hugeImageHelper = new HugeImageHelper();
     private ClickHelper clickHelper = new ClickHelper();
 
     public static ImageFragment build(Image image, String loadingImageOptionsId, boolean showTools) {
@@ -118,11 +118,11 @@ public class ImageFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        boolean showHighDefinitionImage = AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_UNSPLASH_LARGE_IMAGE);
+        boolean showHighDefinitionImage = AppConfig.getBoolean(getContext(), AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE);
         finalShowImageUrl = showHighDefinitionImage && !TextUtils.isEmpty(image.highDefinitionUrl) ? image.highDefinitionUrl : image.regularUrl;
 
         imageZoomHelper.onViewCreated();
-        largeImageHelper.onViewCreated();
+        hugeImageHelper.onViewCreated();
         mappingHelper.onViewCreated();
         clickHelper.onViewCreated();
         showImageHelper.onViewCreated();
@@ -138,7 +138,7 @@ public class ImageFragment extends BaseFragment {
 
     @Override
     public void onUserVisibleChanged(boolean isVisibleToUser) {
-        largeImageHelper.onUserVisibleChanged();
+        hugeImageHelper.onUserVisibleChanged();
         setWindowBackground.onUserVisibleChanged();
         gifPlayFollowPageVisible.onUserVisibleChanged();
     }
@@ -151,8 +151,8 @@ public class ImageFragment extends BaseFragment {
             mappingHelper.onViewCreated();
         } else if (AppConfig.Key.READ_MODE.equals(event.key)) {
             imageZoomHelper.onReadModeConfigChanged();
-        } else if (AppConfig.Key.SUPPORT_LARGE_IMAGE.equals(event.key)) {
-            largeImageHelper.onConfigChanged();
+        } else if (AppConfig.Key.SUPPORT_HUGE_IMAGE.equals(event.key)) {
+            hugeImageHelper.onConfigChanged();
             mappingHelper.onViewCreated();
         }
     }
@@ -334,14 +334,14 @@ public class ImageFragment extends BaseFragment {
         }
     }
 
-    private class LargeImageHelper {
+    private class HugeImageHelper {
         private void onViewCreated() {
-            imageView.setBlockDisplayLargeImageEnabled(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE));
+            imageView.setHugeImageEnabled(AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SUPPORT_HUGE_IMAGE));
 
             // 初始化超大图查看器的暂停状态，这一步很重要
-            if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)
-                    && imageView.isBlockDisplayLargeImageEnabled()) {
-                imageView.getLargeImageViewer().setPause(!isVisibleToUser());
+            if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)
+                    && imageView.isHugeImageEnabled()) {
+                imageView.getHugeImageViewer().setPause(!isVisibleToUser());
             }
         }
 
@@ -351,14 +351,14 @@ public class ImageFragment extends BaseFragment {
 
         private void onUserVisibleChanged() {
             // 不可见的时候暂停超大图查看器，节省内存
-            if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)) {
-                if (imageView.isBlockDisplayLargeImageEnabled()) {
-                    imageView.getLargeImageViewer().setPause(!isVisibleToUser());
+            if (AppConfig.getBoolean(getActivity(), AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
+                if (imageView.isHugeImageEnabled()) {
+                    imageView.getHugeImageViewer().setPause(!isVisibleToUser());
                 }
             } else {
-                if (imageView.isBlockDisplayLargeImageEnabled()
-                        && isVisibleToUser() && imageView.getLargeImageViewer().isPaused()) {
-                    imageView.getLargeImageViewer().setPause(false);
+                if (imageView.isHugeImageEnabled()
+                        && isVisibleToUser() && imageView.getHugeImageViewer().isPaused()) {
+                    imageView.getHugeImageViewer().setPause(false);
                 }
             }
         }
@@ -367,11 +367,11 @@ public class ImageFragment extends BaseFragment {
     private class MappingHelper {
         private void onViewCreated() {
             // MappingView跟随碎片变化刷新碎片区域
-            if (imageView.isBlockDisplayLargeImageEnabled()) {
-                imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
+            if (imageView.isHugeImageEnabled()) {
+                imageView.getHugeImageViewer().setOnTileChangedListener(new HugeImageViewer.OnTileChangedListener() {
                     @Override
-                    public void onTileChanged(LargeImageViewer largeImageViewer) {
-                        mappingView.tileChanged(largeImageViewer);
+                    public void onTileChanged(HugeImageViewer hugeImageViewer) {
+                        mappingView.tileChanged(hugeImageViewer);
                     }
                 });
             }
@@ -462,8 +462,8 @@ public class ImageFragment extends BaseFragment {
 
             final boolean zoomEnabled = imageView.isZoomEnabled();
             final ImageZoomer imageZoomer = zoomEnabled ? imageView.getImageZoomer() : null;
-            final boolean blockDisplayLargeImageEnabled = imageView.isBlockDisplayLargeImageEnabled();
-            final LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
+            final boolean hugeImageEnabled = imageView.isHugeImageEnabled();
+            final HugeImageViewer hugeImageViewer = imageView.getHugeImageViewer();
             Drawable drawable = SketchUtils.getLastDrawable(imageView.getDrawable());
 
             final List<MenuItem> menuItemList = new LinkedList<MenuItem>();
@@ -486,8 +486,8 @@ public class ImageFragment extends BaseFragment {
                 }
             }));
 
-            String largeImageTileTitle = blockDisplayLargeImageEnabled ? (largeImageViewer.isShowTileRect() ? "不显示分块区域" : "显示分块区域") : "分块区域（未开启大图功能）";
-            menuItemList.add(new MenuItem(largeImageTileTitle, new DialogInterface.OnClickListener() {
+            String hugeImageTileTitle = hugeImageEnabled ? (hugeImageViewer.isShowTileRect() ? "不显示分块区域" : "显示分块区域") : "分块区域（未开启大图功能）";
+            menuItemList.add(new MenuItem(hugeImageTileTitle, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     setShowTile();
@@ -548,22 +548,22 @@ public class ImageFragment extends BaseFragment {
                 messageBuilder.append("/").append(visibleRect.toShortString());
             }
 
-            if (imageView.isBlockDisplayLargeImageEnabled()) {
-                LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
-                if (largeImageViewer.isReady()) {
-                    String tilesNeedMemory = Formatter.formatFileSize(getContext(), largeImageViewer.getTilesAllocationByteCount());
+            if (imageView.isHugeImageEnabled()) {
+                HugeImageViewer hugeImageViewer = imageView.getHugeImageViewer();
+                if (hugeImageViewer.isReady()) {
+                    String tilesNeedMemory = Formatter.formatFileSize(getContext(), hugeImageViewer.getTilesAllocationByteCount());
                     messageBuilder.append("\n");
                     messageBuilder.append("碎片：")
-                            .append(largeImageViewer.getTiles())
+                            .append(hugeImageViewer.getTiles())
                             .append("/")
-                            .append(largeImageViewer.getTileList().size())
+                            .append(hugeImageViewer.getTileList().size())
                             .append("/")
                             .append(tilesNeedMemory);
                     messageBuilder.append("\n");
-                    messageBuilder.append("碎片解码区域：").append(largeImageViewer.getDecodeRect().toShortString());
+                    messageBuilder.append("碎片解码区域：").append(hugeImageViewer.getDecodeRect().toShortString());
                     messageBuilder.append("\n");
-                    messageBuilder.append("碎片SRC区域：").append(largeImageViewer.getDecodeSrcRect().toShortString());
-                } else if (largeImageViewer.isInitializing()) {
+                    messageBuilder.append("碎片SRC区域：").append(hugeImageViewer.getDecodeSrcRect().toShortString());
+                } else if (hugeImageViewer.isInitializing()) {
                     messageBuilder.append("\n");
                     messageBuilder.append("大图功能正在初始化...");
                 }
@@ -686,10 +686,10 @@ public class ImageFragment extends BaseFragment {
         }
 
         private void setShowTile() {
-            if (imageView.isBlockDisplayLargeImageEnabled()) {
-                LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
-                boolean newShowTileRect = !largeImageViewer.isShowTileRect();
-                largeImageViewer.setShowTileRect(newShowTileRect);
+            if (imageView.isHugeImageEnabled()) {
+                HugeImageViewer hugeImageViewer = imageView.getHugeImageViewer();
+                boolean newShowTileRect = !hugeImageViewer.isShowTileRect();
+                hugeImageViewer.setShowTileRect(newShowTileRect);
             } else {
                 Toast.makeText(getContext(), "请先到首页左侧菜单开启大图功能", Toast.LENGTH_SHORT).show();
             }

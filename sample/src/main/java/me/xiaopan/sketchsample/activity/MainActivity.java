@@ -71,11 +71,11 @@ import me.xiaopan.sketchsample.event.CacheCleanEvent;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
 import me.xiaopan.sketchsample.fragment.Base64ImageTestFragment;
+import me.xiaopan.sketchsample.fragment.HugeImageTestFragment;
 import me.xiaopan.sketchsample.fragment.ImageOrientationTestHomeFragment;
 import me.xiaopan.sketchsample.fragment.ImageProcessorTestFragment;
 import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
 import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
-import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
 import me.xiaopan.sketchsample.fragment.MyPhotosFragment;
 import me.xiaopan.sketchsample.fragment.MyVideosFragment;
 import me.xiaopan.sketchsample.fragment.OtherTestFragment;
@@ -302,8 +302,8 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuList.add(new CheckMenu(this, "Enabled Gesture Zoom In Detail Page", AppConfig.Key.SUPPORT_ZOOM, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChangedBefore(boolean checked) {
-                if (!checked && AppConfig.getBoolean(getBaseContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE)) {
-                    AppConfig.putBoolean(getBaseContext(), AppConfig.Key.SUPPORT_LARGE_IMAGE, false);
+                if (!checked && AppConfig.getBoolean(getBaseContext(), AppConfig.Key.SUPPORT_HUGE_IMAGE)) {
+                    AppConfig.putBoolean(getBaseContext(), AppConfig.Key.SUPPORT_HUGE_IMAGE, false);
                 }
             }
 
@@ -315,8 +315,8 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuList.add(new CheckMenu(this, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener));
 
-        menuList.add("Block Display Large Image");
-        menuList.add(new CheckMenu(this, "Enabled Block Display Large Image In Detail Page", AppConfig.Key.SUPPORT_LARGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add("Block Display Huge Image");
+        menuList.add(new CheckMenu(this, "Enabled Block Display Huge Image In Detail Page", AppConfig.Key.SUPPORT_HUGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChangedBefore(boolean checked) {
                 if (checked && !AppConfig.getBoolean(getBaseContext(), AppConfig.Key.SUPPORT_ZOOM)) {
@@ -329,7 +329,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
 
             }
         }, menuClickListener));
-        menuList.add(new CheckMenu(this, "Visible To User Decode Large Image In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Visible To User Decode Huge Image In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE, null, menuClickListener));
 
         menuList.add("GIF");
         menuList.add(new CheckMenu(this, "Auto Play GIF In List", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener));
@@ -344,7 +344,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuList.add(new CheckMenu(this, "Disabled Correct Image Orientation", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener));
 
         menuList.add("Other");
-        menuList.add(new CheckMenu(this, "Show Unsplash Large Image In Detail Page", AppConfig.Key.SHOW_UNSPLASH_LARGE_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Show Unsplash Raw Image In Detail Page", AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Mapping Thumbnail In Detail Page", AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Press Status In List", AppConfig.Key.CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Show Image From Corner Mark", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
@@ -385,7 +385,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuList.add(new CheckMenu(this, "Output Flow Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Cache Log", AppConfig.Key.LOG_CACHE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "Output Block Display Large Image Log", AppConfig.Key.LOG_LARGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Output Block Display Huge Image Log", AppConfig.Key.LOG_HUGE_IMAGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Output Used Time Log", AppConfig.Key.LOG_TIME, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener));
 
@@ -538,7 +538,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         APP_LIST("My Apps", AppListFragment.class, false, false),
         ABOUT("About Sketch", AboutFragment.class, false, false),
 
-        LARGE_IMAGE("Block Display Large Image", LargeImageTestFragment.class, true, false),
+        LARGE_IMAGE("Block Display Huge Image", HugeImageTestFragment.class, true, false),
         IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment.class, true, false),
         IMAGE_SHAPER_TESt("Image Shaper Test", ImageShaperTestFragment.class, true, false),
         REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment.class, true, false),
