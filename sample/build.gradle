@@ -23,7 +23,7 @@ android {
         minSdkVersion MIN_SDK_VERSION.toInteger()
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode VERSION_CODE.toInteger()
-        versionName "${VERSION_NAME}"
+        versionName "${VERSION_NAME}.${getGitVersion()}"
 
         ndk {
             abiFilters 'armeabi'
@@ -137,4 +137,8 @@ def Properties openProperties(String fileName) {
     properties.load(inputStream)
     inputStream.close()
     return properties
+}
+
+def static getGitVersion() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
 }
