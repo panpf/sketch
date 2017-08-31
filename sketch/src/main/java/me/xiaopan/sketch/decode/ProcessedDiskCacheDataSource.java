@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.preprocess;
+package me.xiaopan.sketch.decode;
 
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
 
-public class PreProcessResult {
-    public DiskCache.Entry diskCacheEntry;
-    public byte[] imageData;
-    public ImageFrom imageFrom;
+public class ProcessedDiskCacheDataSource extends DiskCacheDataSource {
 
-    public PreProcessResult(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
-        this.diskCacheEntry = diskCacheEntry;
-        this.imageFrom = imageFrom;
-    }
-
-    public PreProcessResult(byte[] imageData, ImageFrom imageFrom) {
-        this.imageData = imageData;
-        this.imageFrom = imageFrom;
+    public ProcessedDiskCacheDataSource(DiskCache.Entry diskCacheEntry) {
+        super(diskCacheEntry, ImageFrom.DISK_CACHE);
     }
 }

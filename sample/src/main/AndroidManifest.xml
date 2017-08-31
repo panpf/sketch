@@ -36,7 +36,7 @@
             android:process=":notification" />
 
         <meta-data
-            android:name="me.xiaopan.sketchsample.SketchInitializer"
+            android:name="me.xiaopan.sketchsample.SampleSketchInitializer"
             android:value="SKETCH_INITIALIZER" />
     </application>
 </manifest>

@@ -16,6 +16,7 @@ public class AppInfo implements FileScanner.FileItem{
     private int versionCode;
     private long appSize;
     private boolean tempInstalled;
+    private boolean tempXPK;
 
     public AppInfo(boolean tempInstalled) {
         this.tempInstalled = tempInstalled;
@@ -105,5 +106,13 @@ public class AppInfo implements FileScanner.FileItem{
     @Override
     public long getFileLength() {
         return appSize;
+    }
+
+    public boolean isTempXPK() {
+        return tempXPK;
+    }
+
+    public void setTempXPK(boolean tempXPK) {
+        this.tempXPK = tempXPK;
     }
 }

@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
@@ -41,6 +42,9 @@ public class InstalledAppFragment extends BaseFragment implements AppItemFactory
     @BindView(R.id.hint_recyclerFragment)
     HintView hintView;
 
+    @BindView(R.id.refresh_recyclerFragment)
+    SwipeRefreshLayout refreshLayout;
+
     private AssemblyRecyclerAdapter adapter = null;
 
     @Override
@@ -49,6 +53,8 @@ public class InstalledAppFragment extends BaseFragment implements AppItemFactory
 
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+
+        refreshLayout.setEnabled(false);
 
         if (adapter != null) {
             recyclerView.setAdapter(adapter);

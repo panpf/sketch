@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import java.util.Locale;
+
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -31,7 +33,7 @@ import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class ThumbnailModeDecodeHelper extends DecodeHelper {
-    private static final String LOG_NAME = "ThumbnailModeDecodeHelper";
+    private static final String NAME = "ThumbnailModeDecodeHelper";
 
     /**
      * 要想使用缩略图功能需要配置开启缩略图功能、配置resize并且图片格式和系统版本支持BitmapRegionDecoder才行
@@ -47,7 +49,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         Resize resize = loadOptions.getResize();
         if (resize == null) {
-            SLog.e(LOG_NAME, "thumbnailMode need resize ");
+            SLog.e(NAME, "thumbnailMode need resize ");
             return false;
         }
 
@@ -122,16 +124,16 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid");
             return null;
         }
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            SLog.w(LOG_NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
-                    boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
+            String cause = String.format(Locale.US, "Bitmap width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d",
+                    boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight());
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause);
             bitmap.recycle();
-            ImageDecodeUtils.decodeError(request, dataSource, LOG_NAME);
             return null;
         }
 
@@ -140,7 +142,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         correctOrientation(orientationCorrector, result, exifOrientation, request);
 
-        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, LOG_NAME);
+        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, NAME);
         return result;
     }
 }

@@ -14,6 +14,7 @@ import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.bean.AppInfo;
+import me.xiaopan.sketchsample.util.XpkIconUriModel;
 import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.AppItem> {
@@ -74,9 +75,11 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
         @Override
         protected void onSetData(int i, AppInfo appInfo) {
             if (appInfo.isTempInstalled()) {
-                iconImageView.displayInstalledAppIcon(appInfo.getId(), appInfo.getVersionCode());
+                iconImageView.displayAppIcon(appInfo.getId(), appInfo.getVersionCode());
+            } else if (appInfo.isTempXPK()) {
+                iconImageView.displayImage(XpkIconUriModel.makeUri(appInfo.getApkFilePath()));
             } else {
-                iconImageView.displayImage(appInfo.getApkFilePath());
+                iconImageView.displayApkIcon(appInfo.getApkFilePath());
             }
             nameTextView.setText(appInfo.getName());
             infoTextView.setText(String.format("v%s  |  %s", appInfo.getVersionName(), appInfo.getFormattedAppSize()));

@@ -19,17 +19,14 @@ package me.xiaopan.sketch.decode;
 import android.content.Context;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriInfo;
 
+// TODO: 2017/8/31 重构
 public class DataSourceFactory {
-
-    private static final String NAME = "DataSourceFactory";
 
     /**
      * 创建数据源，可用于解码
@@ -46,8 +43,7 @@ public class DataSourceFactory {
             return dataSource;
         }
 
-        SLog.w(NAME, "unknown uri is %s", uriInfo.getUri());
-        throw new DecodeException(String.format("Unknown uri is %s", uriInfo.getUri()), ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI);
+        return null;
     }
 
     /**
@@ -63,10 +59,6 @@ public class DataSourceFactory {
      */
     public static DataSource processedCacheFirstMakeDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult,
                                                                LoadOptions options, String processedImageDiskCacheKey) throws DecodeException {
-        if (context == null || uriInfo == null) {
-            return null;
-        }
-
         Configuration configuration = Sketch.with(context).getConfiguration();
         ProcessedImageCache processedImageCache = configuration.getProcessedImageCache();
 

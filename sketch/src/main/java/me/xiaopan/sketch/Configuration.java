@@ -38,7 +38,6 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.http.ImageDownloader;
-import me.xiaopan.sketch.preprocess.ImagePreprocessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
@@ -66,7 +65,6 @@ public final class Configuration {
     private HttpStack httpStack;
     private ImageDecoder decoder;
     private ImageDownloader downloader;
-    private ImagePreprocessor imagePreprocessor;
     private ImageOrientationCorrector orientationCorrector;
 
     private ImageDisplayer defaultDisplayer;
@@ -108,7 +106,6 @@ public final class Configuration {
         this.resizeProcessor = new ResizeImageProcessor();
         this.resizeCalculator = new ResizeCalculator();
         this.defaultDisplayer = new DefaultImageDisplayer();
-        this.imagePreprocessor = new ImagePreprocessor();
         this.processedImageCache = new ProcessedImageCache();
         this.orientationCorrector = new ImageOrientationCorrector();
 
@@ -311,29 +308,6 @@ public final class Configuration {
         if (downloader != null) {
             this.downloader = downloader;
             SLog.w(NAME, "downloader=%s", downloader.getKey());
-        }
-        return this;
-    }
-
-    /**
-     * 获取图片预处理器
-     *
-     * @return ImagePreprocessor
-     */
-    public ImagePreprocessor getImagePreprocessor() {
-        return imagePreprocessor;
-    }
-
-    /**
-     * 设置图片预处理器
-     *
-     * @return Configuration. Convenient chain calls
-     */
-    @SuppressWarnings("unused")
-    public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
-        if (imagePreprocessor != null) {
-            this.imagePreprocessor = imagePreprocessor;
-            SLog.w(NAME, "imagePreprocessor=%s", imagePreprocessor.getKey());
         }
         return this;
     }
@@ -701,7 +675,6 @@ public final class Configuration {
                 "\n" + "httpStack：" + httpStack.getKey() +
                 "\n" + "decoder：" + decoder.getKey() +
                 "\n" + "downloader：" + downloader.getKey() +
-                "\n" + "imagePreprocessor：" + imagePreprocessor.getKey() +
                 "\n" + "orientationCorrector：" + orientationCorrector.getKey() +
 
                 "\n" + "defaultDisplayer：" + defaultDisplayer.getKey() +

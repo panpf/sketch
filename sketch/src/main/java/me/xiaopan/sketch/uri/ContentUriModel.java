@@ -20,24 +20,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.CacheFileDataSource;
 import me.xiaopan.sketch.decode.ContentDataSource;
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeException;
-import me.xiaopan.sketch.preprocess.ImagePreprocessor;
-import me.xiaopan.sketch.preprocess.PreProcessResult;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.UriInfo;
 
 public class ContentUriModel implements UriModel {
 
     public static final String SCHEME = "content://";
-    private static final String NAME = "ContentUriModel";
 
     @Override
     public boolean match(String uri) {
@@ -60,28 +50,7 @@ public class ContentUriModel implements UriModel {
     }
 
     @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
-        if (context == null || uriInfo == null) {
-            return null;
-        }
-
-        // TODO: 2017/8/31 特殊文件预处理要被 专用的uri 替代
-        Configuration configuration = Sketch.with(context).getConfiguration();
-        ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
-        if (imagePreprocessor.match(context, uriInfo)) {
-
-            PreProcessResult prePrecessResult = imagePreprocessor.process(context, uriInfo);
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-            }
-
-            if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-            }
-
-            SLog.w(NAME, "pre process result is null", uriInfo.getUri());
-            throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
-        }
+    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
         return new ContentDataSource(context, Uri.parse(uriInfo.getContent()));
     }
 }

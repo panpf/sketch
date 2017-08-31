@@ -11,10 +11,10 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
-import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
-import me.xiaopan.sketchsample.util.XpkIconPreprocessor;
+import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
+import me.xiaopan.sketchsample.util.XpkIconUriModel;
 
-public class SketchInitializer implements Initializer {
+public class SampleSketchInitializer implements Initializer {
 
     private Context context;
     private Configuration configuration;
@@ -45,9 +45,10 @@ public class SketchInitializer implements Initializer {
         onEvent(new AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY));
 
-        configuration.getImagePreprocessor().addPreprocessor(new VideoThumbnailPreprocessor());
-        configuration.getImagePreprocessor().addPreprocessor(new XpkIconPreprocessor());
         configuration.setErrorTracker(new SampleErrorTracker(context));
+
+        configuration.getUriModelRegistry().add(new VideoThumbnailUriModel());
+        configuration.getUriModelRegistry().add(new XpkIconUriModel());
     }
 
     @SuppressWarnings("unused")

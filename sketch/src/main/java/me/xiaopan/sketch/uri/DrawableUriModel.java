@@ -20,18 +20,10 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.CacheFileDataSource;
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.DrawableDataSource;
-import me.xiaopan.sketch.preprocess.ImagePreprocessor;
-import me.xiaopan.sketch.preprocess.PreProcessResult;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.UriInfo;
 
 public class DrawableUriModel implements UriModel {
@@ -50,7 +42,7 @@ public class DrawableUriModel implements UriModel {
 
     @Override
     public String getUriContent(String uri) {
-        return !TextUtils.isEmpty(uri) ? uri.substring(SCHEME.length()) : uri;
+        return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
     @Override
@@ -64,30 +56,15 @@ public class DrawableUriModel implements UriModel {
     }
 
     @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
-        if (context == null || uriInfo == null) {
-            return null;
+    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
+        int resId;
+        try {
+            resId = Integer.valueOf(uriInfo.getContent());
+        } catch (NumberFormatException e) {
+            SLog.e(NAME, "Conversion resId failed. %s", uriInfo.getUri());
+            throw e;
         }
-
-        // TODO: 2017/8/31 特殊文件预处理要被 专用的uri 替代
-        Configuration configuration = Sketch.with(context).getConfiguration();
-        ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
-        if (imagePreprocessor.match(context, uriInfo)) {
-
-            PreProcessResult prePrecessResult = imagePreprocessor.process(context, uriInfo);
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-            }
-
-            if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-            }
-
-            SLog.w(NAME, "pre process result is null", uriInfo.getUri());
-            throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
-        }
-
-        return new DrawableDataSource(context, Integer.valueOf(uriInfo.getContent()));
+        return new DrawableDataSource(context, resId);
     }
 
     public int getResId(String uri) {

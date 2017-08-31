@@ -18,19 +18,25 @@ package me.xiaopan.sketch.uri;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Base64;
 
-import me.xiaopan.sketch.Configuration;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.CacheFileDataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeException;
-import me.xiaopan.sketch.preprocess.ImagePreprocessor;
-import me.xiaopan.sketch.preprocess.PreProcessResult;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriInfo;
+import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class Base64UriModel implements UriModel {
 
@@ -58,29 +64,87 @@ public class Base64UriModel implements UriModel {
     }
 
     @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
-        if (context == null || uriInfo == null) {
+    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+
+        DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+        if (cacheEntry != null) {
+            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
+        }
+
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
+        diskCacheEditLock.lock();
+
+        DataSource dataSource;
+        try {
+            cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            if (cacheEntry != null) {
+                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
+            } else {
+                dataSource = cacheBase64Image(uriInfo, diskCache);
+            }
+        } finally {
+            diskCacheEditLock.unlock();
+        }
+
+        return dataSource;
+    }
+
+    private DataSource cacheBase64Image(UriInfo uriInfo, DiskCache diskCache) {
+        byte[] data = Base64.decode(uriInfo.getContent(), Base64.DEFAULT);
+
+        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
+        OutputStream outputStream;
+        if (diskCacheEditor != null) {
+            try {
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            } catch (IOException e) {
+                e.printStackTrace();
+                diskCacheEditor.abort();
+                return null;
+            }
+        } else {
+            outputStream = new ByteArrayOutputStream();
+        }
+
+        try {
+            outputStream.write(data);
+
+            if (diskCacheEditor != null) {
+                diskCacheEditor.commit();
+            }
+        } catch (DiskLruCache.EditorChangedException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
             return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            if (diskCacheEditor != null) {
+                diskCacheEditor.abort();
+            }
+            return null;
+        } catch (DiskLruCache.ClosedException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
+            return null;
+        } catch (DiskLruCache.FileNotExistException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
+            return null;
+        } finally {
+            SketchUtils.close(outputStream);
         }
 
-        // TODO: 2017/8/31 特殊文件预处理要被 专用的uri 替代
-        Configuration configuration = Sketch.with(context).getConfiguration();
-        ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
-        if (imagePreprocessor.match(context, uriInfo)) {
-
-            PreProcessResult prePrecessResult = imagePreprocessor.process(context, uriInfo);
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
+        if (diskCacheEditor != null) {
+            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            if (cacheEntry != null) {
+                return new DiskCacheDataSource(cacheEntry, ImageFrom.MEMORY);
+            } else {
+                SLog.e(NAME, "Not found base64 image cache file. %s", uriInfo.getUri());
+                return null;
             }
-
-            if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-            }
-
-            SLog.w(NAME, "pre process result is null", uriInfo.getUri());
-            throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
+        } else {
+            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.MEMORY);
         }
-
-        return null;
     }
 }

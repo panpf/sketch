@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,31 +16,47 @@ import java.util.zip.ZipFile;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.preprocess.PreProcessResult;
-import me.xiaopan.sketch.preprocess.Preprocessor;
+import me.xiaopan.sketch.decode.ByteArrayDataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
+import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriInfo;
-import me.xiaopan.sketch.uri.FileUriModel;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-/**
- * 解析XPK文件的图标
- */
-public class XpkIconPreprocessor implements Preprocessor {
+public class XpkIconUriModel implements UriModel {
 
-    private static final String NAME = "XpkIconPreprocessor";
+    public static final String SCHEME = "xpk.icon://";
+    private static final String NAME = "XpkIconUriModel";
 
-    @Override
-    public boolean match(Context context, UriInfo uriInfo) {
-        // TODO: 2017/8/31 这些都代表需要预处理，后续用 UriModel 实现即可
-        return uriInfo.getUriModel() instanceof FileUriModel
-                && uriInfo.getContent() != null
-                && SketchUtils.checkSuffix(uriInfo.getContent(), ".xpk");
+    public static String makeUri(String filePath) {
+        return SCHEME + filePath;
     }
 
     @Override
-    public PreProcessResult process(Context context, UriInfo uriInfo) {
+    public boolean match(String uri) {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    }
+
+    @Override
+    public String getUriContent(String uri) {
+        return match(uri) ? uri.substring(SCHEME.length()) : uri;
+    }
+
+    @Override
+    public String getDiskCacheKey(String uri) {
+        return uri;
+    }
+
+    @Override
+    public boolean isFromNet() {
+        return false;
+    }
+
+    @Override
+    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
         File xpkFile = new File(uriInfo.getContent());
         if (!xpkFile.exists()) {
             return null;
@@ -51,28 +68,28 @@ public class XpkIconPreprocessor implements Preprocessor {
 
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
-            return new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
         ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        PreProcessResult result;
+        DataSource dataSource;
         try {
             cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
-                result = new PreProcessResult(cacheEntry, ImageFrom.DISK_CACHE);
+                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                result = readXpkIcon(uriInfo, diskCache, diskCacheKey);
+                dataSource = readXpkIcon(uriInfo, diskCache, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
         }
 
-        return result;
+        return dataSource;
     }
 
-    private PreProcessResult readXpkIcon(UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
+    private DataSource readXpkIcon(UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
         ZipFile zipFile;
         try {
             zipFile = new ZipFile(uriInfo.getContent());
@@ -83,7 +100,7 @@ public class XpkIconPreprocessor implements Preprocessor {
         InputStream inputStream;
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
-            SLog.w(NAME, "not found icon.png in. %s", uriInfo.getUri());
+            SLog.e(NAME, "Not found icon.png in xpk file. %s", uriInfo.getUri());
             return null;
         }
 
@@ -149,13 +166,13 @@ public class XpkIconPreprocessor implements Preprocessor {
         if (diskCacheEditor != null) {
             DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
-                return new PreProcessResult(cacheEntry, ImageFrom.LOCAL);
+                return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
-                SLog.e(NAME, "not found xpk icon cache file. %s", uriInfo.getUri());
+                SLog.e(NAME, "Not found xpk icon cache file. %s", uriInfo.getUri());
                 return null;
             }
         } else {
-            return new PreProcessResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
+            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
         }
     }
 }

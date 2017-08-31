@@ -21,7 +21,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 
-import me.xiaopan.sketch.preprocess.InstalledAppIconPreprocessor;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -29,9 +28,10 @@ import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
 import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.LoadListener;
+import me.xiaopan.sketch.uri.ApkIconUriModel;
+import me.xiaopan.sketch.uri.AppIconUriModel;
 import me.xiaopan.sketch.uri.AssetUriModel;
 import me.xiaopan.sketch.uri.DrawableUriModel;
-import me.xiaopan.sketch.uri.FileVariantUriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -76,19 +76,6 @@ public class Sketch {
             }
         }
         return instance;
-    }
-
-    /**
-     * 创建用于显示已安装APP图标的uri
-     *
-     * @param packageName app包名
-     * @param versionCode app版本
-     * @return 用于显示已安装APP图标的uri
-     */
-    public static String createInstalledAppIconUri(String packageName, int versionCode) {
-        return String.format("%s%s?%s=%s&%s=%d", FileVariantUriModel.SCHEME,
-                InstalledAppIconPreprocessor.INSTALLED_APP_URI_HOST, InstalledAppIconPreprocessor.INSTALLED_APP_URI_PARAM_PACKAGE_NAME,
-                packageName, InstalledAppIconPreprocessor.INSTALLED_APP_URI_PARAM_VERSION_CODE, versionCode);
     }
 
     /**
@@ -193,16 +180,29 @@ public class Sketch {
     }
 
     /**
-     * 加载已安装APP的图标
+     * 加载 APK 的图标
      *
-     * @param packageName 已安装APP的包名
-     * @param versionCode 已安装APP的版本号
-     * @param listener    监听加载过程
-     * @return LoadHelper 你可以继续通过LoadHelper设置一下参数，最后调用其commit()方法提交即可
+     * @param filePath APP 的路径
+     * @param listener 监听加载过程
+     * @return LoadHelper 你可以继续通过 LoadHelper 设置一下参数，最后调用其 commit() 方法提交即可
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadInstalledAppIcon(String packageName, int versionCode, LoadListener listener) {
-        String uri = createInstalledAppIconUri(packageName, versionCode);
+    public LoadHelper loadApkIcon(String filePath, LoadListener listener) {
+        String uri = ApkIconUriModel.makeUri(filePath);
+        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
+    }
+
+    /**
+     * 加载 APP 的图标
+     *
+     * @param packageName APP 的包名
+     * @param versionCode APP 的版本号
+     * @param listener    监听加载过程
+     * @return LoadHelper 你可以继续通过 LoadHelper 设置一下参数，最后调用其 commit() 方法提交即可
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper loadAppIcon(String packageName, int versionCode, LoadListener listener) {
+        String uri = AppIconUriModel.makeUri(packageName, versionCode);
         return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
     }
 
@@ -263,15 +263,29 @@ public class Sketch {
     }
 
     /**
-     * 显示已安装APP的图标
+     * 显示已安装 APK 文件的图标
      *
-     * @param packageName 已安装APP的包名
-     * @param versionCode 已安装APP的版本号
-     * @param sketchView  默认实现是SketchImageView
-     * @return DisplayHelper 你可以继续通过DisplayHelper设置一下参数，最后调用其commit()方法提交即可
+     * @param filePath   APK 的路径
+     * @param sketchView 默认实现是 SketchImageView
+     * @return DisplayHelper 你可以继续通过 DisplayHelper 设置一下参数，最后调用其 commit() 方法提交即可
      */
-    public DisplayHelper displayInstalledAppIcon(String packageName, int versionCode, SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, createInstalledAppIconUri(packageName, versionCode), sketchView);
+    @SuppressWarnings("unused")
+    public DisplayHelper displayApkIcon(String filePath, SketchView sketchView) {
+        String uri = ApkIconUriModel.makeUri(filePath);
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
+    }
+
+    /**
+     * 显示 APP 的图标
+     *
+     * @param packageName APP 的包名
+     * @param versionCode APP 的版本号
+     * @param sketchView  默认实现是 SketchImageView
+     * @return DisplayHelper 你可以继续通过 DisplayHelper 设置一下参数，最后调用其 commit() 方法提交即可
+     */
+    public DisplayHelper displayAppIcon(String packageName, int versionCode, SketchView sketchView) {
+        String uri = AppIconUriModel.makeUri(packageName, versionCode);
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
     /**

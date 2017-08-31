@@ -63,8 +63,13 @@ public class SketchImageView extends FunctionPropertyView {
     }
 
     @Override
-    public DisplayRequest displayInstalledAppIcon(String packageName, int versionCode) {
-        return Sketch.with(getContext()).displayInstalledAppIcon(packageName, versionCode, this).commit();
+    public DisplayRequest displayAppIcon(String packageName, int versionCode) {
+        return Sketch.with(getContext()).displayAppIcon(packageName, versionCode, this).commit();
+    }
+
+    @Override
+    public DisplayRequest displayApkIcon(String filePath) {
+        return Sketch.with(getContext()).displayApkIcon(filePath, this).commit();
     }
 
     @Override

@@ -11,7 +11,7 @@ import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.bean.VideoItem;
-import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
+import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
 import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemFactory.MyVideoItem> {
@@ -79,7 +79,7 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
 
         @Override
         protected void onSetData(int i, VideoItem videoItem) {
-            iconImageView.displayImage(VideoThumbnailPreprocessor.createUri(videoItem.path));
+            iconImageView.displayImage(VideoThumbnailUriModel.makeUri(videoItem.path));
             nameTextView.setText(videoItem.title);
             sizeTextView.setText(videoItem.getTempFormattedSize(sizeTextView.getContext()));
             dateTextView.setText(String.valueOf(videoItem.getTempFormattedDate()));

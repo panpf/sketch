@@ -24,13 +24,9 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.CacheFileDataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeException;
-import me.xiaopan.sketch.preprocess.ImagePreprocessor;
-import me.xiaopan.sketch.preprocess.PreProcessResult;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriInfo;
 
@@ -60,32 +56,11 @@ public class HttpUriModel implements UriModel {
     }
 
     @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
-        if (context == null || uriInfo == null) {
-            return null;
-        }
-
-        // TODO: 2017/8/31 特殊文件预处理要被 专用的uri 替代
-        Configuration configuration = Sketch.with(context).getConfiguration();
-        ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
-        if (imagePreprocessor.match(context, uriInfo)) {
-            PreProcessResult prePrecessResult = imagePreprocessor.process(context, uriInfo);
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-            }
-
-            if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-            }
-
-            SLog.w(NAME, "pre process result is null", uriInfo.getUri());
-            throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
-        }
-
+    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
         if (downloadResult != null) {
             DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
             if (diskCacheEntry != null) {
-                return new CacheFileDataSource(diskCacheEntry, downloadResult.getImageFrom());
+                return new DiskCacheDataSource(diskCacheEntry, downloadResult.getImageFrom());
             }
 
             byte[] imageDataArray = downloadResult.getImageData();
@@ -93,15 +68,17 @@ public class HttpUriModel implements UriModel {
                 return new ByteArrayDataSource(imageDataArray, downloadResult.getImageFrom());
             }
 
-            SLog.w(NAME, "download result exception. %s", uriInfo.getUri());
-            throw new DecodeException("Download result exception", ErrorCause.DOWNLOAD_RESULT_IS_NULL);
+            SLog.e(NAME, "Not found data from download result. %s", uriInfo.getUri());
+            return null;
         } else {
+            Configuration configuration = Sketch.with(context).getConfiguration();
             DiskCache.Entry diskCacheEntry = configuration.getDiskCache().get(uriInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
-                return new CacheFileDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
+                return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
             }
 
-            throw new DecodeException(String.format("Not found disk cache: %s", uriInfo.getUri()), ErrorCause.DOWNLOAD_RESULT_IS_NULL);
+            SLog.e(NAME, "Not found disk cache. %s", uriInfo.getUri());
+            return null;
         }
     }
 }

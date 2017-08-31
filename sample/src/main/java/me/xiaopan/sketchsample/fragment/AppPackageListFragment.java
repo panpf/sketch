@@ -284,6 +284,7 @@ public class AppPackageListFragment extends BaseFragment implements AppItemFacto
                 appInfo.setApkFilePath(file.getPath());
                 appInfo.setAppSize(file.length());
                 appInfo.setFormattedAppSize(Formatter.formatFileSize(context, appInfo.getAppSize()));
+                appInfo.setTempXPK(true);
 
                 return appInfo;
             } catch (Exception e) {

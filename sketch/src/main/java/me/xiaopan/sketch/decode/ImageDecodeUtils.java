@@ -96,24 +96,21 @@ public class ImageDecodeUtils {
         }
     }
 
-    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName) {
-        if (dataSource instanceof CacheFileDataSource) {
-            DiskCache.Entry diskCacheEntry = ((CacheFileDataSource) dataSource).getDiskCacheEntry();
-
-            SLog.e(logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
-
-            if (!diskCacheEntry.delete()) {
-                SLog.e(logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
-                        diskCacheEntry.getUri(), loadRequest.getKey());
+    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName, String cause) {
+        if (dataSource instanceof DiskCacheDataSource) {
+            DiskCache.Entry diskCacheEntry = ((DiskCacheDataSource) dataSource).getDiskCacheEntry();
+            File cacheFile = diskCacheEntry.getFile();
+            if (diskCacheEntry.delete()) {
+                SLog.e(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey());
+            } else {
+                SLog.e(logName, "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey());
             }
-        }
-
-        if (dataSource instanceof FileDataSource) {
+        } else if (dataSource instanceof FileDataSource) {
             File file = ((FileDataSource) dataSource).getFile(null, null);
-            SLog.e(logName, "decode failed. filePath=%s, fileLength=%d",
-                    file.getPath(), file.exists() ? file.length() : 0);
+            SLog.e(logName, "Decode failed. %s. filePath=%s, fileLength=%d. %s",
+                    cause, file.getPath(), file.exists() ? file.length() : -1);
         } else {
-            SLog.e(logName, "decode failed. %s", String.valueOf(loadRequest.getUri()));
+            SLog.e(logName, "Decode failed. %s. %s", cause, loadRequest.getUri());
         }
     }
 

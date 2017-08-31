@@ -88,12 +88,19 @@ public interface SketchView {
     DisplayRequest displayContentImage(Uri uri);
 
     /**
-     * 显示已安装APP的图标
+     * 显示 APk 的图标
      *
-     * @param packageName APP包名
-     * @param versionCode APP版本号
+     * @param filePath APK 的路径
      */
-    DisplayRequest displayInstalledAppIcon(String packageName, int versionCode);
+    DisplayRequest displayApkIcon(String filePath);
+
+    /**
+     * 显示 APP 的图标
+     *
+     * @param packageName APP 的包名
+     * @param versionCode APP 的版本号
+     */
+    DisplayRequest displayAppIcon(String packageName, int versionCode);
 
     /**
      * 准备显示图片

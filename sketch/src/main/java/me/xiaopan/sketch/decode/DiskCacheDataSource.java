@@ -27,13 +27,13 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 
-public class CacheFileDataSource implements DataSource {
+public class DiskCacheDataSource implements DataSource {
 
     private DiskCache.Entry diskCacheEntry;
     private ImageFrom imageFrom;
     private long length = -1;
 
-    public CacheFileDataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
+    public DiskCacheDataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
         this.imageFrom = imageFrom;
     }

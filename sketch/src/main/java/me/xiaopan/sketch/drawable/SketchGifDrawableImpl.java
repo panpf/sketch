@@ -43,7 +43,7 @@ import pl.droidsonroids.gif.GifDrawable;
  */
 // SketchGifDrawableImpl类配置了混淆时忽略警告，以后内部类有变化时需要同步调整混淆配置，并打包验证
 public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawable {
-    private static final String LOG_NAME = "SketchGifDrawableImpl";
+    private static final String NAME = "SketchGifDrawableImpl";
 
     private String key;
     private String uri;
@@ -212,7 +212,7 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
 
     @Override
     public String getInfo() {
-        return SketchUtils.makeImageInfo(LOG_NAME, getOriginWidth(), getOriginHeight(), getMimeType(),
+        return SketchUtils.makeImageInfo(NAME, getOriginWidth(), getOriginHeight(), getMimeType(),
                 getExifOrientation(), mBuffer, getAllocationByteCount(), null);
     }
 

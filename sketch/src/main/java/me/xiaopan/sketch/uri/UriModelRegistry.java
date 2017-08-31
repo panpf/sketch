@@ -34,6 +34,8 @@ public class UriModelRegistry {
         this.uriModelList.add(new AssetUriModel());
         this.uriModelList.add(new DrawableUriModel());
         this.uriModelList.add(new ContentUriModel());
+        this.uriModelList.add(new ApkIconUriModel());
+        this.uriModelList.add(new AppIconUriModel());
         this.uriModelList.add(new Base64UriModel());
         this.uriModelList.add(new Base64VariantUriModel());
 //        this.uriModelList.add(new AndroidResourceUriModel());
@@ -42,6 +44,13 @@ public class UriModelRegistry {
     public UriModelRegistry add(UriModel uriModel) {
         if (uriModel != null) {
             uriModelList.add(uriModel);
+        }
+        return this;
+    }
+
+    public UriModelRegistry add(int index, UriModel uriModel) {
+        if (uriModel != null) {
+            uriModelList.add(index, uriModel);
         }
         return this;
     }

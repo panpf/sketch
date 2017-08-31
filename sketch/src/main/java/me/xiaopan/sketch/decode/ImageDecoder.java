@@ -106,6 +106,11 @@ public class ImageDecoder implements Identifier {
         DataSource dataSource = DataSourceFactory.processedCacheFirstMakeDataSource(request.getContext(), request.getUriInfo(),
                 request.getDownloadResult(), request.getOptions(), request.getProcessedImageDiskCacheKey());
 
+        if (dataSource == null) {
+            ImageDecodeUtils.decodeError(request, null, NAME, "Can not be generated DataSource");
+            return null;
+        }
+
         // Decode bounds and mime info
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();
         boundOptions.inJustDecodeBounds = true;
@@ -113,16 +118,14 @@ public class ImageDecoder implements Identifier {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
-            SLog.e(NAME, "decode bounds failed %s", request.getKey(), e);
-            ImageDecodeUtils.decodeError(request, dataSource, NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Unable to read bound information");
             return null;
         }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            SLog.e(NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
-                    boundOptions.outWidth, boundOptions.outHeight, request.getKey());
-            ImageDecodeUtils.decodeError(request, dataSource, NAME);
+            String cause = String.format("Image width or height less than or equal to 1px. imageSize: %dx%d", boundOptions.outWidth, boundOptions.outHeight);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause);
             return null;
         }
 

@@ -82,7 +82,7 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    public ProcessedCacheDataSource getDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+    public ProcessedDiskCacheDataSource getDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
@@ -93,7 +93,7 @@ public class ProcessedImageCache implements Identifier {
             editLock.unlock();
         }
 
-        return diskCacheEntry != null ? new ProcessedCacheDataSource(diskCacheEntry) : null;
+        return diskCacheEntry != null ? new ProcessedDiskCacheDataSource(diskCacheEntry) : null;
     }
 
     /**

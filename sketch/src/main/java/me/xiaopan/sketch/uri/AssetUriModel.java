@@ -19,24 +19,14 @@ package me.xiaopan.sketch.uri;
 import android.content.Context;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.AssetsDataSource;
-import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.CacheFileDataSource;
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeException;
-import me.xiaopan.sketch.preprocess.ImagePreprocessor;
-import me.xiaopan.sketch.preprocess.PreProcessResult;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.UriInfo;
 
 public class AssetUriModel implements UriModel {
 
     public static final String SCHEME = "asset://";
-    private static final String NAME = "AssetUriModel";
 
     public static String makeUri(String assetResName) {
         if (TextUtils.isEmpty(assetResName)) {
@@ -52,7 +42,7 @@ public class AssetUriModel implements UriModel {
 
     @Override
     public String getUriContent(String uri) {
-        return !TextUtils.isEmpty(uri) ? uri.substring(SCHEME.length()) : uri;
+        return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
     @Override
@@ -66,29 +56,7 @@ public class AssetUriModel implements UriModel {
     }
 
     @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
-        if (context == null || uriInfo == null) {
-            return null;
-        }
-
-        // TODO: 2017/8/31 特殊文件预处理要被 专用的uri 替代
-        Configuration configuration = Sketch.with(context).getConfiguration();
-        ImagePreprocessor imagePreprocessor = configuration.getImagePreprocessor();
-        if (imagePreprocessor.match(context, uriInfo)) {
-
-            PreProcessResult prePrecessResult = imagePreprocessor.process(context, uriInfo);
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                return new CacheFileDataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-            }
-
-            if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                return new ByteArrayDataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-            }
-
-            SLog.w(NAME, "pre process result is null", uriInfo.getUri());
-            throw new DecodeException("Pre process result is null", ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
-        }
-
+    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
         return new AssetsDataSource(context, uriInfo.getContent());
     }
 }

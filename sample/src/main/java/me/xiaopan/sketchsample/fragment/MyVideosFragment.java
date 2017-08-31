@@ -44,7 +44,7 @@ import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.adapter.itemfactory.MyVideoItemFactory;
 import me.xiaopan.sketchsample.bean.VideoItem;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
-import me.xiaopan.sketchsample.util.VideoThumbnailPreprocessor;
+import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
 import me.xiaopan.sketchsample.widget.HintView;
 
 @BindContentView(R.layout.fragment_recycler)
@@ -203,7 +203,7 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
 
             MyVideosFragment.this.adapter = adapter;
 
-            changeBackground(VideoThumbnailPreprocessor.createUri(imageUriList.get(0).path));
+            changeBackground(VideoThumbnailUriModel.makeUri(imageUriList.get(0).path));
         }
     }
 }

@@ -19,7 +19,6 @@ package me.xiaopan.sketch.uri;
 import android.content.Context;
 
 import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.UriInfo;
 
@@ -27,11 +26,12 @@ public interface UriModel {
 
     boolean match(String uri);
 
+    // TODO: 2017/8/31 重构这个方法的 设计与实现，感觉跟  getDiskCacheKey 是重复的
     String getUriContent(String uri);
 
     String getDiskCacheKey(String uri);
 
     boolean isFromNet();
 
-    DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException;
+    DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult);
 }

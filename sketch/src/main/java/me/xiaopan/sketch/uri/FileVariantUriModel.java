@@ -37,6 +37,6 @@ public class FileVariantUriModel extends FileUriModel {
 
     @Override
     public String getUriContent(String uri) {
-        return !TextUtils.isEmpty(uri) ? uri.substring(SCHEME.length()) : uri;
+        return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 }

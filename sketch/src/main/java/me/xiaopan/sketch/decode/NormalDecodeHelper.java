@@ -19,8 +19,9 @@ package me.xiaopan.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.util.Locale;
+
 import me.xiaopan.sketch.ErrorTracker;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -88,16 +89,16 @@ public class NormalDecodeHelper extends DecodeHelper {
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            ImageDecodeUtils.decodeError(request, dataSource, NAME);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid");
             return null;
         }
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            SLog.w(NAME, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
-                    boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
+            String cause = String.format(Locale.US, "Bitmap width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d",
+                    boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight());
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause);
             bitmap.recycle();
-            ImageDecodeUtils.decodeError(request, dataSource, NAME);
             return null;
         }
 
