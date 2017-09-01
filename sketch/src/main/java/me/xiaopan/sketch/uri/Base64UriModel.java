@@ -73,22 +73,23 @@ public class Base64UriModel extends UriModel {
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+        String diskCacheKey = getDiskCacheKey(uri);
 
-        DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
+        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
             return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey(uri));
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
         DataSource dataSource;
         try {
-            cacheEntry = diskCache.get(getDiskCacheKey(uri));
+            cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = cacheBase64Image(uri, diskCache);
+                dataSource = cacheBase64Image(context, uri, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -97,10 +98,12 @@ public class Base64UriModel extends UriModel {
         return dataSource;
     }
 
-    private DataSource cacheBase64Image(String uri, DiskCache diskCache) {
+    private DataSource cacheBase64Image(Context context, String uri, String diskCacheKey) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+
         byte[] data = Base64.decode(getUriContent(uri), Base64.DEFAULT);
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(getDiskCacheKey(uri));
+        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -143,7 +146,7 @@ public class Base64UriModel extends UriModel {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.MEMORY);
             } else {

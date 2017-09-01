@@ -20,7 +20,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -72,8 +71,8 @@ public class HttpUriModel extends UriModel {
             SLog.e(NAME, "Not found data from download result. %s", uri);
             return null;
         } else {
-            Configuration configuration = Sketch.with(context).getConfiguration();
-            DiskCache.Entry diskCacheEntry = configuration.getDiskCache().get(getDiskCacheKey(uri));
+            DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+            DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey(uri));
             if (diskCacheEntry != null) {
                 return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
             }

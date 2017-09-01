@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
@@ -48,6 +47,12 @@ public class VideoThumbnailUriModel extends UriModel {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
+    @NonNull
+    @Override
+    public String getDiskCacheKey(@NonNull String uri) {
+        return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
+    }
+
     /**
      * 获取 uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
      *
@@ -56,17 +61,8 @@ public class VideoThumbnailUriModel extends UriModel {
      */
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        // TODO: 2017/9/1 这里的磁盘缓存key，想办法改一下
-        String path = getUriContent(uri);
-
-        File file = new File(path);
-        if (!file.exists()) {
-            return null;
-        }
-        long lastModifyTime = file.lastModified();
-        String diskCacheKey = path + "." + lastModifyTime;
-
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+        String diskCacheKey = getDiskCacheKey(uri);
 
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
@@ -82,13 +78,7 @@ public class VideoThumbnailUriModel extends UriModel {
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                FFmpegMediaMetadataRetriever mediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
-                mediaMetadataRetriever.setDataSource(path);
-                try {
-                    dataSource = readVideoThumbnail(context, uri, diskCache, diskCacheKey, mediaMetadataRetriever);
-                } finally {
-                    mediaMetadataRetriever.release();
-                }
+                dataSource = readVideoThumbnail(context, uri, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -97,8 +87,19 @@ public class VideoThumbnailUriModel extends UriModel {
         return dataSource;
     }
 
-    private DataSource readVideoThumbnail(Context context, String uri, DiskCache diskCache,
-                                          String diskCacheKey, FFmpegMediaMetadataRetriever mediaMetadataRetriever) {
+    private DataSource readVideoThumbnail(Context context, String uri, String diskCacheKey) {
+        FFmpegMediaMetadataRetriever mediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(getUriContent(uri));
+        try {
+            return realReadVideoThumbnail(context, uri, diskCacheKey, mediaMetadataRetriever);
+        } finally {
+            mediaMetadataRetriever.release();
+        }
+    }
+
+    private DataSource realReadVideoThumbnail(Context context, String uri, String diskCacheKey, FFmpegMediaMetadataRetriever mediaMetadataRetriever) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+
         FFmpegMediaMetadataRetriever.Metadata metadata = mediaMetadataRetriever.getMetadata();
         int videoWidth = metadata.getInt(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
         int videoHeight = metadata.getInt(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);

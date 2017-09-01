@@ -59,6 +59,14 @@ public class LoadRequest extends FreeRideDownloadRequest {
     }
 
     /**
+     * 获取数据源
+     */
+    public DataSource getDataSource() {
+        DownloadResult downloadResult = getUriModel().isFromNet() ? getDownloadResult() : null;
+        return getUriModel().getDataSource(getContext(), getUri(), downloadResult);
+    }
+
+    /**
      * 获取数据源，优先考虑已处理缓存
      */
     public DataSource getDataSourceWithPressedCache() {
@@ -118,28 +126,26 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
         setStatus(Status.INTERCEPT_LOCAL_TASK);
 
-        if (!getUriModel().isFromNet()) {
-            // 本地请求直接执行加载
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",
-                        Thread.currentThread().getName(), getKey());
-            }
-            submitRunLoad();
-            return;
-        } else {
-            ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
+        if (getUriModel().isFromNet()) {
             // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
+            ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
             if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(this)) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(getLogName(), "local thread. disk cache image. runDispatch. %s. %s",
                             Thread.currentThread().getName(), getKey());
                 }
                 submitRunLoad();
-                return;
+            } else {
+                super.runDispatch();
             }
+        } else {
+            // 本地请求直接执行加载
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",
+                        Thread.currentThread().getName(), getKey());
+            }
+            submitRunLoad();
         }
-
-        super.runDispatch();
     }
 
     @Override

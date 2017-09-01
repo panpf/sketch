@@ -51,18 +51,16 @@ public class XpkIconUriModel extends UriModel {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
+    @NonNull
+    @Override
+    public String getDiskCacheKey(@NonNull String uri) {
+        return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
+    }
+
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        // TODO: 2017/9/1 这里的磁盘缓存key，想办法改一下
-        String filePath = getUriContent(uri);
-        File xpkFile = new File(filePath);
-        if (!xpkFile.exists()) {
-            return null;
-        }
-        long lastModifyTime = xpkFile.lastModified();
-        String diskCacheKey = filePath + "." + lastModifyTime;
-
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+        String diskCacheKey = getDiskCacheKey(uri);
 
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
@@ -78,7 +76,7 @@ public class XpkIconUriModel extends UriModel {
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = readXpkIcon(xpkFile, uri, diskCache, diskCacheKey);
+                dataSource = readXpkIcon(context, uri, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -87,10 +85,11 @@ public class XpkIconUriModel extends UriModel {
         return dataSource;
     }
 
-    private DataSource readXpkIcon(File file, String uri, DiskCache diskCache, String diskCacheKey) {
+    private DataSource readXpkIcon(Context context, String uri, String diskCacheKey) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
         ZipFile zipFile;
         try {
-            zipFile = new ZipFile(file);
+            zipFile = new ZipFile(new File(getUriContent(uri)));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

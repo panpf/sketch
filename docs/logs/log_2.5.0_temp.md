@@ -6,6 +6,7 @@ bugs：
 * :bug: 修复在多线程环境下可能拿到一个尚未执行 Initializer 的 Sketch 的 bug
 * :bug: 修复 ImageZoomer 的双击事件和单击事件可能会有冲突的BUG
 * :bug: 修复通过SketchUtils.generatorTempFileName(DataSource, String) 方法生成的文件名中含有换行符导致创建文件失败的BUG，直接影响了 DataSource.getFile(File, String) 方法
+* :bug: 修复当同一个文件被用于多种 uri 支持时，其磁盘缓存可能错乱的 BUG
 
 重命名：
 * :fire: Configuration.setImageSizeCalculator(ImageSizeCalculator) 方法改名为 setSizeCalculator

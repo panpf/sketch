@@ -23,7 +23,6 @@ import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
@@ -66,20 +65,16 @@ public class ApkIconUriModel extends UriModel {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
+    @NonNull
+    @Override
+    public String getDiskCacheKey(@NonNull String uri) {
+        return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
+    }
+
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        // TODO: 2017/9/1 这里的磁盘缓存key，想办法改一下
-
-        String apkFilePath = getUriContent(uri);
-
-        File apkFile = new File(apkFilePath);
-        if (!apkFile.exists()) {
-            return null;
-        }
-        long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = apkFilePath + "." + lastModifyTime;
-
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+        String diskCacheKey = getDiskCacheKey(uri);
 
         DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
@@ -95,7 +90,7 @@ public class ApkIconUriModel extends UriModel {
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = readApkIcon(context, uri, apkFilePath, diskCache, diskCacheKey);
+                dataSource = readApkIcon(context, uri, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -104,9 +99,11 @@ public class ApkIconUriModel extends UriModel {
         return dataSource;
     }
 
-    private DataSource readApkIcon(Context context, String uri, String apkFilePath, DiskCache diskCache, String diskCacheKey) {
+    private DataSource readApkIcon(Context context, String uri, String diskCacheKey) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, false, NAME, bitmapPool);
+
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, getUriContent(uri), false, NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }

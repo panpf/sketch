@@ -1272,4 +1272,22 @@ public class SketchUtils {
         }
         return null;
     }
+
+    /**
+     * 生成文件 uri 的磁盘缓存 key，关键在于要在 uri 的后面加上文件的修改时间来作为缓存 key，这样当文件发生变化时能及时更新缓存
+     *
+     * @param uri      文件 uri
+     * @param filePath 文件路径，要获取文件的修改时间
+     * @return 文件 uri 的磁盘缓存 key
+     */
+    public static String createFileUriDiskCacheKey(String uri, String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            long lastModifyTime = file.lastModified();
+            // 这里必须用 uri 连接修改时间，不能用 filePath，因为使用 filePath 的话当同一个文件可以用于多种 uri 时会导致磁盘缓存错乱
+            return uri + "." + lastModifyTime;
+        } else {
+            return uri;
+        }
+    }
 }

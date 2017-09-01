@@ -71,22 +71,23 @@ public class AppIconUriModel extends UriModel {
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+        String diskCacheKey = getDiskCacheKey(uri);
 
-        DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
+        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
         if (cacheEntry != null) {
             return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey(uri));
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
         DataSource dataSource;
         try {
-            cacheEntry = diskCache.get(getDiskCacheKey(uri));
+            cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = readAppIcon(context, uri, diskCache);
+                dataSource = readAppIcon(context, uri, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -95,7 +96,8 @@ public class AppIconUriModel extends UriModel {
         return dataSource;
     }
 
-    private DataSource readAppIcon(Context context, String uri, DiskCache diskCache) {
+    private DataSource readAppIcon(Context context, String uri, String diskCacheKey) {
+        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
         Uri imageUri = Uri.parse(uri);
 
         String packageName = imageUri.getHost();
@@ -136,7 +138,7 @@ public class AppIconUriModel extends UriModel {
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(getDiskCacheKey(uri));
+        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -179,7 +181,7 @@ public class AppIconUriModel extends UriModel {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
+            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
