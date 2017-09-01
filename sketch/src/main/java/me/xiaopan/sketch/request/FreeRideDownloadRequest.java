@@ -22,6 +22,7 @@ import java.util.Set;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -30,14 +31,14 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class FreeRideDownloadRequest extends DownloadRequest implements FreeRideManager.DownloadFreeRide {
     private Set<FreeRideManager.DownloadFreeRide> downloadFreeRideSet;
 
-    public FreeRideDownloadRequest(Sketch sketch, UriInfo uriInfo, String key, DownloadOptions options,
+    public FreeRideDownloadRequest(Sketch sketch, String uri, UriModel uriModel, String key, DownloadOptions options,
                                    DownloadListener downloadListener, DownloadProgressListener downloadProgressListener) {
-        super(sketch, uriInfo, key, options, downloadListener, downloadProgressListener);
+        super(sketch, uri, uriModel, key, options, downloadListener, downloadProgressListener);
     }
 
     @Override
     public String getDownloadFreeRideKey() {
-        return getUriInfo().getContent();
+        return getUri();
     }
 
     @Override
@@ -100,7 +101,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
     @Override
     public synchronized boolean processDownloadFreeRide() {
         DiskCache diskCache = getConfiguration().getDiskCache();
-        DiskCache.Entry diskCacheEntry = diskCache.get(getUriInfo().getDiskCacheKey());
+        DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
 
         if (diskCacheEntry != null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {

@@ -1,14 +1,15 @@
 package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.uri.UriModel;
 
 abstract class AsyncRequest extends BaseRequest implements Runnable {
 
     private RunStatus runStatus;
     private boolean sync;
 
-    AsyncRequest(Sketch sketch, UriInfo uriInfo, String key) {
-        super(sketch, uriInfo, key);
+    AsyncRequest(Sketch sketch, String uri, UriModel uriModel, String key) {
+        super(sketch, uri, uriModel, key);
     }
 
     @Override

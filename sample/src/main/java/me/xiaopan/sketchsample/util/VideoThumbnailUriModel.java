@@ -2,6 +2,7 @@ package me.xiaopan.sketchsample.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
@@ -17,19 +18,18 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
-public class VideoThumbnailUriModel implements UriModel {
+public class VideoThumbnailUriModel extends UriModel {
 
     public static final String SCHEME = "video.thumbnail://";
     private static final String NAME = "VideoThumbnailUriModel";
@@ -39,28 +39,25 @@ public class VideoThumbnailUriModel implements UriModel {
     }
 
     @Override
-    public boolean match(String uri) {
+    protected boolean match(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
     @Override
-    public String getUriContent(String uri) {
+    public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
+     */
     @Override
-    public String getDiskCacheKey(String uri) {
-        return uri;
-    }
-
-    @Override
-    public boolean isFromNet() {
-        return false;
-    }
-
-    @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
-        String path = uriInfo.getContent();
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+        // TODO: 2017/9/1 这里的磁盘缓存key，想办法改一下
+        String path = getUriContent(uri);
 
         File file = new File(path);
         if (!file.exists()) {
@@ -88,7 +85,7 @@ public class VideoThumbnailUriModel implements UriModel {
                 FFmpegMediaMetadataRetriever mediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
                 mediaMetadataRetriever.setDataSource(path);
                 try {
-                    dataSource = readVideoThumbnail(context, uriInfo, diskCache, diskCacheKey, mediaMetadataRetriever);
+                    dataSource = readVideoThumbnail(context, uri, diskCache, diskCacheKey, mediaMetadataRetriever);
                 } finally {
                     mediaMetadataRetriever.release();
                 }
@@ -100,7 +97,7 @@ public class VideoThumbnailUriModel implements UriModel {
         return dataSource;
     }
 
-    private DataSource readVideoThumbnail(Context context, UriInfo uriInfo, DiskCache diskCache,
+    private DataSource readVideoThumbnail(Context context, String uri, DiskCache diskCache,
                                           String diskCacheKey, FFmpegMediaMetadataRetriever mediaMetadataRetriever) {
         FFmpegMediaMetadataRetriever.Metadata metadata = mediaMetadataRetriever.getMetadata();
         int videoWidth = metadata.getInt(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
@@ -136,7 +133,7 @@ public class VideoThumbnailUriModel implements UriModel {
             return null;
         }
         if (frameBitmap.isRecycled()) {
-            SLog.e(NAME, "Video thumbnail bitmap recycled. %s", uriInfo.getUri());
+            SLog.e(NAME, "Video thumbnail bitmap recycled. %s", uri);
             return null;
         }
 
@@ -188,7 +185,7 @@ public class VideoThumbnailUriModel implements UriModel {
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
-                SLog.e(NAME, "Not found video thumbnail cache file. %s", uriInfo.getUri());
+                SLog.e(NAME, "Not found video thumbnail cache file. %s", uri);
                 return null;
             }
         } else {

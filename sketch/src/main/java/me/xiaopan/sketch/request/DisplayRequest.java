@@ -33,6 +33,7 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -45,10 +46,10 @@ public class DisplayRequest extends LoadRequest {
     private ViewInfo viewInfo;
     private RequestAndViewBinder requestAndViewBinder;
 
-    public DisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
+    public DisplayRequest(Sketch sketch, String uri, UriModel uriModel, String key, DisplayOptions displayOptions,
                           ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
                           DownloadProgressListener downloadProgressListener) {
-        super(sketch, uriInfo, key, displayOptions, null, downloadProgressListener);
+        super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener);
 
         this.viewInfo = viewInfo;
         this.displayOptions = displayOptions;
@@ -310,7 +311,7 @@ public class DisplayRequest extends LoadRequest {
             if (drawable instanceof SketchRefDrawable) {
                 drawableInfo = ((SketchRefDrawable) drawable).getInfo();
             }
-            SLog.d(getLogName(), "image display completed. runCompletedInMainThread. %s. %s. viewHashCode=%s. %s. %s",
+            SLog.d(getLogName(), "image display completed. runCompletedInMainThread. %s. %s. view(%s). %s. %s",
                     displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(viewInterface.hashCode()),
                     Thread.currentThread().getName(), getKey());
         }

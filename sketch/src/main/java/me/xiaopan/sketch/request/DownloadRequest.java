@@ -19,6 +19,7 @@ package me.xiaopan.sketch.request;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 下载请求
@@ -30,9 +31,9 @@ public class DownloadRequest extends AsyncRequest {
     private DownloadListener downloadListener;
     private DownloadProgressListener downloadProgressListener;
 
-    public DownloadRequest(Sketch sketch, UriInfo uriInfo, String key, DownloadOptions options,
+    public DownloadRequest(Sketch sketch, String uri, UriModel uriModel, String key, DownloadOptions options,
                            DownloadListener downloadListener, DownloadProgressListener downloadProgressListener) {
-        super(sketch, uriInfo, key);
+        super(sketch, uri, uriModel, key);
 
         this.options = options;
         this.downloadListener = downloadListener;
@@ -107,7 +108,7 @@ public class DownloadRequest extends AsyncRequest {
             setStatus(Status.CHECK_DISK_CACHE);
 
             DiskCache diskCache = getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(getUriInfo().getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(getLogName(), "from diskCache. runDispatch. %s. %s",

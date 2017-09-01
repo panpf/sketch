@@ -5,6 +5,7 @@ bugs：
 * :bug: 修复 Sketch 的单例可能失效的 BUG
 * :bug: 修复在多线程环境下可能拿到一个尚未执行 Initializer 的 Sketch 的 bug
 * :bug: 修复 ImageZoomer 的双击事件和单击事件可能会有冲突的BUG
+* :bug: 修复通过SketchUtils.generatorTempFileName(DataSource, String) 方法生成的文件名中含有换行符导致创建文件失败的BUG，直接影响了 DataSource.getFile(File, String) 方法
 
 重命名：
 * :fire: Configuration.setImageSizeCalculator(ImageSizeCalculator) 方法改名为 setSizeCalculator
@@ -29,7 +30,7 @@ bugs：
 
 变更：
 * :hammer: file:// 格式的 uri 已产生的磁盘缓存将全部作废，因为其磁盘缓存 key 去掉了 file://
-* :hammer: 现在你要现实 apk icon 就必须使用 apk.icon://协议 
+* :hammer: 现在你要现实 apk icon 就必须使用 apk.icon://协议
 
 新增：
 * :sparkles: 新增了 UriModel

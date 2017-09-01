@@ -18,30 +18,31 @@ package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.uri.UriModel;
 
 /**
- * Request创建工厂
+ * Request 创建工厂
  */
 public class RequestFactory implements Identifier {
     private static final String KEY = "RequestFactory";
 
-    public DisplayRequest newDisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
+    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriModel uriModel, String key, DisplayOptions displayOptions,
                                             ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
                                             DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
         // 因此ViewInfo和DisplayOptions不能直接拿来用，要重新New一个
-        return new FreeRideDisplayRequest(sketch, uriInfo, key, new DisplayOptions(displayOptions),
+        return new FreeRideDisplayRequest(sketch, uri, uriModel, key, new DisplayOptions(displayOptions),
                 new ViewInfo(viewInfo), requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
-    public LoadRequest newLoadRequest(Sketch sketch, UriInfo uriInfo, String key, LoadOptions options,
+    public LoadRequest newLoadRequest(Sketch sketch, String uri, UriModel uriModel, String key, LoadOptions options,
                                       LoadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new LoadRequest(sketch, uriInfo, key, options, listener, downloadProgressListener);
+        return new LoadRequest(sketch, uri, uriModel, key, options, listener, downloadProgressListener);
     }
 
-    public DownloadRequest newDownloadRequest(Sketch sketch, UriInfo uriInfo, String key, DownloadOptions options,
+    public DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriModel uriModel, String key, DownloadOptions options,
                                               DownloadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new FreeRideDownloadRequest(sketch, uriInfo, key, options, listener, downloadProgressListener);
+        return new FreeRideDownloadRequest(sketch, uri, uriModel, key, options, listener, downloadProgressListener);
     }
 
     @Override

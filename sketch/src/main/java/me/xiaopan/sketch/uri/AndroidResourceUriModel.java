@@ -16,6 +16,6 @@
 //
 //package me.xiaopan.sketch.uri;
 //
-//public class AndroidResourceUriModel implements UriModel{
+//public class AndroidResourceUriModel extends UriModel{
 //
 //}

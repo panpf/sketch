@@ -18,6 +18,7 @@ package me.xiaopan.sketch.uri;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
@@ -33,15 +34,14 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ApkIconUriModel implements UriModel {
+public class ApkIconUriModel extends UriModel {
 
     public static final String SCHEME = "apk.icon://";
     private static final String NAME = "ApkIconUriModel";
@@ -51,33 +51,33 @@ public class ApkIconUriModel implements UriModel {
     }
 
     @Override
-    public boolean match(String uri) {
+    protected boolean match(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，例如 "apk.icon:///sdcard/test.apk"，就会返回 "/sdcard/test.apk"
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，例如 "apk.icon:///sdcard/test.apk"，就会返回 "/sdcard/test.apk"
+     */
     @Override
-    public String getUriContent(String uri) {
+    public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
     @Override
-    public String getDiskCacheKey(String uri) {
-        return uri;
-    }
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+        // TODO: 2017/9/1 这里的磁盘缓存key，想办法改一下
 
-    @Override
-    public boolean isFromNet() {
-        return false;
-    }
+        String apkFilePath = getUriContent(uri);
 
-    @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
-        File apkFile = new File(uriInfo.getContent());
+        File apkFile = new File(apkFilePath);
         if (!apkFile.exists()) {
             return null;
         }
         long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = uriInfo.getContent() + "." + lastModifyTime;
+        String diskCacheKey = apkFilePath + "." + lastModifyTime;
 
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
@@ -95,7 +95,7 @@ public class ApkIconUriModel implements UriModel {
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = readApkIcon(context, uriInfo, diskCache, diskCacheKey);
+                dataSource = readApkIcon(context, uri, apkFilePath, diskCache, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -104,14 +104,14 @@ public class ApkIconUriModel implements UriModel {
         return dataSource;
     }
 
-    private DataSource readApkIcon(Context context, UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
+    private DataSource readApkIcon(Context context, String uri, String apkFilePath, DiskCache diskCache, String diskCacheKey) {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, uriInfo.getContent(), false, NAME, bitmapPool);
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, false, NAME, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
         if (iconBitmap.isRecycled()) {
-            SLog.e(NAME, "Apk icon bitmap recycled. %s", uriInfo.getUri());
+            SLog.e(NAME, "Apk icon bitmap recycled. %s", uri);
             return null;
         }
 
@@ -162,7 +162,7 @@ public class ApkIconUriModel implements UriModel {
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
-                SLog.e(NAME, "Not found apk icon cache file. %s", uriInfo.getUri());
+                SLog.e(NAME, "Not found apk icon cache file. %s", uri);
                 return null;
             }
         } else {

@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.uri;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -30,58 +31,64 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class Base64UriModel implements UriModel {
+public class Base64UriModel extends UriModel {
 
     public static final String SCHEME = "data:image/";
     private static final String NAME = "Base64UriModel";
 
     @Override
-    public boolean match(String uri) {
+    protected boolean match(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，例如 "data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z"，就会返回 "/9j/4QaORX...C8bg/U7T/in//Z"
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，例如 "data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z"，就会返回 "/9j/4QaORX...C8bg/U7T/in//Z"
+     */
     @Override
-    public String getUriContent(String uri) {
+    public String getUriContent(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) ? uri.substring(uri.indexOf(";") + ";base64,".length()) : uri;
     }
 
+    @NonNull
     @Override
-    public String getDiskCacheKey(String uri) {
+    public String getDiskCacheKey(@NonNull String uri) {
         return getUriContent(uri);
     }
 
     @Override
-    public boolean isFromNet() {
-        return false;
+    public boolean isConvertShortUriForKey() {
+        return true;
     }
 
     @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
-        DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+        DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
         if (cacheEntry != null) {
             return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey(uri));
         diskCacheEditLock.lock();
 
         DataSource dataSource;
         try {
-            cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            cacheEntry = diskCache.get(getDiskCacheKey(uri));
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = cacheBase64Image(uriInfo, diskCache);
+                dataSource = cacheBase64Image(uri, diskCache);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -90,10 +97,10 @@ public class Base64UriModel implements UriModel {
         return dataSource;
     }
 
-    private DataSource cacheBase64Image(UriInfo uriInfo, DiskCache diskCache) {
-        byte[] data = Base64.decode(uriInfo.getContent(), Base64.DEFAULT);
+    private DataSource cacheBase64Image(String uri, DiskCache diskCache) {
+        byte[] data = Base64.decode(getUriContent(uri), Base64.DEFAULT);
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
+        DiskCache.Editor diskCacheEditor = diskCache.edit(getDiskCacheKey(uri));
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -136,11 +143,11 @@ public class Base64UriModel implements UriModel {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.MEMORY);
             } else {
-                SLog.e(NAME, "Not found base64 image cache file. %s", uriInfo.getUri());
+                SLog.e(NAME, "Not found base64 image cache file. %s", uri);
                 return null;
             }
         } else {

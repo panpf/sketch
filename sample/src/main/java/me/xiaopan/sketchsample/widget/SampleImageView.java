@@ -15,18 +15,15 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
-import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
-import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
@@ -245,13 +242,8 @@ public class SampleImageView extends SketchImageView {
         messageBuilder.append("\n");
         messageBuilder.append(sketchDrawable.getUri());
 
-        UriInfo uriInfo = UriInfo.make(Sketch.with(getContext()).getConfiguration().getUriModelRegistry(), sketchDrawable.getUri());
-        DataSource dataSource = null;
-        try {
-            dataSource = DataSourceFactory.makeDataSource(getContext(), uriInfo, null);
-        } catch (DecodeException e) {
-            e.printStackTrace();
-        }
+        UriModel uriModel = UriModel.match(getContext(), sketchDrawable.getUri());
+        DataSource dataSource = DataSourceFactory.makeDataSource(getContext(), sketchDrawable.getUri(), uriModel, null);
         long imageLength = 0;
         try {
             imageLength = dataSource != null ? dataSource.getLength() : 0;

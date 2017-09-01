@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.util;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
@@ -17,16 +18,15 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class XpkIconUriModel implements UriModel {
+public class XpkIconUriModel extends UriModel {
 
     public static final String SCHEME = "xpk.icon://";
     private static final String NAME = "XpkIconUriModel";
@@ -36,33 +36,31 @@ public class XpkIconUriModel implements UriModel {
     }
 
     @Override
-    public boolean match(String uri) {
+    protected boolean match(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，例如 "xpk.icon:///sdcard/test.xpk"，就会返回 "/sdcard/test.xpk"
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，例如 "xpk.icon:///sdcard/test.xpk"，就会返回 "/sdcard/test.xpk"
+     */
     @Override
-    public String getUriContent(String uri) {
+    public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
     @Override
-    public String getDiskCacheKey(String uri) {
-        return uri;
-    }
-
-    @Override
-    public boolean isFromNet() {
-        return false;
-    }
-
-    @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
-        File xpkFile = new File(uriInfo.getContent());
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+        // TODO: 2017/9/1 这里的磁盘缓存key，想办法改一下
+        String filePath = getUriContent(uri);
+        File xpkFile = new File(filePath);
         if (!xpkFile.exists()) {
             return null;
         }
         long lastModifyTime = xpkFile.lastModified();
-        String diskCacheKey = uriInfo.getContent() + "." + lastModifyTime;
+        String diskCacheKey = filePath + "." + lastModifyTime;
 
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
@@ -80,7 +78,7 @@ public class XpkIconUriModel implements UriModel {
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = readXpkIcon(uriInfo, diskCache, diskCacheKey);
+                dataSource = readXpkIcon(xpkFile, uri, diskCache, diskCacheKey);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -89,10 +87,10 @@ public class XpkIconUriModel implements UriModel {
         return dataSource;
     }
 
-    private DataSource readXpkIcon(UriInfo uriInfo, DiskCache diskCache, String diskCacheKey) {
+    private DataSource readXpkIcon(File file, String uri, DiskCache diskCache, String diskCacheKey) {
         ZipFile zipFile;
         try {
-            zipFile = new ZipFile(uriInfo.getContent());
+            zipFile = new ZipFile(file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -100,7 +98,7 @@ public class XpkIconUriModel implements UriModel {
         InputStream inputStream;
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
-            SLog.e(NAME, "Not found icon.png in xpk file. %s", uriInfo.getUri());
+            SLog.e(NAME, "Not found icon.png in xpk file. %s", uri);
             return null;
         }
 
@@ -168,7 +166,7 @@ public class XpkIconUriModel implements UriModel {
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
-                SLog.e(NAME, "Not found xpk icon cache file. %s", uriInfo.getUri());
+                SLog.e(NAME, "Not found xpk icon cache file. %s", uri);
                 return null;
             }
         } else {

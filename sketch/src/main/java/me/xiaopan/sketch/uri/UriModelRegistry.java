@@ -16,13 +16,16 @@
 
 package me.xiaopan.sketch.uri;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * 负责管理和匹配 UriModel
  */
-// TODO: 2017/8/30 也许可以替代 ImagePreprocessor 了
 public class UriModelRegistry {
     private List<UriModel> uriModelList = new LinkedList<>();
 
@@ -38,33 +41,43 @@ public class UriModelRegistry {
         this.uriModelList.add(new AppIconUriModel());
         this.uriModelList.add(new Base64UriModel());
         this.uriModelList.add(new Base64VariantUriModel());
+        // TODO: 2017/9/1 实现 AndroidResourceUriModel
 //        this.uriModelList.add(new AndroidResourceUriModel());
     }
 
-    public UriModelRegistry add(UriModel uriModel) {
+    @NonNull
+    public UriModelRegistry add(@NonNull UriModel uriModel) {
+        //noinspection ConstantConditions
         if (uriModel != null) {
             uriModelList.add(uriModel);
         }
         return this;
     }
 
-    public UriModelRegistry add(int index, UriModel uriModel) {
+    @NonNull
+    public UriModelRegistry add(int index, @NonNull UriModel uriModel) {
+        //noinspection ConstantConditions
         if (uriModel != null) {
             uriModelList.add(index, uriModel);
         }
         return this;
     }
 
-    public boolean remove(UriModel uriModel) {
-        return uriModelList.remove(uriModel);
+    public boolean remove(@NonNull UriModel uriModel) {
+        //noinspection ConstantConditions
+        return uriModel != null && uriModelList.remove(uriModel);
     }
 
-    public UriModel match(String uri) {
-        for (UriModel uriModel : uriModelList) {
-            if (uriModel.match(uri)) {
-                return uriModel;
+    @Nullable
+    public UriModel match(@NonNull String uri) {
+        if (!TextUtils.isEmpty(uri)) {
+            for (UriModel uriModel : uriModelList) {
+                if (uriModel.match(uri)) {
+                    return uriModel;
+                }
             }
         }
+
         return null;
     }
 }

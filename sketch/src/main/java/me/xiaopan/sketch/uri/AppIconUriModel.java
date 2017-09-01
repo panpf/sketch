@@ -21,6 +21,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
@@ -35,15 +36,14 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.ByteArrayDataSource;
-import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.decode.DiskCacheDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriInfo;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class AppIconUriModel implements UriModel {
+public class AppIconUriModel extends UriModel {
 
     public static final String SCHEME = "app.icon://";
     private static final String NAME = "AppIconUriModel";
@@ -53,44 +53,40 @@ public class AppIconUriModel implements UriModel {
     }
 
     @Override
-    public boolean match(String uri) {
+    protected boolean match(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，对于 "app.icon://me.xiaopan.sketchsmaple/240" 格式的 uri 来说，就是返回它自己
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，对于 "app.icon://me.xiaopan.sketchsmaple/240" 格式的 uri 来说，就是返回它自己
+     */
     @Override
-    public String getUriContent(String uri) {
+    public String getUriContent(@NonNull String uri) {
         return uri;
     }
 
     @Override
-    public String getDiskCacheKey(String uri) {
-        return uri;
-    }
-
-    @Override
-    public boolean isFromNet() {
-        return false;
-    }
-
-    @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
 
-        DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+        DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
         if (cacheEntry != null) {
             return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(uriInfo.getDiskCacheKey());
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey(uri));
         diskCacheEditLock.lock();
 
         DataSource dataSource;
         try {
-            cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            cacheEntry = diskCache.get(getDiskCacheKey(uri));
             if (cacheEntry != null) {
                 dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
             } else {
-                dataSource = readAppIcon(context, uriInfo, diskCache);
+                dataSource = readAppIcon(context, uri, diskCache);
             }
         } finally {
             diskCacheEditLock.unlock();
@@ -99,12 +95,12 @@ public class AppIconUriModel implements UriModel {
         return dataSource;
     }
 
-    private DataSource readAppIcon(Context context, UriInfo uriInfo, DiskCache diskCache) {
-        Uri uri = Uri.parse(uriInfo.getUri());
+    private DataSource readAppIcon(Context context, String uri, DiskCache diskCache) {
+        Uri imageUri = Uri.parse(uri);
 
-        String packageName = uri.getHost();
+        String packageName = imageUri.getHost();
 
-        String path = uri.getPath();
+        String path = imageUri.getPath();
         if (path != null && path.startsWith("/")) {
             path = path.substring(1);
         }
@@ -113,7 +109,7 @@ public class AppIconUriModel implements UriModel {
             versionCode = Integer.valueOf(path);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            SLog.e(NAME, "Conversion app versionCode failed. %s", uriInfo.getUri());
+            SLog.e(NAME, "Conversion app versionCode failed. %s", uri);
             return null;
         }
 
@@ -136,11 +132,11 @@ public class AppIconUriModel implements UriModel {
         }
 
         if (iconBitmap.isRecycled()) {
-            SLog.e(NAME, "App icon bitmap recycled. %s", uriInfo.getUri());
+            SLog.e(NAME, "App icon bitmap recycled. %s", uri);
             return null;
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(uriInfo.getDiskCacheKey());
+        DiskCache.Editor diskCacheEditor = diskCache.edit(getDiskCacheKey(uri));
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
@@ -183,11 +179,11 @@ public class AppIconUriModel implements UriModel {
         }
 
         if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            DiskCache.Entry cacheEntry = diskCache.get(getDiskCacheKey(uri));
             if (cacheEntry != null) {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
-                SLog.e(NAME, "Not found app icon cache file. %s", uriInfo.getUri());
+                SLog.e(NAME, "Not found app icon cache file. %s", uri);
                 return null;
             }
         } else {

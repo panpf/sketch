@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.uri;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -24,34 +25,29 @@ import java.io.File;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.FileDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.UriInfo;
 
-public class FileUriModel implements UriModel {
+public class FileUriModel extends UriModel {
 
     public static final String SCHEME = "/";
 
     @Override
-    public boolean match(String uri) {
+    protected boolean match(@NonNull String uri) {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，但对于 "/sdcard/test.png" 格式的 uri 来说就是返回它自己
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，但对于 "/sdcard/test.png" 格式的 uri 来说就是返回它自己
+     */
     @Override
-    public String getUriContent(String uri) {
+    public String getUriContent(@NonNull String uri) {
         return uri;
     }
 
     @Override
-    public String getDiskCacheKey(String uri) {
-        return getUriContent(uri);
-    }
-
-    @Override
-    public boolean isFromNet() {
-        return false;
-    }
-
-    @Override
-    public DataSource getDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) {
-        return new FileDataSource(new File(uriInfo.getContent()));
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+        return new FileDataSource(new File(uri));
     }
 }

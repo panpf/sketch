@@ -28,6 +28,7 @@ import me.xiaopan.sketch.decode.GifDecodeResult;
 import me.xiaopan.sketch.decode.ProcessedImageCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -39,9 +40,9 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
     private LoadResult loadResult;
 
-    public LoadRequest(Sketch sketch, UriInfo uriInfo, String key, LoadOptions loadOptions,
+    public LoadRequest(Sketch sketch, String uri, UriModel uriModel, String key, LoadOptions loadOptions,
                        LoadListener loadListener, DownloadProgressListener downloadProgressListener) {
-        super(sketch, uriInfo, key, loadOptions, null, downloadProgressListener);
+        super(sketch, uri, uriModel, key, loadOptions, null, downloadProgressListener);
 
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;
@@ -101,7 +102,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
         setStatus(Status.INTERCEPT_LOCAL_TASK);
 
-        if (!getUriInfo().getUriModel().isFromNet()) {
+        if (!getUriModel().isFromNet()) {
             // 本地请求直接执行加载
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",

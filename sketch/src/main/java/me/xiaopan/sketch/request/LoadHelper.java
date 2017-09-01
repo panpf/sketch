@@ -17,12 +17,14 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -34,7 +36,8 @@ public class LoadHelper {
     private Sketch sketch;
     private boolean sync;
 
-    private UriInfo uriInfo;
+    private String uri;
+    private UriModel uriModel;
     private String key;
     private LoadOptions loadOptions = new LoadOptions();
     private LoadListener loadListener;
@@ -42,7 +45,8 @@ public class LoadHelper {
 
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.uriInfo = UriInfo.make(sketch.getConfiguration().getUriModelRegistry(), uri);
+        this.uri = uri;
+        this.uriModel = UriModel.match(sketch, uri);
     }
 
     /**
@@ -239,14 +243,14 @@ public class LoadHelper {
     }
 
     private boolean checkUri() {
-        if (uriInfo == null) {
+        if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
-        if (uriInfo.getUriModel() == null) {
-            SLog.e(NAME, "Not support uri. %s", uriInfo.getUri());
+        if (uriModel == null) {
+            SLog.e(NAME, "Not support uri. %s", uri);
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -306,14 +310,13 @@ public class LoadHelper {
         }
 
         // 根据URI和加载选项生成请求ID
-        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getUriModel(), loadOptions);
+        key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions);
     }
 
     private boolean checkRequestLevel() {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
-        if (loadOptions.getRequestLevel() == RequestLevel.LOCAL
-                && uriInfo.getUriModel().isFromNet()
-                && !sketch.getConfiguration().getDiskCache().exist(uriInfo.getDiskCacheKey())) {
+        if (loadOptions.getRequestLevel() == RequestLevel.LOCAL && uriModel.isFromNet()
+                && !sketch.getConfiguration().getDiskCache().exist(uriModel.getDiskCacheKey(uri))) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
@@ -331,7 +334,7 @@ public class LoadHelper {
 
     private LoadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        LoadRequest request = requestFactory.newLoadRequest(sketch, uriInfo, key, loadOptions, loadListener, downloadProgressListener);
+        LoadRequest request = requestFactory.newLoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

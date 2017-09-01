@@ -26,6 +26,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -34,10 +35,10 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideManager.DisplayFreeRide {
     private Set<FreeRideManager.DisplayFreeRide> displayFreeRideSet;
 
-    public FreeRideDisplayRequest(Sketch sketch, UriInfo uriInfo, String key, DisplayOptions displayOptions,
+    public FreeRideDisplayRequest(Sketch sketch, String uri, UriModel uriModel, String key, DisplayOptions displayOptions,
                                   ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
                                   DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
-        super(sketch, uriInfo, key, displayOptions, viewInfo, requestAndViewBinder, displayListener, downloadProgressListener);
+        super(sketch, uri, uriModel, key, displayOptions, viewInfo, requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
     @Override

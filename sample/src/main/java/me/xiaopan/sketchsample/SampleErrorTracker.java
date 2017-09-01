@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 
 import me.xiaopan.sketch.ErrorTracker;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchRefDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -286,7 +285,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     private String decodeUri(Context context, String imageUri) {
-        UriModel uriModel = Sketch.with(context).getConfiguration().getUriModelRegistry().match(imageUri);
+        UriModel uriModel = UriModel.match(context, imageUri);
         if (uriModel != null && uriModel instanceof DrawableUriModel) {
             try {
                 int resId = ((DrawableUriModel) uriModel).getResId(imageUri);

@@ -23,9 +23,8 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
-import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
-import me.xiaopan.sketch.request.UriInfo;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.BaseFragment;
@@ -69,15 +68,13 @@ public class InBitmapTestFragment extends BaseFragment {
     private View currentMode;
 
     private static Bitmap decodeImage(Context context, String imageUri, BitmapFactory.Options options) {
-        UriInfo uriInfo = UriInfo.make(Sketch.with(context).getConfiguration().getUriModelRegistry(), imageUri);
-        if (uriInfo == null || uriInfo.getUriModel() == null) {
+        UriModel uriInfo = UriModel.match(context, imageUri);
+        if (uriInfo == null) {
             return null;
         }
-        DataSource dataSource;
-        try {
-            dataSource = DataSourceFactory.makeDataSource(context, uriInfo, null);
-        } catch (DecodeException e) {
-            e.printStackTrace();
+
+        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri, uriInfo, null);
+        if (dataSource == null) {
             return null;
         }
 

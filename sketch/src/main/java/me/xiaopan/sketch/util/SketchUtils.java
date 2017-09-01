@@ -83,7 +83,6 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.uri.Base64UriModel;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.viewfun.huge.Tile;
 
@@ -1021,7 +1020,7 @@ public class SketchUtils {
      */
     public static String makeRequestKey(String imageUri, UriModel uriModel, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
-        if (uriModel != null && uriModel instanceof Base64UriModel) {
+        if (uriModel.isConvertShortUriForKey()) {
             builder.append(SketchMD5Utils.md5(imageUri));
         } else {
             builder.append(imageUri);
@@ -1220,11 +1219,14 @@ public class SketchUtils {
             return Base64.encodeToString(uri.getBytes(), Base64.DEFAULT);
         }
 
-        if (options.outMimeType == null || !options.outMimeType.startsWith("image/")) {
-            return Base64.encodeToString(uri.getBytes(), Base64.DEFAULT);
+        String uriEncode = SketchMD5Utils.md5(uri);
+        if (options.outMimeType != null && options.outMimeType.startsWith("image/")) {
+            String suffix = options.outMimeType.replace("image/", "");
+            return String.format("%s.%s", uriEncode, suffix);
+        } else {
+            return uriEncode;
         }
 
-        return String.format("%s.%s", Base64.encodeToString(uri.getBytes(), Base64.DEFAULT), options.outMimeType.replace("image/", ""));
     }
 
     public static Initializer findInitializer(Context context) {

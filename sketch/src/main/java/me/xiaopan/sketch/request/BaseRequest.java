@@ -21,19 +21,23 @@ import android.content.Context;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.uri.UriModel;
 
 public abstract class BaseRequest {
-    private UriInfo uriInfo;
+    private String uri;
+    private UriModel uriModel;
     private String key;
+    private String diskCacheKey;
     private Sketch sketch;
     private String logName = "Request";
     private Status status;
     private ErrorCause errorCause;
     private CancelCause cancelCause;
 
-    BaseRequest(Sketch sketch, UriInfo uriInfo, String key) {
+    BaseRequest(Sketch sketch, String uri, UriModel uriModel, String key) {
         this.sketch = sketch;
-        this.uriInfo = uriInfo;
+        this.uri = uri;
+        this.uriModel = uriModel;
         this.key = key;
     }
 
@@ -49,22 +53,23 @@ public abstract class BaseRequest {
         return sketch.getConfiguration();
     }
 
-    public UriInfo getUriInfo() {
-        return uriInfo;
+    public String getUri() {
+        return uri;
     }
 
-    /**
-     * 获取KEY
-     */
+    public UriModel getUriModel() {
+        return uriModel;
+    }
+
     public String getKey() {
         return key;
     }
 
-    /**
-     * 获取uri
-     */
-    public String getUri() {
-        return uriInfo.getUri();
+    public String getDiskCacheKey() {
+        if (diskCacheKey == null) {
+            diskCacheKey = uriModel.getDiskCacheKey(uri);
+        }
+        return diskCacheKey;
     }
 
     /**
@@ -75,7 +80,7 @@ public abstract class BaseRequest {
     }
 
     /**
-     * 日志名称
+     * 设置日志名称
      */
     void setLogName(String logName) {
         this.logName = logName;

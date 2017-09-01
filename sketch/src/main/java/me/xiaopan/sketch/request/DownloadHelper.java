@@ -16,13 +16,16 @@
 
 package me.xiaopan.sketch.request;
 
+import android.text.TextUtils;
+
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 下载Helper，负责组织、收集、初始化下载参数，最后执行commit()提交请求
+ * 下载 Helper，负责组织、收集、初始化下载参数，最后执行 commit() 提交请求
  */
 public class DownloadHelper {
     private static final String NAME = "DownloadHelper";
@@ -30,7 +33,8 @@ public class DownloadHelper {
     private Sketch sketch;
     private boolean sync;
 
-    private UriInfo uriInfo;
+    private String uri;
+    private UriModel uriModel;
     private String key;
     private DownloadOptions downloadOptions = new DownloadOptions();
     private DownloadListener downloadListener;
@@ -38,7 +42,8 @@ public class DownloadHelper {
 
     public DownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.uriInfo = UriInfo.make(sketch.getConfiguration().getUriModelRegistry(), uri);
+        this.uri = uri;
+        this.uriModel = UriModel.match(sketch, uri);
     }
 
     /**
@@ -120,20 +125,20 @@ public class DownloadHelper {
     }
 
     private boolean checkUri() {
-        if (uriInfo == null) {
+        if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
-        if (uriInfo.getUriModel() == null) {
-            SLog.e(NAME, "Not support uri. %s", uriInfo.getUri());
+        if (uriModel == null) {
+            SLog.e(NAME, "Not support uri. %s", uri);
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
-        if (!uriInfo.getUriModel().isFromNet()) {
-            SLog.e(NAME, "Only support http ot https. %s", uriInfo.getUri());
+        if (!uriModel.isFromNet()) {
+            SLog.e(NAME, "Only support http ot https. %s", uri);
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -148,13 +153,13 @@ public class DownloadHelper {
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
         // 根据URI和下载选项生成请求key
-        key = SketchUtils.makeRequestKey(uriInfo.getUri(), uriInfo.getUriModel(), downloadOptions);
+        key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions);
     }
 
     private boolean checkDiskCache() {
         if (!downloadOptions.isCacheInDiskDisabled()) {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(uriInfo.getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = diskCache.get(uriModel.getDiskCacheKey(uri));
             if (diskCacheEntry != null) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(NAME, "image download completed. %s", key);
@@ -172,8 +177,8 @@ public class DownloadHelper {
 
     private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DownloadRequest request = requestFactory.newDownloadRequest(sketch, uriInfo, key, downloadOptions,
-                downloadListener, downloadProgressListener);
+        DownloadRequest request = requestFactory.newDownloadRequest(sketch, uri, uriModel, key,
+                downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

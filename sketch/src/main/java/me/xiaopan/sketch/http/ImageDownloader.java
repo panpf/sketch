@@ -50,12 +50,12 @@ public class ImageDownloader implements Identifier {
         }
 
         DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String diskCacheKey = request.getUriInfo().getDiskCacheKey();
+        String diskCacheKey = request.getDiskCacheKey();
 
         // 使用磁盘缓存就必须要上锁
         ReentrantLock diskCacheEditLock = null;
         if (!request.getOptions().isCacheInDiskDisabled()) {
-            diskCacheEditLock = diskCache.getEditLock(request.getUriInfo().getDiskCacheKey());
+            diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         }
         if (diskCacheEditLock != null) {
             diskCacheEditLock.lock();
@@ -136,7 +136,7 @@ public class ImageDownloader implements Identifier {
             throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
         request.setStatus(BaseRequest.Status.CONNECTING);
 
-        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(request.getUriInfo().getContent());
+        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(request.getUri());
         if (request.isCanceled()) {
             httpResponse.releaseConnection();
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {

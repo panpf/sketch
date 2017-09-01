@@ -32,11 +32,10 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.DataSource;
 import me.xiaopan.sketch.decode.DataSourceFactory;
-import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.decode.ImageType;
-import me.xiaopan.sketch.request.UriInfo;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -61,13 +60,16 @@ public class ImageRegionDecoder {
     }
 
     public static ImageRegionDecoder build(Context context, final String imageUri,
-                                           final boolean correctImageOrientationDisabled) throws DecodeException, IOException {
-        UriInfo uriInfo = UriInfo.make(Sketch.with(context).getConfiguration().getUriModelRegistry(), imageUri);
-        if (uriInfo == null || uriInfo.getUriModel() == null) {
-            throw new IllegalArgumentException("Unknown scheme uri: " + imageUri);
+                                           final boolean correctImageOrientationDisabled) throws IOException {
+        UriModel uriModel = UriModel.match(context, imageUri);
+        if (uriModel == null) {
+            throw new IllegalArgumentException("Unknown scheme uri. " + imageUri);
         }
 
-        DataSource dataSource = DataSourceFactory.makeDataSource(context, uriInfo, null);
+        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri, uriModel, null);
+        if (dataSource == null) {
+            throw new IllegalArgumentException("Can not be generated DataSource.  " + imageUri);
+        }
 
         // 读取图片尺寸和类型
         BitmapFactory.Options boundOptions = new BitmapFactory.Options();

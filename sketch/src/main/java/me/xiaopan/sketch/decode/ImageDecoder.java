@@ -103,8 +103,8 @@ public class ImageDecoder implements Identifier {
      */
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         // Make date source
-        DataSource dataSource = DataSourceFactory.processedCacheFirstMakeDataSource(request.getContext(), request.getUriInfo(),
-                request.getDownloadResult(), request.getOptions(), request.getProcessedImageDiskCacheKey());
+        DataSource dataSource = DataSourceFactory.processedCacheFirstMakeDataSource(request.getContext(), request.getUri(),
+                request.getUriModel(), request.getDownloadResult(), request.getOptions(), request.getProcessedImageDiskCacheKey());
 
         if (dataSource == null) {
             ImageDecodeUtils.decodeError(request, null, NAME, "Can not be generated DataSource");

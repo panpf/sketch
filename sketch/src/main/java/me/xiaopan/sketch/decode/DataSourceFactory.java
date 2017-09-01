@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.LoadOptions;
-import me.xiaopan.sketch.request.UriInfo;
+import me.xiaopan.sketch.uri.UriModel;
 
 // TODO: 2017/8/31 重构
 public class DataSourceFactory {
@@ -32,13 +32,13 @@ public class DataSourceFactory {
      * 创建数据源，可用于解码
      *
      * @param context        Context
-     * @param uriInfo        图片uri
+     * @param uri            图片uri
+     * @param uriModel       uri model
      * @param downloadResult 下载结果
      * @return DataSource
-     * @throws DecodeException 无法创建数据源
      */
-    public static DataSource makeDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult) throws DecodeException {
-        DataSource dataSource = uriInfo.getUriModel().getDataSource(context, uriInfo, downloadResult);
+    public static DataSource makeDataSource(Context context, String uri, UriModel uriModel, DownloadResult downloadResult) {
+        DataSource dataSource = uriModel.getDataSource(context, uri, downloadResult);
         if (dataSource != null) {
             return dataSource;
         }
@@ -50,15 +50,15 @@ public class DataSourceFactory {
      * 创建数据源时已处理缓存优先
      *
      * @param context                    Context
-     * @param uriInfo                    图片uri
+     * @param uri                        图片uri
+     * @param uriModel                   uri model
      * @param options                    加载选项
      * @param downloadResult             下载结果
      * @param processedImageDiskCacheKey 已处理缓存key
      * @return DataSource
-     * @throws DecodeException 无法创建数据源
      */
-    public static DataSource processedCacheFirstMakeDataSource(Context context, UriInfo uriInfo, DownloadResult downloadResult,
-                                                               LoadOptions options, String processedImageDiskCacheKey) throws DecodeException {
+    public static DataSource processedCacheFirstMakeDataSource(Context context, String uri, UriModel uriModel, DownloadResult downloadResult,
+                                                               LoadOptions options, String processedImageDiskCacheKey) {
         Configuration configuration = Sketch.with(context).getConfiguration();
         ProcessedImageCache processedImageCache = configuration.getProcessedImageCache();
 
@@ -70,6 +70,6 @@ public class DataSourceFactory {
             }
         }
 
-        return makeDataSource(context, uriInfo, downloadResult);
+        return makeDataSource(context, uri, uriModel, downloadResult);
     }
 }
