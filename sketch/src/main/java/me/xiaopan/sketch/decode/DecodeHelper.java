@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 

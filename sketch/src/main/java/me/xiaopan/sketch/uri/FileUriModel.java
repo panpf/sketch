@@ -22,8 +22,8 @@ import android.text.TextUtils;
 
 import java.io.File;
 
-import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.FileDataSource;
+import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.datasource.FileDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 
 public class FileUriModel extends UriModel {

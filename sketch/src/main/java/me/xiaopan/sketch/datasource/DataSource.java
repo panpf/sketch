@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.datasource;
 
 import java.io.File;
 import java.io.IOException;

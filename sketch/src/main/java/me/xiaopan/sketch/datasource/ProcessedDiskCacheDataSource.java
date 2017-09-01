@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.datasource;
 
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class ProcessedDiskCacheDataSource extends DiskCacheDataSource {

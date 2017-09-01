@@ -74,7 +74,7 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.decode.ImageType;

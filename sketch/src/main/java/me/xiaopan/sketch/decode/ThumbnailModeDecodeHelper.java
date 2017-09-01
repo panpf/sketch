@@ -26,6 +26,7 @@ import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.LoadRequest;

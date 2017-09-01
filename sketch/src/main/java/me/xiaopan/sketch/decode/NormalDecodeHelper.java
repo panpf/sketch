@@ -24,6 +24,7 @@ import java.util.Locale;
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;

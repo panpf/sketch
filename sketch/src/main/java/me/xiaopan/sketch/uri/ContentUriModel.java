@@ -21,8 +21,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.decode.ContentDataSource;
-import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.datasource.ContentDataSource;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 
 public class ContentUriModel extends UriModel {

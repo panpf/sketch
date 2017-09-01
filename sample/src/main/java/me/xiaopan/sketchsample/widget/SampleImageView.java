@@ -16,8 +16,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DataSourceFactory;
+import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;

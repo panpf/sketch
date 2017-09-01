@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.datasource.ProcessedDiskCacheDataSource;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;

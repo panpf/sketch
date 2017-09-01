@@ -26,6 +26,8 @@ import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.ExifInterface;
 

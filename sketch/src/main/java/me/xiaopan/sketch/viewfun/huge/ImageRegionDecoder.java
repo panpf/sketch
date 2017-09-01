@@ -30,8 +30,8 @@ import java.io.InputStream;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DataSourceFactory;
+import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.decode.ImageType;

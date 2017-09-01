@@ -14,63 +14,57 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.datasource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 
-public class DiskCacheDataSource implements DataSource {
+public class FileDataSource implements DataSource {
 
-    private DiskCache.Entry diskCacheEntry;
-    private ImageFrom imageFrom;
+    private File file;
     private long length = -1;
 
-    public DiskCacheDataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
-        this.diskCacheEntry = diskCacheEntry;
-        this.imageFrom = imageFrom;
+    public FileDataSource(File file) {
+        this.file = file;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return diskCacheEntry.newInputStream();
+        return new FileInputStream(file);
     }
 
     @Override
-    public long getLength() throws IOException {
+    public synchronized long getLength() throws IOException {
         if (length >= 0) {
             return length;
         }
 
-        length = diskCacheEntry.getFile().length();
+        length = file.length();
         return length;
     }
 
     @Override
     public File getFile(File outDir, String outName) {
-        return diskCacheEntry.getFile();
+        return file;
     }
 
     @Override
     public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    public DiskCache.Entry getDiskCacheEntry() {
-        return diskCacheEntry;
+        return ImageFrom.LOCAL;
     }
 
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, diskCacheEntry.getFile());
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

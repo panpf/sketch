@@ -22,8 +22,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.decode.DataSource;
-import me.xiaopan.sketch.decode.DrawableDataSource;
+import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.datasource.DrawableDataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 
 public class DrawableUriModel extends UriModel {

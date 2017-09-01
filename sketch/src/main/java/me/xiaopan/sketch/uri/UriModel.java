@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 
 /**

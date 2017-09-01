@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.datasource;
 
 import android.content.Context;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.decode.ProcessedImageCache;
 import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.uri.UriModel;

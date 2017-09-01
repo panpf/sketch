@@ -20,8 +20,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.decode.AssetsDataSource;
-import me.xiaopan.sketch.decode.DataSource;
+import me.xiaopan.sketch.datasource.AssetsDataSource;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 
 public class AssetUriModel extends UriModel {

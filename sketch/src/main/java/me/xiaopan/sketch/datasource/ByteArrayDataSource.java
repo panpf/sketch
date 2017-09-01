@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.datasource;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.net.Uri;
 import android.text.TextUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,38 +32,24 @@ import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ContentDataSource implements DataSource {
+public class ByteArrayDataSource implements DataSource {
 
-    private Context context;
-    private Uri contentUri;
-    private long length = -1;
+    private byte[] data;
+    private ImageFrom imageFrom;
 
-    public ContentDataSource(Context context, Uri contentUri) {
-        this.context = context;
-        this.contentUri = contentUri;
+    public ByteArrayDataSource(byte[] data, ImageFrom imageFrom) {
+        this.data = data;
+        this.imageFrom = imageFrom;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return context.getContentResolver().openInputStream(contentUri);
+        return new ByteArrayInputStream(data);
     }
 
     @Override
-    public synchronized long getLength() throws IOException {
-        if (length >= 0) {
-            return length;
-        }
-
-        AssetFileDescriptor fileDescriptor = null;
-        try {
-            fileDescriptor = context.getContentResolver().openAssetFileDescriptor(contentUri, "r");
-            length = fileDescriptor != null ? fileDescriptor.getLength() : 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            SketchUtils.close(fileDescriptor);
-        }
-        return length;
+    public long getLength() throws IOException {
+        return data.length;
     }
 
     @Override
@@ -83,7 +66,7 @@ public class ContentDataSource implements DataSource {
         if (!TextUtils.isEmpty(outName)) {
             outFile = new File(outDir, outName);
         } else {
-            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, contentUri.toString()));
+            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, String.valueOf(System.currentTimeMillis())));
         }
 
         InputStream inputStream = getInputStream();
@@ -112,14 +95,13 @@ public class ContentDataSource implements DataSource {
 
     @Override
     public ImageFrom getImageFrom() {
-        return ImageFrom.LOCAL;
+        return imageFrom;
     }
 
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        ContentResolver contentResolver = context.getContentResolver();
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, contentResolver, contentUri);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, data);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

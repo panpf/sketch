@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.datasource;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -34,34 +34,32 @@ import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class AssetsDataSource implements DataSource {
+public class DrawableDataSource implements DataSource {
 
     private Context context;
-    private String assetsFilePath;
+    private int drawableId;
     private long length = -1;
 
-    public AssetsDataSource(Context context, String assetsFilePath) {
+    public DrawableDataSource(Context context, int drawableId) {
         this.context = context;
-        this.assetsFilePath = assetsFilePath;
+        this.drawableId = drawableId;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return context.getAssets().open(assetsFilePath);
+        return context.getResources().openRawResource(drawableId);
     }
 
     @Override
-    public synchronized long getLength() throws IOException {
+    public long getLength() throws IOException {
         if (length >= 0) {
             return length;
         }
 
         AssetFileDescriptor fileDescriptor = null;
         try {
-            fileDescriptor = context.getAssets().openFd(assetsFilePath);
+            fileDescriptor = context.getResources().openRawResourceFd(drawableId);
             length = fileDescriptor != null ? fileDescriptor.getLength() : 0;
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             SketchUtils.close(fileDescriptor);
         }
@@ -82,7 +80,7 @@ public class AssetsDataSource implements DataSource {
         if (!TextUtils.isEmpty(outName)) {
             outFile = new File(outDir, outName);
         } else {
-            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, assetsFilePath));
+            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, String.valueOf(drawableId)));
         }
 
         InputStream inputStream = getInputStream();
@@ -116,9 +114,9 @@ public class AssetsDataSource implements DataSource {
 
     @Override
     public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        AssetManager assetManager = context.getAssets();
+        Resources resources = context.getResources();
         try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, assetManager, assetsFilePath);
+            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, resources, drawableId);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
