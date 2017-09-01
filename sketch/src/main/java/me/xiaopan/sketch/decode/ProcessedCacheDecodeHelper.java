@@ -27,7 +27,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.datasource.DataSourceFactory;
-import me.xiaopan.sketch.datasource.ProcessedDiskCacheDataSource;
+import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.ExifInterface;
@@ -40,7 +40,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
 
     @Override
     public boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions) {
-        return dataSource instanceof ProcessedDiskCacheDataSource;
+        return dataSource instanceof DiskCacheDataSource && ((DiskCacheDataSource) dataSource).isFromProcessedCache();
     }
 
     @Override

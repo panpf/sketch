@@ -24,7 +24,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.datasource.ProcessedDiskCacheDataSource;
+import me.xiaopan.sketch.datasource.DiskCacheDataSource;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -83,7 +84,7 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    public ProcessedDiskCacheDataSource getDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+    public DiskCacheDataSource getDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
@@ -94,7 +95,11 @@ public class ProcessedImageCache implements Identifier {
             editLock.unlock();
         }
 
-        return diskCacheEntry != null ? new ProcessedDiskCacheDataSource(diskCacheEntry) : null;
+        if (diskCacheEntry == null) {
+            return null;
+        }
+
+        return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE).setFromProcessedCache(true);
     }
 
     /**

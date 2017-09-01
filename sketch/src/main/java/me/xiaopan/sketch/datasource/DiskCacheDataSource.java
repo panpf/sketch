@@ -32,6 +32,7 @@ public class DiskCacheDataSource implements DataSource {
     private DiskCache.Entry diskCacheEntry;
     private ImageFrom imageFrom;
     private long length = -1;
+    private boolean fromProcessedCache; // 标识是否来自已处理缓存，后续对已处理缓存的图片会有额外处理
 
     public DiskCacheDataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
@@ -75,5 +76,14 @@ public class DiskCacheDataSource implements DataSource {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean isFromProcessedCache() {
+        return fromProcessedCache;
+    }
+
+    public DiskCacheDataSource setFromProcessedCache(boolean fromProcessedCache) {
+        this.fromProcessedCache = fromProcessedCache;
+        return this;
     }
 }
