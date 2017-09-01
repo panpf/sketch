@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.decode.BitmapDecodeResult;
 import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.DecodeResult;
@@ -51,10 +52,25 @@ public class LoadRequest extends FreeRideDownloadRequest {
     }
 
     /**
-     * 获取磁盘缓存key
+     * 获取已处理功能使用的磁盘缓存 key
      */
-    public String getProcessedImageDiskCacheKey() {
+    public String getProcessedDiskCacheKey() {
         return getKey();
+    }
+
+    /**
+     * 获取数据源，优先考虑已处理缓存
+     */
+    public DataSource getDataSourceWithPressedCache() {
+        ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
+        if (processedImageCache.canUse(getOptions())) {
+            DataSource dataSource = processedImageCache.getDiskCache(this);
+            if (dataSource != null) {
+                return dataSource;
+            }
+        }
+
+        return getDataSource();
     }
 
     /**
@@ -113,8 +129,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         } else {
             ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
             // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
-            if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(
-                    getConfiguration().getDiskCache(), getProcessedImageDiskCacheKey())) {
+            if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(this)) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(getLogName(), "local thread. disk cache image. runDispatch. %s. %s",
                             Thread.currentThread().getName(), getKey());

@@ -17,7 +17,6 @@ import java.io.IOException;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -202,40 +201,6 @@ public class SampleImageView extends SketchImageView {
         super.onDetachedFromWindow();
     }
 
-    public enum Page {
-        PHOTO_LIST, UNSPLASH_LIST, SEARCH_LIST, APP_LIST, DETAIL, DEMO;
-    }
-
-    private class LongClickShowDrawableInfoListener implements View.OnLongClickListener {
-        @Override
-        public boolean onLongClick(View v) {
-            if (v.getContext() instanceof Activity) {
-                showInfo((Activity) v.getContext());
-                return true;
-            }
-            return false;
-        }
-
-        private void showInfo(Activity activity) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-            Drawable drawable = SketchUtils.getLastDrawable(getDrawable());
-
-            String imageInfo;
-            if (drawable instanceof SketchLoadingDrawable) {
-                imageInfo = "图片正在加载，请稍后";
-            } else if (drawable instanceof SketchDrawable) {
-                imageInfo = makeImageInfo(drawable, (SketchDrawable) drawable);
-            } else {
-                imageInfo = "未知来源图片";
-            }
-            builder.setMessage(imageInfo);
-
-            builder.setNegativeButton("取消", null);
-            builder.show();
-        }
-    }
-
     public String makeImageInfo(Drawable drawable, SketchDrawable sketchDrawable) {
         StringBuilder messageBuilder = new StringBuilder();
 
@@ -243,7 +208,7 @@ public class SampleImageView extends SketchImageView {
         messageBuilder.append(sketchDrawable.getUri());
 
         UriModel uriModel = UriModel.match(getContext(), sketchDrawable.getUri());
-        DataSource dataSource = DataSourceFactory.makeDataSource(getContext(), sketchDrawable.getUri(), uriModel, null);
+        DataSource dataSource = uriModel.getDataSource(getContext(), sketchDrawable.getUri(), null);
         long imageLength = 0;
         try {
             imageLength = dataSource != null ? dataSource.getLength() : 0;
@@ -288,5 +253,39 @@ public class SampleImageView extends SketchImageView {
                 .append(sketchDrawable.getKey());
 
         return messageBuilder.toString();
+    }
+
+    public enum Page {
+        PHOTO_LIST, UNSPLASH_LIST, SEARCH_LIST, APP_LIST, DETAIL, DEMO;
+    }
+
+    private class LongClickShowDrawableInfoListener implements View.OnLongClickListener {
+        @Override
+        public boolean onLongClick(View v) {
+            if (v.getContext() instanceof Activity) {
+                showInfo((Activity) v.getContext());
+                return true;
+            }
+            return false;
+        }
+
+        private void showInfo(Activity activity) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+            Drawable drawable = SketchUtils.getLastDrawable(getDrawable());
+
+            String imageInfo;
+            if (drawable instanceof SketchLoadingDrawable) {
+                imageInfo = "图片正在加载，请稍后";
+            } else if (drawable instanceof SketchDrawable) {
+                imageInfo = makeImageInfo(drawable, (SketchDrawable) drawable);
+            } else {
+                imageInfo = "未知来源图片";
+            }
+            builder.setMessage(imageInfo);
+
+            builder.setNegativeButton("取消", null);
+            builder.show();
+        }
     }
 }

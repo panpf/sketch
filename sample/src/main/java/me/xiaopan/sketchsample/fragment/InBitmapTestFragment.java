@@ -22,7 +22,6 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -68,12 +67,12 @@ public class InBitmapTestFragment extends BaseFragment {
     private View currentMode;
 
     private static Bitmap decodeImage(Context context, String imageUri, BitmapFactory.Options options) {
-        UriModel uriInfo = UriModel.match(context, imageUri);
-        if (uriInfo == null) {
+        UriModel uriModel = UriModel.match(context, imageUri);
+        if (uriModel == null) {
             return null;
         }
 
-        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri, uriInfo, null);
+        DataSource dataSource = uriModel.getDataSource(context, imageUri, null);
         if (dataSource == null) {
             return null;
         }

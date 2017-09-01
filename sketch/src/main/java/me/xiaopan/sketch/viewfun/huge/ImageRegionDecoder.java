@@ -31,7 +31,6 @@ import java.io.InputStream;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.decode.ImageType;
@@ -66,7 +65,7 @@ public class ImageRegionDecoder {
             throw new IllegalArgumentException("Unknown scheme uri. " + imageUri);
         }
 
-        DataSource dataSource = DataSourceFactory.makeDataSource(context, imageUri, uriModel, null);
+        DataSource dataSource = uriModel.getDataSource(context, imageUri, null);
         if (dataSource == null) {
             throw new IllegalArgumentException("Can not be generated DataSource.  " + imageUri);
         }

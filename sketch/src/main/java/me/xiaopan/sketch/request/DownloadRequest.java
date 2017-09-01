@@ -19,6 +19,7 @@ package me.xiaopan.sketch.request;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
@@ -55,6 +56,13 @@ public class DownloadRequest extends AsyncRequest {
     @SuppressWarnings("unused")
     public DownloadResult getDownloadResult() {
         return downloadResult;
+    }
+
+    /**
+     * 获取数据源
+     */
+    public DataSource getDataSource() {
+        return getUriModel().getDataSource(getContext(), getUri(), getDownloadResult());
     }
 
     @Override

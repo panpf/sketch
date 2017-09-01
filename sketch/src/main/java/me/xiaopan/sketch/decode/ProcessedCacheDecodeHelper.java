@@ -26,7 +26,6 @@ import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -97,8 +96,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         }
 
         // 由于是读取的经过处理的缓存图片，因此要重新读取原图的类型、宽高信息
-        DataSource originFileDataSource = DataSourceFactory.makeDataSource(request.getContext(),
-                request.getUri(), request.getUriModel(), request.getDownloadResult());
+        DataSource originFileDataSource = request.getDataSource();
         BitmapFactory.Options originImageOptions = null;
         if (originFileDataSource != null) {
             originImageOptions = new BitmapFactory.Options();

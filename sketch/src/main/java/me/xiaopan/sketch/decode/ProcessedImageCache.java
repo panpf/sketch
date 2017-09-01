@@ -27,6 +27,7 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -70,7 +71,10 @@ public class ProcessedImageCache implements Identifier {
         return inSampleSize >= 8;
     }
 
-    public boolean checkDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+    public boolean checkDiskCache(LoadRequest request) {
+        DiskCache diskCache = request.getConfiguration().getDiskCache();
+        String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
@@ -84,7 +88,10 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    public DiskCacheDataSource getDiskCache(DiskCache diskCache, String processedImageDiskCacheKey) {
+    public DiskCacheDataSource getDiskCache(LoadRequest request) {
+        DiskCache diskCache = request.getConfiguration().getDiskCache();
+        String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 
@@ -105,7 +112,10 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 保存bitmap到磁盘缓存
      */
-    public void saveToDiskCache(DiskCache diskCache, String processedImageDiskCacheKey, Bitmap bitmap) {
+    public void saveToDiskCache(LoadRequest request, Bitmap bitmap) {
+        DiskCache diskCache = request.getConfiguration().getDiskCache();
+        String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
 

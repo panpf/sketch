@@ -28,7 +28,6 @@ import butterknife.BindView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DataSourceFactory;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -725,7 +724,7 @@ public class ImageFragment extends BaseFragment {
                 return null;
             }
 
-            DataSource dataSource = DataSourceFactory.makeDataSource(getContext(), imageUri, uriModel, null);
+            DataSource dataSource = uriModel.getDataSource(getContext(), imageUri, null);
             if (dataSource == null) {
                 Toast.makeText(getActivity(), "图片还没有准备好", Toast.LENGTH_LONG).show();
                 return null;
@@ -813,7 +812,7 @@ public class ImageFragment extends BaseFragment {
                 return;
             }
 
-            DataSource dataSource = DataSourceFactory.makeDataSource(getContext(), imageUri, uriModel, null);
+            DataSource dataSource = uriModel.getDataSource(getContext(), imageUri, null);
             if (dataSource == null) {
                 Toast.makeText(getActivity(), "图片还没有准备好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                 return;
