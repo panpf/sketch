@@ -29,14 +29,14 @@ public class RequestAndViewBinder {
     private WeakReference<SketchView> imageViewReference;
 
     public RequestAndViewBinder(SketchView imageView) {
-        this.imageViewReference = new WeakReference<SketchView>(imageView);
+        this.imageViewReference = new WeakReference<>(imageView);
     }
 
     public void setDisplayRequest(DisplayRequest displayRequest) {
         this.displayRequest = displayRequest;
     }
 
-    public SketchView getImageViewInterface() {
+    public SketchView getView() {
         final SketchView sketchView = imageViewReference.get();
         if (displayRequest != null) {
             DisplayRequest holderDisplayRequest = SketchUtils.findDisplayRequest(sketchView);
@@ -51,6 +51,6 @@ public class RequestAndViewBinder {
     }
 
     public boolean isBroken() {
-        return getImageViewInterface() == null;
+        return getView() == null;
     }
 }

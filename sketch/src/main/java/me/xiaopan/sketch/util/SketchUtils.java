@@ -622,7 +622,7 @@ public class SketchUtils {
     }
 
     /**
-     * 从ImageViewInterface上查找DisplayRequest
+     * 从 SketchView 上查找 DisplayRequest
      */
     public static DisplayRequest findDisplayRequest(SketchView sketchView) {
         if (sketchView != null) {

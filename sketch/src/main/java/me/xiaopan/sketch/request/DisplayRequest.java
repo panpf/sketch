@@ -304,7 +304,7 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getShapeSize(), displayOptions.getImageShaper());
         }
 
-        SketchView viewInterface = requestAndViewBinder.getImageViewInterface();
+        SketchView viewInterface = requestAndViewBinder.getView();
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             String drawableInfo = "unknown";
             if (drawable instanceof SketchRefDrawable) {
@@ -338,8 +338,8 @@ public class DisplayRequest extends LoadRequest {
 
         // 显示失败图片
         if (displayOptions.getErrorImage() != null) {
-            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(getContext(), requestAndViewBinder.getImageViewInterface(), displayOptions);
-            displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), errorDrawable);
+            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(getContext(), requestAndViewBinder.getView(), displayOptions);
+            displayOptions.getImageDisplayer().display(requestAndViewBinder.getView(), errorDrawable);
         } else {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "failedDrawable is null. runErrorInMainThread. %s. %s",
