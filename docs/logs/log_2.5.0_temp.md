@@ -35,8 +35,9 @@ bugs：
 
 新增：
 * :sparkles: 新增了 UriModel
-* :sparkles: 新增 apk.icon:///sdcard/file.apk 协议
-* :sparkles: 新增 app.icon://me.xiaopan.sketchsample/240 协议
+* :sparkles: 新增 apk.icon:///sdcard/file.apk 协议，代替 ApkIconPreprocessor
+* :sparkles: 新增 app.icon://me.xiaopan.sketchsample/240 协议，代替 InstallAppIconPreprocessor
+* :sparkles: 新增 android.resource://me.xiaopan.sketchsample/drawable/ic_launcher 协议
 * :sparkles: SketchImageView 新增 displayApkIcon(String) 方法，用于显示 APK 的图标
 * :sparkles: Sketch 新增 displayApkIcon(String, SketchView) 方法，用于显示 APK 的图标
 * :sparkles: Sketch 新增 loadApkIcon(String, LoadListener) 方法，用于加载 APK 的图标
@@ -44,7 +45,8 @@ bugs：
 wiki待办：
 * UriModel wiki 新增
 * UriScheme wiki 删除
-* 现在有专门的 apk.icon:// 协议支持，那么现实 apk icon 的方式就得变化了
+* 现在有专门的 apk.icon:// 协议支持，那么显示 apk icon 的方式就得变化了
+* 新增了几种 uri readme 得更新了
 
 
 [了解 Sketch 日志]: ../wiki/log.md

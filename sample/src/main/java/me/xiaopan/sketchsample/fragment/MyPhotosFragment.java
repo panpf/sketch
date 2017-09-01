@@ -170,8 +170,9 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
             ImageOrientationCorrectTestFileGenerator generator = ImageOrientationCorrectTestFileGenerator.getInstance(context);
             String[] testFilePaths = generator.getFilePaths();
 
-            List<String> imagePathList = new ArrayList<>(cursor.getCount() + AssetImage.ALL.length + testFilePaths.length);
-            Collections.addAll(imagePathList, AssetImage.ALL);
+            String[] allUris = AssetImage.getAll(getContext());
+            List<String> imagePathList = new ArrayList<>(cursor.getCount() + allUris.length + testFilePaths.length);
+            Collections.addAll(imagePathList, allUris);
             Collections.addAll(imagePathList, testFilePaths);
             while (cursor.moveToNext()) {
                 imagePathList.add(String.format("file://%s", cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))));

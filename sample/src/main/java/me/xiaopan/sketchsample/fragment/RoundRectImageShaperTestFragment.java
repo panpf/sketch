@@ -88,6 +88,6 @@ public class RoundRectImageShaperTestFragment extends BaseFragment {
         RoundRectImageShaper imageShaper = new RoundRectImageShaper(radiusProgress).setStroke(Color.WHITE, strokeProgress);
 
         imageView.getOptions().setImageShaper(imageShaper);
-        imageView.displayImage(AssetImage.SAMPLE_JPG);
+        imageView.displayImage(AssetImage.TYPE_TEST_JPG);
     }
 }

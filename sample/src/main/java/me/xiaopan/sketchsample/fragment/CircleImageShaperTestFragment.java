@@ -62,6 +62,6 @@ public class CircleImageShaperTestFragment extends BaseFragment {
         CircleImageShaper imageShaper = new CircleImageShaper().setStroke(Color.WHITE, strokeProgress);
 
         imageView.getOptions().setImageShaper(imageShaper);
-        imageView.displayImage(AssetImage.SAMPLE_JPG);
+        imageView.displayImage(AssetImage.TYPE_TEST_JPG);
     }
 }

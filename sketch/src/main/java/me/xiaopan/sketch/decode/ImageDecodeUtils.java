@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,12 +100,16 @@ public class ImageDecodeUtils {
         }
     }
 
-    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName, String cause) {
+    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName, String cause, Throwable tr) {
+        if (tr != null) {
+            SLog.e(logName, Log.getStackTraceString(tr));
+        }
+
         if (dataSource instanceof DiskCacheDataSource) {
             DiskCache.Entry diskCacheEntry = ((DiskCacheDataSource) dataSource).getDiskCacheEntry();
             File cacheFile = diskCacheEntry.getFile();
             if (diskCacheEntry.delete()) {
-                SLog.e(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey());
+                SLog.e(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey(), tr);
             } else {
                 SLog.e(logName, "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey());
             }

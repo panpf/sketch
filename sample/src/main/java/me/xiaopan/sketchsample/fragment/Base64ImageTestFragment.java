@@ -42,7 +42,7 @@ public class Base64ImageTestFragment extends BaseFragment {
             }
         });
 
-        editText.setText(AssetImage.BASE64_IMAGE);
+        editText.setText(AssetImage.URI_TEST_BASE64);
     }
 
     private void showImage(String imageText) {

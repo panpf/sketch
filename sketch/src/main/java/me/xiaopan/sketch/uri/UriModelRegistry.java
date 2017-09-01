@@ -37,12 +37,11 @@ public class UriModelRegistry {
         this.uriModelList.add(new AssetUriModel());
         this.uriModelList.add(new DrawableUriModel());
         this.uriModelList.add(new ContentUriModel());
+        this.uriModelList.add(new AndroidResUriModel());
         this.uriModelList.add(new ApkIconUriModel());
         this.uriModelList.add(new AppIconUriModel());
         this.uriModelList.add(new Base64UriModel());
         this.uriModelList.add(new Base64VariantUriModel());
-        // TODO: 2017/9/1 实现 AndroidResourceUriModel
-//        this.uriModelList.add(new AndroidResourceUriModel());
     }
 
     @NonNull

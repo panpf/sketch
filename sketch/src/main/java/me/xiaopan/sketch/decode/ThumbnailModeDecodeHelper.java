@@ -125,7 +125,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid");
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid", null);
             return null;
         }
 
@@ -133,7 +133,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
             String cause = String.format(Locale.US, "Bitmap width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d",
                     boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight());
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null);
             bitmap.recycle();
             return null;
         }

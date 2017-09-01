@@ -105,7 +105,7 @@ public class ImageDecoder implements Identifier {
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         DataSource dataSource = request.getDataSourceWithPressedCache();
         if (dataSource == null) {
-            ImageDecodeUtils.decodeError(request, null, NAME, "Can not be generated DataSource");
+            ImageDecodeUtils.decodeError(request, null, NAME, "Can not be generated DataSource", null);
             return null;
         }
 
@@ -116,14 +116,14 @@ public class ImageDecoder implements Identifier {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
         } catch (IOException e) {
             e.printStackTrace();
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Unable to read bound information");
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Unable to read bound information", e);
             return null;
         }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             String cause = String.format("Image width or height less than or equal to 1px. imageSize: %dx%d", boundOptions.outWidth, boundOptions.outHeight);
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause);
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null);
             return null;
         }
 
