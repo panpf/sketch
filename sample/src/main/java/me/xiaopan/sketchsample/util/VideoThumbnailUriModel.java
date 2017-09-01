@@ -42,6 +42,12 @@ public class VideoThumbnailUriModel extends UriModel {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
+    /**
+     * 获取 uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
+     *
+     * @param uri 图片 uri
+     * @return uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
+     */
     @Override
     public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
@@ -53,12 +59,6 @@ public class VideoThumbnailUriModel extends UriModel {
         return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
     }
 
-    /**
-     * 获取 uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
-     *
-     * @param uri 图片 uri
-     * @return uri 所真正包含的内容部分，例如 "video.thumbnail:///sdcard/test.mp4"，就会返回 "/sdcard/test.mp4"
-     */
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
