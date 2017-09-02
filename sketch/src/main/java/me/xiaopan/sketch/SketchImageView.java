@@ -17,7 +17,6 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.request.DisplayCache;
@@ -58,7 +57,7 @@ public class SketchImageView extends FunctionPropertyView {
     }
 
     @Override
-    public DisplayRequest displayContentImage(Uri uri) {
+    public DisplayRequest displayContentImage(String uri) {
         return Sketch.with(getContext()).displayFromContent(uri, this).commit();
     }
 

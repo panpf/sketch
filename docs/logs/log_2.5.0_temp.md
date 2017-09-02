@@ -1,4 +1,4 @@
-:fire: 如果你用到了下述重命名和移除部分功能以及 ErrorTracker 的话就不能无痛升级 :fire: 
+:fire: 如果你用到了下述重命名、移除和重构部分功能以及 ErrorTracker 的话就不能无痛升级 :fire: 
 
 bugs：
 * :bug: 修复在某些 ROM 上查找 Initializer 时碰到 meta 值不是 String 时崩溃的 BUG
@@ -20,7 +20,6 @@ bugs：
 * :fire: SketchImageView.displayInstalledAppIcon(String, int) 重命名为 displayAppIcon(String, int)
 * :fire: Sketch.displayInstalledAppIcon(String, int, SketchView) 重命名为 displayAppIcon(String, int, SketchView)
 * :fire: Sketch.loadInstalledAppIcon(String, int, LoadListener) 重命名为 loadAppIcon(String, int, LoadListener)
-* :fire: Sketch.loadFromURI(Uri, LoadListener) 重命名为 loadFromContent(Uri, LoadListener)
 
 移除：
 * :fire: 移除 SLogType 类，其功能整合到了 SLog 中 ([了解 Sketch 日志])
@@ -36,11 +35,14 @@ bugs：
 * :fire: 移除 ErrorCause.SOURCE_BITMAP_RECYCLED
 * :fire: 移除 DownloadListener、LoadListener、DisplayListener 的 onStarted() 方法
 
-变更：
+重构：
 * :hammer: file:// 格式的 uri 已产生的磁盘缓存将全部作废，因为其磁盘缓存 key 去掉了 file://
-* :hammer: 现在你要现实 apk icon 就必须使用 apk.icon://协议
+* :hammer: 现在你要显示 apk icon 就必须使用 apk.icon:// 协议
 * :hammer: DownloadListener、LoadListener、DisplayListener 新增 onStartLoad() 方法代替之前的 onStarted() ，现在只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
 * :hammer: 现在 LoadHelper 不接受空的 LoadListener
+* :hammer: Sketch.displayFromContent(Uri, SketchView) 方法签名现在改为 Sketch.displayFromContent(String, SketchView)
+* :hammer: Sketch.loadFromURI(Uri, SketchView) 方法重构为 Sketch.loadFromContent(String, SketchView)
+* :hammer: SketchImageView.displayContentImage(Uri) 方法签名现在改为 SketchImageView.displayContentImage(String)
 
 新增：
 * :sparkles: 新增了 UriModel

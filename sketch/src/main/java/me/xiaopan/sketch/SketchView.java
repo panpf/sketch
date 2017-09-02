@@ -18,7 +18,6 @@ package me.xiaopan.sketch;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -80,12 +79,12 @@ public interface SketchView {
     DisplayRequest displayAssetImage(String imageFileName);
 
     /**
-     * 显示来自ContentProvider的图片
+     * 显示来自 ContentProvider 的图片
      *
      * @param uri 图片URI
      */
     @SuppressWarnings("unused")
-    DisplayRequest displayContentImage(Uri uri);
+    DisplayRequest displayContentImage(String uri);
 
     /**
      * 显示 APk 的图标

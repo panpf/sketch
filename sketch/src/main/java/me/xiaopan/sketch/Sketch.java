@@ -18,7 +18,6 @@ package me.xiaopan.sketch;
 
 import android.app.Application;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -174,13 +173,13 @@ public class Sketch {
     /**
      * 加载 URI 指向的图片
      *
-     * @param uri      图片 Uri，会通过 ContentResolver().openInputStream(Uri) 方法来读取图片
+     * @param uri      来自 ContentProvider 的图片的 Uri，应该是 content://、file:// 或 android.resource:// ,会通过 ContentResolver().openInputStream(Uri) 方法来读取图片
      * @param listener 监听加载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadFromContent(@NonNull Uri uri, @Nullable LoadListener listener) {
-        return configuration.getHelperFactory().getLoadHelper(this, uri.toString(), listener);
+    public LoadHelper loadFromContent(@NonNull String uri, @Nullable LoadListener listener) {
+        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
 
     /**
@@ -191,7 +190,7 @@ public class Sketch {
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadApkIcon(@NonNull String filePath, LoadListener listener) {
+    public LoadHelper loadApkIcon(@NonNull String filePath, @Nullable LoadListener listener) {
         String uri = ApkIconUriModel.makeUri(filePath);
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
@@ -205,7 +204,7 @@ public class Sketch {
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadAppIcon(String packageName, int versionCode, LoadListener listener) {
+    public LoadHelper loadAppIcon(@NonNull String packageName, int versionCode, @Nullable LoadListener listener) {
         String uri = AppIconUriModel.makeUri(packageName, versionCode);
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
@@ -227,7 +226,7 @@ public class Sketch {
      * @param sketchView Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
-    public DisplayHelper display(String uri, SketchView sketchView) {
+    public DisplayHelper display(@NonNull String uri, @NonNull SketchView sketchView) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
@@ -238,7 +237,7 @@ public class Sketch {
      * @param sketchView   Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
-    public DisplayHelper displayFromAsset(String assetResName, SketchView sketchView) {
+    public DisplayHelper displayFromAsset(@NonNull String assetResName, @NonNull SketchView sketchView) {
         String uri = AssetUriModel.makeUri(assetResName);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
@@ -250,20 +249,20 @@ public class Sketch {
      * @param sketchView    Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
-    public DisplayHelper displayFromResource(int drawableResId, SketchView sketchView) {
+    public DisplayHelper displayFromResource(@DrawableRes int drawableResId, @NonNull SketchView sketchView) {
         String uri = DrawableUriModel.makeUri(drawableResId);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
     /**
-     * 显示来自 ContentProvider 的图片
+     * 显示来自 ContentProvider 的图片，图片 uri，
      *
-     * @param uri        来自 ContentProvider 的图片的 Uri，会通过 ContentResolver().openInputStream(Uri) 方法来读取图片
+     * @param uri        来自 ContentProvider 的图片的 Uri，应该是 content://、file:// 或 android.resource:// ,会通过 ContentResolver().openInputStream(Uri) 方法来读取图片
      * @param sketchView Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
-    public DisplayHelper displayFromContent(Uri uri, SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, sketchView);
+    public DisplayHelper displayFromContent(@NonNull String uri, @NonNull SketchView sketchView) {
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 
     /**
