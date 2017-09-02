@@ -57,7 +57,7 @@ public class CallbackHandler {
                         break;
 
                     case WHAT_CALLBACK_STARTED:
-                        ((Listener) msg.obj).onStarted();
+                        ((Listener) msg.obj).onStartLoad();
                         break;
                     case WHAT_CALLBACK_FAILED:
                         ((Listener) msg.obj).onError(ErrorCause.valueOf(msg.getData().getString(PARAM_FAILED_CAUSE)));
@@ -122,7 +122,7 @@ public class CallbackHandler {
     static void postCallbackStarted(Listener listener, boolean sync) {
         if (listener != null) {
             if (sync || SketchUtils.isMainThread()) {
-                listener.onStarted();
+                listener.onStartLoad();
             } else {
                 handler.obtainMessage(WHAT_CALLBACK_STARTED, listener).sendToTarget();
             }

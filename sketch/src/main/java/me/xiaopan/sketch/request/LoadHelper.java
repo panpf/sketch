@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.ImageView.ScaleType;
 
@@ -43,10 +44,11 @@ public class LoadHelper {
     private LoadListener loadListener;
     private DownloadProgressListener downloadProgressListener;
 
-    public LoadHelper(Sketch sketch, String uri) {
+    public LoadHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull LoadListener loadListener) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriModel = UriModel.match(sketch, uri);
+        this.loadListener = loadListener;
     }
 
     /**
@@ -194,14 +196,6 @@ public class LoadHelper {
     }
 
     /**
-     * 设置加载监听器
-     */
-    public LoadHelper listener(LoadListener loadListener) {
-        this.loadListener = loadListener;
-        return this;
-    }
-
-    /**
      * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
@@ -227,9 +221,7 @@ public class LoadHelper {
             throw new IllegalStateException("Cannot sync perform the load in the UI thread ");
         }
 
-        CallbackHandler.postCallbackStarted(loadListener, sync);
-
-        if (!checkUri()) {
+        if (!checkParam()) {
             return null;
         }
 
@@ -242,7 +234,12 @@ public class LoadHelper {
         return submitRequest();
     }
 
-    private boolean checkUri() {
+    private boolean checkParam() {
+        // LoadRequest 没有内存缓存，加载结果必须通过 Listener 回调才有意义
+        if (loadListener == null) {
+            SLog.e(NAME, "Load request must have LoadListener. %s", uri);
+        }
+
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
@@ -333,10 +330,13 @@ public class LoadHelper {
     }
 
     private LoadRequest submitRequest() {
+        CallbackHandler.postCallbackStarted(loadListener, sync);
+
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         LoadRequest request = requestFactory.newLoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
+
         return request;
     }
 }

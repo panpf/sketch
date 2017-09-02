@@ -81,7 +81,8 @@ sketchImageView.setOptions(displayOptions)
 // 监听显示过程
 sketchImageView.setDisplayListener(new DisplayListener() {
     @Override
-    public void onStarted() {
+    public void onStartLoad() {
+        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
         Log.i("displayListener", "开始");
     }
 
@@ -91,7 +92,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 
     @Override
-    public void onError(FailCause failCause) {
+    public void onError(ErrorCause errorCause) {
         Log.i("displayListener", "失败");
     }
 

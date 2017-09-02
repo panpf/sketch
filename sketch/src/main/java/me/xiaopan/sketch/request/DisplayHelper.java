@@ -380,14 +380,9 @@ public class DisplayHelper {
             return null;
         }
 
-        CallbackHandler.postCallbackStarted(displayListener, false);
+        boolean checkResult = checkParam();
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            Stopwatch.with().record("callbackStarted");
-        }
-
-        boolean checkResult = checkUri();
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            Stopwatch.with().record("checkUri");
+            Stopwatch.with().record("checkParam");
         }
         if (!checkResult) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
@@ -452,7 +447,7 @@ public class DisplayHelper {
         return request;
     }
 
-    private boolean checkUri() {
+    private boolean checkParam() {
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
 
@@ -769,6 +764,11 @@ public class DisplayHelper {
     }
 
     private DisplayRequest submitRequest() {
+        CallbackHandler.postCallbackStarted(displayListener, false);
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
+            Stopwatch.with().record("callbackStarted");
+        }
+
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
         DisplayRequest request = requestFactory.newDisplayRequest(sketch, uri, uriModel, key, displayOptions, viewInfo,

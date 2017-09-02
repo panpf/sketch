@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
@@ -25,15 +27,15 @@ public class HelperFactory implements Identifier {
 
     private DisplayHelper cacheDisplayHelper;
 
-    public DownloadHelper getDownloadHelper(Sketch sketch, String uri) {
-        return new DownloadHelper(sketch, uri);
+    public DownloadHelper getDownloadHelper(@NonNull Sketch sketch, String uri, DownloadListener listener) {
+        return new DownloadHelper(sketch, uri, listener);
     }
 
-    public LoadHelper getLoadHelper(Sketch sketch, String uri) {
-        return new LoadHelper(sketch, uri);
+    public LoadHelper getLoadHelper(@NonNull Sketch sketch, String uri, LoadListener listener) {
+        return new LoadHelper(sketch, uri, listener);
     }
 
-    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchView sketchView) {
+    public DisplayHelper getDisplayHelper(@NonNull Sketch sketch, String uri, SketchView sketchView) {
         if (this.cacheDisplayHelper == null) {
             this.cacheDisplayHelper = new DisplayHelper();
         }
@@ -47,7 +49,7 @@ public class HelperFactory implements Identifier {
     /**
      * 用完了要回收
      */
-    public void recycleDisplayHelper(DisplayHelper displayHelper) {
+    public void recycleDisplayHelper(@NonNull DisplayHelper displayHelper) {
         displayHelper.reset();
         if (this.cacheDisplayHelper == null) {
             this.cacheDisplayHelper = displayHelper;

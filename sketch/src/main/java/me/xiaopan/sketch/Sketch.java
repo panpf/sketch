@@ -20,6 +20,9 @@ import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
@@ -49,7 +52,7 @@ public class Sketch {
 
     private Configuration configuration;
 
-    private Sketch(Context context) {
+    private Sketch(@NonNull Context context) {
         this.configuration = new Configuration(context);
     }
 
@@ -59,7 +62,7 @@ public class Sketch {
      * @param context 用于初始化 Sketch
      * @return Sketch
      */
-    public static Sketch with(Context context) {
+    public static Sketch with(@NonNull Context context) {
         if (instance == null) {
             synchronized (Sketch.class) {
                 if (instance == null) {
@@ -85,7 +88,7 @@ public class Sketch {
      * @return true：当前 SketchView 有正在执行的任务并且取消成功；false：当前 SketchView 没有正在执行的任务
      */
     @SuppressWarnings("unused")
-    public static boolean cancel(SketchView sketchView) {
+    public static boolean cancel(@NonNull SketchView sketchView) {
         final DisplayRequest displayRequest = SketchUtils.findDisplayRequest(sketchView);
         if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel(CancelCause.BE_CANCELLED);
@@ -100,6 +103,7 @@ public class Sketch {
      *
      * @return Configuration
      */
+    @NonNull
     public Configuration getConfiguration() {
         return configuration;
     }
@@ -116,8 +120,8 @@ public class Sketch {
      * @return DownloadHelper 你可以继续通过 DownloadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public DownloadHelper download(String uri, DownloadListener listener) {
-        return configuration.getHelperFactory().getDownloadHelper(this, uri).listener(listener);
+    public DownloadHelper download(@NonNull String uri, @Nullable DownloadListener listener) {
+        return configuration.getHelperFactory().getDownloadHelper(this, uri, listener);
     }
 
     /**
@@ -137,8 +141,8 @@ public class Sketch {
      * @param listener 监听下载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
-    public LoadHelper load(String uri, LoadListener listener) {
-        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
+    public LoadHelper load(@NonNull String uri, @Nullable LoadListener listener) {
+        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
 
     /**
@@ -149,9 +153,9 @@ public class Sketch {
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadFromAsset(String assetResName, LoadListener listener) {
+    public LoadHelper loadFromAsset(@NonNull String assetResName, @Nullable LoadListener listener) {
         String uri = AssetUriModel.makeUri(assetResName);
-        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
+        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
 
     /**
@@ -162,9 +166,9 @@ public class Sketch {
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadFromResource(int drawableResId, LoadListener listener) {
+    public LoadHelper loadFromResource(@DrawableRes int drawableResId, @Nullable LoadListener listener) {
         String uri = DrawableUriModel.makeUri(drawableResId);
-        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
+        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
 
     /**
@@ -175,8 +179,8 @@ public class Sketch {
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadFromContent(Uri uri, LoadListener listener) {
-        return configuration.getHelperFactory().getLoadHelper(this, uri.toString()).listener(listener);
+    public LoadHelper loadFromContent(@NonNull Uri uri, @Nullable LoadListener listener) {
+        return configuration.getHelperFactory().getLoadHelper(this, uri.toString(), listener);
     }
 
     /**
@@ -187,9 +191,9 @@ public class Sketch {
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
     @SuppressWarnings("unused")
-    public LoadHelper loadApkIcon(String filePath, LoadListener listener) {
+    public LoadHelper loadApkIcon(@NonNull String filePath, LoadListener listener) {
         String uri = ApkIconUriModel.makeUri(filePath);
-        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
+        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
 
     /**
@@ -203,7 +207,7 @@ public class Sketch {
     @SuppressWarnings("unused")
     public LoadHelper loadAppIcon(String packageName, int versionCode, LoadListener listener) {
         String uri = AppIconUriModel.makeUri(packageName, versionCode);
-        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(listener);
+        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
 
     /**

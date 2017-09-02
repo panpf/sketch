@@ -21,19 +21,19 @@ package me.xiaopan.sketch.request;
  */
 public interface Listener {
     /**
-     * 已开始
+     * 只有进入异步线程才会回调此方法
      */
-    void onStarted();
+    void onStartLoad();
 
     /**
-     * 已失败
+     * 失败
      *
      * @param errorCause 失败原因
      */
     void onError(ErrorCause errorCause);
 
     /**
-     * 已取消
+     * 取消
      */
     void onCanceled(CancelCause cancelCause);
 }

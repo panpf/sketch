@@ -192,7 +192,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onStarted() {
+        public void onStartLoad() {
             hintView.loading(null);
         }
 

@@ -28,10 +28,19 @@ bugs：
 * :fire: 移除了 UriScheme
 * :fire: 移除 ImagePreprocessor 机制，UriModel 代替之，相关类 Preprocessor、PreProcessResult 也一并移除
 * :fire: 移除 Sketch.createInstalledAppIconUri(String, int) 方法，AppIconUriModel.makeUri(String, int) 方法替代之
+* :fire: 移除 DownloadHelper.listener(DownloadListener) 方法
+* :fire: 移除 LoadHelper.listener(LoadListener) 方法
+* :fire: 移除 ErrorCause.DOWNLOAD_RESULT_IS_NULL
+* :fire: 移除 ErrorCause.PRE_PROCESS_RESULT_IS_NULL
+* :fire: 移除 ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI
+* :fire: 移除 ErrorCause.SOURCE_BITMAP_RECYCLED
+* :fire: 移除 DownloadListener、LoadListener、DisplayListener 的 onStarted() 方法
 
 变更：
 * :hammer: file:// 格式的 uri 已产生的磁盘缓存将全部作废，因为其磁盘缓存 key 去掉了 file://
 * :hammer: 现在你要现实 apk icon 就必须使用 apk.icon://协议
+* :hammer: DownloadListener、LoadListener、DisplayListener 新增 onStartLoad() 方法代替之前的 onStarted() ，现在只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
+* :hammer: 现在 LoadHelper 不接受空的 LoadListener
 
 新增：
 * :sparkles: 新增了 UriModel

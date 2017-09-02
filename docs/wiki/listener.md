@@ -1,12 +1,12 @@
-Sketch支持对``开始``、``完成``、``失败``、``取消``以及``下载进度``进行监听
+Sketch支持对``开始加载``、``完成``、``失败``、``取消``以及``下载进度``进行监听
 
 SketchImageView
 ```java
 SketchImageView sketchImageView = ...;
 sketchImageView.setDisplayListener(new DisplayListener() {
     @Override
-    public void onStarted() {
-
+    public void onStartLoad() {
+        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
     }
 
     @Override
@@ -15,7 +15,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 
     @Override
-    public void onError(FailCause failCause) {
+    public void onError(ErrorCause errorCause) {
 
     }
 
@@ -42,8 +42,8 @@ load()
 ```java
 Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
     @Override
-    public void onStarted() {
-
+    public void onStartLoad() {
+        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
     }
 
     @Override
@@ -72,8 +72,8 @@ download()
 ```java
 Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
     @Override
-    public void onStarted() {
-
+    public void onStartLoad() {
+        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
     }
 
     @Override
@@ -98,4 +98,4 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
 }).commit();
 ```
 
-listener默认都是异步回调的，并且都会在主线程回调，但是当load()和download()开启了同步后其listener就在当前线程回调
+listener 默认都是异步回调的，并且都会在主线程回调，但是当 load() 和 download() 开启了同步后其 listener 就在当前线程回调

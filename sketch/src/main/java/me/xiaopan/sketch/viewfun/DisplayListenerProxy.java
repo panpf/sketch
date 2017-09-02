@@ -34,7 +34,7 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onStarted() {
+    public void onStartLoad() {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
@@ -46,7 +46,7 @@ class DisplayListenerProxy implements DisplayListener {
         }
 
         if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onStarted();
+            view.wrappedDisplayListener.onStartLoad();
         }
     }
 

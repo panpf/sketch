@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
@@ -40,9 +42,10 @@ public class DownloadHelper {
     private DownloadListener downloadListener;
     private DownloadProgressListener downloadProgressListener;
 
-    public DownloadHelper(Sketch sketch, String uri) {
+    public DownloadHelper(@NonNull Sketch sketch, @NonNull String uri, @Nullable DownloadListener downloadListener) {
         this.sketch = sketch;
         this.uri = uri;
+        this.downloadListener = downloadListener;
         this.uriModel = UriModel.match(sketch, uri);
     }
 
@@ -76,14 +79,6 @@ public class DownloadHelper {
     }
 
     /**
-     * 设置下载监听器
-     */
-    public DownloadHelper listener(DownloadListener downloadListener) {
-        this.downloadListener = downloadListener;
-        return this;
-    }
-
-    /**
      * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
@@ -109,9 +104,7 @@ public class DownloadHelper {
             throw new IllegalStateException("Cannot sync perform the download in the UI thread ");
         }
 
-        CallbackHandler.postCallbackStarted(downloadListener, sync);
-
-        if (!checkUri()) {
+        if (!checkParam()) {
             return null;
         }
 
@@ -124,7 +117,7 @@ public class DownloadHelper {
         return submitRequest();
     }
 
-    private boolean checkUri() {
+    private boolean checkParam() {
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
@@ -176,11 +169,14 @@ public class DownloadHelper {
     }
 
     private DownloadRequest submitRequest() {
+        CallbackHandler.postCallbackStarted(downloadListener, sync);
+
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         DownloadRequest request = requestFactory.newDownloadRequest(sketch, uri, uriModel, key,
                 downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
+
         return request;
     }
 }
