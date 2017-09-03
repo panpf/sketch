@@ -185,8 +185,10 @@ public abstract class BaseRequest {
         }
     }
 
-    // TODO: 2017/9/3 都替换成这个方法
-    public String getThreadName(){
+    /**
+     * 获取当前线程的名字
+     */
+    public String getThreadName() {
         return Thread.currentThread().getName();
     }
 

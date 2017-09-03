@@ -99,7 +99,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runDispatch. download request just start. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -113,7 +113,7 @@ public class DownloadRequest extends AsyncRequest {
             if (diskCacheEntry != null) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(getLogName(), "from diskCache. runDispatch. %s. %s",
-                            Thread.currentThread().getName(), getKey());
+                            getThreadName(), getKey());
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
                 downloadCompleted();
@@ -129,7 +129,7 @@ public class DownloadRequest extends AsyncRequest {
 
         // 下载
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            SLog.d(getLogName(), "download. runDispatch. %s. %s", Thread.currentThread().getName(), getKey());
+            SLog.d(getLogName(), "download. runDispatch. %s. %s", getThreadName(), getKey());
         }
         submitRunDownload();
     }
@@ -141,7 +141,7 @@ public class DownloadRequest extends AsyncRequest {
         boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
         if (SLog.isLoggable(SLog.LEVEL_DEBUG)) {
             SLog.d(getLogName(), "canceled. runDispatch. %s. %s. %s",
-                    isPauseDownload ? "pause download" : "requestLevel is local", Thread.currentThread().getName(), getKey());
+                    isPauseDownload ? "pause download" : "requestLevel is local", getThreadName(), getKey());
         }
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL);
     }
@@ -151,7 +151,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runDownload. start download. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -191,7 +191,7 @@ public class DownloadRequest extends AsyncRequest {
             postRunCompleted();
         } else {
             SLog.e(getLogName(), "Not found data after download completed. %s. %s",
-                    Thread.currentThread().getName(), getKey());
+                    getThreadName(), getKey());
             error(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
         }
     }
@@ -201,7 +201,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isFinished()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "finished. runUpdateProgressInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -216,7 +216,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runCompletedInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -233,7 +233,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runErrorInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }

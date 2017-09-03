@@ -118,8 +118,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     protected void runDispatch() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "canceled. runDispatch. load request just start. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                SLog.d(getLogName(), "canceled. runDispatch. load request just start. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -131,8 +130,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
             if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(this)) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(getLogName(), "local thread. disk cache image. runDispatch. %s. %s",
-                            Thread.currentThread().getName(), getKey());
+                    SLog.d(getLogName(), "local thread. disk cache image. runDispatch. %s. %s", getThreadName(), getKey());
                 }
                 submitRunLoad();
             } else {
@@ -142,7 +140,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             // 本地请求直接执行加载
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             submitRunLoad();
         }
@@ -155,7 +153,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             submitRunLoad();
         } else {
             SLog.e(getLogName(), "Not found data after download completed. %s. %s",
-                    Thread.currentThread().getName(), getKey());
+                    getThreadName(), getKey());
             error(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
         }
     }
@@ -165,7 +163,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runLoad. load request just start. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -189,7 +187,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                         imageAttrs.getHeight(), imageAttrs.getMimeType(),
                         imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                 SLog.e(getLogName(), "decode failed. runLoad. bitmap recycled. bitmapInfo: %s. %s. %s",
-                        imageInfo, Thread.currentThread().getName(), getKey());
+                        imageInfo, getThreadName(), getKey());
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
@@ -199,7 +197,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                 String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
                         imageAttrs.getHeight(), imageAttrs.getMimeType(),
                         imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                SLog.d(getLogName(), "decode success. runLoad. bitmapInfo: %s. %s. %s", imageInfo, Thread.currentThread().getName(), getKey());
+                SLog.d(getLogName(), "decode success. runLoad. bitmapInfo: %s. %s. %s", imageInfo, getThreadName(), getKey());
             }
 
             if (isCanceled()) {
@@ -209,7 +207,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                             imageAttrs.getHeight(), imageAttrs.getMimeType(),
                             imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                     SLog.d(getLogName(), "canceled. runLoad. decode after. bitmapInfo: %s. %s. %s",
-                            imageInfo, Thread.currentThread().getName(), getKey());
+                            imageInfo, getThreadName(), getKey());
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());
                 return;
@@ -222,20 +220,20 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
             if (gifDrawable.isRecycled()) {
                 SLog.e(getLogName(), "decode failed. runLoad. gif drawable recycled. gifInfo: %s. %s. %s",
-                        gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
+                        gifDrawable.getInfo(), getThreadName(), getKey());
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "decode gif success. runLoad. gifInfo: %s. %s. %s",
-                        gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
+                        gifDrawable.getInfo(), getThreadName(), getKey());
             }
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG) && isCanceled()) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(getLogName(), "canceled. runLoad. decode after. gifInfo: %s. %s. %s",
-                            gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
+                            gifDrawable.getInfo(), getThreadName(), getKey());
                 }
                 gifDrawable.recycle();
                 return;
@@ -244,7 +242,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadResult = new LoadResult(gifDrawable, decodeResult);
             loadCompleted();
         } else {
-            SLog.e(getLogName(), "Unknown DecodeResult type. %S. %s. %s", decodeResult.getClass().getName(), Thread.currentThread().getName(), getKey());
+            SLog.e(getLogName(), "Unknown DecodeResult type. %S. %s. %s", decodeResult.getClass().getName(), getThreadName(), getKey());
             error(ErrorCause.DECODE_UNKNOWN_RESULT_TYPE);
         }
     }
@@ -267,7 +265,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             }
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runCompletedInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -284,7 +282,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runErrorInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }

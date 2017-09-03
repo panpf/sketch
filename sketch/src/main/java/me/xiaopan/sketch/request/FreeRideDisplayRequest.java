@@ -114,7 +114,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
         if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
             memoryCache.remove(getMemoryCacheKey());
             SLog.e(getLogName(), "memory cache drawable recycled. processFreeRideRequests. bitmap=%s. %s. %s",
-                    cachedRefBitmap.getInfo(), Thread.currentThread().getName(), getKey());
+                    cachedRefBitmap.getInfo(), getThreadName(), getKey());
             cachedRefBitmap = null;
         }
 

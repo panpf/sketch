@@ -92,7 +92,7 @@ public class DisplayRequest extends LoadRequest {
         if (requestAndViewBinder.isBroken()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG)) {
                 SLog.d(getLogName(), "The request and the connection to the view are interrupted. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             canceled(CancelCause.BIND_DISCONNECT);
             return true;
@@ -137,7 +137,7 @@ public class DisplayRequest extends LoadRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runLoad. display request just started. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -159,7 +159,7 @@ public class DisplayRequest extends LoadRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runDownload. get memory cache edit lock after. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return true;
         }
@@ -173,7 +173,7 @@ public class DisplayRequest extends LoadRequest {
                 if (!cachedRefBitmap.isRecycled()) {
                     if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                         SLog.d(getLogName(), "from memory get drawable. runLoad. bitmap=%s. %s. %s",
-                                cachedRefBitmap.getInfo(), Thread.currentThread().getName(), getKey());
+                                cachedRefBitmap.getInfo(), getThreadName(), getKey());
                     }
 
                     // 立马标记等待使用，防止被回收
@@ -186,7 +186,7 @@ public class DisplayRequest extends LoadRequest {
                 } else {
                     memoryCache.remove(getMemoryCacheKey());
                     SLog.e(getLogName(), "memory cache drawable recycled. runLoad. bitmap=%s. %s. %s",
-                            cachedRefBitmap.getInfo(), Thread.currentThread().getName(), getKey());
+                            cachedRefBitmap.getInfo(), getThreadName(), getKey());
                 }
             }
         }
@@ -206,7 +206,7 @@ public class DisplayRequest extends LoadRequest {
                         imageAttrs.getHeight(), imageAttrs.getMimeType(),
                         imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                 SLog.e(getLogName(), "decode failed. loadCompleted. bitmap recycled. bitmapInfo: %s. %s. %s. %s",
-                        imageInfo, loadResult.getImageFrom(), Thread.currentThread().getName(), getKey());
+                        imageInfo, loadResult.getImageFrom(), getThreadName(), getKey());
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
@@ -230,7 +230,7 @@ public class DisplayRequest extends LoadRequest {
 
             if (gifDrawable.isRecycled()) {
                 SLog.e(getLogName(), "gif drawable recycled. loadCompleted. gifInfo=%s. %s. %s",
-                        gifDrawable.getInfo(), Thread.currentThread().getName(), getKey());
+                        gifDrawable.getInfo(), getThreadName(), getKey());
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
@@ -242,7 +242,7 @@ public class DisplayRequest extends LoadRequest {
             displayCompleted();
         } else {
             SLog.e(getLogName(), "Not found data after load completed. %s. %s",
-                    Thread.currentThread().getName(), getKey());
+                    getThreadName(), getKey());
             error(ErrorCause.DATA_LOST_AFTER_LOAD_COMPLETED);
         }
     }
@@ -257,7 +257,7 @@ public class DisplayRequest extends LoadRequest {
         if (drawable == null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "completedDrawable is null. runCompletedInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -274,7 +274,7 @@ public class DisplayRequest extends LoadRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runCompletedInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -290,7 +290,7 @@ public class DisplayRequest extends LoadRequest {
                 // 图片不可用
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                     SLog.d(getLogName(), "image display exception. bitmap recycled. %s. %s. %s. %s",
-                            ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom(), Thread.currentThread().getName(), getKey());
+                            ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom(), getThreadName(), getKey());
                 }
 
                 runErrorInMainThread();
@@ -313,7 +313,7 @@ public class DisplayRequest extends LoadRequest {
             }
             SLog.d(getLogName(), "image display completed. runCompletedInMainThread. %s. %s. view(%s). %s. %s",
                     displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(viewInterface.hashCode()),
-                    Thread.currentThread().getName(), getKey());
+                    getThreadName(), getKey());
         }
 
         displayOptions.getImageDisplayer().display(viewInterface, drawable);
@@ -330,7 +330,7 @@ public class DisplayRequest extends LoadRequest {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "canceled. runErrorInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
             return;
         }
@@ -344,7 +344,7 @@ public class DisplayRequest extends LoadRequest {
         } else {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "failedDrawable is null. runErrorInMainThread. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                        getThreadName(), getKey());
             }
         }
 
