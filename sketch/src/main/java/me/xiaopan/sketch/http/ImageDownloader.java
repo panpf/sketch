@@ -283,7 +283,7 @@ public class ImageDownloader implements Identifier {
         // Return DownloadResult
         if (diskCacheEditor == null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "Download success, data is saved to disk cache. fileLength: %d/%d. %s. %s",
+                SLog.d(NAME, "Download success. Data is saved to disk cache. fileLength: %d/%d. %s. %s",
                         completedLength, contentLength, request.getThreadName(), request.getKey());
             }
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
@@ -291,7 +291,7 @@ public class ImageDownloader implements Identifier {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "Download success, data is saved to memory. fileLength: %d/%d. %s. %s",
+                    SLog.d(NAME, "Download success. data is saved to memory. fileLength: %d/%d. %s. %s",
                             completedLength, contentLength, request.getThreadName(), request.getKey());
                 }
                 return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);

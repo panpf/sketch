@@ -357,8 +357,8 @@ public class LoadHelper {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "canceled. %s. %s",
-                        isPauseDownload ? "pause download" : "requestLevel is local", key);
+                CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
+                SLog.d(NAME, "Request cancel. %s. %s", cause, key);
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
@@ -375,6 +375,10 @@ public class LoadHelper {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         LoadRequest request = requestFactory.newLoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
+
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+            SLog.d(NAME, "Run dispatch submitted. %s", key);
+        }
         request.submit();
 
         return request;

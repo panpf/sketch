@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
@@ -97,8 +98,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
     }
 
     @Override
-    public void error(ErrorCause errorCause) {
-        super.error(errorCause);
+    protected void doError(@NonNull ErrorCause errorCause) {
+        super.doError(errorCause);
 
         if (loadListener != null) {
             postRunError();
@@ -106,8 +107,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
     }
 
     @Override
-    public void canceled(CancelCause cancelCause) {
-        super.canceled(cancelCause);
+    protected void doCancel(@NonNull CancelCause cancelCause) {
+        super.doCancel(cancelCause);
 
         if (loadListener != null) {
             postRunCanceled();
@@ -118,7 +119,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     protected void runDispatch() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "canceled. runDispatch. load request just start. %s. %s", getThreadName(), getKey());
+                SLog.d(getLogName(), "Request end before dispatch. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -130,7 +131,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
             if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(this)) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(getLogName(), "local thread. disk cache image. runDispatch. %s. %s", getThreadName(), getKey());
+                    SLog.d(getLogName(), "Dispatch. Processed disk cache. %s. %s", getThreadName(), getKey());
                 }
                 submitRunLoad();
             } else {
@@ -139,8 +140,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         } else {
             // 本地请求直接执行加载
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "local thread. local image. runDispatch. %s. %s",
-                        getThreadName(), getKey());
+                SLog.d(getLogName(), "Dispatch. Local image. %s. %s", getThreadName(), getKey());
             }
             submitRunLoad();
         }
@@ -152,9 +152,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
         if (downloadResult != null && downloadResult.hasData()) {
             submitRunLoad();
         } else {
-            SLog.e(getLogName(), "Not found data after download completed. %s. %s",
-                    getThreadName(), getKey());
-            error(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
+            SLog.e(getLogName(), "Not found data after download completed. %s. %s", getThreadName(), getKey());
+            doError(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
         }
     }
 
@@ -162,8 +161,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     protected void runLoad() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "canceled. runLoad. load request just start. %s. %s",
-                        getThreadName(), getKey());
+                SLog.d(getLogName(), "Request end before decode. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -174,7 +172,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             decodeResult = getConfiguration().getDecoder().decode(this);
         } catch (DecodeException e) {
             e.printStackTrace();
-            error(e.getErrorCause());
+            doError(e.getErrorCause());
             return;
         }
 
@@ -186,9 +184,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
                 String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
                         imageAttrs.getHeight(), imageAttrs.getMimeType(),
                         imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                SLog.e(getLogName(), "decode failed. runLoad. bitmap recycled. bitmapInfo: %s. %s. %s",
-                        imageInfo, getThreadName(), getKey());
-                error(ErrorCause.BITMAP_RECYCLED);
+                SLog.e(getLogName(), "Decode failed because bitmap recycled. bitmapInfo: %s. %s. %s", imageInfo, getThreadName(), getKey());
+                doError(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
@@ -197,19 +194,15 @@ public class LoadRequest extends FreeRideDownloadRequest {
                 String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
                         imageAttrs.getHeight(), imageAttrs.getMimeType(),
                         imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                SLog.d(getLogName(), "decode success. runLoad. bitmapInfo: %s. %s. %s", imageInfo, getThreadName(), getKey());
+                SLog.d(getLogName(), "Decode success. bitmapInfo: %s. %s. %s", imageInfo, getThreadName(), getKey());
             }
 
             if (isCanceled()) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    ImageAttrs imageAttrs = decodeResult.getImageAttrs();
-                    String imageInfo = SketchUtils.makeImageInfo(null, imageAttrs.getWidth(),
-                            imageAttrs.getHeight(), imageAttrs.getMimeType(),
-                            imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
-                    SLog.d(getLogName(), "canceled. runLoad. decode after. bitmapInfo: %s. %s. %s",
-                            imageInfo, getThreadName(), getKey());
-                }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getConfiguration().getBitmapPool());
+
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                    SLog.d(getLogName(), "Request end after decode. %s. %s", getThreadName(), getKey());
+                }
                 return;
             }
 
@@ -219,23 +212,22 @@ public class LoadRequest extends FreeRideDownloadRequest {
             SketchGifDrawable gifDrawable = ((GifDecodeResult) decodeResult).getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
-                SLog.e(getLogName(), "decode failed. runLoad. gif drawable recycled. gifInfo: %s. %s. %s",
+                SLog.e(getLogName(), "Decode failed because gif drawable recycled. gifInfo: %s. %s. %s",
                         gifDrawable.getInfo(), getThreadName(), getKey());
-                error(ErrorCause.GIF_DRAWABLE_RECYCLED);
+                doError(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "decode gif success. runLoad. gifInfo: %s. %s. %s",
-                        gifDrawable.getInfo(), getThreadName(), getKey());
+                SLog.d(getLogName(), "Decode gif success. gifInfo: %s. %s. %s", gifDrawable.getInfo(), getThreadName(), getKey());
             }
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG) && isCanceled()) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(getLogName(), "canceled. runLoad. decode after. gifInfo: %s. %s. %s",
-                            gifDrawable.getInfo(), getThreadName(), getKey());
-                }
+            if (isCanceled()) {
                 gifDrawable.recycle();
+
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                    SLog.d(getLogName(), "Request end after decode. %s. %s", getThreadName(), getKey());
+                }
                 return;
             }
 
@@ -243,7 +235,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadCompleted();
         } else {
             SLog.e(getLogName(), "Unknown DecodeResult type. %S. %s. %s", decodeResult.getClass().getName(), getThreadName(), getKey());
-            error(ErrorCause.DECODE_UNKNOWN_RESULT_TYPE);
+            doError(ErrorCause.DECODE_UNKNOWN_RESULT_TYPE);
         }
     }
 
@@ -254,18 +246,14 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
-            // 已经取消了就直接把图片回收了
-            if (loadResult != null) {
-                if (loadResult.getBitmap() != null) {
-                    BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getConfiguration().getBitmapPool());
-                }
-                if (loadResult.getGifDrawable() != null) {
-                    loadResult.getGifDrawable().recycle();
-                }
+            if (loadResult != null && loadResult.getBitmap() != null) {
+                BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getConfiguration().getBitmapPool());
+            } else if (loadResult != null && loadResult.getGifDrawable() != null) {
+                loadResult.getGifDrawable().recycle();
             }
+
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "canceled. runCompletedInMainThread. %s. %s",
-                        getThreadName(), getKey());
+                SLog.d(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -281,8 +269,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     protected void runErrorInMainThread() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "canceled. runErrorInMainThread. %s. %s",
-                        getThreadName(), getKey());
+                SLog.d(getLogName(), "Request end before call err. %s. %s", getThreadName(), getKey());
             }
             return;
         }

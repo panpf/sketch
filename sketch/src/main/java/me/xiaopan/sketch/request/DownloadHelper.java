@@ -161,7 +161,7 @@ public class DownloadHelper {
             DiskCache.Entry diskCacheEntry = diskCache.get(uriModel.getDiskCacheKey(uri));
             if (diskCacheEntry != null) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "image download completed. %s", key);
+                    SLog.d(NAME, "Download image completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
@@ -181,6 +181,10 @@ public class DownloadHelper {
         DownloadRequest request = requestFactory.newDownloadRequest(sketch, uri, uriModel, key,
                 downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
+
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+            SLog.d(NAME, "Run dispatch submitted. %s", key);
+        }
         request.submit();
 
         return request;

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import me.xiaopan.sketch.ErrorTracker;
-import me.xiaopan.sketch.drawable.SketchRefDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -233,7 +233,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onBitmapRecycledOnDisplay(@NonNull DisplayRequest request, @NonNull SketchRefDrawable refDrawable) {
+    public void onBitmapRecycledOnDisplay(@NonNull DisplayRequest request, @NonNull SketchDrawable refDrawable) {
         super.onBitmapRecycledOnDisplay(request, refDrawable);
 
         CrashReport.postCatchedException(new Exception(String.format(

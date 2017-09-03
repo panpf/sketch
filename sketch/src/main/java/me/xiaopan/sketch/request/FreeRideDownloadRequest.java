@@ -85,7 +85,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         if (downloadFreeRideSet == null) {
             synchronized (this) {
                 if (downloadFreeRideSet == null) {
-                    downloadFreeRideSet = new HashSet<FreeRideManager.DownloadFreeRide>();
+                    downloadFreeRideSet = new HashSet<>();
                 }
             }
         }

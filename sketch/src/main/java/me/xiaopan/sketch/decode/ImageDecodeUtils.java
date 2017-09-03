@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
@@ -85,17 +86,17 @@ public class ImageDecodeUtils {
         return bitmap;
     }
 
-    static void decodeSuccess(Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
+    static void decodeSuccess(@NonNull Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
+            if (loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getSizeCalculator();
-                SLog.d(logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
-                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
-                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
+                SLog.d(logName,
+                        "Decode bitmap. originalSize=%dx%d, targetSize=%dx%d, targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
+                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(), sizeCalculator.getTargetSizeScale(),
+                        inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
-                SLog.d(logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+                SLog.d(logName, "Decode bitmap. bitmapSize=%dx%d. %s", bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             }
         }
     }

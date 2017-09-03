@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import me.xiaopan.sketch.drawable.SketchRefDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadRequest;
@@ -151,9 +151,9 @@ public class ErrorTracker implements Identifier {
     /**
      * 在即将显示时发现 Bitmap 被回收
      */
-    public void onBitmapRecycledOnDisplay(@NonNull DisplayRequest request, @NonNull SketchRefDrawable refDrawable) {
+    public void onBitmapRecycledOnDisplay(@NonNull DisplayRequest request, @NonNull SketchDrawable sketchDrawable) {
         SLog.e(NAME, "onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
-                request.getUri(), refDrawable.getInfo());
+                request.getUri(), sketchDrawable.getInfo());
     }
 
     /**

@@ -695,7 +695,7 @@ public class DisplayHelper {
         if (cachedRefBitmap.isRecycled()) {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.e(NAME, "memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
+            SLog.w(NAME, "Memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
             return true;
         }
 
@@ -704,8 +704,7 @@ public class DisplayHelper {
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.d(NAME, "image display completed. %s. %s. view(%s)",
-                    ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
+            SLog.d(NAME, "Display image completed. %s. %s. view(%s)", ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
 
         SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
@@ -738,8 +737,8 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "canceled. %s. view(%s). %s", isPauseLoad ? "pause load" : "requestLevel is memory",
-                        Integer.toHexString(sketchView.hashCode()), key);
+                CancelCause cause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.REQUEST_LEVEL_IS_MEMORY;
+                SLog.d(NAME, "Request cancel. %s. view(%s). %s", cause, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             Drawable loadingDrawable = null;
@@ -761,8 +760,8 @@ public class DisplayHelper {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                String cancelCause = isPauseDownload ? "pause download" : "requestLevel is local";
-                SLog.d(NAME, "canceled. %s. view(%s). %s", cancelCause, Integer.toHexString(sketchView.hashCode()), key);
+                CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
+                SLog.d(NAME, "Request cancel. %s. view(%s). %s", cause, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             // 显示暂停下载图片
@@ -774,11 +773,6 @@ public class DisplayHelper {
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
                 drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "pauseDownloadDrawable is null. view(%s). %s",
-                            Integer.toHexString(sketchView.hashCode()), key);
-                }
             }
             sketchView.setImageDrawable(drawable);
 
@@ -793,20 +787,19 @@ public class DisplayHelper {
     /**
      * 试图取消已经存在的请求
      *
-     * @return DisplayRequest 非null：请求一模一样，无需取消；null：已经取消或没有已存在的请求
+     * @return DisplayRequest null：已经取消或没有已存在的请求
      */
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "repeat request. newId=%s. view(%s)",
-                            key, Integer.toHexString(sketchView.hashCode()));
+                    SLog.d(NAME, "Repeat request. key=%s. view(%s)", key, Integer.toHexString(sketchView.hashCode()));
                 }
                 return potentialRequest;
             } else {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "cancel old request. newId=%s. oldId=%s. view(%s)",
+                    SLog.d(NAME, "Cancel old request. newKey=%s. oldKey=%s. view(%s)",
                             key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -849,8 +842,7 @@ public class DisplayHelper {
         }
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            SLog.d(NAME, "submit request. view(%s). %s",
-                    Integer.toHexString(sketchView.hashCode()), key);
+            SLog.d(NAME, "Run dispatch submitted. view(%s). %s", Integer.toHexString(sketchView.hashCode()), key);
         }
 
         request.submit();
