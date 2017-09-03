@@ -267,9 +267,10 @@ public class DisplayRequest extends LoadRequest {
                     displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(viewInterface.hashCode()), getThreadName(), getKey());
         }
 
-        displayOptions.getImageDisplayer().display(viewInterface, drawable);
-
+        // 一定要在 ImageDisplayer().display 之前执行
         setStatus(Status.COMPLETED);
+
+        displayOptions.getImageDisplayer().display(viewInterface, drawable);
 
         if (displayListener != null) {
             displayListener.onCompleted(displayResult.getDrawable(), displayResult.getImageFrom(), displayResult.getImageAttrs());
