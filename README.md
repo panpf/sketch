@@ -138,8 +138,8 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 
 基础功能：
 * [SketchImageView 详细使用说明](docs/wiki/sketch_image_view.md)
-* [配置 Options](docs/wiki/options_config.md)
-* [管理 Options](docs/wiki/options_manage.md)
+* [Options & Helper](docs/wiki/options_and_helper.md)
+* [管理多个 Options](docs/wiki/options_manage.md)
 * [只加载图片到内存或只下载图片到本地](docs/wiki/load_and_download.md)
 * [播放 GIF 图片](docs/wiki/display_gif_image.md)
 * [手势缩放、旋转图片](docs/wiki/zoom.md)
@@ -161,7 +161,6 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 * [移动网络下暂停下载图片，节省流量](docs/wiki/pause_download.md)
 * [列表滑动时暂停加载图片，提升流畅度](docs/wiki/pause_load.md)
 * [显示 APK 或已安装 APP 的图标](docs/wiki/display_apk_or_app_icon.md)
-* [通过 ImagePreprocessor 显示特殊文件中的图片（例如视频、MP3）](docs/wiki/pre_process_image.md)
 * [通过 MemoryCacheStateImage 先显示较模糊的图片，然后再显示清晰的图片](docs/wiki/memory_cache_state_image.md)
 
 更多：

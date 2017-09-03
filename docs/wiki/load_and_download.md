@@ -7,7 +7,7 @@ SketchImageView就是使用的 Sketch.display() 方法
 
 每一种方法都有专用的Options、Listener、Helper
 
-* Options：用来定制请求，[点击了解更多](options_config.md)
+* Options：用来定制请求，[点击了解更多](options_and_helper.md)
 * Listener：用来监控请求的状态，[点击了解更多](listener.md)
 * Helper：用来组织请求并提交请求
 

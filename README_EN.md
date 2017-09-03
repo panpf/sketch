@@ -138,8 +138,8 @@ sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 
 Basic functions:
 * [SketchImageView Detailed Instructions](docs/wiki/sketch_image_view.md)
-* [Config Options](docs/wiki/options_config.md)
-* [Manage Options](docs/wiki/options_manage.md)
+* [Options & Helper](docs/wiki/options_and_helper.md)
+* [Manage Multiple Options](docs/wiki/options_manage.md)
 * [Just load the picture into memory or just download the picture to the local](docs/wiki/load_and_download.md)
 * [Play gif image](docs/wiki/display_gif_image.md)
 * [Gesture zoom, rotate the picture](docs/wiki/zoom.md)
@@ -161,7 +161,6 @@ To further enhance the user experience:
 * [Mobile network to suspend downloading pictures, save traffic](docs/wiki/pause_download.md)
 * [Pause loading of images while sliding the list to improve fluency](docs/wiki/pause_load.md)
 * [Display APK or installed APP icon](docs/wiki/display_apk_or_app_icon.md)
-* [Displaying images in special files with Image Preprocessor (eg video, MP3)](docs/wiki/pre_process_image.md)
 * [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture](docs/wiki/memory_cache_state_image.md)
 
 More:

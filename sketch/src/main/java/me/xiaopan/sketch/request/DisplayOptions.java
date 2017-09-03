@@ -68,11 +68,6 @@ public class DisplayOptions extends LoadOptions {
      */
     private ShapeSize shapeSize;
 
-    /**
-     * 使用 ImageView 的 layout_width 和 layout_height 作为 shape size
-     */
-    private boolean shapeSizeByFixedSize;
-
     public DisplayOptions() {
         reset();
     }
@@ -373,7 +368,6 @@ public class DisplayOptions extends LoadOptions {
     @NonNull
     public DisplayOptions setShapeSize(@Nullable ShapeSize shapeSize) {
         this.shapeSize = shapeSize;
-        this.shapeSizeByFixedSize = false;
         return this;
     }
 
@@ -390,21 +384,16 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 没有设置shape size时使用fixed size作为shape size
-     */
-    public boolean isShapeSizeByFixedSize() {
-        return shapeSizeByFixedSize;
-    }
-
-    /**
-     * 设置没有设置shape size时使用fixed size作为shape size
+     * 设置绘制时图片应该显示的尺寸
      *
-     * @param shapeSizeByFixedSize 没有设置shape size时使用fixed size作为shape size
+     * @param width     绘制时应该显示的宽
+     * @param height    绘制时应该显示的高
+     * @param scaleType 缩放类型
      * @return DisplayOptions
      */
-    public DisplayOptions setShapeSizeByFixedSize(boolean shapeSizeByFixedSize) {
-        this.shapeSizeByFixedSize = shapeSizeByFixedSize;
-        return this;
+    @NonNull
+    public DisplayOptions setShapeSize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
+        return setShapeSize(new ShapeSize(width, height, scaleType));
     }
 
     @Override
@@ -417,7 +406,6 @@ public class DisplayOptions extends LoadOptions {
         pauseDownloadImage = null;
         imageShaper = null;
         shapeSize = null;
-        shapeSizeByFixedSize = false;
     }
 
     /**
@@ -440,6 +428,5 @@ public class DisplayOptions extends LoadOptions {
         pauseDownloadImage = options.pauseDownloadImage;
         imageShaper = options.imageShaper;
         shapeSize = options.shapeSize;
-        shapeSizeByFixedSize = options.shapeSizeByFixedSize;
     }
 }

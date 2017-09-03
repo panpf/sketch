@@ -22,9 +22,9 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.Identifier;
 
 /**
- * 将图片加载到内存中之后根据resize进行修正
+ * 将图片加载到内存中之后根据 {@link Resize} 进行修正
  * <p>
- * 修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸小于等于resize，如果需要必须同resize一致可以设置 {@link LoadOptions#forceUseResize}
+ * 修正的原则就是最终返回的图片的比例一定是跟 {@link Resize} 一样的，但尺寸小于等于 {@link Resize} ，如果需要必须同 {@link Resize} 一致可以设置 {@link LoadOptions#forceUseResize}
  */
 public class Resize implements Identifier {
 
@@ -63,11 +63,11 @@ public class Resize implements Identifier {
         this.scaleType = sourceResize.scaleType;
     }
 
-    protected Resize() {
+    private Resize() {
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 resize
+     * 使用 ImageView 的固定尺寸作为 {@link Resize}
      */
     @SuppressWarnings("unused")
     public static Resize byViewFixedSize(Mode mode) {
@@ -75,7 +75,7 @@ public class Resize implements Identifier {
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 resize
+     * 使用 ImageView 的固定尺寸作为 {@link Resize}
      */
     @SuppressWarnings("unused")
     public static Resize byViewFixedSize() {
@@ -125,18 +125,18 @@ public class Resize implements Identifier {
 
     public enum Mode {
         /**
-         * 新图片的尺寸不会比 resize 大，但宽高比一定会一样
+         * 新图片的尺寸不会比 {@link Resize} 大，但宽高比一定会一样
          */
         ASPECT_RATIO_SAME,
 
         /**
-         * 即使原图尺寸比 resize 小，也会得到一个跟 resize 尺寸一样的 bitmap
+         * 即使原图尺寸比 {@link Resize} 小，也会得到一个跟 {@link Resize} 尺寸一样的 bitmap
          */
         EXACTLY_SAME,
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 resize
+     * 使用 ImageView 的固定尺寸作为 {@link Resize}
      */
     static class ByViewFixedSizeResize extends Resize {
 

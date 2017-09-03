@@ -31,7 +31,7 @@ public class ImageOptions {
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageDisplayer(new TransitionImageDisplayer())
-                        .setShapeSizeByFixedSize(true);
+                        .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
 
@@ -44,7 +44,7 @@ public class ImageOptions {
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageDisplayer(new TransitionImageDisplayer())
                         .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
-                        .setShapeSizeByFixedSize(true);
+                        .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
 
@@ -57,7 +57,7 @@ public class ImageOptions {
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
                         .setImageDisplayer(new TransitionImageDisplayer())
-                        .setShapeSizeByFixedSize(true);
+                        .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
     }

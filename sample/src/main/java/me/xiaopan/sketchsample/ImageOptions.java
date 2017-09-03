@@ -31,6 +31,7 @@ import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.CircleImageShaper;
 import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.state.DrawableStateImage;
@@ -76,7 +77,7 @@ public class ImageOptions {
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageDisplayer(transitionImageDisplayer)
-                        .setShapeSizeByFixedSize(true);
+                        .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
 
@@ -89,7 +90,7 @@ public class ImageOptions {
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageDisplayer(transitionImageDisplayer)
                         .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
-                        .setShapeSizeByFixedSize(true);
+                        .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
 
@@ -101,7 +102,7 @@ public class ImageOptions {
                         .setImageProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
                         .setCacheProcessedImageInDisk(true)
                         .setBitmapConfig(Bitmap.Config.ARGB_8888)   // 效果比较重要
-                        .setShapeSizeByFixedSize(true)
+                        .setShapeSize(ShapeSize.byViewFixedSize())
                         .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,
                                 context.getResources().getDisplayMetrics().heightPixels / 4)
                         .setImageDisplayer(new TransitionImageDisplayer(true));
@@ -117,7 +118,7 @@ public class ImageOptions {
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
                         .setImageDisplayer(transitionImageDisplayer)
-                        .setShapeSizeByFixedSize(true);
+                        .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
 

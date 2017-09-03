@@ -68,7 +68,7 @@ displayOptions.setErrorImage(R.drawable.image_error);
 
 sketchImageView.setOptions(displayOptions)
 ```
-具体的配置项请参考[配置各种属性.md](options_config.md)
+具体的配置项请参考[配置各种属性.md](options_and_helper.md)
 
 #### 2.使用手势缩放和分块显示超大图功能
 

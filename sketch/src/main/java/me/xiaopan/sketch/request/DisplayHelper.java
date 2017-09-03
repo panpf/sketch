@@ -389,12 +389,12 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置根据 ImageView 的 layout_width 和 layout_height 作为 shape size
+     * 设置图片尺寸，用于绘制时修改图片的尺寸
      */
     @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper shapeSizeByFixedSize() {
-        displayOptions.setShapeSizeByFixedSize(true);
+    public DisplayHelper shapeSize(int width, int height, ScaleType scaleType) {
+        displayOptions.setShapeSize(width, height, scaleType);
         return this;
     }
 
@@ -537,15 +537,15 @@ public class DisplayHelper {
         FixedSize fixedSize = viewInfo.getFixedSize();
 
 
-        // 用 ImageVie 的固定宽高作为 shape size
+        // 用 ImageVie 的固定宽高作为 ShapeSize
         ShapeSize shapeSize = displayOptions.getShapeSize();
-        if (shapeSize == null && displayOptions.isShapeSizeByFixedSize()) {
+        if (shapeSize != null && shapeSize instanceof ShapeSize.ByViewFixedSizeShapeSize) {
             if (fixedSize != null) {
                 shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
                 displayOptions.setShapeSize(shapeSize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
-                        " can not be applied with the shapeSizeByFixedSize function");
+                        " can not be applied with the ShapeSize.byViewFixedSize() function");
             }
         }
 
@@ -560,7 +560,7 @@ public class DisplayHelper {
         }
 
 
-        // 用 ImageVie 的固定宽高作为 resize
+        // 用 ImageVie 的固定宽高作为 Resize
         Resize resize = displayOptions.getResize();
         if (resize != null && resize instanceof Resize.ByViewFixedSizeResize) {
             if (fixedSize != null) {

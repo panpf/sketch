@@ -23,11 +23,11 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 
 /**
- * 用来搭配 {@link SketchShapeBitmapDrawable} 在绘制时修改图片的尺寸，用来替代大多数情况下对resize的依赖
+ * 用来搭配 {@link SketchShapeBitmapDrawable} 在绘制时修改图片的尺寸，用来替代大多数情况下对 {@link Resize} 的依赖
  * <p>
- * 当多张图片的inSampleSize一样，那么读到内存里的bitmap尺寸就一样，但是因为resize不一样，导致会产生多个差别很小的bitmap，这样就降低了内存缓存利用率
+ * 当多张图片的 inSampleSize 一样，那么读到内存里的 bitmap 尺寸就一样，但是因为 {@link Resize} 不一样，导致会产生多个差别很小的 bitmap，这样就降低了内存缓存利用率
  * <p>
- * 当使用shape size时，就可以使用同一个bitmap在绘制时显示出不同的尺寸，避免了产生多个差别很小的bitmap，提高了内存缓存利用率
+ * 当使用 {@link ShapeSize} 时，就可以使用同一个 bitmap 在绘制时显示出不同的尺寸，避免了产生多个差别很小的 bitmap，提高了内存缓存利用率
  */
 public class ShapeSize implements Identifier {
     private int width;
@@ -45,6 +45,17 @@ public class ShapeSize implements Identifier {
         this.scaleType = scaleType;
     }
 
+    private ShapeSize() {
+    }
+
+    /**
+     * 使用 ImageView 的固定尺寸作为 {@link ShapeSize}
+     */
+    @SuppressWarnings("unused")
+    public static ShapeSize byViewFixedSize() {
+        return ByViewFixedSizeShapeSize.INSTANCE;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -57,7 +68,7 @@ public class ShapeSize implements Identifier {
         return scaleType;
     }
 
-    public void setScaleType(ImageView.ScaleType scaleType) {
+    void setScaleType(ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
     }
 
@@ -80,5 +91,12 @@ public class ShapeSize implements Identifier {
     @Override
     public String getKey() {
         return String.format("ShapeSize(%dx%d)", width, height);
+    }
+
+    /**
+     * 使用 ImageView 的固定尺寸作为 {@link ShapeSize}
+     */
+    static class ByViewFixedSizeShapeSize extends ShapeSize {
+        static final ByViewFixedSizeShapeSize INSTANCE = new ByViewFixedSizeShapeSize();
     }
 }
