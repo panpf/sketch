@@ -243,24 +243,24 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置加载中时显示的占位图片
      *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    @NonNull
-    public DisplayOptions setLoadingImage(@DrawableRes int drawableResId) {
-        setLoadingImage(new DrawableStateImage(drawableResId));
-        return this;
-    }
-
-    /**
-     * 设置加载中时显示的占位图片
-     *
      * @param loadingImage 加载中时显示的占位图片
      * @return DisplayOptions
      */
     @NonNull
     public DisplayOptions setLoadingImage(@Nullable StateImage loadingImage) {
         this.loadingImage = loadingImage;
+        return this;
+    }
+
+    /**
+     * 设置加载中时显示的占位图片
+     *
+     * @param drawableResId 资源图片ID
+     * @return DisplayOptions
+     */
+    @NonNull
+    public DisplayOptions setLoadingImage(@DrawableRes int drawableResId) {
+        setLoadingImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -277,24 +277,24 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置加载失败时显示的图片
      *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    @NonNull
-    public DisplayOptions setErrorImage(@DrawableRes int drawableResId) {
-        setErrorImage(new DrawableStateImage(drawableResId));
-        return this;
-    }
-
-    /**
-     * 设置加载失败时显示的图片
-     *
      * @param errorImage 加载失败时显示的图片
      * @return DisplayOptions
      */
     @NonNull
     public DisplayOptions setErrorImage(@Nullable StateImage errorImage) {
         this.errorImage = errorImage;
+        return this;
+    }
+
+    /**
+     * 设置加载失败时显示的图片
+     *
+     * @param drawableResId 资源图片ID
+     * @return DisplayOptions
+     */
+    @NonNull
+    public DisplayOptions setErrorImage(@DrawableRes int drawableResId) {
+        setErrorImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -311,24 +311,24 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置暂停下载时显示的图片
      *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    @NonNull
-    public DisplayOptions setPauseDownloadImage(@DrawableRes int drawableResId) {
-        setPauseDownloadImage(new DrawableStateImage(drawableResId));
-        return this;
-    }
-
-    /**
-     * 设置暂停下载时显示的图片
-     *
      * @param pauseDownloadImage 暂停下载时显示的图片
      * @return DisplayOptions
      */
     @NonNull
     public DisplayOptions setPauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
         this.pauseDownloadImage = pauseDownloadImage;
+        return this;
+    }
+
+    /**
+     * 设置暂停下载时显示的图片
+     *
+     * @param drawableResId 资源图片ID
+     * @return DisplayOptions
+     */
+    @NonNull
+    public DisplayOptions setPauseDownloadImage(@DrawableRes int drawableResId) {
+        setPauseDownloadImage(new DrawableStateImage(drawableResId));
         return this;
     }
 

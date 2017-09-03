@@ -28,7 +28,6 @@ public abstract class DecodeHelper {
     abstract boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource,
                            @NonNull ImageType imageType, @NonNull BitmapFactory.Options boundOptions);
 
-    @NonNull
     abstract DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType,
                                  @NonNull BitmapFactory.Options boundOptions, @NonNull BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException;
 
