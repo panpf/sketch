@@ -22,9 +22,9 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.Identifier;
 
 /**
- * 将图片加载到内存中之后根据 {@link Resize} 进行修正
+ * 将图片加载到内存中之后根据 {@link Resize} 进行调整尺寸
  * <p>
- * 修正的原则就是最终返回的图片的比例一定是跟 {@link Resize} 一样的，但尺寸小于等于 {@link Resize} ，如果需要必须同 {@link Resize} 一致可以设置 {@link LoadOptions#forceUseResize}
+ * 修正的原则就是最终返回的图片的比例一定是跟 {@link Resize} 一样的，但尺寸小于等于 {@link Resize} ，如果需要必须同 {@link Resize} 一致可以设置 {@link Mode#ASPECT_RATIO_SAME}
  */
 public class Resize implements Identifier {
 
@@ -37,7 +37,9 @@ public class Resize implements Identifier {
         this.width = width;
         this.height = height;
         this.scaleType = scaleType;
-        this.mode = mode;
+        if (mode != null) {
+            this.mode = mode;
+        }
     }
 
     public Resize(int width, int height, ImageView.ScaleType scaleType) {
@@ -49,7 +51,9 @@ public class Resize implements Identifier {
     public Resize(int width, int height, Mode mode) {
         this.width = width;
         this.height = height;
-        this.mode = mode;
+        if (mode != null) {
+            this.mode = mode;
+        }
     }
 
     public Resize(int width, int height) {
@@ -116,9 +120,10 @@ public class Resize implements Identifier {
     @NonNull
     @Override
     public String getKey() {
-        return String.format("Resize(%dx%d-%s)", width, height, scaleType != null ? scaleType.name() : "null");
+        return String.format("Resize(%dx%d-%s-%s)", width, height, scaleType != null ? scaleType.name() : "null", mode.name());
     }
 
+    @NonNull
     public Mode getMode() {
         return mode;
     }

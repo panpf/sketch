@@ -33,9 +33,7 @@ bugs：
 * :fire: 移除 ErrorCause.PRE_PROCESS_RESULT_IS_NULL
 * :fire: 移除 ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI
 * :fire: 移除 ErrorCause.SOURCE_BITMAP_RECYCLED
-* :fire: 移除 DownloadListener、LoadListener、DisplayListener 的 onStarted() 方法
-* :fire: 移除 resizeByFixedSize 属性，Resize.byViewFixedSize() 代替，详情参考 [resize]
-* :fire: 移除 shapeSizeByFixedSize 属性，ShapeSize.byViewFixedSize() 代替，详情参考 [shape_size]
+* :fire: 移除 DownloadListener、LoadListener、DisplayListener 的 onStarted() 方法 用 
 
 重构：
 * :hammer: file:// 格式的 uri 已产生的磁盘缓存将全部作废，因为其磁盘缓存 key 去掉了 file://
@@ -46,6 +44,11 @@ bugs：
 * :hammer: Sketch.loadFromURI(Uri, SketchView) 方法重构为 Sketch.loadFromContent(String, SketchView)
 * :hammer: SketchImageView.displayContentImage(Uri) 方法签名现在改为 SketchImageView.displayContentImage(String)
 * :hammer: Initializer.onInitialize(Context, Sketch, Configuration) 方法签名现在改为 onInitialize(Context, Configuration)
+* :hammer: ImageProcessor.process(Sketch, Bitmap, Resize, boolean, boolean) 方法签名现在改为 process(Sketch, Bitmap, Resize, boolean
+* :hammer: WrappedImageProcessor.onProcess(Sketch, Bitmap, Resize, boolean, boolean) 方法签名现在改为 onProcess(Sketch, Bitmap, Resize, boolean
+* :hammer: 移除 resizeByFixedSize 属性，用 Resize.byViewFixedSize() 代替，详情参考 [resize]
+* :hammer: 移除 shapeSizeByFixedSize 属性，用 ShapeSize.byViewFixedSize() 代替，详情参考 [shape_size]
+* :hammer: 移除 forceUseResize 属性，用 Resize.Mode 代替，详情参考 [resize]
 
 新增：
 * :sparkles: 新增了 UriModel

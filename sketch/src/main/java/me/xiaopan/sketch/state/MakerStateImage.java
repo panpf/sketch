@@ -125,8 +125,7 @@ public class MakerStateImage implements StateImage {
         }
         Bitmap newBitmap;
         try {
-            newBitmap = processor.process(sketch, bitmap, resize,
-                    options.isForceUseResize(), tempLowQualityImage);
+            newBitmap = processor.process(sketch, bitmap, resize, tempLowQualityImage);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             ErrorTracker errorTracker = sketch.getConfiguration().getErrorTracker();

@@ -36,11 +36,6 @@ public class LoadOptions extends DownloadOptions {
     private Resize resize;
 
     /**
-     * 强制使经过 resize 处理的图片同 resize 的尺寸一致
-     */
-    private boolean forceUseResize;
-
-    /**
      * 最大尺寸，用于计算 inSampleSize，缩小图片
      */
     private MaxSize maxSize;
@@ -205,25 +200,6 @@ public class LoadOptions extends DownloadOptions {
     @NonNull
     public LoadOptions setResize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
         this.resize = new Resize(width, height, scaleType);
-        return this;
-    }
-
-    /**
-     * 强制使最终图片的尺寸跟 resize一样
-     */
-    public boolean isForceUseResize() {
-        return forceUseResize;
-    }
-
-    /**
-     * 设置强制使最终图片的尺寸跟 resize 一样
-     *
-     * @param forceUseResize 强制使最终图片的尺寸跟 resize 一样
-     * @return LoadOptions
-     */
-    @NonNull
-    public LoadOptions setForceUseResize(boolean forceUseResize) {
-        this.forceUseResize = forceUseResize;
         return this;
     }
 
@@ -421,7 +397,6 @@ public class LoadOptions extends DownloadOptions {
         lowQualityImage = false;
         imageProcessor = null;
         decodeGifImage = false;
-        forceUseResize = false;
         bitmapConfig = null;
         inPreferQualityOverSpeed = false;
         thumbnailMode = false;
@@ -448,7 +423,6 @@ public class LoadOptions extends DownloadOptions {
         lowQualityImage = options.lowQualityImage;
         imageProcessor = options.imageProcessor;
         decodeGifImage = options.decodeGifImage;
-        forceUseResize = options.forceUseResize;
         bitmapConfig = options.bitmapConfig;
         inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
         thumbnailMode = options.thumbnailMode;
@@ -467,9 +441,6 @@ public class LoadOptions extends DownloadOptions {
         }
         if (resize != null) {
             builder.append("_").append(resize.getKey());
-            if (forceUseResize) {
-                builder.append("_").append("forceUseResize");
-            }
             if (thumbnailMode) {
                 builder.append("_").append("thumbnailMode");
             }
@@ -506,9 +477,6 @@ public class LoadOptions extends DownloadOptions {
 
         if (resize != null) {
             builder.append("_").append(resize.getKey());
-            if (forceUseResize) {
-                builder.append("_").append("forceUseResize");
-            }
         }
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");

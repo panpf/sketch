@@ -138,12 +138,6 @@ public class DisplayOptions extends LoadOptions {
 
     @NonNull
     @Override
-    public DisplayOptions setForceUseResize(boolean forceUseResize) {
-        return (DisplayOptions) super.setForceUseResize(forceUseResize);
-    }
-
-    @NonNull
-    @Override
     public DisplayOptions setImageProcessor(@Nullable ImageProcessor processor) {
         return (DisplayOptions) super.setImageProcessor(processor);
     }

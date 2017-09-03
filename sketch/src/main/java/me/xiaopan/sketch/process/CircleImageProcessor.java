@@ -70,7 +70,7 @@ public class CircleImageProcessor extends WrappedImageProcessor {
 
     @NonNull
     @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
         if (bitmap.isRecycled()) {
             return bitmap;
         }
@@ -82,7 +82,7 @@ public class CircleImageProcessor extends WrappedImageProcessor {
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
         ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                newBitmapSize, newBitmapSize, scaleType, forceUseResize);
+                newBitmapSize, newBitmapSize, scaleType, resize != null && resize.getMode() == Resize.Mode.EXACTLY_SAME);
         if (mapping == null) {
             return bitmap;
         }

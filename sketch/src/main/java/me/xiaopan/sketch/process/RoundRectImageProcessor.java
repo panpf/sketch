@@ -77,7 +77,7 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
 
     @NonNull
     @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean lowQualityImage) {
         if (bitmap.isRecycled()) {
             return bitmap;
         }
@@ -86,7 +86,8 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
         ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 resize != null ? resize.getWidth() : bitmap.getWidth(),
                 resize != null ? resize.getHeight() : bitmap.getHeight(),
-                resize != null ? resize.getScaleType() : null, forceUseResize);
+                resize != null ? resize.getScaleType() : null,
+                resize != null && resize.getMode() == Resize.Mode.EXACTLY_SAME);
         if (mapping == null) {
             return bitmap;
         }

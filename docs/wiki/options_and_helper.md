@@ -21,7 +21,6 @@ Sketch 的 display()、load()、download() 方法（[参考 load_android_downloa
 |cacheInDiskDisabled|false|false|false|
 |maxSize|-|屏幕的宽高|优先考虑ImageView的layout_width和layout_height|
 |resize|-|null|null|
-|forceUseResize|-|false|false|
 |processor|-|null|null|
 |decodeGifImage|-|false|false|
 |lowQualityImage|-|false|false|
@@ -45,7 +44,6 @@ Sketch 的 display()、load()、download() 方法（[参考 load_android_downloa
 * cacheInDiskDisabled: 禁用磁盘缓存-[参考 disk_cache.md]
 * maxSize: 限制读取到内存的图片的尺寸-[参考 max_size.md]
 * resize: 修改图片的尺寸-[参考 resize.md]
-* forceUseResize: 强制使用 resize-[参考 resize.md]
 * processor: 处理图片-[参考 process_image.md]
 * decodeGifImage: 解码 GIF 图片，开启后可播放 GIF 图片-[参考 display_gif_image.md]
 * lowQualityImage: 解码图片时优先使用低质量的 Bitmap.Config，例如 JPEG 图片将使用 ARGB_565 解码，具体请查看 [ImageType] 类

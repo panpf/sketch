@@ -32,5 +32,5 @@ public interface ImageProcessor extends Identifier {
      * 处理
      */
     @NonNull
-    Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage);
+    Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage);
 }

@@ -53,10 +53,7 @@ public class ProcessImageResultProcessor implements ResultProcessor {
 
         Bitmap newBitmap = null;
         try {
-            newBitmap = imageProcessor.process(
-                    request.getSketch(), bitmap,
-                    loadOptions.getResize(), loadOptions.isForceUseResize(),
-                    loadOptions.isLowQualityImage());
+            newBitmap = imageProcessor.process(request.getSketch(), bitmap, loadOptions.getResize(), loadOptions.isLowQualityImage());
         } catch (Throwable e) {
             e.printStackTrace();
             ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();

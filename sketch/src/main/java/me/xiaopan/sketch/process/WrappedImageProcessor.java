@@ -69,7 +69,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
 
     @NonNull
     @Override
-    public final Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+    public final Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
         //noinspection ConstantConditions
         if (bitmap == null || bitmap.isRecycled()) {
             return bitmap;
@@ -78,12 +78,12 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
         // resize
         Bitmap newBitmap = bitmap;
         if (!isInterceptResize()) {
-            newBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
+            newBitmap = super.process(sketch, bitmap, resize, lowQualityImage);
         }
 
         // wrapped
         if (wrappedProcessor != null) {
-            Bitmap wrappedBitmap = wrappedProcessor.process(sketch, newBitmap, resize, forceUseResize, lowQualityImage);
+            Bitmap wrappedBitmap = wrappedProcessor.process(sketch, newBitmap, resize, lowQualityImage);
             if (wrappedBitmap != newBitmap) {
                 if (newBitmap != bitmap) {
                     BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
@@ -92,9 +92,9 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
                 newBitmap = wrappedBitmap;
             }
         }
-        return onProcess(sketch, newBitmap, resize, forceUseResize, lowQualityImage);
+        return onProcess(sketch, newBitmap, resize, lowQualityImage);
     }
 
     @NonNull
-    public abstract Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage);
+    public abstract Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage);
 }

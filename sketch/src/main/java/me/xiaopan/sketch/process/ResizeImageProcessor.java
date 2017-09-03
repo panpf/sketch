@@ -31,7 +31,7 @@ public class ResizeImageProcessor implements ImageProcessor {
 
     @NonNull
     @Override
-    public Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+    public Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
         if (bitmap.isRecycled()) {
             return bitmap;
         }
@@ -43,7 +43,7 @@ public class ResizeImageProcessor implements ImageProcessor {
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
         ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                resize.getWidth(), resize.getHeight(), resize.getScaleType(), forceUseResize);
+                resize.getWidth(), resize.getHeight(), resize.getScaleType(), resize.getMode() == Resize.Mode.EXACTLY_SAME);
         if (mapping == null) {
             return bitmap;
         }

@@ -102,17 +102,16 @@ public class ResizeCalculator implements Identifier {
     /**
      * 计算
      *
-     * @param imageWidth     图片原始宽
-     * @param imageHeight    图片原始高
-     * @param resizeWidth    目标宽
-     * @param resizeHeight   目标高
-     * @param scaleType      缩放类型
-     * @param forceUseResize 强制使用resize
+     * @param imageWidth   图片原始宽
+     * @param imageHeight  图片原始高
+     * @param resizeWidth  目标宽
+     * @param resizeHeight 目标高
+     * @param scaleType    缩放类型
+     * @param exactlySame  使新图片的尺寸和resize尺寸一致
      * @return 计算结果
      */
-    public Mapping calculator(int imageWidth, int imageHeight,
-                              int resizeWidth, int resizeHeight,
-                              ImageView.ScaleType scaleType, boolean forceUseResize) {
+    public Mapping calculator(int imageWidth, int imageHeight, int resizeWidth, int resizeHeight,
+                              ImageView.ScaleType scaleType, boolean exactlySame) {
         if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
             Mapping mapping = new Mapping();
             mapping.imageWidth = imageWidth;
@@ -128,7 +127,7 @@ public class ResizeCalculator implements Identifier {
 
         int newImageWidth;
         int newImageHeight;
-        if (forceUseResize) {
+        if (exactlySame) {
             newImageWidth = resizeWidth;
             newImageHeight = resizeHeight;
         } else {

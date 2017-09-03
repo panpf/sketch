@@ -171,8 +171,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
-     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
+     * 调整图片尺寸
      */
     @NonNull
     public DisplayHelper resize(@Nullable Resize resize) {
@@ -181,8 +180,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
-     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
+     * 调整图片尺寸
      */
     @NonNull
     public DisplayHelper resize(int width, int height) {
@@ -191,21 +189,11 @@ public class DisplayHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
-     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
+     * 调整图片尺寸
      */
     @NonNull
     public DisplayHelper resize(int width, int height, @NonNull ScaleType scaleType) {
         displayOptions.setResize(width, height, scaleType);
-        return this;
-    }
-
-    /**
-     * 强制使经过 resize 处理后的图片同 resize 的尺寸一致
-     */
-    @NonNull
-    public DisplayHelper forceUseResize() {
-        displayOptions.setForceUseResize(true);
         return this;
     }
 
