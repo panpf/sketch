@@ -201,16 +201,6 @@ public class DisplayHelper {
     }
 
     /**
-     * 使用 ImageView 的 layout_width 和 layout_height 作为 resize
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public DisplayHelper resizeByFixedSize() {
-        displayOptions.setResizeByFixedSize(true);
-        return this;
-    }
-
-    /**
      * 强制使经过 resize 处理后的图片同 resize 的尺寸一致
      */
     @NonNull
@@ -572,13 +562,13 @@ public class DisplayHelper {
 
         // 用 ImageVie 的固定宽高作为 resize
         Resize resize = displayOptions.getResize();
-        if (resize == null && displayOptions.isResizeByFixedSize()) {
+        if (resize != null && resize instanceof Resize.ByViewFixedSizeResize) {
             if (fixedSize != null) {
                 resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
                 displayOptions.setResize(resize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
-                        " can not be applied with the resizeByFixedSize function");
+                        " can not be applied with the Resize.byViewFixedSize() function");
             }
         }
 

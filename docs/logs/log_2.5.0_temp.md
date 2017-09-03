@@ -34,6 +34,7 @@ bugs：
 * :fire: 移除 ErrorCause.NOT_FOUND_DATA_SOURCE_BY_UNKNOWN_URI
 * :fire: 移除 ErrorCause.SOURCE_BITMAP_RECYCLED
 * :fire: 移除 DownloadListener、LoadListener、DisplayListener 的 onStarted() 方法
+* :fire: 移除 resizeByFixedSize 属性，Resize.byViewFixedSize() 代替，详情参考 [resize]
 
 重构：
 * :hammer: file:// 格式的 uri 已产生的磁盘缓存将全部作废，因为其磁盘缓存 key 去掉了 file://
@@ -63,5 +64,5 @@ wiki待办：
 
 
 [了解 Sketch 日志]: ../wiki/log.md
-
+[resize]: ../wiki/resize.md
 

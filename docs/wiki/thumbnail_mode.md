@@ -40,7 +40,7 @@ LayoutParams params = sketchImageView.getLayoutParams();
 
 if (params.width != 0 && params.height != 0) {  
   // 用params.width和params.height做为resize
-  options.setResizeByFixedSize();
+  options.setResize(Resize.byViewFixedSize());
 
   // Sketch会默认取params.width和params.height做为maxSize，因此不用设置
 } else {

@@ -26,7 +26,6 @@ Sketch共有DisplayOptions `extends` LoadOptions `extends` DownloadOptions三种
 |loadingImage|-|-|null|
 |errorImage|-|-|null|
 |pauseDownloadImage|-|-|null|
-|resizeByFixedSize|-|-|false|
 |imageShaper|-|-|null|
 |shapeSize|-|-|null|
 |shapeSizeByFixedSize|-|-|false|
@@ -96,9 +95,6 @@ displayOptions.setPauseDownloadImage(R.drawable.image_load_pause_download);
 // 使用过度效果来显示图片。如果你使用了TransitionImageDisplayer并且SketchImageView的layout_width和layout_height是固定的并且ScaleType是CENTER_CROP的话，就会自动使用FixedSizeBitmapDrawable的FixedSize功能，让占位图和实际图片的比例保持一致，这样可以保证最终显示不变形
 displayOptions.setImageDisplayer(new TransitionImageDisplayer());
 
-// 使用ImageView的layout_width和layout_height作为resize，优先级较高
-displayOptions.setResizeByFixedSize(true);
-
 // 以圆角矩形的形状绘制图片，包括loadingImage、errorImage、pauseDownloadImage以及要加载的图片
 displayOptions.setImageShaper(new ReoundRectImageShaper(20)));
 
@@ -109,7 +105,7 @@ displayOptions.setShapeSize(500, 500);
 // displayOptions.setShapeSizeByFixedSize(true);
 ```
 
-Options支持的属性Helper中都有对应的方法，只是方法名不一样（没有set）
+Options 支持的属性 Helper 中都有对应的方法，只是方法名不一样（没有set）
 
 #### 使用Options：
 Sketch.display()、Sketch.load()、Sketch.download()都会返回其专属的Helper，Helper中也都会有专门的方法配置这些属性，例如：

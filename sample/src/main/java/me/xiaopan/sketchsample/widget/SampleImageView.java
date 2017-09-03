@@ -24,6 +24,7 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
+import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
@@ -163,16 +164,20 @@ public class SampleImageView extends SketchImageView {
             if (page == Page.PHOTO_LIST) {
                 final boolean thumbnailMode = AppConfig.getBoolean(getContext(), event.key);
                 getOptions().setThumbnailMode(thumbnailMode);
-                if (getOptions().getResize() == null) {
-                    getOptions().setResizeByFixedSize(thumbnailMode);
+                if (thumbnailMode) {
+                    getOptions().setResize(Resize.byViewFixedSize());
+                } else {
+                    getOptions().setResize(null);
                 }
 
                 redisplay(new RedisplayListener() {
                     @Override
                     public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
                         cacheOptions.setThumbnailMode(thumbnailMode);
-                        if (cacheOptions.getResize() == null) {
-                            cacheOptions.setResizeByFixedSize(thumbnailMode);
+                        if (thumbnailMode) {
+                            cacheOptions.setResize(Resize.byViewFixedSize());
+                        } else {
+                            cacheOptions.setResize(null);
                         }
                     }
                 });

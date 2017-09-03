@@ -59,11 +59,6 @@ public class DisplayOptions extends LoadOptions {
     private StateImage pauseDownloadImage;
 
     /**
-     * 使用 ImageView 的 layout_width 和 layout_height 作为 resize
-     */
-    private boolean resizeByFixedSize;
-
-    /**
      * 绘制时修改图片的形状
      */
     private ImageShaper imageShaper;
@@ -338,28 +333,6 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 没有设置resize时使用fixed size作为resize
-     *
-     * @see FixedSize
-     */
-    public boolean isResizeByFixedSize() {
-        return resizeByFixedSize;
-    }
-
-    /**
-     * 设置没有设置resize时使用fixed size作为resize
-     *
-     * @param isResizeByFixedSize 没有设置resize时，使用fixed size作为resize
-     * @return DisplayOptions
-     * @see FixedSize
-     */
-    @NonNull
-    public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
-        this.resizeByFixedSize = isResizeByFixedSize;
-        return this;
-    }
-
-    /**
      * 获取绘制时图片形状修改器
      *
      * @return ImageShaper
@@ -439,7 +412,6 @@ public class DisplayOptions extends LoadOptions {
         super.reset();
         cacheInMemoryDisabled = false;
         imageDisplayer = null;
-        resizeByFixedSize = false;
         loadingImage = null;
         errorImage = null;
         pauseDownloadImage = null;
@@ -463,7 +435,6 @@ public class DisplayOptions extends LoadOptions {
 
         cacheInMemoryDisabled = options.cacheInMemoryDisabled;
         imageDisplayer = options.imageDisplayer;
-        resizeByFixedSize = options.resizeByFixedSize;
         loadingImage = options.loadingImage;
         errorImage = options.errorImage;
         pauseDownloadImage = options.pauseDownloadImage;

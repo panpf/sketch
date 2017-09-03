@@ -27,18 +27,29 @@ import me.xiaopan.sketch.Identifier;
  * 修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸小于等于resize，如果需要必须同resize一致可以设置 {@link LoadOptions#forceUseResize}
  */
 public class Resize implements Identifier {
-    private int width;
-    private int height;
 
-    /**
-     * 裁剪图片时scaleType将决定如何裁剪，原理同ImageView的scaleType相同
-     */
+    protected int width;
+    protected int height;
+    protected Mode mode = Mode.ASPECT_RATIO_SAME;
     private ImageView.ScaleType scaleType;
 
-    public Resize(Resize sourceResize) {
-        this.width = sourceResize.width;
-        this.height = sourceResize.height;
-        this.scaleType = sourceResize.scaleType;
+    public Resize(int width, int height, ImageView.ScaleType scaleType, Mode mode) {
+        this.width = width;
+        this.height = height;
+        this.scaleType = scaleType;
+        this.mode = mode;
+    }
+
+    public Resize(int width, int height, ImageView.ScaleType scaleType) {
+        this.width = width;
+        this.height = height;
+        this.scaleType = scaleType;
+    }
+
+    public Resize(int width, int height, Mode mode) {
+        this.width = width;
+        this.height = height;
+        this.mode = mode;
     }
 
     public Resize(int width, int height) {
@@ -46,16 +57,36 @@ public class Resize implements Identifier {
         this.height = height;
     }
 
-    public Resize(int width, int height, ImageView.ScaleType scaleType) {
-        this(width, height);
-        this.scaleType = scaleType;
+    public Resize(Resize sourceResize) {
+        this.width = sourceResize.width;
+        this.height = sourceResize.height;
+        this.scaleType = sourceResize.scaleType;
+    }
+
+    protected Resize() {
+    }
+
+    /**
+     * 使用 ImageView 的固定尺寸作为 resize
+     */
+    @SuppressWarnings("unused")
+    public static Resize byViewFixedSize(Mode mode) {
+        return new ByViewFixedSizeResize(mode);
+    }
+
+    /**
+     * 使用 ImageView 的固定尺寸作为 resize
+     */
+    @SuppressWarnings("unused")
+    public static Resize byViewFixedSize() {
+        return new ByViewFixedSizeResize();
     }
 
     public ImageView.ScaleType getScaleType() {
         return scaleType;
     }
 
-    public void setScaleType(ImageView.ScaleType scaleType) {
+    void setScaleType(ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
     }
 
@@ -86,5 +117,37 @@ public class Resize implements Identifier {
     @Override
     public String getKey() {
         return String.format("Resize(%dx%d-%s)", width, height, scaleType != null ? scaleType.name() : "null");
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public enum Mode {
+        /**
+         * 新图片的尺寸不会比 resize 大，但宽高比一定会一样
+         */
+        ASPECT_RATIO_SAME,
+
+        /**
+         * 即使原图尺寸比 resize 小，也会得到一个跟 resize 尺寸一样的 bitmap
+         */
+        EXACTLY_SAME,
+    }
+
+    /**
+     * 使用 ImageView 的固定尺寸作为 resize
+     */
+    static class ByViewFixedSizeResize extends Resize {
+
+        ByViewFixedSizeResize(@NonNull Mode mode) {
+            //noinspection ConstantConditions
+            if (mode != null) {
+                this.mode = mode;
+            }
+        }
+
+        ByViewFixedSizeResize() {
+        }
     }
 }
