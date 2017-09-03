@@ -1,6 +1,8 @@
 package me.xiaopan.sketch.cache;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Identifier;
 
@@ -51,7 +53,7 @@ public interface BitmapPool extends Identifier {
      * @see android.graphics.Bitmap#isMutable()
      * @see android.graphics.Bitmap#recycle()
      */
-    boolean put(Bitmap bitmap);
+    boolean put(@NonNull Bitmap bitmap);
 
     /**
      * Identical to {@link #get(int, int, android.graphics.Bitmap.Config)} except that any returned non-null
@@ -70,7 +72,8 @@ public interface BitmapPool extends Identifier {
      * random image data or null if no such {@link android.graphics.Bitmap} could be obtained from the pool.
      * @see #get(int, int, android.graphics.Bitmap.Config)
      */
-    Bitmap getDirty(int width, int height, Bitmap.Config config);
+    @Nullable
+    Bitmap getDirty(int width, int height, @NonNull Bitmap.Config config);
 
     /**
      * Returns a {@link android.graphics.Bitmap} of exactly the given width, height, and configuration, and containing
@@ -98,7 +101,8 @@ public interface BitmapPool extends Identifier {
      * @param config The {@link android.graphics.Bitmap.Config} of the desired {@link android.graphics.Bitmap}.
      * @see #getDirty(int, int, android.graphics.Bitmap.Config)
      */
-    Bitmap get(int width, int height, Bitmap.Config config);
+    @Nullable
+    Bitmap get(int width, int height, @NonNull Bitmap.Config config);
 
     /**
      * Returns a {@link android.graphics.Bitmap} of exactly the given width, height, and configuration, and containing
@@ -128,7 +132,8 @@ public interface BitmapPool extends Identifier {
      * @param config The {@link android.graphics.Bitmap.Config} of the desired {@link android.graphics.Bitmap}.
      * @see #getDirty(int, int, android.graphics.Bitmap.Config)
      */
-    Bitmap getOrMake(int width, int height, Bitmap.Config config);
+    @NonNull
+    Bitmap getOrMake(int width, int height, @NonNull Bitmap.Config config);
 
     /**
      * Disabled?

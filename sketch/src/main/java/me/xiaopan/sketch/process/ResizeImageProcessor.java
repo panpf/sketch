@@ -18,6 +18,8 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -27,9 +29,10 @@ import me.xiaopan.sketch.request.Resize;
 public class ResizeImageProcessor implements ImageProcessor {
     private static final String KEY = "ResizeImageProcessor";
 
+    @NonNull
     @Override
-    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled()) {
+    public Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap.isRecycled()) {
             return bitmap;
         }
 
@@ -59,6 +62,7 @@ public class ResizeImageProcessor implements ImageProcessor {
         return resizeBitmap;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;

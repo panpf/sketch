@@ -19,14 +19,15 @@ package me.xiaopan.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.ExifInterface;
 
@@ -60,39 +61,33 @@ public class ImageDecoder implements Identifier {
      * @return DecodeResult
      * @throws DecodeException 解码失败了
      */
-    public DecodeResult decode(LoadRequest request) throws DecodeException {
-        long startTime = 0;
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            startTime = timeAnalyze.decodeStart();
-        }
-
+    @NonNull
+    public DecodeResult decode(@NonNull LoadRequest request) throws DecodeException {
         DecodeResult result = null;
         try {
+            long startTime = 0;
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
+                startTime = timeAnalyze.decodeStart();
+            }
             result = doDecode(request);
-        } catch (DecodeException e) {
-            throw e;
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
+                timeAnalyze.decodeEnd(startTime, NAME, request.getKey());
+            }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            timeAnalyze.decodeEnd(startTime, NAME, request.getKey());
-        }
-
-        if (result != null) {
             try {
                 doProcess(request, result);
-            } catch (DecodeException e) {
+            } catch (ProcessException e) {
                 result.recycle(request.getConfiguration().getBitmapPool());
-                throw e;
-            } catch (Throwable e) {
-                e.printStackTrace();
-                result.recycle(request.getConfiguration().getBitmapPool());
-                result = null;
+                throw new DecodeException(e, ErrorCause.DECODE_PROCESS_IMAGE_FAIL);
             }
-        }
 
-        return result;
+            return result;
+        } catch (Throwable tr) {
+            if (result != null) {
+                result.recycle(request.getConfiguration().getBitmapPool());
+            }
+            throw new DecodeException(tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
+        }
     }
 
     /**
@@ -102,11 +97,12 @@ public class ImageDecoder implements Identifier {
      * @return DecodeResult
      * @throws DecodeException 解码失败了
      */
+    @NonNull
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
         DataSource dataSource = request.getDataSourceWithPressedCache();
         if (dataSource == null) {
-            ImageDecodeUtils.decodeError(request, null, NAME, "Can not be generated DataSource", null);
-            return null;
+            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", null);
+            throw new DecodeException("Unable create DataSource", ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
         }
 
         // Decode bounds and mime info
@@ -114,17 +110,16 @@ public class ImageDecoder implements Identifier {
         boundOptions.inJustDecodeBounds = true;
         try {
             ImageDecodeUtils.decodeBitmap(dataSource, boundOptions);
-        } catch (IOException e) {
-            e.printStackTrace();
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Unable to read bound information", e);
-            return null;
+        } catch (Throwable e) {
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Unable read bound information", e);
+            throw new DecodeException("Unable read bound information", e, ErrorCause.DECODE_UNABLE_READ_BOUND_INFORMATION);
         }
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             String cause = String.format("Image width or height less than or equal to 1px. imageSize: %dx%d", boundOptions.outWidth, boundOptions.outHeight);
             ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null);
-            return null;
+            throw new DecodeException(cause, ErrorCause.DECODE_BOUND_RESULT_IMAGE_SIZE_INVALID);
         }
 
         // Read image orientation
@@ -162,9 +157,11 @@ public class ImageDecoder implements Identifier {
 
         if (decodeResult != null) {
             decodeResult.setImageFrom(dataSource.getImageFrom());
+            return decodeResult;
+        } else {
+            ImageDecodeUtils.decodeError(request, null, NAME, "No matching DecodeHelper", null);
+            throw new DecodeException("No matching DecodeHelper", ErrorCause.DECODE_NO_MATCHING_DECODE_HELPER);
         }
-
-        return decodeResult;
     }
 
     /**
@@ -172,9 +169,9 @@ public class ImageDecoder implements Identifier {
      *
      * @param request LoadRequest
      * @param result  DecodeResult
-     * @throws DecodeException 处理失败了
+     * @throws ProcessException 处理失败了
      */
-    private void doProcess(LoadRequest request, DecodeResult result) throws DecodeException {
+    private void doProcess(LoadRequest request, DecodeResult result) throws ProcessException {
         if (result == null || result.isBanProcess()) {
             return;
         }
@@ -184,6 +181,7 @@ public class ImageDecoder implements Identifier {
         }
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return NAME;

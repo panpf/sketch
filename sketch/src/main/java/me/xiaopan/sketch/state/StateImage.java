@@ -18,6 +18,8 @@ package me.xiaopan.sketch.state;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -26,5 +28,6 @@ import me.xiaopan.sketch.request.DisplayOptions;
  * 专门用于加载中、失败、暂停图片
  */
 public interface StateImage {
-    Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions);
+    @Nullable
+    Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions);
 }

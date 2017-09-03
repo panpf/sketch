@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SketchView;
@@ -30,7 +31,7 @@ public interface ImageDisplayer extends Identifier {
     /**
      * 显示
      */
-    void display(SketchView sketchView, Drawable newDrawable);
+    void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable);
 
     /**
      * 获取持续时间，单位毫秒

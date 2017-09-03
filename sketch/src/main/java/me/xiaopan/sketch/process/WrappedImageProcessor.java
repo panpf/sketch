@@ -17,6 +17,8 @@
 package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
@@ -34,6 +36,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
         this.wrappedProcessor = wrappedProcessor;
     }
 
+    @NonNull
     @Override
     public final String getKey() {
         String selfKey = onGetKey();
@@ -48,7 +51,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
             if (!TextUtils.isEmpty(wrappedKey)) {
                 return wrappedKey;
             } else {
-                return null;
+                return "WrappedImageProcessor";
             }
         }
     }
@@ -64,9 +67,10 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
         return false;
     }
 
+    @NonNull
     @Override
-    public final Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize,
-                                boolean lowQualityImage) {
+    public final Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        //noinspection ConstantConditions
         if (bitmap == null || bitmap.isRecycled()) {
             return bitmap;
         }
@@ -80,7 +84,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
         // wrapped
         if (wrappedProcessor != null) {
             Bitmap wrappedBitmap = wrappedProcessor.process(sketch, newBitmap, resize, forceUseResize, lowQualityImage);
-            if (wrappedBitmap != null && wrappedBitmap != newBitmap) {
+            if (wrappedBitmap != newBitmap) {
                 if (newBitmap != bitmap) {
                     BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
                     BitmapPoolUtils.freeBitmapToPool(newBitmap, bitmapPool);
@@ -91,6 +95,6 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
         return onProcess(sketch, newBitmap, resize, forceUseResize, lowQualityImage);
     }
 
-    public abstract Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize,
-                                     boolean lowQualityImage);
+    @NonNull
+    public abstract Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage);
 }

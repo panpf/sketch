@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -31,7 +32,7 @@ public class BitmapDecodeResult implements DecodeResult {
     private boolean banProcess;
     private boolean processed;
 
-    public BitmapDecodeResult(ImageAttrs imageAttrs, Bitmap bitmap) {
+    public BitmapDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull Bitmap bitmap) {
         this.imageAttrs = imageAttrs;
         this.bitmap = bitmap;
     }
@@ -80,6 +81,7 @@ public class BitmapDecodeResult implements DecodeResult {
         }
     }
 
+    @NonNull
     public Bitmap getBitmap() {
         return bitmap;
     }

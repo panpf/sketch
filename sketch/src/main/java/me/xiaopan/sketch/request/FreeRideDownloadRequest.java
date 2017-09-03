@@ -85,7 +85,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         if (downloadFreeRideSet == null) {
             synchronized (this) {
                 if (downloadFreeRideSet == null) {
-                    downloadFreeRideSet = new HashSet<FreeRideManager.DownloadFreeRide>();
+                    downloadFreeRideSet = new HashSet<>();
                 }
             }
         }
@@ -105,8 +105,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
         if (diskCacheEntry != null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "from diskCache. processDownloadFreeRide. %s. %s",
-                        Thread.currentThread().getName(), getKey());
+                SLog.d(getLogName(), "from diskCache. processDownloadFreeRide. %s. %s", getThreadName(), getKey());
             }
             downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
             downloadCompleted();

@@ -17,6 +17,8 @@
 package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
@@ -29,5 +31,6 @@ public interface ImageProcessor extends Identifier {
     /**
      * 处理
      */
-    Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage);
+    @NonNull
+    Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage);
 }

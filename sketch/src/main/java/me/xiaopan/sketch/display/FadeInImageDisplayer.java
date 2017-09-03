@@ -1,6 +1,7 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
 
@@ -34,7 +35,7 @@ public class FadeInImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public void display(SketchView sketchView, Drawable newDrawable) {
+    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
         if (newDrawable == null) {
             return;
         }
@@ -56,6 +57,7 @@ public class FadeInImageDisplayer implements ImageDisplayer {
         return alwaysUse;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(duration=%d, alwaysUse=%s)", KEY, duration, alwaysUse);

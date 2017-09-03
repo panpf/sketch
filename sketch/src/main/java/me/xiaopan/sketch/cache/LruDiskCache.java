@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
 import java.io.File;
@@ -113,13 +114,15 @@ public class LruDiskCache implements DiskCache {
 
     // 这个方法性能优先，因此不加synchronized
     @Override
-    public boolean exist(String uri) {
+    public boolean exist(@NonNull String uri) {
         if (closed) {
             return false;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable judge exist, uri=%s", uri);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable judge exist, uri=%s", uri);
+            }
             return false;
         }
 
@@ -143,13 +146,15 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized Entry get(String uri) {
+    public synchronized Entry get(@NonNull String uri) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable get, uri=%s", uri);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable get, uri=%s", uri);
+            }
             return null;
         }
 
@@ -170,13 +175,15 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized Editor edit(String uri) {
+    public synchronized Editor edit(@NonNull String uri) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable edit, uri=%s", uri);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable edit, uri=%s", uri);
+            }
             return null;
         }
 
@@ -201,9 +208,7 @@ public class LruDiskCache implements DiskCache {
 
             try {
                 diskEditor = cache.edit(uriToDiskCacheKey(uri));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (DiskLruCache.ClosedException e1) {
+            } catch (IOException | DiskLruCache.ClosedException e1) {
                 e1.printStackTrace();
             }
         } catch (DiskLruCache.ClosedException e) {
@@ -217,15 +222,14 @@ public class LruDiskCache implements DiskCache {
 
             try {
                 diskEditor = cache.edit(uriToDiskCacheKey(uri));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (DiskLruCache.ClosedException e1) {
+            } catch (IOException | DiskLruCache.ClosedException e1) {
                 e1.printStackTrace();
             }
         }
         return diskEditor != null ? new LruDiskCacheEditor(diskEditor) : null;
     }
 
+    @NonNull
     @Override
     public synchronized File getCacheDir() {
         return cacheDir;
@@ -236,8 +240,9 @@ public class LruDiskCache implements DiskCache {
         return maxSize;
     }
 
+    @NonNull
     @Override
-    public String uriToDiskCacheKey(String uri) {
+    public String uriToDiskCacheKey(@NonNull String uri) {
         // 由于DiskLruCache会在uri后面加序列号，因此这里不用再对apk文件的名称做特殊处理了
 //        if (SketchUtils.checkSuffix(uri, ".apk")) {
 //            uri += ".icon";
@@ -316,8 +321,9 @@ public class LruDiskCache implements DiskCache {
         }
     }
 
+    @NonNull
     @Override
-    public synchronized ReentrantLock getEditLock(String uri) {
+    public synchronized ReentrantLock getEditLock(@NonNull String uri) {
         if (editLockMap == null) {
             synchronized (this) {
                 if (editLockMap == null) {
@@ -334,6 +340,7 @@ public class LruDiskCache implements DiskCache {
         return lock;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
@@ -349,16 +356,19 @@ public class LruDiskCache implements DiskCache {
             this.snapshot = snapshot;
         }
 
+        @NonNull
         @Override
         public InputStream newInputStream() throws IOException {
             return snapshot.newInputStream(0);
         }
 
+        @NonNull
         @Override
         public File getFile() {
             return snapshot.getFile(0);
         }
 
+        @NonNull
         @Override
         public String getUri() {
             return uri;

@@ -16,6 +16,9 @@
 
 package me.xiaopan.sketch.http;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -36,6 +39,7 @@ public interface HttpStack extends Identifier {
      * 设置最大重试次数（默认HttpStack.DEFAULT_MAX_RETRY_COUNT）
      */
     @SuppressWarnings("unused")
+    @NonNull
     HttpStack setMaxRetryCount(int maxRetryCount);
 
     /**
@@ -48,6 +52,7 @@ public interface HttpStack extends Identifier {
      * 设置连接超时时间（默认HttpStack.DEFAULT_CONNECT_TIMEOUT）
      */
     @SuppressWarnings("unused")
+    @NonNull
     HttpStack setConnectTimeout(int connectTimeout);
 
     /**
@@ -60,47 +65,55 @@ public interface HttpStack extends Identifier {
      * 设置读取超时时间（默认HttpStack.DEFAULT_READ_TIMEOUT）
      */
     @SuppressWarnings("unused")
+    @NonNull
     HttpStack setReadTimeout(int readTimeout);
 
     /**
      * 获取User-Agent
      */
     @SuppressWarnings("unused")
+    @Nullable
     String getUserAgent();
 
     /**
      * 设置User-Agent
      */
     @SuppressWarnings("unused")
+    @NonNull
     HttpStack setUserAgent(String userAgent);
 
     /**
      * 获取扩展请求属性
      */
     @SuppressWarnings("unused")
+    @Nullable
     Map<String, String> getExtraHeaders();
 
     /**
      * 设置扩展请求属性
      */
     @SuppressWarnings("unused")
+    @NonNull
     HttpStack setExtraHeaders(Map<String, String> extraHeaders);
 
     /**
      * 获取可存在多个的请求属性
      */
     @SuppressWarnings("unused")
+    @Nullable
     Map<String, String> getAddExtraHeaders();
 
     /**
      * 添加可存在多个的请求属性
      */
     @SuppressWarnings("unused")
+    @NonNull
     HttpStack addExtraHeaders(Map<String, String> extraHeaders);
 
     /**
      * 获取响应
      */
+    @NonNull
     ImageHttpResponse getHttpResponse(String uri) throws IOException;
 
     /**
@@ -112,16 +125,17 @@ public interface HttpStack extends Identifier {
         /**
          * 获取响应状态码
          *
-         * @throws IOException
+         * @throws IOException IO
          */
         int getResponseCode() throws IOException;
 
         /**
          * 获取响应消息
          *
-         * @throws IOException
+         * @throws IOException IO
          */
         @SuppressWarnings("unused")
+        @Nullable
         String getResponseMessage() throws IOException;
 
         /**
@@ -137,13 +151,15 @@ public interface HttpStack extends Identifier {
         /**
          * 获取所有的响应头
          */
+        @Nullable
         String getResponseHeadersString();
 
         /**
          * 获取内容输入流
          *
-         * @throws IOException
+         * @throws IOException IO
          */
+        @NonNull
         InputStream getContent() throws IOException;
 
         /**

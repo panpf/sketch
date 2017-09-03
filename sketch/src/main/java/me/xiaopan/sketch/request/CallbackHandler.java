@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -78,7 +80,7 @@ public class CallbackHandler {
     /**
      * 推到主线程处理完成
      */
-    static void postRunCompleted(AsyncRequest request) {
+    static void postRunCompleted(@NonNull AsyncRequest request) {
         if (request.isSync()) {
             request.runCompletedInMainThread();
         } else {
@@ -89,7 +91,7 @@ public class CallbackHandler {
     /**
      * 推到主线程处理取消
      */
-    static void postRunCanceled(AsyncRequest request) {
+    static void postRunCanceled(@NonNull AsyncRequest request) {
         if (request.isSync()) {
             request.runCanceledInMainThread();
         } else {
@@ -100,7 +102,7 @@ public class CallbackHandler {
     /**
      * 推到主线程处理失败
      */
-    static void postRunError(AsyncRequest request) {
+    static void postRunError(@NonNull AsyncRequest request) {
         if (request.isSync()) {
             request.runErrorInMainThread();
         } else {
@@ -111,7 +113,7 @@ public class CallbackHandler {
     /**
      * 推到主线程处理进度
      */
-    static void postRunUpdateProgress(AsyncRequest request, int totalLength, int completedLength) {
+    static void postRunUpdateProgress(@NonNull AsyncRequest request, int totalLength, int completedLength) {
         if (request.isSync()) {
             request.runUpdateProgressInMainThread(totalLength, completedLength);
         } else {
@@ -119,7 +121,7 @@ public class CallbackHandler {
         }
     }
 
-    static void postCallbackStarted(Listener listener, boolean sync) {
+    static void postCallbackStarted(@Nullable Listener listener, boolean sync) {
         if (listener != null) {
             if (sync || SketchUtils.isMainThread()) {
                 listener.onStartLoad();
@@ -129,7 +131,7 @@ public class CallbackHandler {
         }
     }
 
-    static void postCallbackError(Listener listener, ErrorCause errorCause, boolean sync) {
+    static void postCallbackError(@Nullable Listener listener, @NonNull ErrorCause errorCause, boolean sync) {
         if (listener != null) {
             if (sync || SketchUtils.isMainThread()) {
                 listener.onError(errorCause);
@@ -145,7 +147,7 @@ public class CallbackHandler {
         }
     }
 
-    static void postCallbackCanceled(Listener listener, CancelCause cancelCause, boolean sync) {
+    static void postCallbackCanceled(@Nullable Listener listener, @NonNull CancelCause cancelCause, boolean sync) {
         if (listener != null) {
             if (sync || SketchUtils.isMainThread()) {
                 listener.onCanceled(cancelCause);

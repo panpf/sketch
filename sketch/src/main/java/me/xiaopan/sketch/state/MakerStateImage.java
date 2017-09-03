@@ -21,6 +21,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.ErrorTracker;
@@ -58,8 +60,9 @@ public class MakerStateImage implements StateImage {
         return resId;
     }
 
+    @Nullable
     @Override
-    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
+    public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
         Drawable drawable = makeDrawable(Sketch.with(context), displayOptions);
 
         ShapeSize shapeSize = displayOptions.getShapeSize();

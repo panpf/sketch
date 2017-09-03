@@ -19,6 +19,9 @@ package me.xiaopan.sketch.request;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
@@ -43,7 +46,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.Stopwatch;
 
 /**
- * 显示Helper，负责组织、收集、初始化显示参数，最后执行commit()提交请求
+ * 显示 Helper，负责组织、收集、初始化显示参数，最后执行 commit() 提交请求
  */
 public class DisplayHelper {
     private static final String NAME = "DisplayHelper";
@@ -60,7 +63,7 @@ public class DisplayHelper {
     private ViewInfo viewInfo = new ViewInfo();
     private SketchView sketchView;
 
-    public DisplayHelper init(Sketch sketch, String uri, SketchView sketchView) {
+    public DisplayHelper init(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriModel = UriModel.match(sketch, uri);
@@ -70,7 +73,7 @@ public class DisplayHelper {
             Stopwatch.with().start(NAME + ". display use time");
         }
 
-        // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
+        // onDisplay 一定要在最前面执行，因为 在onDisplay 中会设置一些属性，这些属性会影响到后续一些 get 方法返回的结果
         this.sketchView.onReadyDisplay(uriModel);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("onDisplay");
@@ -107,6 +110,7 @@ public class DisplayHelper {
     /**
      * 禁用磁盘缓存
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper disableCacheInDisk() {
         displayOptions.setCacheInDiskDisabled(true);
@@ -114,8 +118,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 禁用BitmapPool
+     * 禁用 BitmapPool
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper disableBitmapPool() {
         displayOptions.setBitmapPoolDisabled(true);
@@ -123,10 +128,11 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置请求Level
+     * 设置请求 Level
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper requestLevel(RequestLevel requestLevel) {
+    public DisplayHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             displayOptions.setRequestLevel(requestLevel);
             displayOptions.setRequestLevelFrom(null);
@@ -135,8 +141,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 解码Gif图片
+     * 解码 Gif 图片
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper decodeGifImage() {
         displayOptions.setDecodeGifImage(true);
@@ -144,8 +151,19 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
+     * 设置最大尺寸，在解码时会使用此 Size 来计算 inSimpleSize
      */
+    @NonNull
+    @SuppressWarnings("unused")
+    public DisplayHelper maxSize(@Nullable MaxSize maxSize) {
+        displayOptions.setMaxSize(maxSize);
+        return this;
+    }
+
+    /**
+     * 设置最大尺寸，在解码时会使用此 Size 来计算 inSimpleSize
+     */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper maxSize(int width, int height) {
         displayOptions.setMaxSize(width, height);
@@ -153,26 +171,39 @@ public class DisplayHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
-     * 但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
+     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
      */
+    @NonNull
+    public DisplayHelper resize(@Nullable Resize resize) {
+        displayOptions.setResize(resize);
+        return this;
+    }
+
+    /**
+     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
+     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
+     */
+    @NonNull
     public DisplayHelper resize(int width, int height) {
         displayOptions.setResize(width, height);
         return this;
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
-     * 但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
+     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
      */
-    public DisplayHelper resize(int width, int height, ScaleType scaleType) {
-        displayOptions.setResize(new Resize(width, height, scaleType));
+    @NonNull
+    public DisplayHelper resize(int width, int height, @NonNull ScaleType scaleType) {
+        displayOptions.setResize(width, height, scaleType);
         return this;
     }
 
     /**
-     * 使用ImageView的layout_width和layout_height作为resize
+     * 使用 ImageView 的 layout_width 和 layout_height 作为 resize
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper resizeByFixedSize() {
         displayOptions.setResizeByFixedSize(true);
@@ -180,8 +211,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 强制使经过resize处理后的图片同resize的尺寸一致
+     * 强制使经过 resize 处理后的图片同 resize 的尺寸一致
      */
+    @NonNull
     public DisplayHelper forceUseResize() {
         displayOptions.setForceUseResize(true);
         return this;
@@ -190,16 +222,18 @@ public class DisplayHelper {
     /**
      * 返回低质量的图片
      */
+    @NonNull
     public DisplayHelper lowQualityImage() {
         displayOptions.setLowQualityImage(true);
         return this;
     }
 
     /**
-     * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
+     * 设置图片处理器，图片处理器会根据 resize 和 ScaleType 创建一张新的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper processor(ImageProcessor processor) {
+    public DisplayHelper processor(@Nullable ImageProcessor processor) {
         displayOptions.setImageProcessor(processor);
         return this;
     }
@@ -207,8 +241,9 @@ public class DisplayHelper {
     /**
      * 设置图片质量
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper bitmapConfig(Bitmap.Config config) {
+    public DisplayHelper bitmapConfig(@Nullable Bitmap.Config config) {
         displayOptions.setBitmapConfig(config);
         return this;
     }
@@ -216,6 +251,7 @@ public class DisplayHelper {
     /**
      * 设置优先考虑质量还是速度
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         displayOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
@@ -225,6 +261,7 @@ public class DisplayHelper {
     /**
      * 开启缩略图模式
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper thumbnailMode() {
         displayOptions.setThumbnailMode(true);
@@ -232,8 +269,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+     * 为了加快速度，将经过 ImageProcessor、resize 或 thumbnailMode 处理过的图片保存到磁盘缓存中，下次就直接读取
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper cacheProcessedImageInDisk() {
         displayOptions.setCacheProcessedImageInDisk(true);
@@ -243,6 +281,7 @@ public class DisplayHelper {
     /**
      * 禁用纠正图片方向功能
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper disableCorrectImageOrientation() {
         displayOptions.setCorrectImageOrientationDisabled(true);
@@ -252,6 +291,7 @@ public class DisplayHelper {
     /**
      * 禁用内存缓存
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper disableCacheInMemory() {
         displayOptions.setCacheInMemoryDisabled(true);
@@ -261,8 +301,9 @@ public class DisplayHelper {
     /**
      * 设置图片显示器，在加载完成后会调用此显示器来显示图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper displayer(ImageDisplayer displayer) {
+    public DisplayHelper displayer(@Nullable ImageDisplayer displayer) {
         displayOptions.setImageDisplayer(displayer);
         return this;
     }
@@ -270,8 +311,9 @@ public class DisplayHelper {
     /**
      * 设置正在加载时显示的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper loadingImage(StateImage loadingImage) {
+    public DisplayHelper loadingImage(@Nullable StateImage loadingImage) {
         displayOptions.setLoadingImage(loadingImage);
         return this;
     }
@@ -279,8 +321,9 @@ public class DisplayHelper {
     /**
      * 设置正在加载时显示的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper loadingImage(int drawableResId) {
+    public DisplayHelper loadingImage(@DrawableRes int drawableResId) {
         displayOptions.setLoadingImage(drawableResId);
         return this;
     }
@@ -288,8 +331,9 @@ public class DisplayHelper {
     /**
      * 设置错误时显示的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper errorImage(StateImage errorImage) {
+    public DisplayHelper errorImage(@Nullable StateImage errorImage) {
         displayOptions.setErrorImage(errorImage);
         return this;
     }
@@ -297,8 +341,9 @@ public class DisplayHelper {
     /**
      * 设置错误时显示的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper errorImage(int drawableResId) {
+    public DisplayHelper errorImage(@DrawableRes int drawableResId) {
         displayOptions.setErrorImage(drawableResId);
         return this;
     }
@@ -306,8 +351,9 @@ public class DisplayHelper {
     /**
      * 设置暂停下载时显示的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper pauseDownloadImage(StateImage pauseDownloadImage) {
+    public DisplayHelper pauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
         displayOptions.setPauseDownloadImage(pauseDownloadImage);
         return this;
     }
@@ -315,8 +361,9 @@ public class DisplayHelper {
     /**
      * 设置暂停下载时显示的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper pauseDownloadImage(int drawableResId) {
+    public DisplayHelper pauseDownloadImage(@DrawableRes int drawableResId) {
         displayOptions.setPauseDownloadImage(drawableResId);
         return this;
     }
@@ -324,8 +371,9 @@ public class DisplayHelper {
     /**
      * 设置图片整型器，用于绘制时修改图片的形状
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper shaper(ImageShaper imageShaper) {
+    public DisplayHelper shaper(@Nullable ImageShaper imageShaper) {
         displayOptions.setImageShaper(imageShaper);
         return this;
     }
@@ -333,8 +381,9 @@ public class DisplayHelper {
     /**
      * 设置图片尺寸，用于绘制时修改图片的尺寸
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper shapeSize(ShapeSize shapeSize) {
+    public DisplayHelper shapeSize(@Nullable ShapeSize shapeSize) {
         displayOptions.setShapeSize(shapeSize);
         return this;
     }
@@ -342,6 +391,7 @@ public class DisplayHelper {
     /**
      * 设置图片尺寸，用于绘制时修改图片的尺寸
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper shapeSize(int width, int height) {
         displayOptions.setShapeSize(width, height);
@@ -349,8 +399,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置根据ImageView的layout_width和layout_height作为shape size
+     * 设置根据 ImageView 的 layout_width 和 layout_height 作为 shape size
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper shapeSizeByFixedSize() {
         displayOptions.setShapeSizeByFixedSize(true);
@@ -361,7 +412,8 @@ public class DisplayHelper {
     /**
      * 批量设置显示参数（完全覆盖）
      */
-    public DisplayHelper options(DisplayOptions newOptions) {
+    @NonNull
+    public DisplayHelper options(@Nullable DisplayOptions newOptions) {
         displayOptions.copy(newOptions);
         return this;
     }
@@ -369,6 +421,7 @@ public class DisplayHelper {
     /**
      * 提交请求
      */
+    @Nullable
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
             SLog.w(NAME, "Please perform a commit in the UI thread. view(%s). %s",
@@ -461,7 +514,7 @@ public class DisplayHelper {
             }
             sketchView.setImageDrawable(drawable);
 
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NULL_OR_EMPTY, false);
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
             return false;
         }
 
@@ -494,7 +547,7 @@ public class DisplayHelper {
         FixedSize fixedSize = viewInfo.getFixedSize();
 
 
-        // 用ImageVie的固定宽高作为shape size
+        // 用 ImageVie 的固定宽高作为 shape size
         ShapeSize shapeSize = displayOptions.getShapeSize();
         if (shapeSize == null && displayOptions.isShapeSizeByFixedSize()) {
             if (fixedSize != null) {
@@ -506,18 +559,18 @@ public class DisplayHelper {
             }
         }
 
-        // 如果没有设置ScaleType的话就从ImageView身上取
+        // 如果没有设置 ScaleType 的话就从 ImageView 身上取
         if (shapeSize != null && shapeSize.getScaleType() == null && sketchView != null) {
             shapeSize.setScaleType(viewInfo.getScaleType());
         }
 
-        // 检查Resize的宽高都必须大于0
+        // 检查 Resize 的宽高都必须大于 0
         if (shapeSize != null && (shapeSize.getWidth() == 0 || shapeSize.getHeight() == 0)) {
             throw new IllegalArgumentException("ShapeSize width and height must be > 0");
         }
 
 
-        // 用ImageVie的固定宽高作为resize
+        // 用 ImageVie 的固定宽高作为 resize
         Resize resize = displayOptions.getResize();
         if (resize == null && displayOptions.isResizeByFixedSize()) {
             if (fixedSize != null) {
@@ -529,18 +582,18 @@ public class DisplayHelper {
             }
         }
 
-        // 如果没有设置ScaleType的话就从ImageView身上取
+        // 如果没有设置 ScaleType 的话就从 ImageView 身上取
         if (resize != null && resize.getScaleType() == null && sketchView != null) {
             resize.setScaleType(viewInfo.getScaleType());
         }
 
-        // 检查Resize的宽高都必须大于0
+        // 检查 Resize 的宽高都必须大于 0
         if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
             throw new IllegalArgumentException("Resize width and height must be > 0");
         }
 
 
-        // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
+        // 没有设置 maxSize 的话，如果 ImageView 的宽高是的固定的就根据 ImageView 的宽高来作为 maxSize，否则就用默认的 maxSize
         if (displayOptions.getMaxSize() == null) {
             MaxSize maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView);
             if (maxSize == null) {
@@ -549,14 +602,14 @@ public class DisplayHelper {
             displayOptions.setMaxSize(maxSize);
         }
 
-        // 检查MaxSize的宽或高大于0即可
+        // 检查 MaxSize 的宽或高大于 0 即可
         MaxSize maxSize = displayOptions.getMaxSize();
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
 
-        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
+        // 没有 ImageProcessor 但有 resize 的话就需要设置一个默认的图片裁剪处理器
         if (displayOptions.getImageProcessor() == null && resize != null) {
             displayOptions.setImageProcessor(configuration.getResizeProcessor());
         }
@@ -572,7 +625,7 @@ public class DisplayHelper {
             displayOptions.setInPreferQualityOverSpeed(true);
         }
 
-        // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
+        // 如果没有设置请求 Level 的话就跟据暂停下载和暂停加载功能来设置请求 Level
         if (displayOptions.getRequestLevel() == null) {
             if (configuration.isGlobalPauseDownload()) {
                 displayOptions.setRequestLevel(RequestLevel.LOCAL);
@@ -585,12 +638,12 @@ public class DisplayHelper {
             }
         }
 
-        // ImageDisplayer必须得有
+        // ImageDisplayer 必须得有
         if (displayOptions.getImageDisplayer() == null) {
             displayOptions.setImageDisplayer(configuration.getDefaultDisplayer());
         }
 
-        // 使用过渡图片显示器的时候，如果使用了loadingImage的话就必须配合ShapeSize才行，如果没有ShapeSize就取ImageView的宽高作为ShapeSize
+        // 使用过渡图片显示器的时候，如果使用了 loadingImage 的话就必须配合 ShapeSize 才行，如果没有 ShapeSize 就取 ImageView 的宽高作为 ShapeSize
         if (displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
                 && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
             if (fixedSize != null) {
@@ -610,7 +663,7 @@ public class DisplayHelper {
             }
         }
 
-        // 根据URI和显示选项生成请求key
+        // 根据 URI 和显示选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions);
     }
 
@@ -642,7 +695,7 @@ public class DisplayHelper {
         if (cachedRefBitmap.isRecycled()) {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.e(NAME, "memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
+            SLog.w(NAME, "Memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
             return true;
         }
 
@@ -651,8 +704,7 @@ public class DisplayHelper {
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.d(NAME, "image display completed. %s. %s. view(%s)",
-                    ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
+            SLog.d(NAME, "Display image completed. %s. %s. view(%s)", ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
         }
 
         SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
@@ -685,8 +737,8 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "canceled. %s. view(%s). %s", isPauseLoad ? "pause load" : "requestLevel is memory",
-                        Integer.toHexString(sketchView.hashCode()), key);
+                CancelCause cause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.REQUEST_LEVEL_IS_MEMORY;
+                SLog.d(NAME, "Request cancel. %s. view(%s). %s", cause, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             Drawable loadingDrawable = null;
@@ -708,8 +760,8 @@ public class DisplayHelper {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                String cancelCause = isPauseDownload ? "pause download" : "requestLevel is local";
-                SLog.d(NAME, "canceled. %s. view(%s). %s", cancelCause, Integer.toHexString(sketchView.hashCode()), key);
+                CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
+                SLog.d(NAME, "Request cancel. %s. view(%s). %s", cause, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             // 显示暂停下载图片
@@ -721,11 +773,6 @@ public class DisplayHelper {
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
                 drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "pauseDownloadDrawable is null. view(%s). %s",
-                            Integer.toHexString(sketchView.hashCode()), key);
-                }
             }
             sketchView.setImageDrawable(drawable);
 
@@ -740,20 +787,19 @@ public class DisplayHelper {
     /**
      * 试图取消已经存在的请求
      *
-     * @return DisplayRequest 非null：请求一模一样，无需取消；null：已经取消或没有已存在的请求
+     * @return DisplayRequest null：已经取消或没有已存在的请求
      */
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "repeat request. newId=%s. view(%s)",
-                            key, Integer.toHexString(sketchView.hashCode()));
+                    SLog.d(NAME, "Repeat request. key=%s. view(%s)", key, Integer.toHexString(sketchView.hashCode()));
                 }
                 return potentialRequest;
             } else {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "cancel old request. newId=%s. oldId=%s. view(%s)",
+                    SLog.d(NAME, "Cancel old request. newKey=%s. oldKey=%s. view(%s)",
                             key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -796,8 +842,7 @@ public class DisplayHelper {
         }
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            SLog.d(NAME, "submit request. view(%s). %s",
-                    Integer.toHexString(sketchView.hashCode()), key);
+            SLog.d(NAME, "Run dispatch submitted. view(%s). %s", Integer.toHexString(sketchView.hashCode()), key);
         }
 
         request.submit();

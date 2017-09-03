@@ -19,6 +19,8 @@ package me.xiaopan.sketch.state;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -43,8 +45,9 @@ public class OldStateImage implements StateImage {
     public OldStateImage() {
     }
 
+    @Nullable
     @Override
-    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
+    public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
         Drawable drawable = SketchUtils.getLastDrawable(sketchView.getDrawable());
 
         if (drawable != null && drawable instanceof SketchLoadingDrawable) {

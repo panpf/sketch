@@ -16,12 +16,15 @@
 
 package me.xiaopan.sketch.datasource;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
@@ -39,6 +42,7 @@ public class DiskCacheDataSource implements DataSource {
         this.imageFrom = imageFrom;
     }
 
+    @NonNull
     @Override
     public InputStream getInputStream() throws IOException {
         return diskCacheEntry.newInputStream();
@@ -59,6 +63,7 @@ public class DiskCacheDataSource implements DataSource {
         return diskCacheEntry.getFile();
     }
 
+    @NonNull
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
@@ -68,14 +73,11 @@ public class DiskCacheDataSource implements DataSource {
         return diskCacheEntry;
     }
 
+    @NonNull
     @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, diskCacheEntry.getFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
+                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
+        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, diskCacheEntry.getFile());
     }
 
     public boolean isFromProcessedCache() {

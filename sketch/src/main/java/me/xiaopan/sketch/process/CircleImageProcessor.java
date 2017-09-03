@@ -21,6 +21,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Sketch;
@@ -66,10 +68,11 @@ public class CircleImageProcessor extends WrappedImageProcessor {
         return true;
     }
 
+    @NonNull
     @Override
-    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled()) {
-            return null;
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap.isRecycled()) {
+            return bitmap;
         }
 
         int targetWidth = resize != null ? resize.getWidth() : bitmap.getWidth();

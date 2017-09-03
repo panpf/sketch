@@ -20,6 +20,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -156,7 +158,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public void setImageURI(Uri uri) {
+    public void setImageURI(@Nullable Uri uri) {
         final Drawable oldDrawable = getDrawable();
         super.setImageURI(uri);
         final Drawable newDrawable = getDrawable();
@@ -165,7 +167,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public void setImageResource(int resId) {
+    public void setImageResource(@DrawableRes int resId) {
         final Drawable oldDrawable = getDrawable();
         super.setImageResource(resId);
         final Drawable newDrawable = getDrawable();
@@ -174,7 +176,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public void setImageDrawable(Drawable drawable) {
+    public void setImageDrawable(@Nullable Drawable drawable) {
         final Drawable oldDrawable = getDrawable();
         super.setImageDrawable(drawable);
         final Drawable newDrawable = getDrawable();
@@ -182,7 +184,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         setDrawable("setImageDrawable", oldDrawable, newDrawable);
     }
 
-    private void setDrawable(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    private void setDrawable(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         if (oldDrawable != newDrawable) {
             if (getFunctions().onDrawableChanged(callPosition, oldDrawable, newDrawable)) {
                 invalidate();
@@ -197,13 +199,14 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         }
     }
 
+    @NonNull
     @Override
     public DisplayOptions getOptions() {
         return getFunctions().requestFunction.getDisplayOptions();
     }
 
     @Override
-    public void setOptions(DisplayOptions newDisplayOptions) {
+    public void setOptions(@Nullable DisplayOptions newDisplayOptions) {
         if (newDisplayOptions == null) {
             getFunctions().requestFunction.getDisplayOptions().reset();
         } else {
@@ -211,16 +214,18 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         }
     }
 
+    @Nullable
     @Override
     public DisplayListener getDisplayListener() {
         return displayListenerProxy;
     }
 
     @Override
-    public void setDisplayListener(DisplayListener displayListener) {
+    public void setDisplayListener(@Nullable DisplayListener displayListener) {
         this.wrappedDisplayListener = displayListener;
     }
 
+    @Nullable
     @Override
     public DownloadProgressListener getDownloadProgressListener() {
         if (getFunctions().showProgressFunction != null || wrappedProgressListener != null) {
@@ -231,17 +236,18 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
+    public void setDownloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.wrappedProgressListener = downloadProgressListener;
     }
 
+    @Nullable
     @Override
     public DisplayCache getDisplayCache() {
         return getFunctions().requestFunction.getDisplayCache();
     }
 
     @Override
-    public void setDisplayCache(DisplayCache displayCache) {
+    public void setDisplayCache(@NonNull DisplayCache displayCache) {
         getFunctions().requestFunction.setDisplayCache(displayCache);
     }
 }

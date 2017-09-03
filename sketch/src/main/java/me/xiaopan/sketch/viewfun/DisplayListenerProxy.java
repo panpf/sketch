@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.viewfun;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
@@ -51,7 +52,7 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
+    public void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
@@ -68,7 +69,7 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onError(ErrorCause errorCause) {
+    public void onError(@NonNull ErrorCause errorCause) {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
@@ -85,7 +86,7 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onCanceled(CancelCause cancelCause) {
+    public void onCanceled(@NonNull CancelCause cancelCause) {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;

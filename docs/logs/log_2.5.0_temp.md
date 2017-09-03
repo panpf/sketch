@@ -43,6 +43,7 @@ bugs：
 * :hammer: Sketch.displayFromContent(Uri, SketchView) 方法签名现在改为 Sketch.displayFromContent(String, SketchView)
 * :hammer: Sketch.loadFromURI(Uri, SketchView) 方法重构为 Sketch.loadFromContent(String, SketchView)
 * :hammer: SketchImageView.displayContentImage(Uri) 方法签名现在改为 SketchImageView.displayContentImage(String)
+* :hammer: Initializer.onInitialize(Context, Sketch, Configuration) 方法签名现在改为 onInitialize(Context, Configuration)
 
 新增：
 * :sparkles: 新增了 UriModel
@@ -52,6 +53,7 @@ bugs：
 * :sparkles: SketchImageView 新增 displayApkIcon(String) 方法，用于显示 APK 的图标
 * :sparkles: Sketch 新增 displayApkIcon(String, SketchView) 方法，用于显示 APK 的图标
 * :sparkles: Sketch 新增 loadApkIcon(String, LoadListener) 方法，用于加载 APK 的图标
+* :sparkles: 现在 sketch 里大部分对外的接口都加上了 @NonNull 或 @Nullable 注解，因此现在需要明确依赖 support-annotations
 
 wiki待办：
 * UriModel wiki 新增

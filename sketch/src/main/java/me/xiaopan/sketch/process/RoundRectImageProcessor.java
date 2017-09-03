@@ -23,6 +23,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -74,10 +75,11 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
         return true;
     }
 
+    @NonNull
     @Override
-    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled()) {
-            return null;
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap.isRecycled()) {
+            return bitmap;
         }
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();

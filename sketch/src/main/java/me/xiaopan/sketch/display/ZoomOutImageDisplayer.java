@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -90,7 +91,7 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public void display(SketchView sketchView, Drawable newDrawable) {
+    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
         if (newDrawable == null) {
             return;
         }
@@ -102,6 +103,7 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
         sketchView.startAnimation(scaleAnimation);
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",

@@ -19,6 +19,8 @@ package me.xiaopan.sketch.state;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
@@ -42,8 +44,9 @@ public class DrawableStateImage implements StateImage {
         this.resId = resId;
     }
 
+    @Nullable
     @Override
-    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
+    public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
         Drawable drawable = originDrawable;
         if (drawable == null && resId != -1) {
             drawable = context.getResources().getDrawable(resId);

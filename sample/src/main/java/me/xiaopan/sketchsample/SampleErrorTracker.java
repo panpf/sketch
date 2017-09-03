@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import me.xiaopan.sketch.ErrorTracker;
-import me.xiaopan.sketch.drawable.SketchRefDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -42,13 +43,14 @@ class SampleErrorTracker extends ErrorTracker {
         this.context = context.getApplicationContext();
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return "SampleErrorTracker";
     }
 
     @Override
-    public void onNotFoundGifSoError(Throwable e) {
+    public void onNotFoundGifSoError(@NonNull Throwable e) {
         super.onNotFoundGifSoError(e);
 
         // 每次运行只上报一次
@@ -69,7 +71,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
+    public void onDecodeGifImageError(@NonNull Throwable throwable, @NonNull LoadRequest request, int outWidth, int outHeight, @NonNull String outMimeType) {
         super.onDecodeGifImageError(throwable, request, outWidth, outHeight, outMimeType);
 
         // 其它异常每半小时上报一次
@@ -112,7 +114,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onDecodeNormalImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
+    public void onDecodeNormalImageError(@NonNull Throwable throwable, @NonNull LoadRequest request, int outWidth, int outHeight, @NonNull String outMimeType) {
         super.onDecodeNormalImageError(throwable, request, outWidth, outHeight, outMimeType);
 
         // 每半小时上报一次
@@ -153,7 +155,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onInstallDiskCacheError(Exception e, File cacheDir) {
+    public void onInstallDiskCacheError(@NonNull Exception e, @NonNull File cacheDir) {
         super.onInstallDiskCacheError(e, cacheDir);
 
         // 每半小时上传一次
@@ -196,7 +198,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onProcessImageError(Throwable throwable, String imageUri, ImageProcessor processor) {
+    public void onProcessImageError(@NonNull Throwable throwable, @NonNull String imageUri, @NonNull ImageProcessor processor) {
         super.onProcessImageError(throwable, imageUri, processor);
 
         // 每半小时上报一次
@@ -218,7 +220,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onTileSortError(IllegalArgumentException e, List<Tile> tileList, boolean useLegacyMergeSort) {
+    public void onTileSortError(@NonNull IllegalArgumentException e, @NonNull List<Tile> tileList, boolean useLegacyMergeSort) {
         super.onTileSortError(e, tileList, useLegacyMergeSort);
 
         CrashReport.postCatchedException(new Exception(String.format(
@@ -231,7 +233,7 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onBitmapRecycledOnDisplay(DisplayRequest request, SketchRefDrawable refDrawable) {
+    public void onBitmapRecycledOnDisplay(@NonNull DisplayRequest request, @NonNull SketchDrawable refDrawable) {
         super.onBitmapRecycledOnDisplay(request, refDrawable);
 
         CrashReport.postCatchedException(new Exception(String.format(
@@ -243,8 +245,8 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onInBitmapDecodeError(String imageUri, int imageWidth, int imageHeight, String imageMimeType,
-                                      Throwable throwable, int inSampleSize, Bitmap inBitmap) {
+    public void onInBitmapDecodeError(@NonNull String imageUri, int imageWidth, int imageHeight, @NonNull String imageMimeType,
+                                      @NonNull Throwable throwable, int inSampleSize, @NonNull Bitmap inBitmap) {
         super.onInBitmapDecodeError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, inSampleSize, inBitmap);
 
         CrashReport.postCatchedException(new Exception(String.format(
@@ -263,8 +265,8 @@ class SampleErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onDecodeRegionError(String imageUri, int imageWidth, int imageHeight, String imageMimeType,
-                                    Throwable throwable, Rect srcRect, int inSampleSize) {
+    public void onDecodeRegionError(@NonNull String imageUri, int imageWidth, int imageHeight, @NonNull String imageMimeType,
+                                    @NonNull Throwable throwable, @NonNull Rect srcRect, int inSampleSize) {
         super.onDecodeRegionError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, srcRect, inSampleSize);
 
         CrashReport.postCatchedException(new Exception(String.format(

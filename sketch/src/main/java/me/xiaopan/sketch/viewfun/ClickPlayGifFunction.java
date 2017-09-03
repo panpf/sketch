@@ -18,6 +18,7 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -50,7 +51,7 @@ public class ClickPlayGifFunction extends ViewFunction {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         Drawable drawable = view.getDrawable();
         if (drawable != lastDrawable) {
             canClickPlay = canClickPlay(drawable);

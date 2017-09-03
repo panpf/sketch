@@ -2,6 +2,8 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
@@ -56,6 +58,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
+    @SuppressWarnings("unused")
     public static GaussianBlurImageProcessor makeLayerColor(int layerColor, WrappedImageProcessor wrappedImageProcessor) {
         return new GaussianBlurImageProcessor(DEFAULT_RADIUS, layerColor, wrappedImageProcessor);
     }
@@ -352,17 +355,22 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
         return String.format("%s(radius=%d,maskColor=%d)", KEY, radius, layerColor);
     }
 
+    @NonNull
     @Override
-    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled()) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap.isRecycled()) {
             return bitmap;
         }
 
         // blur handle
         Bitmap blurBitmap = fastGaussianBlur(bitmap, radius, bitmap.getConfig() != null && bitmap.isMutable());
 
+        if (blurBitmap == null) {
+            return bitmap;
+        }
+
         // layer color handle
-        if (blurBitmap != null && layerColor != NO_LAYER_COLOR) {
+        if (layerColor != NO_LAYER_COLOR) {
             Canvas canvas = new Canvas(blurBitmap);
             canvas.drawColor(layerColor);
         }

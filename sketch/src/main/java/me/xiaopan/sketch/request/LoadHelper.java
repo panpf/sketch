@@ -18,6 +18,7 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView.ScaleType;
 
@@ -29,7 +30,7 @@ import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 加载Helper，负责组织、收集、初始化加载参数，最后执行commit()提交请求
+ * 加载 Helper，负责组织、收集、初始化加载参数，最后执行 commit() 提交请求
  */
 public class LoadHelper {
     private static final String NAME = "LoadHelper";
@@ -54,6 +55,7 @@ public class LoadHelper {
     /**
      * 禁用磁盘缓存
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper disableCacheInDisk() {
         loadOptions.setCacheInDiskDisabled(true);
@@ -61,8 +63,9 @@ public class LoadHelper {
     }
 
     /**
-     * 禁用BitmapPool
+     * 禁用 BitmapPool
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper disableBitmapPool() {
         loadOptions.setBitmapPoolDisabled(true);
@@ -70,10 +73,11 @@ public class LoadHelper {
     }
 
     /**
-     * 设置请求Level
+     * 设置请求 Level
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public LoadHelper requestLevel(RequestLevel requestLevel) {
+    public LoadHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             loadOptions.setRequestLevel(requestLevel);
             loadOptions.setRequestLevelFrom(null);
@@ -84,6 +88,7 @@ public class LoadHelper {
     /**
      * 解码Gif图片
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper decodeGifImage() {
         loadOptions.setDecodeGifImage(true);
@@ -91,8 +96,9 @@ public class LoadHelper {
     }
 
     /**
-     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
+     * 设置最大尺寸，在解码的时候会使用此 Size 来计算 inSimpleSize
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper maxSize(int width, int height) {
         loadOptions.setMaxSize(width, height);
@@ -100,26 +106,49 @@ public class LoadHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
-     * 但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 设置最大尺寸，在解码的时候会使用此 Size 来计算 inSimpleSize
      */
+    @NonNull
+    @SuppressWarnings("unused")
+    public LoadHelper maxSize(@Nullable MaxSize maxSize) {
+        loadOptions.setMaxSize(maxSize);
+        return this;
+    }
+
+    /**
+     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
+     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
+     */
+    @NonNull
+    public LoadHelper resize(@Nullable Resize resize) {
+        loadOptions.setResize(resize);
+        return this;
+    }
+
+    /**
+     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
+     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
+     */
+    @NonNull
     public LoadHelper resize(int width, int height) {
         loadOptions.setResize(width, height);
         return this;
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
-     * 但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 裁剪图片，将原始图片加载到内存中之后根据 resize 进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟 resize 一样的，
+     * 但尺寸不一定会等于 resize，也有可能小于 resize，如果需要必须同 resize 一致可以设置 forceUseResize
      */
-    public LoadHelper resize(int width, int height, ScaleType scaleType) {
-        loadOptions.setResize(new Resize(width, height, scaleType));
+    @NonNull
+    public LoadHelper resize(int width, int height, @NonNull ScaleType scaleType) {
+        loadOptions.setResize(width, height, scaleType);
         return this;
     }
 
     /**
-     * 强制使经过resize处理后的图片同resize的尺寸一致
+     * 强制使经过 resize 处理后的图片同 resize 的尺寸一致
      */
+    @NonNull
     public LoadHelper forceUseResize() {
         loadOptions.setForceUseResize(true);
         return this;
@@ -128,16 +157,18 @@ public class LoadHelper {
     /**
      * 返回低质量的图片
      */
+    @NonNull
     public LoadHelper lowQualityImage() {
         loadOptions.setLowQualityImage(true);
         return this;
     }
 
     /**
-     * 设置图片处理器，图片处理器会根据resize创建一张新的图片
+     * 设置图片处理器，图片处理器会根据 resize 创建一张新的图片
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public LoadHelper processor(ImageProcessor processor) {
+    public LoadHelper processor(@Nullable ImageProcessor processor) {
         loadOptions.setImageProcessor(processor);
         return this;
     }
@@ -145,8 +176,9 @@ public class LoadHelper {
     /**
      * 设置图片质量
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public LoadHelper bitmapConfig(Bitmap.Config config) {
+    public LoadHelper bitmapConfig(@Nullable Bitmap.Config config) {
         loadOptions.setBitmapConfig(config);
         return this;
     }
@@ -154,6 +186,7 @@ public class LoadHelper {
     /**
      * 设置优先考虑质量还是速度
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         loadOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
@@ -163,6 +196,7 @@ public class LoadHelper {
     /**
      * 开启缩略图模式
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper thumbnailMode() {
         loadOptions.setThumbnailMode(true);
@@ -170,8 +204,9 @@ public class LoadHelper {
     }
 
     /**
-     * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+     * 为了加快速度，将经过 ImageProcessor、resize 或 thumbnailMode 处理过的图片保存到磁盘缓存中，下次就直接读取
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper cacheProcessedImageInDisk() {
         loadOptions.setCacheProcessedImageInDisk(true);
@@ -181,6 +216,7 @@ public class LoadHelper {
     /**
      * 禁用纠正图片方向功能
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper disableCorrectImageOrientation() {
         loadOptions.setCorrectImageOrientationDisabled(true);
@@ -190,7 +226,8 @@ public class LoadHelper {
     /**
      * 批量设置加载参数（完全覆盖）
      */
-    public LoadHelper options(LoadOptions newOptions) {
+    @NonNull
+    public LoadHelper options(@Nullable LoadOptions newOptions) {
         loadOptions.copy(newOptions);
         return this;
     }
@@ -198,8 +235,9 @@ public class LoadHelper {
     /**
      * 设置下载进度监听器
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public LoadHelper downloadProgressListener(DownloadProgressListener downloadProgressListener) {
+    public LoadHelper downloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
         return this;
     }
@@ -207,6 +245,7 @@ public class LoadHelper {
     /**
      * 同步处理
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper sync() {
         this.sync = true;
@@ -216,6 +255,7 @@ public class LoadHelper {
     /**
      * 提交
      */
+    @Nullable
     public LoadRequest commit() {
         if (sync && SketchUtils.isMainThread()) {
             throw new IllegalStateException("Cannot sync perform the load in the UI thread ");
@@ -242,7 +282,7 @@ public class LoadHelper {
 
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_INVALID, sync);
             return false;
         }
 
@@ -268,19 +308,19 @@ public class LoadHelper {
         }
 
 
-        // 没有设置maxSize的话，就用默认的maxSize
+        // 没有设置 maxSize 的话，就用默认的 maxSize
         if (loadOptions.getMaxSize() == null) {
             loadOptions.setMaxSize(configuration.getSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
         }
 
-        // 检查MaxSize的宽或高大于0即可
+        // 检查 maxSize 的宽或高大于0即可
         MaxSize maxSize = loadOptions.getMaxSize();
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
 
-        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
+        // 没有 ImageProcessor 但有 resize 的话就需要设置一个默认的图片裁剪处理器
         if (loadOptions.getImageProcessor() == null && resize != null) {
             loadOptions.setImageProcessor(configuration.getResizeProcessor());
         }
@@ -296,7 +336,7 @@ public class LoadHelper {
             loadOptions.setInPreferQualityOverSpeed(true);
         }
 
-        // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
+        // 如果没有设置请求 Level 的话就跟据暂停下载和暂停加载功能来设置请求 Level
         if (loadOptions.getRequestLevel() == null) {
             if (configuration.isGlobalPauseDownload()) {
                 loadOptions.setRequestLevel(RequestLevel.LOCAL);
@@ -306,7 +346,7 @@ public class LoadHelper {
             // 暂停加载对于加载请求并不起作用，因此这里不予处理
         }
 
-        // 根据URI和加载选项生成请求ID
+        // 根据 URI 和加载选项生成请求 ID
         key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions);
     }
 
@@ -317,8 +357,8 @@ public class LoadHelper {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "canceled. %s. %s",
-                        isPauseDownload ? "pause download" : "requestLevel is local", key);
+                CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
+                SLog.d(NAME, "Request cancel. %s. %s", cause, key);
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
@@ -335,6 +375,10 @@ public class LoadHelper {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         LoadRequest request = requestFactory.newLoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
+
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+            SLog.d(NAME, "Run dispatch submitted. %s", key);
+        }
         request.submit();
 
         return request;

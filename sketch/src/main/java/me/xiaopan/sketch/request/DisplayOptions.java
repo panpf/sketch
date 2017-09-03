@@ -17,6 +17,10 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -55,7 +59,7 @@ public class DisplayOptions extends LoadOptions {
     private StateImage pauseDownloadImage;
 
     /**
-     * 使用ImageView的layout_width和layout_height作为resize
+     * 使用 ImageView 的 layout_width 和 layout_height 作为 resize
      */
     private boolean resizeByFixedSize;
 
@@ -70,7 +74,7 @@ public class DisplayOptions extends LoadOptions {
     private ShapeSize shapeSize;
 
     /**
-     * 使用ImageView的layout_width和layout_height作为shape size
+     * 使用 ImageView 的 layout_width 和 layout_height 作为 shape size
      */
     private boolean shapeSizeByFixedSize;
 
@@ -82,86 +86,109 @@ public class DisplayOptions extends LoadOptions {
         copy(from);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
         return (DisplayOptions) super.setCacheInDiskDisabled(cacheInDiskDisabled);
     }
 
+    @NonNull
     @Override
-    public DisplayOptions setRequestLevel(RequestLevel requestLevel) {
+    public DisplayOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
         return (DisplayOptions) super.setRequestLevel(requestLevel);
     }
 
+    @NonNull
     @Override
-    DisplayOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+    DisplayOptions setRequestLevelFrom(@Nullable RequestLevelFrom requestLevelFrom) {
         return (DisplayOptions) super.setRequestLevelFrom(requestLevelFrom);
     }
 
+    @NonNull
     @Override
-    public DisplayOptions setMaxSize(MaxSize maxSize) {
+    public DisplayOptions setMaxSize(@Nullable MaxSize maxSize) {
         return (DisplayOptions) super.setMaxSize(maxSize);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setMaxSize(int width, int height) {
         return (DisplayOptions) super.setMaxSize(width, height);
     }
 
+    @NonNull
     @Override
-    public DisplayOptions setResize(Resize resize) {
+    public DisplayOptions setResize(@Nullable Resize resize) {
         return (DisplayOptions) super.setResize(resize);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setResize(int width, int height) {
         return (DisplayOptions) super.setResize(width, height);
     }
 
+    @NonNull
+    @Override
+    public DisplayOptions setResize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
+        return (DisplayOptions) super.setResize(width, height, scaleType);
+    }
+
+    @NonNull
     @Override
     public DisplayOptions setDecodeGifImage(boolean decodeGifImage) {
         return (DisplayOptions) super.setDecodeGifImage(decodeGifImage);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setLowQualityImage(boolean lowQualityImage) {
         return (DisplayOptions) super.setLowQualityImage(lowQualityImage);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setForceUseResize(boolean forceUseResize) {
         return (DisplayOptions) super.setForceUseResize(forceUseResize);
     }
 
+    @NonNull
     @Override
-    public DisplayOptions setImageProcessor(ImageProcessor processor) {
+    public DisplayOptions setImageProcessor(@Nullable ImageProcessor processor) {
         return (DisplayOptions) super.setImageProcessor(processor);
     }
 
+    @NonNull
     @Override
-    public DisplayOptions setBitmapConfig(Bitmap.Config bitmapConfig) {
+    public DisplayOptions setBitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
         return (DisplayOptions) super.setBitmapConfig(bitmapConfig);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         return (DisplayOptions) super.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setThumbnailMode(boolean thumbnailMode) {
         return (DisplayOptions) super.setThumbnailMode(thumbnailMode);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setCacheProcessedImageInDisk(boolean cacheProcessedImageInDisk) {
         return (DisplayOptions) super.setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setBitmapPoolDisabled(boolean bitmapPoolDisabled) {
         return (DisplayOptions) super.setBitmapPoolDisabled(bitmapPoolDisabled);
     }
 
+    @NonNull
     @Override
     public DisplayOptions setCorrectImageOrientationDisabled(boolean correctImageOrientationDisabled) {
         return (DisplayOptions) super.setCorrectImageOrientationDisabled(correctImageOrientationDisabled);
@@ -180,6 +207,7 @@ public class DisplayOptions extends LoadOptions {
      * @param cacheInMemoryDisabled 禁止使用内存缓存
      * @return DisplayOptions
      */
+    @NonNull
     public DisplayOptions setCacheInMemoryDisabled(boolean cacheInMemoryDisabled) {
         this.cacheInMemoryDisabled = cacheInMemoryDisabled;
         return this;
@@ -190,6 +218,7 @@ public class DisplayOptions extends LoadOptions {
      *
      * @return ImageDisplayer
      */
+    @Nullable
     public ImageDisplayer getImageDisplayer() {
         return imageDisplayer;
     }
@@ -200,7 +229,8 @@ public class DisplayOptions extends LoadOptions {
      * @param displayer ImageDisplayer
      * @return DisplayOptions
      */
-    public DisplayOptions setImageDisplayer(ImageDisplayer displayer) {
+    @NonNull
+    public DisplayOptions setImageDisplayer(@Nullable ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
         return this;
     }
@@ -210,8 +240,21 @@ public class DisplayOptions extends LoadOptions {
      *
      * @return StateImage
      */
+    @Nullable
     public StateImage getLoadingImage() {
         return loadingImage;
+    }
+
+    /**
+     * 设置加载中时显示的占位图片
+     *
+     * @param drawableResId 资源图片ID
+     * @return DisplayOptions
+     */
+    @NonNull
+    public DisplayOptions setLoadingImage(@DrawableRes int drawableResId) {
+        setLoadingImage(new DrawableStateImage(drawableResId));
+        return this;
     }
 
     /**
@@ -220,19 +263,9 @@ public class DisplayOptions extends LoadOptions {
      * @param loadingImage 加载中时显示的占位图片
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadingImage(StateImage loadingImage) {
+    @NonNull
+    public DisplayOptions setLoadingImage(@Nullable StateImage loadingImage) {
         this.loadingImage = loadingImage;
-        return this;
-    }
-
-    /**
-     * 设置加载中时显示的占位图片
-     *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -241,8 +274,21 @@ public class DisplayOptions extends LoadOptions {
      *
      * @return StateImage
      */
+    @Nullable
     public StateImage getErrorImage() {
         return errorImage;
+    }
+
+    /**
+     * 设置加载失败时显示的图片
+     *
+     * @param drawableResId 资源图片ID
+     * @return DisplayOptions
+     */
+    @NonNull
+    public DisplayOptions setErrorImage(@DrawableRes int drawableResId) {
+        setErrorImage(new DrawableStateImage(drawableResId));
+        return this;
     }
 
     /**
@@ -251,19 +297,9 @@ public class DisplayOptions extends LoadOptions {
      * @param errorImage 加载失败时显示的图片
      * @return DisplayOptions
      */
-    public DisplayOptions setErrorImage(StateImage errorImage) {
+    @NonNull
+    public DisplayOptions setErrorImage(@Nullable StateImage errorImage) {
         this.errorImage = errorImage;
-        return this;
-    }
-
-    /**
-     * 设置加载失败时显示的图片
-     *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    public DisplayOptions setErrorImage(int drawableResId) {
-        setErrorImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
@@ -272,19 +308,9 @@ public class DisplayOptions extends LoadOptions {
      *
      * @return StateImage
      */
+    @Nullable
     public StateImage getPauseDownloadImage() {
         return pauseDownloadImage;
-    }
-
-    /**
-     * 设置暂停下载时显示的图片
-     *
-     * @param pauseDownloadImage 暂停下载时显示的图片
-     * @return DisplayOptions
-     */
-    public DisplayOptions setPauseDownloadImage(StateImage pauseDownloadImage) {
-        this.pauseDownloadImage = pauseDownloadImage;
-        return this;
     }
 
     /**
@@ -293,8 +319,21 @@ public class DisplayOptions extends LoadOptions {
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setPauseDownloadImage(int drawableResId) {
+    @NonNull
+    public DisplayOptions setPauseDownloadImage(@DrawableRes int drawableResId) {
         setPauseDownloadImage(new DrawableStateImage(drawableResId));
+        return this;
+    }
+
+    /**
+     * 设置暂停下载时显示的图片
+     *
+     * @param pauseDownloadImage 暂停下载时显示的图片
+     * @return DisplayOptions
+     */
+    @NonNull
+    public DisplayOptions setPauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
+        this.pauseDownloadImage = pauseDownloadImage;
         return this;
     }
 
@@ -314,6 +353,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      * @see FixedSize
      */
+    @NonNull
     public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
         this.resizeByFixedSize = isResizeByFixedSize;
         return this;
@@ -324,6 +364,7 @@ public class DisplayOptions extends LoadOptions {
      *
      * @return ImageShaper
      */
+    @Nullable
     public ImageShaper getImageShaper() {
         return imageShaper;
     }
@@ -334,7 +375,8 @@ public class DisplayOptions extends LoadOptions {
      * @param imageShaper 绘制时图片形状修改器
      * @return DisplayOptions
      */
-    public DisplayOptions setImageShaper(ImageShaper imageShaper) {
+    @NonNull
+    public DisplayOptions setImageShaper(@Nullable ImageShaper imageShaper) {
         this.imageShaper = imageShaper;
         return this;
     }
@@ -344,6 +386,7 @@ public class DisplayOptions extends LoadOptions {
      *
      * @return ShapeSize
      */
+    @Nullable
     public ShapeSize getShapeSize() {
         return shapeSize;
     }
@@ -354,7 +397,8 @@ public class DisplayOptions extends LoadOptions {
      * @param shapeSize 绘制时图片应该显示的尺寸
      * @return DisplayOptions
      */
-    public DisplayOptions setShapeSize(ShapeSize shapeSize) {
+    @NonNull
+    public DisplayOptions setShapeSize(@Nullable ShapeSize shapeSize) {
         this.shapeSize = shapeSize;
         this.shapeSizeByFixedSize = false;
         return this;
@@ -367,6 +411,7 @@ public class DisplayOptions extends LoadOptions {
      * @param height 绘制时应该显示的高
      * @return DisplayOptions
      */
+    @NonNull
     public DisplayOptions setShapeSize(int width, int height) {
         return setShapeSize(new ShapeSize(width, height));
     }
@@ -408,7 +453,7 @@ public class DisplayOptions extends LoadOptions {
      *
      * @param options 来源
      */
-    public void copy(DisplayOptions options) {
+    public void copy(@Nullable DisplayOptions options) {
         if (options == null) {
             return;
         }

@@ -16,6 +16,9 @@
 
 package me.xiaopan.sketch.cache;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 
@@ -26,17 +29,19 @@ public interface MemoryCache extends Identifier {
     /**
      * 放进去一张图片
      */
-    void put(String key, SketchRefBitmap refBitmap);
+    void put(@NonNull String key, @NonNull SketchRefBitmap refBitmap);
 
     /**
      * 根据给定的key获取图片
      */
-    SketchRefBitmap get(String key);
+    @Nullable
+    SketchRefBitmap get(@NonNull String key);
 
     /**
      * 根据给定的key删除图片
      */
-    SketchRefBitmap remove(String key);
+    @Nullable
+    SketchRefBitmap remove(@NonNull String key);
 
     /**
      * 获取已用容量

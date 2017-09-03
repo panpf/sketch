@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.decode;
 
+import android.support.annotation.NonNull;
+
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -29,7 +31,7 @@ public class GifDecodeResult implements DecodeResult {
     private boolean banProcess;
     private boolean processed;
 
-    public GifDecodeResult(ImageAttrs imageAttrs, SketchGifDrawable gifDrawable) {
+    public GifDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull SketchGifDrawable gifDrawable) {
         this.imageAttrs = imageAttrs;
         this.gifDrawable = gifDrawable;
     }
@@ -78,6 +80,7 @@ public class GifDecodeResult implements DecodeResult {
         }
     }
 
+    @NonNull
     public SketchGifDrawable getGifDrawable() {
         return gifDrawable;
     }

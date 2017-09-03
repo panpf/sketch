@@ -19,6 +19,7 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.SketchView;
 
@@ -52,7 +53,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public void display(SketchView sketchView, Drawable newDrawable) {
+    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
         if (newDrawable == null) {
             return;
         }
@@ -63,6 +64,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
         transitionDrawable.startTransition(duration);
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(duration=%d, color=%d, alwaysUse=%s)", KEY, duration, color, alwaysUse);

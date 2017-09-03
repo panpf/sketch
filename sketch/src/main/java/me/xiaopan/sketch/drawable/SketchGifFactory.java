@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class SketchGifFactory {
@@ -52,97 +53,74 @@ public class SketchGifFactory {
         return existGifLibrary == 1;
     }
 
+    public static void assetExistGifLibrary() throws NotFoundGifLibraryException {
+        if (!isExistGifLibrary()) {
+            throw new NotFoundGifLibraryException();
+        }
+    }
+
     @SuppressWarnings("unused")
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, afd);
     }
 
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, assets, assetName);
     }
 
     @SuppressWarnings("unused")
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, ByteBuffer buffer) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, ByteBuffer buffer) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, buffer);
     }
 
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, byte[] bytes) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, byte[] bytes) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, bytes);
     }
 
+    @SuppressWarnings("unused")
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, FileDescriptor fd) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, FileDescriptor fd) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, fd);
     }
 
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, File file) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, File file) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, file);
     }
 
     @SuppressWarnings("unused")
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, String filePath) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, String filePath) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, filePath);
     }
 
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, Resources res, int id) throws Resources.NotFoundException, IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, Resources res, int id) throws Resources.NotFoundException, IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, res, id);
     }
 
     public static SketchGifDrawable createGifDrawable(String key, String imageUri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, imageUri, imageAttrs, imageFrom, bitmapPool, resolver, uri);
     }
 
     @SuppressWarnings("unused")
     public static SketchGifDrawable createGifDrawable(String key, String uri, ImageAttrs imageAttrs, ImageFrom imageFrom,
-                                                      BitmapPool bitmapPool, InputStream stream) throws IOException {
-        if (!isExistGifLibrary()) {
-            return null;
-        }
-
+                                                      BitmapPool bitmapPool, InputStream stream) throws IOException, NotFoundGifLibraryException {
+        assetExistGifLibrary();
         return new SketchGifDrawableImpl(key, uri, imageAttrs, imageFrom, bitmapPool, stream);
     }
 }

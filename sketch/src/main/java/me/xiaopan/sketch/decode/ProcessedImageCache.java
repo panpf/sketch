@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -155,6 +156,7 @@ public class ProcessedImageCache implements Identifier {
         }
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return "ProcessedImageCache";

@@ -56,6 +56,7 @@ public class HelperFactory implements Identifier {
         }
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;

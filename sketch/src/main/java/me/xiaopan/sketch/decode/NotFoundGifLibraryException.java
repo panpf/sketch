@@ -16,28 +16,5 @@
 
 package me.xiaopan.sketch.decode;
 
-import me.xiaopan.sketch.request.ErrorCause;
-
-public class DecodeException extends Exception {
-
-    private ErrorCause errorCause;
-
-    public DecodeException(Throwable cause, ErrorCause errorCause) {
-        super(cause);
-        this.errorCause = errorCause;
-    }
-
-    public DecodeException(String message, ErrorCause errorCause) {
-        super(message);
-        this.errorCause = errorCause;
-    }
-
-    public DecodeException(String message, Throwable cause, ErrorCause errorCause) {
-        super(message, cause);
-        this.errorCause = errorCause;
-    }
-
-    public ErrorCause getErrorCause() {
-        return errorCause;
-    }
+public class NotFoundGifLibraryException extends Exception {
 }

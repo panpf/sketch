@@ -5,13 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import me.xiaopan.sketch.drawable.SketchRefDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadRequest;
@@ -37,7 +38,7 @@ public class ErrorTracker implements Identifier {
      *                 UnableCreateFileException：无法在缓存目录中创建文件
      * @param cacheDir 默认的缓存目录
      */
-    public void onInstallDiskCacheError(Exception e, File cacheDir) {
+    public void onInstallDiskCacheError(@NonNull Exception e, @NonNull File cacheDir) {
         SLog.e(NAME, "onInstallDiskCacheError. %s: %s. SDCardState: %s. cacheDir: %s",
                 e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
     }
@@ -47,7 +48,7 @@ public class ErrorTracker implements Identifier {
      *
      * @param e UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
      */
-    public void onNotFoundGifSoError(Throwable e) {
+    public void onNotFoundGifSoError(@NonNull Throwable e) {
         SLog.e(NAME, "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
                 "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
 
@@ -69,7 +70,8 @@ public class ErrorTracker implements Identifier {
      * @param outHeight   图片原始高
      * @param outMimeType 图片类型
      */
-    public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
+    public void onDecodeGifImageError(@NonNull Throwable throwable, @NonNull LoadRequest request,
+                                      int outWidth, int outHeight, @NonNull String outMimeType) {
         SLog.e(NAME, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
                 outWidth, outHeight, outMimeType, request.getKey());
     }
@@ -83,7 +85,8 @@ public class ErrorTracker implements Identifier {
      * @param outHeight   图片原始高
      * @param outMimeType 图片类型
      */
-    public void onDecodeNormalImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
+    public void onDecodeNormalImageError(@NonNull Throwable throwable, @NonNull LoadRequest request,
+                                         int outWidth, int outHeight, @NonNull String outMimeType) {
         if (throwable instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -106,7 +109,7 @@ public class ErrorTracker implements Identifier {
      * @param imageUri  图片uri
      * @param processor 所使用的处理器
      */
-    public void onProcessImageError(Throwable e, String imageUri, ImageProcessor processor) {
+    public void onProcessImageError(@NonNull Throwable e, @NonNull String imageUri, @NonNull ImageProcessor processor) {
         if (e instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -128,8 +131,8 @@ public class ErrorTracker implements Identifier {
      * @param request   出错的下载请求
      * @param throwable 异常
      */
-    public void onDownloadError(@SuppressWarnings("UnusedParameters") DownloadRequest request,
-                                @SuppressWarnings("UnusedParameters") Throwable throwable) {
+    @SuppressWarnings("UnusedParameters")
+    public void onDownloadError(@NonNull DownloadRequest request, @NonNull Throwable throwable) {
 
     }
 
@@ -140,18 +143,17 @@ public class ErrorTracker implements Identifier {
      * @param tileList           碎片列表
      * @param useLegacyMergeSort 当前是否使用旧的排序算法
      */
-    public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e, List<Tile> tileList,
-                                @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
+    public void onTileSortError(@NonNull IllegalArgumentException e, @NonNull List<Tile> tileList, boolean useLegacyMergeSort) {
         String legacy = useLegacyMergeSort ? "useLegacyMergeSort. " : "";
         SLog.e(NAME, "onTileSortError. %s%s", legacy, SketchUtils.tileListToString(tileList));
     }
 
     /**
-     * 在即将显示时发现Bitmap被回收
+     * 在即将显示时发现 Bitmap 被回收
      */
-    public void onBitmapRecycledOnDisplay(DisplayRequest request, SketchRefDrawable refDrawable) {
+    public void onBitmapRecycledOnDisplay(@NonNull DisplayRequest request, @NonNull SketchDrawable sketchDrawable) {
         SLog.e(NAME, "onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
-                request.getUri(), refDrawable.getInfo());
+                request.getUri(), sketchDrawable.getInfo());
     }
 
     /**
@@ -165,8 +167,8 @@ public class ErrorTracker implements Identifier {
      * @param inSampleSize  缩放比例
      * @param inBitmap      复用的inBitmap
      */
-    public void onInBitmapDecodeError(String imageUri, int imageWidth, int imageHeight,
-                                      String imageMimeType, Throwable throwable, int inSampleSize, Bitmap inBitmap) {
+    public void onInBitmapDecodeError(@NonNull String imageUri, int imageWidth, int imageHeight, @NonNull String imageMimeType,
+                                      @NonNull Throwable throwable, int inSampleSize, @NonNull Bitmap inBitmap) {
         SLog.e(NAME, "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
                         "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
                 imageUri, imageWidth, imageHeight, imageMimeType, inSampleSize,
@@ -183,12 +185,13 @@ public class ErrorTracker implements Identifier {
      * @param throwable     异常
      * @param srcRect       碎片区域
      */
-    public void onDecodeRegionError(String imageUri, int imageWidth, int imageHeight,
-                                    String imageMimeType, Throwable throwable, Rect srcRect, int inSampleSize) {
+    public void onDecodeRegionError(@NonNull String imageUri, int imageWidth, int imageHeight, @NonNull String imageMimeType,
+                                    @NonNull Throwable throwable, @NonNull Rect srcRect, int inSampleSize) {
         SLog.e(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
                 imageUri, imageWidth, imageHeight, imageMimeType, srcRect.toString(), inSampleSize);
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return NAME;

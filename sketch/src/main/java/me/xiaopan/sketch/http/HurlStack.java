@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.http;
 
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,7 @@ public class HurlStack implements HttpStack {
         return maxRetryCount;
     }
 
+    @NonNull
     @Override
     public HurlStack setMaxRetryCount(int maxRetryCount) {
         this.maxRetryCount = maxRetryCount;
@@ -54,6 +56,7 @@ public class HurlStack implements HttpStack {
         return connectTimeout;
     }
 
+    @NonNull
     @Override
     public HurlStack setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
@@ -65,6 +68,7 @@ public class HurlStack implements HttpStack {
         return readTimeout;
     }
 
+    @NonNull
     @Override
     public HurlStack setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
@@ -76,6 +80,7 @@ public class HurlStack implements HttpStack {
         return userAgent;
     }
 
+    @NonNull
     @Override
     public HurlStack setUserAgent(String userAgent) {
         this.userAgent = userAgent;
@@ -87,6 +92,7 @@ public class HurlStack implements HttpStack {
         return setExtraHeaders;
     }
 
+    @NonNull
     @Override
     public HurlStack setExtraHeaders(Map<String, String> extraHeaders) {
         this.setExtraHeaders = extraHeaders;
@@ -98,6 +104,7 @@ public class HurlStack implements HttpStack {
         return addExtraHeaders;
     }
 
+    @NonNull
     @Override
     public HurlStack addExtraHeaders(Map<String, String> extraHeaders) {
         this.addExtraHeaders = extraHeaders;
@@ -109,12 +116,14 @@ public class HurlStack implements HttpStack {
         return throwable instanceof SocketTimeoutException;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
                 KEY, maxRetryCount, connectTimeout, readTimeout, userAgent);
     }
 
+    @NonNull
     @Override
     public ImageHttpResponse getHttpResponse(String uri) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
@@ -211,6 +220,7 @@ public class HurlStack implements HttpStack {
             return stringBuilder.toString();
         }
 
+        @NonNull
         @Override
         public InputStream getContent() throws IOException {
             return connection.getInputStream();

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.request;
 
-import me.xiaopan.sketch.request.LoadRequest;
-
-public interface ResultProcessor {
-    void process(LoadRequest request, DecodeResult result) throws ProcessException;
+public class CanceledException extends Exception {
 }

@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
 import me.xiaopan.sketch.SLog;
@@ -39,13 +40,15 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized void put(String key, SketchRefBitmap refBitmap) {
+    public synchronized void put(@NonNull String key, @NonNull SketchRefBitmap refBitmap) {
         if (closed) {
             return;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable put, key=%s", key);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable put, key=%s", key);
+            }
             return;
         }
 
@@ -69,13 +72,15 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized SketchRefBitmap get(String key) {
+    public synchronized SketchRefBitmap get(@NonNull String key) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable get, key=%s", key);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable get, key=%s", key);
+            }
             return null;
         }
 
@@ -83,13 +88,15 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized SketchRefBitmap remove(String key) {
+    public synchronized SketchRefBitmap remove(@NonNull String key) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable remove, key=%s", key);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable remove, key=%s", key);
+            }
             return null;
         }
 
@@ -176,6 +183,7 @@ public class LruMemoryCache implements MemoryCache {
         cache.evictAll();
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(maxSize=%s)", NAME, Formatter.formatFileSize(context, getMaxSize()));

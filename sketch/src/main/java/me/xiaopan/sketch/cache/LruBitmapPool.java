@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
 import java.util.Arrays;
@@ -88,7 +89,7 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private static Set<Bitmap.Config> getDefaultAllowedConfigs() {
-        Set<Bitmap.Config> configs = new HashSet<Bitmap.Config>();
+        Set<Bitmap.Config> configs = new HashSet<>();
         configs.addAll(Arrays.asList(Bitmap.Config.values()));
         if (Build.VERSION.SDK_INT >= 19) {
             configs.add(null);
@@ -97,17 +98,19 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     @Override
-    public synchronized boolean put(Bitmap bitmap) {
+    public synchronized boolean put(@NonNull Bitmap bitmap) {
         if (closed) {
             return false;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable put, bitmap=%s,%s",
-                    strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable put, bitmap=%s,%s", strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
+            }
             return false;
         }
 
+        //noinspection ConstantConditions
         if (bitmap == null) {
             throw new NullPointerException("Bitmap must not be null");
         }
@@ -136,18 +139,21 @@ public class LruBitmapPool implements BitmapPool {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     @Override
-    public synchronized Bitmap getDirty(int width, int height, Bitmap.Config config) {
+    public synchronized Bitmap getDirty(int width, int height, @NonNull Bitmap.Config config) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
-            SLog.w(NAME, "Disabled. Unable get, bitmap=%s,%s", strategy.logBitmap(width, height, config));
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+                SLog.d(NAME, "Disabled. Unable get, bitmap=%s,%s", strategy.logBitmap(width, height, config));
+            }
             return null;
         }
 
         // Config will be null for non public config types, which can lead to transformations naively passing in
         // null as the requested config here. See issue #194.
+        //noinspection ConstantConditions
         final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
         if (result == null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
@@ -171,7 +177,7 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     @Override
-    public synchronized Bitmap get(int width, int height, Bitmap.Config config) {
+    public synchronized Bitmap get(int width, int height, @NonNull Bitmap.Config config) {
         Bitmap result = getDirty(width, height, config);
         if (result != null) {
             // Bitmaps in the pool contain random data that in some cases must be cleared for an image to be rendered
@@ -183,8 +189,9 @@ public class LruBitmapPool implements BitmapPool {
         return result;
     }
 
+    @NonNull
     @Override
-    public Bitmap getOrMake(int width, int height, Bitmap.Config config) {
+    public Bitmap getOrMake(int width, int height, @NonNull Bitmap.Config config) {
         Bitmap result = get(width, height, config);
         if (result == null) {
             result = Bitmap.createBitmap(width, height, config);
@@ -315,6 +322,7 @@ public class LruBitmapPool implements BitmapPool {
         }
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(maxSize=%s)", NAME, Formatter.formatFileSize(context, getMaxSize()));

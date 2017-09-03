@@ -18,6 +18,9 @@ package me.xiaopan.sketch.viewfun;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.SLog;
@@ -27,7 +30,7 @@ import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 
 /**
- * 这个类负责提供各种function开关和属性设置
+ * 这个类负责提供各种 function 开关和属性设置
  */
 public abstract class FunctionPropertyView extends FunctionCallbackView {
     private static final String NAME = "FunctionPropertyView";
@@ -84,7 +87,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 是否开启了点击播放gif功能
+     * 是否开启了点击播放 gif 功能
      */
     @SuppressWarnings("unused")
     public boolean isClickPlayGifEnabled() {
@@ -92,11 +95,20 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 开启点击播放gif功能
+     * 开启点击播放gif 功能
+     *
+     * @param playIconResId 播放图标资源ID
+     */
+    public void setClickPlayGifEnabled(@DrawableRes int playIconResId) {
+        setClickPlayGifEnabled(playIconResId > 0 ? getResources().getDrawable(playIconResId) : null);
+    }
+
+    /**
+     * 开启点击播放 gif 功能
      *
      * @param playIconDrawable 播放图标
      */
-    public void setClickPlayGifEnabled(Drawable playIconDrawable) {
+    public void setClickPlayGifEnabled(@Nullable Drawable playIconDrawable) {
         if (playIconDrawable != null) {
             getFunctions().clickPlayGifFunction = new ClickPlayGifFunction(this, playIconDrawable);
         } else {
@@ -104,15 +116,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         }
         updateClickable();
         invalidate();
-    }
-
-    /**
-     * 开启点击播放gif功能
-     *
-     * @param playIconResId 播放图标资源ID
-     */
-    public void setClickPlayGifEnabled(int playIconResId) {
-        setClickPlayGifEnabled(playIconResId > 0 ? getResources().getDrawable(playIconResId) : null);
     }
 
     /**
@@ -138,7 +141,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 设置下载进度蒙层的颜色
      */
     @SuppressWarnings("unused")
-    public void setDownloadProgressColor(int downloadProgressColor) {
+    public void setDownloadProgressColor(@ColorInt int downloadProgressColor) {
         if (getFunctions().showProgressFunction != null) {
             getFunctions().showProgressFunction.setDownloadProgressColor(downloadProgressColor);
         }
@@ -167,7 +170,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 设置按下状态的颜色
      */
     @SuppressWarnings("unused")
-    public void setPressedStatusColor(int pressedStatusColor) {
+    public void setPressedStatusColor(@ColorInt int pressedStatusColor) {
         if (getFunctions().showPressedFunction != null) {
             getFunctions().showPressedFunction.setPressedStatusColor(pressedStatusColor);
         }
@@ -211,16 +214,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 开启显示GIF标识功能
      *
-     * @param gifFlagDrawableResId gif标识图标
-     */
-    @SuppressWarnings("unused")
-    public void setShowGifFlagEnabled(int gifFlagDrawableResId) {
-        setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
-    }
-
-    /**
-     * 开启显示GIF标识功能
-     *
      * @param gifFlagDrawable gif标识图标
      */
     @SuppressWarnings("unused")
@@ -235,6 +228,16 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
+     * 开启显示GIF标识功能
+     *
+     * @param gifFlagDrawableResId gif标识图标
+     */
+    @SuppressWarnings("unused")
+    public void setShowGifFlagEnabled(@DrawableRes int gifFlagDrawableResId) {
+        setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
+    }
+
+    /**
      * 获取图片形状，下载进度和按下效果的蒙层会适应此形状
      */
     @SuppressWarnings("unused")
@@ -245,7 +248,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 设置图片形状，下载进度和按下效果的蒙层会适应此形状
      */
-    public void setImageShape(SketchImageView.ImageShape imageShape) {
+    public void setImageShape(@Nullable SketchImageView.ImageShape imageShape) {
         if (getFunctions().imageShapeFunction != null) {
             getFunctions().imageShapeFunction.setImageShape(imageShape);
         }
@@ -263,9 +266,9 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float radius) {
+    public void setImageShapeCornerRadius(float[] radiis) {
         if (getFunctions().imageShapeFunction != null) {
-            getFunctions().imageShapeFunction.setCornerRadius(radius);
+            getFunctions().imageShapeFunction.setCornerRadius(radiis);
         }
     }
 
@@ -273,9 +276,9 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float[] radiis) {
+    public void setImageShapeCornerRadius(float radius) {
         if (getFunctions().imageShapeFunction != null) {
-            getFunctions().imageShapeFunction.setCornerRadius(radiis);
+            getFunctions().imageShapeFunction.setCornerRadius(radius);
         }
     }
 
@@ -292,6 +295,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 获取图片来源
      */
+    @Nullable
     @SuppressWarnings("unused")
     public ImageFrom getImageFrom() {
         return getFunctions().showImageFromFunction != null ? getFunctions().showImageFromFunction.getImageFrom() : null;
@@ -337,6 +341,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 获取缩放功能控制对象
      */
+    @Nullable
     public ImageZoomer getImageZoomer() {
         return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getImageZoomer() : null;
     }
@@ -386,6 +391,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 获取分块显示超大图功能控制对象
      */
+    @Nullable
     public HugeImageViewer getHugeImageViewer() {
         return getFunctions().hugeImageFunction != null ? getFunctions().hugeImageFunction.getHugeImageViewer() : null;
     }

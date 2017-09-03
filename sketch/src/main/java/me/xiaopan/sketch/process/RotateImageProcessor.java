@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -55,7 +56,7 @@ public class RotateImageProcessor extends WrappedImageProcessor {
         int newHeight = (int) newRect.height();
 
         // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
-        Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : null;
+        Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : Bitmap.Config.ARGB_8888;
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888;
         }
@@ -71,9 +72,10 @@ public class RotateImageProcessor extends WrappedImageProcessor {
         return result;
     }
 
+    @NonNull
     @Override
-    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled() || degrees % 360 == 0) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap.isRecycled() || degrees % 360 == 0) {
             return bitmap;
         }
 

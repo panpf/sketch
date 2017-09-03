@@ -20,6 +20,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import me.xiaopan.sketch.SLog;
@@ -49,13 +51,7 @@ public class ShowProgressFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriModel uriModel) {
-        progress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
-        return true;
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         if (progress == NONE) {
             return;
         }
@@ -92,9 +88,9 @@ public class ShowProgressFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDisplayStarted() {
-        progress = 0;
-        return false;
+    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+        progress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
+        return true;
     }
 
     @Override
@@ -104,19 +100,19 @@ public class ShowProgressFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDisplayCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
+    public boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         progress = NONE;
         return true;
     }
 
     @Override
-    public boolean onDisplayError(ErrorCause errorCause) {
+    public boolean onDisplayError(@NonNull ErrorCause errorCause) {
         progress = NONE;
         return true;
     }
 
     @Override
-    public boolean onDisplayCanceled(CancelCause cancelCause) {
+    public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
         progress = NONE;
         return false;
     }

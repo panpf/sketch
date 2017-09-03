@@ -18,6 +18,9 @@ package me.xiaopan.sketch;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -32,18 +35,22 @@ import me.xiaopan.sketch.uri.UriModel;
 
 public interface SketchView {
 
+    @Nullable
     Drawable getDrawable();
 
-    void setImageDrawable(Drawable drawable);
+    void setImageDrawable(@Nullable Drawable drawable);
 
+    @Nullable
     ImageView.ScaleType getScaleType();
 
     void clearAnimation();
 
-    void startAnimation(Animation animation);
+    void startAnimation(@Nullable Animation animation);
 
+    @Nullable
     ViewGroup.LayoutParams getLayoutParams();
 
+    @NonNull
     Resources getResources();
 
     int getPaddingLeft();
@@ -60,38 +67,43 @@ public interface SketchView {
      *
      * @param uri 图片Uri
      */
-    DisplayRequest displayImage(String uri);
+    @Nullable
+    DisplayRequest displayImage(@NonNull String uri);
 
     /**
      * 显示Drawable资源里的图片
      *
      * @param drawableResId Drawable ID
      */
+    @Nullable
     @SuppressWarnings("unused")
-    DisplayRequest displayResourceImage(int drawableResId);
+    DisplayRequest displayResourceImage(@DrawableRes int drawableResId);
 
     /**
      * 显示asset里的图片
      *
      * @param imageFileName ASSETS文件加下的图片文件的名称
      */
+    @Nullable
     @SuppressWarnings("unused")
-    DisplayRequest displayAssetImage(String imageFileName);
+    DisplayRequest displayAssetImage(@NonNull String imageFileName);
 
     /**
      * 显示来自 ContentProvider 的图片
      *
      * @param uri 图片URI
      */
+    @Nullable
     @SuppressWarnings("unused")
-    DisplayRequest displayContentImage(String uri);
+    DisplayRequest displayContentImage(@NonNull String uri);
 
     /**
      * 显示 APk 的图标
      *
      * @param filePath APK 的路径
      */
-    DisplayRequest displayApkIcon(String filePath);
+    @Nullable
+    DisplayRequest displayApkIcon(@NonNull String filePath);
 
     /**
      * 显示 APP 的图标
@@ -99,53 +111,58 @@ public interface SketchView {
      * @param packageName APP 的包名
      * @param versionCode APP 的版本号
      */
-    DisplayRequest displayAppIcon(String packageName, int versionCode);
+    @Nullable
+    DisplayRequest displayAppIcon(@NonNull String packageName, int versionCode);
 
     /**
      * 准备显示图片
      */
-    void onReadyDisplay(UriModel uriModel);
+    void onReadyDisplay(@Nullable UriModel uriModel);
 
     /**
      * 获取显示参数
      */
+    @NonNull
     DisplayOptions getOptions();
 
     /**
      * 批量设置显示参数
      */
-    void setOptions(DisplayOptions newDisplayOptions);
+    void setOptions(@Nullable DisplayOptions newDisplayOptions);
 
     /**
      * 获取显示监听器
      */
+    @Nullable
     DisplayListener getDisplayListener();
 
     /**
      * 设置显示监听器
      */
-    void setDisplayListener(DisplayListener displayListener);
+    void setDisplayListener(@Nullable DisplayListener displayListener);
 
     /**
      * 获取下载进度监听器
      */
+    @Nullable
     DownloadProgressListener getDownloadProgressListener();
 
     /**
      * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
-    void setDownloadProgressListener(DownloadProgressListener downloadProgressListener);
+    void setDownloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener);
 
     /**
      * 获取显示缓存，此方法由Sketch调用，无需理会
      */
+    @Nullable
     DisplayCache getDisplayCache();
 
     /**
      * 设置显示缓存，此方法由Sketch调用，无需理会
      */
-    void setDisplayCache(DisplayCache displayCache);
+    void setDisplayCache(@NonNull DisplayCache displayCache);
 
     /**
      * 是否开启了分块显示超大图功能
@@ -155,8 +172,8 @@ public interface SketchView {
     /**
      * 重新显示
      *
-     * @param listener 在重新显示之前你可以通过这个listener，修改缓存的options
+     * @param listener 在重新显示之前你可以通过这个 listener，修改缓存的options
      * @return false：重新显示失败，之前没有显示过
      */
-    boolean redisplay(RedisplayListener listener);
+    boolean redisplay(@Nullable RedisplayListener listener);
 }

@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.decode.ImageType;
@@ -77,7 +78,7 @@ public class HugeImageFunction extends ViewFunction implements ImageZoomer.OnMat
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             return;
         }
@@ -98,7 +99,7 @@ public class HugeImageFunction extends ViewFunction implements ImageZoomer.OnMat
     }
 
     @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             return false;
         }

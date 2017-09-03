@@ -20,6 +20,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.request.ShapeSize;
 
@@ -38,6 +40,7 @@ public class CircleImageShaper implements ImageShaper {
     }
 
     @SuppressWarnings("unused")
+    @NonNull
     public CircleImageShaper setStroke(int strokeColor, int strokeWidth) {
         this.strokeColor = strokeColor;
         this.strokeWidth = strokeWidth;
@@ -64,13 +67,13 @@ public class CircleImageShaper implements ImageShaper {
     }
 
     @Override
-    public void onUpdateShaderMatrix(Matrix matrix, Rect bounds, int bitmapWidth, int bitmapHeight,
-                                     ShapeSize shapeSize, Rect srcRect) {
+    public void onUpdateShaderMatrix(@NonNull Matrix matrix, @NonNull Rect bounds, int bitmapWidth, int bitmapHeight,
+                                     @Nullable ShapeSize shapeSize, @NonNull Rect srcRect) {
 
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint, Rect bounds) {
+    public void draw(@NonNull Canvas canvas, @NonNull Paint paint, @NonNull Rect bounds) {
         final float widthRadius = bounds.width() / 2f;
         final float heightRadius = bounds.height() / 2f;
         final float cx = bounds.left + widthRadius;

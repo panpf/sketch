@@ -18,6 +18,8 @@ package me.xiaopan.sketch.state;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
@@ -43,8 +45,9 @@ public class MemoryCacheStateImage implements StateImage {
         this.whenEmptyImage = whenEmptyImage;
     }
 
+    @Nullable
     @Override
-    public Drawable getDrawable(Context context, SketchView sketchView, DisplayOptions displayOptions) {
+    public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
         MemoryCache memoryCache = Sketch.with(context).getConfiguration().getMemoryCache();
         SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {

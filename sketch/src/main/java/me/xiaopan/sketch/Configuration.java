@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -48,7 +49,7 @@ import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.uri.UriModelRegistry;
 
 /**
- * Sketch唯一配置类
+ * Sketch 唯一配置类
  */
 public final class Configuration {
     private static final String NAME = "Configuration";
@@ -85,7 +86,7 @@ public final class Configuration {
     private boolean globalInPreferQualityOverSpeed;   // false:全局解码时优先考虑速度；true:全局解码时优先考虑质量
     private GlobalMobileNetworkPauseDownloadController globalMobileNetworkPauseDownloadController;
 
-    Configuration(Context context) {
+    Configuration(@NonNull Context context) {
         context = context.getApplicationContext();
         this.context = context;
 
@@ -124,6 +125,7 @@ public final class Configuration {
      *
      * @return Context
      */
+    @NonNull
     public Context getContext() {
         return context;
     }
@@ -133,6 +135,7 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     public UriModelRegistry getUriModelRegistry() {
         return uriModelRegistry;
     }
@@ -142,6 +145,7 @@ public final class Configuration {
      *
      * @return DiskCache
      */
+    @NonNull
     public DiskCache getDiskCache() {
         return diskCache;
     }
@@ -151,8 +155,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setDiskCache(DiskCache newDiskCache) {
+    public Configuration setDiskCache(@NonNull DiskCache newDiskCache) {
+        //noinspection ConstantConditions
         if (newDiskCache != null) {
             DiskCache oldDiskCache = diskCache;
             diskCache = newDiskCache;
@@ -169,6 +175,7 @@ public final class Configuration {
      *
      * @return BitmapPool
      */
+    @NonNull
     @SuppressWarnings("unused")
     public BitmapPool getBitmapPool() {
         return bitmapPool;
@@ -179,8 +186,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setBitmapPool(BitmapPool newBitmapPool) {
+    public Configuration setBitmapPool(@NonNull BitmapPool newBitmapPool) {
+        //noinspection ConstantConditions
         if (newBitmapPool != null) {
             BitmapPool oldBitmapPool = this.bitmapPool;
             this.bitmapPool = newBitmapPool;
@@ -197,6 +206,7 @@ public final class Configuration {
      *
      * @return MemoryCache
      */
+    @NonNull
     public MemoryCache getMemoryCache() {
         return memoryCache;
     }
@@ -206,8 +216,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setMemoryCache(MemoryCache memoryCache) {
+    public Configuration setMemoryCache(@NonNull MemoryCache memoryCache) {
+        //noinspection ConstantConditions
         if (memoryCache != null) {
             MemoryCache oldMemoryCache = this.memoryCache;
             this.memoryCache = memoryCache;
@@ -224,6 +236,7 @@ public final class Configuration {
      *
      * @return ProcessedImageCache
      */
+    @NonNull
     @SuppressWarnings("unused")
     public ProcessedImageCache getProcessedImageCache() {
         return processedImageCache;
@@ -234,9 +247,14 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setProcessedImageCache(ProcessedImageCache processedImageCache) {
-        this.processedImageCache = processedImageCache;
+    public Configuration setProcessedImageCache(@NonNull ProcessedImageCache processedImageCache) {
+        //noinspection ConstantConditions
+        if (processedImageCache != null) {
+            this.processedImageCache = processedImageCache;
+            SLog.w(NAME, "processedCache=", processedImageCache.getKey());
+        }
         return this;
     }
 
@@ -246,6 +264,7 @@ public final class Configuration {
      *
      * @return HttpStack
      */
+    @NonNull
     @SuppressWarnings("unused")
     public HttpStack getHttpStack() {
         return httpStack;
@@ -256,8 +275,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setHttpStack(HttpStack httpStack) {
+    public Configuration setHttpStack(@NonNull HttpStack httpStack) {
+        //noinspection ConstantConditions
         if (httpStack != null) {
             this.httpStack = httpStack;
             SLog.w(NAME, "httpStack=", httpStack.getKey());
@@ -270,6 +291,7 @@ public final class Configuration {
      *
      * @return ImageDecoder
      */
+    @NonNull
     public ImageDecoder getDecoder() {
         return decoder;
     }
@@ -279,8 +301,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setDecoder(ImageDecoder decoder) {
+    public Configuration setDecoder(@NonNull ImageDecoder decoder) {
+        //noinspection ConstantConditions
         if (decoder != null) {
             this.decoder = decoder;
             SLog.w(NAME, "decoder=%s", decoder.getKey());
@@ -293,6 +317,7 @@ public final class Configuration {
      *
      * @return ImageDownloader
      */
+    @NonNull
     public ImageDownloader getDownloader() {
         return downloader;
     }
@@ -303,8 +328,10 @@ public final class Configuration {
      * @param downloader 设置图片下载器
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setDownloader(ImageDownloader downloader) {
+    public Configuration setDownloader(@NonNull ImageDownloader downloader) {
+        //noinspection ConstantConditions
         if (downloader != null) {
             this.downloader = downloader;
             SLog.w(NAME, "downloader=%s", downloader.getKey());
@@ -317,6 +344,7 @@ public final class Configuration {
      *
      * @return ImageOrientationCorrector
      */
+    @NonNull
     public ImageOrientationCorrector getOrientationCorrector() {
         return orientationCorrector;
     }
@@ -326,8 +354,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setOrientationCorrector(ImageOrientationCorrector orientationCorrector) {
+    public Configuration setOrientationCorrector(@NonNull ImageOrientationCorrector orientationCorrector) {
+        //noinspection ConstantConditions
         if (orientationCorrector != null) {
             this.orientationCorrector = orientationCorrector;
             SLog.w(NAME, "orientationCorrector=%s", orientationCorrector.getKey());
@@ -341,6 +371,7 @@ public final class Configuration {
      *
      * @return ImageDisplayer
      */
+    @NonNull
     public ImageDisplayer getDefaultDisplayer() {
         return defaultDisplayer;
     }
@@ -350,8 +381,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setDefaultDisplayer(ImageDisplayer defaultDisplayer) {
+    public Configuration setDefaultDisplayer(@NonNull ImageDisplayer defaultDisplayer) {
+        //noinspection ConstantConditions
         if (defaultDisplayer != null) {
             this.defaultDisplayer = defaultDisplayer;
             SLog.w(NAME, "defaultDisplayer=%s", defaultDisplayer.getKey());
@@ -364,6 +397,7 @@ public final class Configuration {
      *
      * @return ImageProcessor
      */
+    @NonNull
     public ImageProcessor getResizeProcessor() {
         return resizeProcessor;
     }
@@ -373,8 +407,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setResizeProcessor(ImageProcessor resizeProcessor) {
+    public Configuration setResizeProcessor(@NonNull ImageProcessor resizeProcessor) {
+        //noinspection ConstantConditions
         if (resizeProcessor != null) {
             this.resizeProcessor = resizeProcessor;
             SLog.w(NAME, "resizeProcessor=%s", resizeProcessor.getKey());
@@ -387,6 +423,7 @@ public final class Configuration {
      *
      * @return ResizeCalculator
      */
+    @NonNull
     public ResizeCalculator getResizeCalculator() {
         return resizeCalculator;
     }
@@ -396,8 +433,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
+    public Configuration setResizeCalculator(@NonNull ResizeCalculator resizeCalculator) {
+        //noinspection ConstantConditions
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
             SLog.w(NAME, "resizeCalculator=%s", resizeCalculator.getKey());
@@ -410,6 +449,7 @@ public final class Configuration {
      *
      * @return ImageSizeCalculator
      */
+    @NonNull
     public ImageSizeCalculator getSizeCalculator() {
         return sizeCalculator;
     }
@@ -419,8 +459,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setSizeCalculator(ImageSizeCalculator sizeCalculator) {
+    public Configuration setSizeCalculator(@NonNull ImageSizeCalculator sizeCalculator) {
+        //noinspection ConstantConditions
         if (sizeCalculator != null) {
             this.sizeCalculator = sizeCalculator;
             SLog.w(NAME, "sizeCalculator=%s", sizeCalculator.getKey());
@@ -434,6 +476,7 @@ public final class Configuration {
      *
      * @return FreeRideManager
      */
+    @NonNull
     public FreeRideManager getFreeRideManager() {
         return freeRideManager;
     }
@@ -444,8 +487,10 @@ public final class Configuration {
      * @param freeRideManager 顺风车管理器
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setFreeRideManager(FreeRideManager freeRideManager) {
+    public Configuration setFreeRideManager(@NonNull FreeRideManager freeRideManager) {
+        //noinspection ConstantConditions
         if (freeRideManager != null) {
             this.freeRideManager = freeRideManager;
             SLog.w(NAME, "freeRideManager=%s", freeRideManager.getKey());
@@ -458,6 +503,7 @@ public final class Configuration {
      *
      * @return RequestExecutor
      */
+    @NonNull
     public RequestExecutor getExecutor() {
         return executor;
     }
@@ -467,8 +513,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setExecutor(RequestExecutor newRequestExecutor) {
+    public Configuration setExecutor(@NonNull RequestExecutor newRequestExecutor) {
+        //noinspection ConstantConditions
         if (newRequestExecutor != null) {
             RequestExecutor oldRequestExecutor = executor;
             executor = newRequestExecutor;
@@ -485,6 +533,7 @@ public final class Configuration {
      *
      * @return HelperFactory
      */
+    @NonNull
     public HelperFactory getHelperFactory() {
         return helperFactory;
     }
@@ -494,8 +543,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setHelperFactory(HelperFactory helperFactory) {
+    public Configuration setHelperFactory(@NonNull HelperFactory helperFactory) {
+        //noinspection ConstantConditions
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
             SLog.w(NAME, "helperFactory=%s", helperFactory.getKey());
@@ -508,6 +559,7 @@ public final class Configuration {
      *
      * @return RequestFactory
      */
+    @NonNull
     public RequestFactory getRequestFactory() {
         return requestFactory;
     }
@@ -517,8 +569,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setRequestFactory(RequestFactory requestFactory) {
+    public Configuration setRequestFactory(@NonNull RequestFactory requestFactory) {
+        //noinspection ConstantConditions
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
             SLog.w(NAME, "requestFactory=%s", requestFactory.getKey());
@@ -531,6 +585,7 @@ public final class Configuration {
      *
      * @return ErrorTracker
      */
+    @NonNull
     @SuppressWarnings("unused")
     public ErrorTracker getErrorTracker() {
         return errorTracker;
@@ -541,8 +596,10 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public Configuration setErrorTracker(ErrorTracker errorTracker) {
+    public Configuration setErrorTracker(@NonNull ErrorTracker errorTracker) {
+        //noinspection ConstantConditions
         if (errorTracker != null) {
             this.errorTracker = errorTracker;
             SLog.w(NAME, "errorTracker=%s", errorTracker.getKey());
@@ -562,6 +619,7 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
@@ -583,6 +641,7 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
@@ -604,6 +663,7 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     public Configuration setGlobalMobileNetworkPauseDownload(boolean globalMobileNetworkPauseDownload) {
         if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
             if (globalMobileNetworkPauseDownload) {
@@ -634,6 +694,7 @@ public final class Configuration {
      *
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
@@ -657,6 +718,7 @@ public final class Configuration {
      * @param globalInPreferQualityOverSpeed true：质量；false：速度
      * @return Configuration. Convenient chain calls
      */
+    @NonNull
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
@@ -665,6 +727,7 @@ public final class Configuration {
         return this;
     }
 
+    @NonNull
     public String getInfo() {
         return NAME + ": " +
                 "\n" + "diskCache：" + diskCache.getKey() +

@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.support.annotation.NonNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -136,6 +137,7 @@ public class RequestExecutor implements Identifier {
         this.netTaskExecutor = netTaskExecutor;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(%s", KEY, shutdown ? "shutdown" : "running)");

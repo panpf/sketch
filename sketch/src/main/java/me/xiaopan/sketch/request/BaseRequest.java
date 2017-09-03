@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
@@ -24,17 +25,18 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.uri.UriModel;
 
 public abstract class BaseRequest {
+    private Sketch sketch;
     private String uri;
     private UriModel uriModel;
     private String key;
+
     private String diskCacheKey;
-    private Sketch sketch;
     private String logName = "Request";
     private Status status;
     private ErrorCause errorCause;
     private CancelCause cancelCause;
 
-    BaseRequest(Sketch sketch, String uri, UriModel uriModel, String key) {
+    BaseRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriModel = uriModel;
@@ -72,228 +74,122 @@ public abstract class BaseRequest {
         return diskCacheKey;
     }
 
-    /**
-     * 获取日志名称
-     */
     public String getLogName() {
         return logName;
     }
 
-    /**
-     * 设置日志名称
-     */
     void setLogName(String logName) {
         this.logName = logName;
     }
 
-    /**
-     * 获取状态
-     */
     @SuppressWarnings("unused")
     public Status getStatus() {
         return status;
     }
 
-    /**
-     * 设置状态
-     */
     public void setStatus(Status status) {
         this.status = status;
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            if (status == Status.FAILED) {
-                SLog.d(getLogName(), "new status. %s. %s", status.getLog(), errorCause != null ? errorCause.name() : "");
-            } else if (status == Status.CANCELED) {
-                SLog.d(getLogName(), "new status. %s. %s", status.getLog(), cancelCause != null ? cancelCause.name() : "");
-            } else {
-                SLog.d(getLogName(), "new status. %s", (status != null ? status.getLog() : ""));
-            }
-        }
     }
 
-    /**
-     * 获取失败原因
-     */
     public ErrorCause getErrorCause() {
         return errorCause;
     }
 
-    /**
-     * 设置失败原因
-     */
     @SuppressWarnings("unused")
-    protected void setErrorCause(ErrorCause errorCause) {
-        this.errorCause = errorCause;
+    protected void setErrorCause(@NonNull ErrorCause cause) {
+        if (!isFinished()) {
+            this.errorCause = cause;
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(getLogName(), "Request error. %s. %s. %s", cause.name(), getThreadName(), getKey());
+            }
+        }
     }
 
-    /**
-     * 获取取消原因
-     */
     public CancelCause getCancelCause() {
         return cancelCause;
     }
 
-    /**
-     * 设置取消原因
-     */
-    protected void setCancelCause(CancelCause cancelCause) {
-        this.cancelCause = cancelCause;
+    protected void setCancelCause(@NonNull CancelCause cause) {
+        if (!isFinished()) {
+            this.cancelCause = cause;
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                SLog.d(getLogName(), "Request cancel. %s. %s. %s", cause.name(), getThreadName(), getKey());
+            }
+        }
     }
 
-    /**
-     * 请求是否已经结束了
-     */
     public boolean isFinished() {
         return status == null || status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
     }
 
-    /**
-     * 请求是不是已经取消了
-     */
     public boolean isCanceled() {
         return status == Status.CANCELED;
     }
 
-    /**
-     * 失败了
-     */
-    protected void error(ErrorCause errorCause) {
+    protected void doError(@NonNull ErrorCause errorCause) {
         setErrorCause(errorCause);
         setStatus(Status.FAILED);
     }
 
-    /**
-     * 取消了
-     */
-    // TODO: 2017/8/27 重新梳理这个canceled方法和cancel方法，现在看来设计的不够清晰
-    protected void canceled(CancelCause cancelCause) {
+    protected void doCancel(@NonNull CancelCause cancelCause) {
         setCancelCause(cancelCause);
         setStatus(Status.CANCELED);
     }
 
     /**
-     * 取消请求
+     * Cancel Request
      *
-     * @return false：请求已经结束了
+     * @return false：request finished
      */
     public boolean cancel(CancelCause cancelCause) {
         if (!isFinished()) {
-            canceled(cancelCause);
+            doCancel(cancelCause);
             return true;
         } else {
             return false;
         }
     }
 
-    /**
-     * 请求的状态
-     */
+    public String getThreadName() {
+        return Thread.currentThread().getName();
+    }
+
     public enum Status {
-        /**
-         * 等待分发
-         */
-        WAIT_DISPATCH("waitDispatch"),
+        WAIT_DISPATCH(),
 
-        /**
-         * 开始分发
-         */
-        START_DISPATCH("startDispatch"),
+        START_DISPATCH(),
 
-        /**
-         * 拦截本地任务
-         */
-        INTERCEPT_LOCAL_TASK("interceptLocalTask"),
+        INTERCEPT_LOCAL_TASK(),
 
 
-        /**
-         * 等待下载
-         */
-        WAIT_DOWNLOAD("waitDownload"),
+        WAIT_DOWNLOAD(),
 
-        /**
-         * 开始下载
-         */
-        START_DOWNLOAD("startDownload"),
+        START_DOWNLOAD(),
 
-        /**
-         * 检查磁盘缓存
-         */
-        CHECK_DISK_CACHE("checkDiskCache"),
+        CHECK_DISK_CACHE(),
 
-        /**
-         * 连接中
-         */
-        CONNECTING("connecting"),
+        CONNECTING(),
 
-        /**
-         * 检查响应
-         */
-        CHECK_RESPONSE("checkResponse"),
-
-        /**
-         * 读取数据
-         */
-        READ_DATA("readData"),
+        READ_DATA(),
 
 
-        /**
-         * 等待加载
-         */
-        WAIT_LOAD("waitLoad"),
+        WAIT_LOAD(),
 
-        /**
-         * 开始加载
-         */
-        START_LOAD("startLoad"),
+        START_LOAD(),
 
-        /**
-         * 获取内存缓存编辑锁
-         */
-        GET_MEMORY_CACHE_EDIT_LOCK("getMemoryCacheEditLock"),
+        CHECK_MEMORY_CACHE(),
 
-        /**
-         * 检查内存缓存
-         */
-        CHECK_MEMORY_CACHE("checkMemoryCache"),
+        DECODING(),
 
-        /**
-         * 解码中
-         */
-        DECODING("decoding"),
+        PROCESSING(),
 
-        /**
-         * 处理中
-         */
-        PROCESSING("processing"),
-
-        /**
-         * 等待显示
-         */
-        WAIT_DISPLAY("waitDisplay"),
+        WAIT_DISPLAY(),
 
 
-        /**
-         * 已完成
-         */
-        COMPLETED("completed"),
+        COMPLETED(),
 
-        /**
-         * 已失败
-         */
-        FAILED("failed"),
+        FAILED(),
 
-        /**
-         * 已取消
-         */
-        CANCELED("canceled"),;
-
-        private String log;
-
-        Status(String log) {
-            this.log = log;
-        }
-
-        public String getLog() {
-            return log;
-        }
+        CANCELED(),
     }
 }

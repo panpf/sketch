@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -233,6 +235,7 @@ public class FreeRideManager implements Identifier {
         }
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return NAME;

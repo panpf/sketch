@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.viewfun;
 
+import android.support.annotation.Nullable;
+
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -52,7 +54,7 @@ public class RecyclerCompatFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriModel uriModel) {
+    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
         isSetImage = true;
         return false;
     }

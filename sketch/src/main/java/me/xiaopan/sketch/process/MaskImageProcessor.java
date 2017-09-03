@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -42,9 +43,10 @@ public class MaskImageProcessor extends WrappedImageProcessor {
         return String.format("%s(maskColor=%d)", KEY, maskColor);
     }
 
+    @NonNull
     @Override
-    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled()) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap.isRecycled()) {
             return bitmap;
         }
 

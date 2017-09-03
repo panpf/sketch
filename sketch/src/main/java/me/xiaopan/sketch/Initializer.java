@@ -17,7 +17,8 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 public interface Initializer {
-    void onInitialize(Context context, Sketch sketch, Configuration configuration);
+    void onInitialize(@NonNull Context context, @NonNull Configuration configuration);
 }
