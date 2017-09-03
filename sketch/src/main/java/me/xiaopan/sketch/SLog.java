@@ -17,6 +17,8 @@
 package me.xiaopan.sketch;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -99,7 +101,7 @@ public class SLog {
      *
      * @param proxy null: 恢复为默认的日志代理
      */
-    public static void setProxy(Proxy proxy) {
+    public static void setProxy(@Nullable Proxy proxy) {
         if (SLog.proxy != proxy) {
             SLog.proxy.onReplaced();
             SLog.proxy = proxy != null ? proxy : new ProxyImpl();
@@ -268,7 +270,8 @@ public class SLog {
      * @return 整型
      * @throws NumberFormatException 字符串异常
      */
-    public static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
+    public static int parseUnsignedInt(@NonNull String s, int radix) throws NumberFormatException {
+        //noinspection ConstantConditions
         if (s == null) {
             throw new NumberFormatException("null");
         }
@@ -299,31 +302,33 @@ public class SLog {
     /**
      * 组装最终的日志，将 scope 和 log 连接起来
      *
-     * @param scope  表示当前日志所处的位置
-     * @param format 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
-     * @param args   用于填充 format 格式化模板的数据集合
+     * @param scope       表示当前日志所处的位置
+     * @param formatOrLog 分两种情况，如果 args 不为 null 且长度大于0，那么这就是日志的格式化模板，例如 "position=%d"；否则这就是具体的日志，例如 “position=5”
+     * @param args        用于填充 format 格式化模板的数据集合
      * @return args 不为 null 且长度大于 0 时返回 "${scope}. ${String.format(format, args)}"，否则返回 "${scope}. ${format}"
      */
-    private static String assembleLog(String scope, String format, Object... args) {
-        if (format == null) {
-            format = "";
+    private static String assembleLog(@Nullable String scope, @NonNull String formatOrLog, @Nullable Object... args) {
+        if (TextUtils.isEmpty(formatOrLog)) {
+            return "";
         }
 
         if (args != null && args.length > 0) {
             if (!TextUtils.isEmpty(scope)) {
-                return scope + ". " + String.format(format, args);
+                return scope + ". " + String.format(formatOrLog, args);
             } else {
-                return String.format(format, args);
+                return String.format(formatOrLog, args);
             }
         } else {
             // args 为空说明 format 就是日志
             if (!TextUtils.isEmpty(scope)) {
-                return scope + ". " + format;
+                return scope + ". " + formatOrLog;
             } else {
-                return format;
+                return formatOrLog;
             }
         }
     }
+
+    /* *********************************** VERBOSE *************************************** */
 
     /**
      * 输出 VERBOSE 级别的日志，受 isLoggable(LEVEL_VERBOSE) 控制
@@ -333,7 +338,7 @@ public class SLog {
      * @param args   用于填充 format 格式化模板的数据集合
      * @return 总共输出了多少个字符
      */
-    public static int v(String scope, String format, Object... args) {
+    public static int v(@Nullable String scope, @NonNull String format, @NonNull Object... args) {
         if (!isLoggable(LEVEL_VERBOSE)) {
             return 0;
         }
@@ -347,13 +352,15 @@ public class SLog {
      * @param log   日志内容
      * @return 总共输出了多少个字符
      */
-    public static int v(String scope, String log) {
+    public static int v(@Nullable String scope, @NonNull String log) {
         if (!isLoggable(LEVEL_VERBOSE)) {
             return 0;
         }
         return proxy.v(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
+
+    /* *********************************** DEBUG *************************************** */
 
     /**
      * 输出 DEBUG 级别的日志，受 isLoggable(LEVEL_DEBUG) 控制
@@ -363,7 +370,7 @@ public class SLog {
      * @param args   用于填充 format 格式化模板的数据集合
      * @return 总共输出了多少个字符
      */
-    public static int d(String scope, String format, Object... args) {
+    public static int d(@Nullable String scope, @NonNull String format, @NonNull Object... args) {
         if (!isLoggable(LEVEL_DEBUG)) {
             return 0;
         }
@@ -377,13 +384,30 @@ public class SLog {
      * @param log   日志内容
      * @return 总共输出了多少个字符
      */
-    public static int d(String scope, String log) {
+    public static int d(@Nullable String scope, @NonNull String log) {
         if (!isLoggable(LEVEL_DEBUG)) {
             return 0;
         }
         return proxy.d(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
+    /**
+     * 输出 DEBUG 级别的日志，受 isLoggable(LEVEL_DEBUG) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param tr    异常
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int d(@Nullable String scope, @NonNull Throwable tr, @NonNull String log) {
+        if (!isLoggable(LEVEL_DEBUG)) {
+            return 0;
+        }
+        return proxy.d(TAG, assembleLog(scope, log, (Object[]) null), tr);
+    }
+
+
+    /* *********************************** INFO *************************************** */
 
     /**
      * 输出 INFO 级别的日志，受 isLoggable(LEVEL_INFO) 控制
@@ -393,7 +417,7 @@ public class SLog {
      * @param args   用于填充 format 格式化模板的数据集合
      * @return 总共输出了多少个字符
      */
-    public static int i(String scope, String format, Object... args) {
+    public static int i(@Nullable String scope, @NonNull String format, @NonNull Object... args) {
         if (!isLoggable(LEVEL_INFO)) {
             return 0;
         }
@@ -407,13 +431,15 @@ public class SLog {
      * @param log   日志内容
      * @return 总共输出了多少个字符
      */
-    public static int i(String scope, String log) {
+    public static int i(@Nullable String scope, @NonNull String log) {
         if (!isLoggable(LEVEL_INFO)) {
             return 0;
         }
         return proxy.i(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
+
+    /* *********************************** WARNING *************************************** */
 
     /**
      * 输出 WARNING 级别的日志，受 isLoggable(LEVEL_WARNING) 控制
@@ -423,7 +449,7 @@ public class SLog {
      * @param args   用于填充 format 格式化模板的数据集合
      * @return 总共输出了多少个字符
      */
-    public static int w(String scope, String format, Object... args) {
+    public static int w(@Nullable String scope, @NonNull String format, @NonNull Object... args) {
         if (!isLoggable(LEVEL_WARNING)) {
             return 0;
         }
@@ -437,13 +463,30 @@ public class SLog {
      * @param log   日志内容
      * @return 总共输出了多少个字符
      */
-    public static int w(String scope, String log) {
+    public static int w(@Nullable String scope, @NonNull String log) {
         if (!isLoggable(LEVEL_WARNING)) {
             return 0;
         }
         return proxy.w(TAG, assembleLog(scope, log, (Object[]) null));
     }
 
+    /**
+     * 输出 WARNING 级别的日志，受 isLoggable(LEVEL_WARNING) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param tr    异常
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int w(@Nullable String scope, @NonNull Throwable tr, @NonNull String log) {
+        if (!isLoggable(LEVEL_WARNING)) {
+            return 0;
+        }
+        return proxy.w(TAG, assembleLog(scope, log, (Object[]) null), tr);
+    }
+
+
+    /* *********************************** ERROR *************************************** */
 
     /**
      * 输出 ERROR 级别的日志，受 isLoggable(LEVEL_ERROR) 控制
@@ -453,7 +496,7 @@ public class SLog {
      * @param args   用于填充 format 格式化模板的数据集合
      * @return 总共输出了多少个字符
      */
-    public static int e(String scope, String format, Object... args) {
+    public static int e(@Nullable String scope, @NonNull String format, @NonNull Object... args) {
         if (!isLoggable(LEVEL_ERROR)) {
             return 0;
         }
@@ -467,11 +510,26 @@ public class SLog {
      * @param log   日志内容
      * @return 总共输出了多少个字符
      */
-    public static int e(String scope, String log) {
+    public static int e(@Nullable String scope, @NonNull String log) {
         if (!isLoggable(LEVEL_ERROR)) {
             return 0;
         }
         return proxy.e(TAG, assembleLog(scope, log, (Object[]) null));
+    }
+
+    /**
+     * 输出 ERROR 级别的日志，受 isLoggable(LEVEL_ERROR) 控制
+     *
+     * @param scope 表示当前日志所处的位置
+     * @param tr    异常
+     * @param log   日志内容
+     * @return 总共输出了多少个字符
+     */
+    public static int e(@Nullable String scope, @NonNull Throwable tr, @NonNull String log) {
+        if (!isLoggable(LEVEL_ERROR)) {
+            return 0;
+        }
+        return proxy.e(TAG, assembleLog(scope, log, (Object[]) null), tr);
     }
 
     @SuppressWarnings("WeakerAccess")

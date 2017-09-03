@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
@@ -41,14 +43,19 @@ public class ContentDataSource implements DataSource {
     private Uri contentUri;
     private long length = -1;
 
-    public ContentDataSource(Context context, Uri contentUri) {
+    public ContentDataSource(@NonNull Context context, @NonNull Uri contentUri) {
         this.context = context;
         this.contentUri = contentUri;
     }
 
+    @NonNull
     @Override
     public InputStream getInputStream() throws IOException {
-        return context.getContentResolver().openInputStream(contentUri);
+        InputStream inputStream = context.getContentResolver().openInputStream(contentUri);
+        if (inputStream == null) {
+            throw new IOException("ContentResolver.openInputStream() return null. " + contentUri.toString());
+        }
+        return inputStream;
     }
 
     @Override
@@ -110,19 +117,17 @@ public class ContentDataSource implements DataSource {
         return outFile;
     }
 
+    @NonNull
     @Override
     public ImageFrom getImageFrom() {
         return ImageFrom.LOCAL;
     }
 
+    @NonNull
     @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
+    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
+                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
         ContentResolver contentResolver = context.getContentResolver();
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, contentResolver, contentUri);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, contentResolver, contentUri);
     }
 }

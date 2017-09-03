@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.uri.UriModel;
@@ -45,6 +47,7 @@ public class RequestFactory implements Identifier {
         return new FreeRideDownloadRequest(sketch, uri, uriModel, key, options, listener, downloadProgressListener);
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;

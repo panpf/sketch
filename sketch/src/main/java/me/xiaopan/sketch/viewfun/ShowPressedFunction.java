@@ -19,6 +19,7 @@ package me.xiaopan.sketch.viewfun;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,7 +54,7 @@ public class ShowPressedFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         if (view.isClickable()) {
             gestureDetector.onTouchEvent(event);
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -69,7 +70,7 @@ public class ShowPressedFunction extends ViewFunction {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         if (allowShowPressedStatus || animationRunning || showRect) {
             boolean applyMaskClip = imageShapeFunction.getClipPath() != null;
             if (applyMaskClip) {

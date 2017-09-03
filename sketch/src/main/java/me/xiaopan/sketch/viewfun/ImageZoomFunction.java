@@ -18,6 +18,7 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -38,7 +39,7 @@ public class ImageZoomFunction extends ViewFunction {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         imageZoomer.draw(canvas);
     }
@@ -49,7 +50,7 @@ public class ImageZoomFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         return imageZoomer.onTouch(imageView, event);
     }
 
@@ -60,7 +61,7 @@ public class ImageZoomFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
         imageZoomer.update();
         return false;
     }

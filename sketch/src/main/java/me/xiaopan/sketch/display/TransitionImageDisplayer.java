@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -95,6 +96,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         return duration;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(duration=%d, alwaysUse=%s)", KEY, duration, alwaysUse);

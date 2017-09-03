@@ -16,9 +16,11 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 /**
  * 下载监听器
  */
 public interface DownloadListener extends Listener {
-    void onCompleted(DownloadResult result);
+    void onCompleted(@NonNull DownloadResult result);
 }

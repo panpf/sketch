@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.viewfun;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import me.xiaopan.sketch.request.CancelCause;
@@ -43,7 +45,7 @@ public class ClickRetryFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriModel uriModel) {
+    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
         // 重新走了一遍显示流程，这些要重置
         displayError = false;
         pauseDownload = false;
@@ -53,26 +55,16 @@ public class ClickRetryFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDisplayStarted() {
-        // 重新走了一遍显示流程，这些要重置
-        displayError = false;
-        pauseDownload = false;
-
-        view.updateClickable();
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayError(ErrorCause errorCause) {
+    public boolean onDisplayError(@NonNull ErrorCause errorCause) {
         // 正常的失败才能重试，因此要过滤一下失败原因
-        displayError = errorCause != ErrorCause.URI_NULL_OR_EMPTY && errorCause != ErrorCause.URI_NO_SUPPORT;
+        displayError = errorCause != ErrorCause.URI_INVALID && errorCause != ErrorCause.URI_NO_SUPPORT;
 
         view.updateClickable();
         return false;
     }
 
     @Override
-    public boolean onDisplayCanceled(CancelCause cancelCause) {
+    public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
         pauseDownload = cancelCause == CancelCause.PAUSE_DOWNLOAD;
 
         view.updateClickable();

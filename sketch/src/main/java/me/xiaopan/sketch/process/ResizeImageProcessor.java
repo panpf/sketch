@@ -18,6 +18,7 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -59,6 +60,7 @@ public class ResizeImageProcessor implements ImageProcessor {
         return resizeBitmap;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;

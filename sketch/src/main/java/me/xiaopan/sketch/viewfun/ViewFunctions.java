@@ -18,6 +18,8 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -322,7 +324,7 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onReadyDisplay(UriModel uriModel) {
+    boolean onReadyDisplay(@Nullable UriModel uriModel) {
         boolean needInvokeInvalidate = false;
 
         if (requestFunction != null) {
@@ -371,37 +373,37 @@ class ViewFunctions {
 
         if (showImageFromFunction != null) {
             //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
+            needInvokeInvalidate |= showImageFromFunction.onDisplayStartLoad();
         }
         if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDisplayStarted();
+            needInvokeInvalidate |= showProgressFunction.onDisplayStartLoad();
         }
         if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplayStarted();
+            needInvokeInvalidate |= showGifFlagFunction.onDisplayStartLoad();
         }
         if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplayStarted();
+            needInvokeInvalidate |= showPressedFunction.onDisplayStartLoad();
         }
         if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDisplayStarted();
+            needInvokeInvalidate |= imageShapeFunction.onDisplayStartLoad();
         }
         if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
+            needInvokeInvalidate |= clickRetryFunction.onDisplayStartLoad();
         }
         if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onDisplayStarted();
+            needInvokeInvalidate |= requestFunction.onDisplayStartLoad();
         }
         if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
+            needInvokeInvalidate |= recyclerCompatFunction.onDisplayStartLoad();
         }
         if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplayStarted();
+            needInvokeInvalidate |= zoomFunction.onDisplayStartLoad();
         }
         if (hugeImageFunction != null) {
-            needInvokeInvalidate |= hugeImageFunction.onDisplayStarted();
+            needInvokeInvalidate |= hugeImageFunction.onDisplayStartLoad();
         }
         if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDisplayStarted();
+            needInvokeInvalidate |= clickPlayGifFunction.onDisplayStartLoad();
         }
 
         return needInvokeInvalidate;
@@ -410,7 +412,7 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
+    boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         boolean needInvokeInvalidate = false;
 
         if (showImageFromFunction != null) {
@@ -454,7 +456,7 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayError(ErrorCause errorCause) {
+    boolean onDisplayError(@NonNull ErrorCause errorCause) {
         boolean needInvokeInvalidate = false;
 
         if (showImageFromFunction != null) {
@@ -498,7 +500,7 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayCanceled(CancelCause cancelCause) {
+    boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
         boolean needInvokeInvalidate = false;
 
         if (showImageFromFunction != null) {

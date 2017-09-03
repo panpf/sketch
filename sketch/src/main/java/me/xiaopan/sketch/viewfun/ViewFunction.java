@@ -18,6 +18,8 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -39,7 +41,7 @@ public abstract class ViewFunction {
      *
      * @return 拦截事件
      */
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         return false;
     }
 
@@ -61,7 +63,7 @@ public abstract class ViewFunction {
      *
      * @param canvas Canvas
      */
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
 
     }
 
@@ -79,7 +81,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    public boolean onDrawableChanged(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         return false;
     }
 
@@ -89,7 +91,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onReadyDisplay(UriModel uriModel) {
+    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
         return false;
     }
 
@@ -98,7 +100,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onDisplayStarted() {
+    public boolean onDisplayStartLoad() {
         return false;
     }
 
@@ -118,7 +120,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onDisplayCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
+    public boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         return false;
     }
 
@@ -127,7 +129,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onDisplayError(ErrorCause errorCause) {
+    public boolean onDisplayError(@NonNull ErrorCause errorCause) {
         return false;
     }
 
@@ -136,7 +138,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用invalidate()刷新ImageView
      */
-    public boolean onDisplayCanceled(CancelCause cancelCause) {
+    public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
         return false;
     }
 

@@ -17,6 +17,9 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.request.DisplayCache;
@@ -41,38 +44,44 @@ public class SketchImageView extends FunctionPropertyView {
         super(context, attrs, defStyle);
     }
 
+    @Nullable
     @Override
-    public DisplayRequest displayImage(String uri) {
+    public DisplayRequest displayImage(@NonNull String uri) {
         return Sketch.with(getContext()).display(uri, this).commit();
     }
 
+    @Nullable
     @Override
-    public DisplayRequest displayResourceImage(int drawableResId) {
+    public DisplayRequest displayResourceImage(@DrawableRes int drawableResId) {
         return Sketch.with(getContext()).displayFromResource(drawableResId, this).commit();
     }
 
+    @Nullable
     @Override
-    public DisplayRequest displayAssetImage(String imageFileName) {
+    public DisplayRequest displayAssetImage(@NonNull String imageFileName) {
         return Sketch.with(getContext()).displayFromAsset(imageFileName, this).commit();
     }
 
+    @Nullable
     @Override
-    public DisplayRequest displayContentImage(String uri) {
+    public DisplayRequest displayContentImage(@NonNull String uri) {
         return Sketch.with(getContext()).displayFromContent(uri, this).commit();
     }
 
+    @Nullable
     @Override
-    public DisplayRequest displayAppIcon(String packageName, int versionCode) {
+    public DisplayRequest displayAppIcon(@NonNull String packageName, int versionCode) {
         return Sketch.with(getContext()).displayAppIcon(packageName, versionCode, this).commit();
     }
 
+    @Nullable
     @Override
-    public DisplayRequest displayApkIcon(String filePath) {
+    public DisplayRequest displayApkIcon(@NonNull String filePath) {
         return Sketch.with(getContext()).displayApkIcon(filePath, this).commit();
     }
 
     @Override
-    public boolean redisplay(RedisplayListener listener) {
+    public boolean redisplay(@Nullable RedisplayListener listener) {
         DisplayCache displayCache = getDisplayCache();
         if (displayCache == null) {
             return false;
@@ -89,10 +98,11 @@ public class SketchImageView extends FunctionPropertyView {
     }
 
     /**
-     * 获取选项KEY，可用于组装缓存KEY
+     * 获取选项 KEY，可用于组装缓存 KEY
      *
      * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, String)
      */
+    @NonNull
     public String getOptionsKey() {
         DisplayCache displayCache = getDisplayCache();
         if (displayCache != null) {

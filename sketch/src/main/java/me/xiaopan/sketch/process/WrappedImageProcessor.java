@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
@@ -34,6 +35,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
         this.wrappedProcessor = wrappedProcessor;
     }
 
+    @NonNull
     @Override
     public final String getKey() {
         String selfKey = onGetKey();
@@ -48,7 +50,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
             if (!TextUtils.isEmpty(wrappedKey)) {
                 return wrappedKey;
             } else {
-                return null;
+                return "WrappedImageProcessor";
             }
         }
     }

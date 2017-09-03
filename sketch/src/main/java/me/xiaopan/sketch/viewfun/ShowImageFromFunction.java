@@ -20,6 +20,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -56,7 +58,7 @@ public class ShowImageFromFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(UriModel uriModel) {
+    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
         imageFrom = null;
         return true;
     }
@@ -67,7 +69,7 @@ public class ShowImageFromFunction extends ViewFunction {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         if (imageFrom == null) {
             return;
         }
@@ -125,7 +127,7 @@ public class ShowImageFromFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
         ImageFrom oldImageFrom = imageFrom;
         ImageFrom newImageFrom = null;
         Drawable lastDrawable = SketchUtils.getLastDrawable(newDrawable);

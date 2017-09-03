@@ -17,6 +17,7 @@
 package me.xiaopan.sketch;
 
 import android.app.Application;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
@@ -61,6 +62,7 @@ public class Sketch {
      * @param context 用于初始化 Sketch
      * @return Sketch
      */
+    @NonNull
     public static Sketch with(@NonNull Context context) {
         if (instance == null) {
             synchronized (Sketch.class) {
@@ -71,7 +73,7 @@ public class Sketch {
 
                     Initializer initializer = SketchUtils.findInitializer(context);
                     if (initializer != null) {
-                        initializer.onInitialize(context.getApplicationContext(), newInstance, newInstance.configuration);
+                        initializer.onInitialize(context.getApplicationContext(), newInstance.configuration);
                     }
                     instance = newInstance;
                 }
@@ -118,11 +120,12 @@ public class Sketch {
      * @param listener 监听下载过程
      * @return DownloadHelper 你可以继续通过 DownloadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DownloadHelper download(@NonNull String uri, @Nullable DownloadListener listener) {
         return configuration.getHelperFactory().getDownloadHelper(this, uri, listener);
     }
-
+// TODO: 2017/9/3 支持的uri，需要更新一下了
     /**
      * 根据 URI 加载图片
      *
@@ -140,6 +143,7 @@ public class Sketch {
      * @param listener 监听下载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     public LoadHelper load(@NonNull String uri, @Nullable LoadListener listener) {
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }
@@ -151,6 +155,7 @@ public class Sketch {
      * @param listener     监听加载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper loadFromAsset(@NonNull String assetResName, @Nullable LoadListener listener) {
         String uri = AssetUriModel.makeUri(assetResName);
@@ -164,6 +169,7 @@ public class Sketch {
      * @param listener      监听加载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper loadFromResource(@DrawableRes int drawableResId, @Nullable LoadListener listener) {
         String uri = DrawableUriModel.makeUri(drawableResId);
@@ -177,6 +183,7 @@ public class Sketch {
      * @param listener 监听加载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper loadFromContent(@NonNull String uri, @Nullable LoadListener listener) {
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
@@ -189,6 +196,7 @@ public class Sketch {
      * @param listener 监听加载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper loadApkIcon(@NonNull String filePath, @Nullable LoadListener listener) {
         String uri = ApkIconUriModel.makeUri(filePath);
@@ -203,6 +211,7 @@ public class Sketch {
      * @param listener    监听加载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
     public LoadHelper loadAppIcon(@NonNull String packageName, int versionCode, @Nullable LoadListener listener) {
         String uri = AppIconUriModel.makeUri(packageName, versionCode);
@@ -226,6 +235,7 @@ public class Sketch {
      * @param sketchView Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     public DisplayHelper display(@NonNull String uri, @NonNull SketchView sketchView) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
@@ -237,6 +247,7 @@ public class Sketch {
      * @param sketchView   Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     public DisplayHelper displayFromAsset(@NonNull String assetResName, @NonNull SketchView sketchView) {
         String uri = AssetUriModel.makeUri(assetResName);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
@@ -249,6 +260,7 @@ public class Sketch {
      * @param sketchView    Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     public DisplayHelper displayFromResource(@DrawableRes int drawableResId, @NonNull SketchView sketchView) {
         String uri = DrawableUriModel.makeUri(drawableResId);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
@@ -261,6 +273,7 @@ public class Sketch {
      * @param sketchView Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     public DisplayHelper displayFromContent(@NonNull String uri, @NonNull SketchView sketchView) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
@@ -272,8 +285,9 @@ public class Sketch {
      * @param sketchView Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper displayApkIcon(String filePath, SketchView sketchView) {
+    public DisplayHelper displayApkIcon(@NonNull String filePath, @NonNull SketchView sketchView) {
         String uri = ApkIconUriModel.makeUri(filePath);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
@@ -286,7 +300,8 @@ public class Sketch {
      * @param sketchView  Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
-    public DisplayHelper displayAppIcon(String packageName, int versionCode, SketchView sketchView) {
+    @NonNull
+    public DisplayHelper displayAppIcon(@NonNull String packageName, int versionCode, @NonNull SketchView sketchView) {
         String uri = AppIconUriModel.makeUri(packageName, versionCode);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
@@ -294,8 +309,7 @@ public class Sketch {
     /**
      * 修整内存缓存，4.0 以下你需要重写 Application 的 onTrimMemory(int) 方法，然后调用这个方法
      *
-     * @param level 修剪级别，对应APP的不同状态，对应 ComponentCallbacks2 里的常量
-     * @see android.content.ComponentCallbacks2
+     * @param level 修剪级别，对应APP的不同状态，对应 {@link ComponentCallbacks2} 里的常量
      */
     public void onTrimMemory(int level) {
         // ICE_CREAM_SANDWICH以上版本已经自动注册了onTrimMemory监听，因此无需再在你的Application的onTrimMemory方法中调用此方法

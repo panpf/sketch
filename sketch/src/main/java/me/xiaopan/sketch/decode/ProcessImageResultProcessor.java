@@ -22,14 +22,13 @@ import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.BaseRequest;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
 
 public class ProcessImageResultProcessor implements ResultProcessor {
 
     @Override
-    public void process(LoadRequest request, DecodeResult result) throws DecodeException {
+    public void process(LoadRequest request, DecodeResult result) throws ProcessException {
         if (result.isBanProcess()) {
             return;
         }
@@ -71,8 +70,7 @@ public class ProcessImageResultProcessor implements ResultProcessor {
             }
             result.setProcessed(true);
         } else {
-            throw new DecodeException(String.format("%s: %s. %s", ErrorCause.PROCESS_IMAGE_FAIL.name(),
-                    imageProcessor.getKey(), request.getUri()), ErrorCause.PROCESS_IMAGE_FAIL);
+            throw new ProcessException("Process result bitmap null or recycled");
         }
     }
 }

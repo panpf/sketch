@@ -16,6 +16,9 @@
 
 package me.xiaopan.sketch.cache;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,21 +39,24 @@ public interface DiskCache extends Identifier {
     /**
      * 是否存在
      */
-    boolean exist(String uri);
+    boolean exist(@NonNull String uri);
 
     /**
      * 获取缓存实体
      */
-    Entry get(String uri);
+    @Nullable
+    Entry get(@NonNull String uri);
 
     /**
      * 编辑缓存
      */
-    Editor edit(String uri);
+    @Nullable
+    Editor edit(@NonNull String uri);
 
     /**
      * 获取缓存目录
      */
+    @NonNull
     @SuppressWarnings("unused")
     File getCacheDir();
 
@@ -62,7 +68,8 @@ public interface DiskCache extends Identifier {
     /**
      * 将uri地址进行转码作为缓存文件的名字
      */
-    String uriToDiskCacheKey(String uri);
+    @NonNull
+    String uriToDiskCacheKey(@NonNull String uri);
 
     /**
      * 获取已用容量
@@ -104,7 +111,8 @@ public interface DiskCache extends Identifier {
      * @param uri 下载uri
      * @return ReentrantLock
      */
-    ReentrantLock getEditLock(String uri);
+    @NonNull
+    ReentrantLock getEditLock(@NonNull String uri);
 
     /**
      * 磁盘缓存实体
@@ -116,6 +124,7 @@ public interface DiskCache extends Identifier {
          * @return InputStream
          * @throws IOException
          */
+        @NonNull
         InputStream newInputStream() throws IOException;
 
         /**
@@ -123,6 +132,7 @@ public interface DiskCache extends Identifier {
          *
          * @return File
          */
+        @NonNull
         File getFile();
 
         /**
@@ -130,6 +140,7 @@ public interface DiskCache extends Identifier {
          *
          * @return 对应的uri，未转码的
          */
+        @NonNull
         String getUri();
 
         /**

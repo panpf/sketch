@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 public interface LoadListener extends Listener {
-    void onCompleted(LoadResult result);
+    void onCompleted(@NonNull LoadResult result);
 }

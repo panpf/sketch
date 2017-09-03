@@ -18,6 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.Locale;
@@ -28,6 +29,7 @@ import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.ExifInterface;
 
@@ -42,9 +44,10 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         return dataSource instanceof DiskCacheDataSource && ((DiskCacheDataSource) dataSource).isFromProcessedCache();
     }
 
+    @NonNull
     @Override
     public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
+                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
         decodeOptions.inSampleSize = 1;
 
         // Set inBitmap from bitmap pool
@@ -54,36 +57,32 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
                     boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmapPool);
         }
 
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         try {
             bitmap = ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-
+        } catch (Throwable tr) {
             ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-            if (ImageDecodeUtils.isInBitmapDecodeError(throwable, decodeOptions, false)) {
+            if (ImageDecodeUtils.isInBitmapDecodeError(tr, decodeOptions, false)) {
                 ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool, request.getUri(),
-                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, throwable, decodeOptions, false);
+                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, tr, decodeOptions, false);
 
                 try {
                     bitmap = ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions);
                 } catch (Throwable throwable1) {
-                    throwable1.printStackTrace();
-
-                    errorTracker.onDecodeNormalImageError(throwable1, request,
-                            boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                    errorTracker.onDecodeNormalImageError(throwable1, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                    throw new DecodeException("InBitmap retry", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
                 }
             } else {
-                errorTracker.onDecodeNormalImageError(throwable, request,
-                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                errorTracker.onDecodeNormalImageError(tr, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                throw new DecodeException(tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
             }
         }
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
             ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid", null);
-            return null;
+            throw new DecodeException("Bitmap invalid", ErrorCause.DECODE_RESULT_BITMAP_INVALID);
         }
 
         // 过滤宽高小于等于1的图片
@@ -92,7 +91,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
                     boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight());
             ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null);
             bitmap.recycle();
-            return null;
+            throw new DecodeException(cause, ErrorCause.DECODE_RESULT_BITMAP_SIZE_INVALID);
         }
 
         // 由于是读取的经过处理的缓存图片，因此要重新读取原图的类型、宽高信息

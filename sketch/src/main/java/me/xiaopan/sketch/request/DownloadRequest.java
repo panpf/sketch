@@ -19,6 +19,7 @@ package me.xiaopan.sketch.request;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.http.DownloadException;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
@@ -147,13 +148,21 @@ public class DownloadRequest extends AsyncRequest {
 
     @Override
     protected void runDownload() {
-        downloadResult = getConfiguration().getDownloader().download(this);
-
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "canceled. runDownload. download after. %s. %s",
+                SLog.d(getLogName(), "canceled. runDownload. start download. %s. %s",
                         Thread.currentThread().getName(), getKey());
             }
+            return;
+        }
+
+        try {
+            downloadResult = getConfiguration().getDownloader().download(this);
+        } catch (CanceledException e) {
+            return;
+        } catch (DownloadException e) {
+            e.printStackTrace();
+            error(e.getErrorCause());
             return;
         }
 

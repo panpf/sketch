@@ -52,6 +52,7 @@ public class DownloadHelper {
     /**
      * 禁用磁盘缓存
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DownloadHelper disableCacheInDisk() {
         downloadOptions.setCacheInDiskDisabled(true);
@@ -59,10 +60,11 @@ public class DownloadHelper {
     }
 
     /**
-     * 设置请求Level
+     * 设置请求 Level
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DownloadHelper requestLevel(RequestLevel requestLevel) {
+    public DownloadHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             downloadOptions.setRequestLevel(requestLevel);
             downloadOptions.setRequestLevelFrom(null);
@@ -73,7 +75,8 @@ public class DownloadHelper {
     /**
      * 批量设置下载参数（完全覆盖）
      */
-    public DownloadHelper options(DownloadOptions newOptions) {
+    @NonNull
+    public DownloadHelper options(@Nullable DownloadOptions newOptions) {
         downloadOptions.copy(newOptions);
         return this;
     }
@@ -81,8 +84,9 @@ public class DownloadHelper {
     /**
      * 设置下载进度监听器
      */
+    @NonNull
     @SuppressWarnings("unused")
-    public DownloadHelper downloadProgressListener(DownloadProgressListener downloadProgressListener) {
+    public DownloadHelper downloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
         return this;
     }
@@ -90,6 +94,7 @@ public class DownloadHelper {
     /**
      * 同步处理
      */
+    @NonNull
     @SuppressWarnings("unused")
     public DownloadHelper sync() {
         this.sync = true;
@@ -99,6 +104,7 @@ public class DownloadHelper {
     /**
      * 提交
      */
+    @Nullable
     public DownloadRequest commit() {
         if (sync && SketchUtils.isMainThread()) {
             throw new IllegalStateException("Cannot sync perform the download in the UI thread ");
@@ -120,7 +126,7 @@ public class DownloadHelper {
     private boolean checkParam() {
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
-            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
+            CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_INVALID, sync);
             return false;
         }
 
@@ -145,7 +151,7 @@ public class DownloadHelper {
     protected void preProcess() {
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
-        // 根据URI和下载选项生成请求key
+        // 根据 URI 和下载选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions);
     }
 

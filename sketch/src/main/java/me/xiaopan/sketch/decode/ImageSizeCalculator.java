@@ -18,6 +18,7 @@
 package me.xiaopan.sketch.decode;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -293,6 +294,7 @@ public class ImageSizeCalculator implements Identifier {
         this.targetSizeScale = targetSizeScale;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;

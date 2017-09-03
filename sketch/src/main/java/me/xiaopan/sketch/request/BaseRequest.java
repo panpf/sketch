@@ -149,6 +149,7 @@ public abstract class BaseRequest {
     /**
      * 请求是不是已经取消了
      */
+    // TODO: 2017/9/3 非请求里只要调用这个方法的都抛出 CanceledException
     public boolean isCanceled() {
         return status == Status.CANCELED;
     }
@@ -182,6 +183,11 @@ public abstract class BaseRequest {
         } else {
             return false;
         }
+    }
+
+    // TODO: 2017/9/3 都替换成这个方法
+    public String getThreadName(){
+        return Thread.currentThread().getName();
     }
 
     /**
@@ -223,11 +229,6 @@ public abstract class BaseRequest {
          * 连接中
          */
         CONNECTING("connecting"),
-
-        /**
-         * 检查响应
-         */
-        CHECK_RESPONSE("checkResponse"),
 
         /**
          * 读取数据

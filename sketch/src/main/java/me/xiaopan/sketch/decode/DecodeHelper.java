@@ -18,20 +18,21 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 
 public abstract class DecodeHelper {
     abstract boolean match(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions);
 
+    @NonNull
     abstract DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions,
                                  BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException;
 
     protected void correctOrientation(ImageOrientationCorrector orientationCorrector, DecodeResult decodeResult,
-                                      int exifOrientation, LoadRequest request) throws DecodeException {
+                                      int exifOrientation, LoadRequest request) throws CorrectOrientationException {
         if (!(decodeResult instanceof BitmapDecodeResult)) {
             return;
         }
@@ -47,8 +48,7 @@ public abstract class DecodeHelper {
 
                 bitmapDecodeResult.setProcessed(true);
             } else {
-                throw new DecodeException(String.format("%s: %s. %s", ErrorCause.CORRECT_ORIENTATION_FAIL.name(),
-                        ImageOrientationCorrector.toName(exifOrientation), request.getUri()), ErrorCause.CORRECT_ORIENTATION_FAIL);
+                throw new CorrectOrientationException("Bitmap recycled. exifOrientation=" + ImageOrientationCorrector.toName(exifOrientation));
             }
         }
     }

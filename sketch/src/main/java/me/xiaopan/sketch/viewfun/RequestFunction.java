@@ -18,6 +18,8 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -103,7 +105,7 @@ public class RequestFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    public boolean onDrawableChanged(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         // 当Drawable改变的时候新Drawable的显示引用计数加1，旧Drawable的显示引用计数减1，一定要先处理newDrawable
         newDrawableFromSketch = notifyDrawable(callPosition + ":newDrawable", newDrawable, true);
         oldDrawableFromSketch = notifyDrawable(callPosition + ":oldDrawable", oldDrawable, false);

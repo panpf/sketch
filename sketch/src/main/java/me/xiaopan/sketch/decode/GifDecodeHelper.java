@@ -17,6 +17,9 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+
+import java.io.IOException;
 
 import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
@@ -25,6 +28,7 @@ import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 
 public class GifDecodeHelper extends DecodeHelper {
@@ -41,33 +45,27 @@ public class GifDecodeHelper extends DecodeHelper {
         return false;
     }
 
+    @NonNull
     @Override
-    public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType,
-                               BitmapFactory.Options boundOptions, BitmapFactory.Options decodeOptions, int exifOrientation) {
+    public DecodeResult decode(LoadRequest request, DataSource dataSource, ImageType imageType, BitmapFactory.Options boundOptions,
+                               BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
         try {
-            ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth,
-                    boundOptions.outHeight, exifOrientation);
+            ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-
-            SketchGifDrawable gifDrawable = dataSource.makeGifDrawable(request.getKey(), request.getUri(),
-                    imageAttrs, bitmapPool);
-            if (gifDrawable == null) {
-                return null;
-            }
+            SketchGifDrawable gifDrawable = dataSource.makeGifDrawable(request.getKey(), request.getUri(), imageAttrs, bitmapPool);
 
             return new GifDecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
+        } catch (IOException e) {
+            throw new DecodeException(e, ErrorCause.DECODE_FILE_IO_EXCEPTION);
+        } catch (NotFoundGifLibraryException e) {
+            throw new DecodeException(e, ErrorCause.DECODE_NOT_FOUND_GIF_LIBRARY);
+        } catch (UnsatisfiedLinkError | ExceptionInInitializerError e) {
+            request.getConfiguration().getErrorTracker().onNotFoundGifSoError(e);
+            throw new DecodeException(e, ErrorCause.DECODE_NO_MATCHING_GIF_SO);
         } catch (Throwable e) {
-            e.printStackTrace();
-
             ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
-            if (e instanceof UnsatisfiedLinkError || e instanceof ExceptionInInitializerError) {
-                errorTracker.onNotFoundGifSoError(e);
-            } else {
-                errorTracker.onDecodeGifImageError(e, request,
-                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
-            }
-
-            return null;
+            errorTracker.onDecodeGifImageError(e, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+            throw new DecodeException(e, ErrorCause.DECODE_UNABLE_CREATE_GIF_DRAWABLE);
         }
     }
 }

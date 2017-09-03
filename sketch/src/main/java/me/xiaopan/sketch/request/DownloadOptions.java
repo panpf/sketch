@@ -16,6 +16,9 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.uri.UriModel;
 
@@ -29,12 +32,12 @@ public class DownloadOptions {
     private boolean cacheInDiskDisabled;
 
     /**
-     * 请求Level
+     * 请求 Level
      */
     private RequestLevel requestLevel;
 
     /**
-     * 请求Level的来源
+     * 请求 Level 的来源
      */
     private RequestLevelFrom requestLevelFrom;
 
@@ -43,12 +46,12 @@ public class DownloadOptions {
     }
 
     /**
-     * 从指定的DownloadOptions中拷贝所有属性来创建新的DownloadOptions
+     * 从指定的 DownloadOptions 中拷贝所有属性来创建新的 DownloadOptions
      *
-     * @param from 从这个DownloadOptions里拷贝属性
+     * @param from 从这个 DownloadOptions 里拷贝属性
      */
     @SuppressWarnings("unused")
-    public DownloadOptions(DownloadOptions from) {
+    public DownloadOptions(@NonNull DownloadOptions from) {
         copy(from);
     }
 
@@ -65,6 +68,7 @@ public class DownloadOptions {
      * @param cacheInDiskDisabled 不使用磁盘缓存
      * @return this
      */
+    @NonNull
     public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
         this.cacheInDiskDisabled = cacheInDiskDisabled;
         return this;
@@ -75,6 +79,7 @@ public class DownloadOptions {
      *
      * @see RequestLevel
      */
+    @Nullable
     public RequestLevel getRequestLevel() {
         return requestLevel;
     }
@@ -86,7 +91,8 @@ public class DownloadOptions {
      * @return this
      * @see RequestLevel
      */
-    public DownloadOptions setRequestLevel(RequestLevel requestLevel) {
+    @NonNull
+    public DownloadOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
         this.requestLevel = requestLevel;
         return this;
     }
@@ -96,6 +102,7 @@ public class DownloadOptions {
      *
      * @see RequestLevelFrom
      */
+    @Nullable
     public RequestLevelFrom getRequestLevelFrom() {
         return requestLevelFrom;
     }
@@ -107,7 +114,8 @@ public class DownloadOptions {
      * @return this
      * @see RequestLevelFrom
      */
-    DownloadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+    @NonNull
+    DownloadOptions setRequestLevelFrom(@Nullable RequestLevelFrom requestLevelFrom) {
         this.requestLevelFrom = requestLevelFrom;
         return this;
     }
@@ -124,7 +132,7 @@ public class DownloadOptions {
     /**
      * 从指定的DownloadOptions中拷贝属性，绝对的覆盖
      */
-    public void copy(DownloadOptions options) {
+    public void copy(@Nullable DownloadOptions options) {
         if (options == null) {
             return;
         }
@@ -140,7 +148,8 @@ public class DownloadOptions {
      * @see SketchImageView#getOptionsKey()
      * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, DownloadOptions)
      */
-    public StringBuilder makeKey(StringBuilder builder) {
+    @NonNull
+    public StringBuilder makeKey(@NonNull StringBuilder builder) {
         return builder;
     }
 
@@ -149,7 +158,8 @@ public class DownloadOptions {
      *
      * @see me.xiaopan.sketch.util.SketchUtils#makeStateImageMemoryCacheKey(String, DownloadOptions)
      */
-    public StringBuilder makeStateImageKey(StringBuilder builder) {
+    @NonNull
+    public StringBuilder makeStateImageKey(@NonNull StringBuilder builder) {
         return builder;
     }
 }

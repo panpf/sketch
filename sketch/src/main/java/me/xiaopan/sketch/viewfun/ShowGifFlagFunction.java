@@ -18,6 +18,7 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -43,7 +44,7 @@ public class ShowGifFlagFunction extends ViewFunction {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         Drawable drawable = view.getDrawable();
         if (drawable != lastDrawable) {
             gifImage = SketchUtils.isGifImage(drawable);

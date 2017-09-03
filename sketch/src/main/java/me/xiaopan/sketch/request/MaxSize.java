@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 import me.xiaopan.sketch.Identifier;
 
 /**
@@ -53,6 +55,7 @@ public class MaxSize implements Identifier {
         return false;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("MaxSize(%dx%d)", width, height);

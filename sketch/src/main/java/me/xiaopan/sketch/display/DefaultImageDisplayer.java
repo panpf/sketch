@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.SketchView;
 
@@ -48,6 +49,7 @@ public class DefaultImageDisplayer implements ImageDisplayer {
         return false;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;

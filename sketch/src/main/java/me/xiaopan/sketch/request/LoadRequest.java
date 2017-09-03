@@ -170,7 +170,6 @@ public class LoadRequest extends FreeRideDownloadRequest {
             return;
         }
 
-        // 解码
         setStatus(Status.DECODING);
         DecodeResult decodeResult;
         try {
@@ -181,7 +180,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             return;
         }
 
-        if (decodeResult != null && decodeResult instanceof BitmapDecodeResult) {
+        if (decodeResult instanceof BitmapDecodeResult) {
             Bitmap bitmap = ((BitmapDecodeResult) decodeResult).getBitmap();
 
             if (bitmap.isRecycled()) {
@@ -218,7 +217,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
             loadResult = new LoadResult(bitmap, decodeResult);
             loadCompleted();
-        } else if (decodeResult != null && decodeResult instanceof GifDecodeResult) {
+        } else if (decodeResult instanceof GifDecodeResult) {
             SketchGifDrawable gifDrawable = ((GifDecodeResult) decodeResult).getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
@@ -245,8 +244,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadResult = new LoadResult(gifDrawable, decodeResult);
             loadCompleted();
         } else {
-            SLog.e(getLogName(), "Not found data after decode. %s. %s", Thread.currentThread().getName(), getKey());
-            error(ErrorCause.DATA_LOST_AFTER_DECODE);
+            SLog.e(getLogName(), "Unknown DecodeResult type. %S. %s. %s", decodeResult.getClass().getName(), Thread.currentThread().getName(), getKey());
+            error(ErrorCause.DECODE_UNKNOWN_RESULT_TYPE);
         }
     }
 

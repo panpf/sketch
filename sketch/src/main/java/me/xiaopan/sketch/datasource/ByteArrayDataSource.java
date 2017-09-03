@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.datasource;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.ByteArrayInputStream;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
@@ -42,6 +44,7 @@ public class ByteArrayDataSource implements DataSource {
         this.imageFrom = imageFrom;
     }
 
+    @NonNull
     @Override
     public InputStream getInputStream() throws IOException {
         return new ByteArrayInputStream(data);
@@ -93,18 +96,16 @@ public class ByteArrayDataSource implements DataSource {
         return outFile;
     }
 
+    @NonNull
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
+    @NonNull
     @Override
-    public SketchGifDrawable makeGifDrawable(String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
-        try {
-            return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, data);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
+                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
+        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, data);
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -197,7 +198,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onCompleted(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
+        public void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
             hintView.hidden();
 
             setWindowBackground.onDisplayCompleted();
@@ -205,7 +206,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onError(ErrorCause errorCause) {
+        public void onError(@NonNull ErrorCause errorCause) {
             hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -215,11 +216,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onCanceled(CancelCause cancelCause) {
-            if (cancelCause == null) {
-                return;
-            }
-
+        public void onCanceled(@NonNull CancelCause cancelCause) {
             switch (cancelCause) {
                 case REQUEST_LEVEL_IS_LOCAL:
                     hintView.hint(R.drawable.ic_error, "level is local", "直接显示", new View.OnClickListener() {

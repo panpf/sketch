@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
+
 /**
  * 请求监听器，可监听开始、失败、取消
  */
@@ -30,10 +32,10 @@ public interface Listener {
      *
      * @param errorCause 失败原因
      */
-    void onError(ErrorCause errorCause);
+    void onError(@NonNull ErrorCause errorCause);
 
     /**
      * 取消
      */
-    void onCanceled(CancelCause cancelCause);
+    void onCanceled(@NonNull CancelCause cancelCause);
 }

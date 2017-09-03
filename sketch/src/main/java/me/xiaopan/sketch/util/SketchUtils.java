@@ -46,7 +46,6 @@ import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Base64;
 import android.view.ViewGroup;
 
 import java.io.Closeable;
@@ -1214,13 +1213,13 @@ public class SketchUtils {
         options.inJustDecodeBounds = true;
         try {
             ImageDecodeUtils.decodeBitmap(dataSource, options);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
-            return Base64.encodeToString(uri.getBytes(), Base64.DEFAULT);
+            options = null;
         }
 
         String uriEncode = SketchMD5Utils.md5(uri);
-        if (options.outMimeType != null && options.outMimeType.startsWith("image/")) {
+        if (options != null && options.outMimeType != null && options.outMimeType.startsWith("image/")) {
             String suffix = options.outMimeType.replace("image/", "");
             return String.format("%s.%s", uriEncode, suffix);
         } else {

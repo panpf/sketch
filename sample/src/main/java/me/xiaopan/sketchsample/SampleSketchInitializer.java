@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -8,7 +9,6 @@ import org.greenrobot.eventbus.Subscribe;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Initializer;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
@@ -20,7 +20,7 @@ public class SampleSketchInitializer implements Initializer {
     private Configuration configuration;
 
     @Override
-    public void onInitialize(Context context, Sketch sketch, Configuration configuration) {
+    public void onInitialize(@NonNull Context context, @NonNull Configuration configuration) {
         this.context = context;
         this.configuration = configuration;
 

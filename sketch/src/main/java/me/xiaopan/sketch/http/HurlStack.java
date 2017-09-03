@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.http;
 
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,6 +110,7 @@ public class HurlStack implements HttpStack {
         return throwable instanceof SocketTimeoutException;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",

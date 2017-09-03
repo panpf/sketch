@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
@@ -81,6 +82,7 @@ public class Resize implements Identifier {
         return false;
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return String.format("Resize(%dx%d-%s)", width, height, scaleType != null ? scaleType.name() : "null");

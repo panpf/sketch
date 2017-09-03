@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.View;
@@ -92,7 +93,7 @@ public class SampleImageView extends SketchImageView {
     }
 
     @Override
-    public boolean redisplay(RedisplayListener listener) {
+    public boolean redisplay(@Nullable RedisplayListener listener) {
         return !disabledRedisplay && super.redisplay(listener);
     }
 

@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.decode;
 
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
@@ -92,6 +93,7 @@ public class ResizeCalculator implements Identifier {
         return new int[]{targetImageWidth, targetImageHeight};
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return KEY;
