@@ -1,14 +1,5 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-    }
-}
-
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+apply from: '../build_butterknife.gradle'
 
 Properties localProperties = openProperties("local.properties")
 String jksFileName = localProperties.getProperty("sample.storeFile")
@@ -26,7 +17,7 @@ android {
         versionName "${VERSION_NAME}.${getGitVersion()}"
 
         ndk {
-            abiFilters 'armeabi'
+            abiFilters 'armeabi', 'x86'
         }
     }
 
@@ -53,27 +44,12 @@ android {
     }
 
     productFlavors {
-
         normal {
 
         }
 
-        // todo: x86 系列不会包含gif so 了，得改改
-        normalX86 {
-            ndk {
-                abiFilters "x86"
-            }
-        }
-
-        // 为了测试没有导入sketch-gif时是否可以正常运行
+        // 为了测试没有导入 sketch-gif 时是否可以正常运行
         nogiflib {
-        }
-
-        // 为了测试没有导入sketch-gif时是否可以正常运行
-        nogiflibX86 {
-            ndk {
-                abiFilters "x86"
-            }
         }
     }
 
@@ -103,11 +79,6 @@ dependencies {
     compile project(':sketch')
     normalCompile project(':sketch-gif')
 
-    // ButterKnifeView
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-
-    // LeakCanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -116,8 +87,6 @@ dependencies {
 
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-
-    compile 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
 }
 
 repositories {

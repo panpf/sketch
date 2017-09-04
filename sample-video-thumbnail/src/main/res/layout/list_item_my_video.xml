@@ -9,7 +9,7 @@
         android:layout_width="100dp"
         android:layout_height="70dp">
 
-        <me.xiaopan.sketchsample.widget.SampleImageView
+        <me.xiaopan.sketch.SketchImageView
             android:id="@+id/image_myVideoItem_icon"
             android:layout_width="100dp"
             android:layout_height="70dp"

@@ -1,1 +1,1 @@
-include ':sample', ':sketch', ':sketch-gif'
+include ':sample', ':sketch', ':sketch-gif', ':sample-video-thumbnail'

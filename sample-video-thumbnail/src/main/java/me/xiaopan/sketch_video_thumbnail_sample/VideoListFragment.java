@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketchsample.fragment;
+package me.xiaopan.sketch_video_thumbnail_sample;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,6 +27,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -37,18 +37,9 @@ import java.util.List;
 import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketchsample.BaseFragment;
-import me.xiaopan.sketchsample.BindContentView;
-import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
-import me.xiaopan.sketchsample.adapter.itemfactory.MyVideoItemFactory;
-import me.xiaopan.sketchsample.bean.VideoItem;
-import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
-import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
-import me.xiaopan.sketchsample.widget.HintView;
 
 @BindContentView(R.layout.fragment_recycler)
-public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, MyVideoItemFactory.MyVideoItemListener {
+public class VideoListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, MyVideoItemFactory.MyVideoItemListener {
     @BindView(R.id.refresh_recyclerFragment)
     SwipeRefreshLayout refreshLayout;
 
@@ -56,27 +47,15 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
     RecyclerView recyclerView;
 
     @BindView(R.id.hint_recyclerFragment)
-    HintView hintView;
+    TextView hintView;
 
     private AssemblyRecyclerAdapter adapter;
-
-    private ApplyBackgroundCallback applyBackgroundCallback;
-    private String backgroundImageUri;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof ApplyBackgroundCallback) {
-            applyBackgroundCallback = (ApplyBackgroundCallback) activity;
-        }
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         refreshLayout.setOnRefreshListener(this);
-        recyclerView.addOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         int padding = SketchUtils.dp2px(getActivity(), 2);
@@ -101,20 +80,6 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
     public void onRefresh() {
         if (getActivity() != null) {
             new LoadVideoListTask(getActivity().getBaseContext()).execute();
-        }
-    }
-
-    @Override
-    protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (applyBackgroundCallback != null && isVisibleToUser) {
-            changeBackground(backgroundImageUri);
-        }
-    }
-
-    private void changeBackground(String imageUri) {
-        this.backgroundImageUri = imageUri;
-        if (applyBackgroundCallback != null) {
-            applyBackgroundCallback.onApplyBackground(backgroundImageUri);
         }
     }
 
@@ -145,7 +110,7 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
         protected void onPreExecute() {
             super.onPreExecute();
 
-            hintView.hidden();
+            hintView.setVisibility(View.GONE);
         }
 
         @Override
@@ -190,20 +155,19 @@ public class MyVideosFragment extends BaseFragment implements SwipeRefreshLayout
             refreshLayout.setRefreshing(false);
 
             if (imageUriList == null || imageUriList.isEmpty()) {
-                hintView.empty("No videos");
+                hintView.setText("No videos");
+                hintView.setVisibility(View.VISIBLE);
                 recyclerView.setAdapter(null);
                 return;
             }
 
             AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(imageUriList);
-            adapter.addItemFactory(new MyVideoItemFactory(MyVideosFragment.this));
+            adapter.addItemFactory(new MyVideoItemFactory(VideoListFragment.this));
 
             recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
 
-            MyVideosFragment.this.adapter = adapter;
-
-            changeBackground(VideoThumbnailUriModel.makeUri(imageUriList.get(0).path));
+            VideoListFragment.this.adapter = adapter;
         }
     }
 }

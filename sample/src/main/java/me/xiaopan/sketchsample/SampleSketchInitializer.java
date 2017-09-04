@@ -11,7 +11,6 @@ import me.xiaopan.sketch.Initializer;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
-import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
 import me.xiaopan.sketchsample.util.XpkIconUriModel;
 
 public class SampleSketchInitializer implements Initializer {
@@ -47,7 +46,6 @@ public class SampleSketchInitializer implements Initializer {
 
         configuration.setErrorTracker(new SampleErrorTracker(context));
 
-        configuration.getUriModelRegistry().add(new VideoThumbnailUriModel());
         configuration.getUriModelRegistry().add(new XpkIconUriModel());
     }
 

@@ -190,7 +190,7 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
             refreshLayout.setRefreshing(false);
 
             if (imageUriList == null || imageUriList.isEmpty()) {
-                hintView.empty("No videos");
+                hintView.empty("No photos");
                 recyclerView.setAdapter(null);
                 return;
             }

@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.adapter.itemfactory;
+package me.xiaopan.sketch_video_thumbnail_sample;
 
 import android.content.Context;
 import android.view.View;
@@ -7,12 +7,8 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory;
-import me.xiaopan.sketchsample.ImageOptions;
-import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
-import me.xiaopan.sketchsample.bean.VideoItem;
-import me.xiaopan.sketchsample.util.VideoThumbnailUriModel;
-import me.xiaopan.sketchsample.widget.SampleImageView;
+import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.display.TransitionImageDisplayer;
 
 public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemFactory.MyVideoItem> {
     private MyVideoItemListener listener;
@@ -37,7 +33,7 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
 
     public class MyVideoItem extends BindAssemblyRecyclerItem<VideoItem> {
         @BindView(R.id.image_myVideoItem_icon)
-        SampleImageView iconImageView;
+        SketchImageView iconImageView;
 
         @BindView(R.id.text_myVideoItem_name)
         TextView nameTextView;
@@ -57,9 +53,6 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
 
         @Override
         protected void onConfigViews(Context context) {
-            iconImageView.setOptions(ImageOptions.RECT);
-            iconImageView.setPage(SampleImageView.Page.PHOTO_LIST);
-
             getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -75,6 +68,10 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
                     getItemView().performClick();
                 }
             });
+
+            iconImageView.getOptions()
+                    .setLoadingImage(R.drawable.image_loading)
+                    .setImageDisplayer(new TransitionImageDisplayer());
         }
 
         @Override
