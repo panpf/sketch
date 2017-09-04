@@ -31,6 +31,7 @@ import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.util.ExifInterface;
 
 /**
@@ -95,22 +96,26 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         }
 
         // 由于是读取的经过处理的缓存图片，因此要重新读取原图的类型、宽高信息
-        DataSource originFileDataSource = request.getDataSource();
-        BitmapFactory.Options originImageOptions = null;
-        if (originFileDataSource != null) {
-            originImageOptions = new BitmapFactory.Options();
-            originImageOptions.inJustDecodeBounds = true;
-            try {
-                ImageDecodeUtils.decodeBitmap(originFileDataSource, originImageOptions);
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
+        DataSource originFileDataSource;
+        try {
+            originFileDataSource = request.getDataSource();
+        } catch (GetDataSourceException e) {
+            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e);
+            throw new DecodeException(e, ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
+        }
+
+        BitmapFactory.Options originImageOptions = new BitmapFactory.Options();
+        originImageOptions.inJustDecodeBounds = true;
+        try {
+            ImageDecodeUtils.decodeBitmap(originFileDataSource, originImageOptions);
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
 
         ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();
 
         ImageAttrs imageAttrs;
-        if (originImageOptions != null && !TextUtils.isEmpty(originImageOptions.outMimeType)) {
+        if (!TextUtils.isEmpty(originImageOptions.outMimeType)) {
             // Read image orientation
             int realExifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
             if (!request.getOptions().isCorrectImageOrientationDisabled()) {

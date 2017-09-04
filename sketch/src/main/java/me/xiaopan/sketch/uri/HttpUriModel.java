@@ -55,8 +55,9 @@ public class HttpUriModel extends UriModel {
         return uri;
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) throws GetDataSourceException {
         if (downloadResult != null) {
             DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
             if (diskCacheEntry != null) {
@@ -68,8 +69,9 @@ public class HttpUriModel extends UriModel {
                 return new ByteArrayDataSource(imageDataArray, downloadResult.getImageFrom());
             }
 
-            SLog.e(NAME, "Not found data from download result. %s", uri);
-            return null;
+            String cause = String.format("Not found data from download result. %s", uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         } else {
             DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey(uri));
@@ -77,8 +79,9 @@ public class HttpUriModel extends UriModel {
                 return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
             }
 
-            SLog.e(NAME, "Not found disk cache. %s", uri);
-            return null;
+            String cause = String.format("Not found disk cache. %s", uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         }
     }
 }

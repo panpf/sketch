@@ -64,7 +64,7 @@ public class AndroidResUriModel extends UriModel {
         return uri;
     }
 
-    @Nullable
+    @NonNull
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) {
         return new ContentDataSource(context, Uri.parse(uri));

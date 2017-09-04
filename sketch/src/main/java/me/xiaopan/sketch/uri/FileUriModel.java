@@ -46,6 +46,7 @@ public class FileUriModel extends UriModel {
         return uri;
     }
 
+    @NonNull
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         return new FileDataSource(new File(uri));

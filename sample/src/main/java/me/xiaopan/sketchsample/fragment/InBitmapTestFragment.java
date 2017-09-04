@@ -23,6 +23,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
@@ -72,8 +73,11 @@ public class InBitmapTestFragment extends BaseFragment {
             return null;
         }
 
-        DataSource dataSource = uriModel.getDataSource(context, imageUri, null);
-        if (dataSource == null) {
+        DataSource dataSource;
+        try {
+            dataSource = uriModel.getDataSource(context, imageUri, null);
+        } catch (GetDataSourceException e) {
+            e.printStackTrace();
             return null;
         }
 

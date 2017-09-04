@@ -45,6 +45,7 @@ public class ContentUriModel extends UriModel {
         return uri;
     }
 
+    @NonNull
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         return new ContentDataSource(context, Uri.parse(uri));

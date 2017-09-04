@@ -34,6 +34,7 @@ import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.decode.ImageDecodeUtils;
 import me.xiaopan.sketch.decode.ImageOrientationCorrector;
 import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -65,9 +66,11 @@ public class ImageRegionDecoder {
             throw new IllegalArgumentException("Unknown scheme uri. " + imageUri);
         }
 
-        DataSource dataSource = uriModel.getDataSource(context, imageUri, null);
-        if (dataSource == null) {
-            throw new IllegalArgumentException("Can not be generated DataSource.  " + imageUri);
+        DataSource dataSource;
+        try {
+            dataSource = uriModel.getDataSource(context, imageUri, null);
+        } catch (GetDataSourceException e) {
+            throw new IllegalArgumentException("Can not be generated DataSource.  " + imageUri, e);
         }
 
         // 读取图片尺寸和类型

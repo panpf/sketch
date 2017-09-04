@@ -4,29 +4,18 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.datasource.ByteArrayDataSource;
-import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DiskCacheDataSource;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.uri.UriModel;
-import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.uri.AbsStreamDiskCacheUriModel;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class XpkIconUriModel extends UriModel {
+public class XpkIconUriModel extends AbsStreamDiskCacheUriModel {
 
     public static final String SCHEME = "xpk.icon://";
     private static final String NAME = "XpkIconUriModel";
@@ -57,119 +46,31 @@ public class XpkIconUriModel extends UriModel {
         return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        String diskCacheKey = getDiskCacheKey(uri);
-
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-        if (cacheEntry != null) {
-            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-        }
-
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
-
-        DataSource dataSource;
-        try {
-            cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-            } else {
-                dataSource = readXpkIcon(context, uri, diskCacheKey);
-            }
-        } finally {
-            diskCacheEditLock.unlock();
-        }
-
-        return dataSource;
-    }
-
-    private DataSource readXpkIcon(Context context, String uri, String diskCacheKey) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+    protected InputStream getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
         ZipFile zipFile;
         try {
             zipFile = new ZipFile(new File(getUriContent(uri)));
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            String cause = String.format("Unable open xpk file. %s", uri);
+            SLog.e(NAME, e, cause);
+            throw new GetDataSourceException(cause, e);
         }
-        InputStream inputStream;
+
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
-            SLog.e(NAME, "Not found icon.png in xpk file. %s", uri);
-            return null;
+            String cause = String.format("Not found icon.png in xpk file. %s", uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         }
 
         try {
-            inputStream = zipFile.getInputStream(zipEntry);
+            return zipFile.getInputStream(zipEntry);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (IOException e) {
-                e.printStackTrace();
-                diskCacheEditor.abort();
-                SketchUtils.close(inputStream);
-                return null;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
-        }
-
-        try {
-            byte[] buffer = new byte[8 * 1024];
-            int realLength;
-            while (true) {
-                realLength = inputStream.read(buffer);
-                if (realLength < 0) {
-                    break;
-                }
-                outputStream.write(buffer, 0, realLength);
-            }
-
-            if (diskCacheEditor != null) {
-                diskCacheEditor.commit();
-            }
-        } catch (DiskLruCache.EditorChangedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            if (diskCacheEditor != null) {
-                diskCacheEditor.abort();
-            }
-            return null;
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.FileNotExistException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } finally {
-            SketchUtils.close(inputStream);
-            SketchUtils.close(outputStream);
-        }
-
-        if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
-            } else {
-                SLog.e(NAME, "Not found xpk icon cache file. %s", uri);
-                return null;
-            }
-        } else {
-            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
+            String cause = String.format("Open \"icon.png\" input stream exception. %s", uri);
+            SLog.e(NAME, e, cause);
+            throw new GetDataSourceException(cause, e);
         }
     }
 }

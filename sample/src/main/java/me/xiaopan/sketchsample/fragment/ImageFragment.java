@@ -44,6 +44,7 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.uri.FileUriModel;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
@@ -721,8 +722,11 @@ public class ImageFragment extends BaseFragment {
                 return null;
             }
 
-            DataSource dataSource = uriModel.getDataSource(getContext(), imageUri, null);
-            if (dataSource == null) {
+            DataSource dataSource;
+            try {
+                dataSource = uriModel.getDataSource(getContext(), imageUri, null);
+            } catch (GetDataSourceException e) {
+                e.printStackTrace();
                 Toast.makeText(getActivity(), "图片还没有准备好", Toast.LENGTH_LONG).show();
                 return null;
             }
@@ -809,8 +813,11 @@ public class ImageFragment extends BaseFragment {
                 return;
             }
 
-            DataSource dataSource = uriModel.getDataSource(getContext(), imageUri, null);
-            if (dataSource == null) {
+            DataSource dataSource;
+            try {
+                dataSource = uriModel.getDataSource(getContext(), imageUri, null);
+            } catch (GetDataSourceException e) {
+                e.printStackTrace();
                 Toast.makeText(getActivity(), "图片还没有准备好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                 return;
             }

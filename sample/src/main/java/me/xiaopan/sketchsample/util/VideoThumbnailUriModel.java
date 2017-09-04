@@ -5,30 +5,16 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.datasource.ByteArrayDataSource;
-import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.uri.UriModel;
-import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.uri.AbsBitmapDiskCacheUriModel;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.util.SketchUtils;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
-public class VideoThumbnailUriModel extends UriModel {
+public class VideoThumbnailUriModel extends AbsBitmapDiskCacheUriModel {
 
     public static final String SCHEME = "video.thumbnail://";
     private static final String NAME = "VideoThumbnailUriModel";
@@ -59,47 +45,20 @@ public class VideoThumbnailUriModel extends UriModel {
         return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        String diskCacheKey = getDiskCacheKey(uri);
-
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-        if (cacheEntry != null) {
-            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-        }
-
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
-
-        DataSource dataSource;
-        try {
-            cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-            } else {
-                dataSource = readVideoThumbnail(context, uri, diskCacheKey);
-            }
-        } finally {
-            diskCacheEditLock.unlock();
-        }
-
-        return dataSource;
-    }
-
-    private DataSource readVideoThumbnail(Context context, String uri, String diskCacheKey) {
+    protected Bitmap getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
         FFmpegMediaMetadataRetriever mediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
         mediaMetadataRetriever.setDataSource(getUriContent(uri));
         try {
-            return realReadVideoThumbnail(context, uri, diskCacheKey, mediaMetadataRetriever);
+            return readVideoThumbnail(context, uri, mediaMetadataRetriever);
         } finally {
             mediaMetadataRetriever.release();
         }
     }
 
-    private DataSource realReadVideoThumbnail(Context context, String uri, String diskCacheKey, FFmpegMediaMetadataRetriever mediaMetadataRetriever) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-
+    @NonNull
+    private Bitmap readVideoThumbnail(Context context, String uri, FFmpegMediaMetadataRetriever mediaMetadataRetriever) throws GetDataSourceException {
         FFmpegMediaMetadataRetriever.Metadata metadata = mediaMetadataRetriever.getMetadata();
         int videoWidth = metadata.getInt(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
         int videoHeight = metadata.getInt(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
@@ -130,67 +89,11 @@ public class VideoThumbnailUriModel extends UriModel {
             frameBitmap = mediaMetadataRetriever.getScaledFrameAtTime(timeUs, finalWidth, finalHeight);
         }
 
-        if (frameBitmap == null) {
-            return null;
+        if (frameBitmap == null || frameBitmap.isRecycled()) {
+            String cause = String.format("Video thumbnail bitmap invalid. %s", uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         }
-        if (frameBitmap.isRecycled()) {
-            SLog.e(NAME, "Video thumbnail bitmap recycled. %s", uri);
-            return null;
-        }
-
-        BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (IOException e) {
-                e.printStackTrace();
-                BitmapPoolUtils.freeBitmapToPool(frameBitmap, bitmapPool);
-                diskCacheEditor.abort();
-                return null;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
-        }
-
-        try {
-            frameBitmap.compress(SketchUtils.bitmapConfigToCompressFormat(frameBitmap.getConfig()), 100, outputStream);
-
-            if (diskCacheEditor != null) {
-                diskCacheEditor.commit();
-            }
-        } catch (DiskLruCache.EditorChangedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.FileNotExistException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } finally {
-            BitmapPoolUtils.freeBitmapToPool(frameBitmap, bitmapPool);
-            SketchUtils.close(outputStream);
-        }
-
-        if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
-            } else {
-                SLog.e(NAME, "Not found video thumbnail cache file. %s", uri);
-                return null;
-            }
-        } else {
-            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
-        }
+        return frameBitmap;
     }
 }

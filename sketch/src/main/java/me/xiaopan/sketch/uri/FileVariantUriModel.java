@@ -60,6 +60,7 @@ public class FileVariantUriModel extends FileUriModel {
         return getUriContent(uri);
     }
 
+    @NonNull
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
         return new FileDataSource(new File(getUriContent(uri)));

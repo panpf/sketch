@@ -29,6 +29,7 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.util.ExifInterface;
 
 /**
@@ -99,10 +100,12 @@ public class ImageDecoder implements Identifier {
      */
     @NonNull
     private DecodeResult doDecode(LoadRequest request) throws DecodeException {
-        DataSource dataSource = request.getDataSourceWithPressedCache();
-        if (dataSource == null) {
-            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", null);
-            throw new DecodeException("Unable create DataSource", ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
+        DataSource dataSource;
+        try {
+            dataSource = request.getDataSourceWithPressedCache();
+        } catch (GetDataSourceException e) {
+            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e);
+            throw new DecodeException("Unable create DataSource", e, ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
         }
 
         // Decode bounds and mime info

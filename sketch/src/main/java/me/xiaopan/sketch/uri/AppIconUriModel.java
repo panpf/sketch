@@ -24,26 +24,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.datasource.ByteArrayDataSource;
-import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DiskCacheDataSource;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class AppIconUriModel extends UriModel {
+public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
 
     public static final String SCHEME = "app.icon://";
     private static final String NAME = "AppIconUriModel";
@@ -68,40 +54,12 @@ public class AppIconUriModel extends UriModel {
         return uri;
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        String diskCacheKey = getDiskCacheKey(uri);
-
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-        if (cacheEntry != null) {
-            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-        }
-
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
-
-        DataSource dataSource;
-        try {
-            cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-            } else {
-                dataSource = readAppIcon(context, uri, diskCacheKey);
-            }
-        } finally {
-            diskCacheEditLock.unlock();
-        }
-
-        return dataSource;
-    }
-
-    private DataSource readAppIcon(Context context, String uri, String diskCacheKey) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+    protected Bitmap getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
         Uri imageUri = Uri.parse(uri);
 
         String packageName = imageUri.getHost();
-
         String path = imageUri.getPath();
         if (path != null && path.startsWith("/")) {
             path = path.substring(1);
@@ -110,86 +68,36 @@ public class AppIconUriModel extends UriModel {
         try {
             versionCode = Integer.valueOf(path);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            SLog.e(NAME, "Conversion app versionCode failed. %s", uri);
-            return null;
+            String cause = String.format("Conversion app versionCode failed. %s", uri);
+            SLog.e(NAME, e, cause);
+            throw new GetDataSourceException(cause, e);
         }
 
         PackageInfo packageInfo;
         try {
             packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
+            String cause = String.format("Not found PackageInfo by \"%s\". %s", packageName, uri);
+            SLog.e(NAME, e, cause);
+            throw new GetDataSourceException(cause, e);
         }
+
         if (packageInfo.versionCode != versionCode) {
-            return null;
+            String cause = String.format("App versionCode mismatch, %d != %d. %s", packageInfo.versionCode, versionCode, uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         }
 
         String apkFilePath = packageInfo.applicationInfo.sourceDir;
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, false, NAME, bitmapPool);
-        if (iconBitmap == null) {
-            return null;
+
+        if (iconBitmap == null || iconBitmap.isRecycled()) {
+            String cause = String.format("App icon bitmap invalid. %s", uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         }
 
-        if (iconBitmap.isRecycled()) {
-            SLog.e(NAME, "App icon bitmap recycled. %s", uri);
-            return null;
-        }
-
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (IOException e) {
-                e.printStackTrace();
-                BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
-                diskCacheEditor.abort();
-                return null;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
-        }
-
-        try {
-            iconBitmap.compress(SketchUtils.bitmapConfigToCompressFormat(iconBitmap.getConfig()), 100, outputStream);
-
-            if (diskCacheEditor != null) {
-                diskCacheEditor.commit();
-            }
-        } catch (DiskLruCache.EditorChangedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.FileNotExistException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } finally {
-            BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
-            SketchUtils.close(outputStream);
-        }
-
-        if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
-            } else {
-                SLog.e(NAME, "Not found app icon cache file. %s", uri);
-                return null;
-            }
-        } else {
-            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
-        }
+        return iconBitmap;
     }
 }

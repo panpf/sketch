@@ -94,8 +94,9 @@ public abstract class UriModel {
      * @param downloadResult 下载结果，只对 {@link #isFromNet()} 为 true 的 UriModel 有用
      * @return DataSource
      */
-    @Nullable
-    public abstract DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult);
+    @NonNull
+    public abstract DataSource getDataSource(@NonNull Context context, @NonNull String uri,
+                                             @Nullable DownloadResult downloadResult) throws GetDataSourceException;
 
     /**
      * 在生成 key 时，是否需要将 uri 使用 md5 转成短 uri，适用于非常长的 uri，例如 base64 格式的 uri

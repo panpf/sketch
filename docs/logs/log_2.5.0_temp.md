@@ -24,8 +24,8 @@ bugs：
 移除：
 * :fire: 移除 SLogType 类，其功能整合到了 SLog 中 ([了解 Sketch 日志])
 * :fire: 移除 SLogTracker 类，新增 SLog.Proxy 代替之 ([了解 Sketch 日志])
-* :fire: 移除了 UriScheme
-* :fire: 移除 ImagePreprocessor 机制，UriModel 代替之，相关类 Preprocessor、PreProcessResult 也一并移除
+* :fire: 移除 UriScheme，UriModel 代替之，UriScheme.valueOfUri(String) 用 UriModel.match(Context, String) 代替，UriScheme.xxx.createUri(String) 被 xxxUriModel.makeUri() 代替
+* :fire: 移除 ImagePreprocessor，UriModel 代替之，相关类 Preprocessor、PreProcessResult 也一并移除
 * :fire: 移除 Sketch.createInstalledAppIconUri(String, int) 方法，AppIconUriModel.makeUri(String, int) 方法替代之
 * :fire: 移除 DownloadHelper.listener(DownloadListener) 方法
 * :fire: 移除 LoadHelper.listener(LoadListener) 方法

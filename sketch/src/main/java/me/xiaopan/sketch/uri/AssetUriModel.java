@@ -51,8 +51,9 @@ public class AssetUriModel extends UriModel {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) throws GetDataSourceException {
         return new AssetsDataSource(context, getUriContent(uri));
     }
 }

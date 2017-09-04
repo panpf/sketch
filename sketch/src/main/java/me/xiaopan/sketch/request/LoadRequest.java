@@ -30,6 +30,7 @@ import me.xiaopan.sketch.decode.GifDecodeResult;
 import me.xiaopan.sketch.decode.ProcessedImageCache;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -62,7 +63,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
     /**
      * 获取数据源
      */
-    public DataSource getDataSource() {
+    @NonNull
+    public DataSource getDataSource() throws GetDataSourceException {
         DownloadResult downloadResult = getUriModel().isFromNet() ? getDownloadResult() : null;
         return getUriModel().getDataSource(getContext(), getUri(), downloadResult);
     }
@@ -70,7 +72,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
     /**
      * 获取数据源，优先考虑已处理缓存
      */
-    public DataSource getDataSourceWithPressedCache() {
+    @NonNull
+    public DataSource getDataSourceWithPressedCache() throws GetDataSourceException {
         ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
         if (processedImageCache.canUse(getOptions())) {
             DataSource dataSource = processedImageCache.getDiskCache(this);

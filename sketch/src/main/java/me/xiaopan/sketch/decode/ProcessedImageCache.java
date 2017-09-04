@@ -18,6 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -89,6 +90,7 @@ public class ProcessedImageCache implements Identifier {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
+    @Nullable
     public DiskCacheDataSource getDiskCache(LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();

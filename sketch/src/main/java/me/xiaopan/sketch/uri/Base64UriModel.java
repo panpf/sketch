@@ -21,27 +21,12 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.datasource.ByteArrayDataSource;
-import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DiskCacheDataSource;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.util.DiskLruCache;
-import me.xiaopan.sketch.util.SketchUtils;
-
-public class Base64UriModel extends UriModel {
+public class Base64UriModel extends AbsStreamDiskCacheUriModel {
 
     public static final String SCHEME = "data:image/";
-    private static final String NAME = "Base64UriModel";
 
     @Override
     protected boolean match(@NonNull String uri) {
@@ -70,91 +55,9 @@ public class Base64UriModel extends UriModel {
         return true;
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        String diskCacheKey = getDiskCacheKey(uri);
-
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-        if (cacheEntry != null) {
-            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-        }
-
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
-
-        DataSource dataSource;
-        try {
-            cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-            } else {
-                dataSource = cacheBase64Image(context, uri, diskCacheKey);
-            }
-        } finally {
-            diskCacheEditLock.unlock();
-        }
-
-        return dataSource;
-    }
-
-    private DataSource cacheBase64Image(Context context, String uri, String diskCacheKey) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-
-        byte[] data = Base64.decode(getUriContent(uri), Base64.DEFAULT);
-
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (IOException e) {
-                e.printStackTrace();
-                diskCacheEditor.abort();
-                return null;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
-        }
-
-        try {
-            outputStream.write(data);
-
-            if (diskCacheEditor != null) {
-                diskCacheEditor.commit();
-            }
-        } catch (DiskLruCache.EditorChangedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            if (diskCacheEditor != null) {
-                diskCacheEditor.abort();
-            }
-            return null;
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.FileNotExistException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } finally {
-            SketchUtils.close(outputStream);
-        }
-
-        if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.MEMORY);
-            } else {
-                SLog.e(NAME, "Not found base64 image cache file. %s", uri);
-                return null;
-            }
-        } else {
-            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.MEMORY);
-        }
+    protected InputStream getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
+        return new ByteArrayInputStream(Base64.decode(getUriContent(uri), Base64.DEFAULT));
     }
 }

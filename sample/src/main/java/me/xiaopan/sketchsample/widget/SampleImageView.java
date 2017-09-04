@@ -25,6 +25,7 @@ import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
@@ -214,7 +215,12 @@ public class SampleImageView extends SketchImageView {
         messageBuilder.append(sketchDrawable.getUri());
 
         UriModel uriModel = UriModel.match(getContext(), sketchDrawable.getUri());
-        DataSource dataSource = uriModel.getDataSource(getContext(), sketchDrawable.getUri(), null);
+        DataSource dataSource = null;
+        try {
+            dataSource = uriModel.getDataSource(getContext(), sketchDrawable.getUri(), null);
+        } catch (GetDataSourceException e) {
+            e.printStackTrace();
+        }
         long imageLength = 0;
         try {
             imageLength = dataSource != null ? dataSource.getLength() : 0;

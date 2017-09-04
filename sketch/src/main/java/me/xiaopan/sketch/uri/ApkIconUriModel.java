@@ -21,26 +21,12 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.datasource.ByteArrayDataSource;
-import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.datasource.DiskCacheDataSource;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ApkIconUriModel extends UriModel {
+public class ApkIconUriModel extends AbsBitmapDiskCacheUriModel {
 
     public static final String SCHEME = "apk.icon://";
     private static final String NAME = "ApkIconUriModel";
@@ -71,99 +57,17 @@ public class ApkIconUriModel extends UriModel {
         return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        String diskCacheKey = getDiskCacheKey(uri);
-
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-        if (cacheEntry != null) {
-            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-        }
-
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
-
-        DataSource dataSource;
-        try {
-            cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                dataSource = new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
-            } else {
-                dataSource = readApkIcon(context, uri, diskCacheKey);
-            }
-        } finally {
-            diskCacheEditLock.unlock();
-        }
-
-        return dataSource;
-    }
-
-    private DataSource readApkIcon(Context context, String uri, String diskCacheKey) {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
+    protected Bitmap getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
         BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-
         Bitmap iconBitmap = SketchUtils.readApkIcon(context, getUriContent(uri), false, NAME, bitmapPool);
-        if (iconBitmap == null) {
-            return null;
-        }
-        if (iconBitmap.isRecycled()) {
-            SLog.e(NAME, "Apk icon bitmap recycled. %s", uri);
-            return null;
-        }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
-            try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (IOException e) {
-                e.printStackTrace();
-                BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
-                diskCacheEditor.abort();
-                return null;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
+        if (iconBitmap == null || iconBitmap.isRecycled()) {
+            String cause = String.format("Apk icon bitmap invalid. %s", uri);
+            SLog.e(NAME, cause);
+            throw new GetDataSourceException(cause);
         }
-
-        try {
-            iconBitmap.compress(SketchUtils.bitmapConfigToCompressFormat(iconBitmap.getConfig()), 100, outputStream);
-
-            if (diskCacheEditor != null) {
-                diskCacheEditor.commit();
-            }
-        } catch (DiskLruCache.EditorChangedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } catch (DiskLruCache.FileNotExistException e) {
-            e.printStackTrace();
-            diskCacheEditor.abort();
-            return null;
-        } finally {
-            BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
-            SketchUtils.close(outputStream);
-        }
-
-        if (diskCacheEditor != null) {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
-            if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
-            } else {
-                SLog.e(NAME, "Not found apk icon cache file. %s", uri);
-                return null;
-            }
-        } else {
-            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
-        }
+        return iconBitmap;
     }
 }

@@ -51,14 +51,16 @@ public class DrawableUriModel extends UriModel {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;
     }
 
+    @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) throws GetDataSourceException {
         int resId;
         try {
             resId = Integer.valueOf(getUriContent(uri));
         } catch (NumberFormatException e) {
-            SLog.e(NAME, "Conversion resId failed. %s", uri);
-            throw e;
+            String cause = String.format("Conversion resId failed. %s", uri);
+            SLog.e(NAME, e, cause);
+            throw new GetDataSourceException(cause, e);
         }
         return new DrawableDataSource(context, resId);
     }
