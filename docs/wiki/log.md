@@ -1,3 +1,5 @@
+# 日志
+
 Sketch 运行时的全部日志通过 [SLog] 来打印，[SLog] 默认使用 [android.util.Log] 来打印日志，
 
 ### 接管日志打印工作

@@ -1,3 +1,5 @@
+# 分块显示超大图片
+
 Sketch 通过 HugeImageViewer 可以让 SketchImageView 支持分块显示超级大图，现在你可以替换掉 SubsamplingScaleImageView 了
 
 ### 如何开启

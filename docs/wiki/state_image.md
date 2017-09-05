@@ -1,3 +1,5 @@
+# 使用 StateImage 设置占位图片和状态图片
+
 StateImage用来为loadingImage，errorImage，pauseDownloadImage提供图片
 
 #### 现支持以下几种：

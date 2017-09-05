@@ -1,3 +1,5 @@
+# 使用 TransitionImageDisplayer 以自然过渡渐变的方式显示图片
+
 TransitionImageDisplayer通过TransitionDrawable可以以过渡渐变的方式显示新图片（新图片渐渐显示，旧图片渐渐消失），这应该是最自然、最舒服的图片显示方式了。
 
 TransitionImageDisplayer默认使用ImageView上当前显示的图片（设置了loadingImage就用loadingImage，没有的话就创建一个透明的ColorDrawable）作为旧图片和新图片以过渡渐变的方式显示

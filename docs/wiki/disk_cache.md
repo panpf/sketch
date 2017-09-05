@@ -1,3 +1,5 @@
+# 在磁盘上缓存图片原文件，避免重复下载
+
 DiskCache用来在磁盘上缓存图片，默认实现是LruDiskCache，其核心是DiskLruCache
 
 #### 相关方法

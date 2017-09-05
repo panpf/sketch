@@ -68,18 +68,6 @@ public class SketchImageView extends FunctionPropertyView {
         return Sketch.with(getContext()).displayFromContent(uri, this).commit();
     }
 
-    @Nullable
-    @Override
-    public DisplayRequest displayAppIcon(@NonNull String packageName, int versionCode) {
-        return Sketch.with(getContext()).displayAppIcon(packageName, versionCode, this).commit();
-    }
-
-    @Nullable
-    @Override
-    public DisplayRequest displayApkIcon(@NonNull String filePath) {
-        return Sketch.with(getContext()).displayApkIcon(filePath, this).commit();
-    }
-
     @Override
     public boolean redisplay(@Nullable RedisplayListener listener) {
         DisplayCache displayCache = getDisplayCache();

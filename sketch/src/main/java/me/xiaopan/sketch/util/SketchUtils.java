@@ -1014,7 +1014,7 @@ public class SketchUtils {
      * 生成请求KEY
      *
      * @param imageUri 图片地址
-     * @param uriModel UriScheme
+     * @param uriModel {@link UriModel}
      * @param options  选项
      */
     public static String makeRequestKey(String imageUri, UriModel uriModel, DownloadOptions options) {

@@ -43,17 +43,6 @@ public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
-    /**
-     * 获取 uri 所真正包含的内容部分，对于 "app.icon://me.xiaopan.sketchsmaple/240" 格式的 uri 来说，就是返回它自己
-     *
-     * @param uri 图片 uri
-     * @return uri 所真正包含的内容部分，对于 "app.icon://me.xiaopan.sketchsmaple/240" 格式的 uri 来说，就是返回它自己
-     */
-    @Override
-    public String getUriContent(@NonNull String uri) {
-        return uri;
-    }
-
     @NonNull
     @Override
     protected Bitmap getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {

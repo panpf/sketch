@@ -1,4 +1,4 @@
-### ShapeSize 用来干嘛？
+# 通过 ShapeSize 在绘制时改变图片的尺寸
 
 ShapeSize 用来配置 bitmap 以多大的尺寸显示，不会创建新的图片，原理就是用 BitmapShader 将图片填充到画笔里，然后画一个形状即可
 

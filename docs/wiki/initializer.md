@@ -1,3 +1,5 @@
+# 通过 Initializer 延迟并统一配置 Sketch
+
 Initializer 用来延迟配置 Sketch，具体会延迟到你第一次使用Sketch的时候
 
 #### 设计的初衷

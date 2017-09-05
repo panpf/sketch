@@ -1,3 +1,5 @@
+# 手势缩放、旋转图片
+
 Sketch新增了ImageZoomer可以让SketchImageView支持手势缩放图片，那么现在你可以果断的抛弃其它的缩放工具了
 
 #### 如何开启

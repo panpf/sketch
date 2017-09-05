@@ -1,4 +1,5 @@
-## 管理多个 Options
+# 管理多个 Options
+
 当你需要为每一种类型的图片都定义一个Options的时候就会有很多的Options，那么该怎么方便的去使用和管理这些Options呢？
 
 完整示例如下：

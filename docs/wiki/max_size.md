@@ -1,3 +1,5 @@
+# 使用 MaxSize 限制读取到内存的图片大小
+
 maxSize用来计算inSampleSize，防止加载过大的图片到内存中
 
 #### 背景

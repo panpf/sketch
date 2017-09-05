@@ -1,8 +1,10 @@
+# 使用 ImageDisplayer 以动画的方式显示图片
+
 ImageDisplayer是最后用来显示图片的，通过ImageDisplayer可以以更炫酷的方式显示图片
 
 目前内置了以下几种ImageDisplayer：
 >* DefaultImageDisplayer： 没有任何动画效果，默认的图片显示器
->* TransitionImageDisplayer： 通过TransitionDrawable用当前图片（没有的话就创建一张透明的drawable代替）和新图片以过渡渐变的方式显示 [点击查看详细介绍以及注意事项](transition_displayer.md)
+>* TransitionImageDisplayer： 通过TransitionDrawable用当前图片（没有的话就创建一张透明的drawable代替）和新图片以过渡渐变的方式显示 [点击查看详细介绍以及注意事项](transition_image_displayer.md)
 >* ZoomInImageDisplayer：由小到大的显示图片，缩放比例是从0.5f到1.0f
 >* ZoomOutImageDisplayer：由大到小的显示图片，缩放比例是从1.5f到1.0f
 >* ColorTransitionImageDisplayer：用指定的颜色创建一个Drawable同新图片以过渡效果显示

@@ -1,3 +1,5 @@
+# 在内存中缓存 Bitmap 提升显示速度
+
 MemoryCache用来在内存中缓存图片，默认的实现是LruMemoryCache，自动根据最少使用原则释放旧的图片
 
 #### 相关方法：

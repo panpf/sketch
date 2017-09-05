@@ -1,3 +1,5 @@
+# 播放 GIF 图片
+
 Sketch集成了android-gif-drawable 1.2.6，可以无障碍的播放gif图片
 
 #### 配置解码GIF图

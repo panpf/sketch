@@ -1,3 +1,5 @@
+# SketchImageView 使用指南
+
 SketchImageView用来代替ImageView，你必须使用SketchImageView才能保证图片会被正常回收
 
 特点：
@@ -46,9 +48,6 @@ sketchImageView.displayImage("data:image/jpeg;base,/9j/4QaO...U7T/in//Z");
 
 // display apk icon from SDCard
 sketchImageView.displayImage("/sdcard/google_play.apk");
-
-// display installed app icon
-sketchImageView.displayInstalledAppIcon("com.tencent.qq", 210);
 ```
 
 ### 其它功能（可选）

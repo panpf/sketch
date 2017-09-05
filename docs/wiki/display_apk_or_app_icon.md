@@ -1,31 +1,53 @@
-Sketch支持直接读取APK文件的图标，如下：
-```java
-// SketchImageView
-SketchImageView sketchImageView = ...;
-sketchImageView.displayImage("/sdcard/google_play.apk");
+# 显示 APK 或已安装 APP 的图标
 
-// display
-Sketch.with(context).display("/sdcard/google_play.apk", sketchImageView).commit();
+### 显示 APK 的图标
 
-// load
-Sketch.with(context).load("/sdcard/google_play.apk", new LoadListener(){
-	...
-}).commit();
+Sketch 支持显示 APK 文件的图标，是通过 [ApkIconUriModel] 实现的此功能，uri 如下:
+
+```
+apk.icon:///sdcard/file.apk
 ```
 
-Sketch还支持读取已安装APP的图标，如下：
+[SketchImageView]、[Sketch] 提供了相应的方法可供使用，如下：
+
 ```java
+Sting apkIconUri = ApkIconUriModel.makeUri("/sdcard/file.apk");
+
 // SketchImageView
 SketchImageView sketchImageView = ...;
-sketchImageView.displayInstalledAppIcon("com.tencent.qq", 50001);
+sketchImageView.displayImage(apkIconUri);
 
-// display
-Sketch.with(context).displayInstalledAppIcon("com.tencent.qq", 50001, sketchImageView).commit();
+// Sketch.display()
+Sketch.with(context).display(apkIconUri, sketchImageView).commit();
 
-// load
-Sketch.with(context).loadInstalledAppIcon("com.tencent.qq", 50001, new LoadListener(){
-	...
-}).commit();
+// Sketch.load()
+Sketch.with(context).load(apkIconUri, new LoadListener(){...}).commit();
 ```
 
-![apps](../res/apps.png)
+### 显示 APP 的图标
+
+Sketch 还支持显示已安装 APP 的图标，是通过 [AppIconUriModel] 实现的此功能，uri 如下:
+
+```
+app.icon://com.xiaopan.sketchsample/241
+```
+
+[SketchImageView]、[Sketch] 提供了相应的方法可供使用，如下：
+
+```java
+Sting appIconUri = AppIconUriModel.makeUri("com.xiaopan.sketchsample", 241);
+
+// SketchImageView
+SketchImageView sketchImageView = ...;
+sketchImageView.displayImage(appIconUri);
+
+// Sketch.display()
+Sketch.with(context).display(appIconUri, sketchImageView).commit();
+
+// Sketch.load()
+Sketch.with(context).load(appIconUri, new LoadListener(){...}).commit();
+```
+
+[ApkIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/ApkIconUriModel.java
+[SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
+[Sketch]: ../../sketch/src/main/java/me/xiaopan/sketch/Sketch.java

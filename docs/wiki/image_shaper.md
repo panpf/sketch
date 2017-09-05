@@ -1,4 +1,6 @@
-ImageShaper用来在绘制时修改图片的形状，
+# 通过 ImageShaper 在绘制时改变图片的形状
+
+ImageShaper 用来在绘制时修改图片的形状，
 
 >* 是通过BitmapShader实现的，所以不需要创建新的图片
 >* loadingImage、errorImage、pauseDownloadImage以及加载的图片都会被修改

@@ -31,8 +31,6 @@ import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
 import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.LoadListener;
-import me.xiaopan.sketch.uri.ApkIconUriModel;
-import me.xiaopan.sketch.uri.AppIconUriModel;
 import me.xiaopan.sketch.uri.AssetUriModel;
 import me.xiaopan.sketch.uri.DrawableUriModel;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -112,11 +110,7 @@ public class Sketch {
     /**
      * 根据 URI 下载图片
      *
-     * @param uri      图片 Uri，支持以下几种
-     *                 <ul>
-     *                 <li>http://site.com/image.png  // from Web</li>
-     *                 <li>https://site.com/image.png // from Web</li>
-     *                 </ul>
+     * @param uri      图片 Uri，只支持 http:// 和 https://
      * @param listener 监听下载过程
      * @return DownloadHelper 你可以继续通过 DownloadHelper 设置参数，最后调用其 commit() 方法提交
      */
@@ -125,21 +119,11 @@ public class Sketch {
     public DownloadHelper download(@NonNull String uri, @Nullable DownloadListener listener) {
         return configuration.getHelperFactory().getDownloadHelper(this, uri, listener);
     }
-// TODO: 2017/9/3 支持的uri，需要更新一下了
+
     /**
      * 根据 URI 加载图片
      *
-     * @param uri      图片 Uri，支持以下几种
-     *                 <ul>
-     *                 <li>http://site.com/image.png    // from Web</li>
-     *                 <li>https://site.com/image.png   // from Web</li>
-     *                 <li>file:///mnt/sdcard/image.png // from SD card</li>
-     *                 <li>/mnt/sdcard/image.png    // from SD card</li>
-     *                 <li>/mnt/sdcard/app.apk  // from SD card apk file</li>
-     *                 <li>content://media/external/audio/albumart/13   // from content provider</li>
-     *                 <li>asset://image.png    // from assets</li>
-     *                 <li>"drawable://" + R.drawable.image // from drawables (only images, non-9patch)</li>
-     *                 </ul>
+     * @param uri      图片 Uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
      * @param listener 监听下载过程
      * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
      */
@@ -190,48 +174,9 @@ public class Sketch {
     }
 
     /**
-     * 加载 APK 的图标
-     *
-     * @param filePath APP 的路径
-     * @param listener 监听加载过程
-     * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public LoadHelper loadApkIcon(@NonNull String filePath, @Nullable LoadListener listener) {
-        String uri = ApkIconUriModel.makeUri(filePath);
-        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
-    }
-
-    /**
-     * 加载 APP 的图标
-     *
-     * @param packageName APP 的包名
-     * @param versionCode APP 的版本号
-     * @param listener    监听加载过程
-     * @return LoadHelper 你可以继续通过 LoadHelper 设置参数，最后调用其 commit() 方法提交
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public LoadHelper loadAppIcon(@NonNull String packageName, int versionCode, @Nullable LoadListener listener) {
-        String uri = AppIconUriModel.makeUri(packageName, versionCode);
-        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
-    }
-
-    /**
      * 根据 URI 显示图片
      *
-     * @param uri        图片Uri，支持以下几种
-     *                   <ul>
-     *                   <li>http://site.com/image.png    // from Web</li>
-     *                   <li>https://site.com/image.png   // from Web</li>
-     *                   <li>file:///mnt/sdcard/image.png // from SD card</li>
-     *                   <li>/mnt/sdcard/image.png    // from SD card</li>
-     *                   <li>/mnt/sdcard/app.apk  // from SD card apk file</li>
-     *                   <li>content://media/external/audio/albumart/13   // from content provider</li>
-     *                   <li>asset://image.png    // from assets</li>
-     *                   <li>"drawable://" + R.drawable.image // from drawables (only images, non-9patch)</li>
-     *                   </ul>
+     * @param uri        图片Uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
      * @param sketchView Sketch 对 ImageView 的规范接口，Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
      * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
      */
@@ -275,34 +220,6 @@ public class Sketch {
      */
     @NonNull
     public DisplayHelper displayFromContent(@NonNull String uri, @NonNull SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
-    }
-
-    /**
-     * 显示已安装 APK 文件的图标
-     *
-     * @param filePath   APK 的路径
-     * @param sketchView Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
-     * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public DisplayHelper displayApkIcon(@NonNull String filePath, @NonNull SketchView sketchView) {
-        String uri = ApkIconUriModel.makeUri(filePath);
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
-    }
-
-    /**
-     * 显示 APP 的图标
-     *
-     * @param packageName APP 的包名
-     * @param versionCode APP 的版本号
-     * @param sketchView  Sketch 对 ImageView 的规范接口，默认实现是 SketchImageView
-     * @return DisplayHelper 你可以继续通过 DisplayHelper 设置参数，最后调用其 commit() 方法提交
-     */
-    @NonNull
-    public DisplayHelper displayAppIcon(@NonNull String packageName, int versionCode, @NonNull SketchView sketchView) {
-        String uri = AppIconUriModel.makeUri(packageName, versionCode);
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 

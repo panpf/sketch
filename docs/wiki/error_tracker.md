@@ -1,3 +1,5 @@
+# 通过 ErrorTracker 监控 Sketch 的异常
+
 Sketch在运行的过程中会有各种各样的异常，你可以通过ErrorTracker收到这些异常，然后将这些异常记录下来帮助解决问题
 
 #### 使用

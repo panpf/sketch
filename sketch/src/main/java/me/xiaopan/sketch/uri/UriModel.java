@@ -61,12 +61,26 @@ public abstract class UriModel {
     protected abstract boolean match(@NonNull String uri);
 
     /**
-     * 获取 uri 所真正包含的内容部分，例如 "drawable://1242141"，就会返回 "1242141"，不同的 UriModel 规则不一样
+     * 获取指定 uri 的数据，用于后续解码读取图片
+     *
+     * @param context        Context
+     * @param uri            图片 uri
+     * @param downloadResult 下载结果，只对 {@link #isFromNet()} 为 true 的 UriModel 有用
+     * @return DataSource
+     */
+    @NonNull
+    public abstract DataSource getDataSource(@NonNull Context context, @NonNull String uri,
+                                             @Nullable DownloadResult downloadResult) throws GetDataSourceException;
+
+    /**
+     * 获取 uri 中的内容部分，默认是它自己
      *
      * @param uri 图片 uri
-     * @return uri 所真正包含的内容部分，例如 "drawable://1242141"，就会返回 "1242141"，不同的 UriModel 规则不一样
+     * @return uri 中的内容部分，默认是它自己
      */
-    public abstract String getUriContent(@NonNull String uri);
+    public String getUriContent(@NonNull String uri) {
+        return uri;
+    }
 
     /**
      * 获取指定 uri 的磁盘缓存key，默认返回 uri 自己
@@ -85,18 +99,6 @@ public abstract class UriModel {
     public boolean isFromNet() {
         return false;
     }
-
-    /**
-     * 获取指定 uri 的数据，用于后续解码读取图片
-     *
-     * @param context        Context
-     * @param uri            图片 uri
-     * @param downloadResult 下载结果，只对 {@link #isFromNet()} 为 true 的 UriModel 有用
-     * @return DataSource
-     */
-    @NonNull
-    public abstract DataSource getDataSource(@NonNull Context context, @NonNull String uri,
-                                             @Nullable DownloadResult downloadResult) throws GetDataSourceException;
 
     /**
      * 在生成 key 时，是否需要将 uri 使用 md5 转成短 uri，适用于非常长的 uri，例如 base64 格式的 uri

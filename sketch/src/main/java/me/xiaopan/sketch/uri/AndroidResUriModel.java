@@ -59,11 +59,6 @@ public class AndroidResUriModel extends UriModel {
         return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
     }
 
-    @Override
-    public String getUriContent(@NonNull String uri) {
-        return uri;
-    }
-
     @NonNull
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) {

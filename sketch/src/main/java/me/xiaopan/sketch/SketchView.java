@@ -65,7 +65,7 @@ public interface SketchView {
     /**
      * 显示图片
      *
-     * @param uri 图片Uri
+     * @param uri 图片Uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
      */
     @Nullable
     DisplayRequest displayImage(@NonNull String uri);
@@ -96,23 +96,6 @@ public interface SketchView {
     @Nullable
     @SuppressWarnings("unused")
     DisplayRequest displayContentImage(@NonNull String uri);
-
-    /**
-     * 显示 APk 的图标
-     *
-     * @param filePath APK 的路径
-     */
-    @Nullable
-    DisplayRequest displayApkIcon(@NonNull String filePath);
-
-    /**
-     * 显示 APP 的图标
-     *
-     * @param packageName APP 的包名
-     * @param versionCode APP 的版本号
-     */
-    @Nullable
-    DisplayRequest displayAppIcon(@NonNull String packageName, int versionCode);
 
     /**
      * 准备显示图片

@@ -44,8 +44,8 @@ Sketch 的 display()、load()、download() 方法（[参考 load_android_downloa
 * cacheInDiskDisabled: 禁用磁盘缓存-[参考 disk_cache.md]
 * maxSize: 限制读取到内存的图片的尺寸-[参考 max_size.md]
 * resize: 修改图片的尺寸-[参考 resize.md]
-* processor: 处理图片-[参考 process_image.md]
-* decodeGifImage: 解码 GIF 图片，开启后可播放 GIF 图片-[参考 display_gif_image.md]
+* processor: 处理图片-[参考 image_processor.md]
+* decodeGifImage: 解码 GIF 图片，开启后可播放 GIF 图片-[参考 play_gif_image.md]
 * lowQualityImage: 解码图片时优先使用低质量的 Bitmap.Config，例如 JPEG 图片将使用 ARGB_565 解码，具体请查看 [ImageType] 类
 * bitmapConfig: 强制指定解码图片时使用的 Bitmap.Config，KITKAT 以上版本不能使用 ARGB_4444
 * inPreferQualityOverSpeed: 解码时质量优先，可提高图片质量，但会降低解码速度，当你要频繁的对一张图片进行读取然后写出的时候一定要设置优先考虑质量
@@ -54,7 +54,7 @@ Sketch 的 display()、load()、download() 方法（[参考 load_android_downloa
 * bitmapPoolDisabled: 禁用BitmapPool-[参考 bitmap_pool.md]
 * correctImageOrientationDisabled: 禁用纠正图片方向功能-[参考 correct_image_orientation.md.md]
 * cacheInMemoryDisabled: 禁用内存缓存
-* displayer: 使用专门的显示效果来显示图片-[参考 displayer.md]
+* displayer: 使用专门的显示效果来显示图片-[参考 image_displayer.md]
 * loadingImage: 设置正在加载时显示的图片
 * errorImage: 设置加载失败时显示的图片
 * pauseDownloadImage: 设置暂停下载时显示的图片
@@ -129,11 +129,11 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 [ImageType]: ../../sketch/src/main/java/com/xiaopan/sketch/decode/ImageType.java
 [参考 max_size.md]: max_size.md
 [参考 resize.md]: resize.md
-[参考 process_image.md]: process_image.md
-[参考 display_gif_image.md]: display_gif_image.md
+[参考 image_processor.md]: image_processor.md
+[参考 play_gif_image.md]: play_gif_image.md
 [参考 cache_processed_image_in_disk.md.md]: cache_processed_image_in_disk.md.md
 [参考 bitmap_pool.md]: bitmap_pool.md
 [参考 correct_image_orientation.md.md]: correct_image_orientation.md.md
-[参考 displayer.md]: displayer.md
+[参考 image_displayer.md]: image_displayer.md
 [参考 imag_shaper.md]: imag_shaper.md
 [参考 shape_size.md]: shape_size.md
