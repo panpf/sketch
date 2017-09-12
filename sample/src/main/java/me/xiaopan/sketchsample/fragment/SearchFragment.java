@@ -213,7 +213,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
         List<BaiduImage> imageList = adapter.getDataList();
         ArrayList<Image> urlList = new ArrayList<>();
         for (BaiduImage imageItem : imageList) {
-            urlList.add(new Image(imageItem.getSourceUrl(), imageItem.getSourceUrl()));
+            urlList.add(new Image(imageItem.getUrl(), imageItem.getUrl()));
         }
         ImageDetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
     }
@@ -268,7 +268,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
                 Iterator<BaiduImage> imageIterator = imageList.iterator();
                 while (imageIterator.hasNext()) {
                     BaiduImage image = imageIterator.next();
-                    if (image.getSourceUrl() == null || "".equals(image.getSourceUrl())) {
+                    if (image.getUrl() == null || "".equals(image.getUrl())) {
                         imageIterator.remove();
                     }
                 }
@@ -289,11 +289,11 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
                         fragment.onRefresh();
                     }
                 });
+                fragment.refreshLayout.setRefreshing(false);
             } else {
+                fragment.adapter.loadMoreFailed();
                 Toast.makeText(fragment.getActivity(), HintView.getCauseByException(fragment.getActivity(), t), Toast.LENGTH_LONG).show();
             }
-
-            fragment.refreshLayout.setRefreshing(false);
         }
 
         private void create(SearchFragment fragment, Response<BaiduImageSearchResult> response) {
@@ -311,7 +311,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
             fragment.recyclerView.setAdapter(adapter);
             fragment.adapter = adapter;
 
-            fragment.changeBackground(images.get(0).getSourceUrl());
+            fragment.changeBackground(images.get(0).getUrl());
         }
 
         private void loadMore(SearchFragment fragment, Response<BaiduImageSearchResult> response) {
@@ -325,7 +325,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
             fragment.adapter.addAll(images);
             fragment.adapter.loadMoreFinished(images.size() < 20);
 
-            fragment.changeBackground(images.get(0).getSourceUrl());
+            fragment.changeBackground(images.get(0).getUrl());
         }
     }
 }

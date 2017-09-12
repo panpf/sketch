@@ -70,7 +70,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
             headParams.height = (int) (itemWidth / (image.getWidth() / (float) image.getHeight()));
             imageView.setLayoutParams(headParams);
 
-            imageView.displayImage(image.getSourceUrl());
+            imageView.displayImage(image.getUrl());
         }
     }
 }

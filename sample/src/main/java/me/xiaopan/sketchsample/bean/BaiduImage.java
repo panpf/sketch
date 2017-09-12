@@ -2,10 +2,12 @@ package me.xiaopan.sketchsample.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class BaiduImage {
 
-    @SerializedName("thumbURL")
-    private String sourceUrl;
+    @SerializedName("replaceUrl")
+    private List<ReplaceUrl> replaceUrlList;
 
     @SerializedName("width")
     private int width;
@@ -13,8 +15,8 @@ public class BaiduImage {
     @SerializedName("height")
     private int height;
 
-    public String getSourceUrl() {
-        return sourceUrl;
+    public String getUrl() {
+        return replaceUrlList != null && replaceUrlList.size() > 0 ? replaceUrlList.get(0).objUrl : null;
     }
 
     public int getWidth() {
@@ -23,5 +25,10 @@ public class BaiduImage {
 
     public int getHeight() {
         return height;
+    }
+
+    public static class ReplaceUrl {
+        @SerializedName("ObjURL")
+        public String objUrl;
     }
 }

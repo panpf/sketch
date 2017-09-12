@@ -192,11 +192,11 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
                         fragment.onRefresh();
                     }
                 });
+                fragment.refreshLayout.setRefreshing(false);
             } else {
+                fragment.adapter.loadMoreFailed();
                 Toast.makeText(fragment.getActivity(), HintView.getCauseByException(fragment.getActivity(), t), Toast.LENGTH_LONG).show();
             }
-
-            fragment.refreshLayout.setRefreshing(false);
         }
 
         private void create(UnsplashPhotosFragment fragment, Response<List<UnsplashImage>> response) {
