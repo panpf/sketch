@@ -259,7 +259,7 @@ public class ImageDownloader implements Identifier {
         }
 
         // Check content fully and commit the disk cache
-        boolean readFully = (contentLength <= 0 && !httpResponse.isContentChunked()) || completedLength == contentLength;
+        boolean readFully = (contentLength <= 0 && httpResponse.isContentChunked()) || completedLength == contentLength;
         if (readFully) {
             if (diskCacheEditor != null) {
                 try {
@@ -274,8 +274,8 @@ public class ImageDownloader implements Identifier {
             if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
             }
-            String message = String.format("The data is not fully read. contentLength:%d, completedLength:%d. %s. %s",
-                    contentLength, completedLength, request.getThreadName(), request.getKey());
+            String message = String.format("The data is not fully read. contentLength:%d, completedLength:%d, ContentChunked:%s. %s. %s",
+                    contentLength, completedLength, httpResponse.isContentChunked(), request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
             throw new DownloadException(message, ErrorCause.DOWNLOAD_DATA_NOT_FULLY_READ);
         }
