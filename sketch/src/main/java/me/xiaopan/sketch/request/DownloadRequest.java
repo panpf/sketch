@@ -123,12 +123,10 @@ public class DownloadRequest extends AsyncRequest {
 
         // 在下载之前判断如果请求 Level 限制只能从本地加载的话就取消了
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
-            boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
-            CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
-            doCancel(cause);
+            doCancel(CancelCause.PAUSE_DOWNLOAD);
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG)) {
-                SLog.d(getLogName(), "Request end because %s. %s. %s", cause, getThreadName(), getKey());
+                SLog.d(getLogName(), "Request end because %s. %s. %s", CancelCause.PAUSE_DOWNLOAD, getThreadName(), getKey());
             }
             return;
         }

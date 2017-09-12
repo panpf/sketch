@@ -39,10 +39,10 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.http.ImageDownloader;
+import me.xiaopan.sketch.optionsfilter.OptionsFilterRegistry;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
-import me.xiaopan.sketch.request.GlobalMobileNetworkPauseDownloadController;
 import me.xiaopan.sketch.request.HelperFactory;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
@@ -57,6 +57,7 @@ public final class Configuration {
     private Context context;
 
     private UriModelRegistry uriModelRegistry;
+    private OptionsFilterRegistry optionsFilterRegistry;
 
     private DiskCache diskCache;
     private BitmapPool bitmapPool;
@@ -79,18 +80,12 @@ public final class Configuration {
     private RequestFactory requestFactory;
     private ErrorTracker errorTracker;
 
-    // TODO: 2017/4/15 搞一个通用的属性拦截器，把这些放到属性拦截器里
-    private boolean globalPauseLoad;   // 全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-    private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
-    private boolean globalLowQualityImage; // 全局使用低质量的图片
-    private boolean globalInPreferQualityOverSpeed;   // false:全局解码时优先考虑速度；true:全局解码时优先考虑质量
-    private GlobalMobileNetworkPauseDownloadController globalMobileNetworkPauseDownloadController;
-
     Configuration(@NonNull Context context) {
         context = context.getApplicationContext();
         this.context = context;
 
         this.uriModelRegistry = new UriModelRegistry();
+        this.optionsFilterRegistry = new OptionsFilterRegistry();
 
         // 由于默认的缓存文件名称从 URLEncoder 加密变成了 MD5 所以这里要升级一下版本号，好清除旧的缓存
         this.diskCache = new LruDiskCache(context, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
@@ -112,7 +107,6 @@ public final class Configuration {
 
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
-
         this.errorTracker = new ErrorTracker(context);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -133,11 +127,20 @@ public final class Configuration {
     /**
      * 获取 UriModel 管理器
      *
-     * @return Configuration. Convenient chain calls
+     * @return UriModelRegistry
      */
     @NonNull
     public UriModelRegistry getUriModelRegistry() {
         return uriModelRegistry;
+    }
+
+    /**
+     * 获取 OptionsFilter 管理器
+     *
+     * @return OptionsFilterRegistry
+     */
+    public OptionsFilterRegistry getOptionsFilterRegistry() {
+        return optionsFilterRegistry;
     }
 
     /**
@@ -607,33 +610,13 @@ public final class Configuration {
         return this;
     }
 
-    /**
-     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响display请求
-     */
-    public boolean isGlobalPauseLoad() {
-        return globalPauseLoad;
-    }
-
-    /**
-     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-     *
-     * @return Configuration. Convenient chain calls
-     */
-    @NonNull
-    public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
-        if (this.globalPauseLoad != globalPauseLoad) {
-            this.globalPauseLoad = globalPauseLoad;
-            SLog.w(NAME, "globalPauseLoad=%s", globalPauseLoad);
-        }
-        return this;
-    }
-
 
     /**
      * 全局暂停下载图片？开启后将不再从网络下载图片，只影响display请求和load请求
      */
+    @SuppressWarnings("unused")
     public boolean isGlobalPauseDownload() {
-        return globalPauseDownload;
+        return optionsFilterRegistry.isPauseDownload();
     }
 
     /**
@@ -643,41 +626,30 @@ public final class Configuration {
      */
     @NonNull
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
-        if (this.globalPauseDownload != globalPauseDownload) {
-            this.globalPauseDownload = globalPauseDownload;
+        if (optionsFilterRegistry.isPauseDownload() != globalPauseDownload) {
+            optionsFilterRegistry.setPauseDownload(globalPauseDownload);
             SLog.w(NAME, "globalPauseDownload=%s", globalPauseDownload);
         }
         return this;
     }
 
     /**
-     * 全局移动网络下暂停下载？只影响display请求和load请求
+     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响display请求
      */
-    @SuppressWarnings("unused")
-    public boolean isGlobalMobileNetworkGlobalPauseDownload() {
-        return globalMobileNetworkPauseDownloadController != null && globalMobileNetworkPauseDownloadController.isOpened();
+    public boolean isGlobalPauseLoad() {
+        return optionsFilterRegistry.isPauseLoad();
     }
 
     /**
-     * 设置开启移动网络下暂停下载的功能，只影响 display 请求和 load 请求
+     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      *
      * @return Configuration. Convenient chain calls
      */
     @NonNull
-    public Configuration setGlobalMobileNetworkPauseDownload(boolean globalMobileNetworkPauseDownload) {
-        if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
-            if (globalMobileNetworkPauseDownload) {
-                if (this.globalMobileNetworkPauseDownloadController == null) {
-                    this.globalMobileNetworkPauseDownloadController = new GlobalMobileNetworkPauseDownloadController(context, this);
-                }
-                this.globalMobileNetworkPauseDownloadController.setOpened(true);
-            } else {
-                if (this.globalMobileNetworkPauseDownloadController != null) {
-                    this.globalMobileNetworkPauseDownloadController.setOpened(false);
-                }
-            }
-
-            SLog.w(NAME, "globalMobileNetworkPauseDownload=%s", isGlobalMobileNetworkGlobalPauseDownload());
+    public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
+        if (optionsFilterRegistry.isPauseLoad() != globalPauseLoad) {
+            optionsFilterRegistry.setPauseLoad(globalPauseLoad);
+            SLog.w(NAME, "globalPauseLoad=%s", globalPauseLoad);
         }
         return this;
     }
@@ -686,7 +658,7 @@ public final class Configuration {
      * 全局使用低质量的图片？
      */
     public boolean isGlobalLowQualityImage() {
-        return globalLowQualityImage;
+        return optionsFilterRegistry.isLowQualityImage();
     }
 
     /**
@@ -696,8 +668,8 @@ public final class Configuration {
      */
     @NonNull
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
-        if (this.globalLowQualityImage != globalLowQualityImage) {
-            this.globalLowQualityImage = globalLowQualityImage;
+        if (optionsFilterRegistry.isLowQualityImage() != globalLowQualityImage) {
+            optionsFilterRegistry.setLowQualityImage(globalLowQualityImage);
             SLog.w(NAME, "globalLowQualityImage=%s", globalLowQualityImage);
         }
         return this;
@@ -708,8 +680,9 @@ public final class Configuration {
      *
      * @return true：质量；false：速度
      */
+    @SuppressWarnings("unused")
     public boolean isGlobalInPreferQualityOverSpeed() {
-        return globalInPreferQualityOverSpeed;
+        return optionsFilterRegistry.isInPreferQualityOverSpeed();
     }
 
     /**
@@ -720,9 +693,31 @@ public final class Configuration {
      */
     @NonNull
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
-        if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
-            this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
+        if (optionsFilterRegistry.isInPreferQualityOverSpeed() != globalInPreferQualityOverSpeed) {
+            optionsFilterRegistry.setInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
             SLog.w(NAME, "globalInPreferQualityOverSpeed=%s", globalInPreferQualityOverSpeed);
+        }
+        return this;
+    }
+
+    /**
+     * 全局移动网络下暂停下载？只影响display请求和load请求
+     */
+    @SuppressWarnings("unused")
+    public boolean isGlobalMobileNetworkGlobalPauseDownload() {
+        return optionsFilterRegistry.isGlobalMobileNetworkGlobalPauseDownload();
+    }
+
+    /**
+     * 设置开启移动网络下暂停下载的功能，只影响 display 请求和 load 请求
+     *
+     * @return Configuration. Convenient chain calls
+     */
+    @NonNull
+    public Configuration setGlobalMobileNetworkPauseDownload(boolean globalMobileNetworkPauseDownload) {
+        if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
+            optionsFilterRegistry.setGlobalMobileNetworkPauseDownload(this, globalMobileNetworkPauseDownload);
+            SLog.w(NAME, "globalMobileNetworkPauseDownload=%s", isGlobalMobileNetworkGlobalPauseDownload());
         }
         return this;
     }
@@ -730,6 +725,9 @@ public final class Configuration {
     @NonNull
     public String getInfo() {
         return NAME + ": " +
+                "\n" + "uriModelRegistry：" + uriModelRegistry.getKey() +
+                "\n" + "optionsFilterRegistry：" + optionsFilterRegistry.getKey() +
+
                 "\n" + "diskCache：" + diskCache.getKey() +
                 "\n" + "bitmapPool：" + bitmapPool.getKey() +
                 "\n" + "memoryCache：" + memoryCache.getKey() +
@@ -751,10 +749,10 @@ public final class Configuration {
                 "\n" + "requestFactory：" + requestFactory.getKey() +
                 "\n" + "errorTracker：" + errorTracker.getKey() +
 
-                "\n" + "globalPauseLoad：" + globalPauseLoad +
-                "\n" + "globalPauseDownload：" + globalPauseDownload +
-                "\n" + "globalLowQualityImage：" + globalLowQualityImage +
-                "\n" + "globalInPreferQualityOverSpeed：" + globalInPreferQualityOverSpeed +
+                "\n" + "globalPauseDownload：" + optionsFilterRegistry.isPauseDownload() +
+                "\n" + "globalPauseLoad：" + optionsFilterRegistry.isPauseLoad() +
+                "\n" + "globalLowQualityImage：" + optionsFilterRegistry.isLowQualityImage() +
+                "\n" + "globalInPreferQualityOverSpeed：" + optionsFilterRegistry.isInPreferQualityOverSpeed() +
                 "\n" + "globalMobileNetworkPauseDownload：" + isGlobalMobileNetworkGlobalPauseDownload();
     }
 

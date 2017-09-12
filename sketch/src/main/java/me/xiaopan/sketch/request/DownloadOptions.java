@@ -98,29 +98,6 @@ public class DownloadOptions {
     }
 
     /**
-     * 获取请求Level的来源
-     *
-     * @see RequestLevelFrom
-     */
-    @Nullable
-    public RequestLevelFrom getRequestLevelFrom() {
-        return requestLevelFrom;
-    }
-
-    /**
-     * 设置请求Level的来源
-     *
-     * @param requestLevelFrom {@link RequestLevelFrom}
-     * @return this
-     * @see RequestLevelFrom
-     */
-    @NonNull
-    DownloadOptions setRequestLevelFrom(@Nullable RequestLevelFrom requestLevelFrom) {
-        this.requestLevelFrom = requestLevelFrom;
-        return this;
-    }
-
-    /**
      * 重置所有属性
      */
     public void reset() {

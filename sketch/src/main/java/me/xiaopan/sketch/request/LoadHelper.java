@@ -80,7 +80,6 @@ public class LoadHelper {
     public LoadHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             loadOptions.setRequestLevel(requestLevel);
-            loadOptions.setRequestLevelFrom(null);
         }
         return this;
     }
@@ -314,25 +313,7 @@ public class LoadHelper {
         }
 
 
-        // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
-        if (configuration.isGlobalLowQualityImage()) {
-            loadOptions.setLowQualityImage(true);
-        }
-
-        // 如果设置了全局解码质量优先
-        if (sketch.getConfiguration().isGlobalInPreferQualityOverSpeed()) {
-            loadOptions.setInPreferQualityOverSpeed(true);
-        }
-
-        // 如果没有设置请求 Level 的话就跟据暂停下载和暂停加载功能来设置请求 Level
-        if (loadOptions.getRequestLevel() == null) {
-            if (configuration.isGlobalPauseDownload()) {
-                loadOptions.setRequestLevel(RequestLevel.LOCAL);
-                loadOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
-            }
-
-            // 暂停加载对于加载请求并不起作用，因此这里不予处理
-        }
+        configuration.getOptionsFilterRegistry().filter(loadOptions);
 
         // 根据 URI 和加载选项生成请求 ID
         key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions);
@@ -342,15 +323,12 @@ public class LoadHelper {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (loadOptions.getRequestLevel() == RequestLevel.LOCAL && uriModel.isFromNet()
                 && !sketch.getConfiguration().getDiskCache().exist(uriModel.getDiskCacheKey(uri))) {
-            boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
-                SLog.d(NAME, "Request cancel. %s. %s", cause, key);
+                SLog.d(NAME, "Request cancel. %s. %s", CancelCause.PAUSE_DOWNLOAD, key);
             }
 
-            CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
-            CallbackHandler.postCallbackCanceled(loadListener, cancelCause, sync);
+            CallbackHandler.postCallbackCanceled(loadListener, CancelCause.PAUSE_DOWNLOAD, sync);
             return false;
         }
 

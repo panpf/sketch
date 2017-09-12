@@ -135,7 +135,6 @@ public class DisplayHelper {
     public DisplayHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             displayOptions.setRequestLevel(requestLevel);
-            displayOptions.setRequestLevelFrom(null);
         }
         return this;
     }
@@ -593,29 +592,6 @@ public class DisplayHelper {
         }
 
 
-        // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
-        if (configuration.isGlobalLowQualityImage()) {
-            displayOptions.setLowQualityImage(true);
-        }
-
-        // 如果设置了全局解码质量优先
-        if (configuration.isGlobalInPreferQualityOverSpeed()) {
-            displayOptions.setInPreferQualityOverSpeed(true);
-        }
-
-        // 如果没有设置请求 Level 的话就跟据暂停下载和暂停加载功能来设置请求 Level
-        if (displayOptions.getRequestLevel() == null) {
-            if (configuration.isGlobalPauseDownload()) {
-                displayOptions.setRequestLevel(RequestLevel.LOCAL);
-                displayOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
-            }
-
-            if (configuration.isGlobalPauseLoad()) {
-                displayOptions.setRequestLevel(RequestLevel.MEMORY);
-                displayOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_LOAD);
-            }
-        }
-
         // ImageDisplayer 必须得有
         if (displayOptions.getImageDisplayer() == null) {
             displayOptions.setImageDisplayer(configuration.getDefaultDisplayer());
@@ -640,6 +616,8 @@ public class DisplayHelper {
                 throw new IllegalArgumentException(errorInfo);
             }
         }
+
+        configuration.getOptionsFilterRegistry().filter(displayOptions);
 
         // 根据 URI 和显示选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions);
@@ -712,11 +690,8 @@ public class DisplayHelper {
     private boolean checkRequestLevel() {
         // 如果已经暂停加载的话就不再从本地或网络加载了
         if (displayOptions.getRequestLevel() == RequestLevel.MEMORY) {
-            boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
-
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                CancelCause cause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.REQUEST_LEVEL_IS_MEMORY;
-                SLog.d(NAME, "Request cancel. %s. view(%s). %s", cause, Integer.toHexString(sketchView.hashCode()), key);
+                SLog.d(NAME, "Request cancel. %s. view(%s). %s", CancelCause.PAUSE_LOAD, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             Drawable loadingDrawable = null;
@@ -727,19 +702,16 @@ public class DisplayHelper {
             sketchView.clearAnimation();
             sketchView.setImageDrawable(loadingDrawable);
 
-            CancelCause cancelCause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.REQUEST_LEVEL_IS_MEMORY;
-            CallbackHandler.postCallbackCanceled(displayListener, cancelCause, false);
+            CallbackHandler.postCallbackCanceled(displayListener, CancelCause.PAUSE_LOAD, false);
             return false;
         }
 
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (displayOptions.getRequestLevel() == RequestLevel.LOCAL && uriModel.isFromNet()
                 && !sketch.getConfiguration().getDiskCache().exist(uriModel.getDiskCacheKey(uri))) {
-            boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                CancelCause cause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
-                SLog.d(NAME, "Request cancel. %s. view(%s). %s", cause, Integer.toHexString(sketchView.hashCode()), key);
+                SLog.d(NAME, "Request cancel. %s. view(%s). %s", CancelCause.PAUSE_DOWNLOAD, Integer.toHexString(sketchView.hashCode()), key);
             }
 
             // 显示暂停下载图片
@@ -754,8 +726,7 @@ public class DisplayHelper {
             }
             sketchView.setImageDrawable(drawable);
 
-            CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
-            CallbackHandler.postCallbackCanceled(displayListener, cancelCause, false);
+            CallbackHandler.postCallbackCanceled(displayListener, CancelCause.PAUSE_DOWNLOAD, false);
             return false;
         }
 

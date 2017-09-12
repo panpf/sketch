@@ -113,12 +113,6 @@ public class LoadOptions extends DownloadOptions {
         return (LoadOptions) super.setRequestLevel(requestLevel);
     }
 
-    @NonNull
-    @Override
-    LoadOptions setRequestLevelFrom(@Nullable RequestLevelFrom requestLevelFrom) {
-        return (LoadOptions) super.setRequestLevelFrom(requestLevelFrom);
-    }
-
     /**
      * 获取最大尺寸，用于计算 inSampleSize，缩小图片
      *

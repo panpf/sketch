@@ -219,28 +219,6 @@ public class ImageFragment extends BaseFragment {
         @Override
         public void onCanceled(@NonNull CancelCause cancelCause) {
             switch (cancelCause) {
-                case REQUEST_LEVEL_IS_LOCAL:
-                    hintView.hint(R.drawable.ic_error, "level is local", "直接显示", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
-                            imageView.getOptions().setRequestLevel(RequestLevel.NET);
-                            imageView.displayImage(finalShowImageUrl);
-                            imageView.getOptions().setRequestLevel(requestLevel);
-                        }
-                    });
-                    break;
-                case REQUEST_LEVEL_IS_MEMORY:
-                    hintView.hint(R.drawable.ic_error, "level is memory", "直接显示", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
-                            imageView.getOptions().setRequestLevel(RequestLevel.NET);
-                            imageView.displayImage(finalShowImageUrl);
-                            imageView.getOptions().setRequestLevel(requestLevel);
-                        }
-                    });
-                    break;
                 case BE_CANCELLED:
                     break;
                 case PAUSE_DOWNLOAD:

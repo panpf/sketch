@@ -1,4 +1,4 @@
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.optionsfilter;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,14 +14,13 @@ import me.xiaopan.sketch.Configuration;
 /**
  * 全局移动网络下暂停下载控制器
  */
-public class GlobalMobileNetworkPauseDownloadController {
+public class MobileNetworkPauseDownloadController {
     private NetworkChangedBroadcastReceiver receiver;
     private boolean opened;
     private Configuration configuration;
 
-    public GlobalMobileNetworkPauseDownloadController(Context context, Configuration configuration) {
-        context = context.getApplicationContext();
-        receiver = new NetworkChangedBroadcastReceiver(context, this);
+    public MobileNetworkPauseDownloadController(Configuration configuration) {
+        receiver = new NetworkChangedBroadcastReceiver(configuration.getContext(), this);
         this.configuration = configuration;
     }
 
@@ -68,18 +67,17 @@ public class GlobalMobileNetworkPauseDownloadController {
      */
     private static class NetworkChangedBroadcastReceiver extends BroadcastReceiver {
         private Context context;
-        private WeakReference<GlobalMobileNetworkPauseDownloadController> weakReference;
+        private WeakReference<MobileNetworkPauseDownloadController> weakReference;
 
-        public NetworkChangedBroadcastReceiver(Context context, GlobalMobileNetworkPauseDownloadController download) {
-            context = context.getApplicationContext();
-            this.context = context;
+        public NetworkChangedBroadcastReceiver(Context context, MobileNetworkPauseDownloadController download) {
+            this.context = context.getApplicationContext();
             this.weakReference = new WeakReference<>(download);
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                GlobalMobileNetworkPauseDownloadController pauseDownloadController = weakReference.get();
+                MobileNetworkPauseDownloadController pauseDownloadController = weakReference.get();
                 if (pauseDownloadController != null) {
                     pauseDownloadController.updateStatus(context);
                 }

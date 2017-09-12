@@ -26,16 +26,6 @@ public enum CancelCause {
     BE_CANCELLED,
 
     /**
-     * RequestLevel是LOCAL
-     */
-    REQUEST_LEVEL_IS_LOCAL,
-
-    /**
-     * RequestLevel是MEMORY
-     */
-    REQUEST_LEVEL_IS_MEMORY,
-
-    /**
      * 暂停下载
      */
     PAUSE_DOWNLOAD,

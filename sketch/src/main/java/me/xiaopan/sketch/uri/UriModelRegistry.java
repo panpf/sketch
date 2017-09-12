@@ -23,10 +23,12 @@ import android.text.TextUtils;
 import java.util.LinkedList;
 import java.util.List;
 
+import me.xiaopan.sketch.Identifier;
+
 /**
  * 负责管理和匹配 UriModel
  */
-public class UriModelRegistry {
+public class UriModelRegistry implements Identifier{
     private List<UriModel> uriModelList = new LinkedList<>();
 
     public UriModelRegistry() {
@@ -78,5 +80,11 @@ public class UriModelRegistry {
         }
 
         return null;
+    }
+
+    @NonNull
+    @Override
+    public String getKey() {
+        return "UriModelRegistry";
     }
 }

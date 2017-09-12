@@ -90,12 +90,6 @@ public class DisplayOptions extends LoadOptions {
 
     @NonNull
     @Override
-    DisplayOptions setRequestLevelFrom(@Nullable RequestLevelFrom requestLevelFrom) {
-        return (DisplayOptions) super.setRequestLevelFrom(requestLevelFrom);
-    }
-
-    @NonNull
-    @Override
     public DisplayOptions setMaxSize(@Nullable MaxSize maxSize) {
         return (DisplayOptions) super.setMaxSize(maxSize);
     }

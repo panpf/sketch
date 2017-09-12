@@ -67,7 +67,6 @@ public class DownloadHelper {
     public DownloadHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             downloadOptions.setRequestLevel(requestLevel);
-            downloadOptions.setRequestLevelFrom(null);
         }
         return this;
     }
@@ -149,7 +148,7 @@ public class DownloadHelper {
      * 对属性进行预处理
      */
     protected void preProcess() {
-        // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
+        sketch.getConfiguration().getOptionsFilterRegistry().filter(downloadOptions);
 
         // 根据 URI 和下载选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions);
