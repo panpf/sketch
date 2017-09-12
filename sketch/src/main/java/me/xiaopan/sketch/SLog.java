@@ -170,8 +170,6 @@ public class SLog {
      *              {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}
      */
     public static void setLevel(@Level int level) {
-        /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
-
         int low16BitsMask = 0xFFFF;
         // noinspection NumericOverflow
         int high16BitsMask = 0xFFFF << 16;
@@ -187,11 +185,29 @@ public class SLog {
             newFlag = resetLow16BitFlags | maskLow16Bits;
         }
 
-        int oldFlags = SLog.levelAndTypeFlags;
+        String oldLevelName = getLevelName();
         SLog.levelAndTypeFlags = newFlag;
+        String newLevelName = getLevelName();
 
-        android.util.Log.w(TAG, String.format("%s. setLevel: level(%s), %s -> %s",
-                NAME, Integer.toBinaryString(level), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.levelAndTypeFlags)));
+        android.util.Log.w(TAG, String.format("%s. setLevel, %s -> %s", NAME, oldLevelName, newLevelName));
+    }
+
+    public static String getLevelName() {
+        if (isLoggable(LEVEL_VERBOSE)) {
+            return "VERBOSE";
+        } else if (isLoggable(LEVEL_DEBUG)) {
+            return "DEBUG";
+        } else if (isLoggable(LEVEL_INFO)) {
+            return "INFO";
+        } else if (isLoggable(LEVEL_WARNING)) {
+            return "WARNING";
+        } else if (isLoggable(LEVEL_ERROR)) {
+            return "ERROR";
+        } else if (isLoggable(LEVEL_NONE)) {
+            return "NONE";
+        } else {
+            return "UNKNOWN";
+        }
     }
 
     /**
@@ -200,8 +216,6 @@ public class SLog {
      * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
      */
     public static void openType(@Type int type) {
-        /* 高 16 位，低 16 位分开设置。因为低 16 位是互斥关系，高 16 位是共存关系 */
-
         //noinspection NumericOverflow
         int high16BitsMask = 0xFFFF << 16;
 
@@ -213,11 +227,11 @@ public class SLog {
             newFlag = newFlag | maskHigh16Bits; // 高 16 位赋值
         }
 
-        int oldFlags = SLog.levelAndTypeFlags;
+        String oldTypeNames = getTypeNames();
         SLog.levelAndTypeFlags = newFlag;
+        String newTypeNames = getTypeNames();
 
-        android.util.Log.w(TAG, String.format("%s. openType: type(%s), %s -> %s",
-                NAME, Integer.toBinaryString(type), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.levelAndTypeFlags)));
+        android.util.Log.w(TAG, String.format("%s. openType: %s -> %s", NAME, oldTypeNames, newTypeNames));
     }
 
     /**
@@ -232,12 +246,50 @@ public class SLog {
         // 取出 mask 的高 16 位
         int maskHigh16Bits = type & high16BitsMask;
 
-        int oldFlags = SLog.levelAndTypeFlags;
+        String oldTypeNames = getTypeNames();
         //noinspection WrongConstant
         SLog.levelAndTypeFlags &= ~maskHigh16Bits;
+        String newTypeNames = getTypeNames();
 
-        android.util.Log.w(TAG, String.format("%s. closeType: type(%s), %s -> %s",
-                NAME, Integer.toBinaryString(type), Integer.toBinaryString(oldFlags), Integer.toBinaryString(SLog.levelAndTypeFlags)));
+        android.util.Log.w(TAG, String.format("%s. closeType: %s -> %s", NAME, oldTypeNames, newTypeNames));
+    }
+
+    public static String getTypeNames() {
+        StringBuilder builder = new StringBuilder();
+        if (isLoggable(TYPE_FLOW)) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append("FLOW");
+        }
+        if (isLoggable(TYPE_CACHE)) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append("CACHE");
+        }
+        if (isLoggable(TYPE_ZOOM)) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append("ZOOM");
+        }
+        if (isLoggable(TYPE_HUGE_IMAGE)) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append("HUGE_IMAGE");
+        }
+        if (isLoggable(TYPE_TIME)) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append("TIME");
+        }
+        if (builder.length() == 0) {
+            builder.append("NONE");
+        }
+        return builder.toString();
     }
 
     /**
