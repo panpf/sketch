@@ -1,10 +1,11 @@
 # 列表滑动时暂停加载图片，提升列表滑动流畅度
 
-Sketch支持全局暂停从本地加载图片，暂停后Sketch将只会从内存中去找图片
+Sketch 支持全局暂停从本地加载图片，暂停后 Sketch 将只会从内存中去找图片
 
 ``暂停加载功能只对display请求有效``
 
 你只需执行如下代码设置即可：
+
 ```java
 // 全局暂停从本地加载载图片
 Sketch.with(context).getConfiguration().setGlobalPauseLoad(true);
@@ -13,10 +14,12 @@ Sketch.with(context).getConfiguration().setGlobalPauseLoad(true);
 Sketch.with(context).getConfiguration().setGlobalPauseLoad(false);
 ```
 
-#### 滑动时停止加载
+#### 列表滑动时停止加载
+
 你可以利用这个功能实现列表滑动中不加载图片，进一步提升列表的滑动流畅度
 
-首先你需要添加ScrollingPauseLoadManager.java到你的项目中，支持RecyclerView和AbsListView
+首先你需要添加 ScrollingPauseLoadManager.java 到你的项目中，支持 RecyclerView 和 AbsListView
+
 ```java
 /**
  * 滚动中暂停暂停加载新图片管理器支持RecyclerView和AbsListView
@@ -104,6 +107,7 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
 ```
 
 然后应用即可
+
 ```java
 RecyclerView recyclerView = ...;
 recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(context));
@@ -114,4 +118,4 @@ listView.setOnScrollListener(new ScrollingPauseLoadManager(context));
 
 注意：
 >* 在配置较高的设备上不建议使用此功能，因为实时显示图片的体验要远高于滑动时暂停加载新图片的体验。特别是在列表页点击进入一个新页面又返回的时候，由于新页面加载了新的图片把列表页中图片的缓存挤掉了，回到列表后就会刷新一下重新加载图片
->* 那么此功能我是做着玩的嘛？当然不是，在一些比较老性能很差劲的设备上，开启此功能还是很有必要的。你可以通过Android版本号进行判断并开启此功能。
+>* 那么此功能是做着玩的嘛？当然不是，在一些比较老性能很差劲的设备上，开启此功能还是很有必要的。你可以通过 Android 版本号进行判断并开启此功能。

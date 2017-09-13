@@ -149,6 +149,7 @@ To further enhance the user experience:
 
 More:
 * [Customize UriModel Let Sketch support new Uri types][uri_model]
+* [Unified Change Options][options_filter]
 * [Show video thumbnails][display_video_thumbnail]
 * [Manage Multiple Options][options_manage]
 * [Only load or download images][load_and_download]
@@ -256,6 +257,7 @@ More:
 [initializer]: docs/wiki/initializer.md
 [proguard_config]: docs/wiki/proguard_config.md
 [other]: docs/wiki/other.md
+[options_filter]: docs/wiki/options_filter.md
 
 [koral--]: https://github.com/koral--
 [android-gif-drawable]: https://github.com/koral--/android-gif-drawable

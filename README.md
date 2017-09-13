@@ -149,6 +149,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 
 更多：
 * [自定义 UriModel 让 Sketch 支持新的 Uri 类型][uri_model]
+* [统一修改 Options][options_filter]
 * [显示视频缩略图][display_video_thumbnail]
 * [管理多个 Options][options_manage]
 * [只加载或下载图片][load_and_download]
@@ -256,6 +257,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [initializer]: docs/wiki/initializer.md
 [proguard_config]: docs/wiki/proguard_config.md
 [other]: docs/wiki/other.md
+[options_filter]: docs/wiki/options_filter.md
 
 [koral--]: https://github.com/koral--
 [android-gif-drawable]: https://github.com/koral--/android-gif-drawable
