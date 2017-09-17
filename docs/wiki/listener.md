@@ -1,14 +1,21 @@
-# 监听开始加载、成功、失败以及下载进度事件
+# 监听准备加载、成功、失败以及下载进度事件
 
-Sketch支持对``开始加载``、``完成``、``失败``、``取消``以及``下载进度``进行监听
+Sketch 支持对 `准备加载`、`完成`、`失败`、`取消` 以及 `下载进度` 进行监听
 
-SketchImageView
+注意：
+* listener 默认在主线程回调，但是当 Sketch.load() 和 Sketch.download() 开启了同步后其 listener 就在运行线程回调，可能是主线程，也可能是非主线程
+* onReadyLoad() 方法只有在需要进入非主线程加载图片时才会被回调，因此有可能不回调 onReadyLoad() 方法而直接回调其它方法
+
+#### SketchImageView
+
 ```java
 SketchImageView sketchImageView = ...;
+
+// setDisplayListener() 一定要在 displayImage() 之前
 sketchImageView.setDisplayListener(new DisplayListener() {
     @Override
-    public void onStartLoad() {
-        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
+    public void onReadyLoad() {
+        // 只有在需要进入非主线程加载图片时才会回调 onReadyLoad() 方法
     }
 
     @Override
@@ -27,7 +34,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 });
 
-// setDownloadProgressListener()一定要在displayImage之前执行
+// setDownloadProgressListener() 一定要在 displayImage() 之前
 sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
     @Override
     public void onUpdateDownloadProgress(int totalLength, int completedLength) {
@@ -38,14 +45,15 @@ sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
 sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 ```
 
-``display()不支持设置listener和downloadProgressListener``
+``Sketch.display() 不支持设置 listener 和 downloadProgressListener``
 
-load()
+#### Sketch.load()
+
 ```java
 Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
     @Override
-    public void onStartLoad() {
-        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
+    public void onReadyLoad() {
+        // 只有在需要进入非主线程加载图片时才会回调 onReadyLoad() 方法
     }
 
     @Override
@@ -70,12 +78,13 @@ Sketch.with(context).load("http://t.cn/RShdS1f", new LoadListener() {
 }).maxSize(100, 100).commit();
 ```
 
-download()
+#### Sketch.download()
+
 ```java
 Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
     @Override
-    public void onStartLoad() {
-        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
+    public void onReadyLoad() {
+        // 只有在需要进入非主线程加载图片时才会回调 onReadyLoad() 方法
     }
 
     @Override
@@ -99,5 +108,3 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
     }
 }).commit();
 ```
-
-listener 默认都是异步回调的，并且都会在主线程回调，但是当 load() 和 download() 开启了同步后其 listener 就在当前线程回调

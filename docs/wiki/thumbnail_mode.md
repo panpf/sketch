@@ -8,11 +8,11 @@ Sketch的缩略图模式专门用于在一个较小的ImageView上清晰的显�
 
 最终我们利用BitmapRegionDecoder读取14537,0-15463,926位置的图片并且缩小4倍
 
->* 不同的ScaleType计算出的映射位置会有所不同
+* 不同的ScaleType计算出的映射位置会有所不同
 
 #### 支持的图片类型和系统版本
->* jpeg、png：API 10（2.3.3）及其以上
->* webp：API 14（4.0）及其以上
+* jpeg、png：API 10（2.3.3）及其以上
+* webp：API 14（4.0）及其以上
 
 #### 使用条件
 

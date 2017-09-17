@@ -427,9 +427,8 @@ public class LoadOptions extends DownloadOptions {
 
     @NonNull
     @Override
-    public StringBuilder makeKey(@NonNull StringBuilder builder) {
-        super.makeKey(builder);
-
+    public String makeKey() {
+        StringBuilder builder = new StringBuilder();
         if (maxSize != null) {
             builder.append("_").append(maxSize.getKey());
         }
@@ -461,14 +460,13 @@ public class LoadOptions extends DownloadOptions {
                 builder.append("_").append(processorKey);
             }
         }
-        return builder;
+        return builder.toString();
     }
 
     @NonNull
     @Override
-    public StringBuilder makeStateImageKey(@NonNull StringBuilder builder) {
-        super.makeKey(builder);
-
+    public String makeStateImageKey() {
+        StringBuilder builder = new StringBuilder();
         if (resize != null) {
             builder.append("_").append(resize.getKey());
         }
@@ -482,6 +480,6 @@ public class LoadOptions extends DownloadOptions {
                 builder.append("_").append(processorKey);
             }
         }
-        return builder;
+        return builder.toString();
     }
 }

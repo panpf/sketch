@@ -44,6 +44,7 @@ import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.ViewGroup;
@@ -80,7 +81,6 @@ import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.viewfun.huge.Tile;
@@ -1011,53 +1011,23 @@ public class SketchUtils {
     }
 
     /**
-     * 生成请求KEY
+     * 生成请求 KEY
      *
-     * @param imageUri 图片地址
-     * @param uriModel {@link UriModel}
-     * @param options  选项
+     * @param imageUri   图片地址
+     * @param optionsKey 选项 KEY
+     * @see me.xiaopan.sketch.SketchImageView#getOptionsKey()
      */
-    public static String makeRequestKey(String imageUri, UriModel uriModel, DownloadOptions options) {
+    @SuppressWarnings("unused")
+    @NonNull
+    public static String makeRequestKey(@NonNull String imageUri, @NonNull UriModel uriModel, @NonNull String optionsKey) {
         StringBuilder builder = new StringBuilder();
         if (uriModel.isConvertShortUriForKey()) {
             builder.append(SketchMD5Utils.md5(imageUri));
         } else {
             builder.append(imageUri);
         }
-        if (options != null) {
-            options.makeKey(builder);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * 生成请求KEY
-     *
-     * @param imageUri   图片地址
-     * @param optionsKey 选项KEY
-     * @see me.xiaopan.sketch.SketchImageView#getOptionsKey()
-     */
-    @SuppressWarnings("unused")
-    public static String makeRequestKey(String imageUri, String optionsKey) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(imageUri);
         if (!TextUtils.isEmpty(optionsKey)) {
             builder.append(optionsKey);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * 生成状态图片用的内存缓存KEY
-     *
-     * @param imageUri 图片地址
-     * @param options  配置
-     */
-    public static String makeStateImageMemoryCacheKey(String imageUri, DownloadOptions options) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(imageUri);
-        if (options != null) {
-            options.makeStateImageKey(builder);
         }
         return builder.toString();
     }

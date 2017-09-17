@@ -134,10 +134,10 @@ Basic functions:
 * [Use ImageShaper to change the shape of a picture when drawing][image_shaper]
 * [Use ImageProcessor to change the picture after decoding][image_processor]
 * [Use ImageDisplayer to display images in an animated manner][image_displayer]
-* [Use MaxSize to limit the size of the image to read to memory][max_size]
+* [Use MaxSize to read thumbnails of the right size to save memory][max_size]
 * [Use Resize to precisely modify the size of the image][resize]
 * [Use StateImage to set the placeholder picture and status picture][state_image]
-* [Listen to start loading, success, failure, and download progress events][listener]
+* [Listen to ready load, success, failure, and download progress events][listener]
 
 To further enhance the user experience:
 * [Use the TransitionImageDisplayer to display the image in a natural transition gradient][transition_image_displayer]
@@ -159,12 +159,11 @@ More:
 * [Cache Bitmap in memory to increase the display speed][memory_cache]
 * [Cache the original file on the disk, to avoid duplication of the download][disk_cache]
 * [Send HTTP request][http_stack]
-* [Cancel display image][cancel_request]
+* [Cancel request][cancel_request]
 * [Monitor Sketch's exception][error_tracker]
 * [Log][log]
 * [Delay and configure Sketch][initializer]
 * [Config proguard][proguard_config]
-* [Other knowledge points][other]
 
 ### Thanks
 
@@ -256,7 +255,6 @@ More:
 [log]: docs/wiki/log.md
 [initializer]: docs/wiki/initializer.md
 [proguard_config]: docs/wiki/proguard_config.md
-[other]: docs/wiki/other.md
 [options_filter]: docs/wiki/options_filter.md
 
 [koral--]: https://github.com/koral--

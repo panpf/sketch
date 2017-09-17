@@ -134,10 +134,10 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [使用 ImageShaper 在绘制时改变图片的形状][image_shaper]
 * [使用 ImageProcessor 在解码后改变图片][image_processor]
 * [使用 ImageDisplayer 以动画的方式显示图片][image_displayer]
-* [使用 MaxSize 限制读取到内存的图片大小][max_size]
+* [使用 MaxSize 读取合适尺寸的缩略图，节省内存][max_size]
 * [使用 Resize 精确修改图片的尺寸][resize]
 * [使用 StateImage 设置占位图片和状态图片][state_image]
-* [监听开始加载、成功、失败以及下载进度事件][listener]
+* [监听准备加载、成功、失败以及下载进度事件][listener]
 
 提升用户体验：
 * [使用 TransitionImageDisplayer 以自然过渡渐的变方式显示图片][transition_image_displayer]
@@ -159,12 +159,11 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [在内存中缓存 Bitmap 提升显示速度][memory_cache]
 * [在磁盘上缓存图片原文件，避免重复下载][disk_cache]
 * [发送 HTTP 请求][http_stack]
-* [取消显示图片][cancel_request]
+* [取消请求][cancel_request]
 * [监控 Sketch 的异常][error_tracker]
 * [日志][log]
 * [延迟并统一配置 Sketch][initializer]
 * [配置混淆（Proguard）][proguard_config]
-* [其它知识点][other]
 
 ### 特别感谢
 
@@ -256,7 +255,6 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [log]: docs/wiki/log.md
 [initializer]: docs/wiki/initializer.md
 [proguard_config]: docs/wiki/proguard_config.md
-[other]: docs/wiki/other.md
 [options_filter]: docs/wiki/options_filter.md
 
 [koral--]: https://github.com/koral--

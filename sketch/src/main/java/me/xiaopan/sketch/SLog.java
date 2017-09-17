@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -87,6 +88,13 @@ public class SLog {
      */
     public static final int TYPE_HUGE_IMAGE = 0x01 << 20;
 
+    public static final String LEVEL_NAME_VERBOSE = "VERBOSE";
+    public static final String LEVEL_NAME_DEBUG = "DEBUG";
+    public static final String LEVEL_NAME_INFO = "INFO";
+    public static final String LEVEL_NAME_WARNING = "WARNING";
+    public static final String LEVEL_NAME_ERROR = "ERROR";
+    public static final String LEVEL_NAME_NONE = "NONE";
+
     private static final String TAG = "Sketch";
     private static final String NAME = "SLog";
     private static int levelAndTypeFlags;
@@ -143,6 +151,7 @@ public class SLog {
      * @return 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
      * {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE}
      */
+    @SuppressLint("WrongConstant")
     @Level
     public static int getLevel() {
         if (isLoggable(LEVEL_VERBOSE)) {
@@ -158,7 +167,6 @@ public class SLog {
         } else if (isLoggable(LEVEL_NONE)) {
             return LEVEL_NONE;
         } else {
-            //noinspection WrongConstant
             return 0;
         }
     }
@@ -189,24 +197,27 @@ public class SLog {
         SLog.levelAndTypeFlags = newFlag;
         String newLevelName = getLevelName();
 
-        android.util.Log.w(TAG, String.format("%s. setLevel, %s -> %s", NAME, oldLevelName, newLevelName));
+        android.util.Log.w(TAG, String.format("%s. setLevel. %s -> %s", NAME, oldLevelName, newLevelName));
     }
 
+    /**
+     * 获取日志级别名称
+     */
     public static String getLevelName() {
         if (isLoggable(LEVEL_VERBOSE)) {
-            return "VERBOSE";
+            return LEVEL_NAME_VERBOSE;
         } else if (isLoggable(LEVEL_DEBUG)) {
-            return "DEBUG";
+            return LEVEL_NAME_DEBUG;
         } else if (isLoggable(LEVEL_INFO)) {
-            return "INFO";
+            return LEVEL_NAME_INFO;
         } else if (isLoggable(LEVEL_WARNING)) {
-            return "WARNING";
+            return LEVEL_NAME_WARNING;
         } else if (isLoggable(LEVEL_ERROR)) {
-            return "ERROR";
+            return LEVEL_NAME_ERROR;
         } else if (isLoggable(LEVEL_NONE)) {
-            return "NONE";
+            return LEVEL_NAME_NONE;
         } else {
-            return "UNKNOWN";
+            return "UNKNOWN(" + getLevel() + ")";
         }
     }
 
@@ -322,7 +333,7 @@ public class SLog {
      * @return 整型
      * @throws NumberFormatException 字符串异常
      */
-    public static int parseUnsignedInt(@NonNull String s, int radix) throws NumberFormatException {
+    public static int parseUnsignedInt(@NonNull String s, @SuppressWarnings("SameParameterValue") int radix) throws NumberFormatException {
         //noinspection ConstantConditions
         if (s == null) {
             throw new NumberFormatException("null");

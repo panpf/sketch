@@ -19,23 +19,25 @@ package me.xiaopan.sketch.request;
 import android.support.annotation.NonNull;
 
 /**
- * 请求监听器，可监听开始、失败、取消
+ * 请求监听器，可监听准备加载、失败、取消
  */
 public interface Listener {
     /**
-     * 只有进入异步线程才会回调此方法
+     * 准备转入异步线程加载图片
      */
-    void onStartLoad();
+    void onReadyLoad();
 
     /**
      * 失败
      *
-     * @param errorCause 失败原因
+     * @param cause 原因
      */
-    void onError(@NonNull ErrorCause errorCause);
+    void onError(@NonNull ErrorCause cause);
 
     /**
      * 取消
+     *
+     * @param cause 原因
      */
-    void onCanceled(@NonNull CancelCause cancelCause);
+    void onCanceled(@NonNull CancelCause cause);
 }

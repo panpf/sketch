@@ -1,25 +1,36 @@
 # 通过 ImageShaper 在绘制时改变图片的形状
 
-ImageShaper 用来在绘制时修改图片的形状，
+[ImageShaper] 用来在绘制时修改图片的形状，特点如下：
 
->* 是通过BitmapShader实现的，所以不需要创建新的图片
->* loadingImage、errorImage、pauseDownloadImage以及加载的图片都会被修改
+* 通过 BitmapShader 实现，不会创建新的 Bitmap，节省内存
+* 会应用于 loadingImage、errorImage 以及 pauseDownloadImage
 
-在DisplayOptions中设置即可使用：
+### 使用
+
+可在 [DisplayOptions] 和 [DisplayHelper] 中使用，例如：
 
 ```java
-DisplayOptions options = new DisplayOptions();
-...
-// 以20度圆角矩形的形状显示图片
-options.setImageShaper(new RoundRectImageShaper(20));
-
+// SketchImageView
 SketchImageView sketchImageView = ...;
-sketchImageView.setOptions(options);
-sketchImageView.displayImage(R.drawable.sample);
+sketchImageView.getOptions().setImageShaper(new RoundRectImageShaper(10));
+
+// DisplayHelper
+Sketch.with(context).display(uri, sketchImageView)
+    .shaper(new RoundRectImageShaper(10))
+    .commit();
 ```
 
-目前内置了两种ImageShaper：
->* RoundRectImageShaper：圆角矩形，还支持描边
->* CircleImageShaper：圆形，还支持描边
+目前内置了两种 [ImageShaper]：
 
-如果需要在绘制时同时改变图片的尺寸就要用到ShapeSize了，[点击查看ShapeSize介绍](shape_size.md)
+* RoundRectImageShaper：圆角矩形，还支持描边
+* CircleImageShaper：圆形，还支持描边
+
+如果需要在绘制时同时改变图片的尺寸就要用到 [ShapeSize] 了
+
+[ImageShaper]: ../../sketch/src/main/java/me/xiaopan/sketch/shaper/ImageShaper.java
+[ImageProcessor]: image_processor.md
+[LoadOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
+[LoadHelper]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadHelper.java
+[DisplayHelper]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayHelper.java
+[ShapeSize]: shape_size.md

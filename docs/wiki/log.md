@@ -34,7 +34,7 @@ SLog.setLoggable(SLog.LEVEL_DEBUG);
 SLog.isLoggable(SLog.LEVEL_DEBUG) == true
 
 // 获取当前日志级别
-SLog.getLevel()
+SLog.getLevel();
 ```
 
 ### 日志分类
@@ -60,7 +60,7 @@ SLog.setLoggable(SLog.TYPE_CACHE);
 SLog.isLoggable(SLog.TYPE_CACHE) == true
 
 // 关闭 CACHE 类型日志（此方法只能删除日志分类）
-SLog.removeLoggable(SLog.TYPE_CACHE)
+SLog.removeLoggable(SLog.TYPE_CACHE);
 ```
 
 [SLog]: ../../sketch/src/main/java/me/xiaopan/sketch/SLog.java

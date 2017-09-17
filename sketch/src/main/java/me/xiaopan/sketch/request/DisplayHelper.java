@@ -620,7 +620,7 @@ public class DisplayHelper {
         configuration.getOptionsFilterRegistry().filter(displayOptions);
 
         // 根据 URI 和显示选项生成请求 key
-        key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions);
+        key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey());
     }
 
     /**

@@ -82,8 +82,8 @@ options.setShapeSize(300, 300);
 sketchImageView.displayImage(R.drawable.sample);
 ```
 
->* ShapeSize会同时修改loadingImage、errorImage、pauseDownloadImage以及新图片的尺寸
->* 没有配置loadingImage时无需配置ShapeSize
->* 配置了loadingImage却没有配置ShapeSize时Sketch就会尝试用ImageView的固定宽高（layout_width和layout_height是固定的值）作为ShapeSize，如果宽高不固定就只能抛运行时异常了
+* ShapeSize会同时修改loadingImage、errorImage、pauseDownloadImage以及新图片的尺寸
+* 没有配置loadingImage时无需配置ShapeSize
+* 配置了loadingImage却没有配置ShapeSize时Sketch就会尝试用ImageView的固定宽高（layout_width和layout_height是固定的值）作为ShapeSize，如果宽高不固定就只能抛运行时异常了
 
 [详细了解ShapeSize](shape_size.md)

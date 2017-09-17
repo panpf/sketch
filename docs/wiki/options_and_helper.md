@@ -42,7 +42,7 @@ Sketch 的 display()、load()、download() 方法（[参考 load_android_downloa
 
 * requestLevel: 指定请求的处理深度-[参考 RequestLevel]
 * cacheInDiskDisabled: 禁用磁盘缓存-[参考 disk_cache.md]
-* maxSize: 限制读取到内存的图片的尺寸-[参考 max_size.md]
+* maxSize: 参考 [使用 MaxSize 读取合适尺寸的缩略图，节省内存][max_size]
 * resize: 修改图片的尺寸-[参考 resize.md]
 * processor: 处理图片-[参考 image_processor.md]
 * decodeGifImage: 解码 GIF 图片，开启后可播放 GIF 图片-[参考 play_gif_image.md]
@@ -127,7 +127,7 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 [参考 disk_cache.md]: disk_cache.md
 [参考 thumbnail_mode.md]: thumbnail_mode.md
 [ImageType]: ../../sketch/src/main/java/com/xiaopan/sketch/decode/ImageType.java
-[参考 max_size.md]: max_size.md
+[max_size]: max_size.md
 [参考 resize.md]: resize.md
 [参考 image_processor.md]: image_processor.md
 [参考 play_gif_image.md]: play_gif_image.md

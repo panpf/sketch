@@ -12,11 +12,11 @@ sketchImageView.setZoomEnabled(true);
 #### 对比PhotoView
 
 ImageZoomer是直接在PhotoView基础上做的，并且做了以下改进：
->* ImageZoomer的双击缩放只有两级，并且是根据图片的尺寸、ImageView的宽高以及ScaleType动态计算的，而PhotoView则是固定的三级双击缩放比例，体验不好
->* 手动持续缩放时如果超过了最小比例或最大比例时PhotoView直接就拉不动了，而ImageZoomer依然可以缩放，并且超过后会有种拉橡皮筋的感觉，松手后自动回滚到最小或最大缩放比例，体验更好
->* ImageZoomer优化了scrollEdge的判断，修复了在不能整除的缩放比例下，无法识别边缘的BUG
->* ImageZoomer增加了滑动条，可以方便的看到当前滑动的位置
->* ImageZoomer增加了定位功能，可以指定图片上的一个点，然后以动画的方式移动到这个点
+* ImageZoomer的双击缩放只有两级，并且是根据图片的尺寸、ImageView的宽高以及ScaleType动态计算的，而PhotoView则是固定的三级双击缩放比例，体验不好
+* 手动持续缩放时如果超过了最小比例或最大比例时PhotoView直接就拉不动了，而ImageZoomer依然可以缩放，并且超过后会有种拉橡皮筋的感觉，松手后自动回滚到最小或最大缩放比例，体验更好
+* ImageZoomer优化了scrollEdge的判断，修复了在不能整除的缩放比例下，无法识别边缘的BUG
+* ImageZoomer增加了滑动条，可以方便的看到当前滑动的位置
+* ImageZoomer增加了定位功能，可以指定图片上的一个点，然后以动画的方式移动到这个点
 
 #### 缩放
 
@@ -68,21 +68,21 @@ ImageZoomer会根据图片的尺寸、ImageView的宽高以及ScaleType动态计
 另外ImageZoomer的双击缩放比例则只有两级，即在最小缩放比例和最大缩放比例之间切换，在保证了合理的最小、最大缩放比例的前提下，这样能简化用户的操作，提升用户体验
 
 先介绍几个概念：
->* fillZoomScale：能够让他图片的宽或高充满view的缩放比例
->* fullZoomScale：能够看到图片全貌的缩放比例
->* originZoomScale：如果开启了分块显示超大图功能就是能够让原图一比一显示的缩放比例，否则的话这个固定是1.0f
+* fillZoomScale：能够让他图片的宽或高充满view的缩放比例
+* fullZoomScale：能够看到图片全貌的缩放比例
+* originZoomScale：如果开启了分块显示超大图功能就是能够让原图一比一显示的缩放比例，否则的话这个固定是1.0f
 
 最小缩放比例：
->* ScaleType是CENTER或ScaleType是ENTER_INSIDE并且图尺寸片比view小：`1.0f`
->* ScaleType是CENTER_CROP：`fillZoomScale`
->* ScaleType是FIT_START/FIT_CENTE/FIT_END或ScaleType是ENTER_INSIDE并且图尺寸片比view大：`fullZoomScale`
->* ScaleType是FIT_XY：`fullZoomScale`
+* ScaleType是CENTER或ScaleType是ENTER_INSIDE并且图尺寸片比view小：`1.0f`
+* ScaleType是CENTER_CROP：`fillZoomScale`
+* ScaleType是FIT_START/FIT_CENTE/FIT_END或ScaleType是ENTER_INSIDE并且图尺寸片比view大：`fullZoomScale`
+* ScaleType是FIT_XY：`fullZoomScale`
 
 最大缩放比例：
->* ScaleType是CENTER或ScaleType是ENTER_INSIDE并且图尺寸片比view小：`Math.max(originZoomScale, fillZoomScale)`
->* ScaleType是CENTER_CROP：`Math.max(originZoomScale, fillZoomScale * 1.5f)`
->* ScaleType是FIT_START/FIT_CENTE/FIT_END或ScaleType是ENTER_INSIDE并且图尺寸片比view大：`Math.max(originZoomScale, fillZoomScale)`
->* ScaleType是FIT_XY：`fullZoomScale`
+* ScaleType是CENTER或ScaleType是ENTER_INSIDE并且图尺寸片比view小：`Math.max(originZoomScale, fillZoomScale)`
+* ScaleType是CENTER_CROP：`Math.max(originZoomScale, fillZoomScale * 1.5f)`
+* ScaleType是FIT_START/FIT_CENTE/FIT_END或ScaleType是ENTER_INSIDE并且图尺寸片比view大：`Math.max(originZoomScale, fillZoomScale)`
+* ScaleType是FIT_XY：`fullZoomScale`
 
 #### 阅读模式
 

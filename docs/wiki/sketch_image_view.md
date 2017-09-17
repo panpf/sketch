@@ -3,14 +3,14 @@
 SketchImageView用来代替ImageView，你必须使用SketchImageView才能保证图片会被正常回收
 
 特点：
->* 使用display***Image()系列方法即可方便的显示各种图片
->* 支持显示下载进度
->* 支持显示按下状态，长按的时候还会显示类似Android 5.0的涟漪效果
->* 支持显示图片来源，能方便的看出当前图片来自内存还是本地缓存还是刚从网络下载的
->* 支持显示gif图标，当显示的是gif图的时候会在右下角显示一个图标，用于提醒用户这是一张gif图片
->* 支持显示失败的时候点击重新显示图片
->* 支持暂停下载的时候点击强制显示图片
->* onDetachedFromWindow的时候主动释放图片以及取消请求
+* 使用display***Image()系列方法即可方便的显示各种图片
+* 支持显示下载进度
+* 支持显示按下状态，长按的时候还会显示类似Android 5.0的涟漪效果
+* 支持显示图片来源，能方便的看出当前图片来自内存还是本地缓存还是刚从网络下载的
+* 支持显示gif图标，当显示的是gif图的时候会在右下角显示一个图标，用于提醒用户这是一张gif图片
+* 支持显示失败的时候点击重新显示图片
+* 支持暂停下载的时候点击强制显示图片
+* onDetachedFromWindow的时候主动释放图片以及取消请求
 
 ### 使用SketchImageView
 首先在布局中定义，如下：
@@ -80,8 +80,8 @@ sketchImageView.setOptions(displayOptions)
 // 监听显示过程
 sketchImageView.setDisplayListener(new DisplayListener() {
     @Override
-    public void onStartLoad() {
-        // 只有在需要进入异步线程加载数据时才会回调 onStartLoad() 方法
+    public void onReadyLoad() {
+        // 只有在需要进入非主线程加载图片时才会回调 onReadyLoad() 方法
         Log.i("displayListener", "开始");
     }
 
@@ -164,11 +164,11 @@ sketchImageView.setShowImageFromEnabled(true);
 ```
 
 开启此功能后会在SketchImageView的左上角显示一个纯色的三角形，根据三角形的颜色你就可以知道图片是从哪里来的
->* 紫色表示是从内存中加载的
->* 绿色表示是从内存缓存中加载的
->* 蓝色表示是本地图片
->* 黄色表示是从本地缓存加载的
->* 红色表示是刚刚从网络下载的
+* 紫色表示是从内存中加载的
+* 绿色表示是从内存缓存中加载的
+* 蓝色表示是本地图片
+* 黄色表示是从本地缓存加载的
+* 红色表示是刚刚从网络下载的
 
 效果如下：
 

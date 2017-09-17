@@ -35,19 +35,19 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onStartLoad() {
+    public void onReadyLoad() {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
         }
 
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayStarted();
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayReadyLoad();
         if (needInvokeInvalidate) {
             view.invalidate();
         }
 
         if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onStartLoad();
+            view.wrappedDisplayListener.onReadyLoad();
         }
     }
 
@@ -69,36 +69,36 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onError(@NonNull ErrorCause errorCause) {
+    public void onError(@NonNull ErrorCause cause) {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
         }
 
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayError(errorCause);
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayError(cause);
         if (needInvokeInvalidate) {
             view.invalidate();
         }
 
         if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onError(errorCause);
+            view.wrappedDisplayListener.onError(cause);
         }
     }
 
     @Override
-    public void onCanceled(@NonNull CancelCause cancelCause) {
+    public void onCanceled(@NonNull CancelCause cause) {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
         }
 
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayCanceled(cancelCause);
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayCanceled(cause);
         if (needInvokeInvalidate) {
             view.invalidate();
         }
 
         if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onCanceled(cancelCause);
+            view.wrappedDisplayListener.onCanceled(cause);
         }
     }
 }

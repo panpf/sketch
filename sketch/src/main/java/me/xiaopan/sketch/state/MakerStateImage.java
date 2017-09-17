@@ -36,13 +36,13 @@ import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.uri.DrawableUriModel;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -88,7 +88,10 @@ public class MakerStateImage implements StateImage {
         }
 
         // 从内存缓存中取
-        String memoryCacheKey = SketchUtils.makeStateImageMemoryCacheKey(String.valueOf(resId), options);
+        String imageUri = DrawableUriModel.makeUri(resId);
+        UriModel uriModel = configuration.getUriModelRegistry().match(imageUri);
+        @SuppressWarnings("ConstantConditions")
+        String memoryCacheKey = SketchUtils.makeRequestKey(imageUri, uriModel, options.makeStateImageKey());
         MemoryCache memoryCache = configuration.getMemoryCache();
         SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
@@ -119,9 +122,6 @@ public class MakerStateImage implements StateImage {
         //noinspection ConstantConditions
         if (processor == null && resize != null) {
             processor = sketch.getConfiguration().getResizeProcessor();
-            if (processor == null) {
-                processor = new ResizeImageProcessor();
-            }
         }
         Bitmap newBitmap;
         try {
@@ -143,7 +143,7 @@ public class MakerStateImage implements StateImage {
             }
 
             // 新图片不能用说你处理部分出现异常了，直接返回null即可
-            if (newBitmap == null || newBitmap.isRecycled()) {
+            if (newBitmap.isRecycled()) {
                 return null;
             }
 

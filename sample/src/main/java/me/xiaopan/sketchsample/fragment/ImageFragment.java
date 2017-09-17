@@ -26,8 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.ImageAttrs;
@@ -180,9 +180,14 @@ public class ImageFragment extends BaseFragment {
 
             // 有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
             if (!TextUtils.isEmpty(loadingImageOptionsKey)) {
-                String memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl, loadingImageOptionsKey);
-                MemoryCache memoryCache = Sketch.with(getActivity()).getConfiguration().getMemoryCache();
-                SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
+                Configuration configuration = Sketch.with(getActivity()).getConfiguration();
+                UriModel uriModel = configuration.getUriModelRegistry().match(finalShowImageUrl);
+                SketchRefBitmap cachedRefBitmap = null;
+                String memoryCacheKey = null;
+                if (uriModel != null) {
+                    memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl, uriModel, loadingImageOptionsKey);
+                    cachedRefBitmap = configuration.getMemoryCache().get(memoryCacheKey);
+                }
                 if (cachedRefBitmap != null) {
                     options.setLoadingImage(new MemoryCacheStateImage(memoryCacheKey, null));
                 } else {
@@ -194,7 +199,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onStartLoad() {
+        public void onReadyLoad() {
             hintView.loading(null);
         }
 
@@ -207,7 +212,7 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onError(@NonNull ErrorCause errorCause) {
+        public void onError(@NonNull ErrorCause cause) {
             hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -217,8 +222,8 @@ public class ImageFragment extends BaseFragment {
         }
 
         @Override
-        public void onCanceled(@NonNull CancelCause cancelCause) {
-            switch (cancelCause) {
+        public void onCanceled(@NonNull CancelCause cause) {
+            switch (cause) {
                 case BE_CANCELLED:
                     break;
                 case PAUSE_DOWNLOAD:

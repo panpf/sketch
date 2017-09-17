@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.RedisplayListener;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.viewfun.FunctionPropertyView;
 
 /**
@@ -88,15 +89,15 @@ public class SketchImageView extends FunctionPropertyView {
     /**
      * 获取选项 KEY，可用于组装缓存 KEY
      *
-     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, String)
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
      */
     @NonNull
     public String getOptionsKey() {
         DisplayCache displayCache = getDisplayCache();
         if (displayCache != null) {
-            return displayCache.options.makeKey(new StringBuilder()).toString();
+            return displayCache.options.makeKey();
         } else {
-            return getOptions().makeKey(new StringBuilder()).toString();
+            return getOptions().makeKey();
         }
     }
 

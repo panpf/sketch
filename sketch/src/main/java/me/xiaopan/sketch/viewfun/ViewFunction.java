@@ -79,7 +79,7 @@ public abstract class ViewFunction {
     /**
      * drawable改变
      *
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
     public boolean onDrawableChanged(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         return false;
@@ -89,18 +89,18 @@ public abstract class ViewFunction {
     /**
      * 准备显示图片
      *
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
     public boolean onReadyDisplay(@Nullable UriModel uriModel) {
         return false;
     }
 
     /**
-     * 开始显示图片
+     * 准备加载图片
      *
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
-    public boolean onDisplayStartLoad() {
+    public boolean onDisplayReadyLoad() {
         return false;
     }
 
@@ -109,7 +109,7 @@ public abstract class ViewFunction {
      *
      * @param totalLength     总长度
      * @param completedLength 已完成长度
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
     public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
         return false;
@@ -118,7 +118,7 @@ public abstract class ViewFunction {
     /**
      * 显示完成
      *
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
     public boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         return false;
@@ -127,7 +127,7 @@ public abstract class ViewFunction {
     /**
      * 显示失败
      *
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
     public boolean onDisplayError(@NonNull ErrorCause errorCause) {
         return false;
@@ -136,7 +136,7 @@ public abstract class ViewFunction {
     /**
      * 显示取消
      *
-     * @return 是否需要调用invalidate()刷新ImageView
+     * @return 是否需要调用 invalidate() 刷新 ImageView
      */
     public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
         return false;

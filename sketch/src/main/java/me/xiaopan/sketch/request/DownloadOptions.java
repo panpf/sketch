@@ -36,11 +36,6 @@ public class DownloadOptions {
      */
     private RequestLevel requestLevel;
 
-    /**
-     * 请求 Level 的来源
-     */
-    private RequestLevelFrom requestLevelFrom;
-
     public DownloadOptions() {
         reset();
     }
@@ -87,7 +82,7 @@ public class DownloadOptions {
     /**
      * 设置请求Level
      *
-     * @param requestLevel {@link RequestLevelFrom}
+     * @param requestLevel {@link RequestLevel}
      * @return this
      * @see RequestLevel
      */
@@ -103,7 +98,6 @@ public class DownloadOptions {
     public void reset() {
         cacheInDiskDisabled = false;
         requestLevel = null;
-        requestLevelFrom = null;
     }
 
     /**
@@ -116,7 +110,6 @@ public class DownloadOptions {
 
         cacheInDiskDisabled = options.cacheInDiskDisabled;
         requestLevel = options.requestLevel;
-        requestLevelFrom = options.requestLevelFrom;
     }
 
     /**
@@ -126,8 +119,8 @@ public class DownloadOptions {
      * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, DownloadOptions)
      */
     @NonNull
-    public StringBuilder makeKey(@NonNull StringBuilder builder) {
-        return builder;
+    public String makeKey() {
+        return "";
     }
 
     /**
@@ -136,7 +129,7 @@ public class DownloadOptions {
      * @see me.xiaopan.sketch.util.SketchUtils#makeStateImageMemoryCacheKey(String, DownloadOptions)
      */
     @NonNull
-    public StringBuilder makeStateImageKey(@NonNull StringBuilder builder) {
-        return builder;
+    public String makeStateImageKey() {
+        return "";
     }
 }

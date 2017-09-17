@@ -151,7 +151,7 @@ public class DownloadHelper {
         sketch.getConfiguration().getOptionsFilterRegistry().filter(downloadOptions);
 
         // 根据 URI 和下载选项生成请求 key
-        key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions);
+        key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions.makeKey());
     }
 
     private boolean checkDiskCache() {
