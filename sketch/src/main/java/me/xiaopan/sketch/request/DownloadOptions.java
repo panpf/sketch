@@ -116,7 +116,7 @@ public class DownloadOptions {
      * 生成选项KEY，用于组装请求或内存缓存key
      *
      * @see SketchImageView#getOptionsKey()
-     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, DownloadOptions)
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
      */
     @NonNull
     public String makeKey() {
@@ -126,7 +126,7 @@ public class DownloadOptions {
     /**
      * 生成StateImage用的选项KEY，用于组装StateImage的内存缓存KEY
      *
-     * @see me.xiaopan.sketch.util.SketchUtils#makeStateImageMemoryCacheKey(String, DownloadOptions)
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
      */
     @NonNull
     public String makeStateImageKey() {

@@ -9,7 +9,7 @@ Sketch 共有三个方法可供使用，你可以根据你的需求选择合适�
 
 每一种方法都有专用的 Options、Listener、Helper
 
-* Options：用来定制请求，更详细的介绍请参考 [Options & Helper][options_and_helper]
+* Options：用来定制请求，更详细的介绍请参考 [使用 Options 配置图片][options]
 * Listener：用来监控请求的结果，更详细的介绍请参考 [监听准备加载、成功、失败以及下载进度事件][listener.md]
 * Helper：用来组织请求并提交
 
@@ -94,6 +94,6 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
 * 不仅下载、加载的主体过程会在当前调用线程执行，listener 回调也会在当前调用线程执行，更多listener内容请参考 [监听准备加载、成功、失败以及下载进度事件][listener.md]
 
 [SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
-[options_and_helper]: options_and_helper.md
+[options]: options.md
 [listener]: listener.md
 [sketch_image_view]: sketch_image_view.md

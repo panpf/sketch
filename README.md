@@ -126,7 +126,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 基础功能：
 * [URI 类型及使用指南][uri]
 * [SketchImageView 使用指南][sketch_image_view]
-* [Options & Helper][options_and_helper]
+* [使用 Options 配置图片][options]
 * [播放 GIF 图片][play_gif_image]
 * [手势缩放、旋转图片][zoom]
 * [分块显示超大图片][huge_image]
@@ -219,7 +219,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [sketch]: docs/wiki/sketch.md
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md
-[options_and_helper]: docs/wiki/options_and_helper.md
+[options]: docs/wiki/options.md
 [options_manage]: docs/wiki/options_manage.md
 [load_and_download]: docs/wiki/load_and_download.md
 [play_gif_image]: docs/wiki/play_gif_image.md

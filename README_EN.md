@@ -126,7 +126,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 Basic functions:
 * [URI type and usage guide][uri]
 * [SketchImageView usage guide][sketch_image_view]
-* [Options & Helper][options_and_helper]
+* [Use Options to configure the image][options]
 * [Play GIF image][play_gif_image]
 * [Gesture zoom, rotate the picture][zoom]
 * [Blocked display of huge image][huge_image]
@@ -219,7 +219,7 @@ More:
 [sketch]: docs/wiki/sketch.md
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md
-[options_and_helper]: docs/wiki/options_and_helper.md
+[options]: docs/wiki/options.md
 [options_manage]: docs/wiki/options_manage.md
 [load_and_download]: docs/wiki/load_and_download.md
 [play_gif_image]: docs/wiki/play_gif_image.md
