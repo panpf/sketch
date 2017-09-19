@@ -148,7 +148,7 @@ To further enhance the user experience:
 * [When the list is slipping, the image is paused to increase the sliding fluence of the list][pause_load]
 
 More:
-* [Customize UriModel Let Sketch support new Uri types][uri_model]
+* [Customize UriModel support new Uri types][uri_model]
 * [Unified Change Options][options_filter]
 * [Show video thumbnails][display_video_thumbnail]
 * [Manage Multiple Options][options_manage]

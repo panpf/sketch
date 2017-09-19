@@ -148,7 +148,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]
 
 更多：
-* [自定义 UriModel 让 Sketch 支持新的 Uri 类型][uri_model]
+* [自定义 UriModel 支持新的 Uri 类型][uri_model]
 * [统一修改 Options][options_filter]
 * [显示视频缩略图][display_video_thumbnail]
 * [管理多个 Options][options_manage]
