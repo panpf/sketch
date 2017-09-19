@@ -121,8 +121,6 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 
 #### 文档
 
-[Sketch 总览（请先读我）][sketch]
-
 基础功能：
 * [URI 类型及使用指南][uri]
 * [SketchImageView 使用指南][sketch_image_view]
@@ -216,7 +214,6 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [sample_app_download_link]: docs/sketch-sample.apk
 [UriModel]: sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
 
-[sketch]: docs/wiki/sketch.md
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md
 [options]: docs/wiki/options.md

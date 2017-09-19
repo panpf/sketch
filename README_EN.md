@@ -121,8 +121,6 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 
 #### Documents:
 
-[Sketch Overview (Please read me first)]
-
 Basic functions:
 * [URI type and usage guide][uri]
 * [SketchImageView usage guide][sketch_image_view]
@@ -216,7 +214,6 @@ More:
 [sample_app_download_link]: docs/sketch-sample.apk
 [UriModel]: sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
 
-[sketch]: docs/wiki/sketch.md
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md
 [options]: docs/wiki/options.md
