@@ -612,7 +612,7 @@ public final class Configuration {
 
 
     /**
-     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响display请求和load请求
+     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响 display 请求和 load 请求
      */
     @SuppressWarnings("unused")
     public boolean isGlobalPauseDownload() {
@@ -620,7 +620,7 @@ public final class Configuration {
     }
 
     /**
-     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
+     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 display 请求和 load 请求
      *
      * @return Configuration. Convenient chain calls
      */
@@ -634,14 +634,14 @@ public final class Configuration {
     }
 
     /**
-     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响display请求
+     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响 display 请求
      */
     public boolean isGlobalPauseLoad() {
         return optionsFilterRegistry.isPauseLoad();
     }
 
     /**
-     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 display 请求
      *
      * @return Configuration. Convenient chain calls
      */

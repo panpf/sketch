@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Configuration;
 
 /**
- * 全局移动网络下暂停下载控制器
+ * 全局移动网络或有流量限制的 WIFI 下暂停下载控制器
  */
 public class MobileNetworkPauseDownloadController {
     private NetworkChangedBroadcastReceiver receiver;
@@ -57,9 +58,19 @@ public class MobileNetworkPauseDownloadController {
      * @param context {@link Context}
      */
     private void updateStatus(Context context) {
-        NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-        boolean isPause = networkInfo != null && networkInfo.isAvailable() && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-        configuration.setGlobalPauseDownload(isPause);
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean pause = false;
+        if (networkInfo != null && networkInfo.isAvailable()) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                pause = true;
+            } else if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && connectivityManager.isActiveNetworkMetered()) {
+                    pause = true;
+                }
+            }
+        }
+        configuration.setGlobalPauseDownload(pause);
     }
 
     /**

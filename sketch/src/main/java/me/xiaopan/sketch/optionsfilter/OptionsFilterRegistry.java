@@ -167,7 +167,7 @@ public class OptionsFilterRegistry implements Identifier {
     }
 
     /**
-     * 设置开启移动网络下暂停下载的功能，只影响 display 请求和 load 请求
+     * 设置开启移动网络或有流量限制的 WIFI 下暂停下载的功能，只影响 display 请求和 load 请求
      */
     public void setGlobalMobileNetworkPauseDownload(Configuration configuration, boolean globalMobileNetworkPauseDownload) {
         if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
