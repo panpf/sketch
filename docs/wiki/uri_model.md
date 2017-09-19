@@ -1,4 +1,4 @@
-# 自定义 UriModel 让 Sketch 支持新的 Uri 类型
+# 自定义 UriModel 支持新的 Uri 类型
 
 Sketch 通过 [UriModel] 来支持不同的 uri，也具备扩展功能
 
