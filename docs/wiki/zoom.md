@@ -1,6 +1,6 @@
 # 手势缩放、旋转图片
 
-对图片的手势缩放几乎是每个需要展示图片的 APP 的必备功能，然而其它几款流行的图片加载器 [Fresco]、[Glide]、[Picasso] 都没有提供手势缩放支持，单独提供手势缩放的 View 倒是有几款，例如 [gesture-imageview]、[PhotoView]
+图片的手势缩放几乎是每个需要展示图片的 APP 的必备功能，然而其它几款流行的图片加载器 [Fresco]、[Glide]、[Picasso] 都没有提供手势缩放支持，单独提供手势缩放的 View 倒是有几款，例如 [gesture-imageview]、[PhotoView]
 
 Sketch 是目前唯一提供手势缩放支持的图片加载器，代码基于 [PhotoView] ，核心类是 [ImageZoomer]
 
