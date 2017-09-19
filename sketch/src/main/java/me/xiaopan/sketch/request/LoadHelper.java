@@ -288,26 +288,33 @@ public class LoadHelper {
     protected void preProcess() {
         Configuration configuration = sketch.getConfiguration();
 
-        // 检查Resize的宽高都必须大于0
+        // load 请求不能使用 Resize.ByViewFixedSizeResize
         Resize resize = loadOptions.getResize();
-        if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
+        if (resize != null && resize instanceof Resize.ByViewFixedSizeResize) {
+            resize = null;
+            loadOptions.setResize(null);
+        }
+
+        // Resize 的宽高都必须大于 0
+        if (resize != null && (resize.getWidth() <= 0 || resize.getHeight() <= 0)) {
             throw new IllegalArgumentException("Resize width and height must be > 0");
         }
 
 
-        // 没有设置 maxSize 的话，就用默认的 maxSize
-        if (loadOptions.getMaxSize() == null) {
-            loadOptions.setMaxSize(configuration.getSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
+        // 没有设置 MaxSize 的话，就用默认的 MaxSize
+        MaxSize maxSize = loadOptions.getMaxSize();
+        if (maxSize == null) {
+            maxSize = configuration.getSizeCalculator().getDefaultImageMaxSize(configuration.getContext());
+            loadOptions.setMaxSize(maxSize);
         }
 
-        // 检查 maxSize 的宽或高大于0即可
-        MaxSize maxSize = loadOptions.getMaxSize();
+        // MaxSize 的宽或高大于 0 即可
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
 
-        // 没有 ImageProcessor 但有 resize 的话就需要设置一个默认的图片裁剪处理器
+        // 没有 ImageProcessor 但有 Resize 的话就需要设置一个默认的图片裁剪处理器
         if (loadOptions.getImageProcessor() == null && resize != null) {
             loadOptions.setImageProcessor(configuration.getResizeProcessor());
         }

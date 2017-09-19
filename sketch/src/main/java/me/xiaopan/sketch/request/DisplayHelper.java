@@ -551,7 +551,7 @@ public class DisplayHelper {
         Resize resize = displayOptions.getResize();
         if (resize != null && resize instanceof Resize.ByViewFixedSizeResize) {
             if (fixedSize != null) {
-                resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
+                resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType(), resize.getMode());
                 displayOptions.setResize(resize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
@@ -565,28 +565,28 @@ public class DisplayHelper {
         }
 
         // 检查 Resize 的宽高都必须大于 0
-        if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
+        if (resize != null && (resize.getWidth() <= 0 || resize.getHeight() <= 0)) {
             throw new IllegalArgumentException("Resize width and height must be > 0");
         }
 
 
-        // 没有设置 maxSize 的话，如果 ImageView 的宽高是的固定的就根据 ImageView 的宽高来作为 maxSize，否则就用默认的 maxSize
-        if (displayOptions.getMaxSize() == null) {
-            MaxSize maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView);
+        // 没有设置 MaxSize 的话，如果 ImageView 的宽高是的固定的就根据 ImageView 的宽高来作为 MaxSize，否则就用默认的 MaxSize
+        MaxSize maxSize = displayOptions.getMaxSize();
+        if (maxSize == null) {
+            maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView);
             if (maxSize == null) {
                 maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.getContext());
             }
             displayOptions.setMaxSize(maxSize);
         }
 
-        // 检查 MaxSize 的宽或高大于 0 即可
-        MaxSize maxSize = displayOptions.getMaxSize();
+        // MaxSize 的宽或高大于 0 即可
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
 
-        // 没有 ImageProcessor 但有 resize 的话就需要设置一个默认的图片裁剪处理器
+        // 没有 ImageProcessor 但有 Resize 的话就需要设置一个默认的图片裁剪处理器
         if (displayOptions.getImageProcessor() == null && resize != null) {
             displayOptions.setImageProcessor(configuration.getResizeProcessor());
         }

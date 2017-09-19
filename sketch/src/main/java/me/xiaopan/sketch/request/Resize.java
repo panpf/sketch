@@ -28,9 +28,9 @@ import me.xiaopan.sketch.Identifier;
  */
 public class Resize implements Identifier {
 
-    protected int width;
-    protected int height;
-    protected Mode mode = Mode.ASPECT_RATIO_SAME;
+    private int width;
+    private int height;
+    private Mode mode = Mode.ASPECT_RATIO_SAME;
     private ImageView.ScaleType scaleType;
 
     public Resize(int width, int height, ImageView.ScaleType scaleType, Mode mode) {
@@ -75,7 +75,11 @@ public class Resize implements Identifier {
      */
     @SuppressWarnings("unused")
     public static Resize byViewFixedSize(Mode mode) {
-        return new ByViewFixedSizeResize(mode);
+        if (mode == Mode.EXACTLY_SAME) {
+            return ByViewFixedSizeResize.INSTANCE_EXACTLY_SAME;
+        } else {
+            return ByViewFixedSizeResize.INSTANCE;
+        }
     }
 
     /**
@@ -83,7 +87,7 @@ public class Resize implements Identifier {
      */
     @SuppressWarnings("unused")
     public static Resize byViewFixedSize() {
-        return new ByViewFixedSizeResize();
+        return ByViewFixedSizeResize.INSTANCE;
     }
 
     public ImageView.ScaleType getScaleType() {
@@ -144,15 +148,14 @@ public class Resize implements Identifier {
      * 使用 ImageView 的固定尺寸作为 {@link Resize}
      */
     static class ByViewFixedSizeResize extends Resize {
+        static ByViewFixedSizeResize INSTANCE = new ByViewFixedSizeResize();
+        static ByViewFixedSizeResize INSTANCE_EXACTLY_SAME = new ByViewFixedSizeResize(Mode.EXACTLY_SAME);
 
-        ByViewFixedSizeResize(@NonNull Mode mode) {
-            //noinspection ConstantConditions
-            if (mode != null) {
-                this.mode = mode;
-            }
+        private ByViewFixedSizeResize(@NonNull Mode mode) {
+            super(0, 0, null, mode);
         }
 
-        ByViewFixedSizeResize() {
+        private ByViewFixedSizeResize() {
         }
     }
 }
