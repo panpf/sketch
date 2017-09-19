@@ -116,7 +116,7 @@ SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main
 sketchImageView.displayImage("http://t.cn/RShdS1f");
 ```
 
->* 要显示其它类型 URI 的图片请参考 [URI 类型及使用指南][uri]
+>* 更多类型 URI 的使用请参考 [URI 类型及使用指南][uri]
 >* 更多 SketchImageView 使用方法请参考 [SketchImageView 使用指南][sketch_image_view]
 
 #### 文档
@@ -144,7 +144,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [使用 thumbnailMode 属性显示更清晰的缩略图][thumbnail_mode]
 * [使用 cacheProcessedImageInDisk 属性缓存需要复杂处理的图片，提升显示速度][cache_processed_image_in_disk]
 * [使用 MemoryCacheStateImage 先显示已缓存的较模糊的图片，然后再显示清晰的图片][memory_cache_state_image]
-* [移动网络下暂停下载图片，节省流量][pause_download]
+* [移动网络或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 * [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]
 
 更多：

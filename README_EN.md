@@ -144,7 +144,7 @@ To further enhance the user experience:
 * [Use the thumbnailMode property to display clearer thumbnails][thumbnail_mode]
 * [Use the cacheProcessedImageInDisk property to cache images that require complex processing to increase the display speed][cache_processed_image_in_disk]
 * [Use the MemoryCacheStateImage to display a cached, vague image before displaying a clear image][memory_cache_state_image]
-* [Mobile network to suspend the download picture, save traffic][pause_download]
+* [Mobile network or traffic restrictions under the WIFI pause download pictures, saving traffic][pause_download]
 * [When the list is slipping, the image is paused to increase the sliding fluence of the list][pause_load]
 
 More:

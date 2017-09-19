@@ -1,10 +1,14 @@
-# 移动网络下暂停下载图片，节省流量
+# 移动网络或有流量限制的 WIFI 下暂停下载图片，节省流量
 
-Sketch 支持全局暂停下载新图片，暂停后如果磁盘中没有缓存就不下载了
+现如今移动流量还是比较贵的，图片又是流量大户，因此在移动网络或有流量限制的 WIFI 下暂停下载图片还是很有必要的
+
+Sketch 支持一键开启全局移动网络或有流量限制的 WIFI 下暂停下载图片功能，暂停后如果磁盘中没有缓存就不下载了，并且可以为暂停下载的图片显示一个专用的提示图片并支持点击强制下载
 
 ``暂停下载功能只对 display 和 load 请求有效``
 
-你只需执行如下代码设置即可：
+### 使用
+
+你想要自己控制暂停下载，只需执行如下代码即可：
 
 ```java
 // 全局暂停下载图片
@@ -14,9 +18,9 @@ Sketch.with(context).getConfiguration().setGlobalPauseDownload(true);
 Sketch.with(context).getConfiguration().setGlobalPauseDownload(false);
 ```
 
-#### 移动网络下暂停下载
+### 移动网络下暂停下载
 
-结合此功能 Sketch 还提供了切换到移动网络的时候自动暂停下载图片的功能，如下：
+Sketch 内置了 [MobileNetworkPauseDownloadController] 来提移动网络或有流量限制的 WIFI 下自动暂停下载图片的功能并提供了开关，你只需开启即可，如下：
 
 ```java
 // 开启移动网络下自动暂停下载图片功能
@@ -26,6 +30,18 @@ Sketch.with(getBaseContext()).getConfiguration().setGlobalMobileNetworkPauseDown
 Sketch.with(getBaseContext()).getConfiguration().setGlobalMobileNetworkPauseDownload(false);
 ```
 
-Sketch 还提供了 pauseDownloadImage，通过 DisplayOptions 和 DisplayHelper 可以设置，当暂停下载的时候会自动显示 pauseDownloadImage
+### 暂停下载时显示相应状态图片并点击强制下载
 
-另外 SketchImageView 还提供了当暂停下载的时候点击强制下载并显示的功能，你只需调用其 setClickRetryOnPauseDownloadEnabled(true) 开启即可
+Sketch 还在 [DisplayOptions] 中 提供了 pauseDownloadImage 属性，可以在暂停下载时显示相应的状态图片，以提醒用户
+
+SketchImageView 还提供了暂停下载时候点击强制下载并显示的功能，一句话开启即可
+
+```java
+sketchImageView.setClickDisplayOnPauseDownload(true);
+```
+此功能`只作用于当前图片`，并且`只忽略暂停下载功能一次`
+
+[MobileNetworkPauseDownloadController]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/MobileNetworkPauseDownloadController.java
+[sketch_image_view]: sketch_image_view.md
+[DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
+[SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java

@@ -1,6 +1,6 @@
 # URI 类型及使用指南
 
-Sketch 一共内置支持了 9 种类型的 uri，你还可以通过 [UriModel] 扩展 uri，详情请参考[自定义 UriModel 让 Sketch 支持新的 Uri 类型][uri_model]，下面就一一详解内置的几种 uri
+Sketch 一共内置支持了 9 种类型的 uri，你还可以通过 [UriModel] 扩展 uri，详情请参考 [自定义 UriModel 让 Sketch 支持新的 Uri 类型][uri_model]，下面就一一详解内置的几种 uri
 
 ### http or https uri
 
@@ -100,7 +100,7 @@ Sketch.with(context).loadFromContent(contentUri, new LoadListener(){...}).commit
 
 ### android.resource uri
 
-android.resource uri 通过明确指定资源的包名、类型、名称来读取资源文件，android.resource uri 可以直接读取其它 APP 的资源，只要你知道资源名称或ID，对应方法如下：
+android.resource uri 通过明确指定资源的包名、类型、名称来读取资源文件，android.resource uri 可以直接读取其它 APP 的资源，只要你知道资源名称或 ID，对应方法如下：
 
 ```java
 // Make uri

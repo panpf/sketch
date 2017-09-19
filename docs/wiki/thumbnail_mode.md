@@ -1,57 +1,41 @@
 # 使用 thumbnailMode 属性显示更清晰的缩略图
 
-Sketch的缩略图模式专门用于在一个较小的ImageView上清晰的显示一张超大且宽高比也超大的图片的缩略图
+当你需要在一个比较小的 ImageView 上显示一张很大图片的缩略图的时候，你会得到一张缩小了很多倍很模糊的缩略图
 
-假如ImageView宽高为400x400，图片宽高为30000x960，用400x400和30000x960计算得出的inSampleSize为16，这样得到的图片将极度模糊，无法辨别任何内容
+例如 ImageView 宽高为 400x400，图片宽高为 30000x960，用 400x400 和 30000x960 计算得出的 inSampleSize 为 16，这样得到的缩略图尺寸为 1875x60，这张缩略图是极其模糊，无法辨别任何内容
 
-但假如我们只读取图片中间映射的部分呢，计算得出映射后的位置是14537,0-15463,926，宽高是926x926，我们再用400x400和926x926计算得出的inSampleSize为4，这样就清晰的多了
+为此 Sketch 特别支持了缩略图模式，专门用于在较小的 ImageView 上显示清晰的缩略图，开启缩略图模式后会根据 ImageView 的尺寸在原图上找到对应的映射区域，然后通过 BitmapRegionDecoder 读取映射区域的缩略图
 
-最终我们利用BitmapRegionDecoder读取14537,0-15463,926位置的图片并且缩小4倍
+继续上面的例子，30000x960 的原图中计算出 400x400 的映射区域是 14520,0-15480,960，宽高是 960x960，我们再用 400x400 和 960x960 计算得出的 inSampleSize 为 4，最后将 14520,0-15480,960 区域缩小 4 倍读取出来，这样就清晰的多了
 
-* 不同的ScaleType计算出的映射位置会有所不同
+### 支持的图片类型和系统版本
 
-#### 支持的图片类型和系统版本
 * jpeg、png：API 10（2.3.3）及其以上
 * webp：API 14（4.0）及其以上
 
-#### 使用条件
+### 使用条件
 
-1. 首先必须要配置resize
-2. 然后满足上述对图片类型和系统版本的要求并且resize的宽高比和原图的宽高比相差1.5倍即可
+1. 满足上述对图片类型和系统版本的要求
+2. 配置 [Resize] 并且 [Resize] 的宽高比和原图的宽高比相差1.5倍
 
-```java
-public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight){
-    if (resizeWidth > outWidth && resizeHeight > outHeight) {
-        return false;
-    }
+例如上述例子中 [Resize] 宽高比为 400/400=1.0f，原图宽高比为 30000/960=32.4，32.4f / 1.0f >= 1.5f 为 true 满足条件
 
-    float resizeScale = (float) resizeWidth / resizeHeight;
-    float imageScale = (float) outWidth / outHeight;
-    return Math.max(resizeScale, imageScale) > Math.min(resizeScale, imageScale) * 1.5f;
-}
-```
-
-例如上述示例中resize宽高比为400/400=1.0f，原图宽高比为30000/960=32.4，32.4f > 1.0 * 1.5f = true成立
-
-#### 如何开启
+### 使用
 
 ```java
 SketchImageView sketchImageView = ...;
-DisplayOptions options = sketchImageView.getOptions();
-LayoutParams params = sketchImageView.getLayoutParams();
 
-if (params.width != 0 && params.height != 0) {  
-  // 用params.width和params.height做为resize
-  options.setResize(Resize.byViewFixedSize());
+sketchImageView.getOptions()
+    .setMaxSize(400, 400)
+    .setResize(400, 400)
+    .setThumbnailMode(true);
 
-  // Sketch会默认取params.width和params.height做为maxSize，因此不用设置
-} else {
-  options.setResize(400, 400);
-  options.setMaxSize(400, 400);
-}
-
-// 开启缩略图模式
-options.setThumbnailMode(true);
-
-sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
+sketchImageView.displayImage("http://t.cn/RShdS1f");
 ```
+
+### 映射区域计算规则
+
+映射区域计算规则根据 [Resize] 的 scaleType 属性而定，跟 ImageView.ScaleType 效果一样
+
+
+[Resize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/Resize.java
