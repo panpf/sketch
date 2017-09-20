@@ -13,6 +13,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
+import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.widget.SampleImageView;
 
 public class MyPhotoItemFactory extends AssemblyRecyclerItemFactory<MyPhotoItemFactory.PhotoAlbumItem> {
@@ -74,7 +75,6 @@ public class MyPhotoItemFactory extends AssemblyRecyclerItemFactory<MyPhotoItemF
                     }
                 }
             });
-            imageView.setOptions(ImageOptions.ROUND_RECT);
 
             if (itemSize > 0) {
                 ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
@@ -88,6 +88,12 @@ public class MyPhotoItemFactory extends AssemblyRecyclerItemFactory<MyPhotoItemF
 
         @Override
         protected void onSetData(int i, String imageUri) {
+            if (AppConfig.getBoolean(imageView.getContext(), AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST)) {
+                imageView.setOptions(ImageOptions.ROUND_RECT);
+            } else {
+                imageView.setOptions(ImageOptions.RECT);
+            }
+
             imageView.displayImage(imageUri);
         }
     }

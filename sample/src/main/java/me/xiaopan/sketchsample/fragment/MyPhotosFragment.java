@@ -27,6 +27,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +45,8 @@ import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.ImageDetailActivity;
 import me.xiaopan.sketchsample.adapter.itemfactory.MyPhotoItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
+import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
+import me.xiaopan.sketchsample.util.AppConfig;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
@@ -97,6 +102,14 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
                 }
             });
         }
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -136,6 +149,16 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
         this.backgroundImageUri = imageUri;
         if (applyBackgroundCallback != null) {
             applyBackgroundCallback.onApplyBackground(backgroundImageUri);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onEvent(AppConfigChangedEvent event) {
+        if (AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST.equals(event.key)) {
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
