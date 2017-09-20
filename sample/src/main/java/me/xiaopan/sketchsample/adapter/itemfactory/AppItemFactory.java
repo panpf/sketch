@@ -7,9 +7,6 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory;
-import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.shaper.ImageShaper;
-import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.uri.ApkIconUriModel;
 import me.xiaopan.sketch.uri.AppIconUriModel;
 import me.xiaopan.sketchsample.ImageOptions;
@@ -56,13 +53,6 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
         protected void onConfigViews(Context context) {
             iconImageView.setOptions(ImageOptions.ROUND_RECT);
             iconImageView.setPage(SampleImageView.Page.APP_LIST);
-
-            ImageShaper imageShaper = iconImageView.getOptions().getImageShaper();
-            if (imageShaper instanceof RoundRectImageShaper) {
-                RoundRectImageShaper roundRectImageShaper = (RoundRectImageShaper) imageShaper;
-                iconImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-                iconImageView.setImageShapeCornerRadius(roundRectImageShaper.getOuterRadii());
-            }
 
             getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -18,8 +18,12 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,29 +31,33 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.request.DisplayCache;
+import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
- * 显示按下状态，按下后会在ImageView上显示一个黑色半透明的蒙层，松手后小时
+ * 显示按下状态，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
  */
 public class ShowPressedFunction extends ViewFunction {
+    static final int DEFAULT_MASK_COLOR = 0x33000000;
     private static final String NAME = "ShowPressedFunction";
 
-    private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
-    protected int touchX;
-    protected int touchY;
-    protected int pressedStatusColor = DEFAULT_PRESSED_STATUS_COLOR;
-    protected int rippleRadius;
-    protected boolean allowShowPressedStatus;
-    protected boolean animationRunning;
-    protected Paint pressedStatusPaint;
-    protected GestureDetector gestureDetector;
-    protected boolean showRect;
-    private View view;
-    private ImageShapeFunction imageShapeFunction;
+    private FunctionPropertyView view;
+    private ImageShaper maskShaper;
+    private int maskColor = DEFAULT_MASK_COLOR;
 
-    public ShowPressedFunction(View view, ImageShapeFunction imageShapeFunction) {
+    private int touchX;
+    private int touchY;
+    private int rippleRadius;
+    private boolean allowShowPressedStatus;
+    private boolean animationRunning;
+    private Paint maskPaint;
+    private GestureDetector gestureDetector;
+    private boolean showRect;
+    private Rect bounds;
+
+    public ShowPressedFunction(@NonNull FunctionPropertyView view) {
         this.view = view;
-        this.imageShapeFunction = imageShapeFunction;
+
         this.gestureDetector = new GestureDetector(view.getContext(), new PressedStatusManager());
     }
 
@@ -71,43 +79,80 @@ public class ShowPressedFunction extends ViewFunction {
 
     @Override
     public void onDraw(@NonNull Canvas canvas) {
-        if (allowShowPressedStatus || animationRunning || showRect) {
-            boolean applyMaskClip = imageShapeFunction.getClipPath() != null;
-            if (applyMaskClip) {
-                canvas.save();
-                try {
-                    canvas.clipPath(imageShapeFunction.getClipPath());
-                } catch (UnsupportedOperationException e) {
-                    SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                    }
-                    e.printStackTrace();
+        if (!allowShowPressedStatus && !animationRunning && !showRect) {
+            return;
+        }
+
+        ImageShaper shaper = getMaskShaper();
+        if (shaper != null) {
+            canvas.save();
+            try {
+                if (bounds == null) {
+                    bounds = new Rect();
                 }
+                bounds.set(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom());
+                Path maskPath = shaper.getPath(bounds);
+                canvas.clipPath(maskPath);
+            } catch (UnsupportedOperationException e) {
+                SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                }
+                e.printStackTrace();
             }
+        }
 
-            if (pressedStatusPaint == null) {
-                pressedStatusPaint = new Paint();
-                pressedStatusPaint.setColor(pressedStatusColor);
-                pressedStatusPaint.setAntiAlias(true);
-            }
-            if (allowShowPressedStatus || animationRunning) {
-                canvas.drawCircle(touchX, touchY, rippleRadius, pressedStatusPaint);
-            } else if (showRect) {
-                canvas.drawRect(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom(), pressedStatusPaint);
-            }
+        if (maskPaint == null) {
+            maskPaint = new Paint();
+            maskPaint.setColor(maskColor);
+            maskPaint.setAntiAlias(true);
+        }
+        if (allowShowPressedStatus || animationRunning) {
+            canvas.drawCircle(touchX, touchY, rippleRadius, maskPaint);
+        } else if (showRect) {
+            canvas.drawRect(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom(), maskPaint);
+        }
 
-            if (applyMaskClip) {
-                canvas.restore();
-            }
+        if (shaper != null) {
+            canvas.restore();
         }
     }
 
-    public void setPressedStatusColor(int pressedStatusColor) {
-        this.pressedStatusColor = pressedStatusColor;
-        if (pressedStatusPaint != null) {
-            pressedStatusPaint.setColor(pressedStatusColor);
+    public boolean setMaskColor(@ColorInt int maskColor) {
+        if (this.maskColor == maskColor) {
+            return false;
         }
+
+        this.maskColor = maskColor;
+        return true;
+    }
+
+    private ImageShaper getMaskShaper() {
+        if (maskShaper != null) {
+            return maskShaper;
+        }
+
+        DisplayCache displayCache = view.getDisplayCache();
+        ImageShaper cacheImageShaper = displayCache != null ? displayCache.options.getImageShaper() : null;
+        if (cacheImageShaper != null) {
+            return cacheImageShaper;
+        }
+
+        ImageShaper shaperFromOptions = view.getOptions().getImageShaper();
+        if (shaperFromOptions != null) {
+            return shaperFromOptions;
+        }
+
+        return null;
+    }
+
+    public boolean setMaskShaper(@Nullable ImageShaper maskShaper) {
+        if (this.maskShaper == maskShaper) {
+            return false;
+        }
+
+        this.maskShaper = maskShaper;
+        return true;
     }
 
     private class PressedStatusManager extends GestureDetector.SimpleOnGestureListener implements Runnable {

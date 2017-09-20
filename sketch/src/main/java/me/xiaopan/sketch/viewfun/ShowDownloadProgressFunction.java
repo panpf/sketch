@@ -18,8 +18,11 @@ package me.xiaopan.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -27,27 +30,39 @@ import android.view.View;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
+import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
-public class ShowProgressFunction extends ViewFunction {
+public class ShowDownloadProgressFunction extends ViewFunction {
+    static final int DEFAULT_MASK_COLOR = 0x22000000;
+
     private static final String NAME = "ShowProgressFunction";
-
     private static final int NONE = -1;
-    private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
-    protected int downloadProgressColor = DEFAULT_PROGRESS_COLOR;
-    protected Paint progressPaint;
-    protected float progress = NONE;
-    private View view;
-    private ImageShapeFunction imageShapeFunction;
 
-    public ShowProgressFunction(View view, ImageShapeFunction imageShapeFunction) {
+    private FunctionPropertyView view;
+    private int maskColor = DEFAULT_MASK_COLOR;
+    private ImageShaper maskShaper;
+
+    private Paint maskPaint;
+    private float progress = NONE;
+    private Rect bounds;
+
+    public ShowDownloadProgressFunction(@NonNull FunctionPropertyView view) {
         this.view = view;
-        this.imageShapeFunction = imageShapeFunction;
+    }
+
+    @Override
+    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+        long newProgress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
+        boolean needRefresh = progress != newProgress;
+        progress = newProgress;
+        return needRefresh;
     }
 
     @Override
@@ -56,11 +71,16 @@ public class ShowProgressFunction extends ViewFunction {
             return;
         }
 
-        boolean applyMaskClip = imageShapeFunction.getClipPath() != null;
-        if (applyMaskClip) {
+        ImageShaper shaper = getMaskShaper();
+        if (shaper != null) {
             canvas.save();
             try {
-                canvas.clipPath(imageShapeFunction.getClipPath());
+                if (bounds == null) {
+                    bounds = new Rect();
+                }
+                bounds.set(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom());
+                Path maskPath = shaper.getPath(bounds);
+                canvas.clipPath(maskPath);
             } catch (UnsupportedOperationException e) {
                 SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -70,27 +90,21 @@ public class ShowProgressFunction extends ViewFunction {
             }
         }
 
-        if (progressPaint == null) {
-            progressPaint = new Paint();
-            progressPaint.setColor(downloadProgressColor);
-            progressPaint.setAntiAlias(true);
+        if (maskPaint == null) {
+            maskPaint = new Paint();
+            maskPaint.setColor(maskColor);
+            maskPaint.setAntiAlias(true);
         }
         canvas.drawRect(
                 view.getPaddingLeft(),
                 view.getPaddingTop() + (progress * view.getHeight()),
                 view.getWidth() - view.getPaddingLeft() - view.getPaddingRight(),
                 view.getHeight() - view.getPaddingTop() - view.getPaddingBottom(),
-                progressPaint);
+                maskPaint);
 
-        if (applyMaskClip) {
+        if (shaper != null) {
             canvas.restore();
         }
-    }
-
-    @Override
-    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
-        progress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
-        return true;
     }
 
     @Override
@@ -117,11 +131,40 @@ public class ShowProgressFunction extends ViewFunction {
         return false;
     }
 
-    @SuppressWarnings("unused")
-    public void setDownloadProgressColor(int downloadProgressColor) {
-        this.downloadProgressColor = downloadProgressColor;
-        if (progressPaint != null) {
-            progressPaint.setColor(downloadProgressColor);
+    public boolean setMaskColor(@ColorInt int maskColor) {
+        if (this.maskColor == maskColor) {
+            return false;
         }
+
+        this.maskColor = maskColor;
+        return true;
+    }
+
+    private ImageShaper getMaskShaper() {
+        if (maskShaper != null) {
+            return maskShaper;
+        }
+
+        DisplayCache displayCache = view.getDisplayCache();
+        ImageShaper cacheImageShaper = displayCache != null ? displayCache.options.getImageShaper() : null;
+        if (cacheImageShaper != null) {
+            return cacheImageShaper;
+        }
+
+        ImageShaper shaperFromOptions = view.getOptions().getImageShaper();
+        if (shaperFromOptions != null) {
+            return shaperFromOptions;
+        }
+
+        return null;
+    }
+
+    public boolean setMaskShaper(@Nullable ImageShaper maskShaper) {
+        if (this.maskShaper == maskShaper) {
+            return false;
+        }
+
+        this.maskShaper = maskShaper;
+        return true;
     }
 }

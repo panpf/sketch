@@ -43,11 +43,8 @@ public class ClickPlayGifFunction extends ViewFunction {
 
     private PlayGifRedisplayListener redisplayListener;
 
-    public ClickPlayGifFunction(FunctionCallbackView view, Drawable playIconDrawable) {
+    public ClickPlayGifFunction(FunctionCallbackView view) {
         this.view = view;
-
-        this.playIconDrawable = playIconDrawable;
-        this.playIconDrawable.setBounds(0, 0, playIconDrawable.getIntrinsicWidth(), playIconDrawable.getIntrinsicHeight());
     }
 
     @Override
@@ -104,6 +101,16 @@ public class ClickPlayGifFunction extends ViewFunction {
         }
         Drawable endDrawable = SketchUtils.getLastDrawable(newDrawable);
         return SketchUtils.isGifImage(endDrawable) && !(endDrawable instanceof SketchGifDrawable);
+    }
+
+    public boolean setPlayIconDrawable(@NonNull Drawable playIconDrawable) {
+        if (this.playIconDrawable == playIconDrawable) {
+            return false;
+        }
+
+        this.playIconDrawable = playIconDrawable;
+        this.playIconDrawable.setBounds(0, 0, playIconDrawable.getIntrinsicWidth(), playIconDrawable.getIntrinsicHeight());
+        return true;
     }
 
     private static class PlayGifRedisplayListener implements RedisplayListener {

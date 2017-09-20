@@ -56,18 +56,6 @@ public class SampleImageView extends SketchImageView {
         } catch (EventBusException e) {
             e.printStackTrace();
         }
-
-        if (!isInEditMode()) {
-            disabledRedisplay = true;
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_GIF_FLAG));
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_IMAGE_FROM_FLAG));
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_SHOW_PRESSED_STATUS));
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS));
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD));
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_RETRY_ON_FAILED));
-            onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_PLAY_GIF));
-            disabledRedisplay = false;
-        }
     }
 
     @Override
@@ -75,6 +63,13 @@ public class SampleImageView extends SketchImageView {
         super.onReadyDisplay(uriModel);
 
         disabledRedisplay = true;
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_GIF_FLAG));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_IMAGE_FROM_FLAG));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_SHOW_PRESSED_STATUS));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_RETRY_ON_FAILED));
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.CLICK_PLAY_GIF));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.PLAY_GIF_ON_LIST));
         onEvent(new AppConfigChangedEvent(AppConfig.Key.THUMBNAIL_MODE));

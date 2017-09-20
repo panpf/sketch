@@ -100,13 +100,4 @@ public class SketchImageView extends FunctionPropertyView {
             return getOptions().makeKey();
         }
     }
-
-    /**
-     * 图片的形状
-     */
-    public enum ImageShape {
-        RECT,
-        CIRCLE,
-        ROUNDED_RECT,
-    }
 }

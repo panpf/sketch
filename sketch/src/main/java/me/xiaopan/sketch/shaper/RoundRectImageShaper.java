@@ -45,6 +45,10 @@ public class RoundRectImageShaper implements ImageShaper {
 
     private Paint strokePaint;
 
+    private Rect boundsBack;
+    private RectF rectF;
+    private Path path;
+
     public RoundRectImageShaper(float[] radiis) {
         if (radiis == null || radiis.length < 8) {
             throw new ArrayIndexOutOfBoundsException("outer radii must have >= 8 values");
@@ -53,7 +57,8 @@ public class RoundRectImageShaper implements ImageShaper {
     }
 
     public RoundRectImageShaper(float topLeftRadii, float topRightRadii, float bottomLeftRadii, float bottomRightRadii) {
-        this(new float[]{topLeftRadii, topLeftRadii, topRightRadii, topRightRadii, bottomLeftRadii, bottomLeftRadii, bottomRightRadii, bottomRightRadii});
+        this(new float[]{topLeftRadii, topLeftRadii, topRightRadii, topRightRadii,
+                bottomLeftRadii, bottomLeftRadii, bottomRightRadii, bottomRightRadii});
     }
 
     public RoundRectImageShaper(float radii) {
@@ -110,6 +115,33 @@ public class RoundRectImageShaper implements ImageShaper {
 
     private boolean hasStroke() {
         return strokeColor != 0 && strokeWidth > 0;
+    }
+
+    @NonNull
+    @Override
+    public Path getPath(@NonNull Rect bounds) {
+        if (path != null && boundsBack != null && boundsBack.equals(bounds)) {
+            return path;
+        }
+
+        if (boundsBack == null) {
+            boundsBack = new Rect();
+        }
+        boundsBack.set(bounds);
+
+        if (path == null) {
+            path = new Path();
+        }
+        path.reset();
+
+        if (rectF == null) {
+            rectF = new RectF();
+        }
+        rectF.set(boundsBack);
+
+        path.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+
+        return path;
     }
 
 

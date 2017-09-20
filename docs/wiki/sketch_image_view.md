@@ -7,7 +7,7 @@
 * 支持手势缩放
 * 只是分块显示超大图
 * 支持显示下载进度
-* 支持显示按下状态，长按的时候还会有圆圈扩散效果
+* 支持显示按下状态，按下后会在图片上显示一个黑色半透明的蒙层
 * 支持显示图片来源，能方便的看出当前图片来自内存还是本地缓存还是刚从网络下载的
 * 支持显示 gif 图标，当显示的是 gif 图的时候会在右下角显示一个图标，用于提示用户这是一张 gif 图片
 * 支持显示失败的时候点击重新显示图片
@@ -69,7 +69,7 @@ sketchImageView.setOptions(displayOptions)
 
 ### 显示下载进度
 
-[SketchImageView] 提供了一个简易版的显示进度的功能，你只需调用如下代码开启即可：
+[SketchImageView] 提供了一个简易的显示进度功能，会在图片上面显示一个黑色半透明层，随着进度的更新从上往下消失，你只需调用如下代码开启即可：
 
 ```java
 sketchImageView.setShowDownloadProgressEnabled(true);
@@ -77,20 +77,21 @@ sketchImageView.setShowDownloadProgressEnabled(true);
 
 `一定要在 displayImage() 之前调用，否则不起作用`
 
-默认进度蒙层是矩形的，如果图片或 loading 占位图是圆形的，就会显得不协调，你可以通过 [SketchImageView].ImageShape 改变蒙层的形状，如下：
+默认会使用 DisplayOptions 里的 ImageShaper 修改蒙层的形状，你也可以自定义蒙层的形状，如下：
 
 ```java
-// 设置蒙层形状为圆形
-sketchImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
+sketchImageView.setShowDownloadProgressEnabled(true, new RoundRectImageShaper());
+```
 
-// 设置蒙层形状为圆角矩形，并设置圆角的度数
-sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-sketchImageView.setImageShapeCornerRadius(20);
+你还可以修改蒙层的颜色，如下：
+
+```java
+sketchImageView.setShowDownloadProgressEnabled(true, Color.parse("#ff0000"));
 ```
 
 ### 显示按下状态
 
-[SketchImageView] 支持点击的时候在图片上面显示一层黑色半透明蒙层，表示按下状态，长按的时候还会有圆圈扩散效果
+[SketchImageView] 支持点击的时候在图片上面显示一层黑色半透明蒙层，表示按下状态
 
 ```java
 // 你需要先设置点击Listener
@@ -100,18 +101,17 @@ sketchImageView.setOnClickListener(...);
 sketchImageView.setShowPressedStatusEnabled(true);
 ```
 
-同下载进度蒙层一样，按下状态蒙层默认也是矩形的，如果图片是圆形的，就会显得不协调，你可以通过 [SketchImageView].ImageShape 改变蒙层的形状，如下：
+默认会使用 DisplayOptions 里的 ImageShaper 修改蒙层的形状，你也可以自定义蒙层的形状，如下：
 
 ```java
-// 设置蒙层形状为圆形
-sketchImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
-
-// 设置蒙层形状为圆角矩形，并设置圆角的度数
-sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-sketchImageView.setImageShapeCornerRadius(20);
+sketchImageView.setShowPressedStatusEnabled(true, new RoundRectImageShaper());
 ```
 
-按下状态蒙层和下载进度蒙层共享同一个 [SketchImageView].ImageShape 设置
+你还可以修改蒙层的颜色，如下：
+
+```java
+sketchImageView.setShowPressedStatusEnabled(true, Color.parse("#ff0000"));
+```
 
 ### 显示图片来源
 

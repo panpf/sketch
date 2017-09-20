@@ -24,8 +24,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
 
@@ -60,12 +60,17 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 开启暂停下载的时候点击强制显示图片功能
      */
     public void setClickRetryOnPauseDownloadEnabled(boolean enabled) {
+        if (isClickRetryOnPauseDownloadEnabled() == enabled) {
+            return;
+        }
+
         if (getFunctions().clickRetryFunction == null) {
             getFunctions().clickRetryFunction = new ClickRetryFunction(this);
         }
         getFunctions().clickRetryFunction.setClickRetryOnPauseDownloadEnabled(enabled);
         updateClickable();
     }
+
 
     /**
      * 是否开启了显示失败时点击重试功能
@@ -79,12 +84,17 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 开启显示失败时点击重试功能
      */
     public void setClickRetryOnDisplayErrorEnabled(boolean enabled) {
+        if (isClickRetryOnDisplayErrorEnabled() == enabled) {
+            return;
+        }
+
         if (getFunctions().clickRetryFunction == null) {
             getFunctions().clickRetryFunction = new ClickRetryFunction(this);
         }
         getFunctions().clickRetryFunction.setClickRetryOnDisplayErrorEnabled(enabled);
         updateClickable();
     }
+
 
     /**
      * 是否开启了点击播放 gif 功能
@@ -100,6 +110,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * @param playIconResId 播放图标资源ID
      */
     public void setClickPlayGifEnabled(@DrawableRes int playIconResId) {
+        //noinspection deprecation
         setClickPlayGifEnabled(playIconResId > 0 ? getResources().getDrawable(playIconResId) : null);
     }
 
@@ -109,13 +120,26 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * @param playIconDrawable 播放图标
      */
     public void setClickPlayGifEnabled(@Nullable Drawable playIconDrawable) {
+        boolean update = false;
+
         if (playIconDrawable != null) {
-            getFunctions().clickPlayGifFunction = new ClickPlayGifFunction(this, playIconDrawable);
+            if (getFunctions().clickPlayGifFunction == null) {
+                getFunctions().clickPlayGifFunction = new ClickPlayGifFunction(this);
+                update = true;
+            }
+
+            update |= getFunctions().clickPlayGifFunction.setPlayIconDrawable(playIconDrawable);
         } else {
-            getFunctions().clickPlayGifFunction = null;
+            if (getFunctions().clickPlayGifFunction != null) {
+                getFunctions().clickPlayGifFunction = null;
+                update = true;
+            }
         }
-        updateClickable();
-        invalidate();
+
+        if (update) {
+            updateClickable();
+            invalidate();
+        }
     }
 
     /**
@@ -123,29 +147,65 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isShowDownloadProgressEnabled() {
-        return getFunctions().showProgressFunction != null;
+        return getFunctions().showDownloadProgressFunction != null;
     }
 
     /**
      * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
      */
     public void setShowDownloadProgressEnabled(boolean enabled) {
-        if (enabled) {
-            getFunctions().showProgressFunction = new ShowProgressFunction(this, getFunctions().imageShapeFunction);
-        } else {
-            getFunctions().showProgressFunction = null;
-        }
+        setShowDownloadProgressEnabled(enabled, ShowDownloadProgressFunction.DEFAULT_MASK_COLOR, null);
     }
 
     /**
-     * 设置下载进度蒙层的颜色
+     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
+     *
+     * @param maskShaper 下载进度蒙层的形状
      */
     @SuppressWarnings("unused")
-    public void setDownloadProgressColor(@ColorInt int downloadProgressColor) {
-        if (getFunctions().showProgressFunction != null) {
-            getFunctions().showProgressFunction.setDownloadProgressColor(downloadProgressColor);
+    public void setShowDownloadProgressEnabled(boolean enabled, @Nullable ImageShaper maskShaper) {
+        setShowDownloadProgressEnabled(enabled, ShowDownloadProgressFunction.DEFAULT_MASK_COLOR, maskShaper);
+    }
+
+    /**
+     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
+     *
+     * @param maskColor 下载进度蒙层的颜色
+     */
+    @SuppressWarnings("unused")
+    public void setShowDownloadProgressEnabled(boolean enabled, @ColorInt int maskColor) {
+        setShowDownloadProgressEnabled(enabled, maskColor, null);
+    }
+
+    /**
+     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
+     *
+     * @param maskColor  下载进度蒙层的颜色
+     * @param maskShaper 下载进度蒙层的形状
+     */
+    @SuppressWarnings("unused")
+    public void setShowDownloadProgressEnabled(boolean enabled, @ColorInt int maskColor, @Nullable ImageShaper maskShaper) {
+        boolean update = false;
+
+        if (enabled) {
+            if (getFunctions().showDownloadProgressFunction == null) {
+                getFunctions().showDownloadProgressFunction = new ShowDownloadProgressFunction(this);
+                update = true;
+            }
+            update |= getFunctions().showDownloadProgressFunction.setMaskColor(maskColor);
+            update |= getFunctions().showDownloadProgressFunction.setMaskShaper(maskShaper);
+        } else {
+            if (getFunctions().showDownloadProgressFunction != null) {
+                getFunctions().showDownloadProgressFunction = null;
+                update = true;
+            }
+        }
+
+        if (update) {
+            invalidate();
         }
     }
+
 
     /**
      * 是否开启了显示按下状态功能
@@ -156,25 +216,61 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     }
 
     /**
-     * 开启显示按下状态功能，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
+     * 开启显示按下状态功能，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
      */
     public void setShowPressedStatusEnabled(boolean enabled) {
-        if (enabled) {
-            getFunctions().showPressedFunction = new ShowPressedFunction(this, getFunctions().imageShapeFunction);
-        } else {
-            getFunctions().showPressedFunction = null;
-        }
+        setShowPressedStatusEnabled(enabled, ShowPressedFunction.DEFAULT_MASK_COLOR, null);
     }
 
     /**
-     * 设置按下状态的颜色
+     * 开启显示按下状态功能，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
+     *
+     * @param maskShaper 按下状态蒙层的形状
      */
     @SuppressWarnings("unused")
-    public void setPressedStatusColor(@ColorInt int pressedStatusColor) {
-        if (getFunctions().showPressedFunction != null) {
-            getFunctions().showPressedFunction.setPressedStatusColor(pressedStatusColor);
+    public void setShowPressedStatusEnabled(boolean enabled, ImageShaper maskShaper) {
+        setShowPressedStatusEnabled(enabled, ShowPressedFunction.DEFAULT_MASK_COLOR, maskShaper);
+    }
+
+    /**
+     * 开启显示按下状态功能，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
+     *
+     * @param maskColor 下载进度蒙层的颜色
+     */
+    @SuppressWarnings("unused")
+    public void setShowPressedStatusEnabled(boolean enabled, @ColorInt int maskColor) {
+        setShowPressedStatusEnabled(enabled, maskColor, null);
+    }
+
+    /**
+     * 开启显示按下状态功能，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
+     *
+     * @param maskColor  按下状态蒙层的颜色
+     * @param maskShaper 按下状态蒙层的形状
+     */
+    @SuppressWarnings("unused")
+    public void setShowPressedStatusEnabled(boolean enabled, @ColorInt int maskColor, ImageShaper maskShaper) {
+        boolean update = false;
+
+        if (enabled) {
+            if (getFunctions().showPressedFunction == null) {
+                getFunctions().showPressedFunction = new ShowPressedFunction(this);
+                update = true;
+            }
+            update |= getFunctions().showPressedFunction.setMaskColor(maskColor);
+            update |= getFunctions().showPressedFunction.setMaskShaper(maskShaper);
+        } else {
+            if (getFunctions().showPressedFunction != null) {
+                getFunctions().showPressedFunction = null;
+                update = true;
+            }
+        }
+
+        if (update) {
+            invalidate();
         }
     }
+
 
     /**
      * 是否开启了显示图片来源功能
@@ -189,7 +285,9 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存缓存加载的，紫色代表是从内存加载的
      */
     public void setShowImageFromEnabled(boolean enabled) {
-        ShowImageFromFunction oldShowImageFromFunction = getFunctions().showImageFromFunction;
+        if (isShowImageFromEnabled() == enabled) {
+            return;
+        }
 
         if (enabled) {
             getFunctions().showImageFromFunction = new ShowImageFromFunction(this);
@@ -198,10 +296,18 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             getFunctions().showImageFromFunction = null;
         }
 
-        if (oldShowImageFromFunction != getFunctions().showImageFromFunction) {
-            invalidate();
-        }
+        invalidate();
     }
+
+    /**
+     * 获取图片来源
+     */
+    @Nullable
+    @SuppressWarnings("unused")
+    public ImageFrom getImageFrom() {
+        return getFunctions().showImageFromFunction != null ? getFunctions().showImageFromFunction.getImageFrom() : null;
+    }
+
 
     /**
      * 是否开启了显示GIF标识功能
@@ -218,13 +324,25 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public void setShowGifFlagEnabled(Drawable gifFlagDrawable) {
+        boolean update = false;
+
         if (gifFlagDrawable != null) {
-            getFunctions().showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
-            getFunctions().showGifFlagFunction.onDrawableChanged("setShowGifFlag", null, getDrawable());
+            if (getFunctions().showGifFlagFunction == null) {
+                getFunctions().showGifFlagFunction = new ShowGifFlagFunction(this);
+                update = true;
+            }
+
+            update |= getFunctions().showGifFlagFunction.setGifFlagDrawable(gifFlagDrawable);
         } else {
-            getFunctions().showGifFlagFunction = null;
+            if (getFunctions().showGifFlagFunction != null) {
+                getFunctions().showGifFlagFunction = null;
+                update = true;
+            }
         }
-        invalidate();
+
+        if (update) {
+            invalidate();
+        }
     }
 
     /**
@@ -234,71 +352,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public void setShowGifFlagEnabled(@DrawableRes int gifFlagDrawableResId) {
+        //noinspection deprecation
         setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
-    }
-
-    /**
-     * 获取图片形状，下载进度和按下效果的蒙层会适应此形状
-     */
-    @SuppressWarnings("unused")
-    public SketchImageView.ImageShape getImageShape() {
-        return getFunctions().imageShapeFunction != null ? getFunctions().imageShapeFunction.getImageShape() : null;
-    }
-
-    /**
-     * 设置图片形状，下载进度和按下效果的蒙层会适应此形状
-     */
-    public void setImageShape(@Nullable SketchImageView.ImageShape imageShape) {
-        if (getFunctions().imageShapeFunction != null) {
-            getFunctions().imageShapeFunction.setImageShape(imageShape);
-        }
-    }
-
-    /**
-     * 获取图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
-     */
-    @SuppressWarnings("unused")
-    public float[] getImageShapeCornerRadius() {
-        return getFunctions().imageShapeFunction != null ? getFunctions().imageShapeFunction.getCornerRadius() : null;
-    }
-
-    /**
-     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
-     */
-    @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float[] radiis) {
-        if (getFunctions().imageShapeFunction != null) {
-            getFunctions().imageShapeFunction.setCornerRadius(radiis);
-        }
-    }
-
-    /**
-     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
-     */
-    @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float radius) {
-        if (getFunctions().imageShapeFunction != null) {
-            getFunctions().imageShapeFunction.setCornerRadius(radius);
-        }
-    }
-
-    /**
-     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
-     */
-    @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
-        if (getFunctions().imageShapeFunction != null) {
-            getFunctions().imageShapeFunction.setCornerRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
-        }
-    }
-
-    /**
-     * 获取图片来源
-     */
-    @Nullable
-    @SuppressWarnings("unused")
-    public ImageFrom getImageFrom() {
-        return getFunctions().showImageFromFunction != null ? getFunctions().showImageFromFunction.getImageFrom() : null;
     }
 
     /**
@@ -345,6 +400,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     public ImageZoomer getImageZoomer() {
         return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getImageZoomer() : null;
     }
+
 
     @Override
     public boolean isHugeImageEnabled() {

@@ -46,6 +46,5 @@ BitmapFactory 提供了一个 Options 来配置读取图片的相关选项，其
 2. 调用 Sketch.with(context).getConfiguration().setSizeCalculator(ImageSizeCalculator) 方法使用你自定义的 [ImageSizeCalculator]
 
 
-[MaxSize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/[MaxSize].java
-[ImageDecoder]: ../../sketch/src/main/java/me/xiaopan/sketch/decode/ImageDecoder.java
-[ImageSizeCalculator]: ,,/../sketch/src/main/java/me/xiaopan/sketch/decode/ImageSizeCalculator.java
+[MaxSize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/MaxSize.java
+[ImageSizeCalculator]: ../../sketch/src/main/java/me/xiaopan/sketch/decode/ImageSizeCalculator.java

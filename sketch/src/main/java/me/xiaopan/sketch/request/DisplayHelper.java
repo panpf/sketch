@@ -76,7 +76,7 @@ public class DisplayHelper {
         // onDisplay 一定要在最前面执行，因为 在onDisplay 中会设置一些属性，这些属性会影响到后续一些 get 方法返回的结果
         this.sketchView.onReadyDisplay(uriModel);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            Stopwatch.with().record("onDisplay");
+            Stopwatch.with().record("onReadyDisplay");
         }
 
         viewInfo.reset(sketchView, sketch);

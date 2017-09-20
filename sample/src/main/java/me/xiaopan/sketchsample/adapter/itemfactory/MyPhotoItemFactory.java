@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import butterknife.BindView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory;
-import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.shaper.ImageShaper;
-import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
@@ -77,14 +74,7 @@ public class MyPhotoItemFactory extends AssemblyRecyclerItemFactory<MyPhotoItemF
                     }
                 }
             });
-            imageView.setOptions(ImageOptions.RECT);
-
-            ImageShaper imageShaper = imageView.getOptions().getImageShaper();
-            if (imageShaper != null && imageShaper instanceof RoundRectImageShaper) {
-                RoundRectImageShaper roundRectImageShaper = (RoundRectImageShaper) imageShaper;
-                imageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-                imageView.setImageShapeCornerRadius(roundRectImageShaper.getOuterRadii());
-            }
+            imageView.setOptions(ImageOptions.ROUND_RECT);
 
             if (itemSize > 0) {
                 ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();

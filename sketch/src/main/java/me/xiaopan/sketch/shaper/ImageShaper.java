@@ -19,6 +19,7 @@ package me.xiaopan.sketch.shaper;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,7 +30,19 @@ import me.xiaopan.sketch.request.ShapeSize;
  * 用于绘制时改变图片的形状
  */
 public interface ImageShaper {
+    /**
+     * 获取形状 Path
+     */
+    @NonNull
+    Path getPath(@NonNull Rect bounds);
     void onUpdateShaderMatrix(@NonNull Matrix matrix, @NonNull Rect bounds, int bitmapWidth, int bitmapHeight, @Nullable ShapeSize shapeSize, @NonNull Rect srcRect);
 
+    /**
+     * 绘制
+     *
+     * @param canvas
+     * @param paint
+     * @param bounds
+     */
     void draw(@NonNull Canvas canvas, @NonNull Paint paint, @NonNull Rect bounds);
 }

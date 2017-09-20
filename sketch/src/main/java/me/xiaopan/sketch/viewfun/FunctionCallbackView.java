@@ -228,7 +228,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     @Nullable
     @Override
     public DownloadProgressListener getDownloadProgressListener() {
-        if (getFunctions().showProgressFunction != null || wrappedProgressListener != null) {
+        if (getFunctions().showDownloadProgressFunction != null || wrappedProgressListener != null) {
             return progressListenerProxy;
         } else {
             return null;

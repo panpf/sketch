@@ -19,6 +19,7 @@ package me.xiaopan.sketch.shaper;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +34,8 @@ public class CircleImageShaper implements ImageShaper {
     private int strokeColor;
 
     private Paint strokePaint;
+    private Rect boundsBack;
+    private Path path;
 
     @SuppressWarnings("unused")
     public int getStrokeColor() {
@@ -64,6 +67,31 @@ public class CircleImageShaper implements ImageShaper {
             strokePaint.setColor(strokeColor);
             strokePaint.setStrokeWidth(strokeWidth);
         }
+    }
+
+    @NonNull
+    @Override
+    public Path getPath(@NonNull Rect bounds) {
+        if (path != null && boundsBack != null && boundsBack.equals(bounds)) {
+            return path;
+        }
+
+        if (boundsBack == null) {
+            boundsBack = new Rect();
+        }
+        boundsBack.set(bounds);
+
+        if (path == null) {
+            path = new Path();
+        }
+        path.reset();
+
+        int centerX = bounds.centerX();
+        int centerY = bounds.centerX();
+        int radius = Math.max(centerX - bounds.left, centerY - bounds.top);
+        path.addCircle(centerX, centerY, radius, Path.Direction.CW);
+
+        return path;
     }
 
     @Override

@@ -33,10 +33,9 @@ class ViewFunctions {
     RecyclerCompatFunction recyclerCompatFunction;
 
     ShowImageFromFunction showImageFromFunction;
-    ShowProgressFunction showProgressFunction;
+    ShowDownloadProgressFunction showDownloadProgressFunction;
     ShowPressedFunction showPressedFunction;
     ShowGifFlagFunction showGifFlagFunction;
-    ImageShapeFunction imageShapeFunction;
     ClickRetryFunction clickRetryFunction;
     ImageZoomFunction zoomFunction;
     HugeImageFunction hugeImageFunction;
@@ -45,7 +44,6 @@ class ViewFunctions {
     ViewFunctions(FunctionCallbackView view) {
         requestFunction = new RequestFunction(view);
         recyclerCompatFunction = new RecyclerCompatFunction(view);
-        imageShapeFunction = new ImageShapeFunction(view);
     }
 
     void onAttachedToWindow() {
@@ -58,17 +56,14 @@ class ViewFunctions {
         if (showPressedFunction != null) {
             showPressedFunction.onAttachedToWindow();
         }
-        if (showProgressFunction != null) {
-            showProgressFunction.onAttachedToWindow();
+        if (showDownloadProgressFunction != null) {
+            showDownloadProgressFunction.onAttachedToWindow();
         }
         if (showGifFlagFunction != null) {
             showGifFlagFunction.onAttachedToWindow();
         }
         if (showImageFromFunction != null) {
             showImageFromFunction.onAttachedToWindow();
-        }
-        if (imageShapeFunction != null) {
-            imageShapeFunction.onAttachedToWindow();
         }
         if (clickRetryFunction != null) {
             clickRetryFunction.onAttachedToWindow();
@@ -88,17 +83,14 @@ class ViewFunctions {
         if (showImageFromFunction != null) {
             showImageFromFunction.onLayout(changed, left, top, right, bottom);
         }
-        if (showProgressFunction != null) {
-            showProgressFunction.onLayout(changed, left, top, right, bottom);
+        if (showDownloadProgressFunction != null) {
+            showDownloadProgressFunction.onLayout(changed, left, top, right, bottom);
         }
         if (showGifFlagFunction != null) {
             showGifFlagFunction.onLayout(changed, left, top, right, bottom);
         }
         if (showPressedFunction != null) {
             showPressedFunction.onLayout(changed, left, top, right, bottom);
-        }
-        if (imageShapeFunction != null) {
-            imageShapeFunction.onLayout(changed, left, top, right, bottom);
         }
         if (clickRetryFunction != null) {
             clickRetryFunction.onLayout(changed, left, top, right, bottom);
@@ -130,17 +122,14 @@ class ViewFunctions {
         if (showPressedFunction != null) {
             showPressedFunction.onSizeChanged(w, h, oldw, oldh);
         }
-        if (showProgressFunction != null) {
-            showProgressFunction.onSizeChanged(w, h, oldw, oldh);
+        if (showDownloadProgressFunction != null) {
+            showDownloadProgressFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (showGifFlagFunction != null) {
             showGifFlagFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (showImageFromFunction != null) {
             showImageFromFunction.onSizeChanged(w, h, oldw, oldh);
-        }
-        if (imageShapeFunction != null) {
-            imageShapeFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (clickRetryFunction != null) {
             clickRetryFunction.onSizeChanged(w, h, oldw, oldh);
@@ -166,17 +155,14 @@ class ViewFunctions {
         if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);
         }
-        if (showProgressFunction != null) {
-            showProgressFunction.onDraw(canvas);
+        if (showDownloadProgressFunction != null) {
+            showDownloadProgressFunction.onDraw(canvas);
         }
         if (showImageFromFunction != null) {
             showImageFromFunction.onDraw(canvas);
         }
         if (showGifFlagFunction != null) {
             showGifFlagFunction.onDraw(canvas);
-        }
-        if (imageShapeFunction != null) {
-            imageShapeFunction.onDraw(canvas);
         }
         if (clickRetryFunction != null) {
             clickRetryFunction.onDraw(canvas);
@@ -199,16 +185,13 @@ class ViewFunctions {
         if (showPressedFunction != null && showPressedFunction.onTouchEvent(event)) {
             return true;
         }
-        if (showProgressFunction != null && showProgressFunction.onTouchEvent(event)) {
+        if (showDownloadProgressFunction != null && showDownloadProgressFunction.onTouchEvent(event)) {
             return true;
         }
         if (showImageFromFunction != null && showImageFromFunction.onTouchEvent(event)) {
             return true;
         }
         if (showGifFlagFunction != null && showGifFlagFunction.onTouchEvent(event)) {
-            return true;
-        }
-        if (imageShapeFunction != null && imageShapeFunction.onTouchEvent(event)) {
             return true;
         }
         if (clickRetryFunction != null && clickRetryFunction.onTouchEvent(event)) {
@@ -252,11 +235,8 @@ class ViewFunctions {
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
@@ -293,17 +273,14 @@ class ViewFunctions {
         if (showPressedFunction != null) {
             needSetImageNull |= showPressedFunction.onDetachedFromWindow();
         }
-        if (showProgressFunction != null) {
-            needSetImageNull |= showProgressFunction.onDetachedFromWindow();
+        if (showDownloadProgressFunction != null) {
+            needSetImageNull |= showDownloadProgressFunction.onDetachedFromWindow();
         }
         if (showGifFlagFunction != null) {
             needSetImageNull |= showGifFlagFunction.onDetachedFromWindow();
         }
         if (showImageFromFunction != null) {
             needSetImageNull |= showImageFromFunction.onDetachedFromWindow();
-        }
-        if (imageShapeFunction != null) {
-            needSetImageNull |= imageShapeFunction.onDetachedFromWindow();
         }
         if (clickRetryFunction != null) {
             needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
@@ -337,17 +314,14 @@ class ViewFunctions {
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uriModel);
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onReadyDisplay(uriModel);
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onReadyDisplay(uriModel);
         }
         if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uriModel);
         }
         if (showImageFromFunction != null) {
             needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uriModel);
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onReadyDisplay(uriModel);
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uriModel);
@@ -375,17 +349,14 @@ class ViewFunctions {
             //noinspection ConstantConditions
             needInvokeInvalidate |= showImageFromFunction.onDisplayReadyLoad();
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDisplayReadyLoad();
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayReadyLoad();
         }
         if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onDisplayReadyLoad();
         }
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onDisplayReadyLoad();
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDisplayReadyLoad();
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplayReadyLoad();
@@ -419,17 +390,14 @@ class ViewFunctions {
             //noinspection ConstantConditions
             needInvokeInvalidate |= showImageFromFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
         if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
@@ -463,17 +431,14 @@ class ViewFunctions {
             //noinspection ConstantConditions
             needInvokeInvalidate |= showImageFromFunction.onDisplayError(errorCause);
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDisplayError(errorCause);
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayError(errorCause);
         }
         if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onDisplayError(errorCause);
         }
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onDisplayError(errorCause);
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDisplayError(errorCause);
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplayError(errorCause);
@@ -507,17 +472,14 @@ class ViewFunctions {
             //noinspection ConstantConditions
             needInvokeInvalidate |= showImageFromFunction.onDisplayCanceled(cancelCause);
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDisplayCanceled(cancelCause);
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayCanceled(cancelCause);
         }
         if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onDisplayCanceled(cancelCause);
         }
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onDisplayCanceled(cancelCause);
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDisplayCanceled(cancelCause);
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplayCanceled(cancelCause);
@@ -551,17 +513,14 @@ class ViewFunctions {
             //noinspection ConstantConditions
             needInvokeInvalidate |= showImageFromFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
-        if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
+        if (showDownloadProgressFunction != null) {
+            needInvokeInvalidate |= showDownloadProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
         if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
         if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);

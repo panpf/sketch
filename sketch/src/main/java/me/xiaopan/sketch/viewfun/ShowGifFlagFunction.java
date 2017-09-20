@@ -36,11 +36,8 @@ public class ShowGifFlagFunction extends ViewFunction {
     private int cacheViewWidth;
     private int cacheViewHeight;
 
-    public ShowGifFlagFunction(FunctionCallbackView view, Drawable gifFlagDrawable) {
+    public ShowGifFlagFunction(FunctionCallbackView view) {
         this.view = view;
-
-        this.gifFlagDrawable = gifFlagDrawable;
-        this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
     }
 
     @Override
@@ -66,5 +63,15 @@ public class ShowGifFlagFunction extends ViewFunction {
         canvas.translate(iconDrawLeft, iconDrawTop);
         gifFlagDrawable.draw(canvas);
         canvas.restore();
+    }
+
+    public boolean setGifFlagDrawable(Drawable gifFlagDrawable) {
+        if (this.gifFlagDrawable == gifFlagDrawable) {
+            return false;
+        }
+
+        this.gifFlagDrawable = gifFlagDrawable;
+        this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+        return true;
     }
 }
