@@ -352,6 +352,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuList.add(new CheckMenu(this, "Click Retry On Error In List", AppConfig.Key.CLICK_RETRY_ON_FAILED, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Scrolling Pause Load Image In List", AppConfig.Key.SCROLLING_PAUSE_LOAD, null, menuClickListener));
         menuList.add(new CheckMenu(this, "Mobile Network Pause Download Image", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "Long Clock Show Image Info", AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO, null, menuClickListener));
 
         menuList.add("Log");
         menuList.add(new InfoMenu("Log Level") {

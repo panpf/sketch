@@ -60,7 +60,9 @@ public class AppConfig {
         SHOW_TOOLS_IN_IMAGE_DETAIL("PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL", false),
         OUT_LOG_2_SDCARD("PREFERENCE_OUT_LOG_2_SDCARD", false),
         CLICK_PLAY_GIF("PREFERENCE_CLICK_PLAY_GIF", false),
-        SHOW_UNSPLASH_RAW_IMAGE("PREFERENCE_SHOW_UNSPLASH_RAW_IMAGE", false),;
+        SHOW_UNSPLASH_RAW_IMAGE("PREFERENCE_SHOW_UNSPLASH_RAW_IMAGE", false),
+        LONG_CLICK_SHOW_IMAGE_INFO("LONG_CLICK_SHOW_IMAGE_INFO", false),
+        ;
 
         private String keyName;
         private boolean defaultValue;

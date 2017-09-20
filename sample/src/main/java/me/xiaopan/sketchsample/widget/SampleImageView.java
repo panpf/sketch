@@ -37,15 +37,15 @@ import me.xiaopan.sketchsample.util.AppConfig;
 public class SampleImageView extends SketchImageView {
     private Page page;
     private boolean disabledRedisplay;
+    private LongClickShowDrawableInfoListener longClickShowDrawableInfoListener;
 
     public SampleImageView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public SampleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        setOnLongClickListener(new LongClickShowDrawableInfoListener());
+        onEvent(new AppConfigChangedEvent(AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO));
     }
 
     @Override
@@ -188,6 +188,16 @@ public class SampleImageView extends SketchImageView {
                     cacheOptions.setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
                 }
             });
+        } else if (AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO.equals(event.key)) {
+            if (AppConfig.getBoolean(getContext(), AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO)) {
+                if (longClickShowDrawableInfoListener == null) {
+                    longClickShowDrawableInfoListener = new LongClickShowDrawableInfoListener();
+                }
+
+                setOnLongClickListener(longClickShowDrawableInfoListener);
+            } else {
+                setOnLongClickListener(null);
+            }
         }
     }
 
