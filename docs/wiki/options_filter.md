@@ -28,12 +28,12 @@ optinsFilterRegistry.add(new OptionsFilterRegistry());
 ### 内置的 OptionsFilter
 
 Sketch 内置了四种 [OptionsFilter]，如下：
-* [LowQualityOptionsFilter]：用来控制全局开启低质量模式
-* [InPreferQualityOverSpeedOptionsFilter]：用来控制全局开启质量优先模式
-* [PauseDownloadOptionsFilter]：用来控制暂停下载，配合 [MobileNetworkPauseDownloadController] 可实现移动网络下暂停下载，另参考 [移动网络或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
+* [LowQualityOptionsFilter]：用来控制全局低质量模式
+* [InPreferQualityOverSpeedOptionsFilter]：用来控制全局质量优先模式
+* [PauseDownloadOptionsFilter]：用来控制暂停下载，配合 [MobileNetworkPauseDownloadController] 可实现移动数据下暂停下载，另参考 [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 * [PauseLoadOptionsFilter]：用来控制暂停加载，配合 [ScrollingPauseLoadManager] 可实现列表滑动中暂停加载，另参考 [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]
 
-上述四个 [OptionsFilter], [Configuration] 和 [OptionsFilterRegistry] 都提供了开关控制，详情参考源码即可
+上述四个 [OptionsFilter], [Configuration] 和 [OptionsFilterRegistry] 都提供了开关控制，详情请参考源码
 
 [OptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilter.java
 [OptionsFilterRegistry]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilterRegistry.java

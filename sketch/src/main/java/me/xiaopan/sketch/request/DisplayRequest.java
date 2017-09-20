@@ -252,9 +252,9 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 显示图片
-        if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) && drawable instanceof BitmapDrawable) {
+        if ((displayOptions.getShapeSize() != null || displayOptions.getShaper() != null) && drawable instanceof BitmapDrawable) {
             drawable = new SketchShapeBitmapDrawable(getConfiguration().getContext(), (BitmapDrawable) drawable,
-                    displayOptions.getShapeSize(), displayOptions.getImageShaper());
+                    displayOptions.getShapeSize(), displayOptions.getShaper());
         }
 
         SketchView viewInterface = requestAndViewBinder.getView();
@@ -270,7 +270,7 @@ public class DisplayRequest extends LoadRequest {
         // 一定要在 ImageDisplayer().display 之前执行
         setStatus(Status.COMPLETED);
 
-        displayOptions.getImageDisplayer().display(viewInterface, drawable);
+        displayOptions.getDisplayer().display(viewInterface, drawable);
 
         if (displayListener != null) {
             displayListener.onCompleted(displayResult.getDrawable(), displayResult.getImageFrom(), displayResult.getImageAttrs());
@@ -290,7 +290,7 @@ public class DisplayRequest extends LoadRequest {
 
         if (displayOptions.getErrorImage() != null) {
             Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(getContext(), requestAndViewBinder.getView(), displayOptions);
-            displayOptions.getImageDisplayer().display(requestAndViewBinder.getView(), errorDrawable);
+            displayOptions.getDisplayer().display(requestAndViewBinder.getView(), errorDrawable);
         }
 
         if (displayListener != null) {

@@ -50,7 +50,7 @@ public class ProcessedImageCache implements Identifier {
             return true;
         }
 
-        if (loadOptions.getImageProcessor() != null) {
+        if (loadOptions.getProcessor() != null) {
             return true;
         }
 

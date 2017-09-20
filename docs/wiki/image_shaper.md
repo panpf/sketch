@@ -12,7 +12,7 @@
 ```java
 // SketchImageView
 SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setImageShaper(new RoundRectImageShaper(10));
+sketchImageView.getOptions().setShaper(new RoundRectImageShaper(10));
 
 // DisplayHelper
 Sketch.with(context).display(uri, sketchImageView)

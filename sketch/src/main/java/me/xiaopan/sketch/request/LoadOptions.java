@@ -67,7 +67,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 图片处理器
      */
-    private ImageProcessor imageProcessor;
+    private ImageProcessor processor;
 
     /**
      * 图片质量配置，优先级比 lowQualityImage 高，KITKAT 以上ARGB_4444 会被强制替换为 ARGB_8888
@@ -203,8 +203,8 @@ public class LoadOptions extends DownloadOptions {
      * @return ImageProcessor
      */
     @Nullable
-    public ImageProcessor getImageProcessor() {
-        return imageProcessor;
+    public ImageProcessor getProcessor() {
+        return processor;
     }
 
     /**
@@ -214,8 +214,8 @@ public class LoadOptions extends DownloadOptions {
      * @return LoadOptions
      */
     @NonNull
-    public LoadOptions setImageProcessor(@Nullable ImageProcessor processor) {
-        this.imageProcessor = processor;
+    public LoadOptions setProcessor(@Nullable ImageProcessor processor) {
+        this.processor = processor;
         return this;
     }
 
@@ -389,7 +389,7 @@ public class LoadOptions extends DownloadOptions {
         maxSize = null;
         resize = null;
         lowQualityImage = false;
-        imageProcessor = null;
+        processor = null;
         decodeGifImage = false;
         bitmapConfig = null;
         inPreferQualityOverSpeed = false;
@@ -415,7 +415,7 @@ public class LoadOptions extends DownloadOptions {
         maxSize = options.maxSize;
         resize = options.resize;
         lowQualityImage = options.lowQualityImage;
-        imageProcessor = options.imageProcessor;
+        processor = options.processor;
         decodeGifImage = options.decodeGifImage;
         bitmapConfig = options.bitmapConfig;
         inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
@@ -453,9 +453,9 @@ public class LoadOptions extends DownloadOptions {
         if (bitmapConfig != null) {
             builder.append("_").append(bitmapConfig.name());
         }
-        if (imageProcessor != null) {
+        if (processor != null) {
             // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
-            String processorKey = imageProcessor.getKey();
+            String processorKey = processor.getKey();
             if (!TextUtils.isEmpty(processorKey)) {
                 builder.append("_").append(processorKey);
             }
@@ -473,9 +473,9 @@ public class LoadOptions extends DownloadOptions {
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");
         }
-        if (imageProcessor != null) {
+        if (processor != null) {
             // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
-            String processorKey = imageProcessor.getKey();
+            String processorKey = processor.getKey();
             if (!TextUtils.isEmpty(processorKey)) {
                 builder.append("_").append(processorKey);
             }

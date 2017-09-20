@@ -41,7 +41,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 图片显示器，用来在加载完成后显示图片
      */
-    private ImageDisplayer imageDisplayer;
+    private ImageDisplayer displayer;
 
     /**
      * 正在加载时显示的图片
@@ -61,7 +61,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 绘制时修改图片的形状
      */
-    private ImageShaper imageShaper;
+    private ImageShaper shaper;
 
     /**
      * 绘制时修改图片的尺寸
@@ -132,8 +132,8 @@ public class DisplayOptions extends LoadOptions {
 
     @NonNull
     @Override
-    public DisplayOptions setImageProcessor(@Nullable ImageProcessor processor) {
-        return (DisplayOptions) super.setImageProcessor(processor);
+    public DisplayOptions setProcessor(@Nullable ImageProcessor processor) {
+        return (DisplayOptions) super.setProcessor(processor);
     }
 
     @NonNull
@@ -197,8 +197,8 @@ public class DisplayOptions extends LoadOptions {
      * @return ImageDisplayer
      */
     @Nullable
-    public ImageDisplayer getImageDisplayer() {
-        return imageDisplayer;
+    public ImageDisplayer getDisplayer() {
+        return displayer;
     }
 
     /**
@@ -208,8 +208,8 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     @NonNull
-    public DisplayOptions setImageDisplayer(@Nullable ImageDisplayer displayer) {
-        this.imageDisplayer = displayer;
+    public DisplayOptions setDisplayer(@Nullable ImageDisplayer displayer) {
+        this.displayer = displayer;
         return this;
     }
 
@@ -321,19 +321,19 @@ public class DisplayOptions extends LoadOptions {
      * @return ImageShaper
      */
     @Nullable
-    public ImageShaper getImageShaper() {
-        return imageShaper;
+    public ImageShaper getShaper() {
+        return shaper;
     }
 
     /**
      * 设置绘制时图片形状修改器
      *
-     * @param imageShaper 绘制时图片形状修改器
+     * @param shaper 绘制时图片形状修改器
      * @return DisplayOptions
      */
     @NonNull
-    public DisplayOptions setImageShaper(@Nullable ImageShaper imageShaper) {
-        this.imageShaper = imageShaper;
+    public DisplayOptions setShaper(@Nullable ImageShaper shaper) {
+        this.shaper = shaper;
         return this;
     }
 
@@ -388,11 +388,11 @@ public class DisplayOptions extends LoadOptions {
     public void reset() {
         super.reset();
         cacheInMemoryDisabled = false;
-        imageDisplayer = null;
+        displayer = null;
         loadingImage = null;
         errorImage = null;
         pauseDownloadImage = null;
-        imageShaper = null;
+        shaper = null;
         shapeSize = null;
     }
 
@@ -410,11 +410,11 @@ public class DisplayOptions extends LoadOptions {
         super.copy((LoadOptions) options);
 
         cacheInMemoryDisabled = options.cacheInMemoryDisabled;
-        imageDisplayer = options.imageDisplayer;
+        displayer = options.displayer;
         loadingImage = options.loadingImage;
         errorImage = options.errorImage;
         pauseDownloadImage = options.pauseDownloadImage;
-        imageShaper = options.imageShaper;
+        shaper = options.shaper;
         shapeSize = options.shapeSize;
     }
 }

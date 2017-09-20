@@ -31,7 +31,7 @@ public class ImageOptions {
                         .setLoadingImage(R.drawable.image_loading)
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(new TransitionImageDisplayer())
+                        .setDisplayer(new TransitionImageDisplayer())
                         .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
@@ -43,8 +43,8 @@ public class ImageOptions {
                         .setLoadingImage(R.drawable.image_loading)
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(new TransitionImageDisplayer())
-                        .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
+                        .setDisplayer(new TransitionImageDisplayer())
+                        .setShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
                         .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
@@ -56,8 +56,8 @@ public class ImageOptions {
                         .setLoadingImage(R.drawable.image_loading)
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
-                        .setImageDisplayer(new TransitionImageDisplayer())
+                        .setShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
+                        .setDisplayer(new TransitionImageDisplayer())
                         .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });

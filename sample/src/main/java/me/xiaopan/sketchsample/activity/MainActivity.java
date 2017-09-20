@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
         menuBackgroundImageView.setLayoutParams(layoutParams);
 
         menuBackgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND);
-        menuBackgroundImageView.getOptions().setImageDisplayer(null);
+        menuBackgroundImageView.getOptions().setDisplayer(null);
 
         drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT);
 

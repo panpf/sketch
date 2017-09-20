@@ -156,7 +156,7 @@ public class LoadHelper {
     @NonNull
     @SuppressWarnings("unused")
     public LoadHelper processor(@Nullable ImageProcessor processor) {
-        loadOptions.setImageProcessor(processor);
+        loadOptions.setProcessor(processor);
         return this;
     }
 
@@ -315,8 +315,8 @@ public class LoadHelper {
 
 
         // 没有 ImageProcessor 但有 Resize 的话就需要设置一个默认的图片裁剪处理器
-        if (loadOptions.getImageProcessor() == null && resize != null) {
-            loadOptions.setImageProcessor(configuration.getResizeProcessor());
+        if (loadOptions.getProcessor() == null && resize != null) {
+            loadOptions.setProcessor(configuration.getResizeProcessor());
         }
 
 

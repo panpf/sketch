@@ -44,7 +44,7 @@ public class ProcessImageResultProcessor implements ResultProcessor {
         }
 
         LoadOptions loadOptions = request.getOptions();
-        ImageProcessor imageProcessor = loadOptions.getImageProcessor();
+        ImageProcessor imageProcessor = loadOptions.getProcessor();
         if (imageProcessor == null) {
             return;
         }

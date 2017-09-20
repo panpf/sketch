@@ -38,7 +38,7 @@ Options 用来批量设置如何下载、加载、显示图片，有如下三种
 
 详解：
 
-* requestLevel: 指定请求的处理深度，专门用来实现暂停加载和暂停下载功能，更多内容请参考 [RequestLevel]、[列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]、[移动网络或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
+* requestLevel: 指定请求的处理深度，专门用来实现暂停加载和暂停下载功能，更多内容请参考 [RequestLevel]、[列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]、[移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 * cacheInDiskDisabled: 禁用磁盘缓存，更多内容请参考 [在磁盘上缓存图片原文件，避免重复下载][disk_cache]
 * maxSize: 缩小图片尺寸，读取缩略图，更多内容请参考 [使用 MaxSize 读取合适尺寸的缩略图，节省内存][max_size]
 * resize: 修改图片的尺寸，更多内容请参考 [使用 Resize 精确修改图片的尺寸][resize]

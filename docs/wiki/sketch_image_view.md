@@ -140,7 +140,7 @@ sketchImageView.setClickRetryOnDisplayErrorEnabled(true);
 
 ### 暂停下载时点击强制显示
 
-参考 [移动网络或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
+参考 [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 
 ### 显示 GIF 图标识
 

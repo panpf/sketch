@@ -77,7 +77,7 @@ SketchImageView sketchImageView = ...;
 DisplayOptions options = sketchImageView.getOptions();
 
 options.setLoadingImage(R.drawable.loading);
-options.setImageDisplayer(new TransitionImageDisplayer());
+options.setDisplayer(new TransitionImageDisplayer());
 
 // 以 300x300 的尺寸显示 loadingImage 和最终的图片
 options.setShapeSize(300, 300);

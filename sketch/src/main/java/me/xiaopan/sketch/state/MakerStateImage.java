@@ -66,7 +66,7 @@ public class MakerStateImage implements StateImage {
         Drawable drawable = makeDrawable(Sketch.with(context), displayOptions);
 
         ShapeSize shapeSize = displayOptions.getShapeSize();
-        ImageShaper imageShaper = displayOptions.getImageShaper();
+        ImageShaper imageShaper = displayOptions.getShaper();
         if ((shapeSize != null || imageShaper != null) && drawable != null
                 && drawable instanceof BitmapDrawable) {
             drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
@@ -78,7 +78,7 @@ public class MakerStateImage implements StateImage {
     private Drawable makeDrawable(Sketch sketch, DisplayOptions options) {
         Configuration configuration = sketch.getConfiguration();
 
-        ImageProcessor processor = options.getImageProcessor();
+        ImageProcessor processor = options.getProcessor();
         Resize resize = options.getResize();
         BitmapPool bitmapPool = configuration.getBitmapPool();
 
@@ -105,7 +105,7 @@ public class MakerStateImage implements StateImage {
         // 读取图片
         Bitmap bitmap;
         boolean allowRecycle = false;
-        boolean tempLowQualityImage = configuration.isGlobalLowQualityImage() || options.isLowQualityImage();
+        boolean tempLowQualityImage = configuration.isLowQualityImageEnabled() || options.isLowQualityImage();
         //noinspection deprecation
         Drawable drawable = configuration.getContext().getResources().getDrawable(resId);
         if (drawable != null && drawable instanceof BitmapDrawable) {

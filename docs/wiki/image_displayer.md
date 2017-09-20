@@ -13,7 +13,7 @@
 ```java
 // SketchImageView
 SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+sketchImageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
 // DisplayHelper
 Sketch.with(context).display(uri, sketchImageView)

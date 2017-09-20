@@ -26,8 +26,8 @@ public class ReflectionImageProcessorTestFragment extends BaseFragment {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageView.getOptions().setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2);
 
-        imageView.getOptions().setImageProcessor(new ReflectionImageProcessor());
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setProcessor(new ReflectionImageProcessor());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
         imageView.displayImage(AssetImage.MEI_NV);
     }
 }

@@ -56,7 +56,7 @@ public class OldStateImage implements StateImage {
 
         if (drawable != null) {
             ShapeSize shapeSize = displayOptions.getShapeSize();
-            ImageShaper imageShaper = displayOptions.getImageShaper();
+            ImageShaper imageShaper = displayOptions.getShaper();
             if (shapeSize != null || imageShaper != null) {
                 if (drawable instanceof SketchShapeBitmapDrawable) {
                     drawable = new SketchShapeBitmapDrawable(context, ((SketchShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);

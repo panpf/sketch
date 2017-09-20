@@ -32,7 +32,7 @@ public class RotateImageProcessorTestFragment extends BaseFragment {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageView.getOptions().setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         rotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +46,7 @@ public class RotateImageProcessorTestFragment extends BaseFragment {
     }
 
     private void apply(){
-        imageView.getOptions().setImageProcessor(new RotateImageProcessor(degrees));
+        imageView.getOptions().setProcessor(new RotateImageProcessor(degrees));
         imageView.displayImage(AssetImage.MEI_NV);
     }
 }

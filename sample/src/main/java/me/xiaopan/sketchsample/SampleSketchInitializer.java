@@ -110,11 +110,11 @@ public class SampleSketchInitializer implements Initializer {
                 SLog.closeType(SLog.TYPE_HUGE_IMAGE);
             }
         } else if (AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(event.key)) {
-            configuration.setGlobalMobileNetworkPauseDownload(AppConfig.getBoolean(context, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD));
+            configuration.setMobileDataPauseDownloadEnabled(AppConfig.getBoolean(context, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD));
         } else if (AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE.equals(event.key)) {
-            configuration.setGlobalLowQualityImage(AppConfig.getBoolean(context, AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE));
+            configuration.setLowQualityImageEnabled(AppConfig.getBoolean(context, AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE));
         } else if (AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(event.key)) {
-            configuration.setGlobalInPreferQualityOverSpeed(AppConfig.getBoolean(context, AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED));
+            configuration.setInPreferQualityOverSpeedEnabled(AppConfig.getBoolean(context, AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED));
         } else if (AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK.equals(event.key)) {
             configuration.getDiskCache().setDisabled(AppConfig.getBoolean(context, AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK));
         } else if (AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL.equals(event.key)) {

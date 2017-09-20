@@ -191,10 +191,10 @@ public class ImageFragment extends BaseFragment {
                 if (cachedRefBitmap != null) {
                     options.setLoadingImage(new MemoryCacheStateImage(memoryCacheKey, null));
                 } else {
-                    options.setImageDisplayer(new FadeInImageDisplayer());
+                    options.setDisplayer(new FadeInImageDisplayer());
                 }
             } else {
-                options.setImageDisplayer(new FadeInImageDisplayer());
+                options.setDisplayer(new FadeInImageDisplayer());
             }
         }
 
@@ -395,7 +395,7 @@ public class ImageFragment extends BaseFragment {
                 }
             });
 
-            mappingView.getOptions().setImageDisplayer(new FadeInImageDisplayer());
+            mappingView.getOptions().setDisplayer(new FadeInImageDisplayer());
             mappingView.getOptions().setMaxSize(600, 600);
             mappingView.displayImage(finalShowImageUrl);
 

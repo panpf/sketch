@@ -51,7 +51,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
 
     private BitmapDrawable bitmapDrawable;
     private ShapeSize shapeSize;
-    private ImageShaper imageShaper;
+    private ImageShaper shaper;
 
     private Paint paint;
     private Rect srcRect;
@@ -62,13 +62,13 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
 
     private ResizeCalculator resizeCalculator;
 
-    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
+    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper shaper) {
         Bitmap bitmap = bitmapDrawable.getBitmap();
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException(bitmap == null ? "bitmap is null" : "bitmap recycled");
         }
 
-        if (shapeSize == null && imageShaper == null) {
+        if (shapeSize == null && shaper == null) {
             throw new IllegalArgumentException("shapeSize is null and shapeImage is null");
         }
 
@@ -78,7 +78,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         this.resizeCalculator = Sketch.with(context).getConfiguration().getResizeCalculator();
 
         setShapeSize(shapeSize);
-        setImageShaper(imageShaper);
+        setShaper(shaper);
 
         if (bitmapDrawable instanceof SketchRefDrawable) {
             this.refDrawable = (SketchRefDrawable) bitmapDrawable;
@@ -95,8 +95,8 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
     }
 
     @SuppressWarnings("unused")
-    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ImageShaper imageShaper) {
-        this(context, bitmapDrawable, null, imageShaper);
+    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ImageShaper shaper) {
+        this(context, bitmapDrawable, null, shaper);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
             return;
         }
 
-        if (imageShaper != null && bitmapShader != null) {
-            imageShaper.draw(canvas, paint, bounds);
+        if (shaper != null && bitmapShader != null) {
+            shaper.draw(canvas, paint, bounds);
         } else {
             canvas.drawBitmap(bitmap, srcRect != null && !srcRect.isEmpty() ? srcRect : null, bounds, paint);
         }
@@ -186,7 +186,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
             srcRect.set(mapping.srcRect);
         }
 
-        if (imageShaper != null && bitmapShader != null) {
+        if (shaper != null && bitmapShader != null) {
             float widthScale = (float) boundsWidth / bitmapWidth;
             float heightScale = (float) boundsHeight / bitmapHeight;
 
@@ -200,7 +200,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
                 shaderMatrix.postTranslate(-srcRect.left * scale, -srcRect.top * scale);
             }
 
-            imageShaper.onUpdateShaderMatrix(shaderMatrix, bounds, bitmapWidth, bitmapHeight, shapeSize, srcRect);
+            shaper.onUpdateShaderMatrix(shaderMatrix, bounds, bitmapWidth, bitmapHeight, shapeSize, srcRect);
             bitmapShader.setLocalMatrix(shaderMatrix);
             paint.setShader(bitmapShader);
         }
@@ -222,14 +222,14 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
     }
 
     @SuppressWarnings("unused")
-    public ImageShaper getImageShaper() {
-        return imageShaper;
+    public ImageShaper getShaper() {
+        return shaper;
     }
 
-    public void setImageShaper(ImageShaper imageShaper) {
-        this.imageShaper = imageShaper;
+    public void setShaper(ImageShaper shaper) {
+        this.shaper = shaper;
 
-        if (this.imageShaper != null) {
+        if (this.shaper != null) {
             if (bitmapShader == null) {
                 bitmapShader = new BitmapShader(bitmapDrawable.getBitmap(), Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
                 paint.setShader(bitmapShader);

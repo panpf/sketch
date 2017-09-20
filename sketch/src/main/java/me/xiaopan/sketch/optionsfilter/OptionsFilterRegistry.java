@@ -31,7 +31,7 @@ public class OptionsFilterRegistry implements Identifier {
     private PauseLoadOptionsFilter pauseLoadOptionsFilter;
     private LowQualityOptionsFilter lowQualityOptionsFilter;
     private InPreferQualityOverSpeedOptionsFilter inPreferQualityOverSpeedOptionsFilter;
-    private MobileNetworkPauseDownloadController mobileNetworkPauseDownloadController;
+    private MobileDataPauseDownloadController mobileDataPauseDownloadController;
     private List<OptionsFilter> extrasFilters;
 
     @NonNull
@@ -93,48 +93,48 @@ public class OptionsFilterRegistry implements Identifier {
     /**
      * 全局暂停下载图片？开启后将不再从网络下载图片，只影响 display 请求和 load 请求
      */
-    public boolean isPauseDownload() {
+    public boolean isPauseDownloadEnabled() {
         return pauseDownloadOptionsFilter != null;
     }
 
     /**
      * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 display 请求和 load 请求
      */
-    public void setPauseDownload(boolean pauseDownload) {
-        if (isPauseDownload() != pauseDownload) {
-            this.pauseDownloadOptionsFilter = pauseDownload ? new PauseDownloadOptionsFilter() : null;
+    public void setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
+        if (isPauseDownloadEnabled() != pauseDownloadEnabled) {
+            this.pauseDownloadOptionsFilter = pauseDownloadEnabled ? new PauseDownloadOptionsFilter() : null;
         }
     }
 
     /**
      * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响 display 请求
      */
-    public boolean isPauseLoad() {
+    public boolean isPauseLoadEnabled() {
         return pauseLoadOptionsFilter != null;
     }
 
     /**
      * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 display 请求
      */
-    public void setPauseLoad(boolean pauseLoad) {
-        if (isPauseLoad() != pauseLoad) {
-            this.pauseLoadOptionsFilter = pauseLoad ? new PauseLoadOptionsFilter() : null;
+    public void setPauseLoadEnabled(boolean pauseLoadEnabled) {
+        if (isPauseLoadEnabled() != pauseLoadEnabled) {
+            this.pauseLoadOptionsFilter = pauseLoadEnabled ? new PauseLoadOptionsFilter() : null;
         }
     }
 
     /**
      * 全局使用低质量的图片？
      */
-    public boolean isLowQualityImage() {
+    public boolean isLowQualityImageEnabled() {
         return lowQualityOptionsFilter != null;
     }
 
     /**
      * 设置全局使用低质量的图片
      */
-    public void setLowQualityImage(boolean lowQualityImage) {
-        if (isLowQualityImage() != lowQualityImage) {
-            this.lowQualityOptionsFilter = lowQualityImage ? new LowQualityOptionsFilter() : null;
+    public void setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
+        if (isLowQualityImageEnabled() != lowQualityImageEnabled) {
+            this.lowQualityOptionsFilter = lowQualityImageEnabled ? new LowQualityOptionsFilter() : null;
         }
     }
 
@@ -143,42 +143,42 @@ public class OptionsFilterRegistry implements Identifier {
      *
      * @return true：质量；false：速度
      */
-    public boolean isInPreferQualityOverSpeed() {
+    public boolean isInPreferQualityOverSpeedEnabled() {
         return inPreferQualityOverSpeedOptionsFilter != null;
     }
 
     /**
-     * 设置全局解码时优先考虑速度还是质量 (默认优先考虑速度)
+     * 开启全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
-     * @param inPreferQualityOverSpeed true：质量；false：速度
+     * @param inPreferQualityOverSpeedEnabled true：质量；false：速度
      */
-    public void setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
-        if (isInPreferQualityOverSpeed() != inPreferQualityOverSpeed) {
-            this.inPreferQualityOverSpeedOptionsFilter = inPreferQualityOverSpeed ? new InPreferQualityOverSpeedOptionsFilter() : null;
+    public void setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
+        if (isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
+            this.inPreferQualityOverSpeedOptionsFilter = inPreferQualityOverSpeedEnabled ? new InPreferQualityOverSpeedOptionsFilter() : null;
         }
     }
 
     /**
-     * 全局移动网络下暂停下载？只影响display请求和load请求
+     * 全局移动数据下暂停下载？只影响display请求和load请求
      */
     @SuppressWarnings("unused")
-    public boolean isGlobalMobileNetworkGlobalPauseDownload() {
-        return mobileNetworkPauseDownloadController != null && mobileNetworkPauseDownloadController.isOpened();
+    public boolean isMobileDataPauseDownloadEnabled() {
+        return mobileDataPauseDownloadController != null && mobileDataPauseDownloadController.isOpened();
     }
 
     /**
-     * 设置开启移动网络或有流量限制的 WIFI 下暂停下载的功能，只影响 display 请求和 load 请求
+     * 开启全局移动数据或有流量限制的 WIFI 下暂停下载的功能，只影响 display 请求和 load 请求
      */
-    public void setGlobalMobileNetworkPauseDownload(Configuration configuration, boolean globalMobileNetworkPauseDownload) {
-        if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
-            if (globalMobileNetworkPauseDownload) {
-                if (this.mobileNetworkPauseDownloadController == null) {
-                    this.mobileNetworkPauseDownloadController = new MobileNetworkPauseDownloadController(configuration);
+    public void setMobileDataPauseDownloadEnabled(Configuration configuration, boolean mobileDataPauseDownloadEnabled) {
+        if (isMobileDataPauseDownloadEnabled() != mobileDataPauseDownloadEnabled) {
+            if (mobileDataPauseDownloadEnabled) {
+                if (this.mobileDataPauseDownloadController == null) {
+                    this.mobileDataPauseDownloadController = new MobileDataPauseDownloadController(configuration);
                 }
-                this.mobileNetworkPauseDownloadController.setOpened(true);
+                this.mobileDataPauseDownloadController.setOpened(true);
             } else {
-                if (this.mobileNetworkPauseDownloadController != null) {
-                    this.mobileNetworkPauseDownloadController.setOpened(false);
+                if (this.mobileDataPauseDownloadController != null) {
+                    this.mobileDataPauseDownloadController.setOpened(false);
                 }
             }
         }

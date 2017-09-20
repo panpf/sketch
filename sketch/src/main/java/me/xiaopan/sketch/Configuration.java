@@ -612,11 +612,11 @@ public final class Configuration {
 
 
     /**
-     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响 display 请求和 load 请求
+     * 全局暂停下载图片？
      */
     @SuppressWarnings("unused")
-    public boolean isGlobalPauseDownload() {
-        return optionsFilterRegistry.isPauseDownload();
+    public boolean isPauseDownloadEnabled() {
+        return optionsFilterRegistry.isPauseDownloadEnabled();
     }
 
     /**
@@ -625,19 +625,19 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @NonNull
-    public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
-        if (optionsFilterRegistry.isPauseDownload() != globalPauseDownload) {
-            optionsFilterRegistry.setPauseDownload(globalPauseDownload);
-            SLog.w(NAME, "globalPauseDownload=%s", globalPauseDownload);
+    public Configuration setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
+        if (optionsFilterRegistry.isPauseDownloadEnabled() != pauseDownloadEnabled) {
+            optionsFilterRegistry.setPauseDownloadEnabled(pauseDownloadEnabled);
+            SLog.w(NAME, "pauseDownload=%s", pauseDownloadEnabled);
         }
         return this;
     }
 
     /**
-     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响 display 请求
+     * 全局暂停加载新图片？
      */
-    public boolean isGlobalPauseLoad() {
-        return optionsFilterRegistry.isPauseLoad();
+    public boolean isPauseLoadEnabled() {
+        return optionsFilterRegistry.isPauseLoadEnabled();
     }
 
     /**
@@ -646,10 +646,10 @@ public final class Configuration {
      * @return Configuration. Convenient chain calls
      */
     @NonNull
-    public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
-        if (optionsFilterRegistry.isPauseLoad() != globalPauseLoad) {
-            optionsFilterRegistry.setPauseLoad(globalPauseLoad);
-            SLog.w(NAME, "globalPauseLoad=%s", globalPauseLoad);
+    public Configuration setPauseLoadEnabled(boolean pauseLoadEnabled) {
+        if (optionsFilterRegistry.isPauseLoadEnabled() != pauseLoadEnabled) {
+            optionsFilterRegistry.setPauseLoadEnabled(pauseLoadEnabled);
+            SLog.w(NAME, "pauseLoad=%s", pauseLoadEnabled);
         }
         return this;
     }
@@ -657,67 +657,67 @@ public final class Configuration {
     /**
      * 全局使用低质量的图片？
      */
-    public boolean isGlobalLowQualityImage() {
-        return optionsFilterRegistry.isLowQualityImage();
+    public boolean isLowQualityImageEnabled() {
+        return optionsFilterRegistry.isLowQualityImageEnabled();
     }
 
     /**
-     * 设置全局使用低质量的图片
+     * 设置全局使用低质量图片
      *
      * @return Configuration. Convenient chain calls
      */
     @NonNull
-    public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
-        if (optionsFilterRegistry.isLowQualityImage() != globalLowQualityImage) {
-            optionsFilterRegistry.setLowQualityImage(globalLowQualityImage);
-            SLog.w(NAME, "globalLowQualityImage=%s", globalLowQualityImage);
+    public Configuration setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
+        if (optionsFilterRegistry.isLowQualityImageEnabled() != lowQualityImageEnabled) {
+            optionsFilterRegistry.setLowQualityImageEnabled(lowQualityImageEnabled);
+            SLog.w(NAME, "lowQualityImage=%s", lowQualityImageEnabled);
         }
         return this;
     }
 
     /**
-     * 全局解码时优先考虑速度还是质量 (默认优先考虑速度)
+     * 全局解码时优先质量？
      *
      * @return true：质量；false：速度
      */
     @SuppressWarnings("unused")
-    public boolean isGlobalInPreferQualityOverSpeed() {
-        return optionsFilterRegistry.isInPreferQualityOverSpeed();
+    public boolean isInPreferQualityOverSpeedEnabled() {
+        return optionsFilterRegistry.isInPreferQualityOverSpeedEnabled();
     }
 
     /**
-     * 设置全局解码时优先考虑速度还是质量 (默认优先考虑速度)
+     * 设置全局解码时优先考虑质量 (默认优先考虑速度)
      *
-     * @param globalInPreferQualityOverSpeed true：质量；false：速度
+     * @param inPreferQualityOverSpeedEnabled true：质量；false：速度
      * @return Configuration. Convenient chain calls
      */
     @NonNull
-    public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
-        if (optionsFilterRegistry.isInPreferQualityOverSpeed() != globalInPreferQualityOverSpeed) {
-            optionsFilterRegistry.setInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
-            SLog.w(NAME, "globalInPreferQualityOverSpeed=%s", globalInPreferQualityOverSpeed);
+    public Configuration setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
+        if (optionsFilterRegistry.isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
+            optionsFilterRegistry.setInPreferQualityOverSpeedEnabled(inPreferQualityOverSpeedEnabled);
+            SLog.w(NAME, "inPreferQualityOverSpeed=%s", inPreferQualityOverSpeedEnabled);
         }
         return this;
     }
 
     /**
-     * 全局移动网络下暂停下载？只影响display请求和load请求
+     * 全局移动数据下暂停下载？
      */
     @SuppressWarnings("unused")
-    public boolean isGlobalMobileNetworkGlobalPauseDownload() {
-        return optionsFilterRegistry.isGlobalMobileNetworkGlobalPauseDownload();
+    public boolean isMobileDataPauseDownloadEnabled() {
+        return optionsFilterRegistry.isMobileDataPauseDownloadEnabled();
     }
 
     /**
-     * 设置开启移动网络下暂停下载的功能，只影响 display 请求和 load 请求
+     * 开启全局移动数据下暂停下载功能，只影响 display 请求和 load 请求
      *
      * @return Configuration. Convenient chain calls
      */
     @NonNull
-    public Configuration setGlobalMobileNetworkPauseDownload(boolean globalMobileNetworkPauseDownload) {
-        if (isGlobalMobileNetworkGlobalPauseDownload() != globalMobileNetworkPauseDownload) {
-            optionsFilterRegistry.setGlobalMobileNetworkPauseDownload(this, globalMobileNetworkPauseDownload);
-            SLog.w(NAME, "globalMobileNetworkPauseDownload=%s", isGlobalMobileNetworkGlobalPauseDownload());
+    public Configuration setMobileDataPauseDownloadEnabled(boolean mobileDataPauseDownloadEnabled) {
+        if (isMobileDataPauseDownloadEnabled() != mobileDataPauseDownloadEnabled) {
+            optionsFilterRegistry.setMobileDataPauseDownloadEnabled(this, mobileDataPauseDownloadEnabled);
+            SLog.w(NAME, "mobileDataPauseDownload=%s", isMobileDataPauseDownloadEnabled());
         }
         return this;
     }
@@ -749,11 +749,11 @@ public final class Configuration {
                 "\n" + "requestFactory：" + requestFactory.getKey() +
                 "\n" + "errorTracker：" + errorTracker.getKey() +
 
-                "\n" + "globalPauseDownload：" + optionsFilterRegistry.isPauseDownload() +
-                "\n" + "globalPauseLoad：" + optionsFilterRegistry.isPauseLoad() +
-                "\n" + "globalLowQualityImage：" + optionsFilterRegistry.isLowQualityImage() +
-                "\n" + "globalInPreferQualityOverSpeed：" + optionsFilterRegistry.isInPreferQualityOverSpeed() +
-                "\n" + "globalMobileNetworkPauseDownload：" + isGlobalMobileNetworkGlobalPauseDownload();
+                "\n" + "pauseDownload：" + optionsFilterRegistry.isPauseDownloadEnabled() +
+                "\n" + "pauseLoad：" + optionsFilterRegistry.isPauseLoadEnabled() +
+                "\n" + "lowQualityImage：" + optionsFilterRegistry.isLowQualityImageEnabled() +
+                "\n" + "inPreferQualityOverSpeed：" + optionsFilterRegistry.isInPreferQualityOverSpeedEnabled() +
+                "\n" + "mobileDataPauseDownload：" + isMobileDataPauseDownloadEnabled();
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

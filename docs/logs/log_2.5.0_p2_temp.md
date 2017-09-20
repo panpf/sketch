@@ -8,6 +8,22 @@ bugs：
 * :hammer: [Listener].onStartLoad() 方法名字改为 onReadyLoad()
 * :hammer: [ImageShaper] 接口新增 getPath(Rect bounds) 方法，获取形状的 Path
 * :hammer: 重构 [SketchImageView] 的下载进度和按下状态功能的蒙层形状配置方式，详情请参考 [SketchImageView 使用指南][sketch_image_view]
+* :hammer: [Configuration].isGlobalPauseDownload() 重命名为 isPauseDownloadEnabled()
+* :hammer: [Configuration].setGlobalPauseDownload(boolean) 重命名为 setPauseDownloadEnabled(boolean)
+* :hammer: [Configuration].isGlobalPauseLoad() 重命名为 isPauseLoadEnabled()
+* :hammer: [Configuration].setGlobalPauseLoad(boolean) 重命名为 setPauseLoadEnabled(boolean)
+* :hammer: [Configuration].isGlobalLowQualityImage() 重命名为 isLowQualityImageEnabled()
+* :hammer: [Configuration].setGlobalLowQualityImage(boolean) 重命名为 setLowQualityImageEnabled(boolean)
+* :hammer: [Configuration].isGlobalInPreferQualityOverSpeed() 重命名为 isInPreferQualityOverSpeedEnabled()
+* :hammer: [Configuration].setGlobalInPreferQualityOverSpeed(boolean) 重命名为 setInPreferQualityOverSpeedEnabled(boolean)
+* :hammer: [Configuration].isGlobalMobileNetworkGlobalPauseDownload() 重命名为 isMobileDataPauseDownloadEnabled()
+* :hammer: [Configuration].setGlobalMobileNetworkPauseDownload(boolean) 重命名为 setMobileDataPauseDownloadEnabled(boolean)
+* :hammer: [LoadOptions].getImageProcessor() 重命名为 getProcessor()
+* :hammer: [LoadOptions].setImageProcessor(ImageProcessor) 重命名为 setProcessor(ImageProcessor)
+* :hammer: [DisplayOptions].getImageDisplayer() 重命名为 getDisplayer()
+* :hammer: [DisplayOptions].setImageDisplayer(ImageDisplayer) 重命名为 setDisplayer(ImageDisplayer)
+* :hammer: [DisplayOptions].getImageShaper() 重命名为 getShaper()
+* :hammer: [DisplayOptions].setImageShaper(ImageShaper) 重命名为 setShaper(ImageShaper)
 
 删除：
 * :fire: 删除 RequestLevelFrom ，因此取消原因中不再区分 REQUEST_LEVEL_IS_LOCAL 和 REQUEST_LEVEL_IS_MEMORY
@@ -25,7 +41,7 @@ bugs：
 * :fire: 移除 [SketchImageView] 按下状态的涟漪效果
 
 优化：
-* :zap: 移动网络暂停下载功能支持识别 流量共享 WIFI 热点，更多内容请参考 [移动网络下暂停下载图片，节省流量][pause_download]
+* :zap: 移动数据暂停下载功能支持识别 流量共享 WIFI 热点，更多内容请参考 [移动数据下暂停下载图片，节省流量][pause_download]
 
 新功能：
 * :sparkles: 新增 [OptionsFilter] 可统一过滤修改 Options
@@ -41,4 +57,7 @@ sample app：
 [CancelCause]: ../../sketch/src/main/java/me/xiaopan/sketch/request/CancelCause.java
 [Listener]: ../../sketch/src/main/java/me/xiaopan/sketch/request/Listener.java
 [Resize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/Resize.java
+[LoadOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
 [OptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilter.java
+[Configuration]: ../../sketch/src/main/java/me/xiaopan/sketch/Configuration.java

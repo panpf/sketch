@@ -9,10 +9,10 @@
 
 ```java
 // 全局暂停从本地加载载图片
-Sketch.with(context).getConfiguration().setGlobalPauseLoad(true);
+Sketch.with(context).getConfiguration().setPauseLoadEnabled(true);
 
 // 全局恢复从本地加载载图片
-Sketch.with(context).getConfiguration().setGlobalPauseLoad(false);
+Sketch.with(context).getConfiguration().setPauseLoadEnabled(false);
 ```
 
 ### 列表滑动时停止加载

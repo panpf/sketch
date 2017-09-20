@@ -130,12 +130,12 @@ public class ShowPressedFunction extends ViewFunction {
         }
 
         DisplayCache displayCache = view.getDisplayCache();
-        ImageShaper cacheImageShaper = displayCache != null ? displayCache.options.getImageShaper() : null;
-        if (cacheImageShaper != null) {
-            return cacheImageShaper;
+        ImageShaper shaperFromCacheOptions = displayCache != null ? displayCache.options.getShaper() : null;
+        if (shaperFromCacheOptions != null) {
+            return shaperFromCacheOptions;
         }
 
-        ImageShaper shaperFromOptions = view.getOptions().getImageShaper();
+        ImageShaper shaperFromOptions = view.getOptions().getShaper();
         if (shaperFromOptions != null) {
             return shaperFromOptions;
         }

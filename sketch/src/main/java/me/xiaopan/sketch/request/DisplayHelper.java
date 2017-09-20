@@ -211,7 +211,7 @@ public class DisplayHelper {
     @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper processor(@Nullable ImageProcessor processor) {
-        displayOptions.setImageProcessor(processor);
+        displayOptions.setProcessor(processor);
         return this;
     }
 
@@ -281,7 +281,7 @@ public class DisplayHelper {
     @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper displayer(@Nullable ImageDisplayer displayer) {
-        displayOptions.setImageDisplayer(displayer);
+        displayOptions.setDisplayer(displayer);
         return this;
     }
 
@@ -351,7 +351,7 @@ public class DisplayHelper {
     @NonNull
     @SuppressWarnings("unused")
     public DisplayHelper shaper(@Nullable ImageShaper imageShaper) {
-        displayOptions.setImageShaper(imageShaper);
+        displayOptions.setShaper(imageShaper);
         return this;
     }
 
@@ -587,18 +587,18 @@ public class DisplayHelper {
 
 
         // 没有 ImageProcessor 但有 Resize 的话就需要设置一个默认的图片裁剪处理器
-        if (displayOptions.getImageProcessor() == null && resize != null) {
-            displayOptions.setImageProcessor(configuration.getResizeProcessor());
+        if (displayOptions.getProcessor() == null && resize != null) {
+            displayOptions.setProcessor(configuration.getResizeProcessor());
         }
 
 
         // ImageDisplayer 必须得有
-        if (displayOptions.getImageDisplayer() == null) {
-            displayOptions.setImageDisplayer(configuration.getDefaultDisplayer());
+        if (displayOptions.getDisplayer() == null) {
+            displayOptions.setDisplayer(configuration.getDefaultDisplayer());
         }
 
         // 使用过渡图片显示器的时候，如果使用了 loadingImage 的话就必须配合 ShapeSize 才行，如果没有 ShapeSize 就取 ImageView 的宽高作为 ShapeSize
-        if (displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
+        if (displayOptions.getDisplayer() instanceof TransitionImageDisplayer
                 && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
@@ -666,14 +666,14 @@ public class DisplayHelper {
         SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
 
         Drawable finalDrawable;
-        if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
+        if (displayOptions.getShapeSize() != null || displayOptions.getShaper() != null) {
             finalDrawable = new SketchShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
-                    displayOptions.getShapeSize(), displayOptions.getImageShaper());
+                    displayOptions.getShapeSize(), displayOptions.getShaper());
         } else {
             finalDrawable = refBitmapDrawable;
         }
 
-        ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
+        ImageDisplayer imageDisplayer = displayOptions.getDisplayer();
         if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
             imageDisplayer.display(sketchView, finalDrawable);
         } else {

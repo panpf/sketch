@@ -50,7 +50,7 @@
 >* ``修改`` FailureCause重命名为FailedCause
 >* ``新增`` 所有请求新增RequestLevel属性，可决定请求的处理深度，MEMORY表示只从内存加载；LOCAL：表示只从内存和本地加载；NETWORK：表示最终还会从网络加载
 >* ``新增`` 结合RequestLevel新增暂停下载图片功能，通过Sketch.getConfiguration().setPauseDownload(boolean)设置即可
->* ``新增`` 在暂停下载功能的基础上提供移动网络下暂停下载图片功能，通过Sketch.getConfiguration().setMobileNetworkPauseDownload(boolean)开启即可
+>* ``新增`` 在暂停下载功能的基础上提供移动数据下暂停下载图片功能，通过Sketch.getConfiguration().setMobileNetworkPauseDownload(boolean)开启即可
 >* ``修改`` Sketch.pause()和Sketch.resume()修改为Sketch.getConfiguration().setPauseLoad(boolean)
 >* ``优化`` Helper和Request完全接口化，现在你可以通过自定义Helper和Request来修改整个流程
 >* ``优化`` display请求在加载之前会先从内存缓存中查找一下是否有相同ID的图片
@@ -77,7 +77,7 @@
 >* ``新增`` 增加forceUseResize选项
 
 sample app：
->* ``新增`` 在设置中增加多种开关，包括“显示下载进度”、“移动网络下不下载新图片”、“列表滑动时不加载新图片”等
+>* ``新增`` 在设置中增加多种开关，包括“显示下载进度”、“移动数据下不下载新图片”、“列表滑动时不加载新图片”等
 >* ``新增`` 搜索页和明星个人主页使用瀑布流展示
 >* ``新增`` 增加一个页面，展示读取已安装APP或本地APK文件的图标的功能。页面分两部分，分别显示已安装APP列表和扫描到的本地APK包列表
 >* ``新增`` 搞一个高斯模糊的图片作为背景
@@ -89,7 +89,7 @@ WIKI更新：
 >* 将所有assets:// 改为asset://
 >* wiki中所有涉及到SketchImageView.setImageFor的方法名都要吸怪为display***
 >* Helper和Request完全接口化，现在你可以通过自定义Helper和Request来修改整个流程
->* 新增暂停下载新图片功能，并提供一句话实现移动网络下暂停下载图片，并结合SketchImageView实现暂停时点击下载指定图片
+>* 新增暂停下载新图片功能，并提供一句话实现移动数据下暂停下载图片，并结合SketchImageView实现暂停时点击下载指定图片
 >* SketchImageView的setDebugMode更新了
 >* 更新所有关于LoadRequest和DownloadRequest的listener执行位置的说明
 >* 要着重介绍SketchImageView可以getDisplayOptions直接修改某项属性

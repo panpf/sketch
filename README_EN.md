@@ -32,7 +32,7 @@ Scan qrcode to download, or [Click me download][sample_app_download_link]
 * `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
 * `Exclusive TransitionDrawable support`. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
 * `Only to load or only to download`. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
-* `Paused download on mobile network`. Built-in mobile network to download pictures under the suspended function, you can simply open
+* `Paused download on mobile data`. Built-in mobile network to download pictures under the suspended function, you can simply open
 * `Automatically select the appropriate Bitmap.Config`. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
 * `Powerful and flexible customization`. Can be customized to URI Support, HTTP, download, cache, decoding, processing, display, placeholder and other links
 
@@ -142,7 +142,7 @@ To further enhance the user experience:
 * [Use the thumbnailMode property to display clearer thumbnails][thumbnail_mode]
 * [Use the cacheProcessedImageInDisk property to cache images that require complex processing to increase the display speed][cache_processed_image_in_disk]
 * [Use the MemoryCacheStateImage to display a cached, vague image before displaying a clear image][memory_cache_state_image]
-* [Mobile network or traffic restrictions under the WIFI pause download pictures, saving traffic][pause_download]
+* [Mobile data or traffic restrictions under the WIFI pause download pictures, saving traffic][pause_download]
 * [When the list is slipping, the image is paused to increase the sliding fluence of the list][pause_load]
 
 More:

@@ -32,7 +32,7 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 * `自动防止加载过大 Bitmap` 可通过 maxSize 来控制加载到内存的图片的尺寸，默认为 ImageView的 layout_width 和 layout_height 或屏幕的宽高
 * `独家 TransitionDrawable 支持`. 独家支持任意尺寸的两张图片使用 TransitionDrawable 过渡显示，保证不变形
 * `只加载或只下载`. 除了 display() 方法可以显示图片之外，你还可以通过 load() 方法只加载图片到内存中或通过 download() 方法只下载图片到本地
-* `移动网络下暂停下载`. 内置了移动网络下暂停下载图片的功能，你只需开启即可
+* `移动数据下暂停下载`. 内置了移动数据下暂停下载图片的功能，你只需开启即可
 * `自动选择合适的 Bitmap.Config`. 根据图片的 MimeType 自动选择合适的 Bitmap.Config，减少内存浪费，例如对于 JPEG 格式的图片就会使用 Bitmap.Config.RGB_565 解码
 * `强大且灵活的自定义`. 可自定义 URI 支持、HTTP、下载、缓存、解码、处理、显示、占位图等各个环节
 
@@ -142,7 +142,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [使用 thumbnailMode 属性显示更清晰的缩略图][thumbnail_mode]
 * [使用 cacheProcessedImageInDisk 属性缓存需要复杂处理的图片，提升显示速度][cache_processed_image_in_disk]
 * [使用 MemoryCacheStateImage 先显示已缓存的较模糊的图片，然后再显示清晰的图片][memory_cache_state_image]
-* [移动网络或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
+* [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 * [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]
 
 更多：

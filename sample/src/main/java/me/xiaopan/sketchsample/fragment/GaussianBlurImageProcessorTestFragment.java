@@ -36,7 +36,7 @@ public class GaussianBlurImageProcessorTestFragment extends BaseFragment {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageView.getOptions().setMaxSize(metrics.widthPixels / 4, metrics.heightPixels / 4);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -63,7 +63,7 @@ public class GaussianBlurImageProcessorTestFragment extends BaseFragment {
     }
 
     private void apply() {
-        imageView.getOptions().setImageProcessor(GaussianBlurImageProcessor.makeRadius(progress));
+        imageView.getOptions().setProcessor(GaussianBlurImageProcessor.makeRadius(progress));
         imageView.displayImage(AssetImage.MEI_NV);
     }
 }

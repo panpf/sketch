@@ -53,7 +53,7 @@ public class DrawableStateImage implements StateImage {
         }
 
         ShapeSize shapeSize = displayOptions.getShapeSize();
-        ImageShaper imageShaper = displayOptions.getImageShaper();
+        ImageShaper imageShaper = displayOptions.getShaper();
         if ((shapeSize != null || imageShaper != null) && drawable != null
                 && drawable instanceof BitmapDrawable) {
             drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);

@@ -71,7 +71,7 @@ public class MyVideoItemFactory extends AssemblyRecyclerItemFactory<MyVideoItemF
 
             iconImageView.getOptions()
                     .setLoadingImage(R.drawable.image_loading)
-                    .setImageDisplayer(new TransitionImageDisplayer());
+                    .setDisplayer(new TransitionImageDisplayer());
         }
 
         @Override

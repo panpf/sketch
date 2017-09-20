@@ -36,7 +36,7 @@ public class RoundRectImageProcessorTestFragment extends BaseFragment {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageView.getOptions().setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -63,7 +63,7 @@ public class RoundRectImageProcessorTestFragment extends BaseFragment {
     }
 
     private void apply() {
-        imageView.getOptions().setImageProcessor(new RoundRectImageProcessor(progress));
+        imageView.getOptions().setProcessor(new RoundRectImageProcessor(progress));
         imageView.displayImage(AssetImage.MEI_NV);
     }
 }

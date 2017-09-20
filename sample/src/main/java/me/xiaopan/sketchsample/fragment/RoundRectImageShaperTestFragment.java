@@ -39,7 +39,7 @@ public class RoundRectImageShaperTestFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         radiusSeekBar.setMax(100);
         radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -87,7 +87,7 @@ public class RoundRectImageShaperTestFragment extends BaseFragment {
     private void apply() {
         RoundRectImageShaper imageShaper = new RoundRectImageShaper(radiusProgress).setStroke(Color.WHITE, strokeProgress);
 
-        imageView.getOptions().setImageShaper(imageShaper);
+        imageView.getOptions().setShaper(imageShaper);
         imageView.displayImage(AssetImage.TYPE_TEST_JPG);
     }
 }

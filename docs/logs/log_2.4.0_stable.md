@@ -70,7 +70,7 @@
 
 ### SketchImageView
 * :hammer: getDisplayParams() 方法改名为 getDisplayCache()
-* :fire: 修复在显示错误时点击重试的时候会意外的跳过移动网络暂停下载功能的bug
+* :fire: 修复在显示错误时点击重试的时候会意外的跳过移动数据暂停下载功能的bug
 * :sparkles: 新增 redisplay(RedisplayListener) 方法可按照上次的配置重新显示
 * :sparkles: 新增 setClickPlayGifEnabled(Drawable) 方法可开启点击播放gif功能
 * :hammer: displayURIImage(Uri) 重命名为 displayContentImage(Uri)

@@ -37,7 +37,7 @@ public class MaskImageProcessorTestFragment extends BaseFragment {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageView.getOptions().setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -66,7 +66,7 @@ public class MaskImageProcessorTestFragment extends BaseFragment {
     private void apply() {
         int alpha = (int) (((float) progress / 100) * 255);
         int maskColor = Color.argb(alpha, 0, 0, 0);
-        imageView.getOptions().setImageProcessor(new MaskImageProcessor(maskColor));
+        imageView.getOptions().setProcessor(new MaskImageProcessor(maskColor));
         imageView.displayImage(AssetImage.MASK);
     }
 }

@@ -20,7 +20,7 @@
         \n10. 自动防止加载过大 Bitmap
         \n11. 独家 TransitionDrawable 支持
         \n12. 只加载或只下载
-        \n13. 移动网络下暂停下载
+        \n13. 移动数据下暂停下载
         \n14. 自动选择合适的 Bitmap.Config
     </string>
     <string name="text_version">v%s</string>

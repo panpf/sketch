@@ -32,8 +32,8 @@ public class CircleImageProcessorTestFragment extends BaseFragment {
         layoutParams.leftMargin = layoutParams.topMargin = layoutParams.rightMargin = layoutParams.bottomMargin = SketchUtils.dp2px(getActivity(), 16);
         imageView.setLayoutParams(layoutParams);
 
-        imageView.getOptions().setImageProcessor(CircleImageProcessor.getInstance());
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setProcessor(CircleImageProcessor.getInstance());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
         imageView.displayImage(AssetImage.MEI_NV);
     }
 }

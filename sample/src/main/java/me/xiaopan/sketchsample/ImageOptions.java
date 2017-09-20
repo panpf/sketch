@@ -76,7 +76,7 @@ public class ImageOptions {
                         .setLoadingImage(R.drawable.image_loading)
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(transitionImageDisplayer)
+                        .setDisplayer(transitionImageDisplayer)
                         .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
@@ -88,8 +88,8 @@ public class ImageOptions {
                         .setLoadingImage(R.drawable.image_loading)
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(transitionImageDisplayer)
-                        .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
+                        .setDisplayer(transitionImageDisplayer)
+                        .setShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
                         .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
@@ -99,13 +99,13 @@ public class ImageOptions {
             protected DownloadOptions onCreateOptions(Context context) {
                 return new DisplayOptions()
                         .setLoadingImage(new OldStateImage(new DrawableStateImage(R.drawable.shape_window_background)))
-                        .setImageProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
+                        .setProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
                         .setCacheProcessedImageInDisk(true)
                         .setBitmapConfig(Bitmap.Config.ARGB_8888)   // 效果比较重要
                         .setShapeSize(ShapeSize.byViewFixedSize())
                         .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,
                                 context.getResources().getDisplayMetrics().heightPixels / 4)
-                        .setImageDisplayer(new TransitionImageDisplayer(true));
+                        .setDisplayer(new TransitionImageDisplayer(true));
             }
         });
 
@@ -116,8 +116,8 @@ public class ImageOptions {
                         .setLoadingImage(R.drawable.image_loading)
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
-                        .setImageDisplayer(transitionImageDisplayer)
+                        .setShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
+                        .setDisplayer(transitionImageDisplayer)
                         .setShapeSize(ShapeSize.byViewFixedSize());
             }
         });
@@ -131,7 +131,7 @@ public class ImageOptions {
                         .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setMaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
-                        .setImageDisplayer(transitionImageDisplayer);
+                        .setDisplayer(transitionImageDisplayer);
             }
         });
     }

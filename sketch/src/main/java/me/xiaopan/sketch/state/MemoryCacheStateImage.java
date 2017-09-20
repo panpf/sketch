@@ -56,7 +56,7 @@ public class MemoryCacheStateImage implements StateImage {
             } else {
                 SketchBitmapDrawable bitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
                 ShapeSize shapeSize = displayOptions.getShapeSize();
-                ImageShaper imageShaper = displayOptions.getImageShaper();
+                ImageShaper imageShaper = displayOptions.getShaper();
                 if (shapeSize != null || imageShaper != null) {
                     return new SketchShapeBitmapDrawable(context, bitmapDrawable, shapeSize, imageShaper);
                 } else {

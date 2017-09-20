@@ -33,7 +33,7 @@ public class CircleImageShaperTestFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         strokeSeekBar.setMax(100);
         strokeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -61,7 +61,7 @@ public class CircleImageShaperTestFragment extends BaseFragment {
     private void apply() {
         CircleImageShaper imageShaper = new CircleImageShaper().setStroke(Color.WHITE, strokeProgress);
 
-        imageView.getOptions().setImageShaper(imageShaper);
+        imageView.getOptions().setShaper(imageShaper);
         imageView.displayImage(AssetImage.TYPE_TEST_JPG);
     }
 }

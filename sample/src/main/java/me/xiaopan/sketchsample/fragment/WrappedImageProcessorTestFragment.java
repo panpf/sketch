@@ -50,7 +50,7 @@ public class WrappedImageProcessorTestFragment extends BaseFragment {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageView.getOptions().setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.getOptions().setDisplayer(new TransitionImageDisplayer());
 
         widthSeekBar.setMax(100);
         widthSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -121,7 +121,7 @@ public class WrappedImageProcessorTestFragment extends BaseFragment {
         int alpha = (int) (((float) maskAlphaProgress / 100) * 255);
         int maskColor = Color.argb(alpha, 0, 0, 0);
 
-        imageView.getOptions().setImageProcessor(new MaskImageProcessor(maskColor, rotateImageProcessor));
+        imageView.getOptions().setProcessor(new MaskImageProcessor(maskColor, rotateImageProcessor));
         imageView.displayImage(AssetImage.MEI_NV);
     }
 }

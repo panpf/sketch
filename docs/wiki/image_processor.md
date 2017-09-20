@@ -9,7 +9,7 @@
 ```java
 // SketchImageView
 SketchImageView sketchImageView = ...;
-sketchImageView.getOptions().setImageProcessor(new RoundRectImageProcessor(10));
+sketchImageView.getOptions().setProcessor(new RoundRectImageProcessor(10));
 
 // LoadHelper
 Sketch.with(context).load(uri, listener)
@@ -43,7 +43,7 @@ Sketch.with(context).display(uri, sketchImageView)
 3. 创建新的 bitmap 之前，先从 BitmapPool 中查找可复用 bitmap，实在没有再创建新的 bitmap
 4. 在处理的过程中产生的过渡 Bitmap 在用完之后一定要调用 BitmapPoolUtils.freeBitmapToPool(Bitmap, BitmapPool) 回收掉
 
-自定义的 [ImageProcessor] 写好后通过 [LoadOptions]/[DisplayOptions] 的 setImageProcessor(ImageProcessor) 方法或 [LoadHelper]/[DisplayHelper] 的 processor(ImageProcessor) 方法使用即可
+自定义的 [ImageProcessor] 写好后通过 [LoadOptions]/[DisplayOptions] 的 setProcessor(ImageProcessor) 方法或 [LoadHelper]/[DisplayHelper] 的 processor(ImageProcessor) 方法使用即可
 
 [ImageProcessor]: ../../sketch/src/main/java/me/xiaopan/sketch/process/ImageProcessor.java
 [ImageDecoder]: ../../sketch/src/main/java/me/xiaopan/sketch/decode/ImageDecoder.java
