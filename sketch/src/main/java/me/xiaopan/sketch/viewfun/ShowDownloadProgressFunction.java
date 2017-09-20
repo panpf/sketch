@@ -137,6 +137,9 @@ public class ShowDownloadProgressFunction extends ViewFunction {
         }
 
         this.maskColor = maskColor;
+        if (maskPaint != null) {
+            maskPaint.setColor(maskColor);
+        }
         return true;
     }
 

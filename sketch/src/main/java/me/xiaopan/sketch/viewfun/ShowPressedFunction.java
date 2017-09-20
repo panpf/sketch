@@ -27,8 +27,6 @@ import android.support.annotation.Nullable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.Scroller;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.request.DisplayCache;
@@ -45,14 +43,10 @@ public class ShowPressedFunction extends ViewFunction {
     private ImageShaper maskShaper;
     private int maskColor = DEFAULT_MASK_COLOR;
 
-    private int touchX;
-    private int touchY;
-    private int rippleRadius;
-    private boolean allowShowPressedStatus;
-    private boolean animationRunning;
+    private boolean showProcessed;
+    private boolean singleTapUp;
     private Paint maskPaint;
     private GestureDetector gestureDetector;
-    private boolean showRect;
     private Rect bounds;
 
     public ShowPressedFunction(@NonNull FunctionPropertyView view) {
@@ -69,8 +63,10 @@ public class ShowPressedFunction extends ViewFunction {
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_OUTSIDE:
-                    allowShowPressedStatus = false;
-                    view.invalidate();
+                    if (showProcessed && !singleTapUp) {
+                        showProcessed = false;
+                        view.invalidate();
+                    }
                     break;
             }
         }
@@ -79,7 +75,7 @@ public class ShowPressedFunction extends ViewFunction {
 
     @Override
     public void onDraw(@NonNull Canvas canvas) {
-        if (!allowShowPressedStatus && !animationRunning && !showRect) {
+        if (!showProcessed) {
             return;
         }
 
@@ -107,11 +103,9 @@ public class ShowPressedFunction extends ViewFunction {
             maskPaint.setColor(maskColor);
             maskPaint.setAntiAlias(true);
         }
-        if (allowShowPressedStatus || animationRunning) {
-            canvas.drawCircle(touchX, touchY, rippleRadius, maskPaint);
-        } else if (showRect) {
-            canvas.drawRect(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom(), maskPaint);
-        }
+
+        canvas.drawRect(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(),
+                view.getHeight() - view.getPaddingBottom(), maskPaint);
 
         if (shaper != null) {
             canvas.restore();
@@ -124,6 +118,9 @@ public class ShowPressedFunction extends ViewFunction {
         }
 
         this.maskColor = maskColor;
+        if (maskPaint != null) {
+            maskPaint.setColor(maskColor);
+        }
         return true;
     }
 
@@ -155,103 +152,43 @@ public class ShowPressedFunction extends ViewFunction {
         return true;
     }
 
-    private class PressedStatusManager extends GestureDetector.SimpleOnGestureListener implements Runnable {
-        private boolean showPress;
-        private Scroller scroller;
-        private Runnable cancelRunnable;
+    private class PressedStatusManager extends GestureDetector.SimpleOnGestureListener {
 
-        public PressedStatusManager() {
-            scroller = new Scroller(view.getContext());
-        }
-
-        @Override
-        public void run() {
-            animationRunning = scroller.computeScrollOffset();
-            if (animationRunning) {
-                rippleRadius = scroller.getCurrX();
-                view.post(this);
+        private Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                showProcessed = false;
+                view.invalidate();
             }
-            view.invalidate();
-        }
+        };
 
         @Override
         public boolean onDown(MotionEvent event) {
-            if (!scroller.isFinished()) {
-                scroller.forceFinished(true);
-                view.removeCallbacks(this);
-                animationRunning = false;
-                view.invalidate();
-            }
-
-            touchX = (int) event.getX();
-            touchY = (int) event.getY();
-            showPress = false;
-            return false;
+            showProcessed = false;
+            singleTapUp = false;
+            view.removeCallbacks(runnable);
+            return true;
         }
 
         @Override
         public void onShowPress(MotionEvent e) {
-            allowShowPressedStatus = true;
-            showPress = true;
-            startAnimation(1000);
-        }
+            super.onShowPress(e);
 
-        @Override
-        public void onLongPress(MotionEvent e) {
-            super.onLongPress(e);
+            showProcessed = true;
+            view.invalidate();
         }
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            if (!showPress) {
-                showRect = true;
+            singleTapUp = true;
+
+            if (!showProcessed) {
+                showProcessed = true;
                 view.invalidate();
-                if (cancelRunnable == null) {
-                    cancelRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            showRect = false;
-                            view.invalidate();
-                        }
-                    };
-                }
-                view.postDelayed(cancelRunnable, 200);
             }
+            view.postDelayed(runnable, 120);
+
             return super.onSingleTapUp(e);
-        }
-
-        private void startAnimation(int duration) {
-            if (scroller == null) {
-                scroller = new Scroller(view.getContext(), new DecelerateInterpolator());
-            }
-            scroller.startScroll(0, 0, computeRippleRadius(), 0, duration);
-            view.post(this);
-        }
-
-        /**
-         * 计算涟漪的半径
-         *
-         * @return 涟漪的半径
-         */
-        private int computeRippleRadius() {
-            // 先计算按下点到四边的距离
-            int toLeftDistance = touchX - view.getPaddingLeft();
-            int toTopDistance = touchY - view.getPaddingTop();
-            int toRightDistance = Math.abs(view.getWidth() - view.getPaddingRight() - touchX);
-            int toBottomDistance = Math.abs(view.getHeight() - view.getPaddingBottom() - touchY);
-
-            // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
-            int centerX = view.getWidth() / 2;
-            int centerY = view.getHeight() / 2;
-            if ((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
-                int toLeftTopDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toTopDistance * toTopDistance));
-                int toRightBottomDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toBottomDistance * toBottomDistance));
-                return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
-            } else {
-                int toLeftBottomDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toBottomDistance * toBottomDistance));
-                int toRightTopDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toTopDistance * toTopDistance));
-                return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
-            }
         }
     }
 }
