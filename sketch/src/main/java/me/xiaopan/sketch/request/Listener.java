@@ -19,7 +19,7 @@ package me.xiaopan.sketch.request;
 import android.support.annotation.NonNull;
 
 /**
- * 请求监听器，可监听准备加载、失败、取消
+ * 请求监听器，可监听开始、失败、取消
  */
 public interface Listener {
     void onStarted();

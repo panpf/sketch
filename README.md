@@ -135,7 +135,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [使用 MaxSize 读取合适尺寸的缩略图，节省内存][max_size]
 * [使用 Resize 精确修改图片的尺寸][resize]
 * [使用 StateImage 设置占位图片和状态图片][state_image]
-* [监听准备加载、成功、失败以及下载进度事件][listener]
+* [监听开始、成功、失败以及下载进度][listener]
 
 提升用户体验：
 * [使用 TransitionImageDisplayer 以自然过渡渐的变方式显示图片][transition_image_displayer]

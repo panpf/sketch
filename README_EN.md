@@ -135,7 +135,7 @@ Basic functions:
 * [Use MaxSize to read thumbnails of the right size to save memory][max_size]
 * [Use Resize to precisely modify the size of the image][resize]
 * [Use StateImage to set the placeholder picture and status picture][state_image]
-* [Listen to ready load, success, failure, and download progress events][listener]
+* [Listen to start, success, failure, and download progress events][listener]
 
 To further enhance the user experience:
 * [Use the TransitionImageDisplayer to display the image in a natural transition gradient][transition_image_displayer]

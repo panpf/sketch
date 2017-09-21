@@ -65,7 +65,7 @@ sketchImageView.setOptions(displayOptions)
 
 ### 监听显示过程和下载进度
 
-参考 [监听准备加载、成功、失败以及下载进度事件][listener]
+参考 [监听开始、成功、失败以及下载进度事件][listener]
 
 ### 显示下载进度
 

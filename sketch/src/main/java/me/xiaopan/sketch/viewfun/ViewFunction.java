@@ -96,7 +96,7 @@ public abstract class ViewFunction {
     }
 
     /**
-     * 准备加载图片
+     * 开始转入异步线程加载或下载图片
      *
      * @return 是否需要调用 invalidate() 刷新 ImageView
      */
