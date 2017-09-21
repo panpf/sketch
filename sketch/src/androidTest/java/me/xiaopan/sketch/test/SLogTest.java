@@ -1,6 +1,5 @@
 package me.xiaopan.sketch.test;
 
-import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
@@ -25,7 +24,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class SLogTest {
 
     @Test

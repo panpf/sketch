@@ -3,7 +3,7 @@
 :fire: 如果你用到了下述重命名、移除和重构以及 ErrorTracker 的话就不能无痛升级 :fire:
 
 bugs：
-* :bug: 修复在某些 ROM 上查找 Initializer 时碰到 meta 值不是 String 时崩溃的 BUG
+* :bug: 修复在某些 ROM 上查找 Initializer 时碰到 meta 值不是 String 时崩溃的 BUG [#43]
 * :bug: 修复 Sketch 的单例可能失效的 BUG
 * :bug: 修复在多线程环境下可能拿到一个尚未执行 Initializer 的 Sketch 的 bug
 * :bug: 修复 ImageZoomer 的双击事件和单击事件可能会有冲突的 BUG
@@ -60,3 +60,4 @@ bugs：
 [resize]: ../wiki/resize.md
 [shape_size]: ../wiki/shape_size.md
 [display_apk_or_app_icon]: ../wiki/display_apk_or_app_icon.md
+[#43]: https://github.com/panpf/sketch/issues/43

@@ -14,8 +14,6 @@ import java.util.Locale;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import me.xiaopan.sketch.util.SketchUtils;
-
 /**
  * XPK信息包装类
  */
@@ -60,14 +58,6 @@ public class XpkInfo implements Serializable {
 
     public String getDestination() {
         return destination;
-    }
-
-    @Override
-    public String toString() {
-        return SketchUtils.concat(" ", new Object[]{
-                "apk(loc|size|pack)", this.apkSize,
-                this.packageName, "\ndata(loc|size)", this.destination,
-                this.dataSize, "\nresult(st|suc)"});
     }
 
     /**

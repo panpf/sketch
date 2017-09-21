@@ -604,14 +604,12 @@ public class DisplayHelper {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
                 ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
-                String errorInfo = SketchUtils.concat(
-                        "If you use TransitionImageDisplayer and loadingImage, " +
-                                "You must be setup ShapeSize or imageView width and height must be fixed",
-                        ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
-                        ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
+                String widthName = SketchUtils.viewLayoutFormatted(layoutParams != null ? layoutParams.width : -1);
+                String heightName = SketchUtils.viewLayoutFormatted(layoutParams != null ? layoutParams.height : -1);
+                String errorInfo = String.format("If you use TransitionImageDisplayer and loadingImage, " +
+                        "You must be setup ShapeSize or imageView width and height must be fixed. width=%s, height=%s", widthName, heightName);
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "%s. view(%s). %s",
-                            errorInfo, Integer.toHexString(sketchView.hashCode()), uri);
+                    SLog.d(NAME, "%s. view(%s). %s", errorInfo, Integer.toHexString(sketchView.hashCode()), uri);
                 }
                 throw new IllegalArgumentException(errorInfo);
             }

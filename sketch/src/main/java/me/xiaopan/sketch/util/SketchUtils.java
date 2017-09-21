@@ -193,6 +193,7 @@ public class SketchUtils {
      * @param fileName 例如：test.txt
      * @param suffix   例如：.txt
      */
+    @SuppressWarnings("unused")
     public static boolean checkSuffix(String fileName, String suffix) {
         if (fileName == null) {
             return false;
@@ -208,29 +209,6 @@ public class SketchUtils {
         }
 
         return suffix.equalsIgnoreCase(fileNameSuffix);
-    }
-
-    public static String concat(Object... strings) {
-        if (strings == null || strings.length == 0) {
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-        for (Object string : strings) {
-            builder.append(string);
-        }
-        return builder.toString();
-    }
-
-    @Deprecated
-    public static void mapping(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight, Rect rect) {
-        float widthScale = (float) sourceWidth / targetWidth;
-        float heightScale = (float) sourceHeight / targetHeight;
-        float finalScale = widthScale < heightScale ? widthScale : heightScale;
-        int srcWidth = (int) (targetWidth * finalScale);
-        int srcHeight = (int) (targetHeight * finalScale);
-        int srcLeft = (sourceWidth - srcWidth) / 2;
-        int srcTop = (sourceHeight - srcHeight) / 2;
-        rect.set(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
     }
 
     public static void close(Closeable closeable) {
@@ -438,7 +416,7 @@ public class SketchUtils {
         }
 
         // 去掉不可用的存储器
-        List<String> storagePathList = new LinkedList<String>();
+        List<String> storagePathList = new LinkedList<>();
         Collections.addAll(storagePathList, paths);
         Iterator<String> storagePathIterator = storagePathList.iterator();
 
@@ -538,7 +516,7 @@ public class SketchUtils {
      */
     public static File buildCacheDir(Context context, String dirName, boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
                                      boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException, UnableCreateDirException, UnableCreateFileException {
-        List<File> appCacheDirs = new LinkedList<File>();
+        List<File> appCacheDirs = new LinkedList<>();
 
         String[] sdcardPaths = getAllAvailableSdcardPath(context);
         if (sdcardPaths != null && sdcardPaths.length > 0) {

@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import me.xiaopan.sketch.util.SketchUtils;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class SketchUtilsTest {
     @Test
     public void testReadApkIcon() {
