@@ -1,6 +1,6 @@
 # URI 类型及使用指南
 
-Sketch 一共内置支持了 9 种类型的 uri，你还可以通过 [UriModel] 扩展 uri，详情请参考 [自定义 UriModel 支持新的 Uri 类型][uri_model]，下面就一一详解内置的几种 uri
+Sketch 一共内置支持了 9 种类型的 uri，你还可以通过 [UriModel] 扩展 uri，详情请参考 [UriModel 详解及扩展 URI][uri_model]，下面就一一详解内置的几种 uri
 
 ### http or https uri
 
@@ -121,7 +121,7 @@ Sketch.with(context).load(androidResUri, new LoadListener(){...}).commit();
 
 ### base64 uri
 
-basr64 uri 是将图片的数据转码成 base64 字符串来传递和显示，通常只适用于较小的图片，对应方法如下：
+base64 uri 是将图片的数据转码成 base64 字符串来传递和显示，通常只适用于较小的图片，对应方法如下：
 
 ```java
 String base64ImageUri = "data:image/jpeg;base64,/9j/4QaO...U7T/in//Z";

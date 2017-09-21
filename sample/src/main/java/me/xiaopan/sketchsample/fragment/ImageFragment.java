@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
-import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
@@ -180,13 +179,12 @@ public class ImageFragment extends BaseFragment {
 
             // 有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
             if (!TextUtils.isEmpty(loadingImageOptionsKey)) {
-                Configuration configuration = Sketch.with(getActivity()).getConfiguration();
-                UriModel uriModel = configuration.getUriModelRegistry().match(finalShowImageUrl);
+                UriModel uriModel = UriModel.match(getActivity(), finalShowImageUrl);
                 SketchRefBitmap cachedRefBitmap = null;
                 String memoryCacheKey = null;
                 if (uriModel != null) {
                     memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl, uriModel, loadingImageOptionsKey);
-                    cachedRefBitmap = configuration.getMemoryCache().get(memoryCacheKey);
+                    cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(memoryCacheKey);
                 }
                 if (cachedRefBitmap != null) {
                     options.setLoadingImage(new MemoryCacheStateImage(memoryCacheKey, null));

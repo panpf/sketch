@@ -221,10 +221,12 @@ public class SampleImageView extends SketchImageView {
 
         UriModel uriModel = UriModel.match(getContext(), sketchDrawable.getUri());
         DataSource dataSource = null;
-        try {
-            dataSource = uriModel.getDataSource(getContext(), sketchDrawable.getUri(), null);
-        } catch (GetDataSourceException e) {
-            e.printStackTrace();
+        if (uriModel != null) {
+            try {
+                dataSource = uriModel.getDataSource(getContext(), sketchDrawable.getUri(), null);
+            } catch (GetDataSourceException e) {
+                e.printStackTrace();
+            }
         }
         long imageLength = 0;
         try {

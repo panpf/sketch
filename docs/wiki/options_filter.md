@@ -30,7 +30,7 @@ optinsFilterRegistry.add(new OptionsFilterRegistry());
 Sketch 内置了四种 [OptionsFilter]，如下：
 * [LowQualityOptionsFilter]：用来控制全局低质量模式
 * [InPreferQualityOverSpeedOptionsFilter]：用来控制全局质量优先模式
-* [PauseDownloadOptionsFilter]：用来控制暂停下载，配合 [MobileNetworkPauseDownloadController] 可实现移动数据下暂停下载，另参考 [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
+* [PauseDownloadOptionsFilter]：用来控制暂停下载，配合 [MobileDataPauseDownloadController] 可实现移动数据下暂停下载，另参考 [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 * [PauseLoadOptionsFilter]：用来控制暂停加载，配合 [ScrollingPauseLoadManager] 可实现列表滑动中暂停加载，另参考 [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]
 
 上述四个 [OptionsFilter], [Configuration] 和 [OptionsFilterRegistry] 都提供了开关控制，详情请参考源码
@@ -41,7 +41,7 @@ Sketch 内置了四种 [OptionsFilter]，如下：
 [InPreferQualityOverSpeedOptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/InPreferQualityOverSpeedOptionsFilter.java
 [PauseDownloadOptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/PauseDownloadOptionsFilter.java
 [PauseLoadOptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/PauseLoadOptionsFilter.java
-[MobileNetworkPauseDownloadController]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/MobileNetworkPauseDownloadController.java
+[MobileDataPauseDownloadController]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/MobileDataPauseDownloadController.java
 [ScrollingPauseLoadManager]: ../../sample/src/main/java/me/xiaopan/sketchsample/util/ScrollingPauseLoadManager.java
 [pause_download]: pause_download.md
 [pause_load]: pause_load.md

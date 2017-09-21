@@ -46,6 +46,7 @@ public class DrawableUriModel extends UriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "drawable.icon://424214"，就会返回 "424214"
      */
+    @NonNull
     @Override
     public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;

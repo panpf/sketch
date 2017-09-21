@@ -20,7 +20,7 @@ Sketch.with(context).getConfiguration().setPauseDownloadEnabled(false);
 
 ### 移动数据下暂停下载
 
-Sketch 内置了 [MobileNetworkPauseDownloadController] 来提移动数据或有流量限制的 WIFI 下自动暂停下载图片的功能并提供了开关，你只需开启即可，如下：
+Sketch 内置了 [MobileDataPauseDownloadController] 来提移动数据或有流量限制的 WIFI 下自动暂停下载图片的功能并提供了开关，你只需开启即可，如下：
 
 ```java
 // 开启移动数据下自动暂停下载图片功能
@@ -41,7 +41,7 @@ sketchImageView.setClickDisplayOnPauseDownload(true);
 ```
 此功能`只作用于当前图片`，并且`只忽略暂停下载功能一次`
 
-[MobileNetworkPauseDownloadController]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/MobileNetworkPauseDownloadController.java
+[MobileDataPauseDownloadController]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/MobileDataPauseDownloadController.java
 [sketch_image_view]: sketch_image_view.md
 [DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
 [SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java

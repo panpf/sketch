@@ -37,6 +37,7 @@ public abstract class UriModel {
      * @param uri    图片 uri
      * @return 能够处理这种 uri 的 UriModel
      */
+    @Nullable
     public static UriModel match(@NonNull Sketch sketch, @NonNull String uri) {
         return !TextUtils.isEmpty(uri) ? sketch.getConfiguration().getUriModelRegistry().match(uri) : null;
     }
@@ -48,6 +49,7 @@ public abstract class UriModel {
      * @param uri     图片 uri
      * @return 能够处理这种 uri 的 UriModel
      */
+    @Nullable
     public static UriModel match(@NonNull Context context, @NonNull String uri) {
         return match(Sketch.with(context), uri);
     }
@@ -78,6 +80,7 @@ public abstract class UriModel {
      * @param uri 图片 uri
      * @return uri 中的内容部分，默认是它自己
      */
+    @NonNull
     public String getUriContent(@NonNull String uri) {
         return uri;
     }

@@ -46,6 +46,7 @@ public class AssetUriModel extends UriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "asset://test.png"，就会返回 "test.png"
      */
+    @NonNull
     @Override
     public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;

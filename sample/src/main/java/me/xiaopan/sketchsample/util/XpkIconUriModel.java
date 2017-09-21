@@ -35,6 +35,7 @@ public class XpkIconUriModel extends AbsStreamDiskCacheUriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "xpk.icon:///sdcard/test.xpk"，就会返回 "/sdcard/test.xpk"
      */
+    @NonNull
     @Override
     public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;

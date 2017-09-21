@@ -32,7 +32,7 @@ Scan qrcode to download, or [Click me download][sample_app_download_link]
 * `Automatically prevents excessive loading Bitmap` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
 * `Exclusive TransitionDrawable support`. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
 * `Only to load or only to download`. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
-* `Paused download on mobile data`. Built-in mobile network to download pictures under the suspended function, you can simply open
+* `Paused download on mobile data`. Built-in mobile data to download pictures under the suspended function, you can simply open
 * `Automatically select the appropriate Bitmap.Config`. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
 * `Powerful and flexible customization`. Can be customized to URI Support, HTTP, download, cache, decoding, processing, display, placeholder and other links
 
@@ -146,7 +146,7 @@ To further enhance the user experience:
 * [When the list is slipping, the image is paused to increase the sliding fluence of the list][pause_load]
 
 More:
-* [Customize UriModel support new Uri types][uri_model]
+* [UriModel Detailed and extended URI][uri_model]
 * [Unified Change Options][options_filter]
 * [Show video thumbnails][display_video_thumbnail]
 * [Manage Multiple Options][options_manage]

@@ -46,6 +46,7 @@ public class ApkIconUriModel extends AbsBitmapDiskCacheUriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "apk.icon:///sdcard/test.apk"，就会返回 "/sdcard/test.apk"
      */
+    @NonNull
     @Override
     public String getUriContent(@NonNull String uri) {
         return match(uri) ? uri.substring(SCHEME.length()) : uri;

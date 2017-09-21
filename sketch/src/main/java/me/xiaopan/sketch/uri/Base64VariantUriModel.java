@@ -29,6 +29,7 @@ public class Base64VariantUriModel extends Base64UriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z"，就会返回 "/9j/4QaORX...C8bg/U7T/in//Z"
      */
+    @NonNull
     @Override
     public String getUriContent(@NonNull String uri) {
         return super.getUriContent(uri);

@@ -89,11 +89,16 @@ public class MakerStateImage implements StateImage {
 
         // 从内存缓存中取
         String imageUri = DrawableUriModel.makeUri(resId);
-        UriModel uriModel = configuration.getUriModelRegistry().match(imageUri);
-        @SuppressWarnings("ConstantConditions")
-        String memoryCacheKey = SketchUtils.makeRequestKey(imageUri, uriModel, options.makeStateImageKey());
+        UriModel uriModel = UriModel.match(sketch, imageUri);
+        String memoryCacheKey = null;
+        if (uriModel != null) {
+            memoryCacheKey = SketchUtils.makeRequestKey(imageUri, uriModel, options.makeStateImageKey());
+        }
         MemoryCache memoryCache = configuration.getMemoryCache();
-        SketchRefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
+        SketchRefBitmap cachedRefBitmap = null;
+        if (memoryCacheKey != null) {
+            cachedRefBitmap = memoryCache.get(memoryCacheKey);
+        }
         if (cachedRefBitmap != null) {
             if (!cachedRefBitmap.isRecycled()) {
                 return new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
