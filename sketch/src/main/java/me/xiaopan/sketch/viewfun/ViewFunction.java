@@ -100,7 +100,7 @@ public abstract class ViewFunction {
      *
      * @return 是否需要调用 invalidate() 刷新 ImageView
      */
-    public boolean onDisplayReadyLoad() {
+    public boolean onDisplayStarted() {
         return false;
     }
 

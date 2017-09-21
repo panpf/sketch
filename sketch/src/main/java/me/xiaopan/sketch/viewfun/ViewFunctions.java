@@ -342,39 +342,39 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayReadyLoad() {
+    boolean onDisplayStarted() {
         boolean needInvokeInvalidate = false;
 
         if (showImageFromFunction != null) {
             //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
         }
         if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayStarted();
         }
         if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= showGifFlagFunction.onDisplayStarted();
         }
         if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= showPressedFunction.onDisplayStarted();
         }
         if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
         }
         if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= requestFunction.onDisplayStarted();
         }
         if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
         }
         if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= zoomFunction.onDisplayStarted();
         }
         if (hugeImageFunction != null) {
-            needInvokeInvalidate |= hugeImageFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= hugeImageFunction.onDisplayStarted();
         }
         if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDisplayReadyLoad();
+            needInvokeInvalidate |= clickPlayGifFunction.onDisplayStarted();
         }
 
         return needInvokeInvalidate;

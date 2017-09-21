@@ -19,5 +19,11 @@ package me.xiaopan.sketch.request;
 import android.support.annotation.NonNull;
 
 public interface LoadListener extends Listener {
+    /**
+     * 开始转入异步线程加载图片
+     */
+    @Override
+    void onStarted();
+
     void onCompleted(@NonNull LoadResult result);
 }

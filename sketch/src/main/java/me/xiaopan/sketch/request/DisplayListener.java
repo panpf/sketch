@@ -25,5 +25,11 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
  * 显示监听器，值的注意的是DisplayListener中所有的方法都会在主线中执行，所以实现着不必考虑异步线程中刷新UI的问题
  */
 public interface DisplayListener extends Listener {
+    /**
+     * 开始转入异步线程加载图片
+     */
+    @Override
+    void onStarted();
+
     void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs);
 }

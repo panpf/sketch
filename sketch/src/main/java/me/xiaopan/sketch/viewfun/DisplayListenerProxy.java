@@ -35,19 +35,19 @@ class DisplayListenerProxy implements DisplayListener {
     }
 
     @Override
-    public void onReadyLoad() {
+    public void onStarted() {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
         }
 
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayReadyLoad();
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayStarted();
         if (needInvokeInvalidate) {
             view.invalidate();
         }
 
         if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onReadyLoad();
+            view.wrappedDisplayListener.onStarted();
         }
     }
 

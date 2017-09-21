@@ -22,10 +22,7 @@ import android.support.annotation.NonNull;
  * 请求监听器，可监听准备加载、失败、取消
  */
 public interface Listener {
-    /**
-     * 准备转入异步线程加载图片
-     */
-    void onReadyLoad();
+    void onStarted();
 
     /**
      * 失败

@@ -22,5 +22,11 @@ import android.support.annotation.NonNull;
  * 下载监听器
  */
 public interface DownloadListener extends Listener {
+    /**
+     * 开始转入异步线程下载图片
+     */
+    @Override
+    void onStarted();
+
     void onCompleted(@NonNull DownloadResult result);
 }
