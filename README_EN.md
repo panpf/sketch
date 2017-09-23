@@ -211,7 +211,7 @@ More:
 [email_image]: https://img.shields.io/badge/Email-sky@panpf.me-red.svg
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
-[sample_app_download_link]: docs/sketch-sample.apk
+[sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
 [UriModel]: sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
 
 [uri]: docs/wiki/uri.md
