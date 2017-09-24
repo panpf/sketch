@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from: '../build_butterknife.gradle'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
@@ -26,11 +25,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':sketch')
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
-    compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'me.xiaopan:assemblyadapter:2.3.0'
-    compile 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':sketch')
+
+    implementation "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support.constraint:constraint-layout:${CONSTRAINT_LAYOUT_VERSION}"
+
+    implementation "me.xiaopan:assemblyadapter:${ASSEMBLY_ADAPTER_VERSION}"
+
+    implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
+
+    implementation "com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${BUTTER_KNIFE_VERSION}"
 }

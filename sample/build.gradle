@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from: '../build_butterknife.gradle'
 
 Properties localProperties = openProperties("local.properties")
 String jksFileName = localProperties.getProperty("sample.storeFile")
@@ -43,13 +42,16 @@ android {
         }
     }
 
+    flavorDimensions "app"
+
     productFlavors {
         normal {
-
+            dimension "app"
         }
 
         // 为了测试没有导入 sketch-gif 时是否可以正常运行
         nogiflib {
+            dimension "app"
         }
     }
 
@@ -68,25 +70,28 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
-    compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
 
-    compile 'me.xiaopan:pagerslidingtabstrip:1.6.0'
-    compile 'me.xiaopan:assemblyadapter:2.3.0'
+    implementation "me.xiaopan:pagerslidingtabstrip:${PAGER_SLIDING_TAB_STRIP_VERSION}"
+    implementation "me.xiaopan:assemblyadapter:${ASSEMBLY_ADAPTER_VERSION}"
 
-    compile project(':sketch')
-    normalCompile project(':sketch-gif')
+    implementation project(':sketch')
+    normalImplementation project(':sketch-gif')
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY_ANDROID_VERSION}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
 
-    compile 'org.greenrobot:eventbus:3.0.0'
+    implementation "org.greenrobot:eventbus:${EVENT_BUS_VERSION}"
 
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+
+    implementation "com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${BUTTER_KNIFE_VERSION}"
 }
 
 repositories {
@@ -96,7 +101,7 @@ repositories {
     mavenCentral()
 }
 
-def Properties openProperties(String fileName) {
+Properties openProperties(String fileName) {
     File propertiesFile = new File(projectDir, fileName)
     if (!propertiesFile.exists()) {
         return new Properties()
