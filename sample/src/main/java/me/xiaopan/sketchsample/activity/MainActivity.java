@@ -30,6 +30,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -486,8 +487,10 @@ public class MainActivity extends BaseActivity implements AppListFragment.GetApp
 
     @Override
     public void onApplyBackground(String imageUri) {
-        backgroundImageView.displayImage(imageUri);
-        menuBackgroundImageView.displayImage(imageUri);
+        if (!TextUtils.isEmpty(imageUri)) {
+            backgroundImageView.displayImage(imageUri);
+            menuBackgroundImageView.displayImage(imageUri);
+        }
     }
 
     private void switchLogLevel() {
