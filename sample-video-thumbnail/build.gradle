@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
     buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
     defaultConfig {
-        applicationId "me.xiaopan.sketch_video_thumbnail_sample"
+        applicationId "me.xiaopan.ssvt"
         minSdkVersion 14
         targetSdkVersion TARGET_SDK_VERSION_LIBRARY.toInteger()
         versionCode VERSION_CODE.toInteger()
@@ -25,6 +26,8 @@ android {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':sketch')
 
@@ -35,7 +38,4 @@ dependencies {
     implementation "me.xiaopan:assemblyadapter:${ASSEMBLY_ADAPTER_VERSION}"
 
     implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
-
-    implementation "com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}"
-    annotationProcessor "com.jakewharton:butterknife-compiler:${BUTTER_KNIFE_VERSION}"
 }

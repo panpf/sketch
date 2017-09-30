@@ -1,4 +1,4 @@
-package me.xiaopan.sketch_video_thumbnail_sample;
+package me.xiaopan.ssvt;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -46,5 +46,5 @@ sketchImageView.displayImage(videoFileUri);
 [UriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
 [sample-video-thumbnail]: ../../sample-video-thumbnail/
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
-[VideoThumbnailUriModel.java]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/sketch_video_thumbnail_sample/VideoThumbnailUriModel.java
+[VideoThumbnailUriModel.java]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/ssvt/VideoThumbnailUriModel.java
 [UriModelRegistry]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModelRegistry.java

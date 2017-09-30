@@ -144,7 +144,7 @@ configuration.getUriModelRegistry().add(new MyUriModel());
 [Base64VariantUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/Base64VariantUriModel.java
 [AbsBitmapDiskCacheUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AbsBitmapDiskCacheUriModel.java
 [ApkIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/ApkIconUriModel.java
-[VideoThumbnailUriModel]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/sketch_video_thumbnail_sample/VideoThumbnailUriModel.java
+[VideoThumbnailUriModel]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/ssvt/VideoThumbnailUriModel.java
 [AppIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AppIconUriModel.java
 [ContentUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/ContentUriModel.java
 [DiskCache]: ../../sketch/src/main/java/me/xiaopan/sketch/cache/DiskCache.java
