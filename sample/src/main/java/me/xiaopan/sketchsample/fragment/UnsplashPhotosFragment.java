@@ -27,6 +27,7 @@ import me.xiaopan.sketchsample.adapter.itemfactory.UnsplashPhotosItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.bean.UnsplashImage;
 import me.xiaopan.sketchsample.net.NetServices;
+import me.xiaopan.sketchsample.util.DataTransferStation;
 import me.xiaopan.sketchsample.widget.HintView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -115,7 +116,7 @@ public class UnsplashPhotosFragment extends BaseFragment implements UnsplashPhot
             imageArrayList.add(new Image(unsplashImage.urls.regular, unsplashImage.urls.raw));
         }
 
-        ImageDetailActivity.launch(getActivity(), imageArrayList, optionsKey, position);
+        ImageDetailActivity.launch(getActivity(), DataTransferStation.put(imageArrayList), optionsKey, position);
     }
 
     @Override

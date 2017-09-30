@@ -24,14 +24,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import me.xiaopan.sketchsample.BaseActivity;
-import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.BindContentView;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.fragment.ImageDetailFragment;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.SampleImageView;
@@ -42,9 +39,9 @@ public class ImageDetailActivity extends BaseActivity implements ApplyBackground
     @BindView(R.id.image_onlyFragment_background) SampleImageView backgroundImageView;
     @BindView(R.id.layout_onlyFragment_content) View contentView;
 
-    public static void launch(Activity activity, ArrayList<Image> images, String loadingImageOptionsInfo, int defaultPosition) {
+    public static void launch(Activity activity, String dataTransferKey, String loadingImageOptionsInfo, int defaultPosition) {
         Intent intent = new Intent(activity, ImageDetailActivity.class);
-        intent.putParcelableArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, images);
+        intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY, dataTransferKey);
         intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY, loadingImageOptionsInfo);
         intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);

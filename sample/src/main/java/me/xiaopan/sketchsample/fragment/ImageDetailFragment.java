@@ -37,6 +37,7 @@ import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
+import me.xiaopan.sketchsample.util.DataTransferStation;
 import me.xiaopan.sketchsample.util.PageNumberSetter;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
@@ -44,7 +45,7 @@ import me.xiaopan.sketchsample.widget.ZoomOutPageTransformer;
 
 @BindContentView(R.layout.fragment_detail)
 public class ImageDetailFragment extends BaseFragment implements ImageZoomer.OnViewTapListener {
-    public static final String PARAM_REQUIRED_STRING_ARRAY_LIST_URLS = "PARAM_REQUIRED_STRING_ARRAY_LIST_URLS";
+    public static final String PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY = "PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY";
     public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY";
     public static final String PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION";
 
@@ -73,10 +74,17 @@ public class ImageDetailFragment extends BaseFragment implements ImageZoomer.OnV
         startPlay = new StartPlay();
 
         Bundle arguments = getArguments();
+        String dataTransferKey = null;
         if (arguments != null) {
-            imageList = arguments.getParcelableArrayList(PARAM_REQUIRED_STRING_ARRAY_LIST_URLS);
+            dataTransferKey = arguments.getString(PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY);
+            //noinspection unchecked
+            imageList = (List<Image>) DataTransferStation.remove(dataTransferKey);
             loadingImageOptionsKey = arguments.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY);
             position = arguments.getInt(PARAM_OPTIONAL_INT_DEFAULT_POSITION);
+        }
+
+        if (imageList == null) {
+            throw new IllegalArgumentException("Not found image list by dataTransferKey: " + dataTransferKey);
         }
     }
 
@@ -102,7 +110,7 @@ public class ImageDetailFragment extends BaseFragment implements ImageZoomer.OnV
             pagerAdapter.addItemFactory(new ImageFragmentItemFactory(getActivity(), loadingImageOptionsKey));
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(position);
-            currentItemTextView.setText(position + 1 + "");
+            currentItemTextView.setText(String.format("%d", position + 1));
             countTextView.setText(String.valueOf(imageList.size()));
         }
 
