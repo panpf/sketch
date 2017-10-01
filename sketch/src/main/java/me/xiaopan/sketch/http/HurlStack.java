@@ -18,6 +18,7 @@ package me.xiaopan.sketch.http;
 
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -242,6 +243,12 @@ public class HurlStack implements HttpStack {
                 transferEncodingValue = transferEncodingValue.trim();
             }
             return transferEncodingValue != null && "chunked".equalsIgnoreCase(transferEncodingValue);
+        }
+
+        @Nullable
+        @Override
+        public String getResponseHeader(@NonNull String name) {
+            return connection.getHeaderField(name);
         }
     }
 }

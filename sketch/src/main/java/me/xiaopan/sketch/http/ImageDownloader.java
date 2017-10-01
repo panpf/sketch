@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.http;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,9 +103,12 @@ public class ImageDownloader implements Identifier {
         HttpStack httpStack = request.getConfiguration().getHttpStack();
         int retryCount = 0;
         final int maxRetryCount = httpStack.getMaxRetryCount();
+        String uri = request.getUri();
         while (true) {
             try {
-                return doDownload(request, httpStack, diskCache, diskCacheKey);
+                return doDownload(request, uri, httpStack, diskCache, diskCacheKey);
+            } catch (RedirectsException e) {
+                uri = e.getNewUrl();
             } catch (Throwable tr) {
                 request.getConfiguration().getErrorTracker().onDownloadError(request, tr);
 
@@ -136,6 +140,7 @@ public class ImageDownloader implements Identifier {
      * Real execute download
      *
      * @param request      DownloadRequest
+     * @param uri          image uri
      * @param httpStack    HttpStack
      * @param diskCache    DiskCache
      * @param diskCacheKey disk cache key
@@ -145,15 +150,15 @@ public class ImageDownloader implements Identifier {
      * @throws DownloadException download failed
      */
     @NonNull
-    private DownloadResult doDownload(@NonNull DownloadRequest request, @NonNull HttpStack httpStack,
+    private DownloadResult doDownload(@NonNull DownloadRequest request, @NonNull String uri, @NonNull HttpStack httpStack,
                                       @NonNull DiskCache diskCache, @NonNull String diskCacheKey)
-            throws IOException, CanceledException, DownloadException {
+            throws IOException, CanceledException, DownloadException, RedirectsException {
         // Opening http connection
         request.setStatus(BaseRequest.Status.CONNECTING);
         HttpStack.ImageHttpResponse httpResponse;
         //noinspection CaughtExceptionImmediatelyRethrown
         try {
-            httpResponse = httpStack.getHttpResponse(request.getUri());
+            httpResponse = httpStack.getHttpResponse(uri);
         } catch (IOException e) {
             throw e;
         }
@@ -180,6 +185,25 @@ public class ImageDownloader implements Identifier {
         }
         if (responseCode != 200) {
             httpResponse.releaseConnection();
+
+            // redirects
+            if (responseCode == 301 || responseCode == 302) {
+                String newUri = httpResponse.getResponseHeader("Location");
+                if (!TextUtils.isEmpty(newUri)) {
+                    // To prevent infinite redirection
+                    if (uri.equals(request.getUri())) {
+                        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                            SLog.d(NAME, "Uri redirects. originUri: %s, newUri: %s. %s", request.getUri(), newUri, request.getKey());
+                        }
+                        throw new RedirectsException(newUri);
+                    } else {
+                        SLog.e(NAME, "Disable unlimited redirects, originUri: %s, redirectsUri=%s, newUri=%s. %s", request.getUri(), uri, newUri, request.getKey());
+                    }
+                } else {
+                    SLog.w(NAME, "Uri redirects failed. newUri is empty, originUri: %s. %s", request.getUri(), request.getKey());
+                }
+            }
+
             String message = String.format("Response code exception. responseHeaders: %s. %s. %s",
                     httpResponse.getResponseHeadersString(), request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
@@ -236,13 +260,12 @@ public class ImageDownloader implements Identifier {
 
         // Read data
         request.setStatus(BaseRequest.Status.READ_DATA);
-        int completedLength = 0;
+        int completedLength;
         try {
             completedLength = readData(request, inputStream, outputStream, (int) contentLength);
         } catch (IOException e) {
             if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
-                diskCacheEditor = null;
             }
             String message = String.format("Read data exception. %s. %s", request.getThreadName(), request.getKey());
             SLog.e(NAME, e, message);
@@ -250,7 +273,6 @@ public class ImageDownloader implements Identifier {
         } catch (CanceledException e) {
             if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
-                diskCacheEditor = null;
             }
             throw e;
         } finally {

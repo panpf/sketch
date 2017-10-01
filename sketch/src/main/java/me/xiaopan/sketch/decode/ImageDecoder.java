@@ -83,6 +83,11 @@ public class ImageDecoder implements Identifier {
             }
 
             return result;
+        } catch (DecodeException e) {
+            if (result != null) {
+                result.recycle(request.getConfiguration().getBitmapPool());
+            }
+            throw e;
         } catch (Throwable tr) {
             if (result != null) {
                 result.recycle(request.getConfiguration().getBitmapPool());

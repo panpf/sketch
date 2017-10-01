@@ -103,7 +103,7 @@ public class ImageDecodeUtils {
         }
     }
 
-    static void decodeError(LoadRequest loadRequest, DataSource dataSource, String logName, String cause, Throwable tr) {
+    static void decodeError(LoadRequest request, DataSource dataSource, String logName, String cause, Throwable tr) {
         if (tr != null) {
             SLog.e(logName, Log.getStackTraceString(tr));
         }
@@ -112,17 +112,17 @@ public class ImageDecodeUtils {
             DiskCache.Entry diskCacheEntry = ((DiskCacheDataSource) dataSource).getDiskCacheEntry();
             File cacheFile = diskCacheEntry.getFile();
             if (diskCacheEntry.delete()) {
-                SLog.e(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey(), tr);
+                SLog.e(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), request.getKey(), tr);
             } else {
-                SLog.e(logName, "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s", cause, cacheFile.length(), loadRequest.getKey());
+                SLog.e(logName, "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s", cause, cacheFile.length(), request.getKey());
             }
         } else if (dataSource instanceof FileDataSource) {
             File file = ((FileDataSource) dataSource).getFile(null, null);
             //noinspection ConstantConditions
             SLog.e(logName, "Decode failed. %s. filePath=%s, fileLength=%d. %s",
-                    cause, file.getPath(), file.exists() ? file.length() : -1);
+                    cause, file.getPath(), file.exists() ? file.length() : -1, request.getKey());
         } else {
-            SLog.e(logName, "Decode failed. %s. %s", cause, loadRequest.getUri());
+            SLog.e(logName, "Decode failed. %s. %s", cause, request.getUri());
         }
     }
 

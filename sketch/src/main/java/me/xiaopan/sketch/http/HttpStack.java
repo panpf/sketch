@@ -149,6 +149,12 @@ public interface HttpStack extends Identifier {
         boolean isContentChunked();
 
         /**
+         * 获取响应头
+         */
+        @Nullable
+        String getResponseHeader(@NonNull String name);
+
+        /**
          * 获取所有的响应头
          */
         @Nullable
