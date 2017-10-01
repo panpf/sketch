@@ -14,43 +14,40 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketchsample;
+package me.xiaopan.sketchsample
 
-import android.app.Application;
-import android.os.Build;
+import android.app.Application
+import android.os.Build
 
-import com.squareup.leakcanary.LeakCanary;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.squareup.leakcanary.LeakCanary
+import com.tencent.bugly.crashreport.CrashReport
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.Sketch
 
-public class SampleApplication extends Application {
+class SampleApplication : Application() {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        CrashReport.initCrashReport(getBaseContext(), "900007777", BuildConfig.DEBUG);
+    override fun onCreate() {
+        super.onCreate()
+        CrashReport.initCrashReport(baseContext, "900007777", BuildConfig.DEBUG)
 
         if (!LeakCanary.isInAnalyzerProcess(this)) {
-            LeakCanary.install(this);
+            LeakCanary.install(this)
         }
     }
 
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(getBaseContext()).onTrimMemory(level);
+            Sketch.with(baseContext).onTrimMemory(level)
         }
     }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
+    override fun onLowMemory() {
+        super.onLowMemory()
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(getBaseContext()).onLowMemory();
+            Sketch.with(baseContext).onLowMemory()
         }
     }
 }

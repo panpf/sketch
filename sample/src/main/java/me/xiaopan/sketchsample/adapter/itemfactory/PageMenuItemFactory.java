@@ -52,7 +52,7 @@ public class PageMenuItemFactory extends AssemblyRecyclerItemFactory<PageMenuIte
 
         @Override
         protected void onSetData(int i, MainActivity.Page pageMenu) {
-            textView.setText(pageMenu.getName());
+            textView.setText(pageMenu.getShowName());
         }
     }
 }
