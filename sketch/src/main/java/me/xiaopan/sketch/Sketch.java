@@ -21,6 +21,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -228,6 +229,7 @@ public class Sketch {
      *
      * @param level 修剪级别，对应APP的不同状态，对应 {@link ComponentCallbacks2} 里的常量
      */
+    @Keep
     public void onTrimMemory(int level) {
         // ICE_CREAM_SANDWICH以上版本已经自动注册了onTrimMemory监听，因此无需再在你的Application的onTrimMemory方法中调用此方法
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -246,6 +248,7 @@ public class Sketch {
     /**
      * 当内存低时直接清空全部内存缓存，4.0 以下你需要重写 Application 的 onLowMemory 方法，然后调用这个方法
      */
+    @Keep
     public void onLowMemory() {
         // ICE_CREAM_SANDWICH以上版本已经自动注册了onLowMemory监听，因此无需再在你的Application的onLowMemory方法中调用此方法
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {

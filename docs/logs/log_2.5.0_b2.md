@@ -1,3 +1,7 @@
+
+bugs:
+* :bug: 修复由于混淆了 Sketch.onTrimMemory 和 Sketch.onLowMemory 方法导致其内部调用过滤失效的 bug
+
 sample app：
 * :bug: 修复在 MyPhotos 页面如果数据量超大的话就会崩溃的 bug
 
