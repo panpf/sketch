@@ -18,13 +18,13 @@ public fun <V : View> Activity.bindView(id: Int)
 public fun <V : View> Dialog.bindView(id: Int)
         : ReadOnlyProperty<Dialog, V> = required(id, viewFinder)
 public fun <V : View> DialogFragment.bindView(id: Int)
-        : ReadOnlyProperty<DialogFragment, V> = required(id, viewFinder)
+        : ReadOnlyProperty<DialogFragment, V> = requiredNoCache(id, viewFinder)
 public fun <V : View> SupportDialogFragment.bindView(id: Int)
-        : ReadOnlyProperty<SupportDialogFragment, V> = required(id, viewFinder)
+        : ReadOnlyProperty<SupportDialogFragment, V> = requiredNoCache(id, viewFinder)
 public fun <V : View> Fragment.bindView(id: Int)
-        : ReadOnlyProperty<Fragment, V> = required(id, viewFinder)
+        : ReadOnlyProperty<Fragment, V> = requiredNoCache(id, viewFinder)
 public fun <V : View> SupportFragment.bindView(id: Int)
-        : ReadOnlyProperty<SupportFragment, V> = required(id, viewFinder)
+        : ReadOnlyProperty<SupportFragment, V> = requiredNoCache(id, viewFinder)
 public fun <V : View> ViewHolder.bindView(id: Int)
         : ReadOnlyProperty<ViewHolder, V> = required(id, viewFinder)
 
@@ -35,13 +35,13 @@ public fun <V : View> Activity.bindOptionalView(id: Int)
 public fun <V : View> Dialog.bindOptionalView(id: Int)
         : ReadOnlyProperty<Dialog, V?> = optional(id, viewFinder)
 public fun <V : View> DialogFragment.bindOptionalView(id: Int)
-        : ReadOnlyProperty<DialogFragment, V?> = optional(id, viewFinder)
+        : ReadOnlyProperty<DialogFragment, V?> = optionalNoCache(id, viewFinder)
 public fun <V : View> SupportDialogFragment.bindOptionalView(id: Int)
-        : ReadOnlyProperty<SupportDialogFragment, V?> = optional(id, viewFinder)
+        : ReadOnlyProperty<SupportDialogFragment, V?> = optionalNoCache(id, viewFinder)
 public fun <V : View> Fragment.bindOptionalView(id: Int)
-        : ReadOnlyProperty<Fragment, V?> = optional(id, viewFinder)
+        : ReadOnlyProperty<Fragment, V?> = optionalNoCache(id, viewFinder)
 public fun <V : View> SupportFragment.bindOptionalView(id: Int)
-        : ReadOnlyProperty<SupportFragment, V?> = optional(id, viewFinder)
+        : ReadOnlyProperty<SupportFragment, V?> = optionalNoCache(id, viewFinder)
 public fun <V : View> ViewHolder.bindOptionalView(id: Int)
         : ReadOnlyProperty<ViewHolder, V?> = optional(id, viewFinder)
 
@@ -52,13 +52,13 @@ public fun <V : View> Activity.bindViews(vararg ids: Int)
 public fun <V : View> Dialog.bindViews(vararg ids: Int)
         : ReadOnlyProperty<Dialog, List<V>> = required(ids, viewFinder)
 public fun <V : View> DialogFragment.bindViews(vararg ids: Int)
-        : ReadOnlyProperty<DialogFragment, List<V>> = required(ids, viewFinder)
+        : ReadOnlyProperty<DialogFragment, List<V>> = requiredNoCache(ids, viewFinder)
 public fun <V : View> SupportDialogFragment.bindViews(vararg ids: Int)
-        : ReadOnlyProperty<SupportDialogFragment, List<V>> = required(ids, viewFinder)
+        : ReadOnlyProperty<SupportDialogFragment, List<V>> = requiredNoCache(ids, viewFinder)
 public fun <V : View> Fragment.bindViews(vararg ids: Int)
-        : ReadOnlyProperty<Fragment, List<V>> = required(ids, viewFinder)
+        : ReadOnlyProperty<Fragment, List<V>> = requiredNoCache(ids, viewFinder)
 public fun <V : View> SupportFragment.bindViews(vararg ids: Int)
-        : ReadOnlyProperty<SupportFragment, List<V>> = required(ids, viewFinder)
+        : ReadOnlyProperty<SupportFragment, List<V>> = requiredNoCache(ids, viewFinder)
 public fun <V : View> ViewHolder.bindViews(vararg ids: Int)
         : ReadOnlyProperty<ViewHolder, List<V>> = required(ids, viewFinder)
 
@@ -128,3 +128,27 @@ private class Lazy<T, V>(private val initializer: (T, KProperty<*>) -> V) : Read
         return value as V
     }
 }
+
+// Like Kotlin's lazy delegate but the initializer gets the target and metadata passed to it（No Cache）
+private class NoCacheLazy<T, V>(private val initializer: (T, KProperty<*>) -> V) : ReadOnlyProperty<T, V> {
+
+    override fun getValue(thisRef: T, property: KProperty<*>): V {
+        return initializer(thisRef, property)
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <T, V : View> requiredNoCache(id: Int, finder: T.(Int) -> View?)
+        = NoCacheLazy { t: T, desc -> t.finder(id) as V? ?: viewNotFound(id, desc) }
+
+@Suppress("UNCHECKED_CAST")
+private fun <T, V : View> optionalNoCache(id: Int, finder: T.(Int) -> View?)
+        = NoCacheLazy { t: T, desc ->  t.finder(id) as V? }
+
+@Suppress("UNCHECKED_CAST")
+private fun <T, V : View> requiredNoCache(ids: IntArray, finder: T.(Int) -> View?)
+        = NoCacheLazy { t: T, desc -> ids.map { t.finder(it) as V? ?: viewNotFound(it, desc) } }
+
+@Suppress("UNCHECKED_CAST")
+private fun <T, V : View> optionalNoCache(ids: IntArray, finder: T.(Int) -> View?)
+        = NoCacheLazy { t: T, desc -> ids.map { t.finder(it) as V? }.filterNotNull() }

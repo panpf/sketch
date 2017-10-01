@@ -25,6 +25,6 @@ public class ImageFragmentItemFactory extends AssemblyFragmentItemFactory<Image>
     @Override
     public Fragment createFragment(int i, Image image) {
         boolean showTools = AppConfig.getBoolean(context, AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL);
-        return ImageFragment.build(image, loadingImageOptionsId, showTools);
+        return ImageFragment.Companion.build(image, loadingImageOptionsId, showTools);
     }
 }

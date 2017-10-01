@@ -3,6 +3,7 @@ package me.xiaopan.sketchsample.util;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +18,7 @@ public class ApplyWallpaperAsyncTask extends AsyncTask<Integer, Integer, Boolean
     private File imageFile;
 
     public ApplyWallpaperAsyncTask(Context context, File imageFile) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.imageFile = imageFile;
     }
 
@@ -41,5 +42,10 @@ public class ApplyWallpaperAsyncTask extends AsyncTask<Integer, Integer, Boolean
             }
         }
         return true;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        Toast.makeText(context, aBoolean ? "设置壁纸成功" : "设置壁纸失败", Toast.LENGTH_LONG).show();
     }
 }

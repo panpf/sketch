@@ -64,7 +64,7 @@ import java.util.*
  */
 @SuppressLint("RtlHardcoded")
 @BindContentView(R.layout.activity_main)
-class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener, ApplyBackgroundCallback {
+class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener, PageBackgApplyCallback {
 
     val contentView: View by bindView(R.id.layout_main_content)
     val appListTabStrip: PagerSlidingTabStrip by bindView(R.id.tabStrip_main_appList)
@@ -484,7 +484,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
                              val menuClickListener: View.OnClickListener) : AsyncTask<Int, Int, Int>() {
 
             override fun doInBackground(vararg params: Int?): Int? {
-                activityReference.get().let {
+                activityReference.get()?.let {
                     Sketch.with(it as Context).configuration.diskCache.clear()
                 }
 
@@ -494,7 +494,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
             override fun onPostExecute(integer: Int?) {
                 super.onPostExecute(integer)
 
-                activityReference.get().let {
+                activityReference.get()?.let {
                     menuClickListener.onClick(null)
                     adapter.notifyDataSetChanged()
 
