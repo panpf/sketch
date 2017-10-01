@@ -47,7 +47,6 @@ import me.xiaopan.sketchsample.adapter.itemfactory.MyPhotoItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.event.AppConfigChangedEvent;
 import me.xiaopan.sketchsample.util.AppConfig;
-import me.xiaopan.sketchsample.util.DataTransferStation;
 import me.xiaopan.sketchsample.util.ImageOrientationCorrectTestFileGenerator;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
@@ -129,7 +128,7 @@ public class MyPhotosFragment extends BaseFragment implements MyPhotoItemFactory
             imageArrayList.add(new Image(url, url));
         }
 
-        ImageDetailActivity.launch(getActivity(), DataTransferStation.put(imageArrayList), optionsKey, position);
+        ImageDetailActivity.launch(getActivity(), getDataTransferHelper().put("urlList", imageArrayList), optionsKey, position);
     }
 
     @Override

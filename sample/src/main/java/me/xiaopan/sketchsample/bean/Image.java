@@ -3,7 +3,18 @@ package me.xiaopan.sketchsample.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Image implements Parcelable{
+public class Image implements Parcelable {
+    public static final Creator<Image> CREATOR = new Creator<Image>() {
+        @Override
+        public Image createFromParcel(Parcel in) {
+            return new Image(in);
+        }
+
+        @Override
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
     public String regularUrl;
     public String highDefinitionUrl;
 
@@ -17,18 +28,6 @@ public class Image implements Parcelable{
         highDefinitionUrl = in.readString();
     }
 
-    public static final Creator<Image> CREATOR = new Creator<Image>() {
-        @Override
-        public Image createFromParcel(Parcel in) {
-            return new Image(in);
-        }
-
-        @Override
-        public Image[] newArray(int size) {
-            return new Image[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
@@ -38,5 +37,10 @@ public class Image implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(regularUrl);
         dest.writeString(highDefinitionUrl);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Image{%s -> %s}", regularUrl, highDefinitionUrl);
     }
 }

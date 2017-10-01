@@ -8,8 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import me.xiaopan.sketchsample.util.DataTransferStation;
 
 public class BaseFragment extends Fragment {
+    private DataTransferStation.PageHelper dataTransferHelper = new DataTransferStation.PageHelper(this);
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dataTransferHelper.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,5 +67,21 @@ public class BaseFragment extends Fragment {
 
     public boolean isVisibleToUser() {
         return isResumed() && getUserVisibleHint();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        dataTransferHelper.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dataTransferHelper.onDestroy();
+    }
+
+    public DataTransferStation.PageHelper getDataTransferHelper() {
+        return dataTransferHelper;
     }
 }

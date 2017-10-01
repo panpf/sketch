@@ -37,7 +37,6 @@ import me.xiaopan.sketchsample.BindContentView;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory;
 import me.xiaopan.sketchsample.bean.Image;
-import me.xiaopan.sketchsample.util.DataTransferStation;
 import me.xiaopan.sketchsample.util.PageNumberSetter;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
@@ -78,7 +77,7 @@ public class ImageDetailFragment extends BaseFragment implements ImageZoomer.OnV
         if (arguments != null) {
             dataTransferKey = arguments.getString(PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY);
             //noinspection unchecked
-            imageList = (List<Image>) DataTransferStation.remove(dataTransferKey);
+            imageList = (List<Image>) getDataTransferHelper().get(dataTransferKey);
             loadingImageOptionsKey = arguments.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY);
             position = arguments.getInt(PARAM_OPTIONAL_INT_DEFAULT_POSITION);
         }

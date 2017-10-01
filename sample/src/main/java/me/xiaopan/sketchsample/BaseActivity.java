@@ -29,14 +29,18 @@ import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.xiaopan.sketchsample.util.DataTransferStation;
 
 public abstract class BaseActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
+    private DataTransferStation.PageHelper dataTransferHelper = new DataTransferStation.PageHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dataTransferHelper.onCreate(savedInstanceState);
 
         BindContentView bindContentView = getClass().getAnnotation(BindContentView.class);
         if (bindContentView != null && bindContentView.value() > 0) {
@@ -121,5 +125,21 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean isDisableSetFitsSystemWindows() {
         return false;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        dataTransferHelper.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dataTransferHelper.onDestroy();
+    }
+
+    public DataTransferStation.PageHelper getDataTransferHelper() {
+        return dataTransferHelper;
     }
 }

@@ -36,7 +36,6 @@ import me.xiaopan.sketchsample.bean.BaiduImage;
 import me.xiaopan.sketchsample.bean.BaiduImageSearchResult;
 import me.xiaopan.sketchsample.bean.Image;
 import me.xiaopan.sketchsample.net.NetServices;
-import me.xiaopan.sketchsample.util.DataTransferStation;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
 import retrofit2.Call;
@@ -216,7 +215,7 @@ public class SearchFragment extends BaseFragment implements StaggeredImageItemFa
         for (BaiduImage imageItem : imageList) {
             urlList.add(new Image(imageItem.getUrl(), imageItem.getUrl()));
         }
-        ImageDetailActivity.launch(getActivity(), DataTransferStation.put(urlList), loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
+        ImageDetailActivity.launch(getActivity(), getDataTransferHelper().put("urlList", urlList), loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
     }
 
     private void loadData(int pageIndex) {
