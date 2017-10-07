@@ -166,24 +166,24 @@ class ImageFragment : BaseFragment() {
         }
 
         override fun onError(cause: ErrorCause) {
-            hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示") { imageView.displayImage(finalShowImageUrl!!) }
+            hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", View.OnClickListener { imageView.displayImage(finalShowImageUrl!!) })
         }
 
         override fun onCanceled(cause: CancelCause) {
             @Suppress("NON_EXHAUSTIVE_WHEN")
             when (cause) {
-                CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "为节省流量已暂停下载新图片", "不管了，直接下载") {
+                CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "为节省流量已暂停下载新图片", "不管了，直接下载", View.OnClickListener {
                     val requestLevel = imageView.options.requestLevel
                     imageView.options.requestLevel = RequestLevel.NET
                     imageView.displayImage(finalShowImageUrl!!)
                     imageView.options.requestLevel = requestLevel
-                }
-                CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "已暂停加载新图片", "直接加载") {
+                })
+                CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "已暂停加载新图片", "直接加载", View.OnClickListener {
                     val requestLevel = imageView.options.requestLevel
                     imageView.options.requestLevel = RequestLevel.NET
                     imageView.displayImage(finalShowImageUrl!!)
                     imageView.options.requestLevel = requestLevel
-                }
+                })
             }
         }
 
@@ -297,24 +297,27 @@ class ImageFragment : BaseFragment() {
             }
 
             // 点击MappingView定位到指定位置
-            mappingView.setOnSingleClickListener(MappingView.OnSingleClickListener { x, y ->
-                val drawable = imageView.drawable ?: return@OnSingleClickListener false
+            mappingView.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
+                override fun onSingleClick(x: Float, y: Float): Boolean {
+                    val drawable = imageView.drawable ?: return false
 
-                if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
-                    return@OnSingleClickListener false
+                    if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
+                        return false
+                    }
+
+                    if (mappingView.width == 0 || mappingView.height == 0) {
+                        return false
+                    }
+
+                    val widthScale = drawable.intrinsicWidth.toFloat() / mappingView.width
+                    val heightScale = drawable.intrinsicHeight.toFloat() / mappingView.height
+                    val realX = x * widthScale
+                    val realY = y * heightScale
+
+                    val showLocationAnimation = AppConfig.getBoolean(imageView.context, AppConfig.Key.LOCATION_ANIMATE)
+                    location(realX, realY, showLocationAnimation)
+                    return true
                 }
-
-                if (mappingView.width == 0 || mappingView.height == 0) {
-                    return@OnSingleClickListener false
-                }
-
-                val widthScale = drawable.intrinsicWidth.toFloat() / mappingView.width
-                val heightScale = drawable.intrinsicHeight.toFloat() / mappingView.height
-                val realX = x * widthScale
-                val realY = y * heightScale
-
-                val showLocationAnimation = AppConfig.getBoolean(imageView.context, AppConfig.Key.LOCATION_ANIMATE)
-                location(realX, realY, showLocationAnimation)
             })
 
             mappingView.options.displayer = FadeInImageDisplayer()

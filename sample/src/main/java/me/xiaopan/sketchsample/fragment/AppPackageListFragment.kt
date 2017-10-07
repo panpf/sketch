@@ -126,13 +126,11 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
     }
 
     private class MyScanListener(internal var fragmentWeakReference: WeakReference<AppPackageListFragment>) : FileScanner.ScanListener {
-        private var startTime: Long = 0
+        private val startTime = System.currentTimeMillis()
 
         override fun onStarted() {
             val fragment = fragmentWeakReference.get()
             if (fragment != null) {
-                startTime = System.currentTimeMillis()
-
                 val appScanning = fragment.scanningItemInfo!!.data as AppScanning
                 appScanning.running = true
 

@@ -91,9 +91,6 @@ dependencies {
 
     implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
-
-    implementation "com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}"
-    annotationProcessor "com.jakewharton:butterknife-compiler:${BUTTER_KNIFE_VERSION}"
 }
 
 repositories {

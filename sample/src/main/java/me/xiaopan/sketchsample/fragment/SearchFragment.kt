@@ -178,7 +178,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
     override fun onItemClick(position: Int, image: BaiduImage, loadingImageOptionsInfo: String) {
         val imageList = adapter!!.dataList as List<BaiduImage>
-        val urlList = imageList.map { Image(it.url, it.url) }
+        val urlList = imageList.map { Image(it.url!!, it.url!!) }
         ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", urlList), loadingImageOptionsInfo, position - adapter!!.headerItemCount)
     }
 
@@ -219,24 +219,26 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
         }
 
         private fun filterEmptyImage(response: Response<BaiduImageSearchResult>) {
+            val imageList = response.body()!!.imageList ?: return
 
-            val imageList = response.body()!!.imageList
-            if (imageList != null) {
-                val imageIterator = imageList.iterator()
-                while (imageIterator.hasNext()) {
-                    val image = imageIterator.next()
-                    if (image.url == null || "" == image.url) {
-                        imageIterator.remove()
-                    }
+            val mutableImageList = imageList.toMutableList()
+            val imageIterator = mutableImageList.iterator()
+            while (imageIterator.hasNext()) {
+                val image = imageIterator.next()
+                if (image.url == null || "" == image.url) {
+                    imageIterator.remove()
                 }
             }
+            response.body()!!.imageList = mutableImageList
         }
 
         override fun onFailure(call: Call<BaiduImageSearchResult>, t: Throwable) {
             val fragment = reference.get() ?: return
 
             if (pageIndex == 1) {
-                fragment.hintView.failed(t) { fragment.onRefresh() }
+                fragment.hintView.failed(t, View.OnClickListener {
+                    fragment.onRefresh()
+                })
                 fragment.refreshLayout.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()

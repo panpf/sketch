@@ -164,4 +164,4 @@ public void onPause() {
 [TransitionImageDisplayer]: ../../sketch/src/main/java/me/xiaopan/sketch/display/TransitionImageDisplayer.java
 [SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
 [SketchGifDrawable]: ../../sketch/src/main/java/me/xiaopan/sketch/drawable/SketchGifDrawable.java
-[ImageFragment]: ../../sample/src/main/java/me/xiaopan/sketchsample/fragment/ImageFragment.java
+[ImageFragment]: ../../sample/src/main/java/me/xiaopan/sketchsample/fragment/ImageFragment.kt

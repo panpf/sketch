@@ -65,5 +65,5 @@ SLog.removeLoggable(SLog.TYPE_CACHE);
 
 [SLog]: ../../sketch/src/main/java/me/xiaopan/sketch/SLog.java
 [SLog.Proxy]: ../../sketch/src/main/java/me/xiaopan/sketch/SLog.java
-[SampleLogProxy]: ../../sample/src/main/java/me/xiaopan/sketchsample/SampleLogProxy.java
+[SampleLogProxy]: ../../sample/src/main/java/me/xiaopan/sketchsample/SampleLogProxy.kt
 [android.util.Log]: https://developer.android.com/reference/android/util/Log.html

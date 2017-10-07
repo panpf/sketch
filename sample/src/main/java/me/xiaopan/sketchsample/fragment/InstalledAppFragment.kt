@@ -80,7 +80,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
                 val appInfo = AppInfo(true)
                 appInfo.name = packageInfo.applicationInfo.loadLabel(packageManager).toString()
                 appInfo.packageName = packageInfo.packageName
-                appInfo.sortName = toPinYin(appInfo.name)
+                appInfo.sortName = toPinYin(appInfo.name ?: "")
                 appInfo.id = packageInfo.packageName
                 appInfo.versionName = packageInfo.versionName
                 appInfo.apkFilePath = packageInfo.applicationInfo.publicSourceDir
@@ -89,7 +89,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
                 appInfoList.add(appInfo)
             }
 
-            Collections.sort(appInfoList) { lhs, rhs -> lhs.sortName.compareTo(rhs.sortName, ignoreCase = true) }
+            Collections.sort(appInfoList) { lhs, rhs -> (lhs.sortName ?: "").compareTo((rhs.sortName ?: ""))}
 
             return appInfoList
         }

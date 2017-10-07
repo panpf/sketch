@@ -50,6 +50,7 @@ import java.util.*
  */
 @BindContentView(R.layout.fragment_recycler)
 class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
+
     val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
     val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
     val hintView: HintView by bindView(R.id.hint_recyclerFragment)
@@ -95,20 +96,20 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         super.onDestroyView()
     }
 
-    override fun onClickImage(position: Int, optionsKey: String?) {
-        var optionsKey = optionsKey
+    override fun onClickImage(position: Int, optionsKey: String) {
+        var finalOptionsKey: String? = optionsKey
         // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-        if (optionsKey!!.contains("Resize")
-                || optionsKey.contains("ImageProcessor")
-                || optionsKey.contains("thumbnailMode")) {
-            optionsKey = null
+        if (finalOptionsKey!!.contains("Resize")
+                || finalOptionsKey.contains("ImageProcessor")
+                || finalOptionsKey.contains("thumbnailMode")) {
+            finalOptionsKey = null
         }
 
         val urlList = adapter!!.dataList
         val imageArrayList = ArrayList<Image>(urlList.size)
-        urlList.mapTo(imageArrayList) { Image(it as String?, it) }
+        urlList.mapTo(imageArrayList) { Image(it as String, it) }
 
-        ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", imageArrayList), optionsKey!!, position)
+        ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", imageArrayList), finalOptionsKey, position)
     }
 
     override fun onRefresh() {

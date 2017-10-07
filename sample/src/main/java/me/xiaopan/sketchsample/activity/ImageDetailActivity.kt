@@ -54,7 +54,7 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
 
         backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
-        toolbar.visibility = View.GONE
+        toolbar?.visibility = View.GONE
 
         val imageDetailFragment = ImageDetailFragment()
         imageDetailFragment.arguments = intent.extras
@@ -91,7 +91,7 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
 
     companion object {
 
-        fun launch(activity: Activity, dataTransferKey: String, loadingImageOptionsInfo: String, defaultPosition: Int) {
+        fun launch(activity: Activity, dataTransferKey: String, loadingImageOptionsInfo: String?, defaultPosition: Int) {
             val intent = Intent(activity, ImageDetailActivity::class.java)
             intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY, dataTransferKey)
             intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY, loadingImageOptionsInfo)

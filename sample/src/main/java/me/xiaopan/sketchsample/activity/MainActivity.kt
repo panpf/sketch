@@ -89,17 +89,19 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
     }
 
     private fun initViews() {
-        var layoutParams = backgroundImageView.layoutParams
-        layoutParams!!.width = resources.displayMetrics.widthPixels
-        layoutParams.height = resources.displayMetrics.heightPixels
-        backgroundImageView.setLayoutParams(layoutParams)
+        backgroundImageView.layoutParams?.let {
+            it.width = resources.displayMetrics.widthPixels
+            it.height = resources.displayMetrics.heightPixels
+            backgroundImageView.layoutParams = it
+        }
 
         backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
-        layoutParams = menuBackgroundImageView.layoutParams
-        layoutParams!!.width = resources.displayMetrics.widthPixels
-        layoutParams.height = resources.displayMetrics.heightPixels
-        menuBackgroundImageView.setLayoutParams(layoutParams)
+        menuBackgroundImageView.layoutParams?.let {
+            it.width = resources.displayMetrics.widthPixels
+            it.height = resources.displayMetrics.heightPixels
+            menuBackgroundImageView.layoutParams = it
+        }
 
         menuBackgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
         menuBackgroundImageView.options.displayer = null
@@ -111,8 +113,8 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         params.width = (resources.displayMetrics.widthPixels * 0.7).toInt()
         leftMenuView.layoutParams = params
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
         toggleDrawable = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
 
         appListTabStrip.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), baseContext))
@@ -150,7 +152,11 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
     private fun initData() {
         val adapter = AssemblyRecyclerAdapter(makeMenuList())
         adapter.addItemFactory(MenuTitleItemFactory())
-        adapter.addItemFactory(PageMenuItemFactory(PageMenuItemFactory.OnClickItemListener { page -> switchPage(page) }))
+        adapter.addItemFactory(PageMenuItemFactory(object : PageMenuItemFactory.OnClickItemListener{
+            override fun onClickItem(page: Page) {
+                switchPage(page)
+            }
+        }))
         adapter.addItemFactory(CheckMenuItemFactory())
         adapter.addItemFactory(InfoMenuItemFactory())
         menuRecyclerView.layoutManager = LinearLayoutManager(baseContext)
@@ -430,9 +436,8 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
     class CacheInfoMenu(val activity: MainActivity,
                         val type: String,
-                        val title: String,
+                        title: String,
                         val menuClickListener: View.OnClickListener) : InfoMenu(title) {
-
         override fun getInfo(): String {
             when (type) {
                 "Memory" -> {
@@ -457,22 +462,22 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
             }
         }
 
-        override fun onClick(adapter: AssemblyRecyclerAdapter?) {
+        override fun onClick(adapter: AssemblyRecyclerAdapter) {
             when (type) {
                 "Memory" -> {
                     Sketch.with(activity).configuration.memoryCache.clear()
                     menuClickListener.onClick(null)
-                    adapter!!.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
 
                     EventBus.getDefault().post(CacheCleanEvent())
                 }
                 "Disk" -> {
-                    CleanCacheTask(WeakReference(activity), adapter!!, menuClickListener).execute(0)
+                    CleanCacheTask(WeakReference(activity), adapter, menuClickListener).execute(0)
                 }
                 "BitmapPool" -> {
                     Sketch.with(activity).configuration.bitmapPool.clear()
                     menuClickListener.onClick(null)
-                    adapter!!.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
 
                     EventBus.getDefault().post(CacheCleanEvent())
                 }

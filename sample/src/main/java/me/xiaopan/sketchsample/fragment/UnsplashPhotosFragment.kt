@@ -80,26 +80,24 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         NetServices.unsplash().listPhotos(pageIndex).enqueue(LoadDataCallback(this, pageIndex))
     }
 
-    override fun onClickImage(position: Int, image: UnsplashImage, optionsKey: String?) {
-        var optionsKey = optionsKey
+    override fun onClickImage(position: Int, image: UnsplashImage, optionsKey: String) {
+        var finalOptionsKey: String? = optionsKey
         // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-        if (optionsKey!!.contains("Resize")
-                || optionsKey.contains("ImageProcessor")
-                || optionsKey.contains("thumbnailMode")) {
-            optionsKey = null
+        if (finalOptionsKey!!.contains("Resize")
+                || finalOptionsKey.contains("ImageProcessor")
+                || finalOptionsKey.contains("thumbnailMode")) {
+            finalOptionsKey = null
         }
 
         val images = adapter!!.dataList as List<UnsplashImage>
         val imageArrayList = ArrayList<Image>(images.size)
-        for (unsplashImage in images) {
-            imageArrayList.add(Image(unsplashImage.urls.regular, unsplashImage.urls.raw))
-        }
+        images.mapTo(imageArrayList) { Image(it.urls!!.regular!!, it.urls!!.raw!!) }
 
-        ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", imageArrayList), optionsKey!!, position)
+        ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", imageArrayList), finalOptionsKey!!, position)
     }
 
     override fun onClickUser(position: Int, user: UnsplashImage.User) {
-        val uri = Uri.parse(user.links.html)
+        val uri = Uri.parse(user.links!!.html)
                 .buildUpon()
                 .appendQueryParameter("utm_source", "SketchSample")
                 .appendQueryParameter("utm_medium", "referral")
@@ -153,7 +151,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             val fragment = reference.get() ?: return
 
             if (pageIndex == 1) {
-                fragment.hintView.failed(t) { fragment.onRefresh() }
+                fragment.hintView.failed(t, View.OnClickListener { fragment.onRefresh() })
                 fragment.refreshLayout.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
@@ -175,7 +173,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             fragment.recyclerView.adapter = adapter
             fragment.adapter = adapter
 
-            fragment.changeBackground(images[0].urls.thumb)
+            fragment.changeBackground(images[0].urls!!.thumb)
         }
 
         private fun loadMore(fragment: UnsplashPhotosFragment, response: Response<List<UnsplashImage>>) {
@@ -188,7 +186,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             fragment.adapter!!.addAll(images)
             fragment.adapter!!.loadMoreFinished(images.size < 20)
 
-            fragment.changeBackground(images[0].urls.thumb)
+            fragment.changeBackground(images[0].urls!!.thumb)
         }
     }
 }
