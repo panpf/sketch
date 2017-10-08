@@ -32,7 +32,6 @@ import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory
 import me.xiaopan.sketchsample.bean.Image
 import me.xiaopan.sketchsample.util.PageNumberSetter
 import me.xiaopan.sketchsample.util.ViewPagerPlayer
-import me.xiaopan.sketchsample.widget.DepthPageTransformer
 import me.xiaopan.sketchsample.widget.ZoomOutPageTransformer
 import me.xiaopan.ssvt.bindView
 import org.greenrobot.eventbus.EventBus
@@ -78,12 +77,7 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
         viewPagerPlayer = ViewPagerPlayer(viewPager)
         PageNumberSetter(currentItemTextView, viewPager)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                // 4.0上使用
-                viewPager.setPageTransformer(true, DepthPageTransformer())
-            } else {
-                viewPager.setPageTransformer(true, ZoomOutPageTransformer())
-            }
+            viewPager.setPageTransformer(false, ZoomOutPageTransformer())
         } else {
             viewPager.pageMargin = SketchUtils.dp2px(activity, 8)
         }
