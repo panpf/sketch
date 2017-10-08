@@ -192,8 +192,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         private fun assembleImageInfo(drawable: Drawable, sketchDrawable: SketchDrawable): String {
             val messageBuilder = StringBuilder()
 
-            messageBuilder.append("\n")
-            messageBuilder.append(sketchDrawable.uri)
+            messageBuilder.append(sketchDrawable.key)
 
             val uriModel = UriModel.match(context, sketchDrawable.uri)
             var dataSource: DataSource? = null
@@ -238,15 +237,11 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                     .append("/").append(needMemory)
 
             messageBuilder.append("\n")
+            messageBuilder.append("\n")
             messageBuilder.append("预览图：")
                     .append(drawable.intrinsicWidth).append("x").append(drawable.intrinsicHeight)
                     .append("/").append(sketchDrawable.bitmapConfig)
                     .append("/").append(Formatter.formatFileSize(context, previewDrawableByteCount.toLong()))
-
-            messageBuilder.append("\n")
-            messageBuilder.append("\n")
-            messageBuilder.append("KEY：")
-                    .append(sketchDrawable.key)
 
             return messageBuilder.toString()
         }
