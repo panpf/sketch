@@ -4,26 +4,26 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class Image() : Parcelable {
-    var regularUrl: String? = null
-    var highDefinitionUrl: String? = null
+    var normalQualityUrl: String? = null
+    var rawQualityUrl: String? = null
 
     constructor(parcel: Parcel) : this() {
-        regularUrl = parcel.readString()
-        highDefinitionUrl = parcel.readString()
+        normalQualityUrl = parcel.readString()
+        rawQualityUrl = parcel.readString()
     }
 
     constructor(regularUrl: String, highDefinitionUrl: String) : this() {
-        this.regularUrl = regularUrl
-        this.highDefinitionUrl = highDefinitionUrl
+        this.normalQualityUrl = regularUrl
+        this.rawQualityUrl = highDefinitionUrl
     }
 
     override fun toString(): String {
-        return String.format("Image{%s -> %s}", regularUrl, highDefinitionUrl)
+        return String.format("Image{%s -> %s}", normalQualityUrl, rawQualityUrl)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(regularUrl)
-        parcel.writeString(highDefinitionUrl)
+        parcel.writeString(normalQualityUrl)
+        parcel.writeString(rawQualityUrl)
     }
 
     override fun describeContents(): Int {

@@ -54,7 +54,7 @@ class ImageFragment : BaseFragment() {
     val mappingView: MappingView by bindView(R.id.mapping_imageFragment)
     val hintView: HintView by bindView(R.id.hint_imageFragment_hint)
 
-    private var image: Image? = null
+    lateinit var image: Image
     private var loadingImageOptionsKey: String? = null
     private var showTools: Boolean = false
 
@@ -83,7 +83,7 @@ class ImageFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val showHighDefinitionImage = AppConfig.getBoolean(context, AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
-        finalShowImageUrl = if (showHighDefinitionImage && !TextUtils.isEmpty(image!!.highDefinitionUrl)) image!!.highDefinitionUrl else image!!.regularUrl
+        finalShowImageUrl = if (showHighDefinitionImage && !TextUtils.isEmpty(image.rawQualityUrl)) image.rawQualityUrl else image.normalQualityUrl
 
         imageZoomHelper.onViewCreated()
         hugeImageHelper.onViewCreated()
@@ -144,7 +144,7 @@ class ImageFragment : BaseFragment() {
                 var cachedRefBitmap: SketchRefBitmap? = null
                 var memoryCacheKey: String? = null
                 if (uriModel != null) {
-                    memoryCacheKey = SketchUtils.makeRequestKey(finalShowImageUrl!!, uriModel, loadingImageOptionsKey!!)
+                    memoryCacheKey = SketchUtils.makeRequestKey(image.normalQualityUrl ?: "", uriModel, loadingImageOptionsKey!!)
                     cachedRefBitmap = Sketch.with(activity).configuration.memoryCache.get(memoryCacheKey)
                 }
                 if (cachedRefBitmap != null) {

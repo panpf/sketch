@@ -109,26 +109,28 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
 
     @Override
     public synchronized boolean processDisplayFreeRide() {
-        MemoryCache memoryCache = getConfiguration().getMemoryCache();
-        SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
-        if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
-            memoryCache.remove(getMemoryCacheKey());
-            SLog.e(getLogName(), "memory cache drawable recycled. processFreeRideRequests. bitmap=%s. %s. %s",
-                    cachedRefBitmap.getInfo(), getThreadName(), getKey());
-            cachedRefBitmap = null;
+        if (!getOptions().isCacheInDiskDisabled() && !getOptions().isDecodeGifImage()) {
+            MemoryCache memoryCache = getConfiguration().getMemoryCache();
+            SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
+            if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
+                memoryCache.remove(getMemoryCacheKey());
+                SLog.e(getLogName(), "memory cache drawable recycled. processFreeRideRequests. bitmap=%s. %s. %s",
+                        cachedRefBitmap.getInfo(), getThreadName(), getKey());
+                cachedRefBitmap = null;
+            }
+
+            if (cachedRefBitmap != null) {
+                // 立马标记等待使用，防止被回收
+                cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true);
+
+                Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
+                displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
+                displayCompleted();
+                return true;
+            }
         }
 
-        if (cachedRefBitmap != null) {
-            // 立马标记等待使用，防止被回收
-            cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true);
-
-            Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
-            displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
-            displayCompleted();
-            return true;
-        } else {
-            submitRunLoad();
-            return false;
-        }
+        submitRunLoad();
+        return false;
     }
 }

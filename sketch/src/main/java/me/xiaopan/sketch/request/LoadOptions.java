@@ -447,9 +447,6 @@ public class LoadOptions extends DownloadOptions {
         if (inPreferQualityOverSpeed) {
             builder.append("_").append("preferQuality");
         }
-        if (decodeGifImage) {
-            builder.append("_").append("decodeGifImage");
-        }
         if (bitmapConfig != null) {
             builder.append("_").append(bitmapConfig.name());
         }
