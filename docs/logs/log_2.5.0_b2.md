@@ -1,6 +1,9 @@
 bugs：
 * :bug: 修复由于混淆了 Sketch.onTrimMemory 和 Sketch.onLowMemory 方法导致其内部调用过滤失效的 bug
 
+优化：
+* :sparkles: 支持处理 301 302 重定向，但仅支持重定向一次
+
 重构：
 * :hammer: key 中不再包含 decodeGifImage ，受此影响已经通过 cacheProcessedImageInDisk 生成的磁盘缓存将全部失效
 
