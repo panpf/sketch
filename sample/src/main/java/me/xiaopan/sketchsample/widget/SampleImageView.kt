@@ -31,7 +31,7 @@ import java.io.IOException
 class SampleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SketchImageView(context, attrs) {
     var page: Page? = null
     private var disabledRedisplay: Boolean = false
-    private var longClickShowDrawableInfoListener: LongClickShowDrawableInfoListener? = null
+    private val longClickShowDrawableInfoListener: LongClickShowDrawableInfoListener = LongClickShowDrawableInfoListener()
 
     init {
         onEvent(AppConfigChangedEvent(AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO))
@@ -135,10 +135,6 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                 redisplay { _, cacheOptions -> cacheOptions.isCacheProcessedImageInDisk = cacheProcessedImageInDisk }
             }
             AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO == event.key -> if (AppConfig.getBoolean(context, AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO)) {
-                if (longClickShowDrawableInfoListener == null) {
-                    longClickShowDrawableInfoListener = LongClickShowDrawableInfoListener()
-                }
-
                 onLongClickListener = longClickShowDrawableInfoListener
             } else {
                 onLongClickListener = null
@@ -157,66 +153,8 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         super.onDetachedFromWindow()
     }
 
-    fun makeImageInfo(drawable: Drawable, sketchDrawable: SketchDrawable): String {
-        val messageBuilder = StringBuilder()
-
-        messageBuilder.append("\n")
-        messageBuilder.append(sketchDrawable.uri)
-
-        val uriModel = UriModel.match(context, sketchDrawable.uri)
-        var dataSource: DataSource? = null
-        if (uriModel != null) {
-            try {
-                dataSource = uriModel.getDataSource(context, sketchDrawable.uri, null)
-            } catch (e: GetDataSourceException) {
-                e.printStackTrace()
-            }
-
-        }
-        var imageLength: Long = 0
-        try {
-            imageLength = if (dataSource != null) dataSource.length else 0
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        val needDiskSpace = if (imageLength > 0) Formatter.formatFileSize(context, imageLength) else "未知"
-
-        val previewDrawableByteCount = sketchDrawable.byteCount
-        val pixelByteCount: Int
-        if (drawable is SketchShapeBitmapDrawable) {
-            val bitmap = drawable.bitmapDrawable.bitmap
-            pixelByteCount = previewDrawableByteCount / bitmap.width / bitmap.height
-        } else {
-            pixelByteCount = previewDrawableByteCount / drawable.intrinsicWidth / drawable.intrinsicHeight
-        }
-        val originImageByteCount = sketchDrawable.originWidth * sketchDrawable.originHeight * pixelByteCount
-        val needMemory = Formatter.formatFileSize(context, originImageByteCount.toLong())
-        val mimeType = sketchDrawable.mimeType
-
-        messageBuilder.append("\n")
-        messageBuilder.append("\n")
-        messageBuilder.append("原始图：")
-                .append(sketchDrawable.originWidth).append("x").append(sketchDrawable.originHeight)
-                .append("/").append(if (mimeType != null && mimeType.startsWith("image/")) mimeType.substring(6) else "未知")
-                .append("/").append(needDiskSpace)
-
-        messageBuilder.append("\n                ")
-        messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.exifOrientation))
-                .append("/").append(needMemory)
-
-        messageBuilder.append("\n")
-        messageBuilder.append("预览图：")
-                .append(drawable.intrinsicWidth).append("x").append(drawable.intrinsicHeight)
-                .append("/").append(sketchDrawable.bitmapConfig)
-                .append("/").append(Formatter.formatFileSize(context, previewDrawableByteCount.toLong()))
-
-        messageBuilder.append("\n")
-        messageBuilder.append("\n")
-        messageBuilder.append("KEY：")
-                .append(sketchDrawable.key)
-
-        return messageBuilder.toString()
+    fun showInfo(activity: Activity) {
+        longClickShowDrawableInfoListener.showInfo(activity)
     }
 
     enum class Page {
@@ -232,7 +170,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
             return false
         }
 
-        private fun showInfo(activity: Activity) {
+        fun showInfo(activity: Activity) {
             val builder = AlertDialog.Builder(activity)
 
             val drawable = SketchUtils.getLastDrawable(drawable)
@@ -241,7 +179,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
             if (drawable is SketchLoadingDrawable) {
                 imageInfo = "图片正在加载，请稍后"
             } else if (drawable is SketchDrawable) {
-                imageInfo = makeImageInfo(drawable, drawable as SketchDrawable)
+                imageInfo = assembleImageInfo(drawable, drawable as SketchDrawable)
             } else {
                 imageInfo = "未知来源图片"
             }
@@ -249,6 +187,68 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             builder.setNegativeButton("取消", null)
             builder.show()
+        }
+
+        private fun assembleImageInfo(drawable: Drawable, sketchDrawable: SketchDrawable): String {
+            val messageBuilder = StringBuilder()
+
+            messageBuilder.append("\n")
+            messageBuilder.append(sketchDrawable.uri)
+
+            val uriModel = UriModel.match(context, sketchDrawable.uri)
+            var dataSource: DataSource? = null
+            if (uriModel != null) {
+                try {
+                    dataSource = uriModel.getDataSource(context, sketchDrawable.uri, null)
+                } catch (e: GetDataSourceException) {
+                    e.printStackTrace()
+                }
+
+            }
+            var imageLength: Long = 0
+            try {
+                imageLength = if (dataSource != null) dataSource.length else 0
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            val needDiskSpace = if (imageLength > 0) Formatter.formatFileSize(context, imageLength) else "未知"
+
+            val previewDrawableByteCount = sketchDrawable.byteCount
+            val pixelByteCount: Int
+            if (drawable is SketchShapeBitmapDrawable) {
+                val bitmap = drawable.bitmapDrawable.bitmap
+                pixelByteCount = previewDrawableByteCount / bitmap.width / bitmap.height
+            } else {
+                pixelByteCount = previewDrawableByteCount / drawable.intrinsicWidth / drawable.intrinsicHeight
+            }
+            val originImageByteCount = sketchDrawable.originWidth * sketchDrawable.originHeight * pixelByteCount
+            val needMemory = Formatter.formatFileSize(context, originImageByteCount.toLong())
+            val mimeType = sketchDrawable.mimeType
+
+            messageBuilder.append("\n")
+            messageBuilder.append("\n")
+            messageBuilder.append("原始图：")
+                    .append(sketchDrawable.originWidth).append("x").append(sketchDrawable.originHeight)
+                    .append("/").append(if (mimeType != null && mimeType.startsWith("image/")) mimeType.substring(6) else "未知")
+                    .append("/").append(needDiskSpace)
+
+            messageBuilder.append("\n                ")
+            messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.exifOrientation))
+                    .append("/").append(needMemory)
+
+            messageBuilder.append("\n")
+            messageBuilder.append("预览图：")
+                    .append(drawable.intrinsicWidth).append("x").append(drawable.intrinsicHeight)
+                    .append("/").append(sketchDrawable.bitmapConfig)
+                    .append("/").append(Formatter.formatFileSize(context, previewDrawableByteCount.toLong()))
+
+            messageBuilder.append("\n")
+            messageBuilder.append("\n")
+            messageBuilder.append("KEY：")
+                    .append(sketchDrawable.key)
+
+            return messageBuilder.toString()
         }
     }
 }

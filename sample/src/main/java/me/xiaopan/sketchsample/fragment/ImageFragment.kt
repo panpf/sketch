@@ -16,7 +16,10 @@ import android.widget.Toast
 import me.xiaopan.sketch.Sketch
 import me.xiaopan.sketch.datasource.DataSource
 import me.xiaopan.sketch.display.FadeInImageDisplayer
-import me.xiaopan.sketch.drawable.*
+import me.xiaopan.sketch.drawable.ImageAttrs
+import me.xiaopan.sketch.drawable.SketchDrawable
+import me.xiaopan.sketch.drawable.SketchGifDrawable
+import me.xiaopan.sketch.drawable.SketchRefBitmap
 import me.xiaopan.sketch.request.*
 import me.xiaopan.sketch.state.MemoryCacheStateImage
 import me.xiaopan.sketch.uri.FileUriModel
@@ -328,11 +331,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun location(x: Float, y: Float, animate: Boolean): Boolean {
-            if (!imageView.isZoomEnabled) {
-                return false
-            }
-
-            imageView.imageZoomer!!.location(x, y, animate)
+            imageView.imageZoomer?.location(x, y, animate)
             return true
         }
     }
@@ -340,7 +339,7 @@ class ImageFragment : BaseFragment() {
     private inner class ClickHelper {
 
         fun onViewCreated() {
-            // 将单击事件传递给上层Activity
+            // 将单击事件传递给上层 Activity
             imageView.onClickListener = View.OnClickListener { v ->
                 val parentFragment = parentFragment
                 if (parentFragment != null && parentFragment is ImageZoomer.OnViewTapListener) {
@@ -348,45 +347,44 @@ class ImageFragment : BaseFragment() {
                 }
             }
 
-            // 长按显示图片信息与控制菜单
+            // 长按显示菜单
             imageView.setOnLongClickListener {
-                show()
+                showMenu()
                 true
             }
         }
 
-        fun show() {
-            val builder = AlertDialog.Builder(activity)
-
-            val zoomEnabled = imageView.isZoomEnabled
-            val imageZoomer = if (zoomEnabled) imageView.imageZoomer else null
-            val hugeImageEnabled = imageView.isHugeImageEnabled
-            val hugeImageViewer = imageView.hugeImageViewer
-            val drawable = SketchUtils.getLastDrawable(imageView.drawable)
-
+        fun showMenu() {
             val menuItemList = LinkedList<MenuItem>()
 
-            val imageInfo: String
-            if (drawable is SketchLoadingDrawable) {
-                imageInfo = "图片正在加载，请稍后"
-            } else if (drawable is SketchDrawable) {
-                imageInfo = makeImageInfoWithZoom(drawable, drawable as SketchDrawable)
-            } else {
-                imageInfo = "未知来源图片"
-            }
-            menuItemList.add(MenuItem(imageInfo, null))
-
-            val scaleTypeTitle = "切换ScaleType（" + (if (zoomEnabled) imageZoomer!!.scaleType else imageView.scaleType) + "）"
-            menuItemList.add(MenuItem(scaleTypeTitle, DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }))
-
-            val hugeImageTileTitle = if (hugeImageEnabled) if (hugeImageViewer!!.isShowTileRect) "不显示分块区域" else "显示分块区域" else "分块区域（未开启大图功能）"
-            menuItemList.add(MenuItem(hugeImageTileTitle, DialogInterface.OnClickListener { _, _ -> setShowTile() }))
-
-            val readModeTitle = if (zoomEnabled) if (imageZoomer!!.isReadMode) "关闭阅读模式" else "开启阅读模式" else "阅读模式（未开启缩放功能）"
-            menuItemList.add(MenuItem(readModeTitle, DialogInterface.OnClickListener { _, _ -> setReadMode() }))
-
-            val moreTitle = "更多功能"
-            menuItemList.add(MenuItem(moreTitle, DialogInterface.OnClickListener { _, _ -> showMoreMenu() }))
+            menuItemList.add(MenuItem(
+                    "图片信息",
+                    DialogInterface.OnClickListener { _, _ -> imageView.showInfo(activity) }
+            ))
+            menuItemList.add(MenuItem(
+                    "缩放/旋转/超大图",
+                    DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
+            ))
+            menuItemList.add(MenuItem(
+                    String.format("切换 ScaleType (%s)", imageView.imageZoomer?.scaleType ?: imageView.scaleType),
+                    DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
+            ))
+            menuItemList.add(MenuItem(
+                    "幻灯片播放",
+                    DialogInterface.OnClickListener { _, _ -> play() }
+            ))
+            menuItemList.add(MenuItem(
+                    "设为壁纸",
+                    DialogInterface.OnClickListener { _, _ -> setWallpaper() }
+            ))
+            menuItemList.add(MenuItem(
+                    "分享图片",
+                    DialogInterface.OnClickListener { _, _ -> share() }
+            ))
+            menuItemList.add(MenuItem(
+                    "保存图片",
+                    DialogInterface.OnClickListener { _, _ -> save() }
+            ))
 
             val items = arrayOfNulls<String>(menuItemList.size)
             var w = 0
@@ -396,63 +394,109 @@ class ImageFragment : BaseFragment() {
                 w++
             }
 
-            builder.setItems(items) { dialog, which ->
+            val itemClickListener = DialogInterface.OnClickListener { dialog, which ->
                 dialog.dismiss()
-
                 menuItemList[which].clickListener?.onClick(dialog, which)
             }
 
-            builder.setNegativeButton("取消", null)
-            builder.show()
+            AlertDialog.Builder(activity)
+                    .setItems(items, itemClickListener)
+                    .show()
         }
 
-        fun makeImageInfoWithZoom(drawable: Drawable, sketchDrawable: SketchDrawable): String {
-            val messageBuilder = StringBuilder()
+        fun showZoomMenu() {
+            val menuItemList = LinkedList<MenuItem>()
 
-            messageBuilder.append(imageView.makeImageInfo(drawable, sketchDrawable))
-
-            if (imageView.isZoomEnabled) {
-                val imageZoomer = imageView.imageZoomer
-
-                messageBuilder.append("\n")
-                messageBuilder.append("\n")
-                messageBuilder.append("缩放：").append(SketchUtils.formatFloat(imageZoomer!!.zoomScale, 2))
-
+            val imageZoomer = imageView.imageZoomer
+            if (imageZoomer != null) {
+                val zoomInfoBuilder = StringBuilder()
+                val zoomScale = SketchUtils.formatFloat(imageZoomer.zoomScale, 2)
                 val visibleRect = Rect()
                 imageZoomer.getVisibleRect(visibleRect)
-                messageBuilder.append("/").append(visibleRect.toShortString())
+                val visibleRectString = visibleRect.toShortString()
+                zoomInfoBuilder.append("缩放：").append(zoomScale).append(" / ").append(visibleRectString)
+                menuItemList.add(MenuItem(zoomInfoBuilder.toString(), null))
+            } else {
+                menuItemList.add(MenuItem("缩放 (未开启)", null))
             }
 
-            if (imageView.isHugeImageEnabled) {
-                val hugeImageViewer = imageView.hugeImageViewer
-                if (hugeImageViewer!!.isReady) {
-                    val tilesNeedMemory = Formatter.formatFileSize(context, hugeImageViewer.tilesAllocationByteCount)
-                    messageBuilder.append("\n")
-                    messageBuilder.append("碎片：")
+            val hugeImageViewer = imageView.hugeImageViewer
+            if (hugeImageViewer != null) {
+                val hugeImageInfoBuilder = StringBuilder()
+                if (hugeImageViewer.isReady) {
+                    hugeImageInfoBuilder.append("超大图碎片：")
                             .append(hugeImageViewer.tiles)
                             .append("/")
                             .append(hugeImageViewer.tileList.size)
                             .append("/")
-                            .append(tilesNeedMemory)
-                    messageBuilder.append("\n")
-                    messageBuilder.append("碎片解码区域：").append(hugeImageViewer.decodeRect.toShortString())
-                    messageBuilder.append("\n")
-                    messageBuilder.append("碎片SRC区域：").append(hugeImageViewer.decodeSrcRect.toShortString())
+                            .append(Formatter.formatFileSize(context, hugeImageViewer.tilesAllocationByteCount))
+
+                    hugeImageInfoBuilder.append("\n")
+                    hugeImageInfoBuilder.append("超大图解码区域：").append(hugeImageViewer.decodeRect.toShortString())
+
+                    hugeImageInfoBuilder.append("\n")
+                    hugeImageInfoBuilder.append("超大图SRC区域：").append(hugeImageViewer.decodeSrcRect.toShortString())
                 } else if (hugeImageViewer.isInitializing) {
-                    messageBuilder.append("\n")
-                    messageBuilder.append("大图功能正在初始化...")
+                    hugeImageInfoBuilder.append("\n")
+                    hugeImageInfoBuilder.append("超大图初始化中...")
+                } else {
+                    hugeImageInfoBuilder.append("超大图：不需要")
                 }
+                menuItemList.add(MenuItem(hugeImageInfoBuilder.toString(), null))
+            } else {
+                menuItemList.add(MenuItem("超大图 (未开启)", null))
             }
 
-            messageBuilder.append("\n")
+            if (hugeImageViewer != null) {
+                if (hugeImageViewer.isReady || hugeImageViewer.isInitializing) {
+                    menuItemList.add(MenuItem(
+                            if (hugeImageViewer.isShowTileRect) "隐藏分块边界" else "显示分块边界",
+                            DialogInterface.OnClickListener { _, _ -> toggleShowTileEdge() }))
+                } else {
+                    menuItemList.add(MenuItem("分块边界 (不需要超大图功能)", null))
+                }
+            } else {
+                menuItemList.add(MenuItem("分块边界 (未开启超大图功能)", null))
+            }
 
-            return messageBuilder.toString()
+            if (imageZoomer != null) {
+                menuItemList.add(MenuItem(
+                        if (imageZoomer.isReadMode) "关闭阅读模式" else "开启阅读模式",
+                        DialogInterface.OnClickListener { _, _ -> toggleReadMode() }))
+            } else {
+                menuItemList.add(MenuItem("阅读模式 (未开启缩放功能)", null))
+            }
+
+            if (imageZoomer != null) {
+                menuItemList.add(MenuItem(
+                        String.format("顺时针旋转 90°（%d）", imageZoomer.rotateDegrees),
+                        DialogInterface.OnClickListener { _, _ -> rotate() }))
+            } else {
+                menuItemList.add(MenuItem("顺时针旋转 90° (未开启缩放功能)", null))
+            }
+
+            val items = arrayOfNulls<String>(menuItemList.size)
+            var w = 0
+            val size = menuItemList.size
+            while (w < size) {
+                items[w] = menuItemList[w].title
+                w++
+            }
+
+            val itemClickListener = DialogInterface.OnClickListener { dialog, which ->
+                dialog.dismiss()
+                menuItemList[which].clickListener?.onClick(dialog, which)
+            }
+
+            AlertDialog.Builder(activity)
+                    .setItems(items, itemClickListener)
+                    .show()
         }
 
         fun showScaleTypeMenu() {
             val builder = AlertDialog.Builder(activity)
 
-            builder.setTitle("修改ScaleType")
+            builder.setTitle("切换 ScaleType")
 
             val items = arrayOfNulls<String>(7)
             items[0] = "CENTER"
@@ -481,67 +525,23 @@ class ImageFragment : BaseFragment() {
             builder.show()
         }
 
-        fun showMoreMenu() {
-            val menuItemList = LinkedList<MenuItem>()
-
-            val rotateTitle = if (imageView.isZoomEnabled) "顺时针旋转90度（" + imageView.imageZoomer!!.rotateDegrees + "）" else "旋转图片（未开启缩放功能）"
-            menuItemList.add(MenuItem(rotateTitle, DialogInterface.OnClickListener { _, _ -> rotate() }))
-
-            menuItemList.add(MenuItem("幻灯片播放", DialogInterface.OnClickListener { _, _ -> play() }))
-
-            menuItemList.add(MenuItem("分享图片", DialogInterface.OnClickListener { _, _ -> share() }))
-
-            menuItemList.add(MenuItem("保存图片", DialogInterface.OnClickListener { _, _ -> save() }))
-
-            menuItemList.add(MenuItem("设为壁纸", DialogInterface.OnClickListener { _, _ -> setWallpaper() }))
-
-            val builder = AlertDialog.Builder(activity)
-
-            val items = arrayOfNulls<String>(menuItemList.size)
-            var w = 0
-            val size = menuItemList.size
-            while (w < size) {
-                items[w] = menuItemList[w].title
-                w++
-            }
-
-            builder.setItems(items) { dialog, which ->
-                dialog.dismiss()
-
-                menuItemList[which].clickListener?.onClick(dialog, which)
-            }
-
-            builder.setNegativeButton("取消", null)
-            builder.show()
-        }
-
-        fun setShowTile() {
-            if (imageView.isHugeImageEnabled) {
-                val hugeImageViewer = imageView.hugeImageViewer
-                val newShowTileRect = !hugeImageViewer!!.isShowTileRect
-                hugeImageViewer.isShowTileRect = newShowTileRect
-            } else {
-                Toast.makeText(context, "请先到首页左侧菜单开启大图功能", Toast.LENGTH_SHORT).show()
+        fun toggleShowTileEdge() {
+            imageView.hugeImageViewer?.let {
+                it.isShowTileRect = !it.isShowTileRect
             }
         }
 
-        fun setReadMode() {
-            if (imageView.isZoomEnabled) {
-                val imageZoomer = imageView.imageZoomer
-                val newReadMode = !imageZoomer!!.isReadMode
-                imageZoomer.isReadMode = newReadMode
-            } else {
-                Toast.makeText(context, "请先到首页左侧菜单开启缩放功能", Toast.LENGTH_SHORT).show()
+        fun toggleReadMode() {
+            imageView.imageZoomer?.let {
+                it.isReadMode = !it.isReadMode
             }
         }
 
         fun rotate() {
-            if (imageView.isZoomEnabled) {
-                if (!imageView.imageZoomer!!.rotateBy(90)) {
+            imageView.imageZoomer?.let {
+                if (!it.rotateBy(90)) {
                     Toast.makeText(context, "旋转角度必须是90的倍数或开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show()
                 }
-            } else {
-                Toast.makeText(context, "请先到首页左侧菜单开启缩放功能", Toast.LENGTH_SHORT).show()
             }
         }
 

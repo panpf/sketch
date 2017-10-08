@@ -152,21 +152,25 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         override fun doInBackground(params: Array<Void>): List<String>? {
             val fragment = fragmentWeakReference.get() ?: return null
 
-            val cursor = fragment.context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            var cursor = fragment.context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN), null, null,
-                    MediaStore.Images.Media.DATE_TAKEN + " DESC") ?: return null
+                    MediaStore.Images.Media.DATE_TAKEN + " DESC")
 
             val generator = ImageOrientationCorrectTestFileGenerator.getInstance(fragment.context)
             val testFilePaths = generator.filePaths
 
             val allUris = AssetImage.getAll(fragment.context)
-            val imagePathList = ArrayList<String>(cursor.count + allUris.size + testFilePaths.size)
+            val imageListSize = cursor?.count ?: 0 + allUris.size + testFilePaths.size
+            val imagePathList = ArrayList<String>(imageListSize)
+
             Collections.addAll(imagePathList, *allUris)
             Collections.addAll(imagePathList, *testFilePaths)
-            while (cursor.moveToNext()) {
-                imagePathList.add(String.format("file://%s", cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))))
+            cursor?.let {
+                while (cursor.moveToNext()) {
+                    imagePathList.add(String.format("file://%s", cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))))
+                }
+                cursor.close()
             }
-            cursor.close()
             return imagePathList
         }
 
