@@ -89,17 +89,19 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
     }
 
     private fun initViews() {
+        //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
         backgroundImageView.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels
+            it.height = resources.displayMetrics.heightPixels + DeviceUtils.getWindowHeightSupplement(this)
             backgroundImageView.layoutParams = it
         }
 
         backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
+        //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
         menuBackgroundImageView.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels
+            it.height = resources.displayMetrics.heightPixels + DeviceUtils.getWindowHeightSupplement(this)
             menuBackgroundImageView.layoutParams = it
         }
 

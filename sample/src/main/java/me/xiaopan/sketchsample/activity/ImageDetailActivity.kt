@@ -46,9 +46,10 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
                     contentView.paddingRight, contentView.paddingBottom)
         }
 
+        //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
         backgroundImageView.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels
+            it.height = resources.displayMetrics.heightPixels + DeviceUtils.getWindowHeightSupplement(this)
             backgroundImageView.layoutParams = it
         }
 
