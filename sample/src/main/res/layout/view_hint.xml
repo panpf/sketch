@@ -49,7 +49,7 @@
                     android:layout_marginTop="16dp"
                     android:textColor="@color/default_text_color_normal"
                     android:gravity="center"
-                    tools:text="@string/loadingLater" />
+                    tools:text="Loading…" />
             </LinearLayout>
 
             <TextView

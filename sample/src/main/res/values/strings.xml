@@ -2,30 +2,33 @@
 <resources>
     <string name="app_name">Sketch Sample</string>
 
-    <string name="drawer_open">打开</string>
-    <string name="drawer_close">关闭</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 
-    <string name="loadingLater">正在加载%s，请稍后…</string>
     <string name="text_library_intro">
-        Sketch 是 Android 上一个强大且全面的图片加载器，特性如下：
-        \n1. 多种 URI 支持
-        \n2. 支持 GIF 图
-        \n3. 支持手势缩放
-        \n4. 支持分块显示超大图
-        \n5. 支持三级缓存
-        \n6. 支持纠正图片方向
-        \n7. 支持读取 APK 或 APP 图标
-        \n8. 支持 Base64 图片
-        \n9. 支持各种列表
-        \n10. 自动防止加载过大 Bitmap
-        \n11. 独家 TransitionDrawable 支持
-        \n12. 只加载或只下载
-        \n13. 移动数据下暂停下载
-        \n14. 自动选择合适的 Bitmap.Config
+        Sketch is a powerful and comprehensive picture loader on Android, in addition to the necessary features to load the picture, but also supports GIF, gesture zoom, block display huge image, automatically correct the direction of the picture, display video thumbnails and other functions.
+        \n
+        \n
+        Features are as follows:
+        \n1. Multiple URL support
+        \n2. Support gif
+        \n3. Support gesture zoom
+        \n4. Support block display huge image
+        \n5. Support level 3 cache
+        \n6. Support correcting picture orientation
+        \n7. Support display APK or APP icon
+        \n8. Support Base64 image
+        \n9. Support various list
+        \n10. Automatically prevents excessive loading Bitmap
+        \n11. Exclusive TransitionDrawable support
+        \n12. Only to load or only to download
+        \n13. Paused download on mobile data
+        \n14. Automatically select the appropriate Bitmap.Config
+        \n15. Powerful and flexible customization
     </string>
     <string name="text_version">v%s</string>
     <string name="text_types">%1$s - %2$s</string>
-    <string name="text_project_url">http://github.com/panpf/sketch</string>
+    <string name="text_project_url">https://github.com/panpf/sketch</string>
     <string name="text_powered">
         Powered by：
         \n 1. android-gif-drawable
