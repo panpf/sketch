@@ -169,19 +169,19 @@ class ImageFragment : BaseFragment() {
         }
 
         override fun onError(cause: ErrorCause) {
-            hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", View.OnClickListener { imageView.displayImage(finalShowImageUrl!!) })
+            hintView.hint(R.drawable.ic_error, "Image display failed", "Again", View.OnClickListener { imageView.displayImage(finalShowImageUrl!!) })
         }
 
         override fun onCanceled(cause: CancelCause) {
             @Suppress("NON_EXHAUSTIVE_WHEN")
             when (cause) {
-                CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "为节省流量已暂停下载新图片", "不管了，直接下载", View.OnClickListener {
+                CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "Pause to download new image for saving traffic", "I do not care", View.OnClickListener {
                     val requestLevel = imageView.options.requestLevel
                     imageView.options.requestLevel = RequestLevel.NET
                     imageView.displayImage(finalShowImageUrl!!)
                     imageView.options.requestLevel = requestLevel
                 })
-                CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "已暂停加载新图片", "直接加载", View.OnClickListener {
+                CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "Paused to load new image", "Forced to load", View.OnClickListener {
                     val requestLevel = imageView.options.requestLevel
                     imageView.options.requestLevel = RequestLevel.NET
                     imageView.displayImage(finalShowImageUrl!!)
@@ -358,31 +358,31 @@ class ImageFragment : BaseFragment() {
             val menuItemList = LinkedList<MenuItem>()
 
             menuItemList.add(MenuItem(
-                    "图片信息",
+                    "Image Info",
                     DialogInterface.OnClickListener { _, _ -> imageView.showInfo(activity) }
             ))
             menuItemList.add(MenuItem(
-                    "缩放/旋转/超大图",
+                    "Zoom/Rotate/Huge Image",
                     DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
             ))
             menuItemList.add(MenuItem(
-                    String.format("切换 ScaleType (%s)", imageView.imageZoomer?.scaleType ?: imageView.scaleType),
+                    String.format("Toggle ScaleType (%s)", imageView.imageZoomer?.scaleType ?: imageView.scaleType),
                     DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
             ))
             menuItemList.add(MenuItem(
-                    "幻灯片播放",
+                    "Auto Play",
                     DialogInterface.OnClickListener { _, _ -> play() }
             ))
             menuItemList.add(MenuItem(
-                    "设为壁纸",
+                    "Set as wallpaper",
                     DialogInterface.OnClickListener { _, _ -> setWallpaper() }
             ))
             menuItemList.add(MenuItem(
-                    "分享图片",
+                    "Share Image",
                     DialogInterface.OnClickListener { _, _ -> share() }
             ))
             menuItemList.add(MenuItem(
-                    "保存图片",
+                    "Save Image",
                     DialogInterface.OnClickListener { _, _ -> save() }
             ))
 
@@ -414,17 +414,17 @@ class ImageFragment : BaseFragment() {
                 val visibleRect = Rect()
                 imageZoomer.getVisibleRect(visibleRect)
                 val visibleRectString = visibleRect.toShortString()
-                zoomInfoBuilder.append("缩放：").append(zoomScale).append(" / ").append(visibleRectString)
+                zoomInfoBuilder.append("Zoom: ").append(zoomScale).append(" / ").append(visibleRectString)
                 menuItemList.add(MenuItem(zoomInfoBuilder.toString(), null))
             } else {
-                menuItemList.add(MenuItem("缩放 (未开启)", null))
+                menuItemList.add(MenuItem("Zoom (Disabled)", null))
             }
 
             val hugeImageViewer = imageView.hugeImageViewer
             if (hugeImageViewer != null) {
                 val hugeImageInfoBuilder = StringBuilder()
                 if (hugeImageViewer.isReady) {
-                    hugeImageInfoBuilder.append("超大图碎片：")
+                    hugeImageInfoBuilder.append("Huge image tiles：")
                             .append(hugeImageViewer.tiles)
                             .append("/")
                             .append(hugeImageViewer.tileList.size)
@@ -432,47 +432,47 @@ class ImageFragment : BaseFragment() {
                             .append(Formatter.formatFileSize(context, hugeImageViewer.tilesAllocationByteCount))
 
                     hugeImageInfoBuilder.append("\n")
-                    hugeImageInfoBuilder.append("超大图解码区域：").append(hugeImageViewer.decodeRect.toShortString())
+                    hugeImageInfoBuilder.append("Huge image decode area：").append(hugeImageViewer.decodeRect.toShortString())
 
                     hugeImageInfoBuilder.append("\n")
-                    hugeImageInfoBuilder.append("超大图SRC区域：").append(hugeImageViewer.decodeSrcRect.toShortString())
+                    hugeImageInfoBuilder.append("Huge image decode src area：").append(hugeImageViewer.decodeSrcRect.toShortString())
                 } else if (hugeImageViewer.isInitializing) {
                     hugeImageInfoBuilder.append("\n")
-                    hugeImageInfoBuilder.append("超大图初始化中...")
+                    hugeImageInfoBuilder.append("Huge image initializing...")
                 } else {
-                    hugeImageInfoBuilder.append("超大图：不需要")
+                    hugeImageInfoBuilder.append("Huge image (No need)")
                 }
                 menuItemList.add(MenuItem(hugeImageInfoBuilder.toString(), null))
             } else {
-                menuItemList.add(MenuItem("超大图 (未开启)", null))
+                menuItemList.add(MenuItem("Huge image (Disabled)", null))
             }
 
             if (hugeImageViewer != null) {
                 if (hugeImageViewer.isReady || hugeImageViewer.isInitializing) {
                     menuItemList.add(MenuItem(
-                            if (hugeImageViewer.isShowTileRect) "隐藏分块边界" else "显示分块边界",
+                            if (hugeImageViewer.isShowTileRect) "Hide block boundary" else "Show block boundary",
                             DialogInterface.OnClickListener { _, _ -> toggleShowTileEdge() }))
                 } else {
-                    menuItemList.add(MenuItem("分块边界 (不需要超大图功能)", null))
+                    menuItemList.add(MenuItem("Block boundary (No need huge image)", null))
                 }
             } else {
-                menuItemList.add(MenuItem("分块边界 (未开启超大图功能)", null))
+                menuItemList.add(MenuItem("Block boundary (Huge image disabled)", null))
             }
 
             if (imageZoomer != null) {
                 menuItemList.add(MenuItem(
-                        if (imageZoomer.isReadMode) "关闭阅读模式" else "开启阅读模式",
+                        if (imageZoomer.isReadMode) "Close read mode" else "Open read mode",
                         DialogInterface.OnClickListener { _, _ -> toggleReadMode() }))
             } else {
-                menuItemList.add(MenuItem("阅读模式 (未开启缩放功能)", null))
+                menuItemList.add(MenuItem("Read mode (Zoom disabled)", null))
             }
 
             if (imageZoomer != null) {
                 menuItemList.add(MenuItem(
-                        String.format("顺时针旋转 90°（%d）", imageZoomer.rotateDegrees),
+                        String.format("Clockwise rotation 90°（%d）", imageZoomer.rotateDegrees),
                         DialogInterface.OnClickListener { _, _ -> rotate() }))
             } else {
-                menuItemList.add(MenuItem("顺时针旋转 90° (未开启缩放功能)", null))
+                menuItemList.add(MenuItem("Clockwise rotation 90° (Zoom disabled)", null))
             }
 
             val items = arrayOfNulls<String>(menuItemList.size)
@@ -496,7 +496,7 @@ class ImageFragment : BaseFragment() {
         fun showScaleTypeMenu() {
             val builder = AlertDialog.Builder(activity)
 
-            builder.setTitle("切换 ScaleType")
+            builder.setTitle("Toggle ScaleType")
 
             val items = arrayOfNulls<String>(7)
             items[0] = "CENTER"
@@ -521,7 +521,7 @@ class ImageFragment : BaseFragment() {
                 }
             }
 
-            builder.setNegativeButton("取消", null)
+            builder.setNegativeButton("Cancel", null)
             builder.show()
         }
 
@@ -540,7 +540,7 @@ class ImageFragment : BaseFragment() {
         fun rotate() {
             imageView.imageZoomer?.let {
                 if (!it.rotateBy(90)) {
-                    Toast.makeText(context, "旋转角度必须是90的倍数或开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -552,7 +552,7 @@ class ImageFragment : BaseFragment() {
 
             val uriModel = UriModel.match(context, imageUri!!)
             if (uriModel == null) {
-                Toast.makeText(activity, "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Unknown format uri: " + imageUri, Toast.LENGTH_LONG).show()
                 return null
             }
 
@@ -561,7 +561,7 @@ class ImageFragment : BaseFragment() {
                 dataSource = uriModel.getDataSource(context, imageUri, null)
             } catch (e: GetDataSourceException) {
                 e.printStackTrace()
-                Toast.makeText(activity, "图片还没有准备好", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
                 return null
             }
 
@@ -578,13 +578,13 @@ class ImageFragment : BaseFragment() {
             val drawable = imageView.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
-                Toast.makeText(activity, "稍等一会儿", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
                 return
             }
 
             val imageFile = getImageFile(imageUri)
             if (imageFile == null) {
-                Toast.makeText(activity, "图片还没有准备好", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
                 return
             }
 
@@ -594,7 +594,7 @@ class ImageFragment : BaseFragment() {
 
             val infoList = activity.packageManager.queryIntentActivities(intent, 0)
             if (infoList == null || infoList.isEmpty()) {
-                Toast.makeText(activity, "您的设备上没有能够分享的APP", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "There is no APP on your device to share the picture", Toast.LENGTH_LONG).show()
                 return
             }
 
@@ -605,13 +605,13 @@ class ImageFragment : BaseFragment() {
             val drawable = imageView.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
-                Toast.makeText(activity, "稍等一会儿", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
                 return
             }
 
             val imageFile = getImageFile(imageUri)
             if (imageFile == null) {
-                Toast.makeText(activity, "图片还没有准备好", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
                 return
             }
 
@@ -626,18 +626,18 @@ class ImageFragment : BaseFragment() {
             val drawable = imageView.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
-                Toast.makeText(activity, "稍等一会儿", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
                 return
             }
 
             val uriModel = UriModel.match(context, imageUri!!)
             if (uriModel == null) {
-                Toast.makeText(activity, "我去，怎么会有这样的URL " + imageUri, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Unknown format uri: " + imageUri, Toast.LENGTH_LONG).show()
                 return
             }
 
             if (uriModel is FileUriModel) {
-                Toast.makeText(activity, "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "This image is the local no need to save", Toast.LENGTH_LONG).show()
                 return
             }
 
@@ -646,7 +646,7 @@ class ImageFragment : BaseFragment() {
                 dataSource = uriModel.getDataSource(context, imageUri, null)
             } catch (e: GetDataSourceException) {
                 e.printStackTrace()
-                Toast.makeText(activity, "图片还没有准备好哦，再等一会儿吧！", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
                 return
             }
 

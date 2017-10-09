@@ -22,6 +22,7 @@ import android.os.Handler
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter
 import me.xiaopan.sketch.util.SketchUtils
 import me.xiaopan.sketch.viewfun.zoom.ImageZoomer
@@ -49,7 +50,7 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
     private var position: Int = 0
 
     private var handler: Handler? = null
-    private var viewPagerPlayer: ViewPagerPlayer? = null
+    lateinit var viewPagerPlayer: ViewPagerPlayer
     private var recoverPlay: Boolean = false
     private var startPlay: StartPlay? = null
 
@@ -97,15 +98,15 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
     override fun onResume() {
         super.onResume()
 
-        if (recoverPlay && !viewPagerPlayer!!.isPlaying) {
+        if (recoverPlay && !viewPagerPlayer.isPlaying) {
             handler!!.postDelayed(startPlay, 1000)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (viewPagerPlayer!!.isPlaying) {
-            viewPagerPlayer!!.stop()
+        if (viewPagerPlayer.isPlaying) {
+            viewPagerPlayer.stop()
             recoverPlay = true
         }
         handler!!.removeCallbacks(startPlay)
@@ -118,8 +119,10 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
     override fun onViewTap(view: View, x: Float, y: Float) {
         // 如果正在播放就关闭自动播放
-        if (viewPagerPlayer!!.isPlaying) {
-            viewPagerPlayer!!.stop()
+        if (viewPagerPlayer.isPlaying) {
+            viewPagerPlayer.stop()
+
+            Toast.makeText(activity, "Stop auto play", Toast.LENGTH_SHORT).show()
         } else {
             activity.finish()
         }
@@ -128,12 +131,12 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
     @Suppress("unused")
     @Subscribe
     fun onEvent(event: ImageFragment.PlayImageEvent) {
-        viewPagerPlayer!!.start()
+        viewPagerPlayer.start()
     }
 
     private inner class StartPlay : Runnable {
         override fun run() {
-            viewPagerPlayer!!.start()
+            viewPagerPlayer.start()
             recoverPlay = false
         }
     }

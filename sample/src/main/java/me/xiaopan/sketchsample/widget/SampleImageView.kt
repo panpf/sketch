@@ -177,15 +177,15 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             val imageInfo: String
             if (drawable is SketchLoadingDrawable) {
-                imageInfo = "图片正在加载，请稍后"
+                imageInfo = "Image is loading, please wait later"
             } else if (drawable is SketchDrawable) {
                 imageInfo = assembleImageInfo(drawable, drawable as SketchDrawable)
             } else {
-                imageInfo = "未知来源图片"
+                imageInfo = "Unknown source image"
             }
             builder.setMessage(imageInfo)
 
-            builder.setNegativeButton("取消", null)
+            builder.setNegativeButton("Cancel", null)
             builder.show()
         }
 
@@ -211,7 +211,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                 e.printStackTrace()
             }
 
-            val needDiskSpace = if (imageLength > 0) Formatter.formatFileSize(context, imageLength) else "未知"
+            val needDiskSpace = if (imageLength > 0) Formatter.formatFileSize(context, imageLength) else "Unknown"
 
             val previewDrawableByteCount = sketchDrawable.byteCount
             val pixelByteCount: Int
@@ -227,9 +227,9 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             messageBuilder.append("\n")
             messageBuilder.append("\n")
-            messageBuilder.append("原始图：")
+            messageBuilder.append("Original: ")
                     .append(sketchDrawable.originWidth).append("x").append(sketchDrawable.originHeight)
-                    .append("/").append(if (mimeType != null && mimeType.startsWith("image/")) mimeType.substring(6) else "未知")
+                    .append("/").append(if (mimeType != null && mimeType.startsWith("image/")) mimeType.substring(6) else "Unknown")
                     .append("/").append(needDiskSpace)
 
             messageBuilder.append("\n                ")
@@ -238,7 +238,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             messageBuilder.append("\n")
             messageBuilder.append("\n")
-            messageBuilder.append("预览图：")
+            messageBuilder.append("Preview: ")
                     .append(drawable.intrinsicWidth).append("x").append(drawable.intrinsicHeight)
                     .append("/").append(sketchDrawable.bitmapConfig)
                     .append("/").append(Formatter.formatFileSize(context, previewDrawableByteCount.toLong()))
