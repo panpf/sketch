@@ -83,7 +83,7 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.UriModel;
-import me.xiaopan.sketch.viewfun.huge.Tile;
+import me.xiaopan.sketch.zoom.huge.Tile;
 
 public class SketchUtils {
 
@@ -892,7 +892,7 @@ public class SketchUtils {
      */
     public static boolean supportHugeImage(LoadRequest loadRequest, ImageType imageType) {
         return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).getViewInfo().isHugeImageEnabled() &&
+                ((DisplayRequest) loadRequest).getViewInfo().isZoomEnabled() &&
                 SketchUtils.sdkSupportBitmapRegionDecoder() &&
                 formatSupportBitmapRegionDecoder(imageType);
     }

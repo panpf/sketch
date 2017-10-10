@@ -24,7 +24,7 @@ import me.xiaopan.sketch.SketchView;
 public class ViewInfo {
     private ScaleType scaleType;
     private FixedSize fixedSize;
-    private boolean hugeImageEnabled;
+    private boolean zoomEnabled;
 
     public ViewInfo() {
 
@@ -37,18 +37,18 @@ public class ViewInfo {
     public void copy(ViewInfo viewInfo) {
         this.scaleType = viewInfo.scaleType;
         this.fixedSize = viewInfo.fixedSize;
-        this.hugeImageEnabled = viewInfo.hugeImageEnabled;
+        this.zoomEnabled = viewInfo.zoomEnabled;
     }
 
     public void reset(SketchView sketchView, Sketch sketch) {
         if (sketchView != null) {
             this.scaleType = sketchView.getScaleType();
             this.fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
-            this.hugeImageEnabled = sketchView.isHugeImageEnabled();
+            this.zoomEnabled = sketchView.isZoomEnabled();
         } else {
             this.scaleType = null;
             this.fixedSize = null;
-            this.hugeImageEnabled = false;
+            this.zoomEnabled = false;
         }
     }
 
@@ -60,7 +60,7 @@ public class ViewInfo {
         return scaleType;
     }
 
-    public boolean isHugeImageEnabled() {
-        return hugeImageEnabled;
+    public boolean isZoomEnabled() {
+        return zoomEnabled;
     }
 }

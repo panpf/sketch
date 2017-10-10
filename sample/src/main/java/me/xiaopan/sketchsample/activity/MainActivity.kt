@@ -187,32 +187,9 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         menuList.add(CheckMenu(this, "Disable Disk Cache", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener))
 
         menuList.add("Gesture Zoom Menu")
-        menuList.add(CheckMenu(this, "Enabled Gesture Zoom In Detail Page", AppConfig.Key.SUPPORT_ZOOM, object : CheckMenu.OnCheckedChangedListener {
-            override fun onCheckedChangedBefore(checked: Boolean) {
-                if (!checked && AppConfig.getBoolean(baseContext, AppConfig.Key.SUPPORT_HUGE_IMAGE)) {
-                    AppConfig.putBoolean(baseContext, AppConfig.Key.SUPPORT_HUGE_IMAGE, false)
-                }
-            }
-
-            override fun onCheckedChanged(checked: Boolean) {
-
-            }
-        }, menuClickListener))
+        menuList.add(CheckMenu(this, "Enabled Gesture Zoom In Detail Page", AppConfig.Key.SUPPORT_ZOOM, null, menuClickListener))
         menuList.add(CheckMenu(this, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener))
         menuList.add(CheckMenu(this, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener))
-
-        menuList.add("Huge Image Menu")
-        menuList.add(CheckMenu(this, "Enabled Block Display Huge Image In Detail Page", AppConfig.Key.SUPPORT_HUGE_IMAGE, object : CheckMenu.OnCheckedChangedListener {
-            override fun onCheckedChangedBefore(checked: Boolean) {
-                if (checked && !AppConfig.getBoolean(baseContext, AppConfig.Key.SUPPORT_ZOOM)) {
-                    AppConfig.putBoolean(baseContext, AppConfig.Key.SUPPORT_ZOOM, true)
-                }
-            }
-
-            override fun onCheckedChanged(checked: Boolean) {
-
-            }
-        }, menuClickListener))
         menuList.add(CheckMenu(this, "Visible To User Decode Huge Image In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE, null, menuClickListener))
 
         menuList.add("GIF Menu")

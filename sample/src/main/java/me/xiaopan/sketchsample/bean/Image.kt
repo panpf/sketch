@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class Image() : Parcelable {
-    var normalQualityUrl: String? = null
-    var rawQualityUrl: String? = null
+    lateinit var normalQualityUrl: String
+    lateinit var rawQualityUrl: String
 
     constructor(parcel: Parcel) : this() {
         normalQualityUrl = parcel.readString()

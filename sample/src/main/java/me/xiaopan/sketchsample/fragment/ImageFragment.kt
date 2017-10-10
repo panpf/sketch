@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -26,8 +27,8 @@ import me.xiaopan.sketch.uri.FileUriModel
 import me.xiaopan.sketch.uri.GetDataSourceException
 import me.xiaopan.sketch.uri.UriModel
 import me.xiaopan.sketch.util.SketchUtils
-import me.xiaopan.sketch.viewfun.huge.HugeImageViewer
-import me.xiaopan.sketch.viewfun.zoom.ImageZoomer
+import me.xiaopan.sketch.zoom.ImageZoomer
+import me.xiaopan.sketch.zoom.huge.HugeImageViewer
 import me.xiaopan.sketchsample.BaseFragment
 import me.xiaopan.sketchsample.BindContentView
 import me.xiaopan.sketchsample.R
@@ -50,48 +51,52 @@ import java.util.*
 @BindContentView(R.layout.fragment_image)
 class ImageFragment : BaseFragment() {
 
-    val imageView: SampleImageView by bindView(R.id.image_imageFragment_image)
-    val mappingView: MappingView by bindView(R.id.mapping_imageFragment)
-    val hintView: HintView by bindView(R.id.hint_imageFragment_hint)
+    private val imageView: SampleImageView by bindView(R.id.image_imageFragment_image)
+    private val mappingView: MappingView by bindView(R.id.mapping_imageFragment)
+    private val hintView: HintView by bindView(R.id.hint_imageFragment_hint)
 
-    lateinit var image: Image
+    private lateinit var image: Image
     private var loadingImageOptionsKey: String? = null
     private var showTools: Boolean = false
 
-    private var finalShowImageUrl: String? = null
+    private lateinit var finalShowImageUrl: String
 
-    private val setWindowBackground = SetWindowBackground()
-    private val gifPlayFollowPageVisible = GifPlayFollowPageVisible()
-    private val showImageHelper = ShowImageHelper()
-    private val imageZoomHelper = ImageZoomHelper()
-    private val mappingHelper = MappingHelper()
-    private val hugeImageHelper = HugeImageHelper()
+    private val showHelper = ShowHelper()
+    private val zoomHelper = ZoomHelper()
+    private var mappingHelper = MappingHelper()
     private val clickHelper = ClickHelper()
+    private val setWindowBackgroundHelper = SetWindowBackgroundHelper()
+    private val gifPlayFollowPageVisibleHelper = GifPlayFollowPageVisibleHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setWindowBackground.onCreate(activity)
+        setWindowBackgroundHelper.onCreate(activity)
 
         arguments?.let {
             image = it.getParcelable<Image>(PARAM_REQUIRED_STRING_IMAGE_URI)
             loadingImageOptionsKey = it.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
             showTools = it.getBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
         }
+
+        val showHighDefinitionImage = AppConfig.getBoolean(context, AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
+        finalShowImageUrl = if (showHighDefinitionImage) image.rawQualityUrl else image.normalQualityUrl
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val showHighDefinitionImage = AppConfig.getBoolean(context, AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
-        finalShowImageUrl = if (showHighDefinitionImage && !TextUtils.isEmpty(image.rawQualityUrl)) image.rawQualityUrl else image.normalQualityUrl
-
-        imageZoomHelper.onViewCreated()
-        hugeImageHelper.onViewCreated()
+        zoomHelper.onViewCreated()
         mappingHelper.onViewCreated()
         clickHelper.onViewCreated()
-        showImageHelper.onViewCreated()
+        showHelper.onViewCreated()
 
         EventBus.getDefault().register(this)
+    }
+
+    override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
+        zoomHelper.onUserVisibleChanged()
+        setWindowBackgroundHelper.onUserVisibleChanged()
+        gifPlayFollowPageVisibleHelper.onUserVisibleChanged()
     }
 
     override fun onDestroyView() {
@@ -99,35 +104,26 @@ class ImageFragment : BaseFragment() {
         super.onDestroyView()
     }
 
-    public override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
-        hugeImageHelper.onUserVisibleChanged()
-        setWindowBackground.onUserVisibleChanged()
-        gifPlayFollowPageVisible.onUserVisibleChanged()
-    }
-
     @Suppress("unused")
     @Subscribe
     fun onEvent(event: AppConfigChangedEvent) {
         if (AppConfig.Key.SUPPORT_ZOOM == event.key) {
-            imageZoomHelper.onConfigChanged()
+            zoomHelper.onConfigChanged()
             mappingHelper.onViewCreated()
         } else if (AppConfig.Key.READ_MODE == event.key) {
-            imageZoomHelper.onReadModeConfigChanged()
-        } else if (AppConfig.Key.SUPPORT_HUGE_IMAGE == event.key) {
-            hugeImageHelper.onConfigChanged()
-            mappingHelper.onViewCreated()
+            zoomHelper.onReadModeConfigChanged()
         }
     }
 
     class PlayImageEvent
 
-    private inner class ShowImageHelper : DisplayListener, DownloadProgressListener {
+    private inner class ShowHelper {
         fun onViewCreated() {
-            imageView.displayListener = this
-            imageView.downloadProgressListener = this
+            imageView.displayListener = ImageDisplayListener()
+            imageView.downloadProgressListener = ImageDownloadProgressListener()
 
             initOptions()
-            imageView.displayImage(finalShowImageUrl!!)
+            imageView.displayImage(finalShowImageUrl)
         }
 
         private fun initOptions() {
@@ -135,16 +131,16 @@ class ImageFragment : BaseFragment() {
 
             val options = imageView.options
 
-            // 允许播放GIF
+            // 允许播放 GIF
             options.isDecodeGifImage = true
 
             // 有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
             if (!TextUtils.isEmpty(loadingImageOptionsKey)) {
-                val uriModel = UriModel.match(activity, finalShowImageUrl!!)
+                val uriModel = UriModel.match(activity, finalShowImageUrl)
                 var cachedRefBitmap: SketchRefBitmap? = null
                 var memoryCacheKey: String? = null
                 if (uriModel != null) {
-                    memoryCacheKey = SketchUtils.makeRequestKey(image.normalQualityUrl ?: "", uriModel, loadingImageOptionsKey!!)
+                    memoryCacheKey = SketchUtils.makeRequestKey(image.normalQualityUrl, uriModel, loadingImageOptionsKey!!)
                     cachedRefBitmap = Sketch.with(activity).configuration.memoryCache.get(memoryCacheKey)
                 }
                 if (cachedRefBitmap != null) {
@@ -157,50 +153,156 @@ class ImageFragment : BaseFragment() {
             }
         }
 
-        override fun onStarted() {
-            hintView.loading(null)
-        }
+        inner class ImageDisplayListener : DisplayListener {
+            override fun onStarted() {
+                hintView.loading(null)
+            }
 
-        override fun onCompleted(drawable: Drawable, imageFrom: ImageFrom, imageAttrs: ImageAttrs) {
-            hintView.hidden()
+            override fun onCompleted(drawable: Drawable, imageFrom: ImageFrom, imageAttrs: ImageAttrs) {
+                hintView.hidden()
 
-            setWindowBackground.onDisplayCompleted()
-            gifPlayFollowPageVisible.onDisplayCompleted()
-        }
+                setWindowBackgroundHelper.onDisplayCompleted()
+                gifPlayFollowPageVisibleHelper.onDisplayCompleted()
+            }
 
-        override fun onError(cause: ErrorCause) {
-            hintView.hint(R.drawable.ic_error, "Image display failed", "Again", View.OnClickListener { imageView.displayImage(finalShowImageUrl!!) })
-        }
+            override fun onError(cause: ErrorCause) {
+                hintView.hint(R.drawable.ic_error, "Image display failed", "Again", View.OnClickListener { imageView.displayImage(finalShowImageUrl) })
+            }
 
-        override fun onCanceled(cause: CancelCause) {
-            @Suppress("NON_EXHAUSTIVE_WHEN")
-            when (cause) {
-                CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "Pause to download new image for saving traffic", "I do not care", View.OnClickListener {
-                    val requestLevel = imageView.options.requestLevel
-                    imageView.options.requestLevel = RequestLevel.NET
-                    imageView.displayImage(finalShowImageUrl!!)
-                    imageView.options.requestLevel = requestLevel
-                })
-                CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "Paused to load new image", "Forced to load", View.OnClickListener {
-                    val requestLevel = imageView.options.requestLevel
-                    imageView.options.requestLevel = RequestLevel.NET
-                    imageView.displayImage(finalShowImageUrl!!)
-                    imageView.options.requestLevel = requestLevel
-                })
+            override fun onCanceled(cause: CancelCause) {
+                @Suppress("NON_EXHAUSTIVE_WHEN")
+                when (cause) {
+                    CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "Pause to download new image for saving traffic", "I do not care", View.OnClickListener {
+                        val requestLevel = imageView.options.requestLevel
+                        imageView.options.requestLevel = RequestLevel.NET
+                        imageView.displayImage(finalShowImageUrl)
+                        imageView.options.requestLevel = requestLevel
+                    })
+                    CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "Paused to load new image", "Forced to load", View.OnClickListener {
+                        val requestLevel = imageView.options.requestLevel
+                        imageView.options.requestLevel = RequestLevel.NET
+                        imageView.displayImage(finalShowImageUrl)
+                        imageView.options.requestLevel = requestLevel
+                    })
+                }
             }
         }
 
-        override fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int) {
-            hintView.setProgress(totalLength, completedLength)
+        inner class ImageDownloadProgressListener : DownloadProgressListener {
+
+            override fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int) {
+                hintView.setProgress(totalLength, completedLength)
+            }
         }
     }
 
-    private inner class SetWindowBackground {
+    private inner class ZoomHelper {
+        fun onViewCreated() {
+            imageView.isZoomEnabled = AppConfig.getBoolean(imageView.context, AppConfig.Key.SUPPORT_ZOOM)
+
+            onReadModeConfigChanged()
+
+            // 初始化超大图查看器的暂停状态，这一步很重要
+            if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
+                imageView.hugeImageViewer?.setPause(!isVisibleToUser)
+            }
+        }
+
+        fun onConfigChanged() {
+            onViewCreated()
+        }
+
+        fun onUserVisibleChanged() {
+            if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
+                // 不可见的时候暂停超大图查看器，节省内存
+                imageView.hugeImageViewer?.setPause(!isVisibleToUser)
+            } else {
+                if (isVisibleToUser) {
+                    imageView.hugeImageViewer?.setPause(false)
+                }
+            }
+        }
+
+        fun onReadModeConfigChanged() {
+            if (imageView.isZoomEnabled) {
+                val readMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
+                imageView.imageZoomer!!.isReadMode = readMode
+            }
+        }
+    }
+
+    private inner class MappingHelper {
+        val zoomMatrixChangedListener = ZoomMatrixChangedListener()
+
+        fun onViewCreated() {
+            if (!showTools) {
+                mappingView.visibility = View.GONE
+                return
+            }
+
+            if (imageView.isZoomEnabled) {
+                // MappingView 跟随 Matrix 变化刷新显示区域
+                imageView.imageZoomer?.addOnMatrixChangeListener(zoomMatrixChangedListener)
+
+                // MappingView 跟随碎片变化刷新碎片区域
+                imageView.hugeImageViewer?.onTileChangedListener = HugeImageViewer.OnTileChangedListener { hugeImageViewer -> mappingView.tileChanged(hugeImageViewer) }
+
+                // 点击 MappingView 定位到指定位置
+                mappingView.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
+                    override fun onSingleClick(x: Float, y: Float): Boolean {
+                        val drawable = imageView.drawable ?: return false
+
+                        if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
+                            return false
+                        }
+
+                        if (mappingView.width == 0 || mappingView.height == 0) {
+                            return false
+                        }
+
+                        val widthScale = drawable.intrinsicWidth.toFloat() / mappingView.width
+                        val heightScale = drawable.intrinsicHeight.toFloat() / mappingView.height
+                        val realX = x * widthScale
+                        val realY = y * heightScale
+
+                        val showLocationAnimation = AppConfig.getBoolean(imageView.context, AppConfig.Key.LOCATION_ANIMATE)
+                        location(realX, realY, showLocationAnimation)
+                        return true
+                    }
+                })
+            } else {
+                imageView.imageZoomer?.removeOnMatrixChangeListener(zoomMatrixChangedListener)
+                imageView.hugeImageViewer?.onTileChangedListener = null
+                mappingView.setOnSingleClickListener(null)
+                mappingView.update(Point(), Rect())
+            }
+
+            mappingView.options.displayer = FadeInImageDisplayer()
+            mappingView.options.setMaxSize(600, 600)
+            mappingView.displayImage(finalShowImageUrl)
+        }
+
+        fun location(x: Float, y: Float, animate: Boolean): Boolean {
+            imageView.imageZoomer?.location(x, y, animate)
+            return true
+        }
+
+        private inner class ZoomMatrixChangedListener : ImageZoomer.OnMatrixChangeListener {
+            internal var visibleRect = Rect()
+
+            override fun onMatrixChanged(imageZoomer: ImageZoomer) {
+                imageZoomer.getVisibleRect(visibleRect)
+                mappingView.update(imageZoomer.drawableSize, visibleRect)
+            }
+        }
+    }
+
+    private inner class SetWindowBackgroundHelper {
         private var pageBackgApplyCallback: PageBackgApplyCallback? = null
 
         fun onCreate(activity: Activity) {
             if (activity is PageBackgApplyCallback) {
-                setWindowBackground.pageBackgApplyCallback = activity
+                setWindowBackgroundHelper.pageBackgApplyCallback = activity
             }
         }
 
@@ -215,7 +317,7 @@ class ImageFragment : BaseFragment() {
         }
     }
 
-    private inner class GifPlayFollowPageVisible {
+    private inner class GifPlayFollowPageVisibleHelper {
         fun onUserVisibleChanged() {
             val drawable = imageView.drawable
             val lastDrawable = SketchUtils.getLastDrawable(drawable)
@@ -233,109 +335,6 @@ class ImageFragment : BaseFragment() {
         }
     }
 
-    private inner class ImageZoomHelper {
-        fun onViewCreated() {
-            imageView.isZoomEnabled = AppConfig.getBoolean(imageView.context, AppConfig.Key.SUPPORT_ZOOM)
-            onReadModeConfigChanged()
-        }
-
-        fun onConfigChanged() {
-            onViewCreated()
-        }
-
-        fun onReadModeConfigChanged() {
-            if (imageView.isZoomEnabled) {
-                val readMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
-                imageView.imageZoomer!!.isReadMode = readMode
-            }
-        }
-    }
-
-    private inner class HugeImageHelper {
-        fun onViewCreated() {
-            imageView.isHugeImageEnabled = AppConfig.getBoolean(imageView.context, AppConfig.Key.SUPPORT_HUGE_IMAGE)
-
-            // 初始化超大图查看器的暂停状态，这一步很重要
-            if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE) && imageView.isHugeImageEnabled) {
-                imageView.hugeImageViewer!!.setPause(!isVisibleToUser)
-            }
-        }
-
-        fun onConfigChanged() {
-            onViewCreated()
-        }
-
-        fun onUserVisibleChanged() {
-            // 不可见的时候暂停超大图查看器，节省内存
-            if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
-                if (imageView.isHugeImageEnabled) {
-                    imageView.hugeImageViewer!!.setPause(!isVisibleToUser)
-                }
-            } else {
-                if (imageView.isHugeImageEnabled
-                        && isVisibleToUser && imageView.hugeImageViewer!!.isPaused) {
-                    imageView.hugeImageViewer!!.setPause(false)
-                }
-            }
-        }
-    }
-
-    private inner class MappingHelper {
-        fun onViewCreated() {
-            // MappingView跟随碎片变化刷新碎片区域
-            if (imageView.isHugeImageEnabled) {
-                imageView.hugeImageViewer!!.onTileChangedListener = HugeImageViewer.OnTileChangedListener { hugeImageViewer -> mappingView.tileChanged(hugeImageViewer) }
-            }
-
-            // MappingView跟随Matrix变化刷新显示区域
-            if (imageView.isZoomEnabled) {
-                imageView.imageZoomer!!.addOnMatrixChangeListener(object : ImageZoomer.OnMatrixChangeListener {
-                    internal var visibleRect = Rect()
-
-                    override fun onMatrixChanged(imageZoomer: ImageZoomer) {
-                        imageZoomer.getVisibleRect(visibleRect)
-                        mappingView.update(imageZoomer.drawableSize, visibleRect)
-                    }
-                })
-            }
-
-            // 点击MappingView定位到指定位置
-            mappingView.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
-                override fun onSingleClick(x: Float, y: Float): Boolean {
-                    val drawable = imageView.drawable ?: return false
-
-                    if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
-                        return false
-                    }
-
-                    if (mappingView.width == 0 || mappingView.height == 0) {
-                        return false
-                    }
-
-                    val widthScale = drawable.intrinsicWidth.toFloat() / mappingView.width
-                    val heightScale = drawable.intrinsicHeight.toFloat() / mappingView.height
-                    val realX = x * widthScale
-                    val realY = y * heightScale
-
-                    val showLocationAnimation = AppConfig.getBoolean(imageView.context, AppConfig.Key.LOCATION_ANIMATE)
-                    location(realX, realY, showLocationAnimation)
-                    return true
-                }
-            })
-
-            mappingView.options.displayer = FadeInImageDisplayer()
-            mappingView.options.setMaxSize(600, 600)
-            mappingView.displayImage(finalShowImageUrl!!)
-
-            mappingView.visibility = if (showTools) View.VISIBLE else View.GONE
-        }
-
-        fun location(x: Float, y: Float, animate: Boolean): Boolean {
-            imageView.imageZoomer?.location(x, y, animate)
-            return true
-        }
-    }
-
     private inner class ClickHelper {
 
         fun onViewCreated() {
@@ -347,61 +346,56 @@ class ImageFragment : BaseFragment() {
                 }
             }
 
-            // 长按显示菜单
             imageView.setOnLongClickListener {
-                showMenu()
+                val menuItemList = LinkedList<MenuItem>()
+
+                menuItemList.add(MenuItem(
+                        "Image Info",
+                        DialogInterface.OnClickListener { _, _ -> imageView.showInfo(activity) }
+                ))
+                menuItemList.add(MenuItem(
+                        "Zoom/Rotate/Huge Image",
+                        DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
+                ))
+                menuItemList.add(MenuItem(
+                        String.format("Toggle ScaleType (%s)", imageView.imageZoomer?.scaleType ?: imageView.scaleType),
+                        DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
+                ))
+                menuItemList.add(MenuItem(
+                        "Auto Play",
+                        DialogInterface.OnClickListener { _, _ -> play() }
+                ))
+                menuItemList.add(MenuItem(
+                        "Set as wallpaper",
+                        DialogInterface.OnClickListener { _, _ -> setWallpaper() }
+                ))
+                menuItemList.add(MenuItem(
+                        "Share Image",
+                        DialogInterface.OnClickListener { _, _ -> share() }
+                ))
+                menuItemList.add(MenuItem(
+                        "Save Image",
+                        DialogInterface.OnClickListener { _, _ -> save() }
+                ))
+
+                val items = arrayOfNulls<String>(menuItemList.size)
+                var w = 0
+                val size = menuItemList.size
+                while (w < size) {
+                    items[w] = menuItemList[w].title
+                    w++
+                }
+
+                val itemClickListener = DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                    menuItemList[which].clickListener?.onClick(dialog, which)
+                }
+
+                AlertDialog.Builder(activity)
+                        .setItems(items, itemClickListener)
+                        .show()
                 true
             }
-        }
-
-        fun showMenu() {
-            val menuItemList = LinkedList<MenuItem>()
-
-            menuItemList.add(MenuItem(
-                    "Image Info",
-                    DialogInterface.OnClickListener { _, _ -> imageView.showInfo(activity) }
-            ))
-            menuItemList.add(MenuItem(
-                    "Zoom/Rotate/Huge Image",
-                    DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
-            ))
-            menuItemList.add(MenuItem(
-                    String.format("Toggle ScaleType (%s)", imageView.imageZoomer?.scaleType ?: imageView.scaleType),
-                    DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
-            ))
-            menuItemList.add(MenuItem(
-                    "Auto Play",
-                    DialogInterface.OnClickListener { _, _ -> play() }
-            ))
-            menuItemList.add(MenuItem(
-                    "Set as wallpaper",
-                    DialogInterface.OnClickListener { _, _ -> setWallpaper() }
-            ))
-            menuItemList.add(MenuItem(
-                    "Share Image",
-                    DialogInterface.OnClickListener { _, _ -> share() }
-            ))
-            menuItemList.add(MenuItem(
-                    "Save Image",
-                    DialogInterface.OnClickListener { _, _ -> save() }
-            ))
-
-            val items = arrayOfNulls<String>(menuItemList.size)
-            var w = 0
-            val size = menuItemList.size
-            while (w < size) {
-                items[w] = menuItemList[w].title
-                w++
-            }
-
-            val itemClickListener = DialogInterface.OnClickListener { dialog, which ->
-                dialog.dismiss()
-                menuItemList[which].clickListener?.onClick(dialog, which)
-            }
-
-            AlertDialog.Builder(activity)
-                    .setItems(items, itemClickListener)
-                    .show()
         }
 
         fun showZoomMenu() {
@@ -451,7 +445,7 @@ class ImageFragment : BaseFragment() {
                 if (hugeImageViewer.isReady || hugeImageViewer.isInitializing) {
                     menuItemList.add(MenuItem(
                             if (hugeImageViewer.isShowTileRect) "Hide block boundary" else "Show block boundary",
-                            DialogInterface.OnClickListener { _, _ -> toggleShowTileEdge() }))
+                            DialogInterface.OnClickListener { _, _ -> imageView.hugeImageViewer?.let { it.isShowTileRect = !it.isShowTileRect } }))
                 } else {
                     menuItemList.add(MenuItem("Block boundary (No need huge image)", null))
                 }
@@ -462,7 +456,7 @@ class ImageFragment : BaseFragment() {
             if (imageZoomer != null) {
                 menuItemList.add(MenuItem(
                         if (imageZoomer.isReadMode) "Close read mode" else "Open read mode",
-                        DialogInterface.OnClickListener { _, _ -> toggleReadMode() }))
+                        DialogInterface.OnClickListener { _, _ -> imageView.imageZoomer?.let { it.isReadMode = !it.isReadMode } }))
             } else {
                 menuItemList.add(MenuItem("Read mode (Zoom disabled)", null))
             }
@@ -470,7 +464,13 @@ class ImageFragment : BaseFragment() {
             if (imageZoomer != null) {
                 menuItemList.add(MenuItem(
                         String.format("Clockwise rotation 90°（%d）", imageZoomer.rotateDegrees),
-                        DialogInterface.OnClickListener { _, _ -> rotate() }))
+                        DialogInterface.OnClickListener { _, _ ->
+                            imageView.imageZoomer?.let {
+                                if (!it.rotateBy(90)) {
+                                    Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }))
             } else {
                 menuItemList.add(MenuItem("Clockwise rotation 90° (Zoom disabled)", null))
             }
@@ -523,26 +523,6 @@ class ImageFragment : BaseFragment() {
 
             builder.setNegativeButton("Cancel", null)
             builder.show()
-        }
-
-        fun toggleShowTileEdge() {
-            imageView.hugeImageViewer?.let {
-                it.isShowTileRect = !it.isShowTileRect
-            }
-        }
-
-        fun toggleReadMode() {
-            imageView.imageZoomer?.let {
-                it.isReadMode = !it.isReadMode
-            }
-        }
-
-        fun rotate() {
-            imageView.imageZoomer?.let {
-                if (!it.rotateBy(90)) {
-                    Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
-                }
-            }
         }
 
         fun getImageFile(imageUri: String?): File? {

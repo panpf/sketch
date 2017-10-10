@@ -26,7 +26,7 @@ import me.xiaopan.sketch.SLog
 import me.xiaopan.sketch.SketchImageView
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable
 import me.xiaopan.sketch.util.SketchUtils
-import me.xiaopan.sketch.viewfun.huge.HugeImageViewer
+import me.xiaopan.sketch.zoom.huge.HugeImageViewer
 
 class MappingView : SketchImageView {
 

@@ -18,7 +18,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.viewfun.huge.Tile;
+import me.xiaopan.sketch.zoom.huge.Tile;
 
 public class ErrorTracker implements Identifier {
     private static final String NAME = "ErrorTracker";

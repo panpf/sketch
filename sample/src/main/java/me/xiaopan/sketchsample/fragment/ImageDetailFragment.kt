@@ -25,7 +25,7 @@ import android.widget.TextView
 import android.widget.Toast
 import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter
 import me.xiaopan.sketch.util.SketchUtils
-import me.xiaopan.sketch.viewfun.zoom.ImageZoomer
+import me.xiaopan.sketch.zoom.ImageZoomer
 import me.xiaopan.sketchsample.BaseFragment
 import me.xiaopan.sketchsample.BindContentView
 import me.xiaopan.sketchsample.R

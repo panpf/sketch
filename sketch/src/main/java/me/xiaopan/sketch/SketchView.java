@@ -148,9 +148,9 @@ public interface SketchView {
     void setDisplayCache(@NonNull DisplayCache displayCache);
 
     /**
-     * 是否开启了分块显示超大图功能
+     * 是否开启了手势缩放功能
      */
-    boolean isHugeImageEnabled();
+    boolean isZoomEnabled();
 
     /**
      * 重新显示

@@ -23,17 +23,15 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.shaper.ImageShaper;
-import me.xiaopan.sketch.viewfun.huge.HugeImageViewer;
-import me.xiaopan.sketch.viewfun.zoom.ImageZoomer;
+import me.xiaopan.sketch.zoom.ImageZoomer;
+import me.xiaopan.sketch.zoom.huge.HugeImageViewer;
 
 /**
  * 这个类负责提供各种 function 开关和属性设置
  */
 public abstract class FunctionPropertyView extends FunctionCallbackView {
-    private static final String NAME = "FunctionPropertyView";
 
     public FunctionPropertyView(Context context) {
         super(context);
@@ -359,6 +357,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     /**
      * 是否开启了手势缩放功能
      */
+    @Override
     public boolean isZoomEnabled() {
         return getFunctions().zoomFunction != null;
     }
@@ -367,24 +366,15 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * 开启手势缩放功能
      */
     public void setZoomEnabled(boolean enabled) {
-        if (!enabled && isHugeImageEnabled()) {
-            SLog.w(NAME, "You can't close the gestures zoom function, because of huge image function need it");
-            return;
-        }
-
-        if (getFunctions().zoomFunction != null) {
-            getFunctions().zoomFunction.setFromHugeImageFunction(false);
-        }
-
         if (enabled == isZoomEnabled()) {
             return;
         }
 
         if (enabled) {
             getFunctions().zoomFunction = new ImageZoomFunction(this);
-            getFunctions().zoomFunction.onDrawableChanged("setSupportZoom", null, getDrawable());
+            getFunctions().zoomFunction.onDrawableChanged("setZoomEnabled", null, getDrawable());
         } else {
-            getFunctions().zoomFunction.recycle();
+            getFunctions().zoomFunction.recycle("setZoomEnabled");
             ScaleType scaleType = getFunctions().zoomFunction.getScaleType();
             getFunctions().zoomFunction = null;
 
@@ -401,54 +391,11 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getImageZoomer() : null;
     }
 
-
-    @Override
-    public boolean isHugeImageEnabled() {
-        return getFunctions().hugeImageFunction != null;
-    }
-
-    /**
-     * 开启分块显示超大图功能
-     */
-    public void setHugeImageEnabled(boolean enabled) {
-        if (enabled == isHugeImageEnabled()) {
-            return;
-        }
-
-        if (enabled) {
-            // 要想使用大图功能就必须开启缩放功能
-            if (!isZoomEnabled()) {
-                setZoomEnabled(true);
-                getFunctions().zoomFunction.setFromHugeImageFunction(true);
-            }
-
-            getFunctions().hugeImageFunction = new HugeImageFunction(this);
-            getFunctions().hugeImageFunction.bindImageZoomer(getImageZoomer());
-
-            // 大图功能开启后对ImageZoomer计算缩放比例有影响，因此要重置一下
-            getFunctions().zoomFunction.onDrawableChanged("setHugeImageEnabled", null, getDrawable());
-
-            getFunctions().hugeImageFunction.onDrawableChanged("setHugeImageEnabled", null, getDrawable());
-        } else {
-            getFunctions().hugeImageFunction.recycle("setHugeImageEnabled");
-            getFunctions().hugeImageFunction = null;
-
-            if (isZoomEnabled()) {
-                // 大图功能关闭后对ImageZoomer计算缩放比例有影响，因此要重置一下
-                getFunctions().zoomFunction.onDrawableChanged("setHugeImageEnabled", null, getDrawable());
-
-                if (getFunctions().zoomFunction.isFromHugeImageFunction()) {
-                    setZoomEnabled(false);
-                }
-            }
-        }
-    }
-
     /**
      * 获取分块显示超大图功能控制对象
      */
     @Nullable
     public HugeImageViewer getHugeImageViewer() {
-        return getFunctions().hugeImageFunction != null ? getFunctions().hugeImageFunction.getHugeImageViewer() : null;
+        return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getHugeImageViewer() : null;
     }
 }
