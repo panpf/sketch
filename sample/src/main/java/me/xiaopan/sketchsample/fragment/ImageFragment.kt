@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -28,6 +27,7 @@ import me.xiaopan.sketch.uri.GetDataSourceException
 import me.xiaopan.sketch.uri.UriModel
 import me.xiaopan.sketch.util.SketchUtils
 import me.xiaopan.sketch.zoom.ImageZoomer
+import me.xiaopan.sketch.zoom.Size
 import me.xiaopan.sketch.zoom.huge.HugeImageViewer
 import me.xiaopan.sketchsample.BaseFragment
 import me.xiaopan.sketchsample.BindContentView
@@ -274,7 +274,7 @@ class ImageFragment : BaseFragment() {
                 imageView.imageZoomer?.removeOnMatrixChangeListener(zoomMatrixChangedListener)
                 imageView.hugeImageViewer?.onTileChangedListener = null
                 mappingView.setOnSingleClickListener(null)
-                mappingView.update(Point(), Rect())
+                mappingView.update(Size(0, 0), Rect())
             }
 
             mappingView.options.displayer = FadeInImageDisplayer()

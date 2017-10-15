@@ -35,7 +35,7 @@ import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
- * 这个类负责给function回调各种状态
+ * 这个类负责给 function 回调各种状态
  */
 public abstract class FunctionCallbackView extends ImageView implements SketchView {
 
@@ -126,11 +126,12 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     @Override
     public void setScaleType(ScaleType scaleType) {
-        if (getFunctions().zoomFunction != null && scaleType != ScaleType.MATRIX) {
-            getFunctions().zoomFunction.setScaleType(scaleType);
-            return;
+        ImageZoomFunction zoomFunction = getFunctions().zoomFunction;
+        if (zoomFunction != null && zoomFunction.getImageZoomer().isWorking() && scaleType != ScaleType.MATRIX) {
+            zoomFunction.setScaleType(scaleType);
+        } else {
+            super.setScaleType(scaleType);
         }
-        super.setScaleType(scaleType);
     }
 
     public OnClickListener getOnClickListener() {

@@ -35,6 +35,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.zoom.Size;
 
 /**
  * 碎片管理器
@@ -73,7 +74,7 @@ class TileManager {
         this.hugeImageViewer = hugeImageViewer;
     }
 
-    void update(Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
+    void update(Rect newVisibleRect, Size drawableSize, Size viewSize, Point imageSize, boolean zooming) {
         if (zooming) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "zooming. newVisibleRect=%s, tiles=%d",
@@ -92,16 +93,12 @@ class TileManager {
         }
         visibleRect.set(newVisibleRect);
 
-        final int viewWidth = imageViewSize.x;
-        final int viewHeight = imageViewSize.y;
-        final int previewImageWidth = previewDrawableSize.x;
-        final int previewImageHeight = previewDrawableSize.y;
         final int imageWidth = imageSize.x;
         final int imageHeight = imageSize.y;
 
         // 原始图和预览图对比的缩放比例
-        final float originWidthScale = (float) imageWidth / previewImageWidth;
-        final float originHeightScale = (float) imageHeight / previewImageHeight;
+        final float originWidthScale = (float) imageWidth / drawableSize.getWidth();
+        final float originHeightScale = (float) imageHeight / drawableSize.getHeight();
 
         // 计算绘制区域时，每边应该增加的量
         final int drawWidthAdd = (int) ((float) newVisibleRect.width() / tiles / 2);
@@ -112,8 +109,8 @@ class TileManager {
         Rect newDrawRect = rectPool.get();
         newDrawRect.left = Math.max(0, newVisibleRect.left - drawWidthAdd);
         newDrawRect.top = Math.max(0, newVisibleRect.top - drawHeightAdd);
-        newDrawRect.right = Math.min(previewImageWidth, newVisibleRect.right + drawWidthAdd);
-        newDrawRect.bottom = Math.min(previewImageHeight, newVisibleRect.bottom + drawHeightAdd);
+        newDrawRect.right = Math.min(drawableSize.getWidth(), newVisibleRect.right + drawWidthAdd);
+        newDrawRect.bottom = Math.min(drawableSize.getHeight(), newVisibleRect.bottom + drawHeightAdd);
 
         if (newDrawRect.isEmpty()) {
             SLog.e(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
@@ -131,12 +128,12 @@ class TileManager {
         }
 
         // 根据碎片尺寸修剪drawRect，使其正好能整除碎片
-        if (newDrawRect.right < previewImageWidth) {
+        if (newDrawRect.right < drawableSize.getWidth()) {
             newDrawRect.right = newDrawRect.left + (finalTiles * tileWidth);
         } else if (newDrawRect.left > 0) {
             newDrawRect.left = newDrawRect.right - (finalTiles * tileWidth);
         }
-        if (newDrawRect.bottom < previewImageHeight) {
+        if (newDrawRect.bottom < drawableSize.getHeight()) {
             newDrawRect.bottom = newDrawRect.top + (finalTiles * tileHeight);
         } else if (newDrawRect.top > 0) {
             newDrawRect.top = newDrawRect.bottom - (finalTiles * tileHeight);
@@ -144,7 +141,7 @@ class TileManager {
 
         Rect newDrawSrcRect = rectPool.get();
         calculateSrcRect(newDrawSrcRect, newDrawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
-        int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewWidth, viewHeight);
+        int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewSize.getWidth(), viewSize.getHeight());
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
@@ -155,7 +152,7 @@ class TileManager {
         // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
         Rect newDecodeRect = rectPool.get();
         calculateTilesDecodeRect(newDecodeRect, newDrawRect, drawWidthAdd, drawHeightAdd,
-                tileWidth, tileHeight, previewImageWidth, previewImageHeight);
+                tileWidth, tileHeight, drawableSize.getWidth(), drawableSize.getHeight());
 
         Rect newDecodeSrcRect = rectPool.get();
         calculateSrcRect(newDecodeSrcRect, newDecodeRect, imageWidth, imageHeight,
@@ -418,7 +415,7 @@ class TileManager {
             Rect fullRect = rectPool.get();
             fullRect.set(rect);
 
-            emptyRectList = new LinkedList<Rect>();
+            emptyRectList = new LinkedList<>();
             emptyRectList.add(fullRect);
             return emptyRectList;
         }

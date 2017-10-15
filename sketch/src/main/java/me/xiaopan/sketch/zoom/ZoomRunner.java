@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.zoom;
 
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.zoom.gestures.OnScaleDragGestureListener;
 
 class ZoomRunner implements Runnable {
 
@@ -25,10 +26,12 @@ class ZoomRunner implements Runnable {
     private final long mStartTime;
     private final float mZoomStart;
     private final float mZoomEnd;
-    private ImageZoomer imageZoomer;
+    private ZoomManager zoomManager;
+    private OnScaleDragGestureListener scaleDragGestureListener;
 
-    ZoomRunner(ImageZoomer imageZoomer, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
-        this.imageZoomer = imageZoomer;
+    ZoomRunner(ZoomManager zoomManager, OnScaleDragGestureListener scaleDragGestureListener, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
+        this.zoomManager = zoomManager;
+        this.scaleDragGestureListener = scaleDragGestureListener;
         mFocalX = focalX;
         mFocalY = focalY;
         mStartTime = System.currentTimeMillis();
@@ -38,22 +41,22 @@ class ZoomRunner implements Runnable {
 
     @Override
     public void run() {
-        if (!imageZoomer.isWorking()) {
+        if (!zoomManager.getImageZoomer().isWorking()) {
             SLog.w(ImageZoomer.NAME, "not working. zoom run");
             return;
         }
 
         float t = interpolate();
         float scale = mZoomStart + t * (mZoomEnd - mZoomStart);
-        float deltaScale = scale / imageZoomer.getZoomScale();
+        float deltaScale = scale / zoomManager.getZoomScale();
         boolean continueZoom = t < 1f;
 
-        imageZoomer.setZooming(continueZoom);
-        imageZoomer.onScale(deltaScale, mFocalX, mFocalY);
+        zoomManager.setZooming(continueZoom);
+        scaleDragGestureListener.onScale(deltaScale, mFocalX, mFocalY);
 
         // We haven't hit our target scale yet, so post ourselves again
         if (continueZoom) {
-            CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
+            CompatUtils.postOnAnimation(zoomManager.getImageZoomer().getImageView(), this);
         } else {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "finished. zoom run");
@@ -62,13 +65,13 @@ class ZoomRunner implements Runnable {
     }
 
     private float interpolate() {
-        float t = 1f * (System.currentTimeMillis() - mStartTime) / imageZoomer.getZoomDuration();
+        float t = 1f * (System.currentTimeMillis() - mStartTime) / zoomManager.getImageZoomer().getZoomDuration();
         t = Math.min(1f, t);
-        t = imageZoomer.getZoomInterpolator().getInterpolation(t);
+        t = zoomManager.getImageZoomer().getZoomInterpolator().getInterpolation(t);
         return t;
     }
 
     public void zoom() {
-        imageZoomer.getImageView().post(this);
+        zoomManager.getImageZoomer().getImageView().post(this);
     }
 }

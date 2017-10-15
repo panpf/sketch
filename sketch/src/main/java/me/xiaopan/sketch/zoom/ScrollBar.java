@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
@@ -63,13 +62,6 @@ class ScrollBar {
     }
 
     void drawScrollBar(Canvas canvas) {
-        if (!imageZoomer.isWorking()) {
-            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
-                SLog.v(ImageZoomer.NAME, "not working. drawScrollBar");
-            }
-            return;
-        }
-
         final RectF drawRectF = tempDisplayRectF;
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
@@ -79,9 +71,9 @@ class ScrollBar {
             return;
         }
 
-        Point imageViewSize = imageZoomer.getImageViewSize();
-        final int viewWidth = imageViewSize.x;
-        final int viewHeight = imageViewSize.y;
+        Size viewSize = imageZoomer.getViewSize();
+        final int viewWidth = viewSize.getWidth();
+        final int viewHeight = viewSize.getHeight();
         final float displayWidth = drawRectF.width();
         final float displayHeight = drawRectF.height();
 

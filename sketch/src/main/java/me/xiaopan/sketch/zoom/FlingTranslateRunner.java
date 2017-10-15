@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.zoom;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.graphics.RectF;
 import android.widget.ImageView;
 
@@ -26,29 +25,29 @@ import me.xiaopan.sketch.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingTranslateRunner implements Runnable {
     private final ScrollerProxy mScroller;
-    private ImageZoomer imageZoomer;
+    private ZoomManager zoomManager;
     private int mCurrentX, mCurrentY;
 
-    FlingTranslateRunner(Context context, ImageZoomer imageZoomer) {
+    FlingTranslateRunner(Context context, ZoomManager zoomManager) {
         this.mScroller = ScrollerProxy.getScroller(context);
-        this.imageZoomer = imageZoomer;
+        this.zoomManager = zoomManager;
     }
 
     void fling(int velocityX, int velocityY) {
-        if (!imageZoomer.isWorking()) {
+        if (!zoomManager.getImageZoomer().isWorking()) {
             SLog.w(ImageZoomer.NAME, "not working. fling");
             return;
         }
 
         RectF drawRectF = new RectF();
-        imageZoomer.getDrawRect(drawRectF);
+        zoomManager.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
             return;
         }
 
-        Point imageViewSize = imageZoomer.getImageViewSize();
-        final int imageViewWidth = imageViewSize.x;
-        final int imageViewHeight = imageViewSize.y;
+        Size viewSize = zoomManager.getImageZoomer().getViewSize();
+        final int imageViewWidth = viewSize.getWidth();
+        final int imageViewHeight = viewSize.getHeight();
 
         final int startX = Math.round(-drawRectF.left);
         final int minX, maxX, minY, maxY;
@@ -80,7 +79,7 @@ class FlingTranslateRunner implements Runnable {
                     maxX, minY, maxY, 0, 0);
         }
 
-        ImageView imageView = imageZoomer.getImageView();
+        ImageView imageView = zoomManager.getImageZoomer().getImageView();
         imageView.removeCallbacks(this);
         imageView.post(this);
     }
@@ -95,7 +94,7 @@ class FlingTranslateRunner implements Runnable {
             return;
         }
 
-        if (!imageZoomer.isWorking()) {
+        if (!zoomManager.getImageZoomer().isWorking()) {
             SLog.w(ImageZoomer.NAME, "not working. fling run");
             return;
         }
@@ -109,12 +108,12 @@ class FlingTranslateRunner implements Runnable {
 
         final int newX = mScroller.getCurrX();
         final int newY = mScroller.getCurrY();
-        imageZoomer.translateBy(mCurrentX - newX, mCurrentY - newY);
+        zoomManager.translateBy(mCurrentX - newX, mCurrentY - newY);
         mCurrentX = newX;
         mCurrentY = newY;
 
         // Post On animation
-        CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
+        CompatUtils.postOnAnimation(zoomManager.getImageZoomer().getImageView(), this);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -126,7 +125,7 @@ class FlingTranslateRunner implements Runnable {
         if (mScroller != null) {
             mScroller.forceFinished(true);
         }
-        ImageView imageView = imageZoomer.getImageView();
+        ImageView imageView = zoomManager.getImageZoomer().getImageView();
         if (imageView != null) {
             imageView.removeCallbacks(this);
         }

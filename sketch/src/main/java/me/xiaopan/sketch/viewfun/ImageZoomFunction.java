@@ -51,7 +51,7 @@ public class ImageZoomFunction extends ViewFunction {
         this.view = view;
 
         ZoomMatrixChangeListener zoomMatrixChangeListener = new ZoomMatrixChangeListener();
-        this.imageZoomer = new ImageZoomer(view, true);
+        this.imageZoomer = new ImageZoomer(view);
         imageZoomer.addOnMatrixChangeListener(zoomMatrixChangeListener);
 
         this.hugeImageViewer = new HugeImageViewer(view.getContext(), new HugeCallback(zoomMatrixChangeListener));
@@ -59,16 +59,11 @@ public class ImageZoomFunction extends ViewFunction {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             SLog.e(NAME, "huge image function the minimum support to GINGERBREAD_MR1");
         }
-
-        // TODO: 2017/10/15 loadingDrawable 啥也不干，特别是不能替换掉 ScaleType
-        // TODO: 2017/10/15 对 ImageView 的依赖全部改成接口
-        // TODO: 2017/10/15 update 和 init 合二为一
     }
 
     @Override
     public void onAttachedToWindow() {
-        imageZoomer.init(view, true);
-        imageZoomer.update();
+        imageZoomer.reset();
         resetHugeImage();
     }
 
@@ -76,7 +71,7 @@ public class ImageZoomFunction extends ViewFunction {
     public void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
-        imageZoomer.draw(canvas);
+        imageZoomer.onDraw(canvas);
 
         if (SketchUtils.sdkSupportBitmapRegionDecoder()) {
             if (hugeImageViewer.isReady()) {
@@ -87,25 +82,25 @@ public class ImageZoomFunction extends ViewFunction {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        return imageZoomer.onTouch(view, event);
-    }
-
-    @Override
-    public boolean onDetachedFromWindow() {
-        recycle("onDetachedFromWindow");
-        return false;
+        return imageZoomer.onTouchEvent(event);
     }
 
     @Override
     public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        imageZoomer.update();
+        imageZoomer.reset();
         resetHugeImage();
         return false;
     }
 
     @Override
     public void onSizeChanged(int left, int top, int right, int bottom) {
-        imageZoomer.update();
+        imageZoomer.onSizeChanged();
+    }
+
+    @Override
+    public boolean onDetachedFromWindow() {
+        recycle("onDetachedFromWindow");
+        return false;
     }
 
     private void resetHugeImage() {
@@ -158,7 +153,7 @@ public class ImageZoomFunction extends ViewFunction {
     }
 
     public void recycle(String why) {
-        imageZoomer.cleanup();
+        imageZoomer.recycle();
 
         if (SketchUtils.sdkSupportBitmapRegionDecoder()) {
             hugeImageViewer.recycle(why);
@@ -228,7 +223,7 @@ public class ImageZoomFunction extends ViewFunction {
             imageZoomer.getVisibleRect(tempVisibleRect);
 
             hugeImageViewer.update(tempDrawMatrix, tempVisibleRect, imageZoomer.getDrawableSize(),
-                    imageZoomer.getImageViewSize(), imageZoomer.isZooming());
+                    imageZoomer.getViewSize(), imageZoomer.isZooming());
         }
     }
 }

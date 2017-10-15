@@ -17,7 +17,10 @@
 package me.xiaopan.sketchsample.widget
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -26,6 +29,7 @@ import me.xiaopan.sketch.SLog
 import me.xiaopan.sketch.SketchImageView
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable
 import me.xiaopan.sketch.util.SketchUtils
+import me.xiaopan.sketch.zoom.Size
 import me.xiaopan.sketch.zoom.huge.HugeImageViewer
 
 class MappingView : SketchImageView {
@@ -39,7 +43,7 @@ class MappingView : SketchImageView {
     private var originSrcRectPaint: Paint? = null
     private var loadingTilePaint: Paint? = null
 
-    private val drawableSize = Point()
+    private val drawableSize = Size()
     private val visibleRect = Rect()
 
     private var detector: GestureDetector? = null
@@ -154,8 +158,8 @@ class MappingView : SketchImageView {
             return displayCache?.uri
         }
 
-    fun update(newDrawableSize: Point, newVisibleRect: Rect) {
-        if (newDrawableSize.x == 0 || newDrawableSize.y == 0 || newVisibleRect.isEmpty) {
+    fun update(newDrawableSize: Size, newVisibleRect: Rect) {
+        if (newDrawableSize.width == 0 || newDrawableSize.height == 0 || newVisibleRect.isEmpty) {
             SLog.w("MappingView", "update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
                     imageUri, newDrawableSize.toString(), newVisibleRect.toShortString())
 
@@ -169,7 +173,7 @@ class MappingView : SketchImageView {
             return
         }
 
-        drawableSize.set(newDrawableSize.x, newDrawableSize.y)
+        drawableSize.set(newDrawableSize.width, newDrawableSize.height)
         visibleRect.set(newVisibleRect)
 
         if (!isUsableDrawable || width == 0 || height == 0) {
@@ -261,8 +265,8 @@ class MappingView : SketchImageView {
     private fun resetVisibleMappingRect() {
         val selfWidth = width
         val selfHeight = height
-        val widthScale = selfWidth.toFloat() / drawableSize.x
-        val heightScale = selfHeight.toFloat() / drawableSize.y
+        val widthScale = selfWidth.toFloat() / drawableSize.width
+        val heightScale = selfHeight.toFloat() / drawableSize.height
         this.visibleMappingRect!!.set(
                 Math.round(visibleRect.left * widthScale),
                 Math.round(visibleRect.top * heightScale),

@@ -28,27 +28,26 @@ import me.xiaopan.sketch.SLog;
  */
 class LocationRunner implements Runnable {
     private final Scroller mScroller;
-    private ImageZoomer imageZoomer;
+    private ZoomManager zoomManager;
     private int mCurrentX, mCurrentY;
 
-    LocationRunner(Context context, ImageZoomer imageZoomer) {
+    LocationRunner(Context context, ZoomManager zoomManager) {
         this.mScroller = new Scroller(context, new AccelerateDecelerateInterpolator());
-        this.imageZoomer = imageZoomer;
+        this.zoomManager = zoomManager;
     }
 
     /**
      * 定位到预览图上指定的位置
      */
-    boolean location(int startX, int startY, int endX, int endY) {
+    void location(int startX, int startY, int endX, int endY) {
         mCurrentX = startX;
         mCurrentY = startY;
 
         mScroller.startScroll(startX, startY, endX - startX, endY - startY, 300);
 
-        ImageView imageView = imageZoomer.getImageView();
+        ImageView imageView = zoomManager.getImageZoomer().getImageView();
         imageView.removeCallbacks(this);
         imageView.post(this);
-        return true;
     }
 
     @Override
@@ -61,7 +60,7 @@ class LocationRunner implements Runnable {
             return;
         }
 
-        if (!imageZoomer.isWorking()) {
+        if (!zoomManager.getImageZoomer().isWorking()) {
             SLog.w(ImageZoomer.NAME, "not working. location run");
             mScroller.forceFinished(true);
             return;
@@ -78,12 +77,12 @@ class LocationRunner implements Runnable {
         final int newY = mScroller.getCurrY();
         final float dx = mCurrentX - newX;
         final float dy = mCurrentY - newY;
-        imageZoomer.translateBy(dx, dy);
+        zoomManager.translateBy(dx, dy);
         mCurrentX = newX;
         mCurrentY = newY;
 
         // Post On animation
-        CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
+        CompatUtils.postOnAnimation(zoomManager.getImageZoomer().getImageView(), this);
     }
 
     boolean isRunning() {
@@ -92,7 +91,7 @@ class LocationRunner implements Runnable {
 
     void cancel() {
         mScroller.forceFinished(true);
-        ImageView imageView = imageZoomer.getImageView();
+        ImageView imageView = zoomManager.getImageZoomer().getImageView();
         if (imageView != null) {
             imageView.removeCallbacks(this);
         }

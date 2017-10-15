@@ -31,7 +31,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -83,6 +82,7 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.UriModel;
+import me.xiaopan.sketch.zoom.Size;
 import me.xiaopan.sketch.zoom.huge.Tile;
 
 public class SketchUtils {
@@ -914,7 +914,7 @@ public class SketchUtils {
     /**
      * 将一个旋转了一定度数的矩形转回来（只能是90度的倍数）
      */
-    public static void reverseRotateRect(Rect rect, int rotateDegrees, Point drawableSize) {
+    public static void reverseRotateRect(Rect rect, int rotateDegrees, Size drawableSize) {
         if (rotateDegrees % 90 != 0) {
             return;
         }
@@ -929,8 +929,8 @@ public class SketchUtils {
             rect.top = rect.right;
             rect.right = cache;
 
-            rect.top = drawableSize.y - rect.top;
-            rect.bottom = drawableSize.y - rect.bottom;
+            rect.top = drawableSize.getHeight() - rect.top;
+            rect.bottom = drawableSize.getHeight() - rect.bottom;
         } else if (rotateDegrees == 180) {
             int cache = rect.right;
             rect.right = rect.left;
@@ -940,11 +940,11 @@ public class SketchUtils {
             rect.bottom = rect.top;
             rect.top = cache;
 
-            rect.top = drawableSize.y - rect.top;
-            rect.bottom = drawableSize.y - rect.bottom;
+            rect.top = drawableSize.getHeight() - rect.top;
+            rect.bottom = drawableSize.getHeight() - rect.bottom;
 
-            rect.left = drawableSize.x - rect.left;
-            rect.right = drawableSize.x - rect.right;
+            rect.left = drawableSize.getWidth() - rect.left;
+            rect.right = drawableSize.getWidth() - rect.right;
         } else if (rotateDegrees == 270) {
             int cache = rect.bottom;
             //noinspection SuspiciousNameCombination
@@ -955,34 +955,34 @@ public class SketchUtils {
             rect.top = rect.left;
             rect.left = cache;
 
-            rect.left = drawableSize.x - rect.left;
-            rect.right = drawableSize.x - rect.right;
+            rect.left = drawableSize.getWidth() - rect.left;
+            rect.right = drawableSize.getWidth() - rect.right;
         }
     }
 
     /**
      * 旋转一个点（只能是90的倍数）
      */
-    public static void rotatePoint(PointF point, int rotateDegrees, Point drawableSize) {
+    public static void rotatePoint(PointF point, int rotateDegrees, Size drawableSize) {
         if (rotateDegrees % 90 != 0) {
             return;
         }
 
         if (rotateDegrees == 90) {
-            float newX = drawableSize.y - point.y;
+            float newX = drawableSize.getHeight() - point.y;
             //noinspection SuspiciousNameCombination
             float newY = point.x;
             point.x = newX;
             point.y = newY;
         } else if (rotateDegrees == 180) {
-            float newX = drawableSize.x - point.x;
-            float newY = drawableSize.y - point.y;
+            float newX = drawableSize.getWidth() - point.x;
+            float newY = drawableSize.getHeight() - point.y;
             point.x = newX;
             point.y = newY;
         } else if (rotateDegrees == 270) {
             //noinspection SuspiciousNameCombination
             float newX = point.y;
-            float newY = drawableSize.x - point.x;
+            float newY = drawableSize.getWidth() - point.x;
             point.x = newX;
             point.y = newY;
         }

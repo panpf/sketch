@@ -33,6 +33,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.zoom.Size;
 
 /**
  * 超级大图片查看器
@@ -117,7 +118,7 @@ public class HugeImageViewer {
     /**
      * 更新
      */
-    public void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
+    public void update(Matrix drawMatrix, Rect newVisibleRect, Size drawableSize, Size viewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
@@ -135,15 +136,15 @@ public class HugeImageViewer {
         }
 
         // 传进来的参数不能用就什么也不显示
-        if (newVisibleRect.isEmpty() || previewDrawableSize.x == 0 || previewDrawableSize.y == 0 || imageViewSize.x == 0 || imageViewSize.y == 0) {
-            SLog.w(NAME, "update params is empty. update. newVisibleRect=%s, previewDrawableSize=%dx%d, imageViewSize=%dx%d. %s",
-                    newVisibleRect.toShortString(), previewDrawableSize.x, previewDrawableSize.y, imageViewSize.x, imageViewSize.y, imageUri);
+        if (newVisibleRect.isEmpty() || drawableSize.isEmpty() || viewSize.isEmpty()) {
+            SLog.w(NAME, "update params is empty. update. newVisibleRect=%s, drawableSize=%s, viewSize=%s. %s",
+                    newVisibleRect.toShortString(), drawableSize.toString(), viewSize.toString(), imageUri);
             clean("update param is empty");
             return;
         }
 
         // 如果当前完整显示预览图的话就清空什么也不显示
-        if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
+        if (newVisibleRect.width() == drawableSize.getWidth() && newVisibleRect.height() == drawableSize.getHeight()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                 SLog.d(NAME, "full display. update. newVisibleRect=%s. %s",
                         newVisibleRect.toShortString(), imageUri);
@@ -159,7 +160,7 @@ public class HugeImageViewer {
 
         callback.invalidate();
 
-        tileManager.update(newVisibleRect, previewDrawableSize, imageViewSize, getImageSize(), zooming);
+        tileManager.update(newVisibleRect, drawableSize, viewSize, getImageSize(), zooming);
     }
 
     /**
