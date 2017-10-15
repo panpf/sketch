@@ -59,11 +59,16 @@ public class ImageZoomFunction extends ViewFunction {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             SLog.e(NAME, "huge image function the minimum support to GINGERBREAD_MR1");
         }
+
+        // TODO: 2017/10/15 loadingDrawable 啥也不干，特别是不能替换掉 ScaleType
+        // TODO: 2017/10/15 对 ImageView 的依赖全部改成接口
+        // TODO: 2017/10/15 update 和 init 合二为一
     }
 
     @Override
     public void onAttachedToWindow() {
         imageZoomer.init(view, true);
+        imageZoomer.update();
         resetHugeImage();
     }
 
