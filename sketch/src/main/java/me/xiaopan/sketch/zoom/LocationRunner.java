@@ -16,36 +16,40 @@
 
 package me.xiaopan.sketch.zoom;
 
-import android.content.Context;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 定位执行器
  */
 class LocationRunner implements Runnable {
-    private final Scroller mScroller;
-    private ZoomManager zoomManager;
-    private int mCurrentX, mCurrentY;
+    private ImageZoomer imageZoomer;
+    private ScaleDragHelper scaleDragHelper;
 
-    LocationRunner(Context context, ZoomManager zoomManager) {
-        this.mScroller = new Scroller(context, new AccelerateDecelerateInterpolator());
-        this.zoomManager = zoomManager;
+    private Scroller scroller;
+    private int currentX;
+    private int currentY;
+
+    LocationRunner(ImageZoomer imageZoomer, ScaleDragHelper scaleDragHelper) {
+        this.scroller = new Scroller(imageZoomer.getImageView().getContext(), new AccelerateDecelerateInterpolator());
+        this.imageZoomer = imageZoomer;
+        this.scaleDragHelper = scaleDragHelper;
     }
 
     /**
      * 定位到预览图上指定的位置
      */
     void location(int startX, int startY, int endX, int endY) {
-        mCurrentX = startX;
-        mCurrentY = startY;
+        currentX = startX;
+        currentY = startY;
 
-        mScroller.startScroll(startX, startY, endX - startX, endY - startY, 300);
+        scroller.startScroll(startX, startY, endX - startX, endY - startY, 300);
 
-        ImageView imageView = zoomManager.getImageZoomer().getImageView();
+        ImageView imageView = imageZoomer.getImageView();
         imageView.removeCallbacks(this);
         imageView.post(this);
     }
@@ -53,45 +57,45 @@ class LocationRunner implements Runnable {
     @Override
     public void run() {
         // remaining post that should not be handled
-        if (mScroller.isFinished()) {
+        if (scroller.isFinished()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "finished. location run");
             }
             return;
         }
 
-        if (!zoomManager.getImageZoomer().isWorking()) {
+        if (!imageZoomer.isWorking()) {
             SLog.w(ImageZoomer.NAME, "not working. location run");
-            mScroller.forceFinished(true);
+            scroller.forceFinished(true);
             return;
         }
 
-        if (!mScroller.computeScrollOffset()) {
+        if (!scroller.computeScrollOffset()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(ImageZoomer.NAME, "scroll finished. location run");
             }
             return;
         }
 
-        final int newX = mScroller.getCurrX();
-        final int newY = mScroller.getCurrY();
-        final float dx = mCurrentX - newX;
-        final float dy = mCurrentY - newY;
-        zoomManager.translateBy(dx, dy);
-        mCurrentX = newX;
-        mCurrentY = newY;
+        final int newX = scroller.getCurrX();
+        final int newY = scroller.getCurrY();
+        final float dx = currentX - newX;
+        final float dy = currentY - newY;
+        scaleDragHelper.translateBy(dx, dy);
+        currentX = newX;
+        currentY = newY;
 
         // Post On animation
-        CompatUtils.postOnAnimation(zoomManager.getImageZoomer().getImageView(), this);
+        SketchUtils.postOnAnimation(imageZoomer.getImageView(), this);
     }
 
     boolean isRunning() {
-        return !mScroller.isFinished();
+        return !scroller.isFinished();
     }
 
     void cancel() {
-        mScroller.forceFinished(true);
-        ImageView imageView = zoomManager.getImageZoomer().getImageView();
+        scroller.forceFinished(true);
+        ImageView imageView = imageZoomer.getImageView();
         if (imageView != null) {
             imageView.removeCallbacks(this);
         }

@@ -46,6 +46,8 @@ import android.os.storage.StorageManager;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.Closeable;
@@ -1235,6 +1237,24 @@ public class SketchUtils {
             return uri + "." + lastModifyTime;
         } else {
             return uri;
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void postOnAnimation(View view, Runnable runnable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.postOnAnimation(runnable);
+        } else {
+            view.postDelayed(runnable, 1000 / 60);
+        }
+    }
+
+    public static int getPointerIndex(int action) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+        } else {
+            //noinspection deprecation
+            return (action & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
         }
     }
 }

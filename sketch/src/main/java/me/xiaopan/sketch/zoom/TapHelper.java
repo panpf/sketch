@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.zoom;
 
+import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,12 +25,18 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.FunctionCallbackView;
 
-class TapListener extends GestureDetector.SimpleOnGestureListener {
+class TapHelper extends GestureDetector.SimpleOnGestureListener {
 
     private ImageZoomer imageZoomer;
+    private GestureDetector tapGestureDetector;
 
-    TapListener(ImageZoomer imageZoomer) {
+    TapHelper(Context appContext, ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
+        this.tapGestureDetector = new GestureDetector(appContext, this);
+    }
+
+    boolean onTouchEvent(MotionEvent event) {
+        return tapGestureDetector.onTouchEvent(event);
     }
 
     @Override
@@ -40,14 +47,13 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         ImageView imageView = imageZoomer.getImageView();
-
         ImageZoomer.OnViewTapListener tapListener = imageZoomer.getOnViewTapListener();
-        if (imageView != null && tapListener != null) {
+        if (tapListener != null) {
             tapListener.onViewTap(imageView, e.getX(), e.getY());
             return true;
         }
 
-        if (imageView != null && imageView instanceof FunctionCallbackView) {
+        if (imageView instanceof FunctionCallbackView) {
             FunctionCallbackView functionCallbackView = (FunctionCallbackView) imageView;
             View.OnClickListener clickListener = functionCallbackView.getOnClickListener();
             if (clickListener != null && functionCallbackView.isClickable()) {
@@ -64,14 +70,13 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
         super.onLongPress(e);
 
         ImageView imageView = imageZoomer.getImageView();
-
         ImageZoomer.OnViewLongPressListener longPressListener = imageZoomer.getOnViewLongPressListener();
-        if (imageView != null && longPressListener != null) {
+        if (longPressListener != null) {
             longPressListener.onViewLongPress(imageView, e.getX(), e.getY());
             return;
         }
 
-        if (imageView != null && imageView instanceof FunctionCallbackView) {
+        if (imageView instanceof FunctionCallbackView) {
             FunctionCallbackView functionCallbackView = (FunctionCallbackView) imageView;
             View.OnLongClickListener longClickListener = functionCallbackView.getOnLongClickListener();
             if (longClickListener != null && functionCallbackView.isLongClickable()) {

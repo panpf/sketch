@@ -30,7 +30,7 @@ import android.widget.Scroller;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.SketchUtils;
 
-class ScrollBar {
+class ScrollBarHelper {
 
     private ImageZoomer imageZoomer;
     private Paint scrollBarPaint;
@@ -46,7 +46,7 @@ class ScrollBar {
     private HiddenScrollBarRunner hiddenScrollBarRunner;
     private FadeScrollBarRunner fadeScrollBarRunner;
 
-    ScrollBar(Context context, ImageZoomer imageZoomer) {
+    ScrollBarHelper(Context context, ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
 
         scrollBarPaint = new Paint();
@@ -61,7 +61,7 @@ class ScrollBar {
         fadeScrollBarRunner = new FadeScrollBarRunner(context);
     }
 
-    void drawScrollBar(Canvas canvas) {
+    void onDraw(Canvas canvas) {
         final RectF drawRectF = tempDisplayRectF;
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
@@ -116,7 +116,10 @@ class ScrollBar {
         }
     }
 
-    void matrixChanged() {
+    /**
+     * 此方法里没有执行 imageView.invalidate()，因为回调的地方会有执行
+     */
+    void onMatrixChanged() {
         scrollBarPaint.setAlpha(scrollBarAlpha);
 
         if (fadeScrollBarRunner.isRunning()) {

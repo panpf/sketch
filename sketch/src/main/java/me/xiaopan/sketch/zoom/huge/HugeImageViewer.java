@@ -38,6 +38,7 @@ import me.xiaopan.sketch.zoom.Size;
 /**
  * 超级大图片查看器
  */
+// TODO: 2017/10/21 改名 ImageShredder
 // TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
 public class HugeImageViewer {
     private static final String NAME = "HugeImageViewer";

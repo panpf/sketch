@@ -71,13 +71,14 @@ public class ImageZoomFunction extends ViewFunction {
     public void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
-        imageZoomer.onDraw(canvas);
-
         if (SketchUtils.sdkSupportBitmapRegionDecoder()) {
             if (hugeImageViewer.isReady()) {
                 hugeImageViewer.draw(canvas);
             }
         }
+
+        // imageZoomer.onDraw 必须在 hugeImageViewer.draw 之后执行，这样才不会被覆盖掉
+        imageZoomer.onDraw(canvas);
     }
 
     @Override

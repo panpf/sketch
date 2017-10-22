@@ -20,7 +20,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.view.MotionEvent;
 
-import me.xiaopan.sketch.zoom.CompatUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 @TargetApi(5)
 public class EclairScaleDragGestureDetector extends CupcakeScaleDragGestureDetector {
@@ -66,7 +66,7 @@ public class EclairScaleDragGestureDetector extends CupcakeScaleDragGestureDetec
                 // Ignore deprecation, ACTION_POINTER_ID_MASK and
                 // ACTION_POINTER_ID_SHIFT has same value and are deprecated
                 // You can have either deprecation or lint target api warning
-                final int pointerIndex = CompatUtils.getPointerIndex(ev.getAction());
+                final int pointerIndex = SketchUtils.getPointerIndex(ev.getAction());
                 final int pointerId = ev.getPointerId(pointerIndex);
                 if (pointerId == mActivePointerId) {
                     // This was our active pointer going up. Choose a new

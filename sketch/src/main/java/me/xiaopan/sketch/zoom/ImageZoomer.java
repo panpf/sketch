@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -32,46 +31,50 @@ import android.widget.ImageView.ScaleType;
 import java.util.ArrayList;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.drawable.SketchDrawable;
-import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
-import me.xiaopan.sketch.util.SketchUtils;
 
-// TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
-@SuppressWarnings("SuspiciousNameCombination")
+/**
+ * 图片缩放器，接收触摸事件，变换 Matrix，改变图片的显示效果，代理点击和长按事件
+ */
+// TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
 public class ImageZoomer {
     public static final String NAME = "ImageZoomer";
 
     private ImageView imageView;
-    private ScaleType scaleType;
+    private ScaleType scaleType;    // ImageView 原本的 ScaleType
 
-    private Size viewSize = new Size();
-    private Size imageSize = new Size();
-    private Size drawableSize = new Size();
+    private Sizes sizes = new Sizes();
+    private Scales scales = new Scales();   // 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出的缩放比例
 
-    // config
     private int rotateDegrees; // 旋转角度
     private int zoomDuration = 200;   // 双击缩放动画持续时间
     private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
     private boolean allowParentInterceptOnEdge = true;  // 允许父 ViewGroup 在滑动到边缘时拦截事件
-    private OnViewTapListener onViewTapListener;
     private OnDragFlingListener onDragFlingListener;
     private OnScaleChangeListener onScaleChangeListener;
     private OnRotateChangeListener onRotateChangeListener;
+    private OnViewTapListener onViewTapListener;
     private OnViewLongPressListener onViewLongPressListener;
     private ArrayList<OnMatrixChangeListener> onMatrixChangeListenerList;
 
-    private ZoomManager zoomManager;
+    private TapHelper tapHelper;
+    private ScaleDragHelper scaleDragHelper;
+    private ScrollBarHelper scrollBarHelper;    // 挪到 外面去
 
     public ImageZoomer(ImageView imageView) {
         Context appContext = imageView.getContext().getApplicationContext();
 
         this.imageView = imageView;
         this.scaleType = imageView.getScaleType();
-        this.zoomManager = new ZoomManager(appContext, this);
+
+        this.tapHelper = new TapHelper(appContext, this);
+        this.scaleDragHelper = new ScaleDragHelper(appContext, this);
+        this.scrollBarHelper = new ScrollBarHelper(appContext, this);
     }
 
+
     /* -----------ImageView 回调----------- */
+
 
     /**
      * 绘制回调
@@ -81,14 +84,20 @@ public class ImageZoomer {
             return;
         }
 
-        zoomManager.onDraw(canvas);
+        scrollBarHelper.onDraw(canvas);
     }
 
     /**
      * 事件回调
      */
     public boolean onTouchEvent(MotionEvent event) {
-        return isWorking() && zoomManager.onTouchEvent(event);
+        if (!isWorking()) {
+            return false;
+        }
+
+        boolean scaleAndDragConsumed = scaleDragHelper.onTouchEvent(event);
+        boolean tapConsumed = tapHelper.onTouchEvent(event);
+        return scaleAndDragConsumed || tapConsumed;
     }
 
     /**
@@ -101,7 +110,26 @@ public class ImageZoomer {
         reset();
     }
 
+
+    /* -----------内部组件回调----------- */
+
+
+    void onMatrixChanged() {
+        // 在 setImageMatrix 前面执行，省了再执行一次 imageView.invalidate()
+        scrollBarHelper.onMatrixChanged();
+
+        imageView.setImageMatrix(scaleDragHelper.getDrawMatrix());
+
+        if (onMatrixChangeListenerList != null && !onMatrixChangeListenerList.isEmpty()) {
+            for (int w = 0, size = onMatrixChangeListenerList.size(); w < size; w++) {
+                onMatrixChangeListenerList.get(w).onMatrixChanged(this);
+            }
+        }
+    }
+
+
     /* -----------主要方法----------- */
+
 
     /**
      * 当 ImageView 的 drawable、scaleType、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
@@ -110,195 +138,33 @@ public class ImageZoomer {
      */
     public boolean reset() {
         recycle();
-        resetSizes();
 
+        sizes.resetSizes(imageView);
         if (!isWorking()) {
             return false;
         }
 
         imageView.setScaleType(ScaleType.MATRIX);
-        zoomManager.reset();
+        scales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
+        scaleDragHelper.reset();
         return true;
-    }
-
-    private void resetSizes() {
-        final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
-        final int imageViewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
-        if (imageViewWidth == 0 || imageViewHeight == 0) {
-            return;
-        }
-
-        Drawable drawable = SketchUtils.getLastDrawable(imageView.getDrawable());
-        if (drawable == null) {
-            return;
-        }
-
-        final int drawableWidth = drawable.getIntrinsicWidth();
-        final int drawableHeight = drawable.getIntrinsicHeight();
-        if (drawableWidth == 0 || drawableHeight == 0) {
-            return;
-        }
-
-        viewSize.set(imageViewWidth, imageViewHeight);
-        drawableSize.set(drawableWidth, drawableHeight);
-        if (drawable instanceof SketchDrawable && !(drawable instanceof SketchLoadingDrawable)) {
-            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
-            imageSize.set(sketchDrawable.getOriginWidth(), sketchDrawable.getOriginHeight());
-        } else {
-            imageSize.set(drawableWidth, drawableHeight);
-        }
     }
 
     /**
      * 不需要缩放时回收
      */
     public void recycle() {
-        zoomManager.recycle();
-        viewSize.set(0, 0);
-        imageSize.set(0, 0);
-        drawableSize.set(0, 0);
+        sizes.clean();
+        scales.clean();
+        scaleDragHelper.recycle();
+
         imageView.setImageMatrix(null); // 恢复 Matrix 这很重要
         imageView.setScaleType(scaleType);  // 恢复 ScaleType 这很重要
     }
 
-    /* -----------可获取信息----------- */
-
-    /**
-     * {@link ImageZoomer} 工作中
-     */
-    public boolean isWorking() {
-        return !drawableSize.isEmpty() && !viewSize.isEmpty() && !imageSize.isEmpty();
-    }
-
-    /**
-     * 获取 ImageView
-     */
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    /**
-     * 获取 ImageView 的尺寸
-     */
-    public Size getViewSize() {
-        return viewSize;
-    }
-
-    /**
-     * 获取图片原始尺寸
-     */
-    public Size getImageSize() {
-        return imageSize;
-    }
-
-    /**
-     * 获取预览图的尺寸
-     */
-    public Size getDrawableSize() {
-        return drawableSize;
-    }
-
-    /**
-     * 拷贝绘制 Matrix 的参数
-     */
-    public void getDrawMatrix(Matrix matrix) {
-        matrix.set(zoomManager.getDrawMatrix());
-    }
-
-    /**
-     * 获取绘制区域
-     */
-    public void getDrawRect(RectF rectF) {
-        zoomManager.getDrawRect(rectF);
-    }
-
-    /**
-     * 获取预览图上用户可以看到的区域（不受旋转影响）
-     */
-    public void getVisibleRect(Rect rect) {
-        zoomManager.getVisibleRect(rect);
-    }
-
-    /**
-     * 获取当前缩放比例
-     */
-    public float getZoomScale() {
-        return zoomManager.getZoomScale();
-    }
-
-    /**
-     * 获取 Base 缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getBaseZoomScale() {
-        return zoomManager.getDefaultZoomScale();
-    }
-
-    /**
-     * 获取 support 缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getSupportZoomScale() {
-        return zoomManager.getSupportZoomScale();
-    }
-
-    /**
-     * 获取能够让图片完整显示的缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getFullZoomScale() {
-        return zoomManager.getFullZoomScale();
-    }
-
-    /**
-     * 获取能够让图片充满 ImageView 显示的缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getFillZoomScale() {
-        return zoomManager.getFillZoomScale();
-    }
-
-    /**
-     * 获取能够让图片按原图比例一比一显示的缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getOriginZoomScale() {
-        return zoomManager.getOriginZoomScale();
-    }
-
-    /**
-     * 获取最小缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getMinZoomScale() {
-        return zoomManager.getMinZoomScale();
-    }
-
-    /**
-     * 获取最大缩放比例
-     */
-    @SuppressWarnings("unused")
-    public float getMaxZoomScale() {
-        return zoomManager.getMaxZoomScale();
-    }
-
-    /**
-     * 获取双击缩放比例
-     */
-    @SuppressWarnings("WeakerAccess")
-    public float[] getDoubleClickZoomScales() {
-        return zoomManager.getDoubleClickZoomScales();
-    }
-
-    /**
-     * 正在缩放
-     */
-    public boolean isZooming() {
-        return zoomManager.isZooming();
-    }
-
 
     /* -----------交互功能----------- */
+
 
     /**
      * 定位到预览图上指定的位置（不用考虑旋转角度）
@@ -310,7 +176,7 @@ public class ImageZoomer {
             return false;
         }
 
-        zoomManager.location(x, y, animate);
+        scaleDragHelper.location(x, y, animate);
         return true;
     }
 
@@ -331,13 +197,13 @@ public class ImageZoomer {
             return false;
         }
 
-        if (scale < zoomManager.getMinZoomScale() || scale > zoomManager.getMaxZoomScale()) {
+        if (scale < scales.minZoomScale || scale > scales.maxZoomScale) {
             SLog.w(NAME, "Scale must be within the range of %s(minScale) and %s(maxScale). %s",
-                    zoomManager.getMinZoomScale(), zoomManager.getMaxZoomScale(), scale);
+                    scales.minZoomScale, scales.maxZoomScale, scale);
             return false;
         }
 
-        zoomManager.zoom(scale, focalX, focalY, animate);
+        scaleDragHelper.zoom(scale, focalX, focalY, animate);
         return true;
     }
 
@@ -414,7 +280,146 @@ public class ImageZoomer {
     }
 
 
+    /* -----------可获取信息----------- */
+
+
+    /**
+     * {@link ImageZoomer} 工作中
+     */
+    public boolean isWorking() {
+        return !sizes.isEmpty();
+    }
+
+    /**
+     * 获取 ImageView
+     */
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    /**
+     * 获取 ImageView 的尺寸
+     */
+    public Size getViewSize() {
+        return sizes.viewSize;
+    }
+
+    /**
+     * 获取图片原始尺寸
+     */
+    public Size getImageSize() {
+        return sizes.imageSize;
+    }
+
+    /**
+     * 获取预览图的尺寸
+     */
+    public Size getDrawableSize() {
+        return sizes.drawableSize;
+    }
+
+    /**
+     * 拷贝绘制 Matrix 的参数
+     */
+    public void getDrawMatrix(Matrix matrix) {
+        matrix.set(scaleDragHelper.getDrawMatrix());
+    }
+
+    /**
+     * 获取绘制区域
+     */
+    public void getDrawRect(RectF rectF) {
+        scaleDragHelper.getDrawRect(rectF);
+    }
+
+    /**
+     * 获取预览图上用户可以看到的区域（不受旋转影响）
+     */
+    public void getVisibleRect(Rect rect) {
+        scaleDragHelper.getVisibleRect(rect);
+    }
+
+    /**
+     * 获取当前缩放比例
+     */
+    public float getZoomScale() {
+        return scaleDragHelper.getZoomScale();
+    }
+
+    /**
+     * 获取 Base 缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getBaseZoomScale() {
+        return scaleDragHelper.getDefaultZoomScale();
+    }
+
+    /**
+     * 获取 support 缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getSupportZoomScale() {
+        return scaleDragHelper.getSupportZoomScale();
+    }
+
+    /**
+     * 获取能够让图片完整显示的缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getFullZoomScale() {
+        return scales.fullZoomScale;
+    }
+
+    /**
+     * 获取能够让图片充满 ImageView 显示的缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getFillZoomScale() {
+        return scales.fillZoomScale;
+    }
+
+    /**
+     * 获取能够让图片按原图比例一比一显示的缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getOriginZoomScale() {
+        return scales.originZoomScale;
+    }
+
+    /**
+     * 获取最小缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getMinZoomScale() {
+        return scales.minZoomScale;
+    }
+
+    /**
+     * 获取最大缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getMaxZoomScale() {
+        return scales.maxZoomScale;
+    }
+
+    /**
+     * 获取双击缩放比例
+     */
+    @SuppressWarnings("WeakerAccess")
+    public float[] getDoubleClickZoomScales() {
+        return scales.doubleClickZoomScales;
+    }
+
+    /**
+     * 正在缩放
+     */
+    public boolean isZooming() {
+        return scaleDragHelper.isZooming();
+    }
+
+
     /* -----------配置----------- */
+
 
     /**
      * 获取缩放动画持续时间
@@ -541,10 +546,6 @@ public class ImageZoomer {
         this.onScaleChangeListener = onScaleChangeListener;
     }
 
-    ArrayList<OnMatrixChangeListener> getOnMatrixChangeListenerList() {
-        return onMatrixChangeListenerList;
-    }
-
     /**
      * 添加Matrix变化监听器
      */
@@ -586,7 +587,6 @@ public class ImageZoomer {
     public void setOnRotateChangeListener(OnRotateChangeListener onRotateChangeListener) {
         this.onRotateChangeListener = onRotateChangeListener;
     }
-
 
     /**
      * 飞速拖拽监听器

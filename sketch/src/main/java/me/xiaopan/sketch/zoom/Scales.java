@@ -22,7 +22,7 @@ import android.widget.ImageView.ScaleType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 
-public class ZoomScales {
+public class Scales {
 
     private static final float DEFAULT_MAXIMIZE_SCALE = 1.75f;
     private static final float DEFAULT_MINIMUM_SCALE = 1.0f;
@@ -36,15 +36,15 @@ public class ZoomScales {
     public float originZoomScale;  // 能够让图片按照真实尺寸一比一显示的缩放比例
 
     @SuppressWarnings("ConstantConditions")
-    public void reset(Context context, Size viewSize, Size imageSize, Size drawableSize, ScaleType scaleType, float rotateDegrees, boolean readMode) {
-        final int drawableWidth = rotateDegrees % 180 == 0 ? drawableSize.getWidth() : drawableSize.getHeight();
-        final int drawableHeight = rotateDegrees % 180 == 0 ? drawableSize.getHeight() : drawableSize.getWidth();
-        final int imageWidth = rotateDegrees % 180 == 0 ? imageSize.getWidth() : imageSize.getHeight();
-        final int imageHeight = rotateDegrees % 180 == 0 ? imageSize.getHeight() : imageSize.getWidth();
+    public void reset(Context context, Sizes sizes, ScaleType scaleType, float rotateDegrees, boolean readMode) {
+        final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
+        final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
+        final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();
+        final int imageHeight = rotateDegrees % 180 == 0 ? sizes.imageSize.getHeight() : sizes.imageSize.getWidth();
 
-        final float widthScale = (float) viewSize.getWidth() / drawableWidth;
-        final float heightScale = (float) viewSize.getHeight() / drawableHeight;
-        final boolean imageThanViewLarge = drawableWidth > viewSize.getWidth() || drawableHeight > viewSize.getHeight();
+        final float widthScale = (float) sizes.viewSize.getWidth() / drawableWidth;
+        final float heightScale = (float) sizes.viewSize.getHeight() / drawableHeight;
+        final boolean imageThanViewLarge = drawableWidth > sizes.viewSize.getWidth() || drawableHeight > sizes.viewSize.getHeight();
 
         // 小的是完整显示比例，大的是充满比例
         fullZoomScale = Math.min(widthScale, heightScale);
