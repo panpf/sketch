@@ -95,6 +95,16 @@ class ScaleDragHelper implements OnScaleDragGestureListener, ActionListener {
         }
     }
 
+    void reset() {
+        resetBaseMatrix();
+        resetSupportMatrix();
+        checkAndApplyMatrix();
+    }
+
+    void recycle() {
+        cancelFling();
+    }
+
     boolean onTouchEvent(MotionEvent event) {// 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner.isRunning()) {
@@ -442,16 +452,6 @@ class ScaleDragHelper implements OnScaleDragGestureListener, ActionListener {
             flingRunner.cancelFling();
             flingRunner = null;
         }
-    }
-
-    void reset() {
-        resetBaseMatrix();
-        resetSupportMatrix();
-        checkAndApplyMatrix();
-    }
-
-    void recycle() {
-        cancelFling();
     }
 
     void translateBy(float dx, float dy) {
