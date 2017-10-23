@@ -26,7 +26,7 @@ import android.util.AttributeSet;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.zoom.ImageZoomer;
-import me.xiaopan.sketch.zoom.huge.HugeImageViewer;
+import me.xiaopan.sketch.zoom.HugeImageViewer;
 
 /**
  * 这个类负责提供各种 function 开关和属性设置

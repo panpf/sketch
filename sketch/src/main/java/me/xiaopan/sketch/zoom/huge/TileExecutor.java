@@ -30,7 +30,7 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 碎片解码执行器，负责初始化解码器以及管理解码线程
  */
-class TileExecutor {
+public class TileExecutor {
     private static final String NAME = "TileExecutor";
     private static final AtomicInteger THREAD_NUMBER = new AtomicInteger();
 

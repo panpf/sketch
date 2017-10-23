@@ -39,7 +39,7 @@ import me.xiaopan.sketch.decode.ImageType;
 /**
  * 解码处理器，运行在解码线程中，负责解码
  */
-class TileDecodeHandler extends Handler {
+public class TileDecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 

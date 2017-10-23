@@ -30,7 +30,7 @@ import me.xiaopan.sketch.SketchImageView
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable
 import me.xiaopan.sketch.util.SketchUtils
 import me.xiaopan.sketch.zoom.Size
-import me.xiaopan.sketch.zoom.huge.HugeImageViewer
+import me.xiaopan.sketch.zoom.HugeImageViewer
 
 class MappingView : SketchImageView {
 

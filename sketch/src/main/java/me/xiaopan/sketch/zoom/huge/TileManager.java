@@ -35,22 +35,23 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.zoom.HugeImageViewer;
 import me.xiaopan.sketch.zoom.Size;
 
 /**
  * 碎片管理器
  */
 // TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
-class TileManager {
+public class TileManager {
     private static final String NAME = "TileManager";
-    int tiles = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
+    public int tiles = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
     Rect visibleRect = new Rect();  // 可见区域，当前用户真正能看见的区域
-    Rect drawRect = new Rect(); // 绘制区域，可见区域加大一圈就是绘制区域，为的是提前将四周加载出来，用户缓慢滑动时可直接看到
-    Rect decodeRect = new Rect();   // 解码区域，真正需要解码的区域，是以绘制区域为基础，滑动时哪边不够了就在扩展哪边，解码区域一定比绘制区域大
-    Rect drawSrcRect = new Rect();
-    Rect decodeSrcRect = new Rect();
-    List<Tile> tileList = new LinkedList<Tile>();
-    HugeImageViewer.OnTileChangedListener onTileChangedListener;
+    public Rect drawRect = new Rect(); // 绘制区域，可见区域加大一圈就是绘制区域，为的是提前将四周加载出来，用户缓慢滑动时可直接看到
+    public Rect decodeRect = new Rect();   // 解码区域，真正需要解码的区域，是以绘制区域为基础，滑动时哪边不够了就在扩展哪边，解码区域一定比绘制区域大
+    public Rect drawSrcRect = new Rect();
+    public Rect decodeSrcRect = new Rect();
+    public List<Tile> tileList = new LinkedList<Tile>();
+    public HugeImageViewer.OnTileChangedListener onTileChangedListener;
     private Context context;
     private BitmapPool bitmapPool;
     private HugeImageViewer hugeImageViewer;
@@ -67,14 +68,14 @@ class TileManager {
         }
     }, 20);
 
-    TileManager(Context context, HugeImageViewer hugeImageViewer) {
+    public TileManager(Context context, HugeImageViewer hugeImageViewer) {
         context = context.getApplicationContext();
         this.context = context;
         this.bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         this.hugeImageViewer = hugeImageViewer;
     }
 
-    void update(Rect newVisibleRect, Size drawableSize, Size viewSize, Point imageSize, boolean zooming) {
+    public void update(Rect newVisibleRect, Size drawableSize, Size viewSize, Point imageSize, boolean zooming) {
         if (zooming) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "zooming. newVisibleRect=%s, tiles=%d",
@@ -635,7 +636,7 @@ class TileManager {
         }
     }
 
-    void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
+    public void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
             SLog.d(NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
@@ -653,7 +654,7 @@ class TileManager {
         }
     }
 
-    void decodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
+    public void decodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
         SLog.w(NAME, "decode failed. %s. tile=%s, tiles=%d",
                 exception.getCauseMessage(), tile.getInfo(), tileList.size());
 
@@ -663,7 +664,7 @@ class TileManager {
         tilePool.put(tile);
     }
 
-    void clean(String why) {
+    public void clean(String why) {
         for (Tile tile : tileList) {
             tile.refreshKey();
             tile.clean(bitmapPool);
@@ -680,7 +681,7 @@ class TileManager {
         decodeSrcRect.setEmpty();
     }
 
-    void recycle(@SuppressWarnings("UnusedParameters") String why) {
+    public void recycle(@SuppressWarnings("UnusedParameters") String why) {
         clean(why);
         tilePool.clear();
         rectPool.clear();

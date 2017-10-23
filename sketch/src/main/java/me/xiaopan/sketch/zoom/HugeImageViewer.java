@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.zoom.huge;
+package me.xiaopan.sketch.zoom;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -24,7 +24,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -32,8 +34,16 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.zoom.Size;
+import me.xiaopan.sketch.viewfun.FunctionPropertyView;
+import me.xiaopan.sketch.zoom.huge.ImageRegionDecoder;
+import me.xiaopan.sketch.zoom.huge.Tile;
+import me.xiaopan.sketch.zoom.huge.TileDecodeHandler;
+import me.xiaopan.sketch.zoom.huge.TileDecoder;
+import me.xiaopan.sketch.zoom.huge.TileExecutor;
+import me.xiaopan.sketch.zoom.huge.TileManager;
 
 /**
  * 超级大图片查看器
@@ -44,7 +54,10 @@ public class HugeImageViewer {
     private static final String NAME = "HugeImageViewer";
 
     private Context context;
-    private Callback callback;
+    private ImageZoomer imageZoomer;
+
+    private Matrix tempDrawMatrix;
+    private Rect tempVisibleRect;
 
     private TileExecutor tileExecutor;
     private TileDecoder tileDecoder;
@@ -62,10 +75,10 @@ public class HugeImageViewer {
     private boolean paused;
     private String imageUri;
 
-    public HugeImageViewer(Context context, Callback callback) {
+    public HugeImageViewer(Context context, ImageZoomer imageZoomer) {
         context = context.getApplicationContext();
         this.context = context;
-        this.callback = callback;
+        this.imageZoomer = imageZoomer;
 
         this.tileExecutor = new TileExecutor(new ExecutorCallback());
         this.tileManager = new TileManager(context, this);
@@ -73,9 +86,110 @@ public class HugeImageViewer {
 
         this.matrix = new Matrix();
         this.drawTilePaint = new Paint();
+
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
+            SLog.e(NAME, "huge image function the minimum support to GINGERBREAD_MR1");
+        }
     }
 
-    public void draw(Canvas canvas) {
+
+    /* -----------主要方法----------- */
+
+
+    public void reset() {
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
+            return;
+        }
+
+        ImageView imageView = imageZoomer.getImageView();
+
+        Drawable previewDrawable = SketchUtils.getLastDrawable(imageZoomer.getImageView().getDrawable());
+        SketchDrawable sketchDrawable = null;
+        boolean drawableQualified = false;
+        if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof SketchLoadingDrawable)) {
+            sketchDrawable = (SketchDrawable) previewDrawable;
+            final int previewWidth = previewDrawable.getIntrinsicWidth();
+            final int previewHeight = previewDrawable.getIntrinsicHeight();
+            final int imageWidth = sketchDrawable.getOriginWidth();
+            final int imageHeight = sketchDrawable.getOriginHeight();
+
+            drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight;
+            drawableQualified &= SketchUtils.sdkSupportBitmapRegionDecoder();
+            drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
+
+            if (drawableQualified) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    SLog.d(NAME, "Use huge image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
+                }
+            } else {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    SLog.d(NAME, "Don't need to use huge image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
+                }
+            }
+        }
+
+        boolean correctImageOrientationDisabled = !(imageView instanceof FunctionPropertyView)
+                || ((FunctionPropertyView) imageView).getOptions().isCorrectImageOrientationDisabled();
+        if (drawableQualified) {
+            clean("setImage");
+
+            this.imageUri = sketchDrawable.getUri();
+            this.running = !TextUtils.isEmpty(imageUri);
+            this.tileDecoder.setImage(imageUri, correctImageOrientationDisabled);
+        } else {
+            clean("setImage");
+
+            this.imageUri = null;
+            this.running = false;
+            this.tileDecoder.setImage(null, correctImageOrientationDisabled);
+        }
+    }
+
+    /**
+     * 回收资源（回收后需要重新setImage()才能使用）
+     */
+    public void recycle(String why) {
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
+            return;
+        }
+
+        running = false;
+        clean(why);
+        tileExecutor.recycle(why);
+        tileManager.recycle(why);
+        tileDecoder.recycle(why);
+    }
+
+    /**
+     * 清理资源（不影响继续使用）
+     */
+    private void clean(String why) {
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
+            return;
+        }
+
+        tileExecutor.cleanDecode(why);
+
+        matrix.reset();
+        lastZoomScale = 0;
+        zoomScale = 0;
+
+        tileManager.clean(why);
+
+        invalidateView();
+    }
+
+
+    /* -----------回调方法----------- */
+
+
+    public void onDraw(Canvas canvas) {
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder() || !isReady()) {
+            return;
+        }
+
         if (tileManager.tileList != null && tileManager.tileList.size() > 0) {
             int saveCount = canvas.save();
             canvas.concat(matrix);
@@ -105,21 +219,40 @@ public class HugeImageViewer {
         }
     }
 
-    /**
-     * 设置新的图片
-     */
-    public void setImage(String imageUri, boolean correctImageOrientationDisabled) {
-        clean("setImage");
+    public void onMatrixChanged() {
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
+            return;
+        }
 
-        this.imageUri = imageUri;
-        this.running = !TextUtils.isEmpty(imageUri);
-        this.tileDecoder.setImage(imageUri, correctImageOrientationDisabled);
-    }
+        if (!isReady() && !isInitializing()) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                SLog.d(NAME, "hugeImageViewer not available. onMatrixChanged. %s", imageUri);
+            }
+            return;
+        }
 
-    /**
-     * 更新
-     */
-    public void update(Matrix drawMatrix, Rect newVisibleRect, Size drawableSize, Size viewSize, boolean zooming) {
+        if (imageZoomer.getRotateDegrees() % 90 != 0) {
+            SLog.w(NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
+            return;
+        }
+
+        if (tempDrawMatrix == null) {
+            tempDrawMatrix = new Matrix();
+            tempVisibleRect = new Rect();
+        }
+
+        tempDrawMatrix.reset();
+        tempVisibleRect.setEmpty();
+
+        imageZoomer.getDrawMatrix(tempDrawMatrix);
+        imageZoomer.getVisibleRect(tempVisibleRect);
+
+        Matrix drawMatrix = tempDrawMatrix;
+        Rect newVisibleRect = tempVisibleRect;
+        Size drawableSize = imageZoomer.getDrawableSize();
+        Size viewSize = imageZoomer.getViewSize();
+        boolean zooming = imageZoomer.isZooming();
+
         // 没有准备好就不往下走了
         if (!isReady()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
@@ -159,46 +292,24 @@ public class HugeImageViewer {
         matrix.set(drawMatrix);
         zoomScale = SketchUtils.formatFloat(SketchUtils.getMatrixScale(matrix), 2);
 
-        callback.invalidate();
+        invalidateView();
 
         tileManager.update(newVisibleRect, drawableSize, viewSize, getImageSize(), zooming);
     }
 
-    /**
-     * 清理资源（不影响继续使用）
-     */
-    private void clean(String why) {
-        tileExecutor.cleanDecode(why);
 
-        matrix.reset();
-        lastZoomScale = 0;
-        zoomScale = 0;
+    /* -----------其它方法----------- */
 
-        tileManager.clean(why);
 
-        callback.invalidate();
+    public void invalidateView() {
+        imageZoomer.getImageView().invalidate();
     }
 
-    /**
-     * 回收资源（回收后需要重新setImage()才能使用）
-     */
-    public void recycle(String why) {
-        running = false;
-        clean(why);
-        tileExecutor.recycle(why);
-        tileManager.recycle(why);
-        tileDecoder.recycle(why);
-    }
-
-    void invalidateView() {
-        callback.invalidate();
-    }
-
-    TileDecoder getTileDecoder() {
+    public TileDecoder getTileDecoder() {
         return tileDecoder;
     }
 
-    TileExecutor getTileExecutor() {
+    public TileExecutor getTileExecutor() {
         return tileExecutor;
     }
 
@@ -206,6 +317,10 @@ public class HugeImageViewer {
      * 暂停
      */
     public void setPause(boolean pause) {
+        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
+            return;
+        }
+
         if (pause == paused) {
             return;
         }
@@ -225,7 +340,7 @@ public class HugeImageViewer {
             }
 
             if (running) {
-                callback.updateMatrix();
+                onMatrixChanged();
             }
         }
     }
@@ -270,7 +385,7 @@ public class HugeImageViewer {
     @SuppressWarnings("unused")
     public void setShowTileRect(boolean showTileRect) {
         this.showTileRect = showTileRect;
-        callback.invalidate();
+        invalidateView();
     }
 
     /**
@@ -385,12 +500,6 @@ public class HugeImageViewer {
         return bytes;
     }
 
-    public interface Callback {
-        void invalidate();
-
-        void updateMatrix();
-    }
-
     public interface OnTileChangedListener {
         void onTileChanged(HugeImageViewer hugeImageViewer);
     }
@@ -411,7 +520,7 @@ public class HugeImageViewer {
 
             tileDecoder.initCompleted(imageUri, decoder);
 
-            callback.updateMatrix();
+            onMatrixChanged();
         }
 
         @Override

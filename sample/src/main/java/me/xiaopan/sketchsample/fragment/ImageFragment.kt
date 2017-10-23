@@ -28,7 +28,7 @@ import me.xiaopan.sketch.uri.UriModel
 import me.xiaopan.sketch.util.SketchUtils
 import me.xiaopan.sketch.zoom.ImageZoomer
 import me.xiaopan.sketch.zoom.Size
-import me.xiaopan.sketch.zoom.huge.HugeImageViewer
+import me.xiaopan.sketch.zoom.HugeImageViewer
 import me.xiaopan.sketchsample.BaseFragment
 import me.xiaopan.sketchsample.BindContentView
 import me.xiaopan.sketchsample.R

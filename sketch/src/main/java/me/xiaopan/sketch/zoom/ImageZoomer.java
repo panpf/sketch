@@ -39,6 +39,7 @@ import me.xiaopan.sketch.SLog;
 public class ImageZoomer {
     public static final String NAME = "ImageZoomer";
 
+    private String imageUri;
     private ImageView imageView;
     private ScaleType scaleType;    // ImageView 原本的 ScaleType
 
@@ -59,7 +60,8 @@ public class ImageZoomer {
 
     private TapHelper tapHelper;
     private ScaleDragHelper scaleDragHelper;
-    private ScrollBarHelper scrollBarHelper;    // 挪到 外面去
+    private ScrollBarHelper scrollBarHelper;
+    private HugeImageViewer hugeImageViewer;
 
     public ImageZoomer(ImageView imageView) {
         Context appContext = imageView.getContext().getApplicationContext();
@@ -70,6 +72,49 @@ public class ImageZoomer {
         this.tapHelper = new TapHelper(appContext, this);
         this.scaleDragHelper = new ScaleDragHelper(appContext, this);
         this.scrollBarHelper = new ScrollBarHelper(appContext, this);
+        this.hugeImageViewer = new HugeImageViewer(appContext, this);
+    }
+
+
+    /* -----------主要方法----------- */
+
+
+    /**
+     * 当 ImageView 的 drawable、scaleType、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
+     *
+     * @return true：重置以后可以工作，false：重置以后无法工作，通常是新的 drawable 不满足条件导致
+     */
+    public boolean reset() {
+        recycle("reset");
+
+        sizes.resetSizes(imageView);
+        if (!isWorking()) {
+            return false;
+        }
+
+        imageView.setScaleType(ScaleType.MATRIX);
+
+        scales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
+        scaleDragHelper.reset();
+        hugeImageViewer.reset();
+        return true;
+    }
+
+    /**
+     * 不需要缩放时回收
+     */
+    public void recycle(String why) {
+        if (!isWorking()) {
+            return;
+        }
+
+        sizes.clean();
+        scales.clean();
+        scaleDragHelper.recycle();
+        hugeImageViewer.recycle(why);
+
+        imageView.setImageMatrix(null); // 恢复 Matrix 这很重要
+        imageView.setScaleType(scaleType);  // 恢复 ScaleType 这很重要
     }
 
 
@@ -84,7 +129,8 @@ public class ImageZoomer {
             return;
         }
 
-        scrollBarHelper.onDraw(canvas);
+        hugeImageViewer.onDraw(canvas);
+        scrollBarHelper.onDraw(canvas);    // scrollBarHelper.onDraw 必须在 hugeImageViewer.draw 之后执行，这样才不会被覆盖掉
     }
 
     /**
@@ -100,16 +146,6 @@ public class ImageZoomer {
         return scaleAndDragConsumed || tapConsumed;
     }
 
-    /**
-     * ImageView 尺寸改变回调
-     */
-    public void onSizeChanged() {
-        if (!isWorking()) {
-            return;
-        }
-        reset();
-    }
-
 
     /* -----------内部组件回调----------- */
 
@@ -117,6 +153,7 @@ public class ImageZoomer {
     void onMatrixChanged() {
         // 在 setImageMatrix 前面执行，省了再执行一次 imageView.invalidate()
         scrollBarHelper.onMatrixChanged();
+        hugeImageViewer.onMatrixChanged();
 
         imageView.setImageMatrix(scaleDragHelper.getDrawMatrix());
 
@@ -125,41 +162,6 @@ public class ImageZoomer {
                 onMatrixChangeListenerList.get(w).onMatrixChanged(this);
             }
         }
-    }
-
-
-    /* -----------主要方法----------- */
-
-
-    /**
-     * 当 ImageView 的 drawable、scaleType、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
-     *
-     * @return true：重置以后可以工作，false：重置以后无法工作，通常是新的 drawable 不满足条件导致
-     */
-    public boolean reset() {
-        recycle();
-
-        sizes.resetSizes(imageView);
-        if (!isWorking()) {
-            return false;
-        }
-
-        imageView.setScaleType(ScaleType.MATRIX);
-        scales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
-        scaleDragHelper.reset();
-        return true;
-    }
-
-    /**
-     * 不需要缩放时回收
-     */
-    public void recycle() {
-        sizes.clean();
-        scales.clean();
-        scaleDragHelper.recycle();
-
-        imageView.setImageMatrix(null); // 恢复 Matrix 这很重要
-        imageView.setScaleType(scaleType);  // 恢复 ScaleType 这很重要
     }
 
 
@@ -295,6 +297,10 @@ public class ImageZoomer {
      */
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public HugeImageViewer getHugeImageViewer() {
+        return hugeImageViewer;
     }
 
     /**

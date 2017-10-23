@@ -20,11 +20,12 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
+import me.xiaopan.sketch.zoom.HugeImageViewer;
 
 /**
  * 碎片解码器
  */
-class TileDecoder {
+public class TileDecoder {
 
     private static final String NAME = "TileDecoder";
 
@@ -42,7 +43,7 @@ class TileDecoder {
     /**
      * 设置新的图片
      */
-    void setImage(String imageUri, boolean correctImageOrientationDisabled) {
+    public void setImage(String imageUri, boolean correctImageOrientationDisabled) {
         clean("setImage");
 
         if (decoder != null) {
@@ -79,7 +80,7 @@ class TileDecoder {
         initKeyCounter.refresh();
     }
 
-    void recycle(String why) {
+    public void recycle(String why) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "recycle. %s", why);
         }
@@ -89,7 +90,7 @@ class TileDecoder {
         }
     }
 
-    void initCompleted(String imageUri, ImageRegionDecoder decoder) {
+    public void initCompleted(String imageUri, ImageRegionDecoder decoder) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "init completed. %s", imageUri);
         }
@@ -98,7 +99,7 @@ class TileDecoder {
         this.decoder = decoder;
     }
 
-    void initError(String imageUri, Exception e) {
+    public void initError(String imageUri, Exception e) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
@@ -106,11 +107,11 @@ class TileDecoder {
         initializing = false;
     }
 
-    boolean isReady() {
+    public boolean isReady() {
         return running && decoder != null && decoder.isReady();
     }
 
-    boolean isInitializing() {
+    public boolean isInitializing() {
         return running && initializing;
     }
 

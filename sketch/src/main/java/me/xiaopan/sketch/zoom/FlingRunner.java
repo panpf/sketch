@@ -21,7 +21,6 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingRunner implements Runnable {
     private ImageZoomer imageZoomer;
