@@ -41,7 +41,7 @@ class DisplayListenerProxy implements DisplayListener {
             return;
         }
 
-        boolean needInvokeInvalidate = view.functions.onDisplayStarted();
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayStarted();
         if (needInvokeInvalidate) {
             view.invalidate();
         }
@@ -58,7 +58,7 @@ class DisplayListenerProxy implements DisplayListener {
             return;
         }
 
-        boolean needInvokeInvalidate = view.functions.onDisplayCompleted(drawable, imageFrom, imageAttrs);
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayCompleted(drawable, imageFrom, imageAttrs);
         if (needInvokeInvalidate) {
             view.invalidate();
         }
@@ -75,7 +75,7 @@ class DisplayListenerProxy implements DisplayListener {
             return;
         }
 
-        boolean needInvokeInvalidate = view.functions.onDisplayError(cause);
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayError(cause);
         if (needInvokeInvalidate) {
             view.invalidate();
         }
@@ -92,7 +92,7 @@ class DisplayListenerProxy implements DisplayListener {
             return;
         }
 
-        boolean needInvokeInvalidate = view.functions.onDisplayCanceled(cause);
+        boolean needInvokeInvalidate = view.getFunctions().onDisplayCanceled(cause);
         if (needInvokeInvalidate) {
             view.invalidate();
         }

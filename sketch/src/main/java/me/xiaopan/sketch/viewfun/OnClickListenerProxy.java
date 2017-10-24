@@ -34,11 +34,11 @@ class OnClickListenerProxy implements View.OnClickListener {
             return;
         }
 
-        if (view.functions.clickRetryFunction != null && view.functions.clickRetryFunction.onClick(v)) {
+        if (view.getFunctions().clickRetryFunction != null && view.getFunctions().clickRetryFunction.onClick(v)) {
             return;
         }
 
-        if (view.functions.clickPlayGifFunction != null && view.functions.clickPlayGifFunction.onClick(v)) {
+        if (view.getFunctions().clickPlayGifFunction != null && view.getFunctions().clickPlayGifFunction.onClick(v)) {
             return;
         }
 
@@ -53,12 +53,12 @@ class OnClickListenerProxy implements View.OnClickListener {
             return false;
         }
 
-        if (view.functions.clickRetryFunction != null && view.functions.clickRetryFunction.isClickable()) {
+        if (view.getFunctions().clickRetryFunction != null && view.getFunctions().clickRetryFunction.isClickable()) {
             return true;
         }
 
         //noinspection SimplifiableIfStatement
-        if (view.functions.clickPlayGifFunction != null && view.functions.clickPlayGifFunction.isClickable()) {
+        if (view.getFunctions().clickPlayGifFunction != null && view.getFunctions().clickPlayGifFunction.isClickable()) {
             return true;
         }
 
