@@ -125,11 +125,9 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
     }
 
     private class LoadDataCallback internal constructor(fragment: UnsplashPhotosFragment, private val pageIndex: Int) : Callback<List<UnsplashImage>> {
-        private val reference: WeakReference<UnsplashPhotosFragment>
+        private val reference: WeakReference<UnsplashPhotosFragment> = WeakReference(fragment)
 
         init {
-            this.reference = WeakReference(fragment)
-
             if (pageIndex == 1) {
                 fragment.hintView.hidden()
             }
@@ -137,6 +135,9 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
         override fun onResponse(call: Call<List<UnsplashImage>>, response: Response<List<UnsplashImage>>) {
             val fragment = reference.get() ?: return
+            if (!fragment.isViewCreated) {
+                return
+            }
 
             if (pageIndex == 1) {
                 create(fragment, response)
@@ -149,6 +150,9 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
         override fun onFailure(call: Call<List<UnsplashImage>>, t: Throwable) {
             val fragment = reference.get() ?: return
+            if (!fragment.isViewCreated) {
+                return
+            }
 
             if (pageIndex == 1) {
                 fragment.hintView.failed(t, View.OnClickListener { fragment.onRefresh() })

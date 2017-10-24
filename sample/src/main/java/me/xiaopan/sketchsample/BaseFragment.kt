@@ -9,6 +9,7 @@ import me.xiaopan.sketchsample.util.DataTransferStation
 
 open class BaseFragment : Fragment() {
     val dataTransferHelper = DataTransferStation.PageHelper(this)
+    var isViewCreated = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +23,11 @@ open class BaseFragment : Fragment() {
         } else {
             return super.onCreateView(inflater, container, savedInstanceState)
         }
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        isViewCreated = true
     }
 
     override fun onPause() {
@@ -51,6 +57,11 @@ open class BaseFragment : Fragment() {
 
     val isVisibleToUser: Boolean
         get() = isResumed && userVisibleHint
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isViewCreated = false
+    }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
