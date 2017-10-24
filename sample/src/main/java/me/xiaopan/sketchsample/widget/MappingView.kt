@@ -29,12 +29,12 @@ import me.xiaopan.sketch.SLog
 import me.xiaopan.sketch.SketchImageView
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable
 import me.xiaopan.sketch.util.SketchUtils
+import me.xiaopan.sketch.zoom.BlockDisplayer
 import me.xiaopan.sketch.zoom.Size
-import me.xiaopan.sketch.zoom.HugeImageViewer
 
 class MappingView : SketchImageView {
 
-    private var depHugeImageViewer: HugeImageViewer? = null
+    private var depBlockDisplayer: BlockDisplayer? = null
 
     private var visibleMappingRect: Rect? = null
     private var visiblePaint: Paint? = null
@@ -92,11 +92,11 @@ class MappingView : SketchImageView {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        if (depHugeImageViewer != null && depHugeImageViewer!!.isReady) {
-            val widthScale = depHugeImageViewer!!.imageSize.x.toFloat() / width
-            val heightScale = depHugeImageViewer!!.imageSize.y.toFloat() / height
+        if (depBlockDisplayer != null && depBlockDisplayer!!.isReady) {
+            val widthScale = depBlockDisplayer!!.imageSize.x.toFloat() / width
+            val heightScale = depBlockDisplayer!!.imageSize.y.toFloat() / height
 
-            for (tile in depHugeImageViewer!!.tileList) {
+            for (tile in depBlockDisplayer!!.tileList) {
                 if (!tile.isEmpty) {
                     canvas.drawRect((tile.srcRect.left + 1) / widthScale,
                             (tile.srcRect.top + 1) / heightScale,
@@ -110,7 +110,7 @@ class MappingView : SketchImageView {
                 }
             }
 
-            val drawSrcRect = depHugeImageViewer!!.drawSrcRect
+            val drawSrcRect = depBlockDisplayer!!.drawSrcRect
             if (!drawSrcRect.isEmpty) {
                 canvas.drawRect(drawSrcRect.left / widthScale,
                         drawSrcRect.top / heightScale,
@@ -118,7 +118,7 @@ class MappingView : SketchImageView {
                         drawSrcRect.bottom / heightScale, originSrcRectPaint!!)
             }
 
-            val decodeSrcRect = depHugeImageViewer!!.decodeSrcRect
+            val decodeSrcRect = depBlockDisplayer!!.decodeSrcRect
             if (!decodeSrcRect.isEmpty) {
                 canvas.drawRect(decodeSrcRect.left / widthScale,
                         decodeSrcRect.top / heightScale,
@@ -195,8 +195,8 @@ class MappingView : SketchImageView {
         invalidate()
     }
 
-    fun tileChanged(hugeImageViewer: HugeImageViewer) {
-        this.depHugeImageViewer = hugeImageViewer
+    fun tileChanged(blockDisplayer: BlockDisplayer) {
+        this.depBlockDisplayer = blockDisplayer
         invalidate()
     }
 

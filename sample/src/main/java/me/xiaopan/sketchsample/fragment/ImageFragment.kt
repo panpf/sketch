@@ -26,9 +26,9 @@ import me.xiaopan.sketch.uri.FileUriModel
 import me.xiaopan.sketch.uri.GetDataSourceException
 import me.xiaopan.sketch.uri.UriModel
 import me.xiaopan.sketch.util.SketchUtils
+import me.xiaopan.sketch.zoom.BlockDisplayer
 import me.xiaopan.sketch.zoom.ImageZoomer
 import me.xiaopan.sketch.zoom.Size
-import me.xiaopan.sketch.zoom.HugeImageViewer
 import me.xiaopan.sketchsample.BaseFragment
 import me.xiaopan.sketchsample.BindContentView
 import me.xiaopan.sketchsample.R
@@ -73,7 +73,7 @@ class ImageFragment : BaseFragment() {
         setWindowBackgroundHelper.onCreate(activity)
 
         arguments?.let {
-            image = it.getParcelable<Image>(PARAM_REQUIRED_STRING_IMAGE_URI)
+            image = it.getParcelable(PARAM_REQUIRED_STRING_IMAGE_URI)
             loadingImageOptionsKey = it.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
             showTools = it.getBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
         }
@@ -200,12 +200,8 @@ class ImageFragment : BaseFragment() {
         fun onViewCreated() {
             imageView.isZoomEnabled = AppConfig.getBoolean(imageView.context, AppConfig.Key.SUPPORT_ZOOM)
 
-            onReadModeConfigChanged()
-
-            // 初始化超大图查看器的暂停状态，这一步很重要
-            if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
-                imageView.hugeImageViewer?.setPause(!isVisibleToUser)
-            }
+            onReadModeConfigChanged()   // 初始化阅读模式
+            onUserVisibleChanged()  // 初始化超大图查看器的暂停状态，这一步很重要
         }
 
         fun onConfigChanged() {
@@ -213,20 +209,18 @@ class ImageFragment : BaseFragment() {
         }
 
         fun onUserVisibleChanged() {
-            if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
-                // 不可见的时候暂停超大图查看器，节省内存
-                imageView.hugeImageViewer?.setPause(!isVisibleToUser)
-            } else {
-                if (isVisibleToUser) {
-                    imageView.hugeImageViewer?.setPause(false)
+            imageView.zoomer?.let {
+                if (AppConfig.getBoolean(activity, AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE)) {
+                    it.blockDisplayer.setPause(!isVisibleToUser)  // 不可见的时候暂停超大图查看器，节省内存
+                } else if (isVisibleToUser && it.blockDisplayer.isPaused) {
+                    it.blockDisplayer.setPause(false) // 因为有 PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE 开关的存在，可能会出现关闭开关后依然处于暂停状态的情况，因此这里恢复一下，加个保险
                 }
             }
         }
 
         fun onReadModeConfigChanged() {
-            if (imageView.isZoomEnabled) {
-                val readMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
-                imageView.imageZoomer!!.isReadMode = readMode
+            imageView.zoomer?.let {
+                it.isReadMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
             }
         }
     }
@@ -240,12 +234,12 @@ class ImageFragment : BaseFragment() {
                 return
             }
 
-            if (imageView.isZoomEnabled) {
+            if (imageView.zoomer != null) {
                 // MappingView 跟随 Matrix 变化刷新显示区域
-                imageView.imageZoomer?.addOnMatrixChangeListener(zoomMatrixChangedListener)
+                imageView.zoomer?.addOnMatrixChangeListener(zoomMatrixChangedListener)
 
                 // MappingView 跟随碎片变化刷新碎片区域
-                imageView.hugeImageViewer?.onTileChangedListener = HugeImageViewer.OnTileChangedListener { hugeImageViewer -> mappingView.tileChanged(hugeImageViewer) }
+                imageView.zoomer?.blockDisplayer?.onTileChangedListener = BlockDisplayer.OnTileChangedListener { hugeImageViewer -> mappingView.tileChanged(hugeImageViewer) }
 
                 // 点击 MappingView 定位到指定位置
                 mappingView.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
@@ -271,8 +265,6 @@ class ImageFragment : BaseFragment() {
                     }
                 })
             } else {
-                imageView.imageZoomer?.removeOnMatrixChangeListener(zoomMatrixChangedListener)
-                imageView.hugeImageViewer?.onTileChangedListener = null
                 mappingView.setOnSingleClickListener(null)
                 mappingView.update(Size(0, 0), Rect())
             }
@@ -283,7 +275,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun location(x: Float, y: Float, animate: Boolean): Boolean {
-            imageView.imageZoomer?.location(x, y, animate)
+            imageView.zoomer?.location(x, y, animate)
             return true
         }
 
@@ -358,7 +350,7 @@ class ImageFragment : BaseFragment() {
                         DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
                 ))
                 menuItemList.add(MenuItem(
-                        String.format("Toggle ScaleType (%s)", imageView.imageZoomer?.scaleType ?: imageView.scaleType),
+                        String.format("Toggle ScaleType (%s)", imageView.zoomer?.scaleType ?: imageView.scaleType),
                         DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
                 ))
                 menuItemList.add(MenuItem(
@@ -401,12 +393,12 @@ class ImageFragment : BaseFragment() {
         fun showZoomMenu() {
             val menuItemList = LinkedList<MenuItem>()
 
-            val imageZoomer = imageView.imageZoomer
-            if (imageZoomer != null) {
+            val zoomer = imageView.zoomer
+            if (zoomer != null) {
                 val zoomInfoBuilder = StringBuilder()
-                val zoomScale = SketchUtils.formatFloat(imageZoomer.zoomScale, 2)
+                val zoomScale = SketchUtils.formatFloat(zoomer.zoomScale, 2)
                 val visibleRect = Rect()
-                imageZoomer.getVisibleRect(visibleRect)
+                zoomer.getVisibleRect(visibleRect)
                 val visibleRectString = visibleRect.toShortString()
                 zoomInfoBuilder.append("Zoom: ").append(zoomScale).append(" / ").append(visibleRectString)
                 menuItemList.add(MenuItem(zoomInfoBuilder.toString(), null))
@@ -414,38 +406,40 @@ class ImageFragment : BaseFragment() {
                 menuItemList.add(MenuItem("Zoom (Disabled)", null))
             }
 
-            val hugeImageViewer = imageView.hugeImageViewer
-            if (hugeImageViewer != null) {
-                val hugeImageInfoBuilder = StringBuilder()
-                if (hugeImageViewer.isReady) {
-                    hugeImageInfoBuilder.append("Huge image tiles：")
-                            .append(hugeImageViewer.tiles)
-                            .append("/")
-                            .append(hugeImageViewer.tileList.size)
-                            .append("/")
-                            .append(Formatter.formatFileSize(context, hugeImageViewer.tilesAllocationByteCount))
+            val blockDisplayer = imageView.zoomer?.blockDisplayer
+            if (blockDisplayer != null) {
+                val blockInfoBuilder = StringBuilder()
+                when {
+                    blockDisplayer.isReady -> {
+                        blockInfoBuilder.append("Huge image tiles：")
+                                .append(blockDisplayer.tiles)
+                                .append("/")
+                                .append(blockDisplayer.tileList.size)
+                                .append("/")
+                                .append(Formatter.formatFileSize(context, blockDisplayer.tilesAllocationByteCount))
 
-                    hugeImageInfoBuilder.append("\n")
-                    hugeImageInfoBuilder.append("Huge image decode area：").append(hugeImageViewer.decodeRect.toShortString())
+                        blockInfoBuilder.append("\n")
+                        blockInfoBuilder.append("Huge image decode area：").append(blockDisplayer.decodeRect.toShortString())
 
-                    hugeImageInfoBuilder.append("\n")
-                    hugeImageInfoBuilder.append("Huge image decode src area：").append(hugeImageViewer.decodeSrcRect.toShortString())
-                } else if (hugeImageViewer.isInitializing) {
-                    hugeImageInfoBuilder.append("\n")
-                    hugeImageInfoBuilder.append("Huge image initializing...")
-                } else {
-                    hugeImageInfoBuilder.append("Huge image (No need)")
+                        blockInfoBuilder.append("\n")
+                        blockInfoBuilder.append("Huge image decode src area：").append(blockDisplayer.decodeSrcRect.toShortString())
+                    }
+                    blockDisplayer.isInitializing -> {
+                        blockInfoBuilder.append("\n")
+                        blockInfoBuilder.append("Huge image initializing...")
+                    }
+                    else -> blockInfoBuilder.append("Huge image (No need)")
                 }
-                menuItemList.add(MenuItem(hugeImageInfoBuilder.toString(), null))
+                menuItemList.add(MenuItem(blockInfoBuilder.toString(), null))
             } else {
                 menuItemList.add(MenuItem("Huge image (Disabled)", null))
             }
 
-            if (hugeImageViewer != null) {
-                if (hugeImageViewer.isReady || hugeImageViewer.isInitializing) {
+            if (blockDisplayer != null) {
+                if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
                     menuItemList.add(MenuItem(
-                            if (hugeImageViewer.isShowTileRect) "Hide block boundary" else "Show block boundary",
-                            DialogInterface.OnClickListener { _, _ -> imageView.hugeImageViewer?.let { it.isShowTileRect = !it.isShowTileRect } }))
+                            if (blockDisplayer.isShowTileRect) "Hide block boundary" else "Show block boundary",
+                            DialogInterface.OnClickListener { _, _ -> imageView.zoomer?.blockDisplayer?.let { it.isShowTileRect = !it.isShowTileRect } }))
                 } else {
                     menuItemList.add(MenuItem("Block boundary (No need huge image)", null))
                 }
@@ -453,19 +447,19 @@ class ImageFragment : BaseFragment() {
                 menuItemList.add(MenuItem("Block boundary (Huge image disabled)", null))
             }
 
-            if (imageZoomer != null) {
+            if (zoomer != null) {
                 menuItemList.add(MenuItem(
-                        if (imageZoomer.isReadMode) "Close read mode" else "Open read mode",
-                        DialogInterface.OnClickListener { _, _ -> imageView.imageZoomer?.let { it.isReadMode = !it.isReadMode } }))
+                        if (zoomer.isReadMode) "Close read mode" else "Open read mode",
+                        DialogInterface.OnClickListener { _, _ -> imageView.zoomer?.let { it.isReadMode = !it.isReadMode } }))
             } else {
                 menuItemList.add(MenuItem("Read mode (Zoom disabled)", null))
             }
 
-            if (imageZoomer != null) {
+            if (zoomer != null) {
                 menuItemList.add(MenuItem(
-                        String.format("Clockwise rotation 90°（%d）", imageZoomer.rotateDegrees),
+                        String.format("Clockwise rotation 90°（%d）", zoomer.rotateDegrees),
                         DialogInterface.OnClickListener { _, _ ->
-                            imageView.imageZoomer?.let {
+                            imageView.zoomer?.let {
                                 if (!it.rotateBy(90)) {
                                     Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
                                 }

@@ -21,6 +21,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -39,7 +41,6 @@ import me.xiaopan.sketch.SLog;
 public class ImageZoomer {
     public static final String NAME = "ImageZoomer";
 
-    private String imageUri;
     private ImageView imageView;
     private ScaleType scaleType;    // ImageView 原本的 ScaleType
 
@@ -61,18 +62,17 @@ public class ImageZoomer {
     private TapHelper tapHelper;
     private ScaleDragHelper scaleDragHelper;
     private ScrollBarHelper scrollBarHelper;
-    private HugeImageViewer hugeImageViewer;
+    private BlockDisplayer blockDisplayer;
 
-    public ImageZoomer(ImageView imageView) {
+    public ImageZoomer(@NonNull ImageView imageView) {
         Context appContext = imageView.getContext().getApplicationContext();
 
         this.imageView = imageView;
-        this.scaleType = imageView.getScaleType();
 
         this.tapHelper = new TapHelper(appContext, this);
         this.scaleDragHelper = new ScaleDragHelper(appContext, this);
         this.scrollBarHelper = new ScrollBarHelper(appContext, this);
-        this.hugeImageViewer = new HugeImageViewer(appContext, this);
+        this.blockDisplayer = new BlockDisplayer(appContext, this);
     }
 
 
@@ -84,26 +84,28 @@ public class ImageZoomer {
      *
      * @return true：重置以后可以工作，false：重置以后无法工作，通常是新的 drawable 不满足条件导致
      */
-    public boolean reset() {
-        recycle("reset");
+    public boolean reset(@NonNull String why) {
+        recycle(why);
 
         sizes.resetSizes(imageView);
         if (!isWorking()) {
             return false;
         }
 
+        // 为什么要每次都重新获取 ScaleType ？因为在 reset 是可以反复执行的，在此之前 ScaleType 可能会改变
+        scaleType = imageView.getScaleType();
         imageView.setScaleType(ScaleType.MATRIX);
 
         scales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
         scaleDragHelper.reset();
-        hugeImageViewer.reset();
+        blockDisplayer.reset();
         return true;
     }
 
     /**
      * 不需要缩放时回收
      */
-    public void recycle(String why) {
+    public void recycle(@NonNull String why) {
         if (!isWorking()) {
             return;
         }
@@ -111,10 +113,21 @@ public class ImageZoomer {
         sizes.clean();
         scales.clean();
         scaleDragHelper.recycle();
-        hugeImageViewer.recycle(why);
+        blockDisplayer.recycle(why);
 
-        imageView.setImageMatrix(null); // 恢复 Matrix 这很重要
-        imageView.setScaleType(scaleType);  // 恢复 ScaleType 这很重要
+        // 清空 Matrix，这很重要
+        imageView.setImageMatrix(null);
+
+        // 恢复 ScaleType 这很重要，一定要在 clean 以后执行，要不会被 {@link FunctionCallbackView#setScaleType(ScaleType)} 方法覆盖
+        imageView.setScaleType(scaleType);
+        scaleType = null;
+    }
+
+    /**
+     * {@link ImageZoomer} 工作中
+     */
+    public boolean isWorking() {
+        return !sizes.isEmpty();
     }
 
 
@@ -124,19 +137,19 @@ public class ImageZoomer {
     /**
      * 绘制回调
      */
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull Canvas canvas) {
         if (!isWorking()) {
             return;
         }
 
-        hugeImageViewer.onDraw(canvas);
+        blockDisplayer.onDraw(canvas);
         scrollBarHelper.onDraw(canvas);    // scrollBarHelper.onDraw 必须在 hugeImageViewer.draw 之后执行，这样才不会被覆盖掉
     }
 
     /**
      * 事件回调
      */
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         if (!isWorking()) {
             return false;
         }
@@ -153,7 +166,7 @@ public class ImageZoomer {
     void onMatrixChanged() {
         // 在 setImageMatrix 前面执行，省了再执行一次 imageView.invalidate()
         scrollBarHelper.onMatrixChanged();
-        hugeImageViewer.onMatrixChanged();
+        blockDisplayer.onMatrixChanged();
 
         imageView.setImageMatrix(scaleDragHelper.getDrawMatrix());
 
@@ -265,7 +278,7 @@ public class ImageZoomer {
         }
 
         this.rotateDegrees = degrees;
-        reset();
+        reset("rotateTo");
 
         if (onRotateChangeListener != null) {
             onRotateChangeListener.onRotateChanged(this);
@@ -285,27 +298,24 @@ public class ImageZoomer {
     /* -----------可获取信息----------- */
 
 
-    /**
-     * {@link ImageZoomer} 工作中
-     */
-    public boolean isWorking() {
-        return !sizes.isEmpty();
-    }
-
-    /**
-     * 获取 ImageView
-     */
+    @NonNull
     public ImageView getImageView() {
         return imageView;
     }
 
-    public HugeImageViewer getHugeImageViewer() {
-        return hugeImageViewer;
+    /**
+     * 获取分块显示器
+     */
+    @SuppressWarnings("unused")
+    @NonNull
+    public BlockDisplayer getBlockDisplayer() {
+        return blockDisplayer;
     }
 
     /**
      * 获取 ImageView 的尺寸
      */
+    @NonNull
     public Size getViewSize() {
         return sizes.viewSize;
     }
@@ -313,6 +323,7 @@ public class ImageZoomer {
     /**
      * 获取图片原始尺寸
      */
+    @NonNull
     public Size getImageSize() {
         return sizes.imageSize;
     }
@@ -320,6 +331,7 @@ public class ImageZoomer {
     /**
      * 获取预览图的尺寸
      */
+    @NonNull
     public Size getDrawableSize() {
         return sizes.drawableSize;
     }
@@ -327,21 +339,21 @@ public class ImageZoomer {
     /**
      * 拷贝绘制 Matrix 的参数
      */
-    public void getDrawMatrix(Matrix matrix) {
+    public void getDrawMatrix(@NonNull Matrix matrix) {
         matrix.set(scaleDragHelper.getDrawMatrix());
     }
 
     /**
      * 获取绘制区域
      */
-    public void getDrawRect(RectF rectF) {
+    public void getDrawRect(@NonNull RectF rectF) {
         scaleDragHelper.getDrawRect(rectF);
     }
 
     /**
      * 获取预览图上用户可以看到的区域（不受旋转影响）
      */
-    public void getVisibleRect(Rect rect) {
+    public void getVisibleRect(@NonNull Rect rect) {
         scaleDragHelper.getVisibleRect(rect);
     }
 
@@ -411,6 +423,7 @@ public class ImageZoomer {
     /**
      * 获取双击缩放比例
      */
+    @NonNull
     @SuppressWarnings("WeakerAccess")
     public float[] getDoubleClickZoomScales() {
         return scales.doubleClickZoomScales;
@@ -448,6 +461,7 @@ public class ImageZoomer {
     /**
      * 获取缩放动画插值器
      */
+    @NonNull
     @SuppressWarnings("WeakerAccess")
     public Interpolator getZoomInterpolator() {
         return zoomInterpolator;
@@ -457,13 +471,14 @@ public class ImageZoomer {
      * 设置缩放动画插值器
      */
     @SuppressWarnings("unused")
-    public void setZoomInterpolator(Interpolator interpolator) {
+    public void setZoomInterpolator(@NonNull Interpolator interpolator) {
         zoomInterpolator = interpolator;
     }
 
     /**
      * 获取ScaleType
      */
+    @NonNull
     public ScaleType getScaleType() {
         return scaleType;
     }
@@ -471,13 +486,14 @@ public class ImageZoomer {
     /**
      * 设置ScaleType
      */
-    public void setScaleType(ScaleType scaleType) {
+    public void setScaleType(@NonNull ScaleType scaleType) {
+        //noinspection ConstantConditions
         if (scaleType == null || this.scaleType == scaleType) {
             return;
         }
 
         this.scaleType = scaleType;
-        reset();
+        reset("setScaleType");
     }
 
     /**
@@ -496,7 +512,7 @@ public class ImageZoomer {
         }
 
         this.readMode = readMode;
-        reset();
+        reset("setReadMode");
     }
 
 
@@ -516,6 +532,7 @@ public class ImageZoomer {
         this.allowParentInterceptOnEdge = allowParentInterceptOnEdge;
     }
 
+    @Nullable
     OnViewTapListener getOnViewTapListener() {
         return onViewTapListener;
     }
@@ -524,10 +541,11 @@ public class ImageZoomer {
      * 设置单击监听器
      */
     @SuppressWarnings("unused")
-    public void setOnViewTapListener(OnViewTapListener onViewTapListener) {
+    public void setOnViewTapListener(@Nullable OnViewTapListener onViewTapListener) {
         this.onViewTapListener = onViewTapListener;
     }
 
+    @Nullable
     OnDragFlingListener getOnDragFlingListener() {
         return onDragFlingListener;
     }
@@ -536,10 +554,11 @@ public class ImageZoomer {
      * 设置飞速滚动监听器
      */
     @SuppressWarnings("unused")
-    public void setOnDragFlingListener(OnDragFlingListener onDragFlingListener) {
+    public void setOnDragFlingListener(@Nullable OnDragFlingListener onDragFlingListener) {
         this.onDragFlingListener = onDragFlingListener;
     }
 
+    @Nullable
     OnScaleChangeListener getOnScaleChangeListener() {
         return onScaleChangeListener;
     }
@@ -548,14 +567,15 @@ public class ImageZoomer {
      * 设置缩放监听器
      */
     @SuppressWarnings("unused")
-    public void setOnScaleChangeListener(OnScaleChangeListener onScaleChangeListener) {
+    public void setOnScaleChangeListener(@Nullable OnScaleChangeListener onScaleChangeListener) {
         this.onScaleChangeListener = onScaleChangeListener;
     }
 
     /**
-     * 添加Matrix变化监听器
+     * 添加 Matrix 变化监听器
      */
-    public void addOnMatrixChangeListener(OnMatrixChangeListener listener) {
+    public void addOnMatrixChangeListener(@NonNull OnMatrixChangeListener listener) {
+        //noinspection ConstantConditions
         if (listener != null) {
             if (onMatrixChangeListenerList == null) {
                 onMatrixChangeListenerList = new ArrayList<>(1);
@@ -564,8 +584,12 @@ public class ImageZoomer {
         }
     }
 
+    /**
+     * 移除 Matrix 变化监听器
+     */
     @SuppressWarnings("unused")
-    public boolean removeOnMatrixChangeListener(OnMatrixChangeListener listener) {
+    public boolean removeOnMatrixChangeListener(@NonNull OnMatrixChangeListener listener) {
+        //noinspection ConstantConditions
         return listener != null &&
                 onMatrixChangeListenerList != null && onMatrixChangeListenerList.size() > 0 &&
                 onMatrixChangeListenerList.remove(listener);
@@ -574,6 +598,7 @@ public class ImageZoomer {
     /**
      * 获取长按监听器
      */
+    @Nullable
     OnViewLongPressListener getOnViewLongPressListener() {
         return onViewLongPressListener;
     }
@@ -582,7 +607,7 @@ public class ImageZoomer {
      * 设置长按监听器
      */
     @SuppressWarnings("unused")
-    public void setOnViewLongPressListener(OnViewLongPressListener onViewLongPressListener) {
+    public void setOnViewLongPressListener(@Nullable OnViewLongPressListener onViewLongPressListener) {
         this.onViewLongPressListener = onViewLongPressListener;
     }
 
@@ -590,7 +615,7 @@ public class ImageZoomer {
      * 设置旋转监听器
      */
     @SuppressWarnings("unused")
-    public void setOnRotateChangeListener(OnRotateChangeListener onRotateChangeListener) {
+    public void setOnRotateChangeListener(@Nullable OnRotateChangeListener onRotateChangeListener) {
         this.onRotateChangeListener = onRotateChangeListener;
     }
 
@@ -606,14 +631,14 @@ public class ImageZoomer {
      * 单击监听器
      */
     public interface OnViewTapListener {
-        void onViewTap(View view, float x, float y);
+        void onViewTap(@NonNull View view, float x, float y);
     }
 
     /**
      * Matrix变化监听器
      */
     public interface OnMatrixChangeListener {
-        void onMatrixChanged(ImageZoomer imageZoomer);
+        void onMatrixChanged(@NonNull ImageZoomer imageZoomer);
     }
 
     /**
@@ -628,13 +653,13 @@ public class ImageZoomer {
      * 长按监听器
      */
     public interface OnViewLongPressListener {
-        void onViewLongPress(View view, float x, float y);
+        void onViewLongPress(@NonNull View view, float x, float y);
     }
 
     /**
      * 旋转监听器
      */
     public interface OnRotateChangeListener {
-        void onRotateChanged(ImageZoomer imageZoomer);
+        void onRotateChanged(@NonNull ImageZoomer imageZoomer);
     }
 }

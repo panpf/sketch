@@ -194,11 +194,9 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
     private class LoadDataCallback internal constructor(fragment: SearchFragment, private val pageIndex: Int) : Callback<BaiduImageSearchResult> {
 
-        private val reference: WeakReference<SearchFragment>
+        private val reference: WeakReference<SearchFragment> = WeakReference(fragment)
 
         init {
-            this.reference = WeakReference(fragment)
-
             if (pageIndex == 1) {
                 fragment.hintView.hidden()
             }
@@ -206,6 +204,9 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
         override fun onResponse(call: Call<BaiduImageSearchResult>, response: Response<BaiduImageSearchResult>) {
             val fragment = reference.get() ?: return
+            if (!fragment.isViewCreated) {
+                return
+            }
 
             filterEmptyImage(response)
 
@@ -216,6 +217,23 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
             }
 
             fragment.refreshLayout.isRefreshing = false
+        }
+
+        override fun onFailure(call: Call<BaiduImageSearchResult>, t: Throwable) {
+            val fragment = reference.get() ?: return
+            if (!fragment.isViewCreated) {
+                return
+            }
+
+            if (pageIndex == 1) {
+                fragment.hintView.failed(t, View.OnClickListener {
+                    fragment.onRefresh()
+                })
+                fragment.refreshLayout.isRefreshing = false
+            } else {
+                fragment.adapter!!.loadMoreFailed()
+                Toast.makeText(fragment.activity, HintView.getCauseByException(fragment.activity, t), Toast.LENGTH_LONG).show()
+            }
         }
 
         private fun filterEmptyImage(response: Response<BaiduImageSearchResult>) {
@@ -230,20 +248,6 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
                 }
             }
             response.body()!!.imageList = mutableImageList
-        }
-
-        override fun onFailure(call: Call<BaiduImageSearchResult>, t: Throwable) {
-            val fragment = reference.get() ?: return
-
-            if (pageIndex == 1) {
-                fragment.hintView.failed(t, View.OnClickListener {
-                    fragment.onRefresh()
-                })
-                fragment.refreshLayout.isRefreshing = false
-            } else {
-                fragment.adapter!!.loadMoreFailed()
-                Toast.makeText(fragment.activity, HintView.getCauseByException(fragment.activity, t), Toast.LENGTH_LONG).show()
-            }
         }
 
         private fun create(fragment: SearchFragment, response: Response<BaiduImageSearchResult>) {

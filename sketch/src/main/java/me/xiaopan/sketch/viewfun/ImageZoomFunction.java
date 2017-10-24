@@ -23,44 +23,43 @@ import android.view.MotionEvent;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.zoom.ImageZoomer;
-import me.xiaopan.sketch.zoom.HugeImageViewer;
 
 /**
  * ImageView 缩放功能
  */
 public class ImageZoomFunction extends ViewFunction {
 
-    private ImageZoomer imageZoomer;
+    private ImageZoomer zoomer;
 
     public ImageZoomFunction(FunctionPropertyView view) {
-        this.imageZoomer = new ImageZoomer(view);
+        this.zoomer = new ImageZoomer(view);
     }
 
     @Override
     public void onAttachedToWindow() {
-        imageZoomer.reset();
+        zoomer.reset("onAttachedToWindow");
     }
 
     @Override
     public void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        imageZoomer.onDraw(canvas);
+        zoomer.onDraw(canvas);
     }
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        return imageZoomer.onTouchEvent(event);
+        return zoomer.onTouchEvent(event);
     }
 
     @Override
     public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        imageZoomer.reset();
+        zoomer.reset("onDrawableChanged");
         return false;
     }
 
     @Override
     public void onSizeChanged(int left, int top, int right, int bottom) {
-        imageZoomer.reset();
+        zoomer.reset("onSizeChanged");
     }
 
     @Override
@@ -69,24 +68,21 @@ public class ImageZoomFunction extends ViewFunction {
         return false;
     }
 
+    void recycle(@NonNull String why) {
+        zoomer.recycle(why);
+    }
+
+    @NonNull
     public ImageView.ScaleType getScaleType() {
-        return imageZoomer.getScaleType();
+        return zoomer.getScaleType();
     }
 
-    public void setScaleType(ImageView.ScaleType scaleType) {
-        imageZoomer.setScaleType(scaleType);
+    public void setScaleType(@NonNull ImageView.ScaleType scaleType) {
+        zoomer.setScaleType(scaleType);
     }
 
-    public void recycle(String why) {
-        imageZoomer.recycle(why);
-    }
-
-    public ImageZoomer getImageZoomer() {
-        return imageZoomer;
-    }
-
-    @SuppressWarnings("unused")
-    public HugeImageViewer getHugeImageViewer() {
-        return imageZoomer.getHugeImageViewer();
+    @NonNull
+    public ImageZoomer getZoomer() {
+        return zoomer;
     }
 }

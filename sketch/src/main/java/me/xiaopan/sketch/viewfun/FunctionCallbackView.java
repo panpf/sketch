@@ -127,7 +127,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     @Override
     public void setScaleType(ScaleType scaleType) {
         ImageZoomFunction zoomFunction = getFunctions().zoomFunction;
-        if (zoomFunction != null && zoomFunction.getImageZoomer().isWorking() && scaleType != ScaleType.MATRIX) {
+        if (zoomFunction != null && zoomFunction.getZoomer().isWorking() && scaleType != ScaleType.MATRIX) {
             zoomFunction.setScaleType(scaleType);
         } else {
             super.setScaleType(scaleType);

@@ -38,19 +38,18 @@ import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.FunctionPropertyView;
-import me.xiaopan.sketch.zoom.huge.ImageRegionDecoder;
-import me.xiaopan.sketch.zoom.huge.Tile;
-import me.xiaopan.sketch.zoom.huge.TileDecodeHandler;
-import me.xiaopan.sketch.zoom.huge.TileDecoder;
-import me.xiaopan.sketch.zoom.huge.TileExecutor;
-import me.xiaopan.sketch.zoom.huge.TileManager;
+import me.xiaopan.sketch.zoom.block.ImageRegionDecoder;
+import me.xiaopan.sketch.zoom.block.Tile;
+import me.xiaopan.sketch.zoom.block.TileDecodeHandler;
+import me.xiaopan.sketch.zoom.block.TileDecoder;
+import me.xiaopan.sketch.zoom.block.TileExecutor;
+import me.xiaopan.sketch.zoom.block.TileManager;
 
 /**
- * 超级大图片查看器
+ * 对于超大图片，分块显示可见区域
  */
-// TODO: 2017/10/21 改名 ImageShredder
 // TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
-public class HugeImageViewer {
+public class BlockDisplayer {
     private static final String NAME = "HugeImageViewer";
 
     private Context context;
@@ -75,7 +74,7 @@ public class HugeImageViewer {
     private boolean paused;
     private String imageUri;
 
-    public HugeImageViewer(Context context, ImageZoomer imageZoomer) {
+    public BlockDisplayer(Context context, ImageZoomer imageZoomer) {
         context = context.getApplicationContext();
         this.context = context;
         this.imageZoomer = imageZoomer;
@@ -478,7 +477,7 @@ public class HugeImageViewer {
     /**
      * 获取碎片变化监听器
      */
-    public void setOnTileChangedListener(HugeImageViewer.OnTileChangedListener onTileChangedListener) {
+    public void setOnTileChangedListener(BlockDisplayer.OnTileChangedListener onTileChangedListener) {
         tileManager.onTileChangedListener = onTileChangedListener;
     }
 
@@ -501,7 +500,7 @@ public class HugeImageViewer {
     }
 
     public interface OnTileChangedListener {
-        void onTileChanged(HugeImageViewer hugeImageViewer);
+        void onTileChanged(BlockDisplayer blockDisplayer);
     }
 
     private class ExecutorCallback implements TileExecutor.Callback {

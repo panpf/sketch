@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.zoom.huge;
+package me.xiaopan.sketch.zoom.block;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,7 +35,7 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.zoom.HugeImageViewer;
+import me.xiaopan.sketch.zoom.BlockDisplayer;
 import me.xiaopan.sketch.zoom.Size;
 
 /**
@@ -51,10 +51,10 @@ public class TileManager {
     public Rect drawSrcRect = new Rect();
     public Rect decodeSrcRect = new Rect();
     public List<Tile> tileList = new LinkedList<Tile>();
-    public HugeImageViewer.OnTileChangedListener onTileChangedListener;
+    public BlockDisplayer.OnTileChangedListener onTileChangedListener;
     private Context context;
     private BitmapPool bitmapPool;
-    private HugeImageViewer hugeImageViewer;
+    private BlockDisplayer blockDisplayer;
     private ObjectPool<Tile> tilePool = new ObjectPool<Tile>(new ObjectPool.ObjectFactory<Tile>() {
         @Override
         public Tile newObject() {
@@ -68,11 +68,11 @@ public class TileManager {
         }
     }, 20);
 
-    public TileManager(Context context, HugeImageViewer hugeImageViewer) {
+    public TileManager(Context context, BlockDisplayer blockDisplayer) {
         context = context.getApplicationContext();
         this.context = context;
         this.bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        this.hugeImageViewer = hugeImageViewer;
+        this.blockDisplayer = blockDisplayer;
     }
 
     public void update(Rect newVisibleRect, Size drawableSize, Size viewSize, Point imageSize, boolean zooming) {
@@ -147,7 +147,7 @@ public class TileManager {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
             SLog.d(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
                     newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
-                    inSampleSize, hugeImageViewer.getZoomScale(), hugeImageViewer.getLastZoomScale(), tileList.size());
+                    inSampleSize, blockDisplayer.getZoomScale(), blockDisplayer.getLastZoomScale(), tileList.size());
         }
 
         // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
@@ -178,7 +178,7 @@ public class TileManager {
                 }
 
                 if (onTileChangedListener != null) {
-                    onTileChangedListener.onTileChanged(hugeImageViewer);
+                    onTileChangedListener.onTileChanged(blockDisplayer);
                 }
 
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
@@ -245,7 +245,7 @@ public class TileManager {
                                           int drawTileWidth, int drawTileHeight,
                                           int maxDrawWidth, int maxDrawHeight) {
         // 缩放比例已改变或者这是第一次就直接用新的绘制区域
-        if (hugeImageViewer.getZoomScale() != hugeImageViewer.getLastZoomScale() || decodeRect.isEmpty()) {
+        if (blockDisplayer.getZoomScale() != blockDisplayer.getLastZoomScale() || decodeRect.isEmpty()) {
             newDecodeRect.set(newDrawRect);
             return;
         }
@@ -568,7 +568,7 @@ public class TileManager {
             tile = tileIterator.next();
 
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
-            if (hugeImageViewer.getZoomScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
+            if (blockDisplayer.getZoomScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
                 if (!tile.isEmpty()) {
                     if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                         SLog.d(NAME, "recycle tile. tile=%s", tile.getInfo());
@@ -605,7 +605,7 @@ public class TileManager {
 
                     loadTile.drawRect.set(tileLeft, tileTop, tileRight, tileBottom);
                     loadTile.inSampleSize = inSampleSize;
-                    loadTile.scale = hugeImageViewer.getZoomScale();
+                    loadTile.scale = blockDisplayer.getZoomScale();
                     calculateSrcRect(loadTile.srcRect, loadTile.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
 
                     tileList.add(loadTile);
@@ -615,7 +615,7 @@ public class TileManager {
                     }
 
                     loadTile.refreshKey();
-                    hugeImageViewer.getTileDecoder().decodeTile(loadTile);
+                    blockDisplayer.getTileDecoder().decodeTile(loadTile);
                 } else {
                     if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
                         SLog.d(NAME, "repeated tile. tileDrawRect=%d, %d, %d, %d",
@@ -647,10 +647,10 @@ public class TileManager {
         tile.bitmapDrawSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
         tile.decoder = null;
 
-        hugeImageViewer.invalidateView();
+        blockDisplayer.invalidateView();
 
         if (onTileChangedListener != null) {
-            onTileChangedListener.onTileChanged(hugeImageViewer);
+            onTileChangedListener.onTileChanged(blockDisplayer);
         }
     }
 

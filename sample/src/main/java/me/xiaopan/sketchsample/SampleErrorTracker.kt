@@ -17,7 +17,7 @@ import me.xiaopan.sketch.uri.UriModel
 import me.xiaopan.sketch.util.SketchUtils
 import me.xiaopan.sketch.util.UnableCreateDirException
 import me.xiaopan.sketch.util.UnableCreateFileException
-import me.xiaopan.sketch.zoom.huge.Tile
+import me.xiaopan.sketch.zoom.block.Tile
 import java.io.File
 import java.util.*
 

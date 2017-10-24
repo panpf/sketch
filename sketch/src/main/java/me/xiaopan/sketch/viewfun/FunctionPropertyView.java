@@ -26,7 +26,6 @@ import android.util.AttributeSet;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.zoom.ImageZoomer;
-import me.xiaopan.sketch.zoom.HugeImageViewer;
 
 /**
  * 这个类负责提供各种 function 开关和属性设置
@@ -371,31 +370,24 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         }
 
         if (enabled) {
-            getFunctions().zoomFunction = new ImageZoomFunction(this);
-            getFunctions().zoomFunction.onDrawableChanged("setZoomEnabled", null, getDrawable());
+            ImageZoomFunction zoomFunction = new ImageZoomFunction(this);
+            zoomFunction.onDrawableChanged("setZoomEnabled", null, getDrawable());
+
+            getFunctions().zoomFunction = zoomFunction;
         } else {
             getFunctions().zoomFunction.recycle("setZoomEnabled");
-            ScaleType scaleType = getFunctions().zoomFunction.getScaleType();
-            getFunctions().zoomFunction = null;
 
-            // 恢复ScaleType
-            setScaleType(scaleType);
+            getFunctions().zoomFunction = null;
         }
     }
 
     /**
      * 获取缩放功能控制对象
+     *
+     * @return null：没有开启缩放功能，请先执行 {@link #setZoomEnabled(boolean)} 开启
      */
     @Nullable
-    public ImageZoomer getImageZoomer() {
-        return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getImageZoomer() : null;
-    }
-
-    /**
-     * 获取分块显示超大图功能控制对象
-     */
-    @Nullable
-    public HugeImageViewer getHugeImageViewer() {
-        return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getHugeImageViewer() : null;
+    public ImageZoomer getZoomer() {
+        return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getZoomer() : null;
     }
 }

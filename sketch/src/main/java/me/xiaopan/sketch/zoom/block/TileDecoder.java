@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.zoom.huge;
+package me.xiaopan.sketch.zoom.block;
 
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
-import me.xiaopan.sketch.zoom.HugeImageViewer;
+import me.xiaopan.sketch.zoom.BlockDisplayer;
 
 /**
  * 碎片解码器
@@ -31,12 +31,12 @@ public class TileDecoder {
 
     private KeyCounter initKeyCounter;
     private ImageRegionDecoder decoder;
-    private HugeImageViewer hugeImageViewer;
+    private BlockDisplayer blockDisplayer;
     private boolean running;
     private boolean initializing;
 
-    public TileDecoder(HugeImageViewer hugeImageViewer) {
-        this.hugeImageViewer = hugeImageViewer;
+    public TileDecoder(BlockDisplayer blockDisplayer) {
+        this.blockDisplayer = blockDisplayer;
         this.initKeyCounter = new KeyCounter();
     }
 
@@ -53,7 +53,7 @@ public class TileDecoder {
 
         if (!TextUtils.isEmpty(imageUri)) {
             running = initializing = true;
-            hugeImageViewer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
+            blockDisplayer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
         } else {
             running = initializing = false;
         }
@@ -69,7 +69,7 @@ public class TileDecoder {
         }
 
         tile.decoder = decoder;
-        hugeImageViewer.getTileExecutor().submitDecodeTile(tile.getKey(), tile);
+        blockDisplayer.getTileExecutor().submitDecodeTile(tile.getKey(), tile);
     }
 
     void clean(String why) {

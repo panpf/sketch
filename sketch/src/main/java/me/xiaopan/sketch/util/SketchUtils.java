@@ -85,7 +85,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.zoom.Size;
-import me.xiaopan.sketch.zoom.huge.Tile;
+import me.xiaopan.sketch.zoom.block.Tile;
 
 public class SketchUtils {
 

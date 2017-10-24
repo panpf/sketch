@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.zoom.huge;
+package me.xiaopan.sketch.zoom.block;
 
 import android.content.Context;
 import android.graphics.Bitmap;
