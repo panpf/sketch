@@ -159,4 +159,9 @@ public interface SketchView {
      * @return false：重新显示失败，之前没有显示过
      */
     boolean redisplay(@Nullable RedisplayListener listener);
+
+    /**
+     * 是否使用更小的缩略图
+     */
+    boolean isSmallerThumbnails();
 }

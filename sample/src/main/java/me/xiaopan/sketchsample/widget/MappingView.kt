@@ -38,10 +38,10 @@ class MappingView : SketchImageView {
 
     private var visibleMappingRect: Rect? = null
     private var visiblePaint: Paint? = null
-    private var drawTilesPaint: Paint? = null
+    private var drawBlockPaint: Paint? = null
     private var realSrcRectPaint: Paint? = null
     private var originSrcRectPaint: Paint? = null
-    private var loadingTilePaint: Paint? = null
+    private var loadingBlockPaint: Paint? = null
 
     private val drawableSize = Size()
     private val visibleRect = Rect()
@@ -68,15 +68,15 @@ class MappingView : SketchImageView {
         visiblePaint!!.style = Paint.Style.STROKE
         visiblePaint!!.strokeWidth = SketchUtils.dp2px(context, 1).toFloat()
 
-        drawTilesPaint = Paint()
-        drawTilesPaint!!.color = Color.parseColor("#88A020F0")
-        drawTilesPaint!!.strokeWidth = SketchUtils.dp2px(context, 1).toFloat()
-        drawTilesPaint!!.style = Paint.Style.STROKE
+        drawBlockPaint = Paint()
+        drawBlockPaint!!.color = Color.parseColor("#88A020F0")
+        drawBlockPaint!!.strokeWidth = SketchUtils.dp2px(context, 1).toFloat()
+        drawBlockPaint!!.style = Paint.Style.STROKE
 
-        loadingTilePaint = Paint()
-        loadingTilePaint!!.color = Color.parseColor("#880000CD")
-        loadingTilePaint!!.strokeWidth = SketchUtils.dp2px(context, 1).toFloat()
-        loadingTilePaint!!.style = Paint.Style.STROKE
+        loadingBlockPaint = Paint()
+        loadingBlockPaint!!.color = Color.parseColor("#880000CD")
+        loadingBlockPaint!!.strokeWidth = SketchUtils.dp2px(context, 1).toFloat()
+        loadingBlockPaint!!.style = Paint.Style.STROKE
 
         realSrcRectPaint = Paint()
         realSrcRectPaint!!.color = Color.parseColor("#8800CD00")
@@ -96,17 +96,17 @@ class MappingView : SketchImageView {
             val widthScale = depBlockDisplayer!!.imageSize.x.toFloat() / width
             val heightScale = depBlockDisplayer!!.imageSize.y.toFloat() / height
 
-            for (tile in depBlockDisplayer!!.tileList) {
-                if (!tile.isEmpty) {
-                    canvas.drawRect((tile.srcRect.left + 1) / widthScale,
-                            (tile.srcRect.top + 1) / heightScale,
-                            (tile.srcRect.right - 1) / widthScale,
-                            (tile.srcRect.bottom - 1) / heightScale, drawTilesPaint!!)
-                } else if (!tile.isDecodeParamEmpty) {
-                    canvas.drawRect((tile.srcRect.left + 1) / widthScale,
-                            (tile.srcRect.top + 1) / heightScale,
-                            (tile.srcRect.right - 1) / widthScale,
-                            (tile.srcRect.bottom - 1) / heightScale, loadingTilePaint!!)
+            for (block in depBlockDisplayer!!.blockList) {
+                if (!block.isEmpty) {
+                    canvas.drawRect((block.srcRect.left + 1) / widthScale,
+                            (block.srcRect.top + 1) / heightScale,
+                            (block.srcRect.right - 1) / widthScale,
+                            (block.srcRect.bottom - 1) / heightScale, drawBlockPaint!!)
+                } else if (!block.isDecodeParamEmpty) {
+                    canvas.drawRect((block.srcRect.left + 1) / widthScale,
+                            (block.srcRect.top + 1) / heightScale,
+                            (block.srcRect.right - 1) / widthScale,
+                            (block.srcRect.bottom - 1) / heightScale, loadingBlockPaint!!)
                 }
             }
 
@@ -195,7 +195,7 @@ class MappingView : SketchImageView {
         invalidate()
     }
 
-    fun tileChanged(blockDisplayer: BlockDisplayer) {
+    fun blockChanged(blockDisplayer: BlockDisplayer) {
         this.depBlockDisplayer = blockDisplayer
         invalidate()
     }

@@ -25,9 +25,9 @@ import me.xiaopan.sketch.zoom.BlockDisplayer;
 /**
  * 碎片解码器
  */
-public class TileDecoder {
+public class BlockDecoder {
 
-    private static final String NAME = "TileDecoder";
+    private static final String NAME = "BlockDecoder";
 
     private KeyCounter initKeyCounter;
     private ImageRegionDecoder decoder;
@@ -35,7 +35,7 @@ public class TileDecoder {
     private boolean running;
     private boolean initializing;
 
-    public TileDecoder(BlockDisplayer blockDisplayer) {
+    public BlockDecoder(BlockDisplayer blockDisplayer) {
         this.blockDisplayer = blockDisplayer;
         this.initKeyCounter = new KeyCounter();
     }
@@ -53,7 +53,7 @@ public class TileDecoder {
 
         if (!TextUtils.isEmpty(imageUri)) {
             running = initializing = true;
-            blockDisplayer.getTileExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
+            blockDisplayer.getBlockExecutor().submitInit(imageUri, initKeyCounter, correctImageOrientationDisabled);
         } else {
             running = initializing = false;
         }
@@ -62,18 +62,18 @@ public class TileDecoder {
     /**
      * 解码
      */
-    void decodeTile(Tile tile) {
+    void decodeBlock(Block block) {
         if (!isReady()) {
-            SLog.w(NAME, "not ready. decodeTile. %s", tile.getInfo());
+            SLog.w(NAME, "not ready. decodeBlock. %s", block.getInfo());
             return;
         }
 
-        tile.decoder = decoder;
-        blockDisplayer.getTileExecutor().submitDecodeTile(tile.getKey(), tile);
+        block.decoder = decoder;
+        blockDisplayer.getBlockExecutor().submitDecodeBlock(block.getKey(), block);
     }
 
     void clean(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "clean. %s", why);
         }
 
@@ -81,7 +81,7 @@ public class TileDecoder {
     }
 
     public void recycle(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "recycle. %s", why);
         }
 
@@ -91,7 +91,7 @@ public class TileDecoder {
     }
 
     public void initCompleted(String imageUri, ImageRegionDecoder decoder) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "init completed. %s", imageUri);
         }
 
@@ -100,7 +100,7 @@ public class TileDecoder {
     }
 
     public void initError(String imageUri, Exception e) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 

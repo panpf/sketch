@@ -6,7 +6,7 @@
 
 纵观其它几款流行的图片加载器 [Fresco]、[Glide]、[Picasso] 都没有提供超大图片支持，而单独支持超大图片的 View 倒是有几款，例如 [Subsampling Scale Image View]、[WorldMap]、[LargeImage] ， 但都做的不够好或者没法跟现有的图片加载框架集成，做的不好还好说，不能跟现有图片加载框架集成用起来就很恶心了
 
-下面用 [Glide] 代指现有的图片框架，用 [Subsampling Scale Image View] 代指单独的分块显示超大图控件来举例说明两者不能集成时的恶心之处：
+下面用 [Glide] 代指现有的图片框架，用 [Subsampling Scale Image View] 代指单独的分块显示超大图控件来举例说明两者不能集成时的不便之处：
 
 1. 图片详情页必须准备两个 ImageView，一个 [Glide] 是用的，一个是 [Subsampling Scale Image View]。先用 [Glide] 加载完图片，然后根据结果（如果返回了原始图片尺寸的话，没有的话你还要自己去解析并判断）判断这张图片需不需要用 [Subsampling Scale Image View]，如果需要的话再将 [Subsampling Scale Image View] 显示出来遮盖住 [Glide] 用的 ImageView，并初始化 [Subsampling Scale Image View]
 2. [Subsampling Scale Image View] 要继续优化的话，还会涉及到内存缓存和 bitmap 复用池，如果 [Subsampling Scale Image View] 和 [Glide] 分别单独维护一套的话，APP 的可用内存就剩不了多少了，因此这两者必须能共用一套内存缓存和 bitmap 复用池
@@ -14,7 +14,7 @@
 
 ### 使用
 
-Sketch 是目前唯一提供了超大图片支持的图片加载器，核心类是 [HugeImageViewer]
+Sketch 是目前唯一提供了超大图片支持的图片加载器，核心类是 [BlockDisplayer]，依赖于[手势缩放][zoom]功能，是[手势缩放][zoom]能的一部分
 
 #### 支持的图片类型和系统版本
 * jpeg、png：API 10（2.3.3）及其以上
@@ -26,22 +26,17 @@ Sketch 是目前唯一提供了超大图片支持的图片加载器，核心类�
 
 #### 开启
 
-```java
-SketchImageView sketchImageView = ...;
-sketchImageView.setHugeImageEnabled(true);
-```
-注意：
-* [HugeImageViewer] 需要依赖手势缩放功能，因此当手势缩放功能未开启时 [HugeImageViewer] 会自动开启，同理在关闭 [HugeImageViewer] 的时候如果检测到手势缩放功能是被 [HugeImageViewer] 开启的也会一并关闭手势缩放功能
+只要开启[手势缩放][zoom]就自动开启了分块显示功能
 
 #### 旋转
 
-[HugeImageViewer] 支持跟随手势缩放功旋转，但只支持 90°、180°、270° 旋转
+[BlockDisplayer] 支持跟随[手势缩放][zoom]功旋转，但只支持 90°、180°、270° 旋转
 
 #### 在 ViewPager 中使用
 
-由于 ViewPager 会至少缓存三个页面，所以至少会有三个 [HugeImageViewer] 同时工作，这样对内存的消耗是非常大的
+由于 ViewPager 会至少缓存三个页面，所以至少会有三个 [BlockDisplayer] 同时工作，这样对内存的消耗是非常大的
 
-因此 [HugeImageViewer] 特地提供了 setPause(boolean) 方法来减少在 ViewPager 中的内存消耗，如下：
+因此 [BlockDisplayer] 特地提供了 setPause(boolean) 方法来减少在 ViewPager 中的内存消耗，如下：
 
 ```java
 public class MyFragment extends Fragment {
@@ -52,8 +47,9 @@ public class MyFragment extends Fragment {
         View view = ...;
         sketchImageView = ...;
 
+        sketchImageView.setZoomEnabled(true);
         // 初始化超大图查看器的暂停状态，这一步很重要
-        sketchImageView.getHugeImageViewer().setPause(!isVisibleToUser());
+        sketchImageView.getZoomer().getBlockDisplayer().setPause(!isVisibleToUser());
 
         return view;
     }
@@ -88,8 +84,8 @@ public class MyFragment extends Fragment {
 
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
         // 不可见的时候暂停超大图查看器，节省内存，可见的时候恢复
-        if (sketchImageView != null && sketchImageView.isHugeImageEnabled()) {
-            sketchImageView.getHugeImageViewer().setPause(!isVisibleToUser);
+        if (sketchImageView != null && sketchImageView.isZoomEnabled()) {
+            sketchImageView.getZoomer().getBlockDisplayer().setPause(!isVisibleToUser);
         }
     }
 }
@@ -99,16 +95,16 @@ public class MyFragment extends Fragment {
 
 ```java
 // 显示碎片范围
-hugeImageViewer.setShowTileRect(true);
+sketchImageView.getZoomer().getBlockDisplayer().setShowBlockRect(true);
 
 // 获取当前碎片数量
-int tiles = hugeImageViewer.getTiles();
+int blockSize = sketchImageView.getZoomer().getBlockDisplayer().getBlockSize();
 
 // 获取当前所有碎片占用的字节数
-long tilesByteCount = hugeImageViewer.getTilesAllocationByteCount();
+long allocationByteCount = sketchImageView.getZoomer().getBlockDisplayer().getAllocationByteCount();
 
 // 设置碎片变化监听器
-hugeImageViewer.setOnTileChangedListener(HugeImageViewer.OnTileChangedListener)
+sketchImageView.getZoomer().getBlockDisplayer().setOnBlockChangedListener(BlockDisplayer.OnBlockChangedListener)
 ```
 
 [BitmapRegionDecoder]: https://developer.android.google.cn/reference/android/graphics/BitmapRegionDecoder.html
@@ -118,4 +114,5 @@ hugeImageViewer.setOnTileChangedListener(HugeImageViewer.OnTileChangedListener)
 [WorldMap]: https://github.com/johnnylambada/WorldMap
 [Subsampling Scale Image View]: https://github.com/davemorrissey/subsampling-scale-image-view
 [LargeImage]: https://github.com/LuckyJayce/LargeImage
-[HugeImageViewer]: ../../sketch/src/main/java/me/xiaopan/sketch/viewfun/huge/HugeImageViewer.java
+[BlockDisplayer]: ../../sketch/src/main/java/me/xiaopan/sketch/zoom/BlockDisplayer.java
+[zoom]: zoom.md

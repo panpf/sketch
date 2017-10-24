@@ -61,7 +61,7 @@ sketchImageView.setOptions(displayOptions)
 
 参考 [手势缩放、旋转图片][zoom]
 
-参考 [分块显示超大图片][huge_image]
+参考 [分块显示超大图片][block_display]
 
 ### 监听显示过程和下载进度
 
@@ -149,7 +149,7 @@ sketchImageView.setClickRetryOnDisplayErrorEnabled(true);
 [pause_download]: pause_download.md
 [play_gif]: play_gif.md
 [zoom]: zoom.md
-[huge_image]: huge_image.md
+[block_display]: block_display.md
 [uri]: uri.md
 [options]: options.md
 [listener]: listener.md

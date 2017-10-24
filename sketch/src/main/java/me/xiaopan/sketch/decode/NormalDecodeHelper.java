@@ -30,7 +30,6 @@ import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.util.SketchUtils;
 
 public class NormalDecodeHelper extends DecodeHelper {
     private static final String NAME = "NormalDecodeHelper";
@@ -52,10 +51,10 @@ public class NormalDecodeHelper extends DecodeHelper {
         // Calculate inSampleSize according to max size
         MaxSize maxSize = request.getOptions().getMaxSize();
         if (maxSize != null) {
-            boolean hugeImageEnabled = SketchUtils.supportHugeImage(request, imageType);
-            ImageSizeCalculator imageSizeCalculator = request.getConfiguration().getSizeCalculator();
-            decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundOptions.outWidth, boundOptions.outHeight,
-                    maxSize.getWidth(), maxSize.getHeight(), hugeImageEnabled);
+            ImageSizeCalculator sizeCalculator = request.getConfiguration().getSizeCalculator();
+            boolean smallerThumbnail = sizeCalculator.canUseSmallerThumbnails(request, imageType);
+            decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(boundOptions.outWidth, boundOptions.outHeight,
+                    maxSize.getWidth(), maxSize.getHeight(), smallerThumbnail);
         }
 
         // Set inBitmap from bitmap pool

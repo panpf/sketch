@@ -26,24 +26,24 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
- * 运行在解码线程中，负责初始化TileDecoder
+ * 运行在解码线程中，负责初始化 {@link BlockDecoder}
  */
-class TileDecoderInitHandler extends Handler {
+class InitHandler extends Handler {
     private static final String NAME = "InitHandler";
     private static final int WHAT_INIT = 1002;
 
-    private WeakReference<TileExecutor> reference;
+    private WeakReference<BlockExecutor> reference;
 
-    public TileDecoderInitHandler(Looper looper, TileExecutor decodeExecutor) {
+    public InitHandler(Looper looper, BlockExecutor decodeExecutor) {
         super(looper);
         reference = new WeakReference<>(decodeExecutor);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        TileExecutor decodeExecutor = reference.get();
+        BlockExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
-            decodeExecutor.tileDecodeCallbackHandler.cancelDelayDestroyThread();
+            decodeExecutor.callbackHandler.cancelDelayDestroyThread();
         }
 
         switch (msg.what) {
@@ -54,7 +54,7 @@ class TileDecoderInitHandler extends Handler {
         }
 
         if (decodeExecutor != null) {
-            decodeExecutor.tileDecodeCallbackHandler.postDelayRecycleDecodeThread();
+            decodeExecutor.callbackHandler.postDelayRecycleDecodeThread();
         }
     }
 
@@ -67,7 +67,7 @@ class TileDecoderInitHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void init(TileExecutor decodeExecutor, String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
+    private void init(BlockExecutor decodeExecutor, String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
             SLog.w(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             return;
@@ -84,12 +84,12 @@ class TileDecoderInitHandler extends Handler {
             decoder = ImageRegionDecoder.build(decodeExecutor.callback.getContext(), imageUri, correctImageOrientationDisabled);
         } catch (final Exception e) {
             e.printStackTrace();
-            decodeExecutor.tileDecodeCallbackHandler.postInitError(e, imageUri, key, keyCounter);
+            decodeExecutor.callbackHandler.postInitError(e, imageUri, key, keyCounter);
             return;
         }
 
         if (decoder == null || !decoder.isReady()) {
-            decodeExecutor.tileDecodeCallbackHandler.postInitError(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
+            decodeExecutor.callbackHandler.postInitError(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
             return;
         }
 
@@ -100,11 +100,11 @@ class TileDecoderInitHandler extends Handler {
             return;
         }
 
-        decodeExecutor.tileDecodeCallbackHandler.postInitCompleted(decoder, imageUri, key, keyCounter);
+        decodeExecutor.callbackHandler.postInitCompleted(decoder, imageUri, key, keyCounter);
     }
 
     public void clean(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "clean. %s", why);
         }
 

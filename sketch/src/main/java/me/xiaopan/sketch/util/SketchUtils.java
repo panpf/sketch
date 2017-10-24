@@ -85,7 +85,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.zoom.Size;
-import me.xiaopan.sketch.zoom.block.Tile;
+import me.xiaopan.sketch.zoom.block.Block;
 
 public class SketchUtils {
 
@@ -890,16 +890,6 @@ public class SketchUtils {
     }
 
     /**
-     * 根据请求和图片类型判断是否支持大图功能
-     */
-    public static boolean supportHugeImage(LoadRequest loadRequest, ImageType imageType) {
-        return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).getViewInfo().isZoomEnabled() &&
-                SketchUtils.sdkSupportBitmapRegionDecoder() &&
-                formatSupportBitmapRegionDecoder(imageType);
-    }
-
-    /**
      * 判断两个矩形是否相交
      */
     public static boolean isCross(Rect rect1, Rect rect2) {
@@ -1015,22 +1005,22 @@ public class SketchUtils {
     /**
      * 将一个碎片列表转换成字符串
      */
-    public static String tileListToString(List<Tile> tileList) {
-        if (tileList == null) {
+    public static String blockListToString(List<Block> blockList) {
+        if (blockList == null) {
             return null;
         }
 
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        for (Tile tile : tileList) {
+        for (Block block : blockList) {
             if (builder.length() > 1) {
                 builder.append(",");
             }
             builder.append("\"");
-            builder.append(tile.drawRect.left).append(",");
-            builder.append(tile.drawRect.top).append(",");
-            builder.append(tile.drawRect.right).append(",");
-            builder.append(tile.drawRect.bottom);
+            builder.append(block.drawRect.left).append(",");
+            builder.append(block.drawRect.top).append(",");
+            builder.append(block.drawRect.right).append(",");
+            builder.append(block.drawRect.bottom);
             builder.append("\"");
         }
         builder.append("]");

@@ -26,7 +26,7 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 碎片
  */
-public class Tile {
+public class Block {
     public Rect drawRect = new Rect();
     public Rect srcRect = new Rect();
     public int inSampleSize;

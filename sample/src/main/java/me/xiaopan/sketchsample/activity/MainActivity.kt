@@ -190,7 +190,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         menuList.add(CheckMenu(this, "Enabled Gesture Zoom In Detail Page", AppConfig.Key.SUPPORT_ZOOM, null, menuClickListener))
         menuList.add(CheckMenu(this, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener))
         menuList.add(CheckMenu(this, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Visible To User Decode Huge Image In Detail Page", AppConfig.Key.PAGE_VISIBLE_TO_USER_DECODE_HUGE_IMAGE, null, menuClickListener))
+        menuList.add(CheckMenu(this, "Pause Block Display When Page Not Visible In Detail Page", AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE, null, menuClickListener))
 
         menuList.add("GIF Menu")
         menuList.add(CheckMenu(this, "Auto Play GIF In List", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener))
@@ -239,7 +239,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         menuList.add(CheckMenu(this, "Output Flow Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener))
         menuList.add(CheckMenu(this, "Output Cache Log", AppConfig.Key.LOG_CACHE, null, menuClickListener))
         menuList.add(CheckMenu(this, "Output Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Output Block Display Huge Image Log", AppConfig.Key.LOG_HUGE_IMAGE, null, menuClickListener))
+        menuList.add(CheckMenu(this, "Output Zoom Block Display Log", AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY, null, menuClickListener))
         menuList.add(CheckMenu(this, "Output Used Time Log", AppConfig.Key.LOG_TIME, null, menuClickListener))
         menuList.add(CheckMenu(this, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener))
 
@@ -358,25 +358,25 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         APP_LIST("My Apps", AppListFragment::class.java, false, false),
         ABOUT("About Sketch", AboutFragment::class.java, false, false),
 
-        LARGE_IMAGE("Block Display Huge Image", HugeImageTestFragment::class.java, true, false),
+        BLOCK_DISPLAY_TEST("Block Display Huge Image", BlockDisplayTestFragment::class.java, true, false),
         IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment::class.java, true, false),
-        IMAGE_SHAPER_TESt("Image Shaper Test", ImageShaperTestFragment::class.java, true, false),
+        IMAGE_SHAPER_TEST("Image Shaper Test", ImageShaperTestFragment::class.java, true, false),
         REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment::class.java, true, false),
-        IN_BITMAP_TESt("inBitmap Test", InBitmapTestFragment::class.java, true, false),
+        IN_BITMAP_TEST("inBitmap Test", InBitmapTestFragment::class.java, true, false),
         IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment::class.java, true, false),
-        BASE64_IMAGE_TESt("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
+        BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
         OTHER_TEST("Other Test", OtherTestFragment::class.java, true, !BuildConfig.DEBUG);
 
         val fragment: Fragment?
             get() {
-                try {
-                    return fragmentClass.newInstance()
+                return try {
+                    fragmentClass.newInstance()
                 } catch (e: InstantiationException) {
                     e.printStackTrace()
-                    return null
+                    null
                 } catch (e: IllegalAccessException) {
                     e.printStackTrace()
-                    return null
+                    null
                 }
             }
 

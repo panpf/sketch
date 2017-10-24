@@ -143,7 +143,7 @@ public class ImageZoomer {
         }
 
         blockDisplayer.onDraw(canvas);
-        scrollBarHelper.onDraw(canvas);    // scrollBarHelper.onDraw 必须在 hugeImageViewer.draw 之后执行，这样才不会被覆盖掉
+        scrollBarHelper.onDraw(canvas);    // scrollBarHelper.onDraw 必须在 blockDisplayer.onDraw 之后执行，这样才不会被覆盖掉
     }
 
     /**

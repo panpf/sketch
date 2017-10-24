@@ -27,7 +27,9 @@ import java.lang.reflect.Field;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SketchView;
+import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
+import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -189,14 +191,14 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 计算InSampleSize
      *
-     * @param outWidth         原始宽
-     * @param outHeight        原始高
-     * @param targetWidth      目标宽
-     * @param targetHeight     目标高
-     * @param hugeImageEnabled 是否支持大图，大图时会有特殊处理
+     * @param outWidth          原始宽
+     * @param outHeight         原始高
+     * @param targetWidth       目标宽
+     * @param targetHeight      目标高
+     * @param smallerThumbnails 是否使用较小的缩略图，当 inSampleSize 为 2 时，强制改为 4
      * @return 合适的InSampleSize
      */
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean hugeImageEnabled) {
+    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean smallerThumbnails) {
         targetWidth *= targetSizeScale;
         targetHeight *= targetSizeScale;
 
@@ -243,8 +245,8 @@ public class ImageSizeCalculator implements Identifier {
                 inSampleSize *= 2;
             }
 
-            // 最后如果是为大图功能加载预览图的话，当缩小2倍的话为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
-            if (hugeImageEnabled && inSampleSize == 2) {
+            // 想要较小的缩略图就将 2 改为 4
+            if (smallerThumbnails && inSampleSize == 2) {
                 inSampleSize = 4;
             }
         }
@@ -277,6 +279,16 @@ public class ImageSizeCalculator implements Identifier {
         float resizeScale = (float) resizeWidth / resizeHeight;
         float imageScale = (float) outWidth / outHeight;
         return Math.max(resizeScale, imageScale) > Math.min(resizeScale, imageScale) * 1.5f;
+    }
+
+    /**
+     * 根据请求和图片类型判断是否使用更小的缩略图
+     */
+    public boolean canUseSmallerThumbnails(LoadRequest loadRequest, ImageType imageType) {
+        return loadRequest instanceof DisplayRequest &&
+                ((DisplayRequest) loadRequest).getViewInfo().isSmallerThumbnails() &&
+                SketchUtils.sdkSupportBitmapRegionDecoder() &&
+                SketchUtils.formatSupportBitmapRegionDecoder(imageType);
     }
 
     @SuppressWarnings("unused")

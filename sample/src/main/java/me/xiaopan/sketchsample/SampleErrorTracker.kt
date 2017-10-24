@@ -17,7 +17,7 @@ import me.xiaopan.sketch.uri.UriModel
 import me.xiaopan.sketch.util.SketchUtils
 import me.xiaopan.sketch.util.UnableCreateDirException
 import me.xiaopan.sketch.util.UnableCreateFileException
-import me.xiaopan.sketch.zoom.block.Tile
+import me.xiaopan.sketch.zoom.block.Block
 import java.io.File
 import java.util.*
 
@@ -203,15 +203,15 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         ), throwable))
     }
 
-    override fun onTileSortError(e: IllegalArgumentException, tileList: List<Tile>, useLegacyMergeSort: Boolean) {
-        super.onTileSortError(e, tileList, useLegacyMergeSort)
+    override fun onBlockSortError(e: IllegalArgumentException, blockList: List<Block>, useLegacyMergeSort: Boolean) {
+        super.onBlockSortError(e, blockList, useLegacyMergeSort)
 
         CrashReport.postCatchedException(Exception(String.format(
-                "Sketch - TileSortError - " +
+                "Sketch - BlockSortError - " +
                         "%s " +
-                        "\ntiles: %s",
+                        "\nblocks: %s",
                 if (useLegacyMergeSort) "useLegacyMergeSort. " else "",
-                SketchUtils.tileListToString(tileList)
+                SketchUtils.blockListToString(blockList)
         ), e))
     }
 

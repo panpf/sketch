@@ -127,7 +127,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [使用 Options 配置图片][options]
 * [播放 GIF 图片][play_gif_image]
 * [手势缩放、旋转图片][zoom]
-* [分块显示超大图片][huge_image]
+* [分块显示超大图片][block_display]
 * [使用 ShapeSize 在绘制时改变图片的尺寸][shape_size]
 * [使用 ImageShaper 在绘制时改变图片的形状][image_shaper]
 * [使用 ImageProcessor 在解码后改变图片][image_processor]
@@ -221,7 +221,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [load_and_download]: docs/wiki/load_and_download.md
 [play_gif_image]: docs/wiki/play_gif_image.md
 [zoom]: docs/wiki/zoom.md
-[huge_image]: docs/wiki/huge_image.md
+[block_display]: docs/wiki/block_display.md
 [shape_size]: docs/wiki/shape_size.md
 [image_shaper]: docs/wiki/image_shaper.md
 [image_processor]: docs/wiki/image_processor.md

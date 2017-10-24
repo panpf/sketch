@@ -84,9 +84,9 @@ public class SLog {
     public static final int TYPE_ZOOM = 0x01 << 19;
 
     /**
-     * 日志类型 - 分块显示大图片相关日志
+     * 日志类型 - 缩放中分块显示相关日志
      */
-    public static final int TYPE_HUGE_IMAGE = 0x01 << 20;
+    public static final int TYPE_ZOOM_BLOCK_DISPLAY = 0x01 << 20;
 
     public static final String LEVEL_NAME_VERBOSE = "VERBOSE";
     public static final String LEVEL_NAME_DEBUG = "DEBUG";
@@ -121,7 +121,7 @@ public class SLog {
      *
      * @param mask 取值范围 {@link #LEVEL_VERBOSE}, {@link #LEVEL_DEBUG}, {@link #LEVEL_INFO},
      *             {@link #LEVEL_WARNING}, {@link #LEVEL_ERROR}, {@link #LEVEL_NONE},
-     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
+     *             {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_ZOOM_BLOCK_DISPLAY}
      */
     public static boolean isLoggable(int mask) {
         /* 高 16 位，低 16 位分开判断。因为低 16 位是互斥并且区分大小关系，高 16 位是共存关系 */
@@ -224,7 +224,7 @@ public class SLog {
     /**
      * 开启指定类型的日志
      *
-     * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
+     * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_ZOOM_BLOCK_DISPLAY}
      */
     public static void openType(@Type int type) {
         //noinspection NumericOverflow
@@ -248,7 +248,7 @@ public class SLog {
     /**
      * 关闭指定类型的日志
      *
-     * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_HUGE_IMAGE}
+     * @param type 取值范围 {@link #TYPE_CACHE}, {@link #TYPE_FLOW}, {@link #TYPE_TIME}, {@link #TYPE_ZOOM}, {@link #TYPE_ZOOM_BLOCK_DISPLAY}
      */
     public static void closeType(@Type int type) {
         //noinspection NumericOverflow
@@ -285,11 +285,11 @@ public class SLog {
             }
             builder.append("ZOOM");
         }
-        if (isLoggable(TYPE_HUGE_IMAGE)) {
+        if (isLoggable(TYPE_ZOOM_BLOCK_DISPLAY)) {
             if (builder.length() > 0) {
                 builder.append(", ");
             }
-            builder.append("HUGE_IMAGE");
+            builder.append("ZOOM_BLOCK_DISPLAY");
         }
         if (isLoggable(TYPE_TIME)) {
             if (builder.length() > 0) {
@@ -615,7 +615,7 @@ public class SLog {
     @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
     @IntDef({
             TYPE_CACHE,
-            TYPE_HUGE_IMAGE,
+            TYPE_ZOOM_BLOCK_DISPLAY,
             TYPE_FLOW,
             TYPE_TIME,
             TYPE_ZOOM,

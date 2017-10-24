@@ -42,33 +42,34 @@ import me.xiaopan.sketch.zoom.Size;
  * 碎片管理器
  */
 // TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
-public class TileManager {
-    private static final String NAME = "TileManager";
-    public int tiles = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
-    Rect visibleRect = new Rect();  // 可见区域，当前用户真正能看见的区域
+public class BlockManager {
+    private static final String NAME = "BlockManager";
+
+    public int blockBaseNumber = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
     public Rect drawRect = new Rect(); // 绘制区域，可见区域加大一圈就是绘制区域，为的是提前将四周加载出来，用户缓慢滑动时可直接看到
     public Rect decodeRect = new Rect();   // 解码区域，真正需要解码的区域，是以绘制区域为基础，滑动时哪边不够了就在扩展哪边，解码区域一定比绘制区域大
     public Rect drawSrcRect = new Rect();
     public Rect decodeSrcRect = new Rect();
-    public List<Tile> tileList = new LinkedList<Tile>();
-    public BlockDisplayer.OnTileChangedListener onTileChangedListener;
+    public List<Block> blockList = new LinkedList<Block>();
+    public Rect visibleRect = new Rect();  // 可见区域，当前用户真正能看见的区域
+
     private Context context;
     private BitmapPool bitmapPool;
     private BlockDisplayer blockDisplayer;
-    private ObjectPool<Tile> tilePool = new ObjectPool<Tile>(new ObjectPool.ObjectFactory<Tile>() {
+    private ObjectPool<Block> blockPool = new ObjectPool<>(new ObjectPool.ObjectFactory<Block>() {
         @Override
-        public Tile newObject() {
-            return new Tile();
+        public Block newObject() {
+            return new Block();
         }
     }, 60);
-    private ObjectPool<Rect> rectPool = new ObjectPool<Rect>(new ObjectPool.ObjectFactory<Rect>() {
+    private ObjectPool<Rect> rectPool = new ObjectPool<>(new ObjectPool.ObjectFactory<Rect>() {
         @Override
         public Rect newObject() {
             return new Rect();
         }
     }, 20);
 
-    public TileManager(Context context, BlockDisplayer blockDisplayer) {
+    public BlockManager(Context context, BlockDisplayer blockDisplayer) {
         context = context.getApplicationContext();
         this.context = context;
         this.bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
@@ -78,15 +79,15 @@ public class TileManager {
     public void update(Rect newVisibleRect, Size drawableSize, Size viewSize, Point imageSize, boolean zooming) {
         if (zooming) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(NAME, "zooming. newVisibleRect=%s, tiles=%d",
-                        newVisibleRect.toShortString(), tileList.size());
+                SLog.d(NAME, "zooming. newVisibleRect=%s, blocks=%d",
+                        newVisibleRect.toShortString(), blockList.size());
             }
             return;
         }
 
         // 过滤掉重复的刷新
         if (visibleRect.equals(newVisibleRect)) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
                         newVisibleRect.toShortString(), visibleRect.toShortString());
             }
@@ -102,8 +103,8 @@ public class TileManager {
         final float originHeightScale = (float) imageHeight / drawableSize.getHeight();
 
         // 计算绘制区域时，每边应该增加的量
-        final int drawWidthAdd = (int) ((float) newVisibleRect.width() / tiles / 2);
-        final int drawHeightAdd = (int) ((float) newVisibleRect.height() / tiles / 2);
+        final int drawWidthAdd = (int) ((float) newVisibleRect.width() / blockBaseNumber / 2);
+        final int drawHeightAdd = (int) ((float) newVisibleRect.height() / blockBaseNumber / 2);
 
         // 将显示区域加大一圈，计算出绘制区域，宽高各增加一个平均值
         // 为的是提前将四周加载出来，用户缓慢滑动的时候可以提前看到四周的图像
@@ -119,41 +120,41 @@ public class TileManager {
         }
 
         // 计算碎片的尺寸
-        final int finalTiles = tiles + 1;
-        final int tileWidth = newDrawRect.width() / finalTiles;
-        final int tileHeight = newDrawRect.height() / finalTiles;
+        final int finalBlocks = blockBaseNumber + 1;
+        final int blockWidth = newDrawRect.width() / finalBlocks;
+        final int blockHeight = newDrawRect.height() / finalBlocks;
 
-        if (tileWidth <= 0 || tileHeight <= 0) {
-            SLog.e(NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
+        if (blockWidth <= 0 || blockHeight <= 0) {
+            SLog.e(NAME, "blockWidth or blockHeight exception. %dx%d", blockWidth, blockHeight);
             return;
         }
 
         // 根据碎片尺寸修剪drawRect，使其正好能整除碎片
         if (newDrawRect.right < drawableSize.getWidth()) {
-            newDrawRect.right = newDrawRect.left + (finalTiles * tileWidth);
+            newDrawRect.right = newDrawRect.left + (finalBlocks * blockWidth);
         } else if (newDrawRect.left > 0) {
-            newDrawRect.left = newDrawRect.right - (finalTiles * tileWidth);
+            newDrawRect.left = newDrawRect.right - (finalBlocks * blockWidth);
         }
         if (newDrawRect.bottom < drawableSize.getHeight()) {
-            newDrawRect.bottom = newDrawRect.top + (finalTiles * tileHeight);
+            newDrawRect.bottom = newDrawRect.top + (finalBlocks * blockHeight);
         } else if (newDrawRect.top > 0) {
-            newDrawRect.top = newDrawRect.bottom - (finalTiles * tileHeight);
+            newDrawRect.top = newDrawRect.bottom - (finalBlocks * blockHeight);
         }
 
         Rect newDrawSrcRect = rectPool.get();
         calculateSrcRect(newDrawSrcRect, newDrawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
         int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewSize.getWidth(), viewSize.getHeight());
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-            SLog.d(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+            SLog.d(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, blocks=%d",
                     newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
-                    inSampleSize, blockDisplayer.getZoomScale(), blockDisplayer.getLastZoomScale(), tileList.size());
+                    inSampleSize, blockDisplayer.getZoomScale(), blockDisplayer.getLastZoomScale(), blockList.size());
         }
 
         // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
         Rect newDecodeRect = rectPool.get();
-        calculateTilesDecodeRect(newDecodeRect, newDrawRect, drawWidthAdd, drawHeightAdd,
-                tileWidth, tileHeight, drawableSize.getWidth(), drawableSize.getHeight());
+        calculateBlocksDecodeRect(newDecodeRect, newDrawRect, drawWidthAdd, drawHeightAdd,
+                blockWidth, blockHeight, drawableSize.getWidth(), drawableSize.getHeight());
 
         Rect newDecodeSrcRect = rectPool.get();
         calculateSrcRect(newDecodeSrcRect, newDecodeRect, imageWidth, imageHeight,
@@ -164,34 +165,35 @@ public class TileManager {
             if (!newDecodeRect.equals(decodeRect)) {
 
                 // 回收那些已经超出绘制区域的碎片
-                recycleTiles(tileList, newDecodeRect);
+                recycleBlocks(blockList, newDecodeRect);
 
                 // 找出所有的空白区域，然后一个一个加载
-                List<Rect> emptyRectList = findEmptyRect(newDecodeRect, tileList);
+                List<Rect> emptyRectList = findEmptyRect(newDecodeRect, blockList);
                 if (emptyRectList != null && emptyRectList.size() > 0) {
-                    loadTiles(emptyRectList, tileWidth, tileHeight, imageWidth, imageHeight,
+                    loadBlocks(emptyRectList, blockWidth, blockHeight, imageWidth, imageHeight,
                             originWidthScale, originHeightScale, inSampleSize, newDecodeRect);
                 } else {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                         SLog.d(NAME, "not found empty rect");
                     }
                 }
 
-                if (onTileChangedListener != null) {
-                    onTileChangedListener.onTileChanged(blockDisplayer);
+                BlockDisplayer.OnBlockChangedListener onBlockChangedListener = blockDisplayer.getOnBlockChangedListener();
+                if (onBlockChangedListener != null) {
+                    onBlockChangedListener.onBlockChanged(blockDisplayer);
                 }
 
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                    SLog.d(NAME, "update finished, newDecodeRect=%s, tiles=%d",
-                            newDecodeRect.toShortString(), tileList.size());
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                    SLog.d(NAME, "update finished, newDecodeRect=%s, blocks=%d",
+                            newDecodeRect.toShortString(), blockList.size());
                 }
             } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "update finished draw rect no change");
                 }
             }
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
                         newDecodeRect.toShortString());
             }
@@ -229,7 +231,7 @@ public class TileManager {
      */
     private int calculateInSampleSize(int srcWidth, int srcHeight, int viewWidth, int viewHeight) {
         // 由于绘制区域比显示区域大了一圈，因此targetSize也得大一圈
-        float targetSizeScale = ((float) tiles / 10) + 1;
+        float targetSizeScale = ((float) blockBaseNumber / 10) + 1;
         int targetWidth = Math.round(viewWidth * targetSizeScale);
         int targetHeight = Math.round(viewHeight * targetSizeScale);
 
@@ -240,10 +242,10 @@ public class TileManager {
     /**
      * 在上一个绘制区域的基础上计算出根据新的绘制区域，计算出最终的绘制区域
      */
-    private void calculateTilesDecodeRect(Rect newDecodeRect, Rect newDrawRect,
-                                          int drawWidthAdd, int drawHeightAdd,
-                                          int drawTileWidth, int drawTileHeight,
-                                          int maxDrawWidth, int maxDrawHeight) {
+    private void calculateBlocksDecodeRect(Rect newDecodeRect, Rect newDrawRect,
+                                           int drawWidthAdd, int drawHeightAdd,
+                                           int drawBlockWidth, int drawBlockHeight,
+                                           int maxDrawWidth, int maxDrawHeight) {
         // 缩放比例已改变或者这是第一次就直接用新的绘制区域
         if (blockDisplayer.getZoomScale() != blockDisplayer.getLastZoomScale() || decodeRect.isEmpty()) {
             newDecodeRect.set(newDrawRect);
@@ -265,17 +267,17 @@ public class TileManager {
             if (newDrawRect.left == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.left = 0;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect left to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
-            } else if (leftSpace > leftAndRightEdge || newDecodeRect.left - drawTileWidth <= 0) {
+            } else if (leftSpace > leftAndRightEdge || newDecodeRect.left - drawBlockWidth <= 0) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.left > newDrawRect.left) {
-                    newDecodeRect.left = Math.max(0, newDecodeRect.left - drawTileWidth);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    newDecodeRect.left = Math.max(0, newDecodeRect.left - drawBlockWidth);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                         SLog.d(NAME, "decode rect left expand %d, newDecodeRect=%s",
-                                drawTileWidth, newDecodeRect.toShortString());
+                                drawBlockWidth, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -286,17 +288,17 @@ public class TileManager {
             if (newDrawRect.top == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.top = 0;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect top to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
-            } else if (topSpace > topAndBottomEdge || newDecodeRect.top - drawTileHeight <= 0) {
+            } else if (topSpace > topAndBottomEdge || newDecodeRect.top - drawBlockHeight <= 0) {
                 // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.top > newDrawRect.top) {
-                    newDecodeRect.top = Math.max(0, newDecodeRect.top - drawTileHeight);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    newDecodeRect.top = Math.max(0, newDecodeRect.top - drawBlockHeight);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                         SLog.d(NAME, "decode rect top expand %d, newDecodeRect=%s",
-                                drawTileHeight, newDecodeRect.toShortString());
+                                drawBlockHeight, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -308,18 +310,18 @@ public class TileManager {
             if (newDrawRect.right == maxDrawWidth) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.right = maxDrawWidth;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect right to %d, newDecodeRect=%s",
                             maxDrawWidth, newDecodeRect.toShortString());
                 }
-            } else if (rightSpace > leftAndRightEdge || newDecodeRect.right + drawTileWidth >= maxDrawWidth) {
+            } else if (rightSpace > leftAndRightEdge || newDecodeRect.right + drawBlockWidth >= maxDrawWidth) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.right < newDrawRect.right) {
-                    newDecodeRect.right = Math.min(maxDrawWidth, newDecodeRect.right + drawTileWidth);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    newDecodeRect.right = Math.min(maxDrawWidth, newDecodeRect.right + drawBlockWidth);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                         SLog.d(NAME, "decode rect right expand %d, newDecodeRect=%s",
-                                drawTileWidth, newDecodeRect.toShortString());
+                                drawBlockWidth, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -330,54 +332,54 @@ public class TileManager {
             if (newDrawRect.bottom > maxDrawHeight) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.bottom = maxDrawHeight;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect bottom to %d, newDecodeRect=%s",
                             maxDrawHeight, newDecodeRect.toShortString());
                 }
-            } else if (bottomSpace > topAndBottomEdge || newDecodeRect.bottom + drawTileHeight >= maxDrawHeight) {
+            } else if (bottomSpace > topAndBottomEdge || newDecodeRect.bottom + drawBlockHeight >= maxDrawHeight) {
                 // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.bottom < newDrawRect.bottom) {
-                    newDecodeRect.bottom = Math.min(maxDrawHeight, newDecodeRect.bottom + drawTileHeight);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+                    newDecodeRect.bottom = Math.min(maxDrawHeight, newDecodeRect.bottom + drawBlockHeight);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                         SLog.d(NAME, "decode rect bottom expand %d, newDecodeRect=%s",
-                                drawTileHeight, newDecodeRect.toShortString());
+                                drawBlockHeight, newDecodeRect.toShortString());
                     }
                 }
             }
         }
 
         // 前面把四周给加大了一圈，这里要把多余的剪掉
-        while (newDecodeRect.left + drawTileWidth < newDrawRect.left ||
-                newDecodeRect.top + drawTileHeight < newDrawRect.top ||
-                newDecodeRect.right - drawTileWidth > newDrawRect.right ||
-                newDecodeRect.bottom - drawTileHeight > newDrawRect.bottom) {
-            if (newDecodeRect.left + drawTileWidth < newDrawRect.left) {
-                newDecodeRect.left += drawTileWidth;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        while (newDecodeRect.left + drawBlockWidth < newDrawRect.left ||
+                newDecodeRect.top + drawBlockHeight < newDrawRect.top ||
+                newDecodeRect.right - drawBlockWidth > newDrawRect.right ||
+                newDecodeRect.bottom - drawBlockHeight > newDrawRect.bottom) {
+            if (newDecodeRect.left + drawBlockWidth < newDrawRect.left) {
+                newDecodeRect.left += drawBlockWidth;
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect left reduced %d, newDecodeRect=%s",
-                            drawTileWidth, newDecodeRect.toShortString());
+                            drawBlockWidth, newDecodeRect.toShortString());
                 }
             }
-            if (newDecodeRect.top + drawTileHeight < newDrawRect.top) {
-                newDecodeRect.top += drawTileHeight;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (newDecodeRect.top + drawBlockHeight < newDrawRect.top) {
+                newDecodeRect.top += drawBlockHeight;
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect top reduced %d, newDecodeRect=%s",
-                            drawTileHeight, newDecodeRect.toShortString());
+                            drawBlockHeight, newDecodeRect.toShortString());
                 }
             }
-            if (newDecodeRect.right - drawTileWidth > newDrawRect.right) {
-                newDecodeRect.right -= drawTileWidth;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (newDecodeRect.right - drawBlockWidth > newDrawRect.right) {
+                newDecodeRect.right -= drawBlockWidth;
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect right reduced %d, newDecodeRect=%s",
-                            drawTileWidth, newDecodeRect.toShortString());
+                            drawBlockWidth, newDecodeRect.toShortString());
                 }
             }
-            if (newDecodeRect.bottom - drawTileHeight > newDrawRect.bottom) {
-                newDecodeRect.bottom -= drawTileHeight;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (newDecodeRect.bottom - drawBlockHeight > newDrawRect.bottom) {
+                newDecodeRect.bottom -= drawBlockHeight;
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                     SLog.d(NAME, "decode rect bottom reduced %d, newDecodeRect=%s",
-                            drawTileHeight, newDecodeRect.toShortString());
+                            drawBlockHeight, newDecodeRect.toShortString());
                 }
             }
         }
@@ -387,11 +389,11 @@ public class TileManager {
      * 去重
      */
     private boolean canLoad(int left, int top, int right, int bottom) {
-        for (Tile drawTile : tileList) {
-            if (drawTile.drawRect.left == left &&
-                    drawTile.drawRect.top == top &&
-                    drawTile.drawRect.right == right &&
-                    drawTile.drawRect.bottom == bottom) {
+        for (Block drawBlock : blockList) {
+            if (drawBlock.drawRect.left == left &&
+                    drawBlock.drawRect.top == top &&
+                    drawBlock.drawRect.right == right &&
+                    drawBlock.drawRect.bottom == bottom) {
                 return false;
             }
         }
@@ -402,17 +404,17 @@ public class TileManager {
     /**
      * 假如有一个矩形，并且已知这个矩形中的N个碎片，那么要找出所有的空白碎片（不可用的碎片会从已知列表中删除）
      *
-     * @param rect     那个矩形
-     * @param tileList 已知碎片
+     * @param rect      那个矩形
+     * @param blockList 已知碎片
      * @return 所有空白的碎片
      */
-    private List<Rect> findEmptyRect(Rect rect, List<Tile> tileList) {
+    private List<Rect> findEmptyRect(Rect rect, List<Block> blockList) {
         if (rect.isEmpty()) {
             return null;
         }
 
         List<Rect> emptyRectList = null;
-        if (tileList == null || tileList.size() == 0) {
+        if (blockList == null || blockList.size() == 0) {
             Rect fullRect = rectPool.get();
             fullRect.set(rect);
 
@@ -422,9 +424,9 @@ public class TileManager {
         }
 
         // 按离左上角的距离排序
-        Comparator<Tile> tileComparator = new Comparator<Tile>() {
+        Comparator<Block> blockComparator = new Comparator<Block>() {
             @Override
-            public int compare(Tile o1, Tile o2) {
+            public int compare(Block o1, Block o2) {
                 // 同一行比较left，不同行比较top
                 if ((o1.drawRect.top <= o2.drawRect.top && o1.drawRect.bottom >= o2.drawRect.bottom)
                         || (o1.drawRect.top >= o2.drawRect.top && o1.drawRect.bottom <= o2.drawRect.bottom)) {
@@ -435,7 +437,7 @@ public class TileManager {
             }
         };
         try {
-            Collections.sort(tileList, tileComparator);
+            Collections.sort(blockList, blockComparator);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
@@ -445,23 +447,23 @@ public class TileManager {
 
             Configuration configuration = Sketch.with(context).getConfiguration();
             ErrorTracker errorTracker = configuration.getErrorTracker();
-            errorTracker.onTileSortError(e, tileList, false);
+            errorTracker.onBlockSortError(e, blockList, false);
 
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             try {
-                Collections.sort(tileList, tileComparator);
+                Collections.sort(blockList, blockComparator);
             } catch (IllegalArgumentException e2) {
                 e2.printStackTrace();
 
-                errorTracker.onTileSortError(e, tileList, true);
+                errorTracker.onBlockSortError(e, blockList, true);
             }
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "false");
         }
 
         int left = rect.left, top = rect.top, right = 0, bottom = -1;
-        Tile lastRect = null;
-        Tile childRect;
-        Iterator<Tile> rectIterator = tileList.iterator();
+        Block lastRect = null;
+        Block childRect;
+        Iterator<Block> rectIterator = blockList.iterator();
         while (rectIterator.hasNext()) {
             childRect = rectIterator.next();
 
@@ -561,73 +563,73 @@ public class TileManager {
     /**
      * 回收哪些已经超出绘制区域的碎片
      */
-    private void recycleTiles(List<Tile> tileList, Rect drawRect) {
-        Tile tile;
-        Iterator<Tile> tileIterator = tileList.iterator();
-        while (tileIterator.hasNext()) {
-            tile = tileIterator.next();
+    private void recycleBlocks(List<Block> blockList, Rect drawRect) {
+        Block block;
+        Iterator<Block> blockIterator = blockList.iterator();
+        while (blockIterator.hasNext()) {
+            block = blockIterator.next();
 
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
-            if (blockDisplayer.getZoomScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
-                if (!tile.isEmpty()) {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                        SLog.d(NAME, "recycle tile. tile=%s", tile.getInfo());
+            if (blockDisplayer.getZoomScale() != block.scale || !SketchUtils.isCross(block.drawRect, drawRect)) {
+                if (!block.isEmpty()) {
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                        SLog.d(NAME, "recycle block. block=%s", block.getInfo());
                     }
-                    tileIterator.remove();
-                    tile.clean(bitmapPool);
-                    tilePool.put(tile);
+                    blockIterator.remove();
+                    block.clean(bitmapPool);
+                    blockPool.put(block);
                 } else {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                        SLog.d(NAME, "recycle loading tile and refresh key. tile=%s", tile.getInfo());
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                        SLog.d(NAME, "recycle loading block and refresh key. block=%s", block.getInfo());
                     }
-                    tile.refreshKey();
-                    tileIterator.remove();
+                    block.refreshKey();
+                    blockIterator.remove();
                 }
             }
         }
     }
 
-    private void loadTiles(List<Rect> emptyRectList, int tileWidth, int tileHeight,
-                           int imageWidth, int imageHeight, float originWidthScale, float originHeightScale,
-                           int inSampleSize, Rect newDecodeRect) {
+    private void loadBlocks(List<Rect> emptyRectList, int blockWidth, int blockHeight,
+                            int imageWidth, int imageHeight, float originWidthScale, float originHeightScale,
+                            int inSampleSize, Rect newDecodeRect) {
         for (Rect emptyRect : emptyRectList) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "load emptyRect=%s", emptyRect.toShortString());
             }
 
-            int tileLeft = emptyRect.left, tileTop = emptyRect.top, tileRight = 0, tileBottom = 0;
-            while (Math.round(tileRight) < emptyRect.right || Math.round(tileBottom) < emptyRect.bottom) {
-                tileRight = Math.min(tileLeft + tileWidth, emptyRect.right);
-                tileBottom = Math.min(tileTop + tileHeight, emptyRect.bottom);
+            int blockLeft = emptyRect.left, blockTop = emptyRect.top, blockRight = 0, blockBottom = 0;
+            while (Math.round(blockRight) < emptyRect.right || Math.round(blockBottom) < emptyRect.bottom) {
+                blockRight = Math.min(blockLeft + blockWidth, emptyRect.right);
+                blockBottom = Math.min(blockTop + blockHeight, emptyRect.bottom);
 
-                if (canLoad(tileLeft, tileTop, tileRight, tileBottom)) {
-                    Tile loadTile = tilePool.get();
+                if (canLoad(blockLeft, blockTop, blockRight, blockBottom)) {
+                    Block loadBlock = blockPool.get();
 
-                    loadTile.drawRect.set(tileLeft, tileTop, tileRight, tileBottom);
-                    loadTile.inSampleSize = inSampleSize;
-                    loadTile.scale = blockDisplayer.getZoomScale();
-                    calculateSrcRect(loadTile.srcRect, loadTile.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
+                    loadBlock.drawRect.set(blockLeft, blockTop, blockRight, blockBottom);
+                    loadBlock.inSampleSize = inSampleSize;
+                    loadBlock.scale = blockDisplayer.getZoomScale();
+                    calculateSrcRect(loadBlock.srcRect, loadBlock.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
 
-                    tileList.add(loadTile);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                        SLog.d(NAME, "submit and refresh key. newDecodeRect=%s, tile=%s",
-                                newDecodeRect.toShortString(), loadTile.getInfo());
+                    blockList.add(loadBlock);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                        SLog.d(NAME, "submit and refresh key. newDecodeRect=%s, block=%s",
+                                newDecodeRect.toShortString(), loadBlock.getInfo());
                     }
 
-                    loadTile.refreshKey();
-                    blockDisplayer.getTileDecoder().decodeTile(loadTile);
+                    loadBlock.refreshKey();
+                    blockDisplayer.getBlockDecoder().decodeBlock(loadBlock);
                 } else {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                        SLog.d(NAME, "repeated tile. tileDrawRect=%d, %d, %d, %d",
-                                Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                        SLog.d(NAME, "repeated block. blockDrawRect=%d, %d, %d, %d",
+                                Math.round(blockLeft), Math.round(blockTop), Math.round(blockRight), Math.round(blockBottom));
                     }
                 }
 
-                if (Math.round(tileRight) >= emptyRect.right) {
-                    tileLeft = emptyRect.left;
-                    tileTop = tileBottom;
+                if (Math.round(blockRight) >= emptyRect.right) {
+                    blockLeft = emptyRect.left;
+                    blockTop = blockBottom;
                 } else {
-                    tileLeft = tileRight;
+                    blockLeft = blockRight;
                 }
             }
 
@@ -636,44 +638,45 @@ public class TileManager {
         }
     }
 
-    public void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+    public void decodeCompleted(Block block, Bitmap bitmap, int useTime) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            SLog.d(NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
-                    useTime, tile.getInfo(), bitmap.getWidth(), bitmap.getHeight(), bitmapConfig, tileList.size());
+            SLog.d(NAME, "decode completed. useTime=%dms, block=%s, bitmap=%dx%d(%s), blocks=%d",
+                    useTime, block.getInfo(), bitmap.getWidth(), bitmap.getHeight(), bitmapConfig, blockList.size());
         }
 
-        tile.bitmap = bitmap;
-        tile.bitmapDrawSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        tile.decoder = null;
+        block.bitmap = bitmap;
+        block.bitmapDrawSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        block.decoder = null;
 
         blockDisplayer.invalidateView();
 
-        if (onTileChangedListener != null) {
-            onTileChangedListener.onTileChanged(blockDisplayer);
+        BlockDisplayer.OnBlockChangedListener onBlockChangedListener = blockDisplayer.getOnBlockChangedListener();
+        if (onBlockChangedListener != null) {
+            onBlockChangedListener.onBlockChanged(blockDisplayer);
         }
     }
 
-    public void decodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
-        SLog.w(NAME, "decode failed. %s. tile=%s, tiles=%d",
-                exception.getCauseMessage(), tile.getInfo(), tileList.size());
+    public void decodeError(Block block, DecodeHandler.DecodeErrorException exception) {
+        SLog.w(NAME, "decode failed. %s. block=%s, blocks=%d",
+                exception.getCauseMessage(), block.getInfo(), blockList.size());
 
-        tileList.remove(tile);
+        blockList.remove(block);
 
-        tile.clean(bitmapPool);
-        tilePool.put(tile);
+        block.clean(bitmapPool);
+        blockPool.put(block);
     }
 
     public void clean(String why) {
-        for (Tile tile : tileList) {
-            tile.refreshKey();
-            tile.clean(bitmapPool);
-            tilePool.put(tile);
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                SLog.d(NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
+        for (Block block : blockList) {
+            block.refreshKey();
+            block.clean(bitmapPool);
+            blockPool.put(block);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                SLog.d(NAME, "clean block and refresh key. %s. block=%s", why, block.getInfo());
             }
         }
-        tileList.clear();
+        blockList.clear();
         visibleRect.setEmpty();
         drawRect.setEmpty();
         drawSrcRect.setEmpty();
@@ -681,9 +684,23 @@ public class TileManager {
         decodeSrcRect.setEmpty();
     }
 
+    public long getAllocationByteCount() {
+        if (blockList == null || blockList.size() <= 0) {
+            return 0;
+        }
+
+        long bytes = 0;
+        for (Block block : blockList) {
+            if (!block.isEmpty()) {
+                bytes += SketchUtils.getByteCount(block.bitmap);
+            }
+        }
+        return bytes;
+    }
+
     public void recycle(@SuppressWarnings("UnusedParameters") String why) {
         clean(why);
-        tilePool.clear();
+        blockPool.clear();
         rectPool.clear();
     }
 }

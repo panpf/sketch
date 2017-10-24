@@ -252,4 +252,9 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     public void setDisplayCache(@NonNull DisplayCache displayCache) {
         getFunctions().requestFunction.setDisplayCache(displayCache);
     }
+
+    @Override
+    public boolean isSmallerThumbnails() {
+        return isZoomEnabled();
+    }
 }

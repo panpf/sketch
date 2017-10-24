@@ -83,12 +83,12 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         ResizeCalculator.Mapping mapping = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight,
                 resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
-        boolean supportHugeImage = SketchUtils.supportHugeImage(request, imageType);
 
         // 根据resize的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
         ImageSizeCalculator sizeCalculator = request.getConfiguration().getSizeCalculator();
+        boolean smallerThumbnail = sizeCalculator.canUseSmallerThumbnails(request, imageType);
         decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(mapping.srcRect.width(), mapping.srcRect.height(),
-                resize.getWidth(), resize.getHeight(), supportHugeImage);
+                resize.getWidth(), resize.getHeight(), smallerThumbnail);
 
         orientationCorrector.reverseRotate(mapping.srcRect, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
 

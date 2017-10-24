@@ -39,18 +39,18 @@ import me.xiaopan.sketch.decode.ImageType;
 /**
  * 解码处理器，运行在解码线程中，负责解码
  */
-public class TileDecodeHandler extends Handler {
+public class DecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
     private boolean disableInBitmap;
 
-    private WeakReference<TileExecutor> reference;
+    private WeakReference<BlockExecutor> reference;
     private BitmapPool bitmapPool;
     private ErrorTracker errorTracker;
     private ImageOrientationCorrector orientationCorrector;
 
-    public TileDecodeHandler(Looper looper, TileExecutor executor) {
+    public DecodeHandler(Looper looper, BlockExecutor executor) {
         super(looper);
         this.reference = new WeakReference<>(executor);
 
@@ -62,53 +62,53 @@ public class TileDecodeHandler extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
-        TileExecutor decodeExecutor = reference.get();
+        BlockExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
-            decodeExecutor.tileDecodeCallbackHandler.cancelDelayDestroyThread();
+            decodeExecutor.callbackHandler.cancelDelayDestroyThread();
         }
 
         switch (msg.what) {
             case WHAT_DECODE:
-                decode(decodeExecutor, msg.arg1, (Tile) msg.obj);
+                decode(decodeExecutor, msg.arg1, (Block) msg.obj);
                 break;
         }
 
         if (decodeExecutor != null) {
-            decodeExecutor.tileDecodeCallbackHandler.postDelayRecycleDecodeThread();
+            decodeExecutor.callbackHandler.postDelayRecycleDecodeThread();
         }
     }
 
-    public void postDecode(int key, Tile tile) {
-        Message message = obtainMessage(TileDecodeHandler.WHAT_DECODE);
+    public void postDecode(int key, Block block) {
+        Message message = obtainMessage(DecodeHandler.WHAT_DECODE);
         message.arg1 = key;
-        message.obj = tile;
+        message.obj = block;
         message.sendToTarget();
     }
 
-    private void decode(TileExecutor executor, int key, Tile tile) {
+    private void decode(BlockExecutor executor, int key, Block block) {
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
+            SLog.w(NAME, "weak reference break. key: %d, block=%s", key, block.getInfo());
             return;
         }
 
-        if (tile.isExpired(key)) {
-            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
+        if (block.isExpired(key)) {
+            executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
             return;
         }
 
-        if (tile.isDecodeParamEmpty()) {
-            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
+        if (block.isDecodeParamEmpty()) {
+            executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
             return;
         }
 
-        ImageRegionDecoder regionDecoder = tile.decoder;
+        ImageRegionDecoder regionDecoder = block.decoder;
         if (regionDecoder == null || !regionDecoder.isReady()) {
-            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
+            executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
             return;
         }
 
-        Rect srcRect = new Rect(tile.srcRect);
-        int inSampleSize = tile.inSampleSize;
+        Rect srcRect = new Rect(block.srcRect);
+        int inSampleSize = block.inSampleSize;
 
         // 根据图片方向恢复src区域的真实位置
         Point imageSize = regionDecoder.getImageSize();
@@ -152,13 +152,13 @@ public class TileDecodeHandler extends Handler {
         int useTime = (int) (System.currentTimeMillis() - time);
 
         if (bitmap == null || bitmap.isRecycled()) {
-            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
+            executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
             return;
         }
 
-        if (tile.isExpired(key)) {
+        if (block.isExpired(key)) {
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool());
-            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
+            executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
@@ -169,21 +169,21 @@ public class TileDecodeHandler extends Handler {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
                 bitmap = newBitmap;
             } else {
-                executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_ROTATE_BITMAP_RECYCLED));
+                executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_ROTATE_BITMAP_RECYCLED));
                 return;
             }
         }
 
         if (bitmap.isRecycled()) {
-            executor.tileDecodeCallbackHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_RECYCLED));
+            executor.callbackHandler.postDecodeError(key, block, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_RECYCLED));
             return;
         }
 
-        executor.tileDecodeCallbackHandler.postDecodeCompleted(key, tile, bitmap, useTime);
+        executor.callbackHandler.postDecodeCompleted(key, block, bitmap, useTime);
     }
 
     public void clean(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "clean. %s", why);
         }
 

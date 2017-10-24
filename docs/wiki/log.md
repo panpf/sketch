@@ -45,7 +45,7 @@ SLog.getLevel();
 * TYPE_CACHE: 内存缓存、bitmap pool、磁盘缓存相关日志
 * TYPE_TIME: commit()和解码耗时相关日志
 * TYPE_ZOOM: 手势缩放相关日志
-* TYPE_HUGE_IMAGE: 分块显示超大图相关日志
+* TYPE_ZOOM_BLOCK_DISPLAY: 分块显示超大图相关日志
 
 注意：
 * 日志分类默认全部关闭

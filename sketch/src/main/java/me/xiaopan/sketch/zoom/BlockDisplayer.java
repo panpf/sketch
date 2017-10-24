@@ -39,18 +39,18 @@ import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.FunctionPropertyView;
 import me.xiaopan.sketch.zoom.block.ImageRegionDecoder;
-import me.xiaopan.sketch.zoom.block.Tile;
-import me.xiaopan.sketch.zoom.block.TileDecodeHandler;
-import me.xiaopan.sketch.zoom.block.TileDecoder;
-import me.xiaopan.sketch.zoom.block.TileExecutor;
-import me.xiaopan.sketch.zoom.block.TileManager;
+import me.xiaopan.sketch.zoom.block.Block;
+import me.xiaopan.sketch.zoom.block.DecodeHandler;
+import me.xiaopan.sketch.zoom.block.BlockDecoder;
+import me.xiaopan.sketch.zoom.block.BlockExecutor;
+import me.xiaopan.sketch.zoom.block.BlockManager;
 
 /**
  * 对于超大图片，分块显示可见区域
  */
 // TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
 public class BlockDisplayer {
-    private static final String NAME = "HugeImageViewer";
+    private static final String NAME = "BlockDisplayer";
 
     private Context context;
     private ImageZoomer imageZoomer;
@@ -58,36 +58,38 @@ public class BlockDisplayer {
     private Matrix tempDrawMatrix;
     private Rect tempVisibleRect;
 
-    private TileExecutor tileExecutor;
-    private TileDecoder tileDecoder;
-    private TileManager tileManager;
+    private BlockExecutor blockExecutor;
+    private BlockDecoder blockDecoder;
+    private BlockManager blockManager;
 
-    private boolean showTileRect;
     private float zoomScale;
     private float lastZoomScale;
-    private Paint drawTilePaint;
-    private Paint drawTileRectPaint;
-    private Paint drawLoadingTileRectPaint;
+    private Paint drawBlockPaint;
+    private Paint drawBlockRectPaint;
+    private Paint drawLoadingBlockRectPaint;
     private Matrix matrix;
 
     private boolean running;
     private boolean paused;
     private String imageUri;
 
+    private boolean showBlockBounds;
+    private BlockDisplayer.OnBlockChangedListener onBlockChangedListener;
+
     public BlockDisplayer(Context context, ImageZoomer imageZoomer) {
         context = context.getApplicationContext();
         this.context = context;
         this.imageZoomer = imageZoomer;
 
-        this.tileExecutor = new TileExecutor(new ExecutorCallback());
-        this.tileManager = new TileManager(context, this);
-        this.tileDecoder = new TileDecoder(this);
+        this.blockExecutor = new BlockExecutor(new ExecutorCallback());
+        this.blockManager = new BlockManager(context, this);
+        this.blockDecoder = new BlockDecoder(this);
 
         this.matrix = new Matrix();
-        this.drawTilePaint = new Paint();
+        this.drawBlockPaint = new Paint();
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            SLog.e(NAME, "huge image function the minimum support to GINGERBREAD_MR1");
+            SLog.e(NAME, "BlockDisplayer minimum support to GINGERBREAD_MR1");
         }
     }
 
@@ -117,13 +119,13 @@ public class BlockDisplayer {
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                    SLog.d(NAME, "Use huge image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                    SLog.d(NAME, "Use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                    SLog.d(NAME, "Don't need to use huge image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                    SLog.d(NAME, "Don't need to use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }
@@ -136,13 +138,13 @@ public class BlockDisplayer {
 
             this.imageUri = sketchDrawable.getUri();
             this.running = !TextUtils.isEmpty(imageUri);
-            this.tileDecoder.setImage(imageUri, correctImageOrientationDisabled);
+            this.blockDecoder.setImage(imageUri, correctImageOrientationDisabled);
         } else {
             clean("setImage");
 
             this.imageUri = null;
             this.running = false;
-            this.tileDecoder.setImage(null, correctImageOrientationDisabled);
+            this.blockDecoder.setImage(null, correctImageOrientationDisabled);
         }
     }
 
@@ -156,9 +158,9 @@ public class BlockDisplayer {
 
         running = false;
         clean(why);
-        tileExecutor.recycle(why);
-        tileManager.recycle(why);
-        tileDecoder.recycle(why);
+        blockExecutor.recycle(why);
+        blockManager.recycle(why);
+        blockDecoder.recycle(why);
     }
 
     /**
@@ -169,13 +171,13 @@ public class BlockDisplayer {
             return;
         }
 
-        tileExecutor.cleanDecode(why);
+        blockExecutor.cleanDecode(why);
 
         matrix.reset();
         lastZoomScale = 0;
         zoomScale = 0;
 
-        tileManager.clean(why);
+        blockManager.clean(why);
 
         invalidateView();
     }
@@ -189,27 +191,27 @@ public class BlockDisplayer {
             return;
         }
 
-        if (tileManager.tileList != null && tileManager.tileList.size() > 0) {
+        if (blockManager.blockList != null && blockManager.blockList.size() > 0) {
             int saveCount = canvas.save();
             canvas.concat(matrix);
 
-            for (Tile tile : tileManager.tileList) {
-                if (!tile.isEmpty()) {
-                    canvas.drawBitmap(tile.bitmap, tile.bitmapDrawSrcRect, tile.drawRect, drawTilePaint);
-                    if (showTileRect) {
-                        if (drawTileRectPaint == null) {
-                            drawTileRectPaint = new Paint();
-                            drawTileRectPaint.setColor(Color.parseColor("#88FF0000"));
+            for (Block block : blockManager.blockList) {
+                if (!block.isEmpty()) {
+                    canvas.drawBitmap(block.bitmap, block.bitmapDrawSrcRect, block.drawRect, drawBlockPaint);
+                    if (showBlockBounds) {
+                        if (drawBlockRectPaint == null) {
+                            drawBlockRectPaint = new Paint();
+                            drawBlockRectPaint.setColor(Color.parseColor("#88FF0000"));
                         }
-                        canvas.drawRect(tile.drawRect, drawTileRectPaint);
+                        canvas.drawRect(block.drawRect, drawBlockRectPaint);
                     }
-                } else if (!tile.isDecodeParamEmpty()) {
-                    if (showTileRect) {
-                        if (drawLoadingTileRectPaint == null) {
-                            drawLoadingTileRectPaint = new Paint();
-                            drawLoadingTileRectPaint.setColor(Color.parseColor("#880000FF"));
+                } else if (!block.isDecodeParamEmpty()) {
+                    if (showBlockBounds) {
+                        if (drawLoadingBlockRectPaint == null) {
+                            drawLoadingBlockRectPaint = new Paint();
+                            drawLoadingBlockRectPaint.setColor(Color.parseColor("#880000FF"));
                         }
-                        canvas.drawRect(tile.drawRect, drawLoadingTileRectPaint);
+                        canvas.drawRect(block.drawRect, drawLoadingBlockRectPaint);
                     }
                 }
             }
@@ -224,8 +226,8 @@ public class BlockDisplayer {
         }
 
         if (!isReady() && !isInitializing()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
-                SLog.d(NAME, "hugeImageViewer not available. onMatrixChanged. %s", imageUri);
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+                SLog.d(NAME, "BlockDisplayer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
@@ -254,7 +256,7 @@ public class BlockDisplayer {
 
         // 没有准备好就不往下走了
         if (!isReady()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "not ready. %s", imageUri);
             }
             return;
@@ -262,7 +264,7 @@ public class BlockDisplayer {
 
         // 暂停中也不走了
         if (paused) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "paused. %s", imageUri);
             }
             return;
@@ -278,7 +280,7 @@ public class BlockDisplayer {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == drawableSize.getWidth() && newVisibleRect.height() == drawableSize.getHeight()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "full display. update. newVisibleRect=%s. %s",
                         newVisibleRect.toShortString(), imageUri);
             }
@@ -293,7 +295,7 @@ public class BlockDisplayer {
 
         invalidateView();
 
-        tileManager.update(newVisibleRect, drawableSize, viewSize, getImageSize(), zooming);
+        blockManager.update(newVisibleRect, drawableSize, viewSize, getImageSize(), zooming);
     }
 
 
@@ -304,12 +306,12 @@ public class BlockDisplayer {
         imageZoomer.getImageView().invalidate();
     }
 
-    public TileDecoder getTileDecoder() {
-        return tileDecoder;
+    public BlockDecoder getBlockDecoder() {
+        return blockDecoder;
     }
 
-    public TileExecutor getTileExecutor() {
-        return tileExecutor;
+    public BlockExecutor getBlockExecutor() {
+        return blockExecutor;
     }
 
     /**
@@ -326,7 +328,7 @@ public class BlockDisplayer {
         paused = pause;
 
         if (paused) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "pause. %s", imageUri);
             }
 
@@ -334,7 +336,7 @@ public class BlockDisplayer {
                 clean("pause");
             }
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_HUGE_IMAGE)) {
+            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "resume. %s", imageUri);
             }
 
@@ -361,29 +363,29 @@ public class BlockDisplayer {
      * 准备好了？
      */
     public boolean isReady() {
-        return running && tileDecoder.isReady();
+        return running && blockDecoder.isReady();
     }
 
     /**
      * 初始化中？
      */
     public boolean isInitializing() {
-        return running && tileDecoder.isInitializing();
+        return running && blockDecoder.isInitializing();
     }
 
     /**
      * 是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
      */
-    public boolean isShowTileRect() {
-        return showTileRect;
+    public boolean isShowBlockBounds() {
+        return showBlockBounds;
     }
 
     /**
      * 设置是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
      */
     @SuppressWarnings("unused")
-    public void setShowTileRect(boolean showTileRect) {
-        this.showTileRect = showTileRect;
+    public void setShowBlockBounds(boolean showBlockBounds) {
+        this.showBlockBounds = showBlockBounds;
         invalidateView();
     }
 
@@ -405,7 +407,7 @@ public class BlockDisplayer {
      * 获取图片的尺寸
      */
     public Point getImageSize() {
-        return tileDecoder.isReady() ? tileDecoder.getDecoder().getImageSize() : null;
+        return blockDecoder.isReady() ? blockDecoder.getDecoder().getImageSize() : null;
     }
 
     /**
@@ -413,7 +415,7 @@ public class BlockDisplayer {
      */
     @SuppressWarnings("unused")
     public ImageType getImageType() {
-        return tileDecoder.isReady() ? tileDecoder.getDecoder().getImageType() : null;
+        return blockDecoder.isReady() ? blockDecoder.getDecoder().getImageType() : null;
     }
 
     /**
@@ -428,82 +430,80 @@ public class BlockDisplayer {
      */
     @SuppressWarnings("unused")
     public Rect getDrawRect() {
-        return tileManager.drawRect;
+        return blockManager.drawRect;
     }
 
     /**
      * 获取绘制区域在原图中对应的位置
      */
     public Rect getDrawSrcRect() {
-        return tileManager.drawSrcRect;
+        return blockManager.drawSrcRect;
     }
 
     /**
      * 获取解码区域
      */
     public Rect getDecodeRect() {
-        return tileManager.decodeRect;
+        return blockManager.decodeRect;
     }
 
     /**
      * 获取解码区域在原图中对应的位置
      */
     public Rect getDecodeSrcRect() {
-        return tileManager.decodeSrcRect;
+        return blockManager.decodeSrcRect;
     }
 
     /**
      * 获取碎片列表
      */
-    public List<Tile> getTileList() {
-        return tileManager.tileList;
+    public List<Block> getBlockList() {
+        return blockManager.blockList;
     }
 
     /**
-     * 获取碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
-     */
-    public int getTiles() {
-        return tileManager.tiles;
-    }
-
-    /**
-     * 获取碎片变化监听器
+     * 获取碎片数量
      */
     @SuppressWarnings("unused")
-    public OnTileChangedListener getOnTileChangedListener() {
-        return tileManager.onTileChangedListener;
-    }
-
-    /**
-     * 获取碎片变化监听器
-     */
-    public void setOnTileChangedListener(BlockDisplayer.OnTileChangedListener onTileChangedListener) {
-        tileManager.onTileChangedListener = onTileChangedListener;
+    public int getBlockSize() {
+        return blockManager.blockList.size();
     }
 
     /**
      * 获取碎片占用的内存，单位字节
      */
     @SuppressWarnings("unused")
-    public long getTilesAllocationByteCount() {
-        if (tileManager.tileList == null || tileManager.tileList.size() <= 0) {
-            return 0;
-        }
-
-        long bytes = 0;
-        for (Tile tile : tileManager.tileList) {
-            if (!tile.isEmpty()) {
-                bytes += SketchUtils.getByteCount(tile.bitmap);
-            }
-        }
-        return bytes;
+    public long getAllocationByteCount() {
+        return blockManager.getAllocationByteCount();
     }
 
-    public interface OnTileChangedListener {
-        void onTileChanged(BlockDisplayer blockDisplayer);
+    /**
+     * 获取碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
+     */
+    public int getBlockBaseNumber() {
+        return blockManager.blockBaseNumber;
     }
 
-    private class ExecutorCallback implements TileExecutor.Callback {
+    /**
+     * 获取碎片变化监听器
+     */
+    @SuppressWarnings("unused")
+    public OnBlockChangedListener getOnBlockChangedListener() {
+        return onBlockChangedListener;
+    }
+
+    /**
+     * 获取碎片变化监听器
+     */
+    public void setOnBlockChangedListener(OnBlockChangedListener onBlockChangedListener) {
+        this.onBlockChangedListener = onBlockChangedListener;
+    }
+
+    public interface OnBlockChangedListener {
+        void onBlockChanged(BlockDisplayer blockDisplayer);
+    }
+
+    private class ExecutorCallback implements BlockExecutor.Callback {
 
         @Override
         public Context getContext() {
@@ -517,7 +517,7 @@ public class BlockDisplayer {
                 return;
             }
 
-            tileDecoder.initCompleted(imageUri, decoder);
+            blockDecoder.initCompleted(imageUri, decoder);
 
             onMatrixChanged();
         }
@@ -529,28 +529,28 @@ public class BlockDisplayer {
                 return;
             }
 
-            tileDecoder.initError(imageUri, e);
+            blockDecoder.initError(imageUri, e);
         }
 
         @Override
-        public void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
+        public void onDecodeCompleted(Block block, Bitmap bitmap, int useTime) {
             if (!running) {
-                SLog.w(NAME, "stop running. decodeCompleted. tile=%s", tile.getInfo());
+                SLog.w(NAME, "stop running. decodeCompleted. block=%s", block.getInfo());
                 BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
                 return;
             }
 
-            tileManager.decodeCompleted(tile, bitmap, useTime);
+            blockManager.decodeCompleted(block, bitmap, useTime);
         }
 
         @Override
-        public void onDecodeError(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
+        public void onDecodeError(Block block, DecodeHandler.DecodeErrorException exception) {
             if (!running) {
-                SLog.w(NAME, "stop running. decodeError. tile=%s", tile.getInfo());
+                SLog.w(NAME, "stop running. decodeError. block=%s", block.getInfo());
                 return;
             }
 
-            tileManager.decodeError(tile, exception);
+            blockManager.decodeError(block, exception);
         }
     }
 }

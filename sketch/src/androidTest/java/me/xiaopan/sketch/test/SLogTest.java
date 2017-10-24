@@ -13,7 +13,7 @@ import static me.xiaopan.sketch.SLog.LEVEL_VERBOSE;
 import static me.xiaopan.sketch.SLog.LEVEL_WARNING;
 import static me.xiaopan.sketch.SLog.TYPE_CACHE;
 import static me.xiaopan.sketch.SLog.TYPE_FLOW;
-import static me.xiaopan.sketch.SLog.TYPE_HUGE_IMAGE;
+import static me.xiaopan.sketch.SLog.TYPE_ZOOM_BLOCK_DISPLAY;
 import static me.xiaopan.sketch.SLog.TYPE_TIME;
 import static me.xiaopan.sketch.SLog.TYPE_ZOOM;
 import static me.xiaopan.sketch.SLog.closeType;
@@ -29,28 +29,28 @@ public class SLogTest {
     @Test
     public void testTypeLoggable() {
         openType(TYPE_FLOW);
-        assertTrue("type request invalid", isLoggable(TYPE_FLOW));
-        assertFalse("type cache valid", isLoggable(TYPE_CACHE));
+        assertTrue("TYPE_FLOW invalid", isLoggable(TYPE_FLOW));
+        assertFalse("TYPE_CACHE valid", isLoggable(TYPE_CACHE));
 
         openType(TYPE_TIME);
-        assertTrue("type time invalid", isLoggable(TYPE_TIME));
-        assertFalse("type zoom invalid", isLoggable(TYPE_ZOOM));
+        assertTrue("TYPE_TIME invalid", isLoggable(TYPE_TIME));
+        assertFalse("TYPE_ZOOM invalid", isLoggable(TYPE_ZOOM));
 
         closeType(TYPE_FLOW);
-        assertFalse("type request valid", isLoggable(TYPE_FLOW));
+        assertFalse("TYPE_FLOW valid", isLoggable(TYPE_FLOW));
     }
 
     @Test
     public void testLevelLoggable() {
         setLevel(LEVEL_INFO);
 
-        assertTrue("level info invalid", isLoggable(LEVEL_INFO));
-        assertTrue("level warning invalid", isLoggable(LEVEL_WARNING));
-        assertTrue("level error invalid", isLoggable(LEVEL_ERROR));
-        assertTrue("level none invalid", isLoggable(LEVEL_NONE));
+        assertTrue("LEVEL_INFO invalid", isLoggable(LEVEL_INFO));
+        assertTrue("LEVEL_WARNING invalid", isLoggable(LEVEL_WARNING));
+        assertTrue("LEVEL_ERROR invalid", isLoggable(LEVEL_ERROR));
+        assertTrue("LEVEL_NONE invalid", isLoggable(LEVEL_NONE));
 
-        assertFalse("level debug valid", isLoggable(LEVEL_DEBUG));
-        assertFalse("level verbose valid", isLoggable(LEVEL_VERBOSE));
+        assertFalse("LEVEL_DEBUG valid", isLoggable(LEVEL_DEBUG));
+        assertFalse("LEVEL_VERBOSE valid", isLoggable(LEVEL_VERBOSE));
     }
 
     @Test
@@ -58,14 +58,14 @@ public class SLogTest {
         //noinspection WrongConstant
         setLevel(LEVEL_VERBOSE | LEVEL_ERROR);
         //noinspection WrongConstant
-        openType(TYPE_HUGE_IMAGE | TYPE_TIME);
-        assertTrue("level error invalid", isLoggable(LEVEL_ERROR));
-        assertTrue("time huge image invalid", isLoggable(TYPE_HUGE_IMAGE));
-        assertTrue("time time invalid", isLoggable(TYPE_TIME));
+        openType(TYPE_ZOOM_BLOCK_DISPLAY | TYPE_TIME);
+        assertTrue("LEVEL_ERROR invalid", isLoggable(LEVEL_ERROR));
+        assertTrue("TYPE_ZOOM_BLOCK_DISPLAY invalid", isLoggable(TYPE_ZOOM_BLOCK_DISPLAY));
+        assertTrue("TYPE_TIME invalid", isLoggable(TYPE_TIME));
 
         //noinspection WrongConstant
-        closeType(TYPE_HUGE_IMAGE);
-        assertFalse("time huge image valid", isLoggable(TYPE_HUGE_IMAGE));
+        closeType(TYPE_ZOOM_BLOCK_DISPLAY);
+        assertFalse("TYPE_ZOOM_BLOCK_DISPLAY valid", isLoggable(TYPE_ZOOM_BLOCK_DISPLAY));
 
         //noinspection WrongConstant
         setLevel(LEVEL_WARNING);
@@ -76,8 +76,8 @@ public class SLogTest {
 
     @Test
     public void testTemp() {
-        openType(TYPE_HUGE_IMAGE);
-        assertTrue("level verbose invalid", isLoggable(LEVEL_INFO));
-        assertTrue("type huge image invalid", isLoggable(TYPE_HUGE_IMAGE));
+        openType(TYPE_ZOOM_BLOCK_DISPLAY);
+        assertTrue("LEVEL_INFO invalid", isLoggable(LEVEL_INFO));
+        assertTrue("TYPE_ZOOM_BLOCK_DISPLAY invalid", isLoggable(TYPE_ZOOM_BLOCK_DISPLAY));
     }
 }

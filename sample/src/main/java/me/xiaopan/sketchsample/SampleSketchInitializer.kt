@@ -31,7 +31,7 @@ class SampleSketchInitializer : Initializer {
         onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_REQUEST))
         onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_CACHE))
         onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_ZOOM))
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_HUGE_IMAGE))
+        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY))
 
         onEvent(AppConfigChangedEvent(AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD))
         onEvent(AppConfigChangedEvent(AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE))
@@ -86,10 +86,10 @@ class SampleSketchInitializer : Initializer {
             } else {
                 SLog.closeType(SLog.TYPE_ZOOM)
             }
-            AppConfig.Key.LOG_HUGE_IMAGE == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_HUGE_IMAGE)) {
-                SLog.openType(SLog.TYPE_HUGE_IMAGE)
+            AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY)) {
+                SLog.openType(SLog.TYPE_ZOOM_BLOCK_DISPLAY)
             } else {
-                SLog.closeType(SLog.TYPE_HUGE_IMAGE)
+                SLog.closeType(SLog.TYPE_ZOOM_BLOCK_DISPLAY)
             }
             AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD == event.key -> configuration!!.isMobileDataPauseDownloadEnabled = AppConfig.getBoolean(context!!, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD)
             AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE == event.key -> configuration!!.isLowQualityImageEnabled = AppConfig.getBoolean(context!!, AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE)

@@ -18,7 +18,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.zoom.block.Tile;
+import me.xiaopan.sketch.zoom.block.Block;
 
 public class ErrorTracker implements Identifier {
     private static final String NAME = "ErrorTracker";
@@ -140,12 +140,12 @@ public class ErrorTracker implements Identifier {
      * 碎片排序错误，Java7的排序算法在检测到A大于B, B小于C, 但是A小于等于C的时候就会抛出异常
      *
      * @param e                  异常
-     * @param tileList           碎片列表
+     * @param blockList           碎片列表
      * @param useLegacyMergeSort 当前是否使用旧的排序算法
      */
-    public void onTileSortError(@NonNull IllegalArgumentException e, @NonNull List<Tile> tileList, boolean useLegacyMergeSort) {
+    public void onBlockSortError(@NonNull IllegalArgumentException e, @NonNull List<Block> blockList, boolean useLegacyMergeSort) {
         String legacy = useLegacyMergeSort ? "useLegacyMergeSort. " : "";
-        SLog.e(NAME, "onTileSortError. %s%s", legacy, SketchUtils.tileListToString(tileList));
+        SLog.e(NAME, "onBlockSortError. %s%s", legacy, SketchUtils.blockListToString(blockList));
     }
 
     /**

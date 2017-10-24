@@ -18,9 +18,9 @@ import me.xiaopan.ssvt.bindView
  * 大图页面，用来展示Sketch显示大图的能力
  */
 @BindContentView(R.layout.fragment_pager_tab)
-class HugeImageTestFragment : BaseFragment() {
-    val tabStrip: PagerSlidingTabStrip by bindView(R.id.tab_pagerTabFragment_tabs)
-    val viewPager: ViewPager by bindView(R.id.pager_pagerTabFragment_content)
+class BlockDisplayTestFragment : BaseFragment() {
+    private val tabStrip: PagerSlidingTabStrip by bindView(R.id.tab_pagerTabFragment_tabs)
+    private val viewPager: ViewPager by bindView(R.id.pager_pagerTabFragment_content)
 
     private var fragmentAdapter: FragmentArrayPagerAdapter? = null
 

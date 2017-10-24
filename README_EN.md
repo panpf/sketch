@@ -127,7 +127,7 @@ Basic functions:
 * [Use Options to configure the image][options]
 * [Play GIF image][play_gif_image]
 * [Gesture zoom, rotate the picture][zoom]
-* [Blocked display of huge image][huge_image]
+* [Blocked display of huge image][block_display]
 * [Use ShapeSize to change the size of the image when drawing][shape_size]
 * [Use ImageShaper to change the shape of a picture when drawing][image_shaper]
 * [Use ImageProcessor to change the picture after decoding][image_processor]
@@ -221,7 +221,7 @@ More:
 [load_and_download]: docs/wiki/load_and_download.md
 [play_gif_image]: docs/wiki/play_gif_image.md
 [zoom]: docs/wiki/zoom.md
-[huge_image]: docs/wiki/huge_image.md
+[block_display]: docs/wiki/block_display.md
 [shape_size]: docs/wiki/shape_size.md
 [image_shaper]: docs/wiki/image_shaper.md
 [image_processor]: docs/wiki/image_processor.md

@@ -14,9 +14,9 @@ public class MyErrorTracker extends ErrorTracker {
     }
 
     @Override
-    public void onTileSortError(IllegalArgumentException e, List<Tile> tileList, boolean useLegacyMergeSort) {
-        super.onTileSortError(e, tileList, useLegacyMergeSort);
-        String message = (useLegacyMergeSort ? "useLegacyMergeSort. " : "") + SketchUtils.tileListToString(tileList);
+    public void onBlockSortError(IllegalArgumentException e, List<Block> blockList, boolean useLegacyMergeSort) {
+        super.onBlockSortError(e, blockList, useLegacyMergeSort);
+        String message = (useLegacyMergeSort ? "useLegacyMergeSort. " : "") + SketchUtils.blockListToString(blockList);
         CrashReport.postCatchedException(new Exception(message, e));
     }
 }

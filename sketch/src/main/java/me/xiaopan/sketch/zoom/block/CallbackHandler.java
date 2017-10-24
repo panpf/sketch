@@ -32,8 +32,8 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
  */
-class TileDecodeCallbackHandler extends Handler {
-    private static final String NAME = "TileDecodeCallbackHandler";
+class CallbackHandler extends Handler {
+    private static final String NAME = "CallbackHandler";
 
     private static final int WHAT_RECYCLE_DECODE_THREAD = 2001;
     private static final int WHAT_INIT_COMPLETED = 2002;
@@ -42,9 +42,9 @@ class TileDecodeCallbackHandler extends Handler {
     private static final int WHAT_DECODE_FAILED = 2005;
 
     private BitmapPool bitmapPool;
-    private WeakReference<TileExecutor> executorReference;
+    private WeakReference<BlockExecutor> executorReference;
 
-    public TileDecodeCallbackHandler(Looper looper, TileExecutor executor) {
+    public CallbackHandler(Looper looper, BlockExecutor executor) {
         super(looper);
         executorReference = new WeakReference<>(executor);
         bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
@@ -66,11 +66,11 @@ class TileDecodeCallbackHandler extends Handler {
                 break;
             case WHAT_DECODE_COMPLETED:
                 DecodeResult decodeResult = (DecodeResult) msg.obj;
-                decodeCompleted(msg.arg1, decodeResult.tile, decodeResult.bitmap, decodeResult.useTime);
+                decodeCompleted(msg.arg1, decodeResult.block, decodeResult.bitmap, decodeResult.useTime);
                 break;
             case WHAT_DECODE_FAILED:
                 DecodeErrorResult decodeErrorResult = (DecodeErrorResult) msg.obj;
-                decodeError(msg.arg1, decodeErrorResult.tile, decodeErrorResult.exception);
+                decodeError(msg.arg1, decodeErrorResult.block, decodeErrorResult.exception);
                 break;
         }
     }
@@ -82,12 +82,12 @@ class TileDecodeCallbackHandler extends Handler {
     public void postDelayRecycleDecodeThread() {
         cancelDelayDestroyThread();
 
-        Message destroyMessage = obtainMessage(TileDecodeCallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
+        Message destroyMessage = obtainMessage(CallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
         sendMessageDelayed(destroyMessage, 30 * 1000);
     }
 
     private void recycleDecodeThread() {
-        TileExecutor executor = executorReference.get();
+        BlockExecutor executor = executorReference.get();
         if (executor != null) {
             executor.recycleDecodeThread();
         }
@@ -97,41 +97,41 @@ class TileDecodeCallbackHandler extends Handler {
      * 取消停止解码线程的延迟任务
      */
     public void cancelDelayDestroyThread() {
-        removeMessages(TileDecodeCallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
+        removeMessages(CallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
     }
 
 
     public void postInitCompleted(ImageRegionDecoder decoder, String imageUri, int initKey, KeyCounter keyCounter) {
-        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_INIT_COMPLETED);
+        Message message = obtainMessage(CallbackHandler.WHAT_INIT_COMPLETED);
         message.arg1 = initKey;
         message.obj = new InitResult(decoder, imageUri, keyCounter);
         message.sendToTarget();
     }
 
     public void postInitError(Exception e, String imageUri, int key, KeyCounter keyCounter) {
-        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_INIT_FAILED);
+        Message message = obtainMessage(CallbackHandler.WHAT_INIT_FAILED);
         message.arg1 = key;
         message.obj = new InitErrorResult(e, imageUri, keyCounter);
         message.sendToTarget();
     }
 
-    public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
-        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_DECODE_COMPLETED);
+    public void postDecodeCompleted(int key, Block block, Bitmap bitmap, int useTime) {
+        Message message = obtainMessage(CallbackHandler.WHAT_DECODE_COMPLETED);
         message.arg1 = key;
-        message.obj = new DecodeResult(bitmap, tile, useTime);
+        message.obj = new DecodeResult(bitmap, block, useTime);
         message.sendToTarget();
     }
 
-    public void postDecodeError(int key, Tile tile, TileDecodeHandler.DecodeErrorException exception) {
-        Message message = obtainMessage(TileDecodeCallbackHandler.WHAT_DECODE_FAILED);
+    public void postDecodeError(int key, Block block, DecodeHandler.DecodeErrorException exception) {
+        Message message = obtainMessage(CallbackHandler.WHAT_DECODE_FAILED);
         message.arg1 = key;
-        message.obj = new DecodeErrorResult(tile, exception);
+        message.obj = new DecodeErrorResult(block, exception);
         message.sendToTarget();
     }
 
 
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
-        TileExecutor executor = executorReference.get();
+        BlockExecutor executor = executorReference.get();
         if (executor == null) {
             SLog.w(NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
             decoder.recycle();
@@ -149,7 +149,7 @@ class TileDecodeCallbackHandler extends Handler {
     }
 
     private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
-        TileExecutor executor = executorReference.get();
+        BlockExecutor executor = executorReference.get();
         if (executor == null) {
             SLog.w(NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
             return;
@@ -164,51 +164,51 @@ class TileDecodeCallbackHandler extends Handler {
         executor.callback.onInitError(imageUri, exception);
     }
 
-    private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
-        TileExecutor executor = executorReference.get();
+    private void decodeCompleted(int key, Block block, Bitmap bitmap, int useTime) {
+        BlockExecutor executor = executorReference.get();
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
+            SLog.w(NAME, "weak reference break. decodeCompleted. key: %d, block=%s", key, block.getInfo());
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
         }
 
-        if (!tile.isExpired(key)) {
-            executor.callback.onDecodeCompleted(tile, bitmap, useTime);
+        if (!block.isExpired(key)) {
+            executor.callback.onDecodeCompleted(block, bitmap, useTime);
         } else {
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
-            executor.callback.onDecodeError(tile,
-                    new TileDecodeHandler.DecodeErrorException(TileDecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
+            executor.callback.onDecodeError(block,
+                    new DecodeHandler.DecodeErrorException(DecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
         }
     }
 
-    private void decodeError(int key, Tile tile, TileDecodeHandler.DecodeErrorException exception) {
-        TileExecutor executor = executorReference.get();
+    private void decodeError(int key, Block block, DecodeHandler.DecodeErrorException exception) {
+        BlockExecutor executor = executorReference.get();
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
+            SLog.w(NAME, "weak reference break. decodeError. key: %d, block=%s", key, block.getInfo());
             return;
         }
 
-        executor.callback.onDecodeError(tile, exception);
+        executor.callback.onDecodeError(block, exception);
     }
 
     private static final class DecodeResult {
-        public Tile tile;
+        public Block block;
         public Bitmap bitmap;
         public int useTime;
 
-        public DecodeResult(Bitmap bitmap, Tile tile, int useTime) {
+        public DecodeResult(Bitmap bitmap, Block block, int useTime) {
             this.bitmap = bitmap;
-            this.tile = tile;
+            this.block = block;
             this.useTime = useTime;
         }
     }
 
     private static final class DecodeErrorResult {
-        public Tile tile;
-        public TileDecodeHandler.DecodeErrorException exception;
+        public Block block;
+        public DecodeHandler.DecodeErrorException exception;
 
-        public DecodeErrorResult(Tile tile, TileDecodeHandler.DecodeErrorException exception) {
-            this.tile = tile;
+        public DecodeErrorResult(Block block, DecodeHandler.DecodeErrorException exception) {
+            this.block = block;
             this.exception = exception;
         }
     }
