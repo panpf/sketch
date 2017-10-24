@@ -44,8 +44,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     DisplayListener wrappedDisplayListener;
     DownloadProgressListener wrappedProgressListener;
 
-    private ViewFunctions functions;
-
+    ViewFunctions functions;
     private ProgressListenerProxy progressListenerProxy;
     private DisplayListenerProxy displayListenerProxy;
     private OnClickListenerProxy clickListenerProxy;
@@ -69,64 +68,54 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         displayListenerProxy = new DisplayListenerProxy(this);
         progressListenerProxy = new ProgressListenerProxy(this);
         clickListenerProxy = new OnClickListenerProxy(this);
+        functions = new ViewFunctions(this);
 
         super.setOnClickListener(clickListenerProxy);
         updateClickable();
-    }
-
-    ViewFunctions getFunctions() {
-        if (functions == null) {
-            synchronized (this) {
-                if (functions == null) {
-                    functions = new ViewFunctions(this);
-                }
-            }
-        }
-        return functions;
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        getFunctions().onLayout(changed, left, top, right, bottom);
+        functions.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        getFunctions().onSizeChanged(w, h, oldw, oldh);
+        functions.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        getFunctions().onDraw(canvas);
+        functions.onDraw(canvas);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return getFunctions().onTouchEvent(event) || super.onTouchEvent(event);
+        return functions.onTouchEvent(event) || super.onTouchEvent(event);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getFunctions().onAttachedToWindow();
+        functions.onAttachedToWindow();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (getFunctions().onDetachedFromWindow()) {
+        if (functions.onDetachedFromWindow()) {
             super.setImageDrawable(null);
         }
     }
 
     @Override
     public void setScaleType(ScaleType scaleType) {
-        ImageZoomFunction zoomFunction = getFunctions().zoomFunction;
+        ImageZoomFunction zoomFunction = functions.zoomFunction;
         if (zoomFunction != null && zoomFunction.getZoomer().isWorking() && scaleType != ScaleType.MATRIX) {
             zoomFunction.setScaleType(scaleType);
         } else {
@@ -187,7 +176,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     private void setDrawable(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         if (oldDrawable != newDrawable) {
-            if (getFunctions().onDrawableChanged(callPosition, oldDrawable, newDrawable)) {
+            if (functions.onDrawableChanged(callPosition, oldDrawable, newDrawable)) {
                 invalidate();
             }
         }
@@ -195,7 +184,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     @Override
     public void onReadyDisplay(UriModel uriModel) {
-        if (getFunctions().onReadyDisplay(uriModel)) {
+        if (functions.onReadyDisplay(uriModel)) {
             invalidate();
         }
     }
@@ -203,15 +192,15 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     @NonNull
     @Override
     public DisplayOptions getOptions() {
-        return getFunctions().requestFunction.getDisplayOptions();
+        return functions.requestFunction.getDisplayOptions();
     }
 
     @Override
     public void setOptions(@Nullable DisplayOptions newDisplayOptions) {
         if (newDisplayOptions == null) {
-            getFunctions().requestFunction.getDisplayOptions().reset();
+            functions.requestFunction.getDisplayOptions().reset();
         } else {
-            getFunctions().requestFunction.getDisplayOptions().copy(newDisplayOptions);
+            functions.requestFunction.getDisplayOptions().copy(newDisplayOptions);
         }
     }
 
@@ -229,7 +218,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     @Nullable
     @Override
     public DownloadProgressListener getDownloadProgressListener() {
-        if (getFunctions().showDownloadProgressFunction != null || wrappedProgressListener != null) {
+        if (functions.showDownloadProgressFunction != null || wrappedProgressListener != null) {
             return progressListenerProxy;
         } else {
             return null;
@@ -244,11 +233,11 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     @Nullable
     @Override
     public DisplayCache getDisplayCache() {
-        return getFunctions().requestFunction.getDisplayCache();
+        return functions.requestFunction.getDisplayCache();
     }
 
     @Override
     public void setDisplayCache(@NonNull DisplayCache displayCache) {
-        getFunctions().requestFunction.setDisplayCache(displayCache);
+        functions.requestFunction.setDisplayCache(displayCache);
     }
 }

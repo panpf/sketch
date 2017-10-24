@@ -50,7 +50,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isClickRetryOnPauseDownloadEnabled() {
-        return getFunctions().clickRetryFunction != null && getFunctions().clickRetryFunction.isClickRetryOnPauseDownloadEnabled();
+        return functions.clickRetryFunction != null && functions.clickRetryFunction.isClickRetryOnPauseDownloadEnabled();
     }
 
     /**
@@ -61,10 +61,10 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             return;
         }
 
-        if (getFunctions().clickRetryFunction == null) {
-            getFunctions().clickRetryFunction = new ClickRetryFunction(this);
+        if (functions.clickRetryFunction == null) {
+            functions.clickRetryFunction = new ClickRetryFunction(this);
         }
-        getFunctions().clickRetryFunction.setClickRetryOnPauseDownloadEnabled(enabled);
+        functions.clickRetryFunction.setClickRetryOnPauseDownloadEnabled(enabled);
         updateClickable();
     }
 
@@ -74,7 +74,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isClickRetryOnDisplayErrorEnabled() {
-        return getFunctions().clickRetryFunction != null && getFunctions().clickRetryFunction.isClickRetryOnDisplayErrorEnabled();
+        return functions.clickRetryFunction != null && functions.clickRetryFunction.isClickRetryOnDisplayErrorEnabled();
     }
 
     /**
@@ -85,10 +85,10 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             return;
         }
 
-        if (getFunctions().clickRetryFunction == null) {
-            getFunctions().clickRetryFunction = new ClickRetryFunction(this);
+        if (functions.clickRetryFunction == null) {
+            functions.clickRetryFunction = new ClickRetryFunction(this);
         }
-        getFunctions().clickRetryFunction.setClickRetryOnDisplayErrorEnabled(enabled);
+        functions.clickRetryFunction.setClickRetryOnDisplayErrorEnabled(enabled);
         updateClickable();
     }
 
@@ -98,7 +98,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isClickPlayGifEnabled() {
-        return getFunctions().clickPlayGifFunction != null;
+        return functions.clickPlayGifFunction != null;
     }
 
     /**
@@ -120,15 +120,15 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         boolean update = false;
 
         if (playIconDrawable != null) {
-            if (getFunctions().clickPlayGifFunction == null) {
-                getFunctions().clickPlayGifFunction = new ClickPlayGifFunction(this);
+            if (functions.clickPlayGifFunction == null) {
+                functions.clickPlayGifFunction = new ClickPlayGifFunction(this);
                 update = true;
             }
 
-            update |= getFunctions().clickPlayGifFunction.setPlayIconDrawable(playIconDrawable);
+            update |= functions.clickPlayGifFunction.setPlayIconDrawable(playIconDrawable);
         } else {
-            if (getFunctions().clickPlayGifFunction != null) {
-                getFunctions().clickPlayGifFunction = null;
+            if (functions.clickPlayGifFunction != null) {
+                functions.clickPlayGifFunction = null;
                 update = true;
             }
         }
@@ -144,7 +144,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isShowDownloadProgressEnabled() {
-        return getFunctions().showDownloadProgressFunction != null;
+        return functions.showDownloadProgressFunction != null;
     }
 
     /**
@@ -185,15 +185,15 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         boolean update = false;
 
         if (enabled) {
-            if (getFunctions().showDownloadProgressFunction == null) {
-                getFunctions().showDownloadProgressFunction = new ShowDownloadProgressFunction(this);
+            if (functions.showDownloadProgressFunction == null) {
+                functions.showDownloadProgressFunction = new ShowDownloadProgressFunction(this);
                 update = true;
             }
-            update |= getFunctions().showDownloadProgressFunction.setMaskColor(maskColor);
-            update |= getFunctions().showDownloadProgressFunction.setMaskShaper(maskShaper);
+            update |= functions.showDownloadProgressFunction.setMaskColor(maskColor);
+            update |= functions.showDownloadProgressFunction.setMaskShaper(maskShaper);
         } else {
-            if (getFunctions().showDownloadProgressFunction != null) {
-                getFunctions().showDownloadProgressFunction = null;
+            if (functions.showDownloadProgressFunction != null) {
+                functions.showDownloadProgressFunction = null;
                 update = true;
             }
         }
@@ -209,7 +209,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isShowPressedStatusEnabled() {
-        return getFunctions().showPressedFunction != null;
+        return functions.showPressedFunction != null;
     }
 
     /**
@@ -250,15 +250,15 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         boolean update = false;
 
         if (enabled) {
-            if (getFunctions().showPressedFunction == null) {
-                getFunctions().showPressedFunction = new ShowPressedFunction(this);
+            if (functions.showPressedFunction == null) {
+                functions.showPressedFunction = new ShowPressedFunction(this);
                 update = true;
             }
-            update |= getFunctions().showPressedFunction.setMaskColor(maskColor);
-            update |= getFunctions().showPressedFunction.setMaskShaper(maskShaper);
+            update |= functions.showPressedFunction.setMaskColor(maskColor);
+            update |= functions.showPressedFunction.setMaskShaper(maskShaper);
         } else {
-            if (getFunctions().showPressedFunction != null) {
-                getFunctions().showPressedFunction = null;
+            if (functions.showPressedFunction != null) {
+                functions.showPressedFunction = null;
                 update = true;
             }
         }
@@ -274,7 +274,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isShowImageFromEnabled() {
-        return getFunctions().showImageFromFunction != null;
+        return functions.showImageFromFunction != null;
     }
 
     /**
@@ -287,10 +287,10 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         }
 
         if (enabled) {
-            getFunctions().showImageFromFunction = new ShowImageFromFunction(this);
-            getFunctions().showImageFromFunction.onDrawableChanged("setShowImageFromEnabled", null, getDrawable());
+            functions.showImageFromFunction = new ShowImageFromFunction(this);
+            functions.showImageFromFunction.onDrawableChanged("setShowImageFromEnabled", null, getDrawable());
         } else {
-            getFunctions().showImageFromFunction = null;
+            functions.showImageFromFunction = null;
         }
 
         invalidate();
@@ -302,7 +302,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     @Nullable
     @SuppressWarnings("unused")
     public ImageFrom getImageFrom() {
-        return getFunctions().showImageFromFunction != null ? getFunctions().showImageFromFunction.getImageFrom() : null;
+        return functions.showImageFromFunction != null ? functions.showImageFromFunction.getImageFrom() : null;
     }
 
 
@@ -311,7 +311,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @SuppressWarnings("unused")
     public boolean isShowGifFlagEnabled() {
-        return getFunctions().showGifFlagFunction != null;
+        return functions.showGifFlagFunction != null;
     }
 
     /**
@@ -324,15 +324,15 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
         boolean update = false;
 
         if (gifFlagDrawable != null) {
-            if (getFunctions().showGifFlagFunction == null) {
-                getFunctions().showGifFlagFunction = new ShowGifFlagFunction(this);
+            if (functions.showGifFlagFunction == null) {
+                functions.showGifFlagFunction = new ShowGifFlagFunction(this);
                 update = true;
             }
 
-            update |= getFunctions().showGifFlagFunction.setGifFlagDrawable(gifFlagDrawable);
+            update |= functions.showGifFlagFunction.setGifFlagDrawable(gifFlagDrawable);
         } else {
-            if (getFunctions().showGifFlagFunction != null) {
-                getFunctions().showGifFlagFunction = null;
+            if (functions.showGifFlagFunction != null) {
+                functions.showGifFlagFunction = null;
                 update = true;
             }
         }
@@ -358,7 +358,7 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @Override
     public boolean isZoomEnabled() {
-        return getFunctions().zoomFunction != null;
+        return functions.zoomFunction != null;
     }
 
     /**
@@ -373,11 +373,11 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
             ImageZoomFunction zoomFunction = new ImageZoomFunction(this);
             zoomFunction.onDrawableChanged("setZoomEnabled", null, getDrawable());
 
-            getFunctions().zoomFunction = zoomFunction;
+            functions.zoomFunction = zoomFunction;
         } else {
-            getFunctions().zoomFunction.recycle("setZoomEnabled");
+            functions.zoomFunction.recycle("setZoomEnabled");
 
-            getFunctions().zoomFunction = null;
+            functions.zoomFunction = null;
         }
     }
 
@@ -388,6 +388,6 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      */
     @Nullable
     public ImageZoomer getZoomer() {
-        return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getZoomer() : null;
+        return functions.zoomFunction != null ? functions.zoomFunction.getZoomer() : null;
     }
 }

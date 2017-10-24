@@ -34,7 +34,7 @@ class ProgressListenerProxy implements DownloadProgressListener {
             return;
         }
 
-        boolean needInvokeInvalidate = view.getFunctions().onUpdateDownloadProgress(totalLength, completedLength);
+        boolean needInvokeInvalidate = view.functions.onUpdateDownloadProgress(totalLength, completedLength);
         if (needInvokeInvalidate) {
             view.invalidate();
         }
