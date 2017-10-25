@@ -69,7 +69,7 @@ Please refer to the details [URI type and usage guide][uri]
 1.Add dependencies to the dependencies node of the app's build.gradle file
 
 ```groovy
-compile 'me.xiaopan:sketch:$sketch_version'
+compile 'me.panpf:sketch:$sketch_version'
 ```
 
 Replace `$sketch_version` with the latest version [![sketch_version_image]][sketch_version_link] `(Do not "v")`
@@ -77,7 +77,7 @@ Replace `$sketch_version` with the latest version [![sketch_version_image]][sket
 If you need to play GIF add sketch-gif dependencies
 
 ```groovy
-compile 'me.xiaopan:sketch-gif:$sketch_gif_version'
+compile 'me.panpf:sketch-gif:$sketch_gif_version'
 ```
 
 Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_image]][sketch_gif_version_link] `(Do not "v")`
@@ -201,9 +201,9 @@ More:
 [logs_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=Logs&colorB=4AC41C
 [logs_link]: https://github.com/panpf/sketch/releases
 [sketch_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
-[sketch_version_link]: https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files
+[sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
 [sketch_gif_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
-[sketch_gif_version_link]: https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files
+[sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [api_10_image]: https://img.shields.io/badge/API-10%2B-orange.svg
 [api_10_link]: https://android-arsenal.com/api?level=10
 [api_14_image]: https://img.shields.io/badge/API-14%2B-blue.svg

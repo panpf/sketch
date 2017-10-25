@@ -69,7 +69,7 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 1.在 app 的 build.gradle 文件的 dependencies 节点中加入依赖
 
 ```groovy
-compile 'me.xiaopan:sketch:$sketch_version'
+compile 'me.panpf:sketch:$sketch_version'
 ```
 
 请自行替换 `$sketch_version` 为最新的版本 [![sketch_version_image]][sketch_version_link] `(不要"v")`
@@ -77,7 +77,7 @@ compile 'me.xiaopan:sketch:$sketch_version'
 如果需要播放 GIF 就添加 sketch-gif 的依赖
 
 ```groovy
-compile 'me.xiaopan:sketch-gif:$sketch_gif_version'
+compile 'me.panpf:sketch-gif:$sketch_gif_version'
 ```
 
 请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link] `(不要"v")`
@@ -201,9 +201,9 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [logs_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=Logs&colorB=4AC41C
 [logs_link]: https://github.com/panpf/sketch/releases
 [sketch_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
-[sketch_version_link]: https://bintray.com/xiaopansky/maven/sketch/_latestVersion#files
+[sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
 [sketch_gif_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
-[sketch_gif_version_link]: https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files
+[sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [api_10_image]: https://img.shields.io/badge/API-10%2B-orange.svg
 [api_10_link]: https://android-arsenal.com/api?level=10
 [api_14_image]: https://img.shields.io/badge/API-14%2B-blue.svg
