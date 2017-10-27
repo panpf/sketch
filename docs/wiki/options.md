@@ -134,7 +134,7 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 [bitmap_pool]: bitmap_pool.md
 [correct_image_orientation]: correct_image_orientation.md.md
 [image_displayer]: image_displayer.md
-[imag_shaper]: imag_shaper.md
+[imag_shaper]: image_shaper.md
 [shape_size]: shape_size.md
 [pause_load]: pause_load.md
 [pause_download]: pause_download.md
