@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.state.StateImage;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
@@ -32,7 +33,7 @@ public class DownloadOptions {
     private boolean cacheInDiskDisabled;
 
     /**
-     * 请求 Level
+     * 请求 level，限制请求处理深度，参考 {@link RequestLevel}
      */
     private RequestLevel requestLevel;
 
@@ -41,9 +42,9 @@ public class DownloadOptions {
     }
 
     /**
-     * 从指定的 DownloadOptions 中拷贝所有属性来创建新的 DownloadOptions
+     * 从指定的 {@link DownloadOptions} 中拷贝所有属性来创建新的 {@link DownloadOptions}
      *
-     * @param from 从这个 DownloadOptions 里拷贝属性
+     * @param from 从这个 {@link DownloadOptions} 里拷贝属性
      */
     @SuppressWarnings("unused")
     public DownloadOptions(@NonNull DownloadOptions from) {
@@ -51,28 +52,9 @@ public class DownloadOptions {
     }
 
     /**
-     * 不使用磁盘缓存？
-     */
-    public boolean isCacheInDiskDisabled() {
-        return cacheInDiskDisabled;
-    }
-
-    /**
-     * 设置不使用磁盘缓存
+     * 获取请求 level
      *
-     * @param cacheInDiskDisabled 不使用磁盘缓存
-     * @return this
-     */
-    @NonNull
-    public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
-        this.cacheInDiskDisabled = cacheInDiskDisabled;
-        return this;
-    }
-
-    /**
-     * 获取请求Level
-     *
-     * @see RequestLevel
+     * @return {@link RequestLevel}
      */
     @Nullable
     public RequestLevel getRequestLevel() {
@@ -80,15 +62,33 @@ public class DownloadOptions {
     }
 
     /**
-     * 设置请求Level
+     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
      *
      * @param requestLevel {@link RequestLevel}
-     * @return this
-     * @see RequestLevel
+     * @return {@link DownloadOptions} 支持链式调用
      */
     @NonNull
     public DownloadOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
         this.requestLevel = requestLevel;
+        return this;
+    }
+
+    /**
+     * 是否禁用磁盘缓存
+     */
+    public boolean isCacheInDiskDisabled() {
+        return cacheInDiskDisabled;
+    }
+
+    /**
+     * 设置是否禁用磁盘缓存
+     *
+     * @param cacheInDiskDisabled 禁用磁盘缓存
+     * @return {@link DownloadOptions} 支持链式调用
+     */
+    @NonNull
+    public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
+        this.cacheInDiskDisabled = cacheInDiskDisabled;
         return this;
     }
 
@@ -101,7 +101,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 从指定的DownloadOptions中拷贝属性，绝对的覆盖
+     * 从指定的 {@link DownloadOptions} 中拷贝属性，绝对的覆盖
      */
     public void copy(@Nullable DownloadOptions options) {
         if (options == null) {
@@ -113,7 +113,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 生成选项KEY，用于组装请求或内存缓存key
+     * 生成选项 key，用于组装请求或内存缓存 key
      *
      * @see SketchImageView#getOptionsKey()
      * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
@@ -124,7 +124,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 生成StateImage用的选项KEY，用于组装StateImage的内存缓存KEY
+     * 生成 {@link StateImage} 用的选项 key，用于组装 {@link StateImage} 的内存缓存 key
      *
      * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
      */

@@ -25,7 +25,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
 
 /**
- * 图片处理器，你可以是实现此接口，将你的图片处理成你想要的效果
+ * {@link ImageProcessor} 可以修改图片
  */
 public interface ImageProcessor extends Identifier {
     /**

@@ -288,8 +288,9 @@ public class ImageZoomer {
     }
 
     /**
-     * 在当前旋转角度的基础上旋转一定角度
+     * 在当前旋转角度的基础上旋转一定角度（会清除已经有的缩放和移动数据，旋转角度会一直存在）
      */
+    @SuppressWarnings("unused")
     public boolean rotateBy(int degrees) {
         return rotateTo(degrees + getRotateDegrees());
     }
@@ -497,15 +498,16 @@ public class ImageZoomer {
     }
 
     /**
-     * 是否开启了阅读模式
+     * 是否开启了阅读模式，开启后尺寸类似长微博或清明上河图的图片将默认充满屏幕显示
      */
     public boolean isReadMode() {
         return readMode;
     }
 
     /**
-     * 设置阅读模式，开启后竖图将默认宽度充满屏幕
+     * 开启阅读模式，开启后尺寸类似长微博或清明上河图的图片将默认充满屏幕显示
      */
+    @SuppressWarnings("unused")
     public void setReadMode(boolean readMode) {
         if (this.readMode == readMode) {
             return;
@@ -517,7 +519,7 @@ public class ImageZoomer {
 
 
     /**
-     * 是否允许父类在滑动到边缘的时候拦截事件（默认true）
+     * 是否允许父类在滑动到边缘的时候拦截事件（默认 true）
      */
     @SuppressWarnings("unused")
     public boolean isAllowParentInterceptOnEdge() {
@@ -525,7 +527,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 设置是否允许父类在滑动到边缘的时候拦截事件（默认true）
+     * 设置是否允许父类在滑动到边缘的时候拦截事件（默认 true）
      */
     @SuppressWarnings("unused")
     public void setAllowParentInterceptOnEdge(boolean allowParentInterceptOnEdge) {

@@ -17,7 +17,7 @@
 package me.xiaopan.sketch.request;
 
 /**
- * 请求Level，决定请求的处理深度
+ * 决定请求的处理深度
  */
 public enum RequestLevel {
     /**

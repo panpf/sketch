@@ -24,7 +24,7 @@ import me.xiaopan.sketch.SketchView;
 public class ViewInfo {
     private ScaleType scaleType;
     private FixedSize fixedSize;
-    private boolean smallerThumbnails;
+    private boolean useSmallerThumbnails;
 
     public ViewInfo() {
 
@@ -37,18 +37,18 @@ public class ViewInfo {
     public void copy(ViewInfo viewInfo) {
         this.scaleType = viewInfo.scaleType;
         this.fixedSize = viewInfo.fixedSize;
-        this.smallerThumbnails = viewInfo.smallerThumbnails;
+        this.useSmallerThumbnails = viewInfo.useSmallerThumbnails;
     }
 
     public void reset(SketchView sketchView, Sketch sketch) {
         if (sketchView != null) {
             this.scaleType = sketchView.getScaleType();
             this.fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
-            this.smallerThumbnails = sketchView.isSmallerThumbnails();
+            this.useSmallerThumbnails = sketchView.isUseSmallerThumbnails();
         } else {
             this.scaleType = null;
             this.fixedSize = null;
-            this.smallerThumbnails = false;
+            this.useSmallerThumbnails = false;
         }
     }
 
@@ -60,7 +60,7 @@ public class ViewInfo {
         return scaleType;
     }
 
-    public boolean isSmallerThumbnails() {
-        return smallerThumbnails;
+    public boolean isUseSmallerThumbnails() {
+        return useSmallerThumbnails;
     }
 }

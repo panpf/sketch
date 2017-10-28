@@ -50,7 +50,7 @@ Options 用来批量设置如何下载、加载、显示图片，有如下三种
 * thumbnailMode: 开启缩略图模式，能够显示更清晰的缩略图，更多内容请参考 [使用 thumbnailMode 属性显示更清晰的缩略图][thumbnail_mode]
 * cacheProcessedImageInDisk: 为了加快速度，将经过复杂处理的图片保存到磁盘缓存中，下次读取后直接使用，更多内容请参考 [使用 cacheProcessedImageInDisk 属性缓存需要复杂处理的图片，提升显示速度][cache_processed_image_in_disk]
 * bitmapPoolDisabled: 禁用 BitmapPool，更多内容请参考 [复用 Bitmap 降低 GC 频率，减少卡顿][bitmap_pool]
-* correctImageOrientationDisabled: 禁用纠正图片方向功能，更多内容请参考 [自动纠正图片方向][correct_image_orientation]
+* correctImageOrientationDisabled: 禁止纠正图片方向，更多内容请参考 [自动纠正图片方向][correct_image_orientation]
 * cacheInMemoryDisabled: 禁用内存缓存，更多内容请参考 [在内存中缓存 Bitmap 提升显示速度][memory_cache]
 * displayer: 使用专门的显示效果来显示图片，更多内容请参考 [使用 ImageDisplayer 以动画的方式显示图片][image_displayer]
 * loadingImage: 设置正在加载时显示的图片

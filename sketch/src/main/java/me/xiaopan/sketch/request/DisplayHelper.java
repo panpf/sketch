@@ -30,7 +30,11 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageSizeCalculator;
+import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.decode.ProcessedResultCacheProcessor;
+import me.xiaopan.sketch.decode.ThumbnailModeDecodeHelper;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
@@ -46,7 +50,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.Stopwatch;
 
 /**
- * 显示 Helper，负责组织、收集、初始化显示参数，最后执行 commit() 提交请求
+ * 组织、收集、初始化显示参数，最后执行 {@link #commit()} 提交请求
  */
 public class DisplayHelper {
     private static final String NAME = "DisplayHelper";
@@ -108,27 +112,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 禁用磁盘缓存
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public DisplayHelper disableCacheInDisk() {
-        displayOptions.setCacheInDiskDisabled(true);
-        return this;
-    }
-
-    /**
-     * 禁用 BitmapPool
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public DisplayHelper disableBitmapPool() {
-        displayOptions.setBitmapPoolDisabled(true);
-        return this;
-    }
-
-    /**
-     * 设置请求 Level
+     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
+     *
+     * @param requestLevel {@link RequestLevel}
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -140,7 +127,33 @@ public class DisplayHelper {
     }
 
     /**
-     * 解码 Gif 图片
+     * 禁用磁盘缓存
+     *
+     * @return {@link DisplayHelper} 支持链式调用
+     */
+    @NonNull
+    @SuppressWarnings("unused")
+    public DisplayHelper disableCacheInDisk() {
+        displayOptions.setCacheInDiskDisabled(true);
+        return this;
+    }
+
+    /**
+     * 禁止从 {@link BitmapPool} 中寻找可复用的 {@link Bitmap}
+     *
+     * @return {@link DisplayHelper} 支持链式调用
+     */
+    @NonNull
+    @SuppressWarnings("unused")
+    public DisplayHelper disableBitmapPool() {
+        displayOptions.setBitmapPoolDisabled(true);
+        return this;
+    }
+
+    /**
+     * 解码 gif 图片并自动循环播放
+     *
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -150,7 +163,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置最大尺寸，在解码时会使用此 Size 来计算 inSimpleSize
+     * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
+     *
+     * @param maxSize 最大尺寸
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -160,17 +176,24 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置最大尺寸，在解码时会使用此 Size 来计算 inSimpleSize
+     * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
+     *
+     * @param maxWidth  最大宽
+     * @param maxHeight 最大高
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper maxSize(int width, int height) {
-        displayOptions.setMaxSize(width, height);
+    public DisplayHelper maxSize(int maxWidth, int maxHeight) {
+        displayOptions.setMaxSize(maxWidth, maxHeight);
         return this;
     }
 
     /**
-     * 调整图片尺寸
+     * 调整图片的尺寸
+     *
+     * @param resize 新的尺寸
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     public DisplayHelper resize(@Nullable Resize resize) {
@@ -179,25 +202,36 @@ public class DisplayHelper {
     }
 
     /**
-     * 调整图片尺寸
+     * 调整图片的尺寸
+     *
+     * @param reWidth  新的宽
+     * @param reHeight 新的高
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
-    public DisplayHelper resize(int width, int height) {
-        displayOptions.setResize(width, height);
+    public DisplayHelper resize(int reWidth, int reHeight) {
+        displayOptions.setResize(reWidth, reHeight);
         return this;
     }
 
     /**
-     * 调整图片尺寸
+     * 调整图片的尺寸
+     *
+     * @param reWidth   新的宽
+     * @param reHeight  新的高
+     * @param scaleType 指定如何生成新图片
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
-    public DisplayHelper resize(int width, int height, @NonNull ScaleType scaleType) {
-        displayOptions.setResize(width, height, scaleType);
+    public DisplayHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
+        displayOptions.setResize(reWidth, reHeight, scaleType);
         return this;
     }
 
     /**
-     * 返回低质量的图片
+     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
+     *
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     public DisplayHelper lowQualityImage() {
@@ -206,7 +240,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置图片处理器，图片处理器会根据 resize 和 ScaleType 创建一张新的图片
+     * 设置图片处理器，可以修改图片
+     *
+     * @param processor 图片处理器
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -216,17 +253,23 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置图片质量
+     * 设置解码时使用的 {@link Bitmap.Config}，KITKAT 以上 {@link Bitmap.Config#ARGB_4444} 会被强制替换为 {@link Bitmap.Config#ARGB_8888}，优先级高于 {@link #lowQualityImage()}，对应 {@link android.graphics.BitmapFactory.Options#inPreferredConfig} 属性
+     *
+     * @param bitmapConfig {@link Bitmap.Config}
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper bitmapConfig(@Nullable Bitmap.Config config) {
-        displayOptions.setBitmapConfig(config);
+    public DisplayHelper bitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
+        displayOptions.setBitmapConfig(bitmapConfig);
         return this;
     }
 
     /**
-     * 设置优先考虑质量还是速度
+     * 设置解码时优先考虑速度还是质量，对应 {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed} 属性
+     *
+     * @param inPreferQualityOverSpeed true：质量优先；false：速度优先
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -236,7 +279,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 开启缩略图模式
+     * 开启缩略图模式，配合 resize 可以得到更清晰的缩略图，参考 {@link ThumbnailModeDecodeHelper}
+     *
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -246,7 +291,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 为了加快速度，将经过 ImageProcessor、resize 或 thumbnailMode 处理过的图片保存到磁盘缓存中，下次就直接读取
+     * 为了加快速度，将经过 {@link #processor(ImageProcessor)}、{@link #resize(Resize)} 或 {@link #thumbnailMode()}，下次就直接读取，参考 {@link ProcessedResultCacheProcessor}
+     *
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -256,7 +303,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 禁用纠正图片方向功能
+     * 禁止纠正图片方向
+     *
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -267,6 +316,8 @@ public class DisplayHelper {
 
     /**
      * 禁用内存缓存
+     *
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -277,6 +328,9 @@ public class DisplayHelper {
 
     /**
      * 设置图片显示器，在加载完成后会调用此显示器来显示图片
+     *
+     * @param displayer 图片显示器
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -287,6 +341,9 @@ public class DisplayHelper {
 
     /**
      * 设置正在加载时显示的图片
+     *
+     * @param loadingImage 正在加载时显示的图片
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -297,6 +354,9 @@ public class DisplayHelper {
 
     /**
      * 设置正在加载时显示的图片
+     *
+     * @param drawableResId drawable 资源 id
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -306,7 +366,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置错误时显示的图片
+     * 设置加载失败时显示的图片
+     *
+     * @param errorImage 加载失败时显示的图片
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -316,7 +379,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置错误时显示的图片
+     * 设置加载失败时显示的图片
+     *
+     * @param drawableResId drawable 资源 id
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -327,6 +393,9 @@ public class DisplayHelper {
 
     /**
      * 设置暂停下载时显示的图片
+     *
+     * @param pauseDownloadImage 暂停下载时显示的图片
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -337,6 +406,9 @@ public class DisplayHelper {
 
     /**
      * 设置暂停下载时显示的图片
+     *
+     * @param drawableResId drawable 资源 id
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -346,7 +418,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置图片整型器，用于绘制时修改图片的形状
+     * 设置图片整形器，用于绘制时修改图片的形状
+     *
+     * @param imageShaper 图片整形器
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -356,7 +431,10 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置图片尺寸，用于绘制时修改图片的尺寸
+     * 设置在绘制时修改图片的尺寸
+     *
+     * @param shapeSize 绘制时修改图片的尺寸
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -366,28 +444,40 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置图片尺寸，用于绘制时修改图片的尺寸
+     * 设置在绘制时修改图片的尺寸
+     *
+     * @param shapeWidth  绘制时修改图片的尺寸的宽
+     * @param shapeHeight 绘制时修改图片的尺寸的高
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper shapeSize(int width, int height) {
-        displayOptions.setShapeSize(width, height);
+    public DisplayHelper shapeSize(int shapeWidth, int shapeHeight) {
+        displayOptions.setShapeSize(shapeWidth, shapeHeight);
         return this;
     }
 
     /**
-     * 设置图片尺寸，用于绘制时修改图片的尺寸
+     * 设置在绘制时修改图片的尺寸
+     *
+     * @param shapeWidth  绘制时修改图片的尺寸的宽
+     * @param shapeHeight 绘制时修改图片的尺寸的高
+     * @param scaleType   指定在绘制时如果显示原图片
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
-    public DisplayHelper shapeSize(int width, int height, ScaleType scaleType) {
-        displayOptions.setShapeSize(width, height, scaleType);
+    public DisplayHelper shapeSize(int shapeWidth, int shapeHeight, ScaleType scaleType) {
+        displayOptions.setShapeSize(shapeWidth, shapeHeight, scaleType);
         return this;
     }
 
 
     /**
      * 批量设置显示参数（完全覆盖）
+     *
+     * @param newOptions {@link DisplayOptions}
+     * @return {@link DisplayHelper} 支持链式调用
      */
     @NonNull
     public DisplayHelper options(@Nullable DisplayOptions newOptions) {
@@ -397,6 +487,8 @@ public class DisplayHelper {
 
     /**
      * 提交请求
+     *
+     * @return {@link DisplayRequest}
      */
     @Nullable
     public DisplayRequest commit() {
@@ -422,7 +514,7 @@ public class DisplayHelper {
             return null;
         }
 
-        preProcess();
+        preProcessOptions();
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("preProcess");
         }
@@ -515,10 +607,7 @@ public class DisplayHelper {
         return true;
     }
 
-    /**
-     * 对相关参数进行预处理
-     */
-    protected void preProcess() {
+    protected void preProcessOptions() {
         Configuration configuration = sketch.getConfiguration();
         ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
         FixedSize fixedSize = viewInfo.getFixedSize();
@@ -622,7 +711,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
+     * 将 最终的 {@link DisplayOptions} 保存在 {@link SketchView} 中，以便在 RecyclerView 中恢复显示时使用
      */
     private void saveParams() {
         DisplayCache displayCache = sketchView.getDisplayCache();
@@ -734,7 +823,7 @@ public class DisplayHelper {
     /**
      * 试图取消已经存在的请求
      *
-     * @return DisplayRequest null：已经取消或没有已存在的请求
+     * @return {@link DisplayRequest} null：已经取消或没有已存在的请求
      */
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);

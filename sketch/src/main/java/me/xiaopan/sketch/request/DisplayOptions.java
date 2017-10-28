@@ -59,7 +59,7 @@ public class DisplayOptions extends LoadOptions {
     private StateImage pauseDownloadImage;
 
     /**
-     * 绘制时修改图片的形状
+     * 图片整形器，用于绘制时修改图片的形状
      */
     private ImageShaper shaper;
 
@@ -76,96 +76,144 @@ public class DisplayOptions extends LoadOptions {
         copy(from);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
         return (DisplayOptions) super.setCacheInDiskDisabled(cacheInDiskDisabled);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
         return (DisplayOptions) super.setRequestLevel(requestLevel);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setMaxSize(@Nullable MaxSize maxSize) {
         return (DisplayOptions) super.setMaxSize(maxSize);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
-    public DisplayOptions setMaxSize(int width, int height) {
-        return (DisplayOptions) super.setMaxSize(width, height);
+    public DisplayOptions setMaxSize(int maxWidth, int maxHeight) {
+        return (DisplayOptions) super.setMaxSize(maxWidth, maxHeight);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setResize(@Nullable Resize resize) {
         return (DisplayOptions) super.setResize(resize);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
-    public DisplayOptions setResize(int width, int height) {
-        return (DisplayOptions) super.setResize(width, height);
+    public DisplayOptions setResize(int reWidth, int reHeight) {
+        return (DisplayOptions) super.setResize(reWidth, reHeight);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
-    public DisplayOptions setResize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
-        return (DisplayOptions) super.setResize(width, height, scaleType);
+    public DisplayOptions setResize(int reWidth, int reHeight, @Nullable ImageView.ScaleType scaleType) {
+        return (DisplayOptions) super.setResize(reWidth, reHeight, scaleType);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setDecodeGifImage(boolean decodeGifImage) {
         return (DisplayOptions) super.setDecodeGifImage(decodeGifImage);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setLowQualityImage(boolean lowQualityImage) {
         return (DisplayOptions) super.setLowQualityImage(lowQualityImage);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setProcessor(@Nullable ImageProcessor processor) {
         return (DisplayOptions) super.setProcessor(processor);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setBitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
         return (DisplayOptions) super.setBitmapConfig(bitmapConfig);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         return (DisplayOptions) super.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setThumbnailMode(boolean thumbnailMode) {
         return (DisplayOptions) super.setThumbnailMode(thumbnailMode);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setCacheProcessedImageInDisk(boolean cacheProcessedImageInDisk) {
         return (DisplayOptions) super.setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setBitmapPoolDisabled(boolean bitmapPoolDisabled) {
         return (DisplayOptions) super.setBitmapPoolDisabled(bitmapPoolDisabled);
     }
 
+    /**
+     * @return {@link DisplayOptions} 支持链式调用
+     */
     @NonNull
     @Override
     public DisplayOptions setCorrectImageOrientationDisabled(boolean correctImageOrientationDisabled) {
@@ -183,10 +231,11 @@ public class DisplayOptions extends LoadOptions {
      * 设置禁止使用内存缓存
      *
      * @param cacheInMemoryDisabled 禁止使用内存缓存
-     * @return DisplayOptions
+     * @return {@link DisplayOptions} 支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
-    public DisplayOptions setCacheInMemoryDisabled(boolean cacheInMemoryDisabled) {
+    public DisplayOptions setCacheInMemoryDisabled(@SuppressWarnings("SameParameterValue") boolean cacheInMemoryDisabled) {
         this.cacheInMemoryDisabled = cacheInMemoryDisabled;
         return this;
     }
@@ -194,7 +243,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 获取图片显示器
      *
-     * @return ImageDisplayer
+     * @return {@link ImageDisplayer}
      */
     @Nullable
     public ImageDisplayer getDisplayer() {
@@ -204,8 +253,8 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置图片显示器
      *
-     * @param displayer ImageDisplayer
-     * @return DisplayOptions
+     * @param displayer 图片显示器
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setDisplayer(@Nullable ImageDisplayer displayer) {
@@ -214,9 +263,9 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 获取加载中时显示的占位图片
+     * 获取正在加载时显示的图片
      *
-     * @return StateImage
+     * @return {@link StateImage}
      */
     @Nullable
     public StateImage getLoadingImage() {
@@ -224,10 +273,10 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置加载中时显示的占位图片
+     * 设置正在加载时显示的图片
      *
-     * @param loadingImage 加载中时显示的占位图片
-     * @return DisplayOptions
+     * @param loadingImage 正在加载时显示的图片
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setLoadingImage(@Nullable StateImage loadingImage) {
@@ -236,10 +285,10 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置加载中时显示的占位图片
+     * 设置正在加载时显示的图片
      *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
+     * @param drawableResId drawable 资源 id
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setLoadingImage(@DrawableRes int drawableResId) {
@@ -250,7 +299,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 获取加载失败时显示的图片
      *
-     * @return StateImage
+     * @return {@link StateImage}
      */
     @Nullable
     public StateImage getErrorImage() {
@@ -261,8 +310,9 @@ public class DisplayOptions extends LoadOptions {
      * 设置加载失败时显示的图片
      *
      * @param errorImage 加载失败时显示的图片
-     * @return DisplayOptions
+     * @return {@link DisplayOptions} 支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public DisplayOptions setErrorImage(@Nullable StateImage errorImage) {
         this.errorImage = errorImage;
@@ -272,8 +322,8 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置加载失败时显示的图片
      *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
+     * @param drawableResId drawable 资源 id
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setErrorImage(@DrawableRes int drawableResId) {
@@ -284,7 +334,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 获取暂停下载时显示的图片
      *
-     * @return StateImage
+     * @return {@link StateImage}
      */
     @Nullable
     public StateImage getPauseDownloadImage() {
@@ -295,8 +345,9 @@ public class DisplayOptions extends LoadOptions {
      * 设置暂停下载时显示的图片
      *
      * @param pauseDownloadImage 暂停下载时显示的图片
-     * @return DisplayOptions
+     * @return {@link DisplayOptions} 支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public DisplayOptions setPauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
         this.pauseDownloadImage = pauseDownloadImage;
@@ -306,8 +357,8 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置暂停下载时显示的图片
      *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
+     * @param drawableResId drawable 资源 id
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setPauseDownloadImage(@DrawableRes int drawableResId) {
@@ -316,9 +367,9 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 获取绘制时图片形状修改器
+     * 设置图片整形器，用于绘制时修改图片的形状
      *
-     * @return ImageShaper
+     * @return {@link ImageShaper}
      */
     @Nullable
     public ImageShaper getShaper() {
@@ -326,10 +377,10 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置绘制时图片形状修改器
+     * 设置图片整形器，用于绘制时修改图片的形状
      *
-     * @param shaper 绘制时图片形状修改器
-     * @return DisplayOptions
+     * @param shaper 图片整形器
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setShaper(@Nullable ImageShaper shaper) {
@@ -340,7 +391,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 获取绘制时图片应该显示的尺寸
      *
-     * @return ShapeSize
+     * @return {@link ShapeSize}
      */
     @Nullable
     public ShapeSize getShapeSize() {
@@ -348,10 +399,10 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置绘制时图片应该显示的尺寸
+     * 设置在绘制时修改图片的尺寸
      *
-     * @param shapeSize 绘制时图片应该显示的尺寸
-     * @return DisplayOptions
+     * @param shapeSize 绘制时修改图片的尺寸
+     * @return {@link DisplayOptions} 支持链式调用
      */
     @NonNull
     public DisplayOptions setShapeSize(@Nullable ShapeSize shapeSize) {
@@ -360,28 +411,30 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置绘制时图片应该显示的尺寸
+     * 设置在绘制时修改图片的尺寸
      *
-     * @param width  绘制时应该显示的宽
-     * @param height 绘制时应该显示的高
-     * @return DisplayOptions
+     * @param shapeWidth  绘制时应该显示的宽
+     * @param shapeHeight 绘制时应该显示的高
+     * @return {@link DisplayOptions} 支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
-    public DisplayOptions setShapeSize(int width, int height) {
-        return setShapeSize(new ShapeSize(width, height));
+    public DisplayOptions setShapeSize(int shapeWidth, int shapeHeight) {
+        return setShapeSize(new ShapeSize(shapeWidth, shapeHeight));
     }
 
     /**
-     * 设置绘制时图片应该显示的尺寸
+     * 设置在绘制时修改图片的尺寸
      *
-     * @param width     绘制时应该显示的宽
-     * @param height    绘制时应该显示的高
-     * @param scaleType 缩放类型
-     * @return DisplayOptions
+     * @param shapeWidth  绘制时修改图片的尺寸的宽
+     * @param shapeHeight 绘制时修改图片的尺寸的高
+     * @param scaleType   指定在绘制时如果显示原图片
+     * @return {@link DisplayOptions} 支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
-    public DisplayOptions setShapeSize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
-        return setShapeSize(new ShapeSize(width, height, scaleType));
+    public DisplayOptions setShapeSize(int shapeWidth, int shapeHeight, @Nullable ImageView.ScaleType scaleType) {
+        return setShapeSize(new ShapeSize(shapeWidth, shapeHeight, scaleType));
     }
 
     @Override

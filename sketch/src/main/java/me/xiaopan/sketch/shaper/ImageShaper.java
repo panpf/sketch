@@ -35,14 +35,11 @@ public interface ImageShaper {
      */
     @NonNull
     Path getPath(@NonNull Rect bounds);
+
     void onUpdateShaderMatrix(@NonNull Matrix matrix, @NonNull Rect bounds, int bitmapWidth, int bitmapHeight, @Nullable ShapeSize shapeSize, @NonNull Rect srcRect);
 
     /**
      * 绘制
-     *
-     * @param canvas
-     * @param paint
-     * @param bounds
      */
     void draw(@NonNull Canvas canvas, @NonNull Paint paint, @NonNull Rect bounds);
 }

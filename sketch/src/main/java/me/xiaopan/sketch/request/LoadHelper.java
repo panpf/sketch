@@ -25,6 +25,10 @@ import android.widget.ImageView.ScaleType;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.decode.ImageType;
+import me.xiaopan.sketch.decode.ProcessedResultCacheProcessor;
+import me.xiaopan.sketch.decode.ThumbnailModeDecodeHelper;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -53,27 +57,10 @@ public class LoadHelper {
     }
 
     /**
-     * 禁用磁盘缓存
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public LoadHelper disableCacheInDisk() {
-        loadOptions.setCacheInDiskDisabled(true);
-        return this;
-    }
-
-    /**
-     * 禁用 BitmapPool
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public LoadHelper disableBitmapPool() {
-        loadOptions.setBitmapPoolDisabled(true);
-        return this;
-    }
-
-    /**
-     * 设置请求 Level
+     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
+     *
+     * @param requestLevel {@link RequestLevel}
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -85,7 +72,33 @@ public class LoadHelper {
     }
 
     /**
-     * 解码Gif图片
+     * 禁用磁盘缓存
+     *
+     * @return {@link LoadHelper} 支持链式调用
+     */
+    @NonNull
+    @SuppressWarnings("unused")
+    public LoadHelper disableCacheInDisk() {
+        loadOptions.setCacheInDiskDisabled(true);
+        return this;
+    }
+
+    /**
+     * 禁止从 {@link BitmapPool} 中寻找可复用的 {@link Bitmap}
+     *
+     * @return {@link LoadHelper} 支持链式调用
+     */
+    @NonNull
+    @SuppressWarnings("unused")
+    public LoadHelper disableBitmapPool() {
+        loadOptions.setBitmapPoolDisabled(true);
+        return this;
+    }
+
+    /**
+     * 解码 gif 图片并自动循环播放
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -95,17 +108,10 @@ public class LoadHelper {
     }
 
     /**
-     * 设置最大尺寸，在解码的时候会使用此 Size 来计算 inSimpleSize
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public LoadHelper maxSize(int width, int height) {
-        loadOptions.setMaxSize(width, height);
-        return this;
-    }
-
-    /**
-     * 设置最大尺寸，在解码的时候会使用此 Size 来计算 inSimpleSize
+     * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
+     *
+     * @param maxSize 最大尺寸
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -115,7 +121,24 @@ public class LoadHelper {
     }
 
     /**
-     * 调整图片尺寸
+     * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
+     *
+     * @param maxWidth  最大宽
+     * @param maxHeight 最大高
+     * @return {@link LoadHelper} 支持链式调用
+     */
+    @NonNull
+    @SuppressWarnings("unused")
+    public LoadHelper maxSize(int maxWidth, int maxHeight) {
+        loadOptions.setMaxSize(maxWidth, maxHeight);
+        return this;
+    }
+
+    /**
+     * 调整图片的尺寸
+     *
+     * @param resize 新的尺寸
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     public LoadHelper resize(@Nullable Resize resize) {
@@ -124,25 +147,36 @@ public class LoadHelper {
     }
 
     /**
-     * 调整图片尺寸
+     * 调调整图片的尺寸
+     *
+     * @param reWidth  新的宽
+     * @param reHeight 新的高
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
-    public LoadHelper resize(int width, int height) {
-        loadOptions.setResize(width, height);
+    public LoadHelper resize(int reWidth, int reHeight) {
+        loadOptions.setResize(reWidth, reHeight);
         return this;
     }
 
     /**
-     * 调整图片尺寸
+     * 调整图片的尺寸
+     *
+     * @param reWidth   新的宽
+     * @param reHeight  新的高
+     * @param scaleType 指定如何生成新图片
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
-    public LoadHelper resize(int width, int height, @NonNull ScaleType scaleType) {
-        loadOptions.setResize(width, height, scaleType);
+    public LoadHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
+        loadOptions.setResize(reWidth, reHeight, scaleType);
         return this;
     }
 
     /**
-     * 返回低质量的图片
+     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     public LoadHelper lowQualityImage() {
@@ -151,7 +185,10 @@ public class LoadHelper {
     }
 
     /**
-     * 设置图片处理器，图片处理器会根据 resize 创建一张新的图片
+     * 设置图片处理器，可以修改图片
+     *
+     * @param processor 图片处理器
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -161,17 +198,23 @@ public class LoadHelper {
     }
 
     /**
-     * 设置图片质量
+     * 设置解码时使用的 {@link Bitmap.Config}，KITKAT 以上 {@link Bitmap.Config#ARGB_4444} 会被强制替换为 {@link Bitmap.Config#ARGB_8888}，优先级高于 {@link #lowQualityImage()}，对应 {@link android.graphics.BitmapFactory.Options#inPreferredConfig} 属性
+     *
+     * @param bitmapConfig {@link Bitmap.Config}
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
-    public LoadHelper bitmapConfig(@Nullable Bitmap.Config config) {
-        loadOptions.setBitmapConfig(config);
+    public LoadHelper bitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
+        loadOptions.setBitmapConfig(bitmapConfig);
         return this;
     }
 
     /**
-     * 设置优先考虑质量还是速度
+     * 设置解码时优先考虑速度还是质量，对应 {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed} 属性
+     *
+     * @param inPreferQualityOverSpeed true：质量优先；false：速度优先
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -181,7 +224,9 @@ public class LoadHelper {
     }
 
     /**
-     * 开启缩略图模式
+     * 开启缩略图模式，配合 resize 可以得到更清晰的缩略图，参考 {@link ThumbnailModeDecodeHelper}
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -191,7 +236,9 @@ public class LoadHelper {
     }
 
     /**
-     * 为了加快速度，将经过 ImageProcessor、resize 或 thumbnailMode 处理过的图片保存到磁盘缓存中，下次就直接读取
+     * 为了加快速度，将经过 {@link #processor(ImageProcessor)}、{@link #resize(Resize)} 或 {@link #thumbnailMode()} 处理过的图片保存到磁盘缓存中，下次就直接读取，参考 {@link ProcessedResultCacheProcessor}
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -201,7 +248,9 @@ public class LoadHelper {
     }
 
     /**
-     * 禁用纠正图片方向功能
+     * 禁止纠正图片方向
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -212,6 +261,9 @@ public class LoadHelper {
 
     /**
      * 批量设置加载参数（完全覆盖）
+     *
+     * @param newOptions {@link LoadOptions}
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     public LoadHelper options(@Nullable LoadOptions newOptions) {
@@ -221,6 +273,8 @@ public class LoadHelper {
 
     /**
      * 设置下载进度监听器
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -230,7 +284,9 @@ public class LoadHelper {
     }
 
     /**
-     * 同步处理
+     * 同步执行
+     *
+     * @return {@link LoadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -241,6 +297,8 @@ public class LoadHelper {
 
     /**
      * 提交
+     *
+     * @return {@link LoadRequest}
      */
     @Nullable
     public LoadRequest commit() {
@@ -252,7 +310,7 @@ public class LoadHelper {
             return null;
         }
 
-        preProcess();
+        preProcessOptions();
 
         if (!checkRequestLevel()) {
             return null;
@@ -282,10 +340,7 @@ public class LoadHelper {
         return true;
     }
 
-    /**
-     * 对属性进行预处理
-     */
-    protected void preProcess() {
+    protected void preProcessOptions() {
         Configuration configuration = sketch.getConfiguration();
 
         // load 请求不能使用 Resize.ByViewFixedSizeResize

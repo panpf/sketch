@@ -16,8 +16,11 @@
 
 package me.xiaopan.sketch;
 
+import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -63,35 +66,35 @@ public interface SketchView {
 
 
     /**
-     * 显示图片
+     * 根据指定的 uri 显示图片
      *
-     * @param uri 图片Uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
+     * @param uri 图片 uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
      */
     @Nullable
     DisplayRequest displayImage(@NonNull String uri);
 
     /**
-     * 显示Drawable资源里的图片
+     * 显示 drawable 资源图片
      *
-     * @param drawableResId Drawable ID
+     * @param drawableResId drawable 资源 id
      */
     @Nullable
     @SuppressWarnings("unused")
     DisplayRequest displayResourceImage(@DrawableRes int drawableResId);
 
     /**
-     * 显示asset里的图片
+     * 显示 assets 资源图片
      *
-     * @param imageFileName ASSETS文件加下的图片文件的名称
+     * @param assetFileName assets 文件夹下的图片文件的名称
      */
     @Nullable
     @SuppressWarnings("unused")
-    DisplayRequest displayAssetImage(@NonNull String imageFileName);
+    DisplayRequest displayAssetImage(@NonNull String assetFileName);
 
     /**
-     * 显示来自 ContentProvider 的图片
+     * 显示来自 {@link ContentProvider} 的图片
      *
-     * @param uri 图片URI
+     * @param uri 来自 {@link ContentProvider} 的图片 uri，例如：content://、file://，使用 {@link ContentResolver#openInputStream(Uri)} api 读取图片
      */
     @Nullable
     @SuppressWarnings("unused")
@@ -137,13 +140,13 @@ public interface SketchView {
     void setDownloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener);
 
     /**
-     * 获取显示缓存，此方法由Sketch调用，无需理会
+     * 获取显示缓存，此方法由 {@link Sketch} 调用，无需理会
      */
     @Nullable
     DisplayCache getDisplayCache();
 
     /**
-     * 设置显示缓存，此方法由Sketch调用，无需理会
+     * 设置显示缓存，此方法由 {@link Sketch} 调用，无需理会
      */
     void setDisplayCache(@NonNull DisplayCache displayCache);
 
@@ -155,13 +158,13 @@ public interface SketchView {
     /**
      * 重新显示
      *
-     * @param listener 在重新显示之前你可以通过这个 listener，修改缓存的options
+     * @param listener 在重新显示之前你可以通过这个 listener，修改缓存的 options
      * @return false：重新显示失败，之前没有显示过
      */
     boolean redisplay(@Nullable RedisplayListener listener);
 
     /**
-     * 是否使用更小的缩略图
+     * 是否使用更小的缩略图，此方法是为手势缩放里的分块显示超大图功能准备的
      */
-    boolean isSmallerThumbnails();
+    boolean isUseSmallerThumbnails();
 }

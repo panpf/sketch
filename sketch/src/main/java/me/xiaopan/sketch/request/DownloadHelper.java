@@ -50,17 +50,10 @@ public class DownloadHelper {
     }
 
     /**
-     * 禁用磁盘缓存
-     */
-    @NonNull
-    @SuppressWarnings("unused")
-    public DownloadHelper disableCacheInDisk() {
-        downloadOptions.setCacheInDiskDisabled(true);
-        return this;
-    }
-
-    /**
-     * 设置请求 Level
+     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
+     *
+     * @param requestLevel {@link RequestLevel}
+     * @return {@link DownloadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -72,7 +65,22 @@ public class DownloadHelper {
     }
 
     /**
+     * 禁用磁盘缓存
+     *
+     * @return {@link DownloadHelper} 支持链式调用
+     */
+    @NonNull
+    @SuppressWarnings("unused")
+    public DownloadHelper disableCacheInDisk() {
+        downloadOptions.setCacheInDiskDisabled(true);
+        return this;
+    }
+
+    /**
      * 批量设置下载参数（完全覆盖）
+     *
+     * @param newOptions {@link DownloadOptions}
+     * @return {@link DownloadHelper} 支持链式调用
      */
     @NonNull
     public DownloadHelper options(@Nullable DownloadOptions newOptions) {
@@ -82,6 +90,8 @@ public class DownloadHelper {
 
     /**
      * 设置下载进度监听器
+     *
+     * @return {@link DownloadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -91,7 +101,9 @@ public class DownloadHelper {
     }
 
     /**
-     * 同步处理
+     * 同步执行
+     *
+     * @return {@link DownloadHelper} 支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -102,6 +114,8 @@ public class DownloadHelper {
 
     /**
      * 提交
+     *
+     * @return {@link DownloadRequest} 支持链式调用
      */
     @Nullable
     public DownloadRequest commit() {
@@ -113,7 +127,7 @@ public class DownloadHelper {
             return null;
         }
 
-        preProcess();
+        preProcessOptions();
 
         if (!checkDiskCache()) {
             return null;
@@ -144,10 +158,7 @@ public class DownloadHelper {
         return true;
     }
 
-    /**
-     * 对属性进行预处理
-     */
-    protected void preProcess() {
+    protected void preProcessOptions() {
         sketch.getConfiguration().getOptionsFilterRegistry().filter(downloadOptions);
 
         // 根据 URI 和下载选项生成请求 key

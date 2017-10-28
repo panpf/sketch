@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 import me.xiaopan.sketch.Identifier;
 
 /**
- * 最大尺寸，用于计算inSimpleSize，缩小图片
+ * 用于计算 inSimpleSize 缩小图片
  */
 public class MaxSize implements Identifier {
     private int width;

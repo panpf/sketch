@@ -254,7 +254,7 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public boolean isSmallerThumbnails() {
+    public boolean isUseSmallerThumbnails() {
         return isZoomEnabled();
     }
 }

@@ -19,7 +19,7 @@ package me.xiaopan.sketch.decode;
 import me.xiaopan.sketch.request.LoadRequest;
 
 /**
- * 缓存经过处理的图片
+ * 缓存经过处理的图片，方便下次直接读取，加快速度
  */
 public class ProcessedResultCacheProcessor implements ResultProcessor {
 

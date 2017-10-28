@@ -18,6 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
@@ -35,6 +36,11 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 缩略图模式解码协助器，当开启缩略图模式并且满足使用缩略图模式的条件时会使用此协助器来解码
+ * <p>
+ * 解码时会根据 resize 的尺寸并使用 {@link BitmapRegionDecoder} 读取原图中的部分区域来得到更清晰的缩略图
+ */
 public class ThumbnailModeDecodeHelper extends DecodeHelper {
     private static final String NAME = "ThumbnailModeDecodeHelper";
 
