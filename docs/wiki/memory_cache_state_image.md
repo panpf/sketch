@@ -80,7 +80,7 @@ public class ImageFragment extends Fragment {
         DisplayOptions options = sketchImageView.getOptions();
 
         Configuration configuration = Sketch.with(getActivity()).getConfiguration();
-        UriModel uriModel = configuration.getUriModelRegistry().match(imageUri);
+        UriModel uriModel = configuration.getUriModelManager().match(imageUri);
         String loadingImageMemoryCacheKey = SketchUtils.makeRequestKey(imageUri, uriModel, optionsKey);       
         options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheKey, null));
 

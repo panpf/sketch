@@ -32,7 +32,7 @@ public class MyInitializer implements Initializer {
 
     @Override
     public void onInitialize(Context context, Configuration configuration) {
-        configuration.getUriModelRegistry().add(new XpkIconUriModel());
+        configuration.getUriModelManager().add(new XpkIconUriModel());
         configuration.setErrorTracker(new MyErrorTracker(context));
     }
 }

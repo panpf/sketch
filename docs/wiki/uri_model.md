@@ -117,7 +117,7 @@ if (uriModel.isFromNet()){
 ```java
 Configuration configuration = ...;
 
-configuration.getUriModelRegistry().add(new MyUriModel());
+configuration.getUriModelManager().add(new MyUriModel());
 ```
 
 #### AbsDiskCacheUriModel

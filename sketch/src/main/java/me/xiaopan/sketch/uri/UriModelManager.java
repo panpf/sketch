@@ -28,10 +28,10 @@ import me.xiaopan.sketch.Identifier;
 /**
  * 负责管理和匹配 {@link UriModel}
  */
-public class UriModelRegistry implements Identifier{
+public class UriModelManager implements Identifier{
     private List<UriModel> uriModelList = new LinkedList<>();
 
-    public UriModelRegistry() {
+    public UriModelManager() {
         this.uriModelList.add(new HttpUriModel());
         this.uriModelList.add(new HttpsUriModel());
         this.uriModelList.add(new FileUriModel());
@@ -47,7 +47,7 @@ public class UriModelRegistry implements Identifier{
     }
 
     @NonNull
-    public UriModelRegistry add(@NonNull UriModel uriModel) {
+    public UriModelManager add(@NonNull UriModel uriModel) {
         //noinspection ConstantConditions
         if (uriModel != null) {
             uriModelList.add(uriModel);
@@ -56,7 +56,7 @@ public class UriModelRegistry implements Identifier{
     }
 
     @NonNull
-    public UriModelRegistry add(int index, @NonNull UriModel uriModel) {
+    public UriModelManager add(int index, @NonNull UriModel uriModel) {
         //noinspection ConstantConditions
         if (uriModel != null) {
             uriModelList.add(index, uriModel);
@@ -85,6 +85,6 @@ public class UriModelRegistry implements Identifier{
     @NonNull
     @Override
     public String getKey() {
-        return "UriModelRegistry";
+        return "UriModelManager";
     }
 }

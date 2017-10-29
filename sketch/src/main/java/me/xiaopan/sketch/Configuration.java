@@ -51,7 +51,7 @@ import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.uri.UriModel;
-import me.xiaopan.sketch.uri.UriModelRegistry;
+import me.xiaopan.sketch.uri.UriModelManager;
 
 /**
  * {@link Sketch} 唯一配置类
@@ -61,7 +61,7 @@ public final class Configuration {
 
     private Context context;
 
-    private UriModelRegistry uriModelRegistry;
+    private UriModelManager uriModelManager;
     private OptionsFilterRegistry optionsFilterRegistry;
 
     private DiskCache diskCache;
@@ -89,7 +89,7 @@ public final class Configuration {
         context = context.getApplicationContext();
         this.context = context;
 
-        this.uriModelRegistry = new UriModelRegistry();
+        this.uriModelManager = new UriModelManager();
         this.optionsFilterRegistry = new OptionsFilterRegistry();
 
         // 由于默认的缓存文件名称从 URLEncoder 加密变成了 MD5 所以这里要升级一下版本号，好清除旧的缓存
@@ -132,11 +132,11 @@ public final class Configuration {
     /**
      * 获取 {@link UriModel} 管理器
      *
-     * @return {@link UriModelRegistry}. {@link UriModel} 管理器
+     * @return {@link UriModelManager}. {@link UriModel} 管理器
      */
     @NonNull
-    public UriModelRegistry getUriModelRegistry() {
-        return uriModelRegistry;
+    public UriModelManager getUriModelManager() {
+        return uriModelManager;
     }
 
     /**
@@ -751,7 +751,7 @@ public final class Configuration {
     @NonNull
     public String getInfo() {
         return NAME + ": " +
-                "\n" + "uriModelRegistry：" + uriModelRegistry.getKey() +
+                "\n" + "uriModelManager：" + uriModelManager.getKey() +
                 "\n" + "optionsFilterRegistry：" + optionsFilterRegistry.getKey() +
 
                 "\n" + "diskCache：" + diskCache.getKey() +

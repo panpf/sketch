@@ -20,11 +20,11 @@ compile 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
 
 2.拷贝 [VideoThumbnailUriModel.java] 到你的 app 中
 
-3.在 Application 中将 [VideoThumbnailUriModel.java] 加入到 [UriModelRegistry] 中，如下：
+3.在 Application 中将 [VideoThumbnailUriModel.java] 加入到 [UriModelManager] 中，如下：
 
 ```java
 Configuration configuration = Sketch.with(context).getConfiguration();
-configuration.getUriModelRegistry().add(new VideoThumbnailUriModel());
+configuration.getUriModelManager().add(new VideoThumbnailUriModel());
 ```
 
 4.显示视频缩略图
@@ -47,4 +47,4 @@ sketchImageView.displayImage(videoFileUri);
 [sample-video-thumbnail]: ../../sample-video-thumbnail/
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
 [VideoThumbnailUriModel.java]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/ssvt/VideoThumbnailUriModel.java
-[UriModelRegistry]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModelRegistry.java
+[UriModelManager]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModelManager.java

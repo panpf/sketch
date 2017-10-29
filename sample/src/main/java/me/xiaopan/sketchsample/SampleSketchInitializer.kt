@@ -42,7 +42,7 @@ class SampleSketchInitializer : Initializer {
 
         configuration!!.errorTracker = SampleErrorTracker(context!!)
 
-        configuration!!.uriModelRegistry.add(XpkIconUriModel())
+        configuration!!.uriModelManager.add(XpkIconUriModel())
     }
 
     @Subscribe

@@ -39,7 +39,7 @@ public abstract class UriModel {
      */
     @Nullable
     public static UriModel match(@NonNull Sketch sketch, @NonNull String uri) {
-        return !TextUtils.isEmpty(uri) ? sketch.getConfiguration().getUriModelRegistry().match(uri) : null;
+        return !TextUtils.isEmpty(uri) ? sketch.getConfiguration().getUriModelManager().match(uri) : null;
     }
 
     /**

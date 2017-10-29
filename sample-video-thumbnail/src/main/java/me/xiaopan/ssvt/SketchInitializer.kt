@@ -8,6 +8,6 @@ import me.xiaopan.sketch.Initializer
 class SketchInitializer : Initializer {
 
     override fun onInitialize(context: Context, configuration: Configuration) {
-        configuration.uriModelRegistry.add(VideoThumbnailUriModel())
+        configuration.uriModelManager.add(VideoThumbnailUriModel())
     }
 }
