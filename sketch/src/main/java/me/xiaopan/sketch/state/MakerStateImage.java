@@ -46,8 +46,9 @@ import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 可以利用Options中配置的ImageProcessor和resize修改原图片，同样支持ShapeSize和ImageShaper
+ * 可以使用 Options 中配置的 {@link ImageProcessor} 和 {@link Resize} 修改原图片，同样支持 {@link ShapeSize} 和 {@link ImageShaper}
  */
+// TODO: 2017/10/30 重命名为 MakerDrawableStateImage 并像 DrawableStateImage 一样支持 drawable
 @SuppressWarnings("unused")
 public class MakerStateImage implements StateImage {
     private int resId;

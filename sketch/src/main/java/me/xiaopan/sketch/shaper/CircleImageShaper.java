@@ -27,7 +27,7 @@ import android.support.annotation.Nullable;
 import me.xiaopan.sketch.request.ShapeSize;
 
 /**
- * 圆形的图片整形器，还可以有描边
+ * 圆形的绘制时图片整形器，还可以有描边
  */
 public class CircleImageShaper implements ImageShaper {
     private int strokeWidth;

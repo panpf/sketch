@@ -23,8 +23,21 @@ import java.util.List;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DownloadOptions;
+import me.xiaopan.sketch.request.LoadListener;
 
+/**
+ * 负责管理 {@link OptionsFilter} 和过滤 Options，内置了以下选项过滤器<p>
+ * <ul>
+ * <li>全局暂停下载功能 -> {@link PauseDownloadOptionsFilter}</li>
+ * <li>全局暂停加载功能 -> {@link PauseLoadOptionsFilter}</li>
+ * <li>全局使用低质量图片功能 -> {@link LowQualityOptionsFilter}</li>
+ * <li>全局解码时质量优先功能 -> {@link InPreferQualityOverSpeedOptionsFilter}</li>
+ * <li>全局移动数据下暂停下载功能 -> {@link MobileDataPauseDownloadController}</li>
+ * </ul>
+ */
 public class OptionsFilterManager implements Identifier {
 
     private PauseDownloadOptionsFilter pauseDownloadOptionsFilter;
@@ -34,6 +47,12 @@ public class OptionsFilterManager implements Identifier {
     private MobileDataPauseDownloadController mobileDataPauseDownloadController;
     private List<OptionsFilter> extrasFilters;
 
+    /**
+     * 添加一个 {@link OptionsFilter}
+     *
+     * @param optionsFilter {@link OptionsFilter}
+     * @return {@link OptionsFilterManager}. 为了支持链式调用
+     */
     @NonNull
     public OptionsFilterManager add(@NonNull OptionsFilter optionsFilter) {
         //noinspection ConstantConditions
@@ -46,6 +65,13 @@ public class OptionsFilterManager implements Identifier {
         return this;
     }
 
+    /**
+     * 添加一个 {@link OptionsFilter} 到指定位置
+     *
+     * @param index         指定位置
+     * @param optionsFilter {@link OptionsFilter}
+     * @return {@link OptionsFilterManager}. 为了支持链式调用
+     */
     @NonNull
     public OptionsFilterManager add(int index, @NonNull OptionsFilter optionsFilter) {
         //noinspection ConstantConditions
@@ -58,11 +84,22 @@ public class OptionsFilterManager implements Identifier {
         return this;
     }
 
+    /**
+     * 删除一个 {@link OptionsFilter}
+     *
+     * @param optionsFilter {@link OptionsFilter}
+     * @return true：存在指定 {@link OptionsFilter} 并已删除
+     */
     public boolean remove(@NonNull OptionsFilter optionsFilter) {
         //noinspection ConstantConditions
         return optionsFilter != null && extrasFilters != null && extrasFilters.remove(optionsFilter);
     }
 
+    /**
+     * 过滤指定 Options
+     *
+     * @param options {@link DownloadOptions}
+     */
     public void filter(@NonNull DownloadOptions options) {
         //noinspection ConstantConditions
         if (options == null) {
@@ -91,14 +128,16 @@ public class OptionsFilterManager implements Identifier {
 
 
     /**
-     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响 display 请求和 load 请求
+     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
      */
     public boolean isPauseDownloadEnabled() {
         return pauseDownloadOptionsFilter != null;
     }
 
     /**
-     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 display 请求和 load 请求
+     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
+     *
+     * @param pauseDownloadEnabled 全局暂停下载新图片
      */
     public void setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
         if (isPauseDownloadEnabled() != pauseDownloadEnabled) {
@@ -107,14 +146,16 @@ public class OptionsFilterManager implements Identifier {
     }
 
     /**
-     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响 display 请求
+     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响 {@link Sketch#display(String, SketchView)} 方法
      */
     public boolean isPauseLoadEnabled() {
         return pauseLoadOptionsFilter != null;
     }
 
     /**
-     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 display 请求
+     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 {@link Sketch#display(String, SketchView)} 方法
+     *
+     * @param pauseLoadEnabled 全局暂停加载新图片
      */
     public void setPauseLoadEnabled(boolean pauseLoadEnabled) {
         if (isPauseLoadEnabled() != pauseLoadEnabled) {
@@ -131,6 +172,8 @@ public class OptionsFilterManager implements Identifier {
 
     /**
      * 设置全局使用低质量的图片
+     *
+     * @param lowQualityImageEnabled 全局使用低质量图片
      */
     public void setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
         if (isLowQualityImageEnabled() != lowQualityImageEnabled) {
@@ -150,7 +193,7 @@ public class OptionsFilterManager implements Identifier {
     /**
      * 开启全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
-     * @param inPreferQualityOverSpeedEnabled true：质量；false：速度
+     * @param inPreferQualityOverSpeedEnabled true：质量优先；false：速度优先
      */
     public void setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
         if (isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
@@ -167,7 +210,9 @@ public class OptionsFilterManager implements Identifier {
     }
 
     /**
-     * 开启全局移动数据或有流量限制的 WIFI 下暂停下载的功能，只影响 display 请求和 load 请求
+     * 开启全局移动数据或有流量限制的 WIFI 下暂停下载的功能，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
+     *
+     * @param mobileDataPauseDownloadEnabled 全局移动数据下暂停下载
      */
     public void setMobileDataPauseDownloadEnabled(Configuration configuration, boolean mobileDataPauseDownloadEnabled) {
         if (isMobileDataPauseDownloadEnabled() != mobileDataPauseDownloadEnabled) {

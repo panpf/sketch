@@ -25,6 +25,7 @@ import me.xiaopan.sketch.SketchView;
 /**
  * 图片显示器，用来在加载完成后显示图片
  */
+// TODO: 2017/10/30 继续完善 javadoc
 public interface ImageDisplayer extends Identifier {
     int DEFAULT_ANIMATION_DURATION = 400;
 

@@ -26,16 +26,16 @@ import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.request.DownloadResult;
 
 /**
- * 负责某一类型 URI 的全部功能，你可通过此类实现扩展 Sketch 支持的 uri
+ * 负责解析某一特定类型的 uri
  */
 public abstract class UriModel {
 
     /**
-     * 根据 uri 匹配能处理它的 UriModel
+     * 匹配可以解析指定 uri 的 {@link UriModel}
      *
-     * @param sketch Sketch
+     * @param sketch {@link Sketch}
      * @param uri    图片 uri
-     * @return 能够处理这种 uri 的 UriModel
+     * @return {@link UriModel}. 能够解析这种 uri 的 {@link UriModel}
      */
     @Nullable
     public static UriModel match(@NonNull Sketch sketch, @NonNull String uri) {
@@ -43,11 +43,11 @@ public abstract class UriModel {
     }
 
     /**
-     * 根据 uri 匹配能处理它的 UriModel
+     * 匹配可以解析指定 uri 的 {@link UriModel}
      *
-     * @param context Context
+     * @param context {@link Context}
      * @param uri     图片 uri
-     * @return 能够处理这种 uri 的 UriModel
+     * @return {@link UriModel}. 能够解析这种 uri 的 {@link UriModel}
      */
     @Nullable
     public static UriModel match(@NonNull Context context, @NonNull String uri) {
@@ -55,19 +55,18 @@ public abstract class UriModel {
     }
 
     /**
-     * 如果返回true，那么后续将使用这个 UriModel 来处理 uri
+     * 当前 {@link UriModel} 是否能够解析指定 uri
      *
      * @param uri 图片 uri
-     * @return true：能处理
      */
     protected abstract boolean match(@NonNull String uri);
 
     /**
      * 获取指定 uri 的数据，用于后续解码读取图片
      *
-     * @param context        Context
+     * @param context        {@link Context}
      * @param uri            图片 uri
-     * @param downloadResult 下载结果，只对 {@link #isFromNet()} 为 true 的 UriModel 有用
+     * @param downloadResult 下载结果，只对 {@link #isFromNet()} 为 true 的 {@link UriModel} 有用
      * @return DataSource
      */
     @NonNull
@@ -75,7 +74,7 @@ public abstract class UriModel {
                                              @Nullable DownloadResult downloadResult) throws GetDataSourceException;
 
     /**
-     * 获取 uri 中的内容部分，默认是它自己
+     * 获取 uri 中的内容部分，默认是它自己。例如对于 http 类型的 uri，内容部分就是它自己，而对于 asset://sample.jpg 类型的 uri，内容部分就是 sample.jpg
      *
      * @param uri 图片 uri
      * @return uri 中的内容部分，默认是它自己
@@ -86,7 +85,7 @@ public abstract class UriModel {
     }
 
     /**
-     * 获取指定 uri 的磁盘缓存key，默认返回 uri 自己
+     * 获取指定 uri 的磁盘缓存 key，默认返回 uri 自己
      *
      * @param uri 图片 uri
      * @return 指定 uri 的磁盘缓存 key

@@ -38,16 +38,19 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 负责下载并缓存图片
+ */
 public class ImageDownloader implements Identifier {
     private static final String NAME = "ImageDownloader";
 
     /**
-     * Download image
+     * 此方法是下载图片的入口，并主要负责下载缓存锁的申请和释放
      *
-     * @param request DownloadRequest
-     * @return DownloadResult
-     * @throws CanceledException canceled
-     * @throws DownloadException download failed
+     * @param request {@link DownloadRequest}
+     * @return {@link DownloadResult}
+     * @throws CanceledException 已取消
+     * @throws DownloadException 下载失败
      */
     @NonNull
     public DownloadResult download(@NonNull DownloadRequest request) throws CanceledException, DownloadException {
@@ -88,14 +91,14 @@ public class ImageDownloader implements Identifier {
     }
 
     /**
-     * Download exception retry
+     * 此方法负责下载的失败重试逻辑
      *
-     * @param request      DownloadRequest
-     * @param diskCache    DiskCache
-     * @param diskCacheKey disk cache key
-     * @return DownloadResult
-     * @throws CanceledException canceled
-     * @throws DownloadException download failed
+     * @param request      {@link DownloadRequest}
+     * @param diskCache    {@link DiskCache}. 用来写出并缓存数据
+     * @param diskCacheKey 磁盘缓存 key
+     * @return {@link DownloadResult}
+     * @throws CanceledException 已取消
+     * @throws DownloadException 下载失败
      */
     @NonNull
     private DownloadResult loopRetryDownload(@NonNull DownloadRequest request, @NonNull DiskCache diskCache,
@@ -137,17 +140,18 @@ public class ImageDownloader implements Identifier {
     }
 
     /**
-     * Real execute download
+     * 真正的下载核心逻辑方法，发送 http 请求并读取响应
      *
-     * @param request      DownloadRequest
-     * @param uri          image uri
-     * @param httpStack    HttpStack
-     * @param diskCache    DiskCache
-     * @param diskCacheKey disk cache key
-     * @return DownloadResult
-     * @throws IOException       because io
-     * @throws CanceledException canceled
-     * @throws DownloadException download failed
+     * @param request      {@link DownloadRequest}
+     * @param uri          图片 uri
+     * @param httpStack    {@link HttpStack}. 用来发送 http 请求并且获取响应
+     * @param diskCache    {@link DiskCache}. 用来写出并缓存数据
+     * @param diskCacheKey 磁盘缓存 key
+     * @return {@link DownloadResult}
+     * @throws IOException        发生 IO 异常
+     * @throws CanceledException  已取消
+     * @throws DownloadException  下载失败
+     * @throws RedirectsException 图片地址重定向了
      */
     @NonNull
     private DownloadResult doDownload(@NonNull DownloadRequest request, @NonNull String uri, @NonNull HttpStack httpStack,
@@ -155,17 +159,17 @@ public class ImageDownloader implements Identifier {
             throws IOException, CanceledException, DownloadException, RedirectsException {
         // Opening http connection
         request.setStatus(BaseRequest.Status.CONNECTING);
-        HttpStack.ImageHttpResponse httpResponse;
+        HttpStack.Response response;
         //noinspection CaughtExceptionImmediatelyRethrown
         try {
-            httpResponse = httpStack.getHttpResponse(uri);
+            response = httpStack.getResponse(uri);
         } catch (IOException e) {
             throw e;
         }
 
         // Check canceled
         if (request.isCanceled()) {
-            httpResponse.releaseConnection();
+            response.releaseConnection();
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(NAME, "Download canceled after opening the connection. %s. %s", request.getThreadName(), request.getKey());
             }
@@ -175,20 +179,20 @@ public class ImageDownloader implements Identifier {
         // Check response code, must be 200
         int responseCode;
         try {
-            responseCode = httpResponse.getResponseCode();
+            responseCode = response.getCode();
         } catch (IOException e) {
-            httpResponse.releaseConnection();
+            response.releaseConnection();
             String message = String.format("Get response code exception. responseHeaders: %s. %s. %s",
-                    httpResponse.getResponseHeadersString(), request.getThreadName(), request.getKey());
+                    response.getHeadersString(), request.getThreadName(), request.getKey());
             SLog.w(NAME, e, message);
             throw new DownloadException(message, e, ErrorCause.DOWNLOAD_GET_RESPONSE_CODE_EXCEPTION);
         }
         if (responseCode != 200) {
-            httpResponse.releaseConnection();
+            response.releaseConnection();
 
             // redirects
             if (responseCode == 301 || responseCode == 302) {
-                String newUri = httpResponse.getResponseHeader("Location");
+                String newUri = response.getHeader("Location");
                 if (!TextUtils.isEmpty(newUri)) {
                     // To prevent infinite redirection
                     if (uri.equals(request.getUri())) {
@@ -205,17 +209,17 @@ public class ImageDownloader implements Identifier {
             }
 
             String message = String.format("Response code exception. responseHeaders: %s. %s. %s",
-                    httpResponse.getResponseHeadersString(), request.getThreadName(), request.getKey());
+                    response.getHeadersString(), request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
             throw new DownloadException(message, ErrorCause.DOWNLOAD_RESPONSE_CODE_EXCEPTION);
         }
 
         // Check content length, must be greater than 0 or is chunked
-        long contentLength = httpResponse.getContentLength();
-        if (contentLength <= 0 && !httpResponse.isContentChunked()) {
-            httpResponse.releaseConnection();
+        long contentLength = response.getContentLength();
+        if (contentLength <= 0 && !response.isContentChunked()) {
+            response.releaseConnection();
             String message = String.format("Content length exception. contentLength: %d, responseHeaders: %s. %s. %s",
-                    contentLength, httpResponse.getResponseHeadersString(), request.getThreadName(), request.getKey());
+                    contentLength, response.getHeadersString(), request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
             throw new DownloadException(message, ErrorCause.DOWNLOAD_CONTENT_LENGTH_EXCEPTION);
         }
@@ -223,9 +227,9 @@ public class ImageDownloader implements Identifier {
         // Get content
         InputStream inputStream;
         try {
-            inputStream = httpResponse.getContent();
+            inputStream = response.getContent();
         } catch (IOException e) {
-            httpResponse.releaseConnection();
+            response.releaseConnection();
             throw e;
         }
 
@@ -281,7 +285,7 @@ public class ImageDownloader implements Identifier {
         }
 
         // Check content fully and commit the disk cache
-        boolean readFully = (contentLength <= 0 && httpResponse.isContentChunked()) || completedLength == contentLength;
+        boolean readFully = (contentLength <= 0 && response.isContentChunked()) || completedLength == contentLength;
         if (readFully) {
             if (diskCacheEditor != null) {
                 try {
@@ -297,7 +301,7 @@ public class ImageDownloader implements Identifier {
                 diskCacheEditor.abort();
             }
             String message = String.format("The data is not fully read. contentLength:%d, completedLength:%d, ContentChunked:%s. %s. %s",
-                    contentLength, completedLength, httpResponse.isContentChunked(), request.getThreadName(), request.getKey());
+                    contentLength, completedLength, response.isContentChunked(), request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
             throw new DownloadException(message, ErrorCause.DOWNLOAD_DATA_NOT_FULLY_READ);
         }
@@ -326,15 +330,15 @@ public class ImageDownloader implements Identifier {
     }
 
     /**
-     * Read data and call update progress
+     * 读取数据并回调下载进度
      *
-     * @param request       DownloadRequest
-     * @param inputStream   InputStream
-     * @param outputStream  OutputStream
-     * @param contentLength content length
-     * @return completed length
-     * @throws IOException       because io
-     * @throws CanceledException canceled
+     * @param request       {@link DownloadRequest}
+     * @param inputStream   {@link InputStream}
+     * @param outputStream  {@link OutputStream}
+     * @param contentLength 数据长度
+     * @return 已读取数据长度
+     * @throws IOException       IO 异常
+     * @throws CanceledException 已取消
      */
     private int readData(@NonNull DownloadRequest request, @NonNull InputStream inputStream,
                          @NonNull OutputStream outputStream, int contentLength) throws IOException, CanceledException {

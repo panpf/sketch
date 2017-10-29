@@ -21,6 +21,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
@@ -31,7 +32,7 @@ import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 使用当前ImageView正在显示的图片作为状态图片
+ * 使用当前 {@link ImageView} 正在显示的图片作为状态图片
  */
 @SuppressWarnings("unused")
 public class OldStateImage implements StateImage {

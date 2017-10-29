@@ -240,9 +240,9 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置图片处理器，可以修改图片
+     * 设置图片处理器，在图片读取到内存后对图片进行修改
      *
-     * @param processor 图片处理器
+     * @param processor {@link ImageProcessor}
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull

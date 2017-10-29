@@ -22,5 +22,10 @@ import me.xiaopan.sketch.request.DownloadOptions;
  * 选项过滤器，用于统一修改 Options
  */
 public interface OptionsFilter {
+    /**
+     * 过滤 Options
+     *
+     * @param options {@link DownloadOptions}
+     */
     void filter(DownloadOptions options);
 }

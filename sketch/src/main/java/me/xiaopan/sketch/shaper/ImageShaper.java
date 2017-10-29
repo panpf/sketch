@@ -21,6 +21,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,10 +37,24 @@ public interface ImageShaper {
     @NonNull
     Path getPath(@NonNull Rect bounds);
 
+    /**
+     * {@link Shader} 的 {@link Matrix} 更新时回调
+     *
+     * @param matrix       {@link Shader} 的 {@link Matrix}
+     * @param bounds       {@link Rect}. 绘制区域的边界位置
+     * @param bitmapWidth  bitmap 宽
+     * @param bitmapHeight bitmap 高
+     * @param shapeSize    {@link ShapeSize}
+     * @param srcRect      {@link Rect}. 原图中的位置
+     */
     void onUpdateShaderMatrix(@NonNull Matrix matrix, @NonNull Rect bounds, int bitmapWidth, int bitmapHeight, @Nullable ShapeSize shapeSize, @NonNull Rect srcRect);
 
     /**
      * 绘制
+     *
+     * @param canvas {@link Canvas}
+     * @param paint  {@link Paint}
+     * @param bounds {@link Rect}. 绘制区域的边界位置
      */
     void draw(@NonNull Canvas canvas, @NonNull Paint paint, @NonNull Rect bounds);
 }

@@ -34,52 +34,60 @@ public interface HttpStack extends Identifier {
     int DEFAULT_MAX_RETRY_COUNT = 0;    // 默认最大重试次数
 
     /**
-     * 获取最大重试次数
+     * 获取最大重试次数，默认值是 {@link HttpStack#DEFAULT_MAX_RETRY_COUNT}
      */
     int getMaxRetryCount();
 
     /**
-     * 设置最大重试次数（默认HttpStack.DEFAULT_MAX_RETRY_COUNT）
+     * 设置最大重试次数
+     *
+     * @param maxRetryCount 最大重试次数
      */
     @SuppressWarnings("unused")
     @NonNull
     HttpStack setMaxRetryCount(int maxRetryCount);
 
     /**
-     * 获取连接超时时间（默认HttpStack.DEFAULT_CONNECT_TIMEOUT）
+     * 获取连接超时时间，单位毫秒，默认值是 {@link HttpStack#DEFAULT_CONNECT_TIMEOUT}
      */
     @SuppressWarnings("unused")
     int getConnectTimeout();
 
     /**
-     * 设置连接超时时间（默认HttpStack.DEFAULT_CONNECT_TIMEOUT）
+     * 设置连接超时时间
+     *
+     * @param connectTimeout 连接超时时间，单位毫秒
      */
     @SuppressWarnings("unused")
     @NonNull
     HttpStack setConnectTimeout(int connectTimeout);
 
     /**
-     * 获取读取超时时间（默认HttpStack.DEFAULT_READ_TIMEOUT）
+     * 获取读取超时时间，单位毫秒，默认值是 {@link HttpStack#DEFAULT_READ_TIMEOUT}
      */
     @SuppressWarnings("unused")
     int getReadTimeout();
 
     /**
-     * 设置读取超时时间（默认HttpStack.DEFAULT_READ_TIMEOUT）
+     * 设置读取超时时间
+     *
+     * @param readTimeout 读取超时时间，单位毫秒
      */
     @SuppressWarnings("unused")
     @NonNull
     HttpStack setReadTimeout(int readTimeout);
 
     /**
-     * 获取User-Agent
+     * 获取自定义请求头中的 User-Agent 属性
      */
     @SuppressWarnings("unused")
     @Nullable
     String getUserAgent();
 
     /**
-     * 设置User-Agent
+     * 设置请求头中的 User-Agent 属性
+     *
+     * @param userAgent 请求头中的 User-Agent 属性
      */
     @SuppressWarnings("unused")
     @NonNull
@@ -93,7 +101,9 @@ public interface HttpStack extends Identifier {
     Map<String, String> getExtraHeaders();
 
     /**
-     * 设置扩展请求属性
+     * 设置扩展请求属性集
+     *
+     * @param extraHeaders 扩展请求属性集
      */
     @SuppressWarnings("unused")
     @NonNull
@@ -108,29 +118,37 @@ public interface HttpStack extends Identifier {
 
     /**
      * 添加可存在多个的请求属性
+     *
+     * @param extraHeaders 扩展请求属性集
      */
     @SuppressWarnings("unused")
     @NonNull
     HttpStack addExtraHeaders(Map<String, String> extraHeaders);
 
     /**
-     * 获取响应
+     * 发送请求并获取响应
+     *
+     * @param uri http uri
+     * @return {@link Response}
      */
     @NonNull
-    ImageHttpResponse getHttpResponse(String uri) throws IOException;
+    Response getResponse(String uri) throws IOException;
 
     /**
      * 是否可以重试
      */
     boolean canRetry(Throwable throwable);
 
-    interface ImageHttpResponse {
+    /**
+     * 统一响应接口
+     */
+    interface Response {
         /**
          * 获取响应状态码
          *
          * @throws IOException IO
          */
-        int getResponseCode() throws IOException;
+        int getCode() throws IOException;
 
         /**
          * 获取响应消息
@@ -139,7 +157,7 @@ public interface HttpStack extends Identifier {
          */
         @SuppressWarnings("unused")
         @Nullable
-        String getResponseMessage() throws IOException;
+        String getMessage() throws IOException;
 
         /**
          * 获取内容长度
@@ -155,13 +173,13 @@ public interface HttpStack extends Identifier {
          * 获取响应头
          */
         @Nullable
-        String getResponseHeader(@NonNull String name);
+        String getHeader(@NonNull String name);
 
         /**
          * 获取所有的响应头
          */
         @Nullable
-        String getResponseHeadersString();
+        String getHeadersString();
 
         /**
          * 获取内容输入流

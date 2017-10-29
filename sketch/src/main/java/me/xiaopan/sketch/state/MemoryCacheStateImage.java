@@ -33,7 +33,7 @@ import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
- * 从内存中获取图片作为状态图片，支持ShapeSize和ImageShaper
+ * 从内存缓存中获取图片作为状态图片，支持 {@link ShapeSize} 和 {@link ImageShaper}
  */
 @SuppressWarnings("unused")
 public class MemoryCacheStateImage implements StateImage {

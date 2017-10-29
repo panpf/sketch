@@ -28,7 +28,7 @@ import android.support.annotation.Nullable;
 import me.xiaopan.sketch.request.ShapeSize;
 
 /**
- * 圆角矩形的图片，还可以有描边
+ * 圆角矩形的绘制时图片整形器，还可以有描边
  */
 @SuppressWarnings("unused")
 public class RoundRectImageShaper implements ImageShaper {

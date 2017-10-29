@@ -25,9 +25,18 @@ import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayOptions;
 
 /**
- * 专门用于加载中、失败、暂停图片
+ * 用于为加载中、失败、暂停状态提供占位图片
  */
 public interface StateImage {
+
+    /**
+     * 获取图片
+     *
+     * @param context        {@link Context}
+     * @param sketchView     {@link SketchView}
+     * @param displayOptions {@link DisplayOptions}
+     * @return {@link Drawable}
+     */
     @Nullable
     Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions);
 }

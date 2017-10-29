@@ -64,7 +64,7 @@ public class LoadOptions extends DownloadOptions {
     private boolean thumbnailMode;
 
     /**
-     * 图片处理器，可以修改图片
+     * 图片处理器，在图片读取到内存后对图片进行修改
      */
     private ImageProcessor processor;
 
@@ -203,7 +203,7 @@ public class LoadOptions extends DownloadOptions {
     }
 
     /**
-     * 获取图片处理器，可以修改图片
+     * 获取图片处理器，在图片读取到内存后对图片进行修改
      *
      * @return {@link ImageProcessor}
      */
@@ -213,7 +213,7 @@ public class LoadOptions extends DownloadOptions {
     }
 
     /**
-     * 设置图片处理器，可以修改图片
+     * 设置图片处理器，在图片读取到内存后对图片进行修改
      *
      * @param processor {@link ImageProcessor}
      * @return {@link LoadOptions}. 为了支持链式调用

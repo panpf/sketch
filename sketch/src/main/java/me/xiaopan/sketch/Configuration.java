@@ -701,7 +701,7 @@ public final class Configuration {
     }
 
     /**
-     * 全局解码时优先质量？
+     * 全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
      * @return true：质量优先；false：速度优先
      */
@@ -711,9 +711,9 @@ public final class Configuration {
     }
 
     /**
-     * 设置全局解码时优先考虑质量 (默认优先考虑速度)
+     * 全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
-     * @param inPreferQualityOverSpeedEnabled true：质量；false：速度
+     * @param inPreferQualityOverSpeedEnabled true：质量优先；false：速度优先
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull

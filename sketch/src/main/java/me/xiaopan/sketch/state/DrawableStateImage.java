@@ -29,7 +29,7 @@ import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
- * 给什么图片显示什么图片，支持ShapeSize和ImageShaper
+ * 给什么图片显示什么图片，支持 {@link ShapeSize} 和 {@link ImageShaper}
  */
 @SuppressWarnings("unused")
 public class DrawableStateImage implements StateImage {

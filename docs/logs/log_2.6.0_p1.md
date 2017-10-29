@@ -8,6 +8,12 @@
 * :hammer: 所有 tile 相关的名字 全部改成了 block
 * :hammer: UriModelRegistry 重命名为 UriModelManager
 * :hammer: OptionsFilterRegistry 重命名为 OptionsFilterManager
+* :hammer: HttpStack.ImageHttpResponse 重命名为 HttpStack.Response
+* :hammer: HttpStack.getHttpResponse(String). 重命名为 HttpStack.getResponse(String)
+* :hammer: HttpStack.ImageHttpResponse.getResponseCode() 重命名为 HttpStack.Response.getCode()
+* :hammer: HttpStack.ImageHttpResponse.getResponseMessage() 重命名为 HttpStack.Response.getMessage()
+* :hammer: HttpStack.ImageHttpResponse.getResponseHeadersString() 重命名为 HttpStack.Response.getHeadersString()
+* :hammer: HttpStack.ImageHttpResponse.getResponseHeader() 重命名为 HttpStack.Response.getHeader()
 
 sample app:
 * :bug: 修复 UNSPLASH 页面没有加载完数据就切换到别的页面时崩溃的 BUG

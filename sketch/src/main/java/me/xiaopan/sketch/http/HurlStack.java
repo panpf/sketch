@@ -126,7 +126,7 @@ public class HurlStack implements HttpStack {
 
     @NonNull
     @Override
-    public ImageHttpResponse getHttpResponse(String uri) throws IOException {
+    public Response getResponse(String uri) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
 
         connection.setConnectTimeout(connectTimeout);
@@ -165,7 +165,7 @@ public class HurlStack implements HttpStack {
 
     }
 
-    private static class HurlResponse implements ImageHttpResponse {
+    private static class HurlResponse implements Response {
         private HttpURLConnection connection;
 
         HurlResponse(HttpURLConnection connection) {
@@ -173,12 +173,12 @@ public class HurlStack implements HttpStack {
         }
 
         @Override
-        public int getResponseCode() throws IOException {
+        public int getCode() throws IOException {
             return connection.getResponseCode();
         }
 
         @Override
-        public String getResponseMessage() throws IOException {
+        public String getMessage() throws IOException {
             return connection.getResponseMessage();
         }
 
@@ -188,7 +188,7 @@ public class HurlStack implements HttpStack {
         }
 
         @Override
-        public String getResponseHeadersString() {
+        public String getHeadersString() {
             Map<String, List<String>> headers = connection.getHeaderFields();
             if (headers == null || headers.size() == 0) {
                 return null;
@@ -247,7 +247,7 @@ public class HurlStack implements HttpStack {
 
         @Nullable
         @Override
-        public String getResponseHeader(@NonNull String name) {
+        public String getHeader(@NonNull String name) {
             return connection.getHeaderField(name);
         }
     }
