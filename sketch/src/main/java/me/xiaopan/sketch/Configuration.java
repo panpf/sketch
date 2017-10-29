@@ -19,6 +19,7 @@ package me.xiaopan.sketch;
 import android.annotation.TargetApi;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
@@ -39,17 +40,21 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.http.ImageDownloader;
+import me.xiaopan.sketch.optionsfilter.OptionsFilter;
 import me.xiaopan.sketch.optionsfilter.OptionsFilterRegistry;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
 import me.xiaopan.sketch.request.HelperFactory;
+import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
+import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.uri.UriModelRegistry;
 
 /**
- * Sketch 唯一配置类
+ * {@link Sketch} 唯一配置类
  */
 public final class Configuration {
     private static final String NAME = "Configuration";
@@ -115,9 +120,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 Context
+     * 获取 {@link Context}
      *
-     * @return Context
+     * @return {@link Context}
      */
     @NonNull
     public Context getContext() {
@@ -125,9 +130,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 UriModel 管理器
+     * 获取 {@link UriModel} 管理器
      *
-     * @return UriModelRegistry
+     * @return {@link UriModelRegistry}. {@link UriModel} 管理器
      */
     @NonNull
     public UriModelRegistry getUriModelRegistry() {
@@ -135,18 +140,18 @@ public final class Configuration {
     }
 
     /**
-     * 获取 OptionsFilter 管理器
+     * 获取 {@link OptionsFilter} 管理器
      *
-     * @return OptionsFilterRegistry
+     * @return {@link OptionsFilterRegistry}. {@link OptionsFilter} 管理器
      */
     public OptionsFilterRegistry getOptionsFilterRegistry() {
         return optionsFilterRegistry;
     }
 
     /**
-     * 获取磁盘缓存器
+     * 获取磁盘缓存管理器
      *
-     * @return DiskCache
+     * @return {@link DiskCache}. 磁盘缓存管理器
      */
     @NonNull
     public DiskCache getDiskCache() {
@@ -154,9 +159,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置磁盘缓存器
+     * 设置磁盘缓存管理器
      *
-     * @return Configuration. Convenient chain calls
+     * @param newDiskCache {@link DiskCache}. 磁盘缓存管理器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -174,9 +180,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 Bitmap 缓存器
+     * 获取 {@link Bitmap} 复用管理器
      *
-     * @return BitmapPool
+     * @return {@link BitmapPool}. {@link Bitmap} 复用管理器
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -185,9 +191,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置 Bitmap 缓存器
+     * 设置 {@link Bitmap} 复用管理器
      *
-     * @return Configuration. Convenient chain calls
+     * @param newBitmapPool {@link BitmapPool}. {@link Bitmap} 复用管理器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -205,9 +212,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取内存缓存器
+     * 获取内存缓存管理器
      *
-     * @return MemoryCache
+     * @return {@link MemoryCache}. 内存缓存管理器
      */
     @NonNull
     public MemoryCache getMemoryCache() {
@@ -215,9 +222,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置内存缓存器
+     * 设置内存缓存管理器
      *
-     * @return Configuration. Convenient chain calls
+     * @param memoryCache {@link MemoryCache}. 内存缓存管理器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -235,9 +243,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取再处理图片缓存器
+     * 获取已处理图片缓存器
      *
-     * @return ProcessedImageCache
+     * @return {@link ProcessedImageCache}. 已处理图片缓存器
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -246,9 +254,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置再处理图片缓存器
+     * 设置已处理图片缓存器
      *
-     * @return Configuration. Convenient chain calls
+     * @param processedImageCache {@link ProcessedImageCache}. 已处理图片缓存器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -263,9 +272,9 @@ public final class Configuration {
 
 
     /**
-     * 获取图片下载器
+     * 获取 HTTP 请求执行器
      *
-     * @return HttpStack
+     * @return {@link HttpStack} HTTP 请求执行器
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -274,9 +283,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置图片下载器
+     * 设置 HTTP 请求执行器
      *
-     * @return Configuration. Convenient chain calls
+     * @param httpStack {@link HttpStack} HTTP 请求执行器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -292,7 +302,7 @@ public final class Configuration {
     /**
      * 获取图片解码器
      *
-     * @return ImageDecoder
+     * @return {@link ImageDecoder}. 图片解码器
      */
     @NonNull
     public ImageDecoder getDecoder() {
@@ -302,7 +312,8 @@ public final class Configuration {
     /**
      * 设置图片解码器
      *
-     * @return Configuration. Convenient chain calls
+     * @param decoder {@link ImageDecoder}. 图片解码器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -318,7 +329,7 @@ public final class Configuration {
     /**
      * 获取图片下载器
      *
-     * @return ImageDownloader
+     * @return {@link ImageDownloader}. 图片下载器
      */
     @NonNull
     public ImageDownloader getDownloader() {
@@ -328,8 +339,8 @@ public final class Configuration {
     /**
      * 设置图片下载器
      *
-     * @param downloader 设置图片下载器
-     * @return Configuration. Convenient chain calls
+     * @param downloader {@link ImageDownloader}. 图片下载器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -345,7 +356,7 @@ public final class Configuration {
     /**
      * 获取图片方向纠正器
      *
-     * @return ImageOrientationCorrector
+     * @return {@link ImageOrientationCorrector}. 图片方向纠正器
      */
     @NonNull
     public ImageOrientationCorrector getOrientationCorrector() {
@@ -355,7 +366,8 @@ public final class Configuration {
     /**
      * 设置图片方向纠正器
      *
-     * @return Configuration. Convenient chain calls
+     * @param orientationCorrector {@link ImageOrientationCorrector}. 图片方向纠正器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -372,7 +384,7 @@ public final class Configuration {
     /**
      * 获取默认的图片显示器
      *
-     * @return ImageDisplayer
+     * @return {@link ImageDisplayer}. 默认的图片显示器
      */
     @NonNull
     public ImageDisplayer getDefaultDisplayer() {
@@ -382,7 +394,8 @@ public final class Configuration {
     /**
      * 设置默认的图片显示器
      *
-     * @return Configuration. Convenient chain calls
+     * @param defaultDisplayer {@link ImageDisplayer}. 默认的图片显示器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -396,9 +409,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 Resize 图片处理器
+     * 获取 {@link Resize} 属性处理器
      *
-     * @return ImageProcessor
+     * @return {@link ImageProcessor}. {@link Resize} 属性处理器
      */
     @NonNull
     public ImageProcessor getResizeProcessor() {
@@ -406,9 +419,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置Resize图片处理器
+     * 设置 {@link Resize} 属性处理器
      *
-     * @return Configuration. Convenient chain calls
+     * @param resizeProcessor {@link ImageProcessor}. {@link Resize} 属性处理器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -422,9 +436,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 Resize 计算器
+     * 获取 {@link Resize} 计算器
      *
-     * @return ResizeCalculator
+     * @return {@link ResizeCalculator}. {@link Resize} 计算器
      */
     @NonNull
     public ResizeCalculator getResizeCalculator() {
@@ -432,9 +446,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置Resize计算器
+     * 设置 {@link Resize} 计算器
      *
-     * @return Configuration. Convenient chain calls
+     * @param resizeCalculator {@link ResizeCalculator}. {@link Resize} 计算器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -448,9 +463,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取图片尺寸计算器
+     * 获取和图片尺寸相关的需求的计算器
      *
-     * @return ImageSizeCalculator
+     * @return {@link ImageSizeCalculator}. 和图片尺寸相关的需求的计算器
      */
     @NonNull
     public ImageSizeCalculator getSizeCalculator() {
@@ -458,9 +473,10 @@ public final class Configuration {
     }
 
     /**
-     * 获取图片尺寸计算器
+     * 设置和图片尺寸相关的需求的计算器
      *
-     * @return Configuration. Convenient chain calls
+     * @param sizeCalculator {@link ImageSizeCalculator}. 和图片尺寸相关的需求的计算器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -477,7 +493,7 @@ public final class Configuration {
     /**
      * 获取顺风车管理器
      *
-     * @return FreeRideManager
+     * @return {@link FreeRideManager}. 顺风车管理器
      */
     @NonNull
     public FreeRideManager getFreeRideManager() {
@@ -487,8 +503,8 @@ public final class Configuration {
     /**
      * 设置顺风车管理器
      *
-     * @param freeRideManager 顺风车管理器
-     * @return Configuration. Convenient chain calls
+     * @param freeRideManager {@link FreeRideManager}. 顺风车管理器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -504,7 +520,7 @@ public final class Configuration {
     /**
      * 获取请求执行器
      *
-     * @return RequestExecutor
+     * @return {@link RequestExecutor}. 请求执行器
      */
     @NonNull
     public RequestExecutor getExecutor() {
@@ -514,7 +530,8 @@ public final class Configuration {
     /**
      * 设置请求执行器
      *
-     * @return Configuration. Convenient chain calls
+     * @param newRequestExecutor {@link RequestExecutor}. 请求执行器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -532,9 +549,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取协助器工厂
+     * 获取协助器创建工厂
      *
-     * @return HelperFactory
+     * @return {@link HelperFactory}. 协助器创建工厂
      */
     @NonNull
     public HelperFactory getHelperFactory() {
@@ -542,9 +559,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置协助器工厂
+     * 设置协助器创建工厂
      *
-     * @return Configuration. Convenient chain calls
+     * @param helperFactory {@link HelperFactory}. 协助器创建工厂
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -558,9 +576,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取请求工厂
+     * 获取请求创建工厂
      *
-     * @return RequestFactory
+     * @return {@link RequestFactory}. 请求创建工厂
      */
     @NonNull
     public RequestFactory getRequestFactory() {
@@ -568,9 +586,10 @@ public final class Configuration {
     }
 
     /**
-     * 设置请求工厂
+     * 设置请求创建工厂
      *
-     * @return Configuration. Convenient chain calls
+     * @param requestFactory {@link RequestFactory}. 请求创建工厂
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -586,7 +605,7 @@ public final class Configuration {
     /**
      * 获取错误跟踪器
      *
-     * @return ErrorTracker
+     * @return {@link ErrorTracker}. 错误跟踪器
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -597,7 +616,8 @@ public final class Configuration {
     /**
      * 设置错误跟踪器
      *
-     * @return Configuration. Convenient chain calls
+     * @param errorTracker {@link ErrorTracker}. 错误跟踪器
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -612,7 +632,7 @@ public final class Configuration {
 
 
     /**
-     * 全局暂停下载图片？
+     * 全局暂停下载新图片？
      */
     @SuppressWarnings("unused")
     public boolean isPauseDownloadEnabled() {
@@ -620,10 +640,12 @@ public final class Configuration {
     }
 
     /**
-     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 display 请求和 load 请求
+     * 设置全局暂停下载新图片，开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
      *
-     * @return Configuration. Convenient chain calls
+     * @param pauseDownloadEnabled 全局暂停下载新图片
+     * @return {@link Configuration}. 为了支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public Configuration setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
         if (optionsFilterRegistry.isPauseDownloadEnabled() != pauseDownloadEnabled) {
@@ -641,10 +663,12 @@ public final class Configuration {
     }
 
     /**
-     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 display 请求
+     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 {@link Sketch#display(String, SketchView)} 方法
      *
-     * @return Configuration. Convenient chain calls
+     * @param pauseLoadEnabled 全局暂停加载新图片
+     * @return {@link Configuration}. 为了支持链式调用
      */
+    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public Configuration setPauseLoadEnabled(boolean pauseLoadEnabled) {
         if (optionsFilterRegistry.isPauseLoadEnabled() != pauseLoadEnabled) {
@@ -664,7 +688,8 @@ public final class Configuration {
     /**
      * 设置全局使用低质量图片
      *
-     * @return Configuration. Convenient chain calls
+     * @param lowQualityImageEnabled 全局使用低质量图片
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     public Configuration setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
@@ -678,7 +703,7 @@ public final class Configuration {
     /**
      * 全局解码时优先质量？
      *
-     * @return true：质量；false：速度
+     * @return true：质量优先；false：速度优先
      */
     @SuppressWarnings("unused")
     public boolean isInPreferQualityOverSpeedEnabled() {
@@ -689,7 +714,7 @@ public final class Configuration {
      * 设置全局解码时优先考虑质量 (默认优先考虑速度)
      *
      * @param inPreferQualityOverSpeedEnabled true：质量；false：速度
-     * @return Configuration. Convenient chain calls
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     public Configuration setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
@@ -709,9 +734,10 @@ public final class Configuration {
     }
 
     /**
-     * 开启全局移动数据下暂停下载功能，只影响 display 请求和 load 请求
+     * 设置全局移动数据下暂停下载，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
      *
-     * @return Configuration. Convenient chain calls
+     * @param mobileDataPauseDownloadEnabled 全局移动数据下暂停下载
+     * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
     public Configuration setMobileDataPauseDownloadEnabled(boolean mobileDataPauseDownloadEnabled) {

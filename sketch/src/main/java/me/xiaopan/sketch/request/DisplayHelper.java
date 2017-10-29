@@ -115,7 +115,7 @@ public class DisplayHelper {
      * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
      *
      * @param requestLevel {@link RequestLevel}
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -129,7 +129,7 @@ public class DisplayHelper {
     /**
      * 禁用磁盘缓存
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -141,7 +141,7 @@ public class DisplayHelper {
     /**
      * 禁止从 {@link BitmapPool} 中寻找可复用的 {@link Bitmap}
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -153,7 +153,7 @@ public class DisplayHelper {
     /**
      * 解码 gif 图片并自动循环播放
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -166,7 +166,7 @@ public class DisplayHelper {
      * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
      *
      * @param maxSize 最大尺寸
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -180,7 +180,7 @@ public class DisplayHelper {
      *
      * @param maxWidth  最大宽
      * @param maxHeight 最大高
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -193,7 +193,7 @@ public class DisplayHelper {
      * 调整图片的尺寸
      *
      * @param resize 新的尺寸
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     public DisplayHelper resize(@Nullable Resize resize) {
@@ -206,7 +206,7 @@ public class DisplayHelper {
      *
      * @param reWidth  新的宽
      * @param reHeight 新的高
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     public DisplayHelper resize(int reWidth, int reHeight) {
@@ -220,7 +220,7 @@ public class DisplayHelper {
      * @param reWidth   新的宽
      * @param reHeight  新的高
      * @param scaleType 指定如何生成新图片
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     public DisplayHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
@@ -231,7 +231,7 @@ public class DisplayHelper {
     /**
      * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     public DisplayHelper lowQualityImage() {
@@ -243,7 +243,7 @@ public class DisplayHelper {
      * 设置图片处理器，可以修改图片
      *
      * @param processor 图片处理器
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -256,7 +256,7 @@ public class DisplayHelper {
      * 设置解码时使用的 {@link Bitmap.Config}，KITKAT 以上 {@link Bitmap.Config#ARGB_4444} 会被强制替换为 {@link Bitmap.Config#ARGB_8888}，优先级高于 {@link #lowQualityImage()}，对应 {@link android.graphics.BitmapFactory.Options#inPreferredConfig} 属性
      *
      * @param bitmapConfig {@link Bitmap.Config}
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -269,7 +269,7 @@ public class DisplayHelper {
      * 设置解码时优先考虑速度还是质量，对应 {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed} 属性
      *
      * @param inPreferQualityOverSpeed true：质量优先；false：速度优先
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -281,7 +281,7 @@ public class DisplayHelper {
     /**
      * 开启缩略图模式，配合 resize 可以得到更清晰的缩略图，参考 {@link ThumbnailModeDecodeHelper}
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -293,7 +293,7 @@ public class DisplayHelper {
     /**
      * 为了加快速度，将经过 {@link #processor(ImageProcessor)}、{@link #resize(Resize)} 或 {@link #thumbnailMode()}，下次就直接读取，参考 {@link ProcessedResultCacheProcessor}
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -305,7 +305,7 @@ public class DisplayHelper {
     /**
      * 禁止纠正图片方向
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -317,7 +317,7 @@ public class DisplayHelper {
     /**
      * 禁用内存缓存
      *
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -330,7 +330,7 @@ public class DisplayHelper {
      * 设置图片显示器，在加载完成后会调用此显示器来显示图片
      *
      * @param displayer 图片显示器
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -343,7 +343,7 @@ public class DisplayHelper {
      * 设置正在加载时显示的图片
      *
      * @param loadingImage 正在加载时显示的图片
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -356,7 +356,7 @@ public class DisplayHelper {
      * 设置正在加载时显示的图片
      *
      * @param drawableResId drawable 资源 id
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -369,7 +369,7 @@ public class DisplayHelper {
      * 设置加载失败时显示的图片
      *
      * @param errorImage 加载失败时显示的图片
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -382,7 +382,7 @@ public class DisplayHelper {
      * 设置加载失败时显示的图片
      *
      * @param drawableResId drawable 资源 id
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -395,7 +395,7 @@ public class DisplayHelper {
      * 设置暂停下载时显示的图片
      *
      * @param pauseDownloadImage 暂停下载时显示的图片
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -408,7 +408,7 @@ public class DisplayHelper {
      * 设置暂停下载时显示的图片
      *
      * @param drawableResId drawable 资源 id
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -421,7 +421,7 @@ public class DisplayHelper {
      * 设置图片整形器，用于绘制时修改图片的形状
      *
      * @param imageShaper 图片整形器
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -434,7 +434,7 @@ public class DisplayHelper {
      * 设置在绘制时修改图片的尺寸
      *
      * @param shapeSize 绘制时修改图片的尺寸
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -448,7 +448,7 @@ public class DisplayHelper {
      *
      * @param shapeWidth  绘制时修改图片的尺寸的宽
      * @param shapeHeight 绘制时修改图片的尺寸的高
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -463,7 +463,7 @@ public class DisplayHelper {
      * @param shapeWidth  绘制时修改图片的尺寸的宽
      * @param shapeHeight 绘制时修改图片的尺寸的高
      * @param scaleType   指定在绘制时如果显示原图片
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -477,7 +477,7 @@ public class DisplayHelper {
      * 批量设置显示参数（完全覆盖）
      *
      * @param newOptions {@link DisplayOptions}
-     * @return {@link DisplayHelper} 支持链式调用
+     * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
     public DisplayHelper options(@Nullable DisplayOptions newOptions) {

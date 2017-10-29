@@ -65,7 +65,7 @@ public class DownloadOptions {
      * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
      *
      * @param requestLevel {@link RequestLevel}
-     * @return {@link DownloadOptions} 支持链式调用
+     * @return {@link DownloadOptions}. 为了支持链式调用
      */
     @NonNull
     public DownloadOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
@@ -84,7 +84,7 @@ public class DownloadOptions {
      * 设置是否禁用磁盘缓存
      *
      * @param cacheInDiskDisabled 禁用磁盘缓存
-     * @return {@link DownloadOptions} 支持链式调用
+     * @return {@link DownloadOptions}. 为了支持链式调用
      */
     @NonNull
     public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {

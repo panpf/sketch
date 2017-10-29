@@ -20,6 +20,9 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.zoom.block.Block;
 
+/**
+ * 负责输出错误信息，你可借此记录错误日志
+ */
 public class ErrorTracker implements Identifier {
     private static final String NAME = "ErrorTracker";
 

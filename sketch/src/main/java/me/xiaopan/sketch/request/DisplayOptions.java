@@ -77,7 +77,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -86,7 +86,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -95,7 +95,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -104,7 +104,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -113,7 +113,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -122,7 +122,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -131,7 +131,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -140,7 +140,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -149,7 +149,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -158,7 +158,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -167,7 +167,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -176,7 +176,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -185,7 +185,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -194,7 +194,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -203,7 +203,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -212,7 +212,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     @Override
@@ -231,7 +231,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置禁止使用内存缓存
      *
      * @param cacheInMemoryDisabled 禁止使用内存缓存
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
@@ -254,7 +254,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置图片显示器
      *
      * @param displayer 图片显示器
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setDisplayer(@Nullable ImageDisplayer displayer) {
@@ -276,7 +276,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置正在加载时显示的图片
      *
      * @param loadingImage 正在加载时显示的图片
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setLoadingImage(@Nullable StateImage loadingImage) {
@@ -288,7 +288,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置正在加载时显示的图片
      *
      * @param drawableResId drawable 资源 id
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setLoadingImage(@DrawableRes int drawableResId) {
@@ -310,7 +310,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置加载失败时显示的图片
      *
      * @param errorImage 加载失败时显示的图片
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
@@ -323,7 +323,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置加载失败时显示的图片
      *
      * @param drawableResId drawable 资源 id
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setErrorImage(@DrawableRes int drawableResId) {
@@ -345,7 +345,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置暂停下载时显示的图片
      *
      * @param pauseDownloadImage 暂停下载时显示的图片
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
@@ -358,7 +358,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置暂停下载时显示的图片
      *
      * @param drawableResId drawable 资源 id
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setPauseDownloadImage(@DrawableRes int drawableResId) {
@@ -380,7 +380,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置图片整形器，用于绘制时修改图片的形状
      *
      * @param shaper 图片整形器
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setShaper(@Nullable ImageShaper shaper) {
@@ -402,7 +402,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置在绘制时修改图片的尺寸
      *
      * @param shapeSize 绘制时修改图片的尺寸
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @NonNull
     public DisplayOptions setShapeSize(@Nullable ShapeSize shapeSize) {
@@ -415,7 +415,7 @@ public class DisplayOptions extends LoadOptions {
      *
      * @param shapeWidth  绘制时应该显示的宽
      * @param shapeHeight 绘制时应该显示的高
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
@@ -429,7 +429,7 @@ public class DisplayOptions extends LoadOptions {
      * @param shapeWidth  绘制时修改图片的尺寸的宽
      * @param shapeHeight 绘制时修改图片的尺寸的高
      * @param scaleType   指定在绘制时如果显示原图片
-     * @return {@link DisplayOptions} 支持链式调用
+     * @return {@link DisplayOptions}. 为了支持链式调用
      */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull

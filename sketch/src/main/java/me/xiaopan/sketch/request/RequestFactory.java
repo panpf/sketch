@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
- * Request 创建工厂
+ * 负责创建 {@link DisplayRequest}、{@link LoadRequest}、{@link DownloadRequest}
  */
 public class RequestFactory implements Identifier {
     private static final String KEY = "RequestFactory";

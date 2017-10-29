@@ -29,7 +29,7 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.util.DiskLruCache;
 
 /**
- * 磁盘缓存器
+ * 磁盘缓存管理器
  */
 public interface DiskCache extends Identifier {
     String DISK_CACHE_DIR_NAME = "sketch";

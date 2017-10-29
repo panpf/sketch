@@ -53,7 +53,7 @@ public class DownloadHelper {
      * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
      *
      * @param requestLevel {@link RequestLevel}
-     * @return {@link DownloadHelper} 支持链式调用
+     * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -67,7 +67,7 @@ public class DownloadHelper {
     /**
      * 禁用磁盘缓存
      *
-     * @return {@link DownloadHelper} 支持链式调用
+     * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -80,7 +80,7 @@ public class DownloadHelper {
      * 批量设置下载参数（完全覆盖）
      *
      * @param newOptions {@link DownloadOptions}
-     * @return {@link DownloadHelper} 支持链式调用
+     * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
     public DownloadHelper options(@Nullable DownloadOptions newOptions) {
@@ -91,7 +91,7 @@ public class DownloadHelper {
     /**
      * 设置下载进度监听器
      *
-     * @return {@link DownloadHelper} 支持链式调用
+     * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -103,7 +103,7 @@ public class DownloadHelper {
     /**
      * 同步执行
      *
-     * @return {@link DownloadHelper} 支持链式调用
+     * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -115,7 +115,7 @@ public class DownloadHelper {
     /**
      * 提交
      *
-     * @return {@link DownloadRequest} 支持链式调用
+     * @return {@link DownloadRequest}. 为了支持链式调用
      */
     @Nullable
     public DownloadRequest commit() {

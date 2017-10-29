@@ -26,7 +26,7 @@ import java.util.List;
 import me.xiaopan.sketch.Identifier;
 
 /**
- * 负责管理和匹配 UriModel
+ * 负责管理和匹配 {@link UriModel}
  */
 public class UriModelRegistry implements Identifier{
     private List<UriModel> uriModelList = new LinkedList<>();

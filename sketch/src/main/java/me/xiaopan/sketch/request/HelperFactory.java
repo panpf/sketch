@@ -22,6 +22,9 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
 
+/**
+ * 负责创建 {@link DisplayHelper}、{@link LoadHelper}、{@link DownloadHelper}
+ */
 public class HelperFactory implements Identifier {
     private static final String KEY = "HelperFactory";
 

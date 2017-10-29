@@ -34,7 +34,7 @@ import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 图片最大尺寸和修正尺寸计算器
+ * 和图片尺寸相关的需求的计算器
  */
 public class ImageSizeCalculator implements Identifier {
     private static final String KEY = "ImageSizeCalculator";

@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import me.xiaopan.sketch.Identifier;
 
 /**
- * Bitmap缓存池，用于缓存Bitmap，便于解码时直接利用，减少内存分配
+ * {@link Bitmap} 复用缓存池，用于缓存并复用 {@link Bitmap}，便于解码时直接利用，减少内存分配
  */
 public interface BitmapPool extends Identifier {
 

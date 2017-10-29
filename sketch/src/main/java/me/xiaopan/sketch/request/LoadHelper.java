@@ -60,7 +60,7 @@ public class LoadHelper {
      * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
      *
      * @param requestLevel {@link RequestLevel}
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -74,7 +74,7 @@ public class LoadHelper {
     /**
      * 禁用磁盘缓存
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -86,7 +86,7 @@ public class LoadHelper {
     /**
      * 禁止从 {@link BitmapPool} 中寻找可复用的 {@link Bitmap}
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -98,7 +98,7 @@ public class LoadHelper {
     /**
      * 解码 gif 图片并自动循环播放
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -111,7 +111,7 @@ public class LoadHelper {
      * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
      *
      * @param maxSize 最大尺寸
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -125,7 +125,7 @@ public class LoadHelper {
      *
      * @param maxWidth  最大宽
      * @param maxHeight 最大高
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -138,7 +138,7 @@ public class LoadHelper {
      * 调整图片的尺寸
      *
      * @param resize 新的尺寸
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     public LoadHelper resize(@Nullable Resize resize) {
@@ -151,7 +151,7 @@ public class LoadHelper {
      *
      * @param reWidth  新的宽
      * @param reHeight 新的高
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     public LoadHelper resize(int reWidth, int reHeight) {
@@ -165,7 +165,7 @@ public class LoadHelper {
      * @param reWidth   新的宽
      * @param reHeight  新的高
      * @param scaleType 指定如何生成新图片
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     public LoadHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
@@ -176,7 +176,7 @@ public class LoadHelper {
     /**
      * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     public LoadHelper lowQualityImage() {
@@ -188,7 +188,7 @@ public class LoadHelper {
      * 设置图片处理器，可以修改图片
      *
      * @param processor 图片处理器
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -201,7 +201,7 @@ public class LoadHelper {
      * 设置解码时使用的 {@link Bitmap.Config}，KITKAT 以上 {@link Bitmap.Config#ARGB_4444} 会被强制替换为 {@link Bitmap.Config#ARGB_8888}，优先级高于 {@link #lowQualityImage()}，对应 {@link android.graphics.BitmapFactory.Options#inPreferredConfig} 属性
      *
      * @param bitmapConfig {@link Bitmap.Config}
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -214,7 +214,7 @@ public class LoadHelper {
      * 设置解码时优先考虑速度还是质量，对应 {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed} 属性
      *
      * @param inPreferQualityOverSpeed true：质量优先；false：速度优先
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -226,7 +226,7 @@ public class LoadHelper {
     /**
      * 开启缩略图模式，配合 resize 可以得到更清晰的缩略图，参考 {@link ThumbnailModeDecodeHelper}
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -238,7 +238,7 @@ public class LoadHelper {
     /**
      * 为了加快速度，将经过 {@link #processor(ImageProcessor)}、{@link #resize(Resize)} 或 {@link #thumbnailMode()} 处理过的图片保存到磁盘缓存中，下次就直接读取，参考 {@link ProcessedResultCacheProcessor}
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -250,7 +250,7 @@ public class LoadHelper {
     /**
      * 禁止纠正图片方向
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -263,7 +263,7 @@ public class LoadHelper {
      * 批量设置加载参数（完全覆盖）
      *
      * @param newOptions {@link LoadOptions}
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     public LoadHelper options(@Nullable LoadOptions newOptions) {
@@ -274,7 +274,7 @@ public class LoadHelper {
     /**
      * 设置下载进度监听器
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")
@@ -286,7 +286,7 @@ public class LoadHelper {
     /**
      * 同步执行
      *
-     * @return {@link LoadHelper} 支持链式调用
+     * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
     @SuppressWarnings("unused")

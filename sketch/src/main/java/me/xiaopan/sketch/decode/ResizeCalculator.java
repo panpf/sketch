@@ -21,9 +21,10 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.request.Resize;
 
 /**
- * 用来计算resize
+ * 用来计算 {@link Resize}
  */
 public class ResizeCalculator implements Identifier {
     private static final String KEY = "ResizeCalculator";
