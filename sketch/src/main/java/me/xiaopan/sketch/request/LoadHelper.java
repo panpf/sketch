@@ -375,7 +375,7 @@ public class LoadHelper {
         }
 
 
-        configuration.getOptionsFilterRegistry().filter(loadOptions);
+        configuration.getOptionsFilterManager().filter(loadOptions);
 
         // 根据 URI 和加载选项生成请求 ID
         key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions.makeKey());

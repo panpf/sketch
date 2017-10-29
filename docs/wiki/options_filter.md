@@ -18,11 +18,11 @@ public class TestOptionsFilter implements OptionsFilter {
 }
 ```
 
-2.然后通过 [OptionsFilterRegistry] 注册 TestOptionsFilter 即可，如下：
+2.然后通过 [OptionsFilterManager] 注册 TestOptionsFilter 即可，如下：
 
 ```java
-OptinsFilterRegistry optinsFilterRegistry = Sketch.with(context).getConfiguration().getOptinsFilterRegistry();
-optinsFilterRegistry.add(new OptionsFilterRegistry());
+OptinsFilterManager optinsFilterManager = Sketch.with(context).getConfiguration().getOptinsFilterManager();
+optinsFilterManager.add(new TestOptionsFilter());
 ```
 
 ### 内置的 OptionsFilter
@@ -33,10 +33,10 @@ Sketch 内置了四种 [OptionsFilter]，如下：
 * [PauseDownloadOptionsFilter]：用来控制暂停下载，配合 [MobileDataPauseDownloadController] 可实现移动数据下暂停下载，另参考 [移动数据或有流量限制的 WIFI 下暂停下载图片，节省流量][pause_download]
 * [PauseLoadOptionsFilter]：用来控制暂停加载，配合 [ScrollingPauseLoadManager] 可实现列表滑动中暂停加载，另参考 [列表滑动时暂停加载图片，提升列表滑动流畅度][pause_load]
 
-上述四个 [OptionsFilter], [Configuration] 和 [OptionsFilterRegistry] 都提供了开关控制，详情请参考源码
+上述四个 [OptionsFilter], [Configuration] 和 [OptionsFilterManager] 都提供了开关控制，详情请参考源码
 
 [OptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilter.java
-[OptionsFilterRegistry]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilterRegistry.java
+[OptionsFilterManager]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilterManager.java
 [LowQualityOptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/LowQualityOptionsFilter.java
 [InPreferQualityOverSpeedOptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/InPreferQualityOverSpeedOptionsFilter.java
 [PauseDownloadOptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/PauseDownloadOptionsFilter.java

@@ -41,7 +41,7 @@ import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.http.ImageDownloader;
 import me.xiaopan.sketch.optionsfilter.OptionsFilter;
-import me.xiaopan.sketch.optionsfilter.OptionsFilterRegistry;
+import me.xiaopan.sketch.optionsfilter.OptionsFilterManager;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
@@ -62,7 +62,7 @@ public final class Configuration {
     private Context context;
 
     private UriModelManager uriModelManager;
-    private OptionsFilterRegistry optionsFilterRegistry;
+    private OptionsFilterManager optionsFilterManager;
 
     private DiskCache diskCache;
     private BitmapPool bitmapPool;
@@ -90,7 +90,7 @@ public final class Configuration {
         this.context = context;
 
         this.uriModelManager = new UriModelManager();
-        this.optionsFilterRegistry = new OptionsFilterRegistry();
+        this.optionsFilterManager = new OptionsFilterManager();
 
         // 由于默认的缓存文件名称从 URLEncoder 加密变成了 MD5 所以这里要升级一下版本号，好清除旧的缓存
         this.diskCache = new LruDiskCache(context, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
@@ -142,10 +142,10 @@ public final class Configuration {
     /**
      * 获取 {@link OptionsFilter} 管理器
      *
-     * @return {@link OptionsFilterRegistry}. {@link OptionsFilter} 管理器
+     * @return {@link OptionsFilterManager}. {@link OptionsFilter} 管理器
      */
-    public OptionsFilterRegistry getOptionsFilterRegistry() {
-        return optionsFilterRegistry;
+    public OptionsFilterManager getOptionsFilterManager() {
+        return optionsFilterManager;
     }
 
     /**
@@ -636,7 +636,7 @@ public final class Configuration {
      */
     @SuppressWarnings("unused")
     public boolean isPauseDownloadEnabled() {
-        return optionsFilterRegistry.isPauseDownloadEnabled();
+        return optionsFilterManager.isPauseDownloadEnabled();
     }
 
     /**
@@ -648,8 +648,8 @@ public final class Configuration {
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public Configuration setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
-        if (optionsFilterRegistry.isPauseDownloadEnabled() != pauseDownloadEnabled) {
-            optionsFilterRegistry.setPauseDownloadEnabled(pauseDownloadEnabled);
+        if (optionsFilterManager.isPauseDownloadEnabled() != pauseDownloadEnabled) {
+            optionsFilterManager.setPauseDownloadEnabled(pauseDownloadEnabled);
             SLog.w(NAME, "pauseDownload=%s", pauseDownloadEnabled);
         }
         return this;
@@ -659,7 +659,7 @@ public final class Configuration {
      * 全局暂停加载新图片？
      */
     public boolean isPauseLoadEnabled() {
-        return optionsFilterRegistry.isPauseLoadEnabled();
+        return optionsFilterManager.isPauseLoadEnabled();
     }
 
     /**
@@ -671,8 +671,8 @@ public final class Configuration {
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public Configuration setPauseLoadEnabled(boolean pauseLoadEnabled) {
-        if (optionsFilterRegistry.isPauseLoadEnabled() != pauseLoadEnabled) {
-            optionsFilterRegistry.setPauseLoadEnabled(pauseLoadEnabled);
+        if (optionsFilterManager.isPauseLoadEnabled() != pauseLoadEnabled) {
+            optionsFilterManager.setPauseLoadEnabled(pauseLoadEnabled);
             SLog.w(NAME, "pauseLoad=%s", pauseLoadEnabled);
         }
         return this;
@@ -682,7 +682,7 @@ public final class Configuration {
      * 全局使用低质量的图片？
      */
     public boolean isLowQualityImageEnabled() {
-        return optionsFilterRegistry.isLowQualityImageEnabled();
+        return optionsFilterManager.isLowQualityImageEnabled();
     }
 
     /**
@@ -693,8 +693,8 @@ public final class Configuration {
      */
     @NonNull
     public Configuration setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
-        if (optionsFilterRegistry.isLowQualityImageEnabled() != lowQualityImageEnabled) {
-            optionsFilterRegistry.setLowQualityImageEnabled(lowQualityImageEnabled);
+        if (optionsFilterManager.isLowQualityImageEnabled() != lowQualityImageEnabled) {
+            optionsFilterManager.setLowQualityImageEnabled(lowQualityImageEnabled);
             SLog.w(NAME, "lowQualityImage=%s", lowQualityImageEnabled);
         }
         return this;
@@ -707,7 +707,7 @@ public final class Configuration {
      */
     @SuppressWarnings("unused")
     public boolean isInPreferQualityOverSpeedEnabled() {
-        return optionsFilterRegistry.isInPreferQualityOverSpeedEnabled();
+        return optionsFilterManager.isInPreferQualityOverSpeedEnabled();
     }
 
     /**
@@ -718,8 +718,8 @@ public final class Configuration {
      */
     @NonNull
     public Configuration setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
-        if (optionsFilterRegistry.isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
-            optionsFilterRegistry.setInPreferQualityOverSpeedEnabled(inPreferQualityOverSpeedEnabled);
+        if (optionsFilterManager.isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
+            optionsFilterManager.setInPreferQualityOverSpeedEnabled(inPreferQualityOverSpeedEnabled);
             SLog.w(NAME, "inPreferQualityOverSpeed=%s", inPreferQualityOverSpeedEnabled);
         }
         return this;
@@ -730,7 +730,7 @@ public final class Configuration {
      */
     @SuppressWarnings("unused")
     public boolean isMobileDataPauseDownloadEnabled() {
-        return optionsFilterRegistry.isMobileDataPauseDownloadEnabled();
+        return optionsFilterManager.isMobileDataPauseDownloadEnabled();
     }
 
     /**
@@ -742,7 +742,7 @@ public final class Configuration {
     @NonNull
     public Configuration setMobileDataPauseDownloadEnabled(boolean mobileDataPauseDownloadEnabled) {
         if (isMobileDataPauseDownloadEnabled() != mobileDataPauseDownloadEnabled) {
-            optionsFilterRegistry.setMobileDataPauseDownloadEnabled(this, mobileDataPauseDownloadEnabled);
+            optionsFilterManager.setMobileDataPauseDownloadEnabled(this, mobileDataPauseDownloadEnabled);
             SLog.w(NAME, "mobileDataPauseDownload=%s", isMobileDataPauseDownloadEnabled());
         }
         return this;
@@ -752,7 +752,7 @@ public final class Configuration {
     public String getInfo() {
         return NAME + ": " +
                 "\n" + "uriModelManager：" + uriModelManager.getKey() +
-                "\n" + "optionsFilterRegistry：" + optionsFilterRegistry.getKey() +
+                "\n" + "optionsFilterManager：" + optionsFilterManager.getKey() +
 
                 "\n" + "diskCache：" + diskCache.getKey() +
                 "\n" + "bitmapPool：" + bitmapPool.getKey() +
@@ -775,10 +775,10 @@ public final class Configuration {
                 "\n" + "requestFactory：" + requestFactory.getKey() +
                 "\n" + "errorTracker：" + errorTracker.getKey() +
 
-                "\n" + "pauseDownload：" + optionsFilterRegistry.isPauseDownloadEnabled() +
-                "\n" + "pauseLoad：" + optionsFilterRegistry.isPauseLoadEnabled() +
-                "\n" + "lowQualityImage：" + optionsFilterRegistry.isLowQualityImageEnabled() +
-                "\n" + "inPreferQualityOverSpeed：" + optionsFilterRegistry.isInPreferQualityOverSpeedEnabled() +
+                "\n" + "pauseDownload：" + optionsFilterManager.isPauseDownloadEnabled() +
+                "\n" + "pauseLoad：" + optionsFilterManager.isPauseLoadEnabled() +
+                "\n" + "lowQualityImage：" + optionsFilterManager.isLowQualityImageEnabled() +
+                "\n" + "inPreferQualityOverSpeed：" + optionsFilterManager.isInPreferQualityOverSpeedEnabled() +
                 "\n" + "mobileDataPauseDownload：" + isMobileDataPauseDownloadEnabled();
     }
 

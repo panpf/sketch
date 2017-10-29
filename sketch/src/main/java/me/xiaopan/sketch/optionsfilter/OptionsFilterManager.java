@@ -25,7 +25,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.DownloadOptions;
 
-public class OptionsFilterRegistry implements Identifier {
+public class OptionsFilterManager implements Identifier {
 
     private PauseDownloadOptionsFilter pauseDownloadOptionsFilter;
     private PauseLoadOptionsFilter pauseLoadOptionsFilter;
@@ -35,7 +35,7 @@ public class OptionsFilterRegistry implements Identifier {
     private List<OptionsFilter> extrasFilters;
 
     @NonNull
-    public OptionsFilterRegistry add(@NonNull OptionsFilter optionsFilter) {
+    public OptionsFilterManager add(@NonNull OptionsFilter optionsFilter) {
         //noinspection ConstantConditions
         if (optionsFilter != null) {
             if (extrasFilters == null) {
@@ -47,7 +47,7 @@ public class OptionsFilterRegistry implements Identifier {
     }
 
     @NonNull
-    public OptionsFilterRegistry add(int index, @NonNull OptionsFilter optionsFilter) {
+    public OptionsFilterManager add(int index, @NonNull OptionsFilter optionsFilter) {
         //noinspection ConstantConditions
         if (optionsFilter != null) {
             if (extrasFilters == null) {
@@ -187,6 +187,6 @@ public class OptionsFilterRegistry implements Identifier {
     @NonNull
     @Override
     public String getKey() {
-        return "OptionsFilterRegistry";
+        return "OptionsFilterManager";
     }
 }

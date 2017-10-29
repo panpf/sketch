@@ -159,7 +159,7 @@ public class DownloadHelper {
     }
 
     protected void preProcessOptions() {
-        sketch.getConfiguration().getOptionsFilterRegistry().filter(downloadOptions);
+        sketch.getConfiguration().getOptionsFilterManager().filter(downloadOptions);
 
         // 根据 URI 和下载选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions.makeKey());

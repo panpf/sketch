@@ -7,6 +7,7 @@
 * :hammer: ErrorTracker.onTileSortError() 重命名为 onBlockSortError
 * :hammer: 所有 tile 相关的名字 全部改成了 block
 * :hammer: UriModelRegistry 重命名为 UriModelManager
+* :hammer: OptionsFilterRegistry 重命名为 OptionsFilterManager
 
 sample app:
 * :bug: 修复 UNSPLASH 页面没有加载完数据就切换到别的页面时崩溃的 BUG
