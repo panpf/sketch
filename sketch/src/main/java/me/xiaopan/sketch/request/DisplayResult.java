@@ -18,7 +18,7 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 
 public class DisplayResult {
     private Drawable drawable;

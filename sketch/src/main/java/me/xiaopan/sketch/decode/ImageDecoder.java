@@ -27,13 +27,24 @@ import java.util.List;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.datasource.DataSource;
+import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.util.ExifInterface;
 
 /**
- * 图片解码器，读取bitmap之前执行计算采样比例、选择合适的config、读取方向、寻找可复用的bitmap等操作，之后进行方向纠正、处理、缓存等操作
+ * 图片解码器，工作内容如下：
+ * <p>
+ * <ol>
+ * <li>读取图片的尺寸、格式信息和方向信息</li>
+ * <li>计算采样比例、选择合适的 {@link Bitmap.Config}</li>
+ * <li>解码图片</li>
+ * <li>
+ * 使用 {@link ImageProcessor} 处理图片
+ * </li>
+ * <li>缓存经过处理的图片</li>
+ * </ol>
  */
 public class ImageDecoder implements Identifier {
     private static final String NAME = "ImageDecoder";
@@ -58,8 +69,8 @@ public class ImageDecoder implements Identifier {
     /**
      * 解码入口方法，统计解码时间、调用解码方法以及后续处理
      *
-     * @param request LoadRequest
-     * @return DecodeResult
+     * @param request {@link LoadRequest}
+     * @return {@link DecodeResult}
      * @throws DecodeException 解码失败了
      */
     @NonNull
@@ -97,10 +108,10 @@ public class ImageDecoder implements Identifier {
     }
 
     /**
-     * 执行具体解码，这个方法里值读取出解码所需的一些属性，然后再交给具体的DecodeHelper去解码
+     * 执行具体解码，这个方法里只读取出解码所需的一些属性，然后再交给具体的 {@link DecodeHelper} 去解码
      *
-     * @param request LoadRequest
-     * @return DecodeResult
+     * @param request {@link LoadRequest}
+     * @return {@link DecodeResult}
      * @throws DecodeException 解码失败了
      */
     @NonNull
@@ -168,15 +179,15 @@ public class ImageDecoder implements Identifier {
             return decodeResult;
         } else {
             ImageDecodeUtils.decodeError(request, null, NAME, "No matching DecodeHelper", null);
-            throw new DecodeException("No matching DecodeHelper", ErrorCause.DECODE_NO_MATCHING_DECODE_HELPER);
+            throw new DecodeException("No matched DecodeHelper", ErrorCause.DECODE_NO_MATCHING_DECODE_HELPER);
         }
     }
 
     /**
      * 执行后续的处理，包括转换、缓存
      *
-     * @param request LoadRequest
-     * @param result  DecodeResult
+     * @param request {@link LoadRequest}
+     * @param result  {@link DecodeResult}
      * @throws ProcessException 处理失败了
      */
     private void doProcess(LoadRequest request, DecodeResult result) throws ProcessException {

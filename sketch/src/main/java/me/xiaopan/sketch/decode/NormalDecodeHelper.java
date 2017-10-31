@@ -19,6 +19,7 @@ package me.xiaopan.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Locale;
 
@@ -26,7 +27,6 @@ import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
@@ -35,14 +35,14 @@ public class NormalDecodeHelper extends DecodeHelper {
     private static final String NAME = "NormalDecodeHelper";
 
     @Override
-    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType,
+    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType,
                          @NonNull BitmapFactory.Options boundOptions) {
         return true;
     }
 
     @NonNull
     @Override
-    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType,
+    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType,
                                @NonNull BitmapFactory.Options boundOptions, @NonNull BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
 
         ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();

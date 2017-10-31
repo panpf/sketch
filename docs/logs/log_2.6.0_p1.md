@@ -14,6 +14,7 @@
 * :hammer: HttpStack.ImageHttpResponse.getResponseMessage() 重命名为 HttpStack.Response.getMessage()
 * :hammer: HttpStack.ImageHttpResponse.getResponseHeadersString() 重命名为 HttpStack.Response.getHeadersString()
 * :hammer: HttpStack.ImageHttpResponse.getResponseHeader() 重命名为 HttpStack.Response.getHeader()
+* :hammer: ImageAttrs 从 drawable 中移动到 decode 包中
 
 sample app:
 * :bug: 修复 UNSPLASH 页面没有加载完数据就切换到别的页面时崩溃的 BUG

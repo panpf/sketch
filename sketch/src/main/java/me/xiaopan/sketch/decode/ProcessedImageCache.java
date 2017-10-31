@@ -113,7 +113,7 @@ public class ProcessedImageCache implements Identifier {
     }
 
     /**
-     * 保存bitmap到磁盘缓存
+     * 保存 {@link Bitmap} 到磁盘缓存
      */
     public void saveToDiskCache(LoadRequest request, Bitmap bitmap) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();

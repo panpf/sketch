@@ -108,7 +108,7 @@ public class ResizeCalculator implements Identifier {
      * @param resizeWidth  目标宽
      * @param resizeHeight 目标高
      * @param scaleType    缩放类型
-     * @param exactlySame  使新图片的尺寸和resize尺寸一致
+     * @param exactlySame  强制使新图片的尺寸和 resizeWidth、resizeHeight 一致
      * @return 计算结果
      */
     public Mapping calculator(int imageWidth, int imageHeight, int resizeWidth, int resizeHeight,

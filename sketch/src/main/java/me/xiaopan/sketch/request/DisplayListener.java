@@ -19,7 +19,7 @@ package me.xiaopan.sketch.request;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 
 /**
  * 显示监听器，值的注意的是DisplayListener中所有的方法都会在主线中执行，所以实现着不必考虑异步线程中刷新UI的问题

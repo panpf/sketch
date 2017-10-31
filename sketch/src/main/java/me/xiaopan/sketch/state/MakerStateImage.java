@@ -31,7 +31,7 @@ import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;

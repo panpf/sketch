@@ -18,6 +18,17 @@ package me.xiaopan.sketch.decode;
 
 import me.xiaopan.sketch.request.LoadRequest;
 
+/**
+ * 解码完成后处理图片
+ */
 public interface ResultProcessor {
+
+    /**
+     * 后期处理
+     *
+     * @param request {@link LoadRequest}
+     * @param result  {@link DecodeResult}
+     * @throws ProcessException 后期处理失败了
+     */
     void process(LoadRequest request, DecodeResult result) throws ProcessException;
 }

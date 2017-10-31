@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;

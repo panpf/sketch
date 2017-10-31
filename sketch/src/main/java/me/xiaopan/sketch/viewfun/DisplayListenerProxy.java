@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.ErrorCause;

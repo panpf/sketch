@@ -44,6 +44,7 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.MotionEvent;
@@ -82,7 +83,6 @@ import me.xiaopan.sketch.decode.ImageType;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.zoom.Size;
 import me.xiaopan.sketch.zoom.block.Block;
@@ -884,7 +884,7 @@ public class SketchUtils {
     /**
      * 根据图片格式型判断是否支持读取图片碎片
      */
-    public static boolean formatSupportBitmapRegionDecoder(ImageType imageType) {
+    public static boolean formatSupportBitmapRegionDecoder(@Nullable ImageType imageType) {
         return imageType != null && (imageType == ImageType.JPEG || imageType == ImageType.PNG ||
                 (imageType == ImageType.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
     }

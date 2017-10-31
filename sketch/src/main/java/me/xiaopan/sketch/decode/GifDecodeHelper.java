@@ -18,6 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.IOException;
 
@@ -25,7 +26,6 @@ import me.xiaopan.sketch.ErrorTracker;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ErrorCause;
@@ -34,7 +34,7 @@ import me.xiaopan.sketch.request.LoadRequest;
 public class GifDecodeHelper extends DecodeHelper {
 
     @Override
-    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
+    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
         if (imageType != null && imageType == ImageType.GIF && request.getOptions().isDecodeGifImage()) {
             if (SketchGifFactory.isExistGifLibrary()) {
                 return true;
@@ -47,7 +47,7 @@ public class GifDecodeHelper extends DecodeHelper {
 
     @NonNull
     @Override
-    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType, @NonNull BitmapFactory.Options boundOptions,
+    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions,
                                @NonNull BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
         try {
             ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);

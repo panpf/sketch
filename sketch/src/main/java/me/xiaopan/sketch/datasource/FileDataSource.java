@@ -25,7 +25,7 @@ import java.io.InputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;

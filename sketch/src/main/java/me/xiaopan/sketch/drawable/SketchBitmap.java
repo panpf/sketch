@@ -2,6 +2,7 @@ package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public abstract class SketchBitmap {

@@ -32,7 +32,6 @@ import java.io.InputStream;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.util.ExifInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 

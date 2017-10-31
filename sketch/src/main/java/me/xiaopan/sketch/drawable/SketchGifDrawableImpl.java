@@ -34,6 +34,7 @@ import java.util.Map;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;

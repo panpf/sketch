@@ -127,7 +127,7 @@ public class ImageDecodeUtils {
     }
 
     /**
-     * 通过异常类型以及message确定是不是由inBitmap导致的解码失败
+     * 通过异常类型以及 message 确定是不是由 inBitmap 导致的解码失败
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static boolean isInBitmapDecodeError(Throwable throwable, BitmapFactory.Options options, boolean fromBitmapRegionDecoder) {
@@ -154,7 +154,7 @@ public class ImageDecodeUtils {
     }
 
     /**
-     * 反馈inBitmap解码失败，并回收inBitmap
+     * 反馈 inBitmap 解码失败，并回收 inBitmap
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void recycleInBitmapOnDecodeError(ErrorTracker errorTracker, BitmapPool bitmapPool,
@@ -177,7 +177,7 @@ public class ImageDecodeUtils {
     }
 
     /**
-     * 通过异常类型以及message确定是不是由srcRect导致的解码失败
+     * 通过异常类型以及 message 确定是不是由 srcRect 导致的解码失败
      */
     public static boolean isSrcRectDecodeError(Throwable throwable, int imageWidth, int imageHeight, Rect srcRect) {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {

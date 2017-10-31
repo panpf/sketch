@@ -21,7 +21,6 @@ import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class BitmapDecodeResult implements DecodeResult {

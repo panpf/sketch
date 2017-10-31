@@ -17,24 +17,64 @@
 package me.xiaopan.sketch.decode;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.ImageFrom;
 
+/**
+ * 解码结果
+ */
 public interface DecodeResult {
 
+    /**
+     * 获取图片的属性
+     *
+     * @return {@link ImageAttrs}
+     */
     ImageAttrs getImageAttrs();
 
+    /**
+     * 获取图片的来源
+     *
+     * @return {@link ImageFrom}
+     */
     ImageFrom getImageFrom();
 
+    /**
+     * 设置图片的来源
+     *
+     * @param imageFrom {@link ImageFrom}
+     */
     void setImageFrom(ImageFrom imageFrom);
 
-    void recycle(BitmapPool bitmapPool);
-
+    /**
+     * 是否禁止对图片进行后期处理
+     */
     boolean isBanProcess();
 
+    /**
+     * 设置是否禁止对图片进行后期处理
+     *
+     * @param banProcess 是否禁止对图片进行后期处理
+     * @return {@link DecodeResult}
+     */
     DecodeResult setBanProcess(boolean banProcess);
 
+    /**
+     * 是否经过了后期处理
+     */
     boolean isProcessed();
 
+    /**
+     * 设置是否经过了后期处理
+     *
+     * @param processed 否经过了后期处理
+     * @return {@link DecodeResult}
+     */
     DecodeResult setProcessed(boolean processed);
+
+    /**
+     * 回收图片
+     *
+     * @param bitmapPool {@link BitmapPool}
+     */
+    void recycle(BitmapPool bitmapPool);
 }

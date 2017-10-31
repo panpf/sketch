@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.drawable;
+package me.xiaopan.sketch.decode;
 
 /**
- * 图片的真实属性，例如宽、高、类型、方向等
+ * 图片的真实宽、高、格式、方向等属性
  */
 public class ImageAttrs {
     private int width;
@@ -48,7 +48,7 @@ public class ImageAttrs {
         return width;
     }
 
-    public void resetSize(int width, int height) {
+    void resetSize(int width, int height) {
         this.width = width;
         this.height = height;
     }

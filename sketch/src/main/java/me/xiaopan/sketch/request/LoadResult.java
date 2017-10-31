@@ -19,7 +19,7 @@ package me.xiaopan.sketch.request;
 import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.decode.DecodeResult;
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 
 public class LoadResult {

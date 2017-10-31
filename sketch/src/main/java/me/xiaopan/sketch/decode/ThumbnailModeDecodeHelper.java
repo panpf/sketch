@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Locale;
 
@@ -29,7 +30,6 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -48,7 +48,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
      * 要想使用缩略图功能需要配置开启缩略图功能、配置resize并且图片格式和系统版本支持BitmapRegionDecoder才行
      */
     @Override
-    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
+    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
         LoadOptions loadOptions = request.getOptions();
         if (!loadOptions.isThumbnailMode()
                 || !SketchUtils.sdkSupportBitmapRegionDecoder()
@@ -70,7 +70,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
     @NonNull
     @Override
-    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @NonNull ImageType imageType, @NonNull BitmapFactory.Options boundOptions,
+    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions,
                                @NonNull BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
 
         ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();

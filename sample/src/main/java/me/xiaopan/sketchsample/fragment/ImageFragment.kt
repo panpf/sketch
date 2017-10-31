@@ -16,7 +16,7 @@ import android.widget.Toast
 import me.xiaopan.sketch.Sketch
 import me.xiaopan.sketch.datasource.DataSource
 import me.xiaopan.sketch.display.FadeInImageDisplayer
-import me.xiaopan.sketch.drawable.ImageAttrs
+import me.xiaopan.sketch.decode.ImageAttrs
 import me.xiaopan.sketch.drawable.SketchDrawable
 import me.xiaopan.sketch.drawable.SketchGifDrawable
 import me.xiaopan.sketch.drawable.SketchRefBitmap

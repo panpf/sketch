@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**

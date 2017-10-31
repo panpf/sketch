@@ -28,7 +28,7 @@ import me.xiaopan.sketch.decode.DecodeException;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.decode.GifDecodeResult;
 import me.xiaopan.sketch.decode.ProcessedImageCache;
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.uri.GetDataSourceException;
 import me.xiaopan.sketch.uri.UriModel;

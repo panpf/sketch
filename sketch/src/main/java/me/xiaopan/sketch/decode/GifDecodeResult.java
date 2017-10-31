@@ -19,7 +19,6 @@ package me.xiaopan.sketch.decode;
 import android.support.annotation.NonNull;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.drawable.ImageAttrs;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 

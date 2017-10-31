@@ -28,7 +28,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.drawable.ImageAttrs;
+import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayCache;
 import me.xiaopan.sketch.request.ErrorCause;

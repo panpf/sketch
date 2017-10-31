@@ -104,7 +104,7 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 获取OpenGL所允许的最大尺寸
+     * 获取 OpenGL 所允许的最大尺寸
      */
     @SuppressWarnings("WeakerAccess")
     public int getOpenGLMaxTextureSize() {
@@ -115,7 +115,7 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 设置OpenGL所允许的最大尺寸,用来计算inSampleSize
+     * 设置 OpenGL 所允许的最大尺寸,用来计算 inSampleSize
      */
     @SuppressWarnings("unused")
     public void setOpenGLMaxTextureSize(int openGLMaxTextureSize) {
@@ -123,10 +123,10 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 计算MaxSize
+     * 计算 {@link MaxSize}
      *
-     * @param sketchView 你需要根据ImageView的宽高来计算
-     * @return MaxSize
+     * @param sketchView 你需要根据 {@link ImageView} 的宽高来计算
+     * @return {@link MaxSize}
      */
     public MaxSize calculateImageMaxSize(SketchView sketchView) {
         int width = getWidth(sketchView, true, true, false);
@@ -152,10 +152,10 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 获取默认的maxSize，默认maxSize是屏幕宽高的70%
+     * 获取默认的 {@link MaxSize}，默认 {@link MaxSize} 是屏幕宽高的 70%
      *
      * @param context 上下文
-     * @return maxSize
+     * @return {@link MaxSize}
      */
     public MaxSize getDefaultImageMaxSize(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -163,10 +163,10 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 计算FixedSize
+     * 计算 {@link FixedSize}
      *
-     * @param sketchView 你需要根据ImageView的宽高来计算
-     * @return FixedSize
+     * @param sketchView 你需要根据 {@link ImageView} 的宽高来计算
+     * @return {@link FixedSize}
      */
     public FixedSize calculateImageFixedSize(SketchView sketchView) {
         ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
@@ -189,14 +189,14 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 计算InSampleSize
+     * 计算 inSampleSize
      *
      * @param outWidth          原始宽
      * @param outHeight         原始高
      * @param targetWidth       目标宽
      * @param targetHeight      目标高
      * @param smallerThumbnails 是否使用较小的缩略图，当 inSampleSize 为 2 时，强制改为 4
-     * @return 合适的InSampleSize
+     * @return 合适的 inSampleSize
      */
     public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean smallerThumbnails) {
         targetWidth *= targetSizeScale;
@@ -297,9 +297,9 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 计算inSampleSize的时候将targetSize稍微放大一点儿，就是乘以这个倍数，默认值是1.25f
+     * 计算 inSampleSize 的时候将 targetSize 稍微放大一点儿，就是乘以这个倍数，默认值是 1.25f
      *
-     * @param targetSizeScale 将targetSize稍微放大一点儿
+     * @param targetSizeScale 将 targetSize 稍微放大一点儿
      */
     @SuppressWarnings("unused")
     public void setTargetSizeScale(float targetSizeScale) {
