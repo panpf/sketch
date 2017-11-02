@@ -66,6 +66,10 @@ imageZoomer.location(100f, 200f, true);
 
 通过 location 方法设置的位置只是临时性的并不会一直保持，其它任何位移行为和更新行为都会覆盖此位置
 
+### 分块显示超大图
+
+[ImageZoomer] 支持分块显示超大图，详情请参考 [分块显示超大图片][block_display.md]
+
 ### 阅读模式
 
 对于宽高相差特别大的图片（比如长微博），如果上来就显示全貌，那么肯定是什么也看不清除，用户必须双击一下放大才能看清楚，那么针对这样的图片 [ImageZoomer] 特别支持了阅读模式来提高用户体验
@@ -219,3 +223,4 @@ public boolean dispatchTouchEvent(MotionEvent ev) {
 [PhotoView]: https://github.com/chrisbanes/PhotoView
 [ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/viewfun/zoom/ImageZoomer.java
 [ImageSizeCalculator]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageSizeCalculator.java
+[block_display.md]: block_display.md 

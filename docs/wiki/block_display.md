@@ -4,9 +4,9 @@
 
 然后 Android 官方并没有提供现成可用的控件来解决这个问题，仅在 API 10 之后提供了 [BitmapRegionDecoder] 可以让我们读取完整图片的部分区域
 
-纵观其它几款流行的图片加载器 [Fresco]、[Glide]、[Picasso] 都没有提供超大图片支持，而单独支持超大图片的 View 倒是有几款，例如 [Subsampling Scale Image View]、[WorldMap]、[LargeImage] ， 但都做的不够好或者没法跟现有的图片加载框架集成，做的不好还好说，不能跟现有图片加载框架集成用起来就很恶心了
+纵观其它几款流行的图片加载器 [Fresco]、[Glide]、[Picasso] 都没有提供分块显示支持，而单独支持分块显示的 View 倒是有几款，例如 [Subsampling Scale Image View]、[WorldMap]、[LargeImage] ， 但都做的不够好或者没法跟现有的图片加载框架集成，做的不好还好说，不能跟现有图片加载框架集成用起来就很恶心了
 
-下面用 [Glide] 代指现有的图片框架，用 [Subsampling Scale Image View] 代指单独的分块显示超大图控件来举例说明两者不能集成时的不便之处：
+下面用 [Glide] 代指现有的图片框架，用 [Subsampling Scale Image View] 代指单独的分块显示控件来举例说明两者不能集成时的不便之处：
 
 1. 图片详情页必须准备两个 ImageView，一个 [Glide] 是用的，一个是 [Subsampling Scale Image View]。先用 [Glide] 加载完图片，然后根据结果（如果返回了原始图片尺寸的话，没有的话你还要自己去解析并判断）判断这张图片需不需要用 [Subsampling Scale Image View]，如果需要的话再将 [Subsampling Scale Image View] 显示出来遮盖住 [Glide] 用的 ImageView，并初始化 [Subsampling Scale Image View]
 2. [Subsampling Scale Image View] 要继续优化的话，还会涉及到内存缓存和 bitmap 复用池，如果 [Subsampling Scale Image View] 和 [Glide] 分别单独维护一套的话，APP 的可用内存就剩不了多少了，因此这两者必须能共用一套内存缓存和 bitmap 复用池
@@ -14,19 +14,11 @@
 
 ### 使用
 
-Sketch 是目前唯一提供了超大图片支持的图片加载器，核心类是 [BlockDisplayer]，依赖于[手势缩放][zoom]功能，是[手势缩放][zoom]能的一部分
+Sketch 是目前唯一提供了分块显示支持的图片加载器，核心类是 [BlockDisplayer]，是[手势缩放][zoom]功能的一部分
 
-#### 支持的图片类型和系统版本
-* jpeg、png：API 10（2.3.3）及其以上
-* webp：API 14（4.0）及其以上
-
-#### 使用条件
-
-只要满足上述对图片类型和系统版本的要求并且读到内存的图片比原始图片小就可以使用超大图功能
-
-#### 开启
-
-只要开启[手势缩放][zoom]就自动开启了分块显示功能
+只要开启[手势缩放][zoom]就自动开启了分块显示功能，但开启后不一定所有图片都会启用分块显示功能，必须同时满足以下两个条件
+* 图片是 jpeg 或 png 类型且 API 10（2.3.3）及其以上或者图片是 webp 类型且 API 14（4.0）及其以上
+* 读到内存的图片尺寸比原始图片小
 
 #### 旋转
 
@@ -48,7 +40,7 @@ public class MyFragment extends Fragment {
         sketchImageView = ...;
 
         sketchImageView.setZoomEnabled(true);
-        // 初始化超大图查看器的暂停状态，这一步很重要
+        // 初始化分块显示器的暂停状态，这一步很重要
         sketchImageView.getZoomer().getBlockDisplayer().setPause(!isVisibleToUser());
 
         return view;
@@ -83,7 +75,7 @@ public class MyFragment extends Fragment {
     }
 
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        // 不可见的时候暂停超大图查看器，节省内存，可见的时候恢复
+        // 不可见的时候暂停分块显示器，节省内存，可见的时候恢复
         if (sketchImageView != null && sketchImageView.isZoomEnabled()) {
             sketchImageView.getZoomer().getBlockDisplayer().setPause(!isVisibleToUser);
         }
