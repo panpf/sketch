@@ -30,11 +30,11 @@ import me.panpf.sketch.request.LoadListener;
 /**
  * 负责管理 {@link OptionsFilter} 和过滤 Options，内置了以下选项过滤器<p>
  * <ul>
- * <li>全局暂停下载功能 -> {@link PauseDownloadOptionsFilter}</li>
- * <li>全局暂停加载功能 -> {@link PauseLoadOptionsFilter}</li>
- * <li>全局使用低质量图片功能 -> {@link LowQualityOptionsFilter}</li>
- * <li>全局解码时质量优先功能 -> {@link InPreferQualityOverSpeedOptionsFilter}</li>
- * <li>全局移动数据下暂停下载功能 -> {@link MobileDataPauseDownloadController}</li>
+ * <li>全局暂停下载功能 == {@link PauseDownloadOptionsFilter}</li>
+ * <li>全局暂停加载功能 == {@link PauseLoadOptionsFilter}</li>
+ * <li>全局使用低质量图片功能 == {@link LowQualityOptionsFilter}</li>
+ * <li>全局解码时质量优先功能 == {@link InPreferQualityOverSpeedOptionsFilter}</li>
+ * <li>全局移动数据下暂停下载功能 == {@link MobileDataPauseDownloadController}</li>
  * </ul>
  */
 public class OptionsFilterManager {

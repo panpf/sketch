@@ -50,7 +50,7 @@ public class LoadOptions extends DownloadOptions {
     private boolean decodeGifImage;
 
     /**
-     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig)，参考 {@link ImageType#getConfig(boolean)}
+     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig}，参考 {@link ImageType#getConfig(boolean)}
      */
     private boolean lowQualityImage;
 
@@ -245,14 +245,14 @@ public class LoadOptions extends DownloadOptions {
     }
 
     /**
-     * 是否在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #setBitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
+     * 是否在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #setBitmapConfig(Bitmap.Config)}，参考 {@link ImageType#getConfig(boolean)}
      */
     public boolean isLowQualityImage() {
         return lowQualityImage;
     }
 
     /**
-     * 设置是否在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #setBitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
+     * 设置是否在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #setBitmapConfig(Bitmap.Config)}，参考 {@link ImageType#getConfig(boolean)}
      *
      * @param lowQualityImage 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}
      * @return {@link LoadOptions}. 为了支持链式调用

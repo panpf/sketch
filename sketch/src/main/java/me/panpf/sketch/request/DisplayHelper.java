@@ -229,7 +229,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig(Bitmap.Config))，参考 {@link ImageType#getConfig(boolean)}
+     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config} ，优先级低于 {@link #bitmapConfig(Bitmap.Config)}，参考 {@link ImageType#getConfig(boolean)}
      *
      * @return {@link DisplayHelper}. 为了支持链式调用
      */

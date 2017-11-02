@@ -27,18 +27,18 @@ import java.util.List;
  * 负责管理和匹配 {@link UriModel}，默认支持以下 uri 和 {@link UriModel}
  * <p>
  * <ul>
- * <li>http:// -> {@link HttpUriModel}</li>
- * <li>https:// -> {@link HttpsUriModel}</li>
- * <li>/sdcard/test.jpg -> {@link FileUriModel}</li>
- * <li>file:// -> {@link FileVariantUriModel}</li>
- * <li>asset:// -> {@link AssetUriModel}</li>
- * <li>drawable:// -> {@link DrawableUriModel}</li>
- * <li>content:// -> {@link ContentUriModel}</li>
- * <li>android.resource:// -> {@link AndroidResUriModel}</li>
- * <li>apk.icon:// -> {@link ApkIconUriModel}</li>
- * <li>app.icon:// -> {@link AppIconUriModel}</li>
- * <li>data:image/ -> {@link Base64UriModel}</li>
- * <li>data:img/ -> {@link Base64VariantUriModel}</li>
+ * <li>http:// == {@link HttpUriModel}</li>
+ * <li>https:// == {@link HttpsUriModel}</li>
+ * <li>/sdcard/test.jpg == {@link FileUriModel}</li>
+ * <li>file:// == {@link FileVariantUriModel}</li>
+ * <li>asset:// == {@link AssetUriModel}</li>
+ * <li>drawable:// == {@link DrawableUriModel}</li>
+ * <li>content:// == {@link ContentUriModel}</li>
+ * <li>android.resource:// == {@link AndroidResUriModel}</li>
+ * <li>apk.icon:// == {@link ApkIconUriModel}</li>
+ * <li>app.icon:// == {@link AppIconUriModel}</li>
+ * <li>data:image/ == {@link Base64UriModel}</li>
+ * <li>data:img/ == {@link Base64VariantUriModel}</li>
  * </ul>
  * <p>
  * 还可以通过 {@link #add(UriModel)} 方法扩展支持新的 uri

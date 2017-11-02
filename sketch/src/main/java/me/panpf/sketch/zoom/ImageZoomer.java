@@ -81,7 +81,7 @@ public class ImageZoomer {
 
 
     /**
-     * 当 {@link ImageView} 的 {@link Drawable)、{@link ScaleType}、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
+     * 当 {@link ImageView} 的 {@link Drawable}、{@link ScaleType}、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
      *
      * @return true：重置以后可以工作，false：重置以后无法工作，通常是新的 {@link Drawable} 不满足条件导致
      */
