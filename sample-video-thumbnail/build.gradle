@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+Properties localProperties = openProperties("local.properties")
+String jksFileName = localProperties.getProperty("sample.storeFile")
+File jksFile = jksFileName != null && "" != jksFileName.trim() ? file(jksFileName) : null
+
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
     buildToolsVersion "${BUILD_TOOLS_VERSION}"
@@ -17,10 +21,20 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile jksFile
+            storePassword localProperties.getProperty('sample.storePassword')
+            keyAlias localProperties.getProperty('sample.keyAlias')
+            keyPassword localProperties.getProperty('sample.keyPassword')
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -38,4 +52,16 @@ dependencies {
     implementation "me.xiaopan:assemblyadapter:${ASSEMBLY_ADAPTER_VERSION}"
 
     implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
+}
+
+Properties openProperties(String fileName) {
+    File propertiesFile = new File(projectDir, fileName)
+    if (!propertiesFile.exists()) {
+        return new Properties()
+    }
+    FileInputStream inputStream = new FileInputStream(propertiesFile)
+    Properties properties = new Properties()
+    properties.load(inputStream)
+    inputStream.close()
+    return properties
 }
