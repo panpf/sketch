@@ -725,7 +725,7 @@ public class DisplayHelper {
     }
 
     private boolean checkMemoryCache() {
-        if (displayOptions.isCacheInMemoryDisabled() || displayOptions.isDecodeGifImage()) {
+        if (displayOptions.isCacheInMemoryDisabled()) {
             return true;
         }
 

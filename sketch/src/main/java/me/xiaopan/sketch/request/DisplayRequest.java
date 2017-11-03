@@ -140,7 +140,7 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // Check memory cache
-        if (!displayOptions.isCacheInDiskDisabled() && !displayOptions.isDecodeGifImage()) {
+        if (!displayOptions.isCacheInDiskDisabled()) {
             setStatus(Status.CHECK_MEMORY_CACHE);
             MemoryCache memoryCache = getConfiguration().getMemoryCache();
             SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());

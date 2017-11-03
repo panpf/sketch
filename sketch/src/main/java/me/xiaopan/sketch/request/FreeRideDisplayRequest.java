@@ -52,7 +52,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
     }
 
     /**
-     * 可以坐顺风车？条件是内存缓存key一样并且内存缓存可以用，没有单独关闭内存缓存，不解码GIF图片的请求，没有开同步执行，请求执行器可以用
+     * 可以坐顺风车？条件是内存缓存 key 一样并且内存缓存可以用，没有单独关闭内存缓存，不解码 gif 图片，没有开同步执行，请求执行器可以用
      */
     @Override
     public boolean canByDisplayFreeRide() {
@@ -109,7 +109,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
 
     @Override
     public synchronized boolean processDisplayFreeRide() {
-        if (!getOptions().isCacheInDiskDisabled() && !getOptions().isDecodeGifImage()) {
+        if (!getOptions().isCacheInDiskDisabled()) {
             MemoryCache memoryCache = getConfiguration().getMemoryCache();
             SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
             if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
