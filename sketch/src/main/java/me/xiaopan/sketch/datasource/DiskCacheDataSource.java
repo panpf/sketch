@@ -30,6 +30,9 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 
+/**
+ * 用于读取来自磁盘缓存的图片
+ */
 public class DiskCacheDataSource implements DataSource {
 
     private DiskCache.Entry diskCacheEntry;

@@ -28,7 +28,7 @@ import me.xiaopan.sketch.state.OldStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 点击播放GIF功能
+ * 点击播放 gif 功能
  */
 public class ClickPlayGifFunction extends ViewFunction {
     private FunctionCallbackView view;

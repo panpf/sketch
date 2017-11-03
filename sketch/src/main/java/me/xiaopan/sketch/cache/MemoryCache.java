@@ -23,22 +23,29 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 
 /**
- * 内存缓存器
+ * 内存缓存管理器
  */
 public interface MemoryCache extends Identifier {
     /**
-     * 放进去一张图片
+     * 缓存一张图片
+     *
+     * @param key       缓存 key
+     * @param refBitmap 待缓存图片
      */
     void put(@NonNull String key, @NonNull SketchRefBitmap refBitmap);
 
     /**
-     * 根据给定的key获取图片
+     * 根据指定 key 获取图片
+     *
+     * @param key 缓存 key
      */
     @Nullable
     SketchRefBitmap get(@NonNull String key);
 
     /**
-     * 根据给定的key删除图片
+     * 根据指定 key 删除图片
+     *
+     * @param key 缓存 key
      */
     @Nullable
     SketchRefBitmap remove(@NonNull String key);
@@ -54,23 +61,23 @@ public interface MemoryCache extends Identifier {
     long getMaxSize();
 
     /**
-     * 根据level修剪内存
+     * 根据 level 修整缓存
      *
-     * @param level 修剪级别，对应APP的不同状态
+     * @param level 修剪级别，对应 APP 的不同状态
      * @see android.content.ComponentCallbacks2
      */
     void trimMemory(int level);
 
     /**
-     * 禁用了？
+     * 是否禁用
      */
     @SuppressWarnings("unused")
     boolean isDisabled();
 
     /**
-     * 设置禁用
+     * 设置是否禁用
      *
-     * @param disabled 禁用
+     * @param disabled 是否禁用
      */
     void setDisabled(boolean disabled);
 
@@ -86,7 +93,7 @@ public interface MemoryCache extends Identifier {
     boolean isClosed();
 
     /**
-     * 关闭
+     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 {@link #setDisabled(boolean)}
      */
     void close();
 }

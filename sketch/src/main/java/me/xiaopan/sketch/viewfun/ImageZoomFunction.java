@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.zoom.ImageZoomer;
 
 /**
- * ImageView 缩放功能
+ * {@link ImageView} 缩放功能
  */
 public class ImageZoomFunction extends ViewFunction {
 

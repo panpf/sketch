@@ -25,9 +25,9 @@ import me.xiaopan.sketch.request.RedisplayListener;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
- * 由于RecyclerView在往回滚动的时候遇到可以直接使用的ItemView（位置没有变）会不走onBindViewHolder而直接走onAttachedToWindow然后显示，
- * <br>可是RequestFunction在onDetachedFromWindow的时候会主动清空Drawable导致没有重新走onBindViewHolder的ItemView会没有Drawable而显示空白
- * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayCache恢复之前的图片
+ * 由于 RecyclerView 在往回滚动的时候遇到可以直接使用的 Item（位置没有变）会不走 onBindViewHolder 而直接走 onAttachedToWindow 然后显示，
+ * <br>可是 RequestFunction 在 onDetachedFromWindow 的时候会主动清空 Drawable 导致没有重新走 onBindViewHolder 的 Item 会没有 Drawable 而显示空白
+ * <br>因此 RecyclerCompatFunction 就判断了如果在 onAttachedToWindow 之前没有调用相关显示图片的方法就会根据 DisplayCache 恢复之前的图片
  */
 public class RecyclerCompatFunction extends ViewFunction {
     private static final String NAME = "RecyclerCompatFunction";

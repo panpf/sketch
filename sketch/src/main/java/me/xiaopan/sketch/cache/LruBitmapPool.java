@@ -21,10 +21,7 @@ import me.xiaopan.sketch.cache.recycle.SizeConfigStrategy;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * An {@link BitmapPool} implementation that uses an
- * {@link me.xiaopan.sketch.cache.recycle.LruPoolStrategy} to bucket {@link Bitmap}s and then uses an LRU
- * eviction policy to evict {@link android.graphics.Bitmap}s from the least recently used bucket in order to keep
- * the pool below a given maximum size limit.
+ * 根据最少使用规则释放缓存的 {@link Bitmap} 复用池
  */
 public class LruBitmapPool implements BitmapPool {
     private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
@@ -46,7 +43,6 @@ public class LruBitmapPool implements BitmapPool {
     private boolean closed;
     private boolean disabled;
 
-    // Exposed for testing only.
     LruBitmapPool(Context context, int maxSize, LruPoolStrategy strategy, Set<Bitmap.Config> allowedConfigs) {
         context = context.getApplicationContext();
         this.context = context;
@@ -58,20 +54,19 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     /**
-     * Constructor for LruBitmapPool.
+     * 创建根据最少使用规则释放缓存的 {@link Bitmap} 复用池，使用默认的 {@link Bitmap} 匹配策略和 {@link Bitmap.Config} 白名单
      *
-     * @param maxSize The initial maximum size of the pool in bytes.
+     * @param maxSize 最大容量
      */
     public LruBitmapPool(Context context, int maxSize) {
         this(context, maxSize, getDefaultStrategy(), getDefaultAllowedConfigs());
     }
 
     /**
-     * Constructor for LruBitmapPool.
+     * 创建根据最少使用规则释放缓存的 {@link Bitmap} 复用池，使用默认的 {@link Bitmap} 匹配策略
      *
-     * @param maxSize        The initial maximum size of the pool in bytes.
-     * @param allowedConfigs A white listed set of {@link android.graphics.Bitmap.Config} that are allowed to be put
-     *                       into the pool. Configs not in the allowed set will be rejected.
+     * @param maxSize        最大容量
+     * @param allowedConfigs {@link Bitmap.Config} 白名单
      */
     @SuppressWarnings("unused")
     public LruBitmapPool(Context context, int maxSize, Set<Bitmap.Config> allowedConfigs) {

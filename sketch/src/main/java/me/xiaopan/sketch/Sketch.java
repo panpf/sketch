@@ -44,9 +44,9 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * {@link Sketch} 是一个功能强大且全面的图片加载器，可以从网络或者本地加载图片，支持 gif、手势缩放以及分块显示超大图
  * <ul>
- * <li>display()：显示图片到 {@link SketchImageView} 上</li>
- * <li>load()：加载图片到内存中</li>
- * <li>download()：下载图片到磁盘上</li>
+ * <li>{@link #display(String, SketchView)}：显示图片到 {@link SketchImageView} 上</li>
+ * <li>{@link #load(String, LoadListener)}：加载图片到内存中</li>
+ * <li>{@link #download(String, DownloadListener)}：下载图片到磁盘上</li>
  * </ul>
  */
 public class Sketch {
@@ -61,7 +61,7 @@ public class Sketch {
     }
 
     /**
-     * 获取{@link Sketch}实例
+     * 获取 {@link Sketch} 实例
      *
      * @param context 用于初始化 {@link Sketch}
      * @return {@link Sketch}

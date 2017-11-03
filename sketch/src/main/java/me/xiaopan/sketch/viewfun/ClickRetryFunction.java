@@ -28,7 +28,7 @@ import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
- * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
+ * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击 {@link android.widget.ImageView} 重新或强制显示图片
  */
 public class ClickRetryFunction extends ViewFunction {
     private boolean clickRetryOnDisplayErrorEnabled;

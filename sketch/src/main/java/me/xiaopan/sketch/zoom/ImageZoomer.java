@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import me.xiaopan.sketch.SLog;
 
 /**
- * 图片缩放器，接收触摸事件，变换 Matrix，改变图片的显示效果，代理点击和长按事件
+ * 图片缩放器，接收触摸事件，变换 {@link Matrix}，改变图片的显示效果，代理点击和长按事件
  */
 // TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
 public class ImageZoomer {
@@ -80,9 +81,9 @@ public class ImageZoomer {
 
 
     /**
-     * 当 ImageView 的 drawable、scaleType、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
+     * 当 {@link ImageView} 的 {@link Drawable)、{@link ScaleType}、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
      *
-     * @return true：重置以后可以工作，false：重置以后无法工作，通常是新的 drawable 不满足条件导致
+     * @return true：重置以后可以工作，false：重置以后无法工作，通常是新的 {@link Drawable} 不满足条件导致
      */
     public boolean reset(@NonNull String why) {
         recycle(why);
@@ -182,7 +183,12 @@ public class ImageZoomer {
 
 
     /**
-     * 定位到预览图上指定的位置（不用考虑旋转角度）
+     * 定位到预览图上指定的位置，不用考虑缩放和旋转
+     *
+     * @param x       预览图上指定位置的 x 坐标
+     * @param y       预览图上指定位置的 y 坐标
+     * @param animate 是否使用动画
+     * @return true：定位成功；false：定位失败，通常是 {@link ImageZoomer} 尚未开始工作
      */
     @SuppressWarnings("unused")
     public boolean location(float x, float y, boolean animate) {
@@ -196,7 +202,11 @@ public class ImageZoomer {
     }
 
     /**
-     * 定位到预览图上指定的位置（不用考虑旋转角度）
+     * 定位到预览图上指定的位置，不用考虑缩放和旋转
+     *
+     * @param x 预览图上指定位置的 x 坐标
+     * @param y 预览图上指定位置的 y 坐标
+     * @return true：定位成功；false：定位失败，通常是 {@link ImageZoomer} 尚未开始工作
      */
     @SuppressWarnings("unused")
     public boolean location(float x, float y) {
@@ -204,7 +214,13 @@ public class ImageZoomer {
     }
 
     /**
-     * 缩放
+     * 缩放，不用考虑缩放和旋转
+     *
+     * @param scale   缩放比例
+     * @param focalX  缩放中心点在预览图上的 x 坐标
+     * @param focalY  缩放中心点在预览图上的 y 坐标
+     * @param animate 是否使用动画
+     * @return true：缩放成功；false：缩放失败，通常是 {@link ImageZoomer} 尚未开始工作或者缩放比例小于最小缩放比例或大于最大缩放比例
      */
     public boolean zoom(float scale, float focalX, float focalY, boolean animate) {
         if (!isWorking()) {
@@ -223,7 +239,11 @@ public class ImageZoomer {
     }
 
     /**
-     * 缩放
+     * 缩放，不用考虑缩放和旋转，默认缩放中心点是 {@link ImageView} 的中心
+     *
+     * @param scale   缩放比例
+     * @param animate 是否使用动画
+     * @return true：缩放成功；false：缩放失败，通常是 {@link ImageZoomer} 尚未开始工作或者缩放比例小于最小缩放比例或大于最大缩放比例
      */
     public boolean zoom(float scale, boolean animate) {
         if (!isWorking()) {
@@ -236,7 +256,10 @@ public class ImageZoomer {
     }
 
     /**
-     * 缩放
+     * 缩放，不用考虑缩放和旋转，默认缩放中心点是 {@link ImageView} 的中心，默认不使用动画
+     *
+     * @param scale 缩放比例
+     * @return true：缩放成功；false：缩放失败，通常是 {@link ImageZoomer} 尚未开始工作或者缩放比例小于最小缩放比例或大于最大缩放比例
      */
     @SuppressWarnings("unused")
     public boolean zoom(float scale) {
@@ -252,7 +275,10 @@ public class ImageZoomer {
 
 
     /**
-     * 旋转图片（会清除已经有的缩放和移动数据，旋转角度会一直存在）
+     * 旋转图片，旋转会清除已经存在的缩放和移动数据
+     *
+     * @param degrees 旋转角度，只能是 90°、180°、270°、360°
+     * @return true：旋转成功；false：旋转失败，通常是 {@link ImageZoomer} 尚未开始工作或者旋转角度不是 90 的倍数
      */
     // TODO: 16/9/28 支持旋转动画
     // TODO: 16/9/28 增加手势旋转功能
@@ -288,7 +314,10 @@ public class ImageZoomer {
     }
 
     /**
-     * 在当前旋转角度的基础上旋转一定角度（会清除已经有的缩放和移动数据，旋转角度会一直存在）
+     * 在当前旋转角度的基础上旋转一定角度，旋转会清除已经存在的缩放和移动数据
+     *
+     * @param degrees 旋转角度，只能是 90°、180°、270°、360°
+     * @return true：旋转成功；false：旋转失败，通常是 {@link ImageZoomer} 尚未开始工作或者旋转角度不是 90 的倍数
      */
     @SuppressWarnings("unused")
     public boolean rotateBy(int degrees) {
@@ -314,7 +343,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 获取 ImageView 的尺寸
+     * 获取 {@link ImageView} 的尺寸
      */
     @NonNull
     public Size getViewSize() {
@@ -338,7 +367,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 拷贝绘制 Matrix 的参数
+     * 拷贝绘制 {@link Matrix} 的参数
      */
     public void getDrawMatrix(@NonNull Matrix matrix) {
         matrix.set(scaleDragHelper.getDrawMatrix());
@@ -390,7 +419,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 获取能够让图片充满 ImageView 显示的缩放比例
+     * 获取能够让图片充满 {@link ImageView} 显示的缩放比例
      */
     @SuppressWarnings("unused")
     public float getFillZoomScale() {
@@ -477,7 +506,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 获取ScaleType
+     * 获取 {@link ScaleType}
      */
     @NonNull
     public ScaleType getScaleType() {
@@ -485,7 +514,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 设置ScaleType
+     * 设置 {@link ScaleType}
      */
     public void setScaleType(@NonNull ScaleType scaleType) {
         //noinspection ConstantConditions
@@ -574,7 +603,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 添加 Matrix 变化监听器
+     * 添加 {@link Matrix} 变化监听器
      */
     public void addOnMatrixChangeListener(@NonNull OnMatrixChangeListener listener) {
         //noinspection ConstantConditions
@@ -587,7 +616,7 @@ public class ImageZoomer {
     }
 
     /**
-     * 移除 Matrix 变化监听器
+     * 移除 {@link Matrix} 变化监听器
      */
     @SuppressWarnings("unused")
     public boolean removeOnMatrixChangeListener(@NonNull OnMatrixChangeListener listener) {
@@ -637,7 +666,7 @@ public class ImageZoomer {
     }
 
     /**
-     * Matrix变化监听器
+     * {@link Matrix} 变化监听器
      */
     public interface OnMatrixChangeListener {
         void onMatrixChanged(@NonNull ImageZoomer imageZoomer);

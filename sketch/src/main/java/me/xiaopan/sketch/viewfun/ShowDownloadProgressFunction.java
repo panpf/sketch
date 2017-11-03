@@ -37,7 +37,7 @@ import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
- * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
+ * 显示下载进度功能，会在 {@link android.widget.ImageView} 上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
 public class ShowDownloadProgressFunction extends ViewFunction {
     static final int DEFAULT_MASK_COLOR = 0x22000000;

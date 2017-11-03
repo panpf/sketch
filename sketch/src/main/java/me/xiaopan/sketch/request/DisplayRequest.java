@@ -60,14 +60,14 @@ public class DisplayRequest extends LoadRequest {
     }
 
     /**
-     * 获取内存缓存key
+     * 获取内存缓存 key
      */
     public String getMemoryCacheKey() {
         return getKey();
     }
 
     /**
-     * 获取View信息
+     * 获取 View 信息
      */
     public ViewInfo getViewInfo() {
         return viewInfo;

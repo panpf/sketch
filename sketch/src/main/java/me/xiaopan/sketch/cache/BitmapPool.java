@@ -7,172 +7,105 @@ import android.support.annotation.Nullable;
 import me.xiaopan.sketch.Identifier;
 
 /**
- * {@link Bitmap} 复用缓存池，用于缓存并复用 {@link Bitmap}，便于解码时直接利用，减少内存分配
+ * {@link Bitmap} 复用缓存池，用于缓存并复用 {@link Bitmap}，便于解码时直接使用，减少内存分配
  */
 public interface BitmapPool extends Identifier {
 
     /**
-     * Get max size
+     * 获取最大容量
      */
     int getMaxSize();
 
     /**
-     * Get use size
+     * 获取已用容量
      */
     int getSize();
 
     /**
-     * Multiplies the initial size of the pool by the given multipler to dynamically and synchronously allow users to
-     * adjust the size of the pool.
-     * <p>
-     * If the current total size of the pool is larger than the max size after the given multiplier is applied,
-     * {@link Bitmap}s should be evicted until the pool is smaller than the new max size.
+     * 调整最大容量，用现有最大容量乘以 sizeMultiplier ，如果调整后已用容量超过新的最大容量会立即释放 {@link Bitmap}
      *
-     * @param sizeMultiplier The size multiplier to apply between 0 and 1.
+     * @param sizeMultiplier 取值范围 0 到 1.
      */
     @SuppressWarnings("unused")
     void setSizeMultiplier(float sizeMultiplier);
 
     /**
-     * Adds the given {@link android.graphics.Bitmap} and returns {@code true} if the {@link android.graphics.Bitmap}
-     * was eligible to be added and {@code false} otherwise.
-     * <p>
-     * <p>
-     * Note - If the {@link android.graphics.Bitmap} is rejected (this method returns false) then it is the caller's
-     * responsibility to call {@link android.graphics.Bitmap#recycle()}.
-     * </p>
-     * <p>
-     * <p>
-     * Note - This method will return {@code true} if the given {@link android.graphics.Bitmap} is synchronously
-     * evicted after being accepted. The only time this method will return {@code false} is if the
-     * {@link android.graphics.Bitmap} is not eligible to be added to the pool (either it is not mutable or it is
-     * larger than the max pool size).
-     * </p>
+     * 缓存 {@link Bitmap}，如果返回 false，调用者有义务调用 {@link Bitmap#recycle()} 回收这个 {@link Bitmap}
      *
-     * @param bitmap The {@link android.graphics.Bitmap} to attempt to add.
+     * @param bitmap {@link Bitmap}
+     * @return false：添加缓存失败，这个 {@link Bitmap} 可能是不可变的或者已经回收了
      * @see android.graphics.Bitmap#isMutable()
      * @see android.graphics.Bitmap#recycle()
      */
     boolean put(@NonNull Bitmap bitmap);
 
     /**
-     * Identical to {@link #get(int, int, android.graphics.Bitmap.Config)} except that any returned non-null
-     * {@link android.graphics.Bitmap} may <em>not</em> have been erased and may contain random data.
-     * <p>
-     * <p>
-     * Although this method is slightly more efficient than {@link #get(int, int, android.graphics.Bitmap.Config)}
-     * it should be used with caution and only when the caller is sure that they are going to erase the
-     * {@link android.graphics.Bitmap} entirely before writing new data to it.
-     * </p>
+     * 获取可复用的 {@link Bitmap}，这个方法不会抹除 {@link Bitmap} 所有的颜色，除非是必要的情况下，否则请使用 {@link #get(int, int, Bitmap.Config)}
      *
-     * @param width  The width in pixels of the desired {@link android.graphics.Bitmap}.
-     * @param height The height in pixels of the desired {@link android.graphics.Bitmap}.
-     * @param config The {@link android.graphics.Bitmap.Config} of the desired {@link android.graphics.Bitmap}.
-     * @return A {@link android.graphics.Bitmap} with exactly the given width, height, and config potentially containing
-     * random image data or null if no such {@link android.graphics.Bitmap} could be obtained from the pool.
-     * @see #get(int, int, android.graphics.Bitmap.Config)
+     * @param width  所需要的宽度
+     * @param height 所需要的高度
+     * @param config 所需要的 {@link android.graphics.Bitmap.Config}
+     * @return {@link android.graphics.Bitmap}. null：缓存池中没有可复用的 {@link Bitmap}
      */
     @Nullable
     Bitmap getDirty(int width, int height, @NonNull Bitmap.Config config);
 
     /**
-     * Returns a {@link android.graphics.Bitmap} of exactly the given width, height, and configuration, and containing
-     * only transparent pixels or null if no such {@link android.graphics.Bitmap} could be obtained from the pool.
-     * <p>
-     * <p>
-     * Because this method erases all pixels in the {@link Bitmap}, this method is slightly slower than
-     * {@link #getDirty(int, int, android.graphics.Bitmap.Config)}. If the {@link android.graphics.Bitmap} is being
-     * obtained to be used in {@link android.graphics.BitmapFactory} or in any other case where every pixel in the
-     * {@link android.graphics.Bitmap} will always be overwritten or cleared,
-     * {@link #getDirty(int, int, android.graphics.Bitmap.Config)} will be faster. When in doubt, use this method
-     * to ensure correctness.
-     * </p>
-     * <p>
-     * <pre>
-     *     Implementations can should clear out every returned Bitmap using the following:
+     * 获取可复用的 {@link Bitmap} 并抹除所有的颜色
      *
-     * {@code
-     * bitmap.eraseColor(Color.TRANSPARENT);
-     * }
-     * </pre>
-     *
-     * @param width  The width in pixels of the desired {@link android.graphics.Bitmap}.
-     * @param height The height in pixels of the desired {@link android.graphics.Bitmap}.
-     * @param config The {@link android.graphics.Bitmap.Config} of the desired {@link android.graphics.Bitmap}.
-     * @see #getDirty(int, int, android.graphics.Bitmap.Config)
+     * @param width  所需要的宽度
+     * @param height 所需要的高度
+     * @param config 所需要的 {@link android.graphics.Bitmap.Config}
+     * @return {@link android.graphics.Bitmap}. null：缓存池中没有可复用的 {@link Bitmap}
      */
     @Nullable
     Bitmap get(int width, int height, @NonNull Bitmap.Config config);
 
     /**
-     * Returns a {@link android.graphics.Bitmap} of exactly the given width, height, and configuration, and containing
-     * only transparent pixels or null if no such {@link android.graphics.Bitmap} could be obtained from the pool.
-     * <p>
-     * <p>
-     * Because this method erases all pixels in the {@link Bitmap}, this method is slightly slower than
-     * {@link #getDirty(int, int, android.graphics.Bitmap.Config)}. If the {@link android.graphics.Bitmap} is being
-     * obtained to be used in {@link android.graphics.BitmapFactory} or in any other case where every pixel in the
-     * {@link android.graphics.Bitmap} will always be overwritten or cleared,
-     * {@link #getDirty(int, int, android.graphics.Bitmap.Config)} will be faster. When in doubt, use this method
-     * to ensure correctness.
-     * </p>
-     * <p>
-     * <pre>
-     *     Implementations can should clear out every returned Bitmap using the following:
+     * 获取可复用的 {@link Bitmap} 并抹除所有的颜色，如果没有可复用的 {@link Bitmap} 就创建
      *
-     * {@code
-     * bitmap.eraseColor(Color.TRANSPARENT);
-     * }
-     * </pre>
-     * <p>
-     * If you can not find reusable to create a new bitmap
-     *
-     * @param width  The width in pixels of the desired {@link android.graphics.Bitmap}.
-     * @param height The height in pixels of the desired {@link android.graphics.Bitmap}.
-     * @param config The {@link android.graphics.Bitmap.Config} of the desired {@link android.graphics.Bitmap}.
-     * @see #getDirty(int, int, android.graphics.Bitmap.Config)
+     * @param width  所需要的宽度
+     * @param height 所需要的高度
+     * @param config 所需要的 {@link android.graphics.Bitmap.Config}
+     * @return {@link android.graphics.Bitmap}
      */
     @NonNull
     Bitmap getOrMake(int width, int height, @NonNull Bitmap.Config config);
 
     /**
-     * Disabled?
+     * 是否已禁用
      */
     @SuppressWarnings("unused")
     boolean isDisabled();
 
     /**
-     * Setup disabled
+     * 设置是否禁用
      *
-     * @param disabled nonuse
+     * @param disabled 是否禁用
      */
     void setDisabled(boolean disabled);
 
     /**
-     * Clean all
+     * 清除所有 {@link Bitmap}
      */
     void clear();
 
     /**
-     * Trim memory
+     * 根据 level 修整缓存
      *
-     * @param level The context of the trim, giving a hint of the amount of
-     *              trimming the application may like to perform.  May be
-     *              {@link android.content.ComponentCallbacks2#TRIM_MEMORY_COMPLETE}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_MODERATE},
-     *              {@link android.content.ComponentCallbacks2#TRIM_MEMORY_BACKGROUND}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_UI_HIDDEN},
-     *              {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_CRITICAL}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_LOW},
-     *              or {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_MODERATE}.
+     * @param level 修剪级别，对应 APP 的不同状态
+     * @see android.content.ComponentCallbacks2
      */
     void trimMemory(int level);
 
     /**
-     * Closed
+     * 是否已关闭
      */
     @SuppressWarnings("unused")
     boolean isClosed();
 
     /**
-     * Close
+     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 {@link #setDisabled(boolean)}
      */
     void close();
 }

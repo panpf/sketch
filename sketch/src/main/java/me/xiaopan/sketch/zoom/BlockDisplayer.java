@@ -38,12 +38,12 @@ import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchLoadingDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.viewfun.FunctionPropertyView;
-import me.xiaopan.sketch.zoom.block.ImageRegionDecoder;
 import me.xiaopan.sketch.zoom.block.Block;
-import me.xiaopan.sketch.zoom.block.DecodeHandler;
 import me.xiaopan.sketch.zoom.block.BlockDecoder;
 import me.xiaopan.sketch.zoom.block.BlockExecutor;
 import me.xiaopan.sketch.zoom.block.BlockManager;
+import me.xiaopan.sketch.zoom.block.DecodeHandler;
+import me.xiaopan.sketch.zoom.block.ImageRegionDecoder;
 
 /**
  * 对于超大图片，分块显示可见区域
@@ -149,7 +149,7 @@ public class BlockDisplayer {
     }
 
     /**
-     * 回收资源（回收后需要重新setImage()才能使用）
+     * 回收资源，回收后需要重新执行 {@link #reset()} 才能使用
      */
     public void recycle(String why) {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
@@ -164,7 +164,7 @@ public class BlockDisplayer {
     }
 
     /**
-     * 清理资源（不影响继续使用）
+     * 清理资源，不影响继续使用
      */
     private void clean(String why) {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
@@ -315,8 +315,9 @@ public class BlockDisplayer {
     }
 
     /**
-     * 暂停
+     * 设置是否暂停，暂停后会清除所有的碎片，并不会再解码新的碎片
      */
+    @SuppressWarnings("unused")
     public void setPause(boolean pause) {
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             return;
@@ -478,7 +479,7 @@ public class BlockDisplayer {
     }
 
     /**
-     * 获取碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
+     * 获取碎片基数，例如碎片基数是3时，就将绘制区域分割成一个 (3+1)x(3+1)=16 个方块
      */
     public int getBlockBaseNumber() {
         return blockManager.blockBaseNumber;

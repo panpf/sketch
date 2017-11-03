@@ -30,13 +30,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.decode.ImageAttrs;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 用于读取来自 {@link android.content.ContentProvider} 的图片，使用 {@link ContentResolver#openInputStream(Uri)} 方法读取数据，
+ * 支持 content://、file://、android.resource:// 格式的 uri
+ */
 public class ContentDataSource implements DataSource {
 
     private Context context;

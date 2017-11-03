@@ -25,9 +25,9 @@ import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 /**
  * 用来搭配 {@link SketchShapeBitmapDrawable} 在绘制时修改图片的尺寸，用来替代大多数情况下对 {@link Resize} 的依赖
  * <p>
- * 当多张图片的 inSampleSize 一样，那么读到内存里的 bitmap 尺寸就一样，但是因为 {@link Resize} 不一样，导致会产生多个差别很小的 bitmap，这样就降低了内存缓存利用率
+ * 当多张图片的 inSampleSize 一样，那么读到内存里的 {@link android.graphics.Bitmap} 尺寸就一样，但是因为 {@link Resize} 不一样，导致会产生多个差别很小的 {@link android.graphics.Bitmap}，这样就降低了内存缓存利用率
  * <p>
- * 当使用 {@link ShapeSize} 时，就可以使用同一个 bitmap 在绘制时显示出不同的尺寸，避免了产生多个差别很小的 bitmap，提高了内存缓存利用率
+ * 当使用 {@link ShapeSize} 时，就可以使用同一个 {@link android.graphics.Bitmap} 在绘制时显示出不同的尺寸，避免了产生多个差别很小的 {@link android.graphics.Bitmap}，提高了内存缓存利用率
  */
 public class ShapeSize implements Identifier {
     private int width;
@@ -49,7 +49,7 @@ public class ShapeSize implements Identifier {
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 {@link ShapeSize}
+     * 使用 {@link ImageView} 的固定尺寸作为 {@link ShapeSize}
      */
     @SuppressWarnings("unused")
     public static ShapeSize byViewFixedSize() {
@@ -94,7 +94,7 @@ public class ShapeSize implements Identifier {
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 {@link ShapeSize}
+     * 使用 {@link ImageView} 的固定尺寸作为 {@link ShapeSize}
      */
     static class ByViewFixedSizeShapeSize extends ShapeSize {
         static final ByViewFixedSizeShapeSize INSTANCE = new ByViewFixedSizeShapeSize();

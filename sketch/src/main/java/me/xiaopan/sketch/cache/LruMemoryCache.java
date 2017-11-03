@@ -25,6 +25,9 @@ import me.xiaopan.sketch.drawable.SketchRefBitmap;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 根据最少使用规则释放缓存的内存缓存管理器
+ */
 public class LruMemoryCache implements MemoryCache {
     private static final String NAME = "LruMemoryCache";
 
@@ -33,6 +36,12 @@ public class LruMemoryCache implements MemoryCache {
     private boolean closed;
     private boolean disabled;
 
+    /**
+     * 创建根据最少使用规则释放缓存的内存缓存管理器
+     *
+     * @param context {@link Context}
+     * @param maxSize 最大容量
+     */
     public LruMemoryCache(Context context, int maxSize) {
         context = context.getApplicationContext();
         this.context = context;

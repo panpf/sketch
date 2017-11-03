@@ -27,7 +27,7 @@ import me.xiaopan.sketch.util.DrawableWrapper;
 import me.xiaopan.sketch.util.ExifInterface;
 
 /**
- * 加载中占位图专用Drawable，可绑定请求
+ * 加载中占位图专用 {@link Drawable}，可绑定请求
  */
 public class SketchLoadingDrawable extends DrawableWrapper implements SketchRefDrawable {
     private WeakReference<DisplayRequest> weakReference;

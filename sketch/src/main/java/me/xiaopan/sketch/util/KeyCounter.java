@@ -19,7 +19,7 @@ package me.xiaopan.sketch.util;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Key计数器
+ * Key 计数器
  */
 public class KeyCounter {
     private AtomicInteger number;
@@ -29,7 +29,7 @@ public class KeyCounter {
     }
 
     /**
-     * 刷新key
+     * 刷新 key
      */
     public void refresh() {
         if (number.get() == Integer.MAX_VALUE) {

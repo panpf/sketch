@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 
 import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.request.CancelCause;
@@ -30,7 +31,7 @@ import me.xiaopan.sketch.uri.UriModel;
 
 public abstract class ViewFunction {
     /**
-     * 依附到Window
+     * 依附到 {@link android.view.Window}
      */
     public void onAttachedToWindow() {
 
@@ -39,6 +40,7 @@ public abstract class ViewFunction {
     /**
      * 发生触摸事件
      *
+     * @param event {@link MotionEvent}. 事件
      * @return 拦截事件
      */
     public boolean onTouchEvent(@NonNull MotionEvent event) {
@@ -61,25 +63,28 @@ public abstract class ViewFunction {
     /**
      * 绘制
      *
-     * @param canvas Canvas
+     * @param canvas {@link Canvas}
      */
     public void onDraw(@NonNull Canvas canvas) {
 
     }
 
     /**
-     * 从Window脱离
+     * 从 {@link android.view.Window} 脱离
      *
-     * @return true：是否需要调用父setImageDrawable清空图片
+     * @return true：是否需要调用父 {@link ImageView#setImageDrawable(Drawable)} 清空图片
      */
     public boolean onDetachedFromWindow() {
         return false;
     }
 
     /**
-     * drawable改变
+     * {@link Drawable} 改变
      *
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @param callPosition 执行这个方法的场景或位置
+     * @param oldDrawable  旧图片
+     * @param newDrawable  新图片
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onDrawableChanged(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         return false;
@@ -89,7 +94,8 @@ public abstract class ViewFunction {
     /**
      * 准备显示图片
      *
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @param uriModel {@link UriModel}
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onReadyDisplay(@Nullable UriModel uriModel) {
         return false;
@@ -98,7 +104,7 @@ public abstract class ViewFunction {
     /**
      * 开始转入异步线程加载或下载图片
      *
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onDisplayStarted() {
         return false;
@@ -109,7 +115,7 @@ public abstract class ViewFunction {
      *
      * @param totalLength     总长度
      * @param completedLength 已完成长度
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
         return false;
@@ -118,7 +124,10 @@ public abstract class ViewFunction {
     /**
      * 显示完成
      *
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @param drawable   新图片
+     * @param imageFrom  图片来源
+     * @param imageAttrs 图片属性
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         return false;
@@ -127,7 +136,8 @@ public abstract class ViewFunction {
     /**
      * 显示失败
      *
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @param errorCause 错误原因
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onDisplayError(@NonNull ErrorCause errorCause) {
         return false;
@@ -136,7 +146,8 @@ public abstract class ViewFunction {
     /**
      * 显示取消
      *
-     * @return 是否需要调用 invalidate() 刷新 ImageView
+     * @param cancelCause 取消原因
+     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
     public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
         return false;

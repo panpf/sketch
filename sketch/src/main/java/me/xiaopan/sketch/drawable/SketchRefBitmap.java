@@ -25,7 +25,7 @@ import me.xiaopan.sketch.decode.ImageAttrs;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 引用Bitmap，能够计算缓存引用、显示引用以及等待显示引用
+ * 引用 {@link Bitmap}，能够计算缓存引用、显示引用以及等待显示引用
  */
 public class SketchRefBitmap extends SketchBitmap {
     private static final String NAME = "SketchRefBitmap";

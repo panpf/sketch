@@ -38,13 +38,7 @@ import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.ExifInterface;
 
 /**
- * 可以改变BitmapDrawable的形状和尺寸
- * <p>
- * fixedSize用来改变尺寸，如果bitmap的尺寸和fixedSize的比例不一致，那么就仅显示bitmap的中间部分（参考CENTER_CROP的效果）
- * </p>
- * <p>
- * shapeImage用来改变形状
- * </p>
+ * 可以改变 {@link BitmapDrawable} 的形状和尺寸
  */
 public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;

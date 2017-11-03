@@ -31,7 +31,7 @@ import me.xiaopan.sketch.uri.UriModel;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 显示图片来源功能，会在ImageView的左上角显示一个三角形的色块用于标识本次图片是从哪里来的
+ * 显示图片来源功能，会在 {@link android.widget.ImageView} 的左上角显示一个三角形的色块用于标识本次图片是从哪里来的
  * <ul>
  * <li>红色：网络</li>
  * <li>黄色：磁盘缓存</li>

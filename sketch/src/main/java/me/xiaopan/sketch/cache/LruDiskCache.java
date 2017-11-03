@@ -37,6 +37,9 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.UnableCreateDirException;
 import me.xiaopan.sketch.util.UnableCreateFileException;
 
+/**
+ * 根据最少使用规则释放缓存的磁盘缓存管理器
+ */
 public class LruDiskCache implements DiskCache {
     private static final String NAME = "LruDiskCache";
 
@@ -50,6 +53,14 @@ public class LruDiskCache implements DiskCache {
     private boolean disabled;
     private Map<String, ReentrantLock> editLockMap;
 
+    /**
+     * 创建根据最少使用规则释放缓存的磁盘缓存管理器
+     *
+     * @param context        {@link Context}
+     * @param configuration  {@link Configuration}
+     * @param appVersionCode app 版本，用于删除旧缓存，想要主动删除旧缓存时更新这个值即可
+     * @param maxSize        最大容量
+     */
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
         context = context.getApplicationContext();
         this.context = context;
@@ -114,14 +125,14 @@ public class LruDiskCache implements DiskCache {
 
     // 这个方法性能优先，因此不加synchronized
     @Override
-    public boolean exist(@NonNull String uri) {
+    public boolean exist(@NonNull String key) {
         if (closed) {
             return false;
         }
 
         if (disabled) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable judge exist, uri=%s", uri);
+                SLog.d(NAME, "Disabled. Unable judge exist, key=%s", key);
             }
             return false;
         }
@@ -135,7 +146,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         try {
-            return cache.exist(uriToDiskCacheKey(uri));
+            return cache.exist(keyEncode(key));
         } catch (DiskLruCache.ClosedException e) {
             e.printStackTrace();
             return false;
@@ -146,14 +157,14 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized Entry get(@NonNull String uri) {
+    public synchronized Entry get(@NonNull String key) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable get, uri=%s", uri);
+                SLog.d(NAME, "Disabled. Unable get, key=%s", key);
             }
             return null;
         }
@@ -167,22 +178,22 @@ public class LruDiskCache implements DiskCache {
 
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {
-            snapshot = cache.getSimpleSnapshot(uriToDiskCacheKey(uri));
+            snapshot = cache.getSimpleSnapshot(keyEncode(key));
         } catch (IOException | DiskLruCache.ClosedException e) {
             e.printStackTrace();
         }
-        return snapshot != null ? new LruDiskCacheEntry(uri, snapshot) : null;
+        return snapshot != null ? new LruDiskCacheEntry(key, snapshot) : null;
     }
 
     @Override
-    public synchronized Editor edit(@NonNull String uri) {
+    public synchronized Editor edit(@NonNull String key) {
         if (closed) {
             return null;
         }
 
         if (disabled) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable edit, uri=%s", uri);
+                SLog.d(NAME, "Disabled. Unable edit, key=%s", key);
             }
             return null;
         }
@@ -196,7 +207,7 @@ public class LruDiskCache implements DiskCache {
 
         DiskLruCache.Editor diskEditor = null;
         try {
-            diskEditor = cache.edit(uriToDiskCacheKey(uri));
+            diskEditor = cache.edit(keyEncode(key));
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -207,7 +218,7 @@ public class LruDiskCache implements DiskCache {
             }
 
             try {
-                diskEditor = cache.edit(uriToDiskCacheKey(uri));
+                diskEditor = cache.edit(keyEncode(key));
             } catch (IOException | DiskLruCache.ClosedException e1) {
                 e1.printStackTrace();
             }
@@ -221,7 +232,7 @@ public class LruDiskCache implements DiskCache {
             }
 
             try {
-                diskEditor = cache.edit(uriToDiskCacheKey(uri));
+                diskEditor = cache.edit(keyEncode(key));
             } catch (IOException | DiskLruCache.ClosedException e1) {
                 e1.printStackTrace();
             }
@@ -242,12 +253,12 @@ public class LruDiskCache implements DiskCache {
 
     @NonNull
     @Override
-    public String uriToDiskCacheKey(@NonNull String uri) {
-        // 由于DiskLruCache会在uri后面加序列号，因此这里不用再对apk文件的名称做特殊处理了
-//        if (SketchUtils.checkSuffix(uri, ".apk")) {
-//            uri += ".icon";
+    public String keyEncode(@NonNull String key) {
+        // 由于DiskLruCache会在key后面加序列号，因此这里不用再对apk文件的名称做特殊处理了
+//        if (SketchUtils.checkSuffix(key, ".apk")) {
+//            key += ".icon";
 //        }
-        return SketchMD5Utils.md5(uri);
+        return SketchMD5Utils.md5(key);
     }
 
     @Override
@@ -323,7 +334,7 @@ public class LruDiskCache implements DiskCache {
 
     @NonNull
     @Override
-    public synchronized ReentrantLock getEditLock(@NonNull String uri) {
+    public synchronized ReentrantLock getEditLock(@NonNull String key) {
         if (editLockMap == null) {
             synchronized (this) {
                 if (editLockMap == null) {
@@ -332,10 +343,10 @@ public class LruDiskCache implements DiskCache {
             }
         }
 
-        ReentrantLock lock = editLockMap.get(uri);
+        ReentrantLock lock = editLockMap.get(key);
         if (lock == null) {
             lock = new ReentrantLock();
-            editLockMap.put(uri, lock);
+            editLockMap.put(key, lock);
         }
         return lock;
     }
@@ -348,11 +359,11 @@ public class LruDiskCache implements DiskCache {
     }
 
     public static class LruDiskCacheEntry implements Entry {
-        private String uri;
+        private String key;
         private DiskLruCache.SimpleSnapshot snapshot;
 
-        public LruDiskCacheEntry(String uri, DiskLruCache.SimpleSnapshot snapshot) {
-            this.uri = uri;
+        public LruDiskCacheEntry(String key, DiskLruCache.SimpleSnapshot snapshot) {
+            this.key = key;
             this.snapshot = snapshot;
         }
 
@@ -370,8 +381,8 @@ public class LruDiskCache implements DiskCache {
 
         @NonNull
         @Override
-        public String getUri() {
-            return uri;
+        public String getKey() {
+            return key;
         }
 
         @Override

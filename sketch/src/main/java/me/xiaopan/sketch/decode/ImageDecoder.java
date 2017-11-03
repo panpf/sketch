@@ -37,7 +37,7 @@ import me.xiaopan.sketch.util.ExifInterface;
  * 图片解码器，工作内容如下：
  * <p>
  * <ol>
- * <li>读取图片的尺寸、格式信息和方向信息</li>
+ * <li>读取图片的尺寸、格式和方向信息</li>
  * <li>计算采样比例、选择合适的 {@link Bitmap.Config}</li>
  * <li>解码图片</li>
  * <li>

@@ -37,39 +37,52 @@ public interface DiskCache extends Identifier {
     int DISK_CACHE_RESERVED_SPACE_SIZE = 200 * 1024 * 1024;
 
     /**
-     * 是否存在
+     * 是否存在指定 key 的缓存
+     *
+     * @param key 缓存 key
      */
-    boolean exist(@NonNull String uri);
+    boolean exist(@NonNull String key);
 
     /**
-     * 获取缓存实体
+     * 获取指定 key 的缓存
+     *
+     * @param key 缓存 key
+     * @return {@link Entry} 缓存实体，用于读取缓存数据
      */
     @Nullable
-    Entry get(@NonNull String uri);
+    Entry get(@NonNull String key);
 
     /**
-     * 编辑缓存
+     * 编辑指定 uri 的缓存
+     *
+     * @param key 缓存 key
+     * @return {@link Editor} 缓存编辑器
      */
     @Nullable
-    Editor edit(@NonNull String uri);
+    Editor edit(@NonNull String key);
 
     /**
      * 获取缓存目录
+     *
+     * @return {@link File}
      */
     @NonNull
     @SuppressWarnings("unused")
     File getCacheDir();
 
     /**
-     * 获取最大容量（默认为100M）
+     * 获取最大容量（默认为 100M）
      */
     long getMaxSize();
 
     /**
-     * 将uri地址进行转码作为缓存文件的名字
+     * 将 key 进行转码
+     *
+     * @param key 缓存 key
+     * @return 转码后的 key
      */
     @NonNull
-    String uriToDiskCacheKey(@NonNull String uri);
+    String keyEncode(@NonNull String key);
 
     /**
      * 获取已用容量
@@ -77,20 +90,20 @@ public interface DiskCache extends Identifier {
     long getSize();
 
     /**
-     * 禁用了？
+     * 是否已禁用
      */
     @SuppressWarnings("unused")
     boolean isDisabled();
 
     /**
-     * 设置禁用
+     * 设置是否禁用
      *
-     * @param disabled 禁用
+     * @param disabled 是否禁用
      */
     void setDisabled(boolean disabled);
 
     /**
-     * 清除缓存
+     * 清除所有缓存
      */
     void clear();
 
@@ -101,18 +114,18 @@ public interface DiskCache extends Identifier {
     boolean isClosed();
 
     /**
-     * 关闭
+     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 {@link #setDisabled(boolean)}
      */
     void close();
 
     /**
      * 获取编辑锁
      *
-     * @param uri 下载uri
-     * @return ReentrantLock
+     * @param key 缓存 key
+     * @return {@link ReentrantLock}. 编辑锁
      */
     @NonNull
-    ReentrantLock getEditLock(@NonNull String uri);
+    ReentrantLock getEditLock(@NonNull String key);
 
     /**
      * 磁盘缓存实体
@@ -121,27 +134,27 @@ public interface DiskCache extends Identifier {
         /**
          * 创建输入流
          *
-         * @return InputStream
-         * @throws IOException
+         * @return {@link InputStream}
+         * @throws IOException IO 异常
          */
         @NonNull
         InputStream newInputStream() throws IOException;
 
         /**
-         * 获取实体文件
+         * 获取缓存文件
          *
-         * @return File
+         * @return {@link File}
          */
         @NonNull
         File getFile();
 
         /**
-         * 获取实体对应的uri
+         * 获取缓存 key
          *
-         * @return 对应的uri，未转码的
+         * @return 缓存 key，未转码的
          */
         @NonNull
-        String getUri();
+        String getKey();
 
         /**
          * 删除实体
@@ -158,23 +171,23 @@ public interface DiskCache extends Identifier {
         /**
          * 创建一个输出流，用于写出文件
          *
-         * @return OutputStream
-         * @throws IOException
+         * @return {@link OutputStream}
+         * @throws IOException IO 异常
          */
         OutputStream newOutputStream() throws IOException;
 
         /**
          * 写完提交
          *
-         * @throws IOException
-         * @throws DiskLruCache.EditorChangedException
-         * @throws DiskLruCache.ClosedException
-         * @throws DiskLruCache.FileNotExistException
+         * @throws IOException                         IO 异常
+         * @throws DiskLruCache.EditorChangedException 编辑器已经改变
+         * @throws DiskLruCache.ClosedException        已经关闭了
+         * @throws DiskLruCache.FileNotExistException  文件被删除了
          */
         void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException;
 
         /**
-         * 写的过程中出现异常情况，中断写出
+         * 中断编辑
          */
         void abort();
     }

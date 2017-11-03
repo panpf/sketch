@@ -23,7 +23,7 @@ import android.support.annotation.NonNull;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 显示GIF图标识功能，使用者指定一个小图标，如果当前显示的图片是GIF图就会在ImageView的右下角显示这个小图标
+ * 显示 gif 标识功能，使用者指定一个小图标，如果当前显示的图片是 gif 图就会在 {@link android.widget.ImageView} 的右下角显示这个小图标
  */
 public class ShowGifFlagFunction extends ViewFunction {
     private FunctionCallbackView view;

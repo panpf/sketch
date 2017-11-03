@@ -29,13 +29,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.decode.ImageAttrs;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 用于读取来自 asset 的图片
+ */
 public class AssetsDataSource implements DataSource {
 
     private Context context;

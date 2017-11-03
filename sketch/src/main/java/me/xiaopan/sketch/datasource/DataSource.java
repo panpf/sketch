@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.decode.ImageAttrs;
+import me.xiaopan.sketch.decode.NotFoundGifLibraryException;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 
@@ -36,7 +36,7 @@ public interface DataSource {
     /**
      * 获取输入流
      *
-     * @return 输入流
+     * @return {@link InputStream}
      * @throws IOException 数据源异常
      */
     @NonNull
@@ -63,20 +63,23 @@ public interface DataSource {
     /**
      * 获取图片来源
      *
-     * @return 图片来源
+     * @return {@link ImageFrom}
      */
     @NonNull
     ImageFrom getImageFrom();
 
     /**
-     * 创建GifDrawable
+     * 创建 GifDrawable
      *
      * @param key        请求的唯一标识 key
-     * @param uri        图片uri
+     * @param uri        图片 uri
      * @param imageAttrs 图片的属性
-     * @param bitmapPool bitmap缓存池
-     * @return GifDrawable
+     * @param bitmapPool {@link android.graphics.Bitmap} 缓存池
+     * @return {@link SketchGifDrawable}
+     * @throws IOException                 数据源异常
+     * @throws NotFoundGifLibraryException 没有集成 sketch-gif
      */
     @NonNull
-    SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs, @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException;
+    SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
+                                      @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException;
 }

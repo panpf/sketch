@@ -150,7 +150,7 @@ public class SketchUtils {
     /**
      * 清空目录
      *
-     * @return true：清空成功；false：清空失败
+     * @return true：成功
      */
     @SuppressWarnings("WeakerAccess")
     public static boolean cleanDir(File dir) {
@@ -309,7 +309,7 @@ public class SketchUtils {
     }
 
     /**
-     * 获取短的当前进程的名字，例如进程名字为com.my.app:push，那么短名字就是:push
+     * 获取短的当前进程的名字，例如进程名字为 com.my.app:push，那么短名字就是 :push
      */
     @SuppressWarnings({"unused", "WeakerAccess"})
     public static String getSimpleProcessName(Context context) {
@@ -323,7 +323,7 @@ public class SketchUtils {
     }
 
     /**
-     * 获取App缓存目录，优先考虑SDCard上的缓存目录
+     * 获取 app 缓存目录，优先考虑 sdcard 上的缓存目录
      */
     @SuppressWarnings("WeakerAccess")
     public static File getAppCacheDir(Context context) {
@@ -372,9 +372,9 @@ public class SketchUtils {
     }
 
     /**
-     * 获取所有可用的SD卡的路径
+     * 获取所有可用的 sdcard 的路径
      *
-     * @return 所有可用的SD卡的路径
+     * @return 所有可用的 sdcard 的路径
      */
     @SuppressWarnings("WeakerAccess")
     @SuppressLint("LongLogTag")
@@ -505,16 +505,16 @@ public class SketchUtils {
     }
 
     /**
-     * 创建缓存目录，会优先在sdcard上创建
+     * 创建缓存目录，会优先在 sdcard 上创建
      *
      * @param dirName            目录名称
      * @param compatManyProcess  目录名称是否加上进程名
      * @param minSpaceSize       最小空间
      * @param cleanOnNoSpace     空间不够用时就尝试清理一下
      * @param cleanOldCacheFiles 清除旧的缓存文件
-     * @param expandNumber       当dirName无法使用时就会尝试dirName1、dirName2、dirName3...
+     * @param expandNumber       当 dirName 无法使用时就会尝试 dirName1、dirName2、dirName3...
      * @return 你应当以返回的目录为最终可用的目录
-     * @throws NoSpaceException 可用空间小于minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
+     * @throws NoSpaceException 可用空间小于 minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      */
     public static File buildCacheDir(Context context, String dirName, boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
                                      boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException, UnableCreateDirException, UnableCreateFileException {
@@ -600,7 +600,7 @@ public class SketchUtils {
     }
 
     /**
-     * 从 SketchView 上查找 DisplayRequest
+     * 从 {@link SketchView} 上查找 {@link DisplayRequest}
      */
     public static DisplayRequest findDisplayRequest(SketchView sketchView) {
         if (sketchView != null) {
@@ -620,8 +620,8 @@ public class SketchUtils {
      * @param imageHeight     图片高
      * @param mimeType        图片格式
      * @param exifOrientation 图片方向
-     * @param bitmap          Bitmap
-     * @param byteCount       bitmap占用字节数
+     * @param bitmap          {@link Bitmap}
+     * @param byteCount       {@link Bitmap} 占用字节数
      */
     public static String makeImageInfo(String type, int imageWidth, int imageHeight, String mimeType,
                                        int exifOrientation, Bitmap bitmap, long byteCount, String key) {
@@ -640,7 +640,7 @@ public class SketchUtils {
     }
 
     /**
-     * 如果是LayerDrawable，则返回其最后一张图片，不是的就返回自己
+     * 如果是 {@link LayerDrawable}，则返回其最后一张图片，不是的就返回自己
      */
     public static Drawable getLastDrawable(Drawable drawable) {
         if (drawable == null) {
@@ -664,8 +664,8 @@ public class SketchUtils {
     /**
      * 获取矩阵中指定位置的值
      *
-     * @param matrix     Matrix
-     * @param whichValue 指定的位置，例如Matrix.MSCALE_X
+     * @param matrix     {@link Matrix}
+     * @param whichValue 指定的位置，例如 {@link Matrix#MSCALE_X}
      */
     @SuppressWarnings("unused")
     public static float getMatrixValue(Matrix matrix, int whichValue) {
@@ -676,7 +676,7 @@ public class SketchUtils {
     }
 
     /**
-     * 从Matrix中获取缩放比例
+     * 从 {@link Matrix} 中获取缩放比例
      */
     public static float getMatrixScale(Matrix matrix) {
         synchronized (MATRIX_VALUES) {
@@ -689,7 +689,7 @@ public class SketchUtils {
     }
 
     /**
-     * 从Matrix中获取旋转角度
+     * 从 {@link Matrix} 中获取旋转角度
      */
     @SuppressWarnings("unused")
     public static int getMatrixRotateDegrees(Matrix matrix) {
@@ -710,7 +710,7 @@ public class SketchUtils {
     }
 
     /**
-     * 从Matrix中获取偏移位置
+     * 从 {@link Matrix} 中获取偏移位置
      */
     @SuppressWarnings("unused")
     public static void getMatrixTranslation(Matrix matrix, PointF point) {
@@ -722,7 +722,7 @@ public class SketchUtils {
     }
 
     /**
-     * 获取OpenGL的版本
+     * 获取 OpenGL 的版本
      */
     @SuppressWarnings("unused")
     public static String getOpenGLVersion(Context context) {
@@ -732,7 +732,7 @@ public class SketchUtils {
     }
 
     /**
-     * 获取OpenGL所允许的图片的最大尺寸(单边长)
+     * 获取 OpenGL 所允许的图片的最大尺寸(单边长)
      */
     public static int getOpenGLMaxTextureSize() {
         int maxTextureSize = 0;
@@ -897,14 +897,14 @@ public class SketchUtils {
     }
 
     /**
-     * dp转换成px
+     * dp 转换成 px
      */
     public static int dp2px(Context context, int dpValue) {
         return (int) ((dpValue * context.getResources().getDisplayMetrics().density) + 0.5);
     }
 
     /**
-     * 将一个旋转了一定度数的矩形转回来（只能是90度的倍数）
+     * 将一个旋转了一定度数的矩形转回来（只能是 90 度的倍数）
      */
     public static void reverseRotateRect(Rect rect, int rotateDegrees, Size drawableSize) {
         if (rotateDegrees % 90 != 0) {
@@ -953,7 +953,7 @@ public class SketchUtils {
     }
 
     /**
-     * 旋转一个点（只能是90的倍数）
+     * 旋转一个点（只能是 90 的倍数）
      */
     public static void rotatePoint(PointF point, int rotateDegrees, Size drawableSize) {
         if (rotateDegrees % 90 != 0) {
@@ -981,10 +981,10 @@ public class SketchUtils {
     }
 
     /**
-     * 生成请求 KEY
+     * 生成请求 key
      *
      * @param imageUri   图片地址
-     * @param optionsKey 选项 KEY
+     * @param optionsKey 选项 key
      * @see me.xiaopan.sketch.SketchImageView#getOptionsKey()
      */
     @SuppressWarnings("unused")
@@ -1028,7 +1028,7 @@ public class SketchUtils {
     }
 
     /**
-     * 根据指定的Bitmap配置获取合适的压缩格式
+     * 根据指定的 {@link Bitmap} 配置获取合适的压缩格式
      */
     public static Bitmap.CompressFormat bitmapConfigToCompressFormat(Bitmap.Config config) {
         return config == Bitmap.Config.RGB_565 ?
@@ -1036,7 +1036,7 @@ public class SketchUtils {
     }
 
     /**
-     * 获取Bitmap占用内存大小，单位字节
+     * 获取 {@link Bitmap} 占用内存大小，单位字节
      */
     public static int getByteCount(Bitmap bitmap) {
         // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃

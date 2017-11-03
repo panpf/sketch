@@ -71,7 +71,7 @@ public class Resize implements Identifier {
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 {@link Resize}
+     * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
      */
     @SuppressWarnings("unused")
     public static Resize byViewFixedSize(Mode mode) {
@@ -83,7 +83,7 @@ public class Resize implements Identifier {
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 {@link Resize}
+     * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
      */
     @SuppressWarnings("unused")
     public static Resize byViewFixedSize() {
@@ -139,13 +139,13 @@ public class Resize implements Identifier {
         ASPECT_RATIO_SAME,
 
         /**
-         * 即使原图尺寸比 {@link Resize} 小，也会得到一个跟 {@link Resize} 尺寸一样的 bitmap
+         * 即使原图尺寸比 {@link Resize} 小，也会得到一个跟 {@link Resize} 尺寸一样的 {@link android.graphics.Bitmap}
          */
         EXACTLY_SAME,
     }
 
     /**
-     * 使用 ImageView 的固定尺寸作为 {@link Resize}
+     * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
      */
     static class ByViewFixedSizeResize extends Resize {
         static ByViewFixedSizeResize INSTANCE = new ByViewFixedSizeResize();

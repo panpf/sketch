@@ -22,12 +22,12 @@ import me.xiaopan.sketch.request.ImageFrom;
 
 public interface SketchDrawable {
     /**
-     * 获取图片ID
+     * 获取图片 ID
      */
     String getKey();
 
     /**
-     * 获取图片URI
+     * 获取图片 uri
      */
     String getUri();
 
@@ -57,7 +57,7 @@ public interface SketchDrawable {
     int getByteCount();
 
     /**
-     * 获取Bitmap配置
+     * 获取 {@link Bitmap} 配置
      */
     Bitmap.Config getBitmapConfig();
 
