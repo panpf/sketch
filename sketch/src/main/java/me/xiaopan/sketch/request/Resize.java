@@ -17,16 +17,17 @@
 package me.xiaopan.sketch.request;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.Key;
 
 /**
  * 将图片加载到内存中之后根据 {@link Resize} 进行调整尺寸
  * <p>
  * 修正的原则就是最终返回的图片的比例一定是跟 {@link Resize} 一样的，但尺寸小于等于 {@link Resize} ，如果需要必须同 {@link Resize} 一致可以设置 {@link Mode#ASPECT_RATIO_SAME}
  */
-public class Resize implements Identifier {
+public class Resize implements Key {
 
     private int width;
     private int height;
@@ -123,13 +124,19 @@ public class Resize implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("Resize(%dx%d-%s-%s)", width, height, scaleType != null ? scaleType.name() : "null", mode.name());
     }
 
     @NonNull
     public Mode getMode() {
         return mode;
+    }
+
+    @Nullable
+    @Override
+    public String getKey() {
+        return toString();
     }
 
     public enum Mode {

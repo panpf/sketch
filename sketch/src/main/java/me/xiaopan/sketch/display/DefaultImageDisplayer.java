@@ -51,7 +51,7 @@ public class DefaultImageDisplayer implements ImageDisplayer {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return KEY;
     }
 }

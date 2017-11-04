@@ -34,7 +34,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         this.context = context.applicationContext
     }
 
-    override fun getKey(): String {
+    override fun toString(): String {
         return "SampleErrorTracker"
     }
 
@@ -197,7 +197,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
                 "Sketch - %s - " +
                         "%s" +
                         "\n%s",
-                processor.key,
+                processor.toString(),
                 decodeUri(context, imageUri),
                 outOfMemoryInfo
         ), throwable))

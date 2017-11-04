@@ -27,7 +27,9 @@ public class LruBitmapPool implements BitmapPool {
     private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
     private static final String NAME = "LruBitmapPool";
 
+    @NonNull
     private final LruPoolStrategy strategy;
+    @NonNull
     private final Set<Bitmap.Config> allowedConfigs;
     private final int initialMaxSize;
     private final BitmapTracker tracker;
@@ -43,9 +45,8 @@ public class LruBitmapPool implements BitmapPool {
     private boolean closed;
     private boolean disabled;
 
-    LruBitmapPool(Context context, int maxSize, LruPoolStrategy strategy, Set<Bitmap.Config> allowedConfigs) {
-        context = context.getApplicationContext();
-        this.context = context;
+    LruBitmapPool(Context context, int maxSize, @NonNull LruPoolStrategy strategy, @NonNull Set<Bitmap.Config> allowedConfigs) {
+        this.context = context.getApplicationContext();
         this.initialMaxSize = maxSize;
         this.maxSize = maxSize;
         this.strategy = strategy;
@@ -69,7 +70,7 @@ public class LruBitmapPool implements BitmapPool {
      * @param allowedConfigs {@link Bitmap.Config} 白名单
      */
     @SuppressWarnings("unused")
-    public LruBitmapPool(Context context, int maxSize, Set<Bitmap.Config> allowedConfigs) {
+    public LruBitmapPool(Context context, int maxSize, @NonNull Set<Bitmap.Config> allowedConfigs) {
         this(context, maxSize, getDefaultStrategy(), allowedConfigs);
     }
 
@@ -319,8 +320,9 @@ public class LruBitmapPool implements BitmapPool {
 
     @NonNull
     @Override
-    public String getKey() {
-        return String.format("%s(maxSize=%s)", NAME, Formatter.formatFileSize(context, getMaxSize()));
+    public String toString() {
+        return String.format("%s(maxSize=%s,strategy=%s,allowedConfigs=%s)",
+                NAME, Formatter.formatFileSize(context, getMaxSize()), strategy.getKey(), allowedConfigs.toString());
     }
 
     private interface BitmapTracker {

@@ -25,13 +25,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.util.DiskLruCache;
 
 /**
  * 磁盘缓存管理器
  */
-public interface DiskCache extends Identifier {
+public interface DiskCache {
     String DISK_CACHE_DIR_NAME = "sketch";
     int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
     int DISK_CACHE_RESERVED_SPACE_SIZE = 200 * 1024 * 1024;

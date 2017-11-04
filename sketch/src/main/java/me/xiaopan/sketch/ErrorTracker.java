@@ -23,7 +23,7 @@ import me.xiaopan.sketch.zoom.block.Block;
 /**
  * 负责输出错误信息，你可借此记录错误日志
  */
-public class ErrorTracker implements Identifier {
+public class ErrorTracker {
     private static final String NAME = "ErrorTracker";
 
     private Context context;
@@ -125,7 +125,7 @@ public class ErrorTracker implements Identifier {
         }
 
         SLog.e(NAME, "onProcessImageError. imageUri: %s. processor: %s",
-                imageUri, processor.getKey());
+                imageUri, processor.toString());
     }
 
     /**
@@ -196,7 +196,7 @@ public class ErrorTracker implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return NAME;
     }
 }

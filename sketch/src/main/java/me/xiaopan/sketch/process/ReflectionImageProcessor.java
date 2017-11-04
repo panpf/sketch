@@ -35,7 +35,6 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class ReflectionImageProcessor extends WrappedImageProcessor {
-    private static final String KEY = "ReflectionImageProcessor";
 
     private static final int DEFAULT_REFLECTION_SPACING = 2;
     private static final float DEFAULT_REFLECTION_SCALE = 0.3f;
@@ -47,7 +46,7 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
      * 创建一个倒影图片处理器
      *
      * @param reflectionSpacing     倒影和图片之间的距离
-     * @param reflectionScale       倒影的高度所占原图高度比例，取值为0.0到1
+     * @param reflectionScale       倒影的高度所占原图高度比例，取值为 0 到 1
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
     public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale, WrappedImageProcessor wrappedImageProcessor) {
@@ -60,23 +59,26 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
      * 创建一个倒影图片处理器
      *
      * @param reflectionSpacing 倒影和图片之间的距离
-     * @param reflectionScale   倒影的高度所占原图高度比例，取值为0.0到1
+     * @param reflectionScale   倒影的高度所占原图高度比例，取值为 0 到 1
      */
     public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale) {
         this(reflectionSpacing, reflectionScale, null);
     }
 
+    /**
+     * 创建一个倒影图片处理器，默认倒影和图片之间的距离是 2 个像素，倒影的高度所占原图高度比例是 0.3
+     *
+     * @param wrappedImageProcessor 嵌套一个图片处理器
+     */
     public ReflectionImageProcessor(WrappedImageProcessor wrappedImageProcessor) {
         this(DEFAULT_REFLECTION_SPACING, DEFAULT_REFLECTION_SCALE, wrappedImageProcessor);
     }
 
+    /**
+     * 创建一个倒影图片处理器，默认倒影和图片之间的距离是 2 个像素，倒影的高度所占原图高度比例是 0.3
+     */
     public ReflectionImageProcessor() {
         this(DEFAULT_REFLECTION_SPACING, DEFAULT_REFLECTION_SCALE, null);
-    }
-
-    @Override
-    public String onGetKey() {
-        return String.format("%s(scale=%s,spacing=%d)", KEY, reflectionScale, reflectionSpacing);
     }
 
     @NonNull
@@ -120,5 +122,16 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
 
     public int getReflectionSpacing() {
         return reflectionSpacing;
+    }
+
+    @NonNull
+    @Override
+    public String onToString() {
+        return String.format("%s(scale=%s,spacing=%d)", "ReflectionImageProcessor", reflectionScale, reflectionSpacing);
+    }
+
+    @Override
+    public String onGetKey() {
+        return String.format("%s(scale=%s,spacing=%d)", "Reflection", reflectionScale, reflectionSpacing);
     }
 }

@@ -29,7 +29,6 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.util.ExifInterface;
@@ -38,7 +37,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
-public class ImageOrientationCorrector implements Identifier {
+public class ImageOrientationCorrector {
 
     public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
 
@@ -334,7 +333,7 @@ public class ImageOrientationCorrector implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return "ImageOrientationCorrector";
     }
 }

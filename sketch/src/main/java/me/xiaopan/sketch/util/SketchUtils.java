@@ -990,15 +990,23 @@ public class SketchUtils {
     @SuppressWarnings("unused")
     @NonNull
     public static String makeRequestKey(@NonNull String imageUri, @NonNull UriModel uriModel, @NonNull String optionsKey) {
-        StringBuilder builder = new StringBuilder();
         if (uriModel.isConvertShortUriForKey()) {
-            builder.append(SketchMD5Utils.md5(imageUri));
+            imageUri = SketchMD5Utils.md5(imageUri);
+        }
+
+        if (TextUtils.isEmpty(optionsKey)) {
+            return imageUri;
+        }
+
+        StringBuilder builder = new StringBuilder(imageUri);
+        if (imageUri.lastIndexOf("?") == -1) {
+            builder.append('?');
         } else {
-            builder.append(imageUri);
+            builder.append('&');
         }
-        if (!TextUtils.isEmpty(optionsKey)) {
-            builder.append(optionsKey);
-        }
+        builder.append("options");
+        builder.append("=");
+        builder.append(optionsKey);
         return builder.toString();
     }
 

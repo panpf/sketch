@@ -18,12 +18,10 @@ package me.xiaopan.sketch.request;
 
 import android.support.annotation.NonNull;
 
-import me.xiaopan.sketch.Identifier;
-
 /**
  * {@link android.widget.ImageView} 的固定尺寸，只能是通过 layout_width 和 layout_height 设置的固定值才能算是固定尺寸
  */
-public class FixedSize implements Identifier {
+public class FixedSize {
     private int width;
     private int height;
 
@@ -57,7 +55,7 @@ public class FixedSize implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("FixedSize(%dx%d)", width, height);
     }
 }

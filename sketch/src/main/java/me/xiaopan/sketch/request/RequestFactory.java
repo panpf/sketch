@@ -18,14 +18,13 @@ package me.xiaopan.sketch.request;
 
 import android.support.annotation.NonNull;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.uri.UriModel;
 
 /**
  * 负责创建 {@link DisplayRequest}、{@link LoadRequest}、{@link DownloadRequest}
  */
-public class RequestFactory implements Identifier {
+public class RequestFactory {
     private static final String KEY = "RequestFactory";
 
     public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriModel uriModel, String key, DisplayOptions displayOptions,
@@ -49,7 +48,7 @@ public class RequestFactory implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return KEY;
     }
 }

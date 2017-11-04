@@ -1,6 +1,7 @@
 package me.xiaopan.sketch.cache.recycle;
 
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -10,6 +11,14 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class AttributeStrategy implements LruPoolStrategy {
     private final KeyPool keyPool = new KeyPool();
     private final GroupedLinkedMap<Key, Bitmap> groupedMap = new GroupedLinkedMap<Key, Bitmap>();
+
+    private static String getBitmapString(Bitmap bitmap) {
+        return getBitmapString(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+    }
+
+    private static String getBitmapString(int width, int height, Bitmap.Config config) {
+        return "[" + width + "x" + height + "], " + config;
+    }
 
     public void put(Bitmap bitmap) {
         final Key key = keyPool.get(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
@@ -46,15 +55,13 @@ public class AttributeStrategy implements LruPoolStrategy {
 
     @Override
     public String toString() {
-        return "AttributeStrategy:\n  " + groupedMap;
+        return "AttributeStrategy(" + groupedMap + "）";
     }
 
-    private static String getBitmapString(Bitmap bitmap) {
-        return getBitmapString(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-    }
-
-    private static String getBitmapString(int width, int height, Bitmap.Config config) {
-        return "[" + width + "x" + height + "], " + config;
+    @Nullable
+    @Override
+    public String getKey() {
+        return "AttributeStrategy";
     }
 
     // Visible for testing.

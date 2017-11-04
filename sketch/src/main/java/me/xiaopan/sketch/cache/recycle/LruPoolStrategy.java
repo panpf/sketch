@@ -2,7 +2,9 @@ package me.xiaopan.sketch.cache.recycle;
 
 import android.graphics.Bitmap;
 
-public interface LruPoolStrategy {
+import me.xiaopan.sketch.Key;
+
+public interface LruPoolStrategy extends Key {
     void put(Bitmap bitmap);
 
     Bitmap get(int width, int height, Bitmap.Config config);

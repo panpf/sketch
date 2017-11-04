@@ -18,12 +18,12 @@ package me.xiaopan.sketch.request;
 
 import android.support.annotation.NonNull;
 
-import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.Key;
 
 /**
  * 用于计算 inSimpleSize 缩小图片
  */
-public class MaxSize implements Identifier {
+public class MaxSize implements Key {
     private int width;
     private int height;
 
@@ -57,7 +57,12 @@ public class MaxSize implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("MaxSize(%dx%d)", width, height);
+    }
+
+    @Override
+    public String getKey() {
+        return toString();
     }
 }

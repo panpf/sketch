@@ -119,7 +119,7 @@ public class HurlStack implements HttpStack {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
                 KEY, maxRetryCount, connectTimeout, readTimeout, userAgent);
     }

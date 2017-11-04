@@ -25,7 +25,6 @@ import android.widget.ImageView;
 
 import java.lang.reflect.Field;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
@@ -36,7 +35,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 和图片尺寸相关的需求的计算器
  */
-public class ImageSizeCalculator implements Identifier {
+public class ImageSizeCalculator {
     private static final String KEY = "ImageSizeCalculator";
 
     private int openGLMaxTextureSize = -1;
@@ -308,7 +307,7 @@ public class ImageSizeCalculator implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return KEY;
     }
 }

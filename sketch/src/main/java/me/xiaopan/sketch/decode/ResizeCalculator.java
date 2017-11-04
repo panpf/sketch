@@ -20,13 +20,12 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.Resize;
 
 /**
  * 用来计算 {@link Resize}
  */
-public class ResizeCalculator implements Identifier {
+public class ResizeCalculator {
     private static final String KEY = "ResizeCalculator";
 
     public static Rect srcMappingStartRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
@@ -96,7 +95,7 @@ public class ResizeCalculator implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return KEY;
     }
 

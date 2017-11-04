@@ -73,7 +73,7 @@ public class Sketch {
                 if (instance == null) {
                     Sketch newInstance = new Sketch(context);
                     SLog.i(null, "Version %s %s(%d) -> %s",
-                            BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.getInfo());
+                            BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.toString());
 
                     Initializer initializer = SketchUtils.findInitializer(context);
                     if (initializer != null) {

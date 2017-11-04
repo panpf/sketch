@@ -35,7 +35,6 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class CircleImageProcessor extends WrappedImageProcessor {
-    private static final String KEY = "CircleImageProcessor";
 
     private static CircleImageProcessor instance;
 
@@ -56,11 +55,6 @@ public class CircleImageProcessor extends WrappedImageProcessor {
             }
         }
         return instance;
-    }
-
-    @Override
-    public String onGetKey() {
-        return KEY;
     }
 
     @Override
@@ -107,5 +101,16 @@ public class CircleImageProcessor extends WrappedImageProcessor {
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint);
 
         return circleBitmap;
+    }
+
+    @NonNull
+    @Override
+    public String onToString() {
+        return "CircleImageProcessor";
+    }
+
+    @Override
+    public String onGetKey() {
+        return "Circle";
     }
 }

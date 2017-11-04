@@ -42,6 +42,7 @@ Sketch.with(context).display(uri, sketchImageView)
 2. 通过 [ImageProcessor] 的 process() 方法传进去的 Bitmap 在处理完之后无需回收它，Sketch 会去回收
 3. 创建新的 bitmap 之前，先从 BitmapPool 中查找可复用 bitmap，实在没有再创建新的 bitmap
 4. 在处理的过程中产生的过渡 Bitmap 在用完之后一定要调用 BitmapPoolUtils.freeBitmapToPool(Bitmap, BitmapPool) 回收掉
+4. 实现 onToString() 和 onGetKey() 方法
 
 自定义的 [ImageProcessor] 写好后通过 [LoadOptions]/[DisplayOptions] 的 setProcessor(ImageProcessor) 方法或 [LoadHelper]/[DisplayHelper] 的 processor(ImageProcessor) 方法使用即可
 

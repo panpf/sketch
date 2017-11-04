@@ -23,12 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import me.xiaopan.sketch.Identifier;
-
 /**
  * 负责发送 HTTP 请求，并返回响应
  */
-public interface HttpStack extends Identifier {
+public interface HttpStack {
     int DEFAULT_READ_TIMEOUT = 7 * 1000;   // 默认读取超时时间
     int DEFAULT_CONNECT_TIMEOUT = 7 * 1000;    // 默认连接超时时间
     int DEFAULT_MAX_RETRY_COUNT = 0;    // 默认最大重试次数

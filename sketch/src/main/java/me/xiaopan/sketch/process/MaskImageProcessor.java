@@ -1,5 +1,6 @@
 package me.xiaopan.sketch.process;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -16,31 +17,27 @@ import me.xiaopan.sketch.request.Resize;
  */
 public class MaskImageProcessor extends WrappedImageProcessor {
 
-    private static final String KEY = "MaskImageProcessor";
-
     private Paint paint;
     private int maskColor;
 
+    /**
+     * 创建一个遮罩图片处理器
+     *
+     * @param maskColor        遮罩颜色
+     * @param wrappedProcessor 嵌套一个图片处理器
+     */
     public MaskImageProcessor(int maskColor, WrappedImageProcessor wrappedProcessor) {
         super(wrappedProcessor);
         this.maskColor = maskColor;
     }
 
+    /**
+     * 创建一个遮罩图片处理器
+     *
+     * @param maskColor 遮罩颜色
+     */
     public MaskImageProcessor(int maskColor) {
         this(maskColor, null);
-    }
-
-    /**
-     * 获取遮罩颜色
-     */
-    @SuppressWarnings("unused")
-    public int getMaskColor() {
-        return maskColor;
-    }
-
-    @Override
-    public String onGetKey() {
-        return String.format("%s(maskColor=%d)", KEY, maskColor);
     }
 
     @NonNull
@@ -80,6 +77,7 @@ public class MaskImageProcessor extends WrappedImageProcessor {
 
         int saveFlags = Canvas.MATRIX_SAVE_FLAG | Canvas.CLIP_SAVE_FLAG | Canvas.HAS_ALPHA_LAYER_SAVE_FLAG |
                 Canvas.FULL_COLOR_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG;
+        @SuppressLint("WrongConstant")
         int src = canvas.saveLayer(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint, saveFlags);
 
         canvas.drawBitmap(bitmap, 0, 0, null);
@@ -90,5 +88,24 @@ public class MaskImageProcessor extends WrappedImageProcessor {
         canvas.restoreToCount(src);
 
         return maskBitmap;
+    }
+
+    /**
+     * 获取遮罩颜色
+     */
+    @SuppressWarnings("unused")
+    public int getMaskColor() {
+        return maskColor;
+    }
+
+    @NonNull
+    @Override
+    public String onToString() {
+        return String.format("%s(%d)", "MaskImageProcessor", maskColor);
+    }
+
+    @Override
+    public String onGetKey() {
+        return String.format("%s(%d)", "Mask", maskColor);
     }
 }

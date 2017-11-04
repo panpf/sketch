@@ -27,44 +27,13 @@ import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.request.Resize;
 
 /**
- * 用于组合两个ImageProcessor一起使用
+ * 用于组合两个 {@link ImageProcessor} 一起使用，可以无限嵌套
  */
 public abstract class WrappedImageProcessor extends ResizeImageProcessor {
     private WrappedImageProcessor wrappedProcessor;
 
-    public WrappedImageProcessor(WrappedImageProcessor wrappedProcessor) {
+    protected WrappedImageProcessor(WrappedImageProcessor wrappedProcessor) {
         this.wrappedProcessor = wrappedProcessor;
-    }
-
-    @NonNull
-    @Override
-    public final String getKey() {
-        String selfKey = onGetKey();
-        String wrappedKey = wrappedProcessor != null ? wrappedProcessor.getKey() : null;
-        if (!TextUtils.isEmpty(selfKey)) {
-            if (!TextUtils.isEmpty(wrappedKey)) {
-                return String.format("%s&%s", selfKey, wrappedKey);
-            } else {
-                return selfKey;
-            }
-        } else {
-            if (!TextUtils.isEmpty(wrappedKey)) {
-                return wrappedKey;
-            } else {
-                return "WrappedImageProcessor";
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public WrappedImageProcessor getWrappedProcessor() {
-        return wrappedProcessor;
-    }
-
-    public abstract String onGetKey();
-
-    protected boolean isInterceptResize() {
-        return false;
     }
 
     @NonNull
@@ -97,4 +66,49 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
 
     @NonNull
     public abstract Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage);
+
+    @SuppressWarnings("unused")
+    public WrappedImageProcessor getWrappedProcessor() {
+        return wrappedProcessor;
+    }
+
+    @Nullable
+    @Override
+    public String getKey() {
+        String selfKey = onGetKey();
+        String wrappedKey = wrappedProcessor != null ? wrappedProcessor.getKey() : null;
+
+        if (!TextUtils.isEmpty(selfKey)) {
+            if (!TextUtils.isEmpty(wrappedKey)) {
+                return String.format("%s->%s", selfKey, wrappedKey);
+            } else {
+                return selfKey;
+            }
+        } else if (!TextUtils.isEmpty(wrappedKey)) {
+            return wrappedKey;
+        }
+        return null;
+    }
+
+    @Nullable
+    public abstract String onGetKey();
+
+    @NonNull
+    @Override
+    public String toString() {
+        String selfToString = onToString();
+        String wrappedToString = wrappedProcessor != null ? wrappedProcessor.toString() : null;
+
+        if (TextUtils.isEmpty(wrappedToString)) {
+            return selfToString;
+        }
+        return String.format("%s->%s", selfToString, wrappedToString);
+    }
+
+    @NonNull
+    public abstract String onToString();
+
+    protected boolean isInterceptResize() {
+        return false;
+    }
 }

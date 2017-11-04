@@ -4,12 +4,10 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import me.xiaopan.sketch.Identifier;
-
 /**
  * {@link Bitmap} 复用缓存池，用于缓存并复用 {@link Bitmap}，便于解码时直接使用，减少内存分配
  */
-public interface BitmapPool extends Identifier {
+public interface BitmapPool {
 
     /**
      * 获取最大容量

@@ -19,13 +19,12 @@ package me.xiaopan.sketch.cache;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.drawable.SketchRefBitmap;
 
 /**
  * 内存缓存管理器
  */
-public interface MemoryCache extends Identifier {
+public interface MemoryCache {
     /**
      * 缓存一张图片
      *

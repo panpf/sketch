@@ -19,13 +19,12 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SketchView;
 
 /**
  * 图片显示器，用来在加载完成后显示图片
  */
-public interface ImageDisplayer extends Identifier {
+public interface ImageDisplayer {
     int DEFAULT_ANIMATION_DURATION = 400;
 
     /**

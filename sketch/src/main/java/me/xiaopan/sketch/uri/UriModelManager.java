@@ -23,8 +23,6 @@ import android.text.TextUtils;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.xiaopan.sketch.Identifier;
-
 /**
  * 负责管理和匹配 {@link UriModel}，默认支持以下 uri 和 {@link UriModel}
  * <p>
@@ -47,7 +45,7 @@ import me.xiaopan.sketch.Identifier;
  * <p>
  * 通过 {@link #match(String)} 方法可以为指定 uri 匹配对应的 {@link UriModel}
  */
-public class UriModelManager implements Identifier {
+public class UriModelManager {
 
     private List<UriModel> uriModelList = new LinkedList<>();
 
@@ -129,7 +127,7 @@ public class UriModelManager implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return "UriModelManager";
     }
 }

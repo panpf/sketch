@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchView;
 import me.xiaopan.sketch.request.DownloadOptions;
@@ -38,7 +37,7 @@ import me.xiaopan.sketch.request.LoadListener;
  * <li>全局移动数据下暂停下载功能 -> {@link MobileDataPauseDownloadController}</li>
  * </ul>
  */
-public class OptionsFilterManager implements Identifier {
+public class OptionsFilterManager {
 
     private PauseDownloadOptionsFilter pauseDownloadOptionsFilter;
     private PauseLoadOptionsFilter pauseLoadOptionsFilter;
@@ -231,7 +230,7 @@ public class OptionsFilterManager implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return "OptionsFilterManager";
     }
 }

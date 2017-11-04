@@ -20,14 +20,14 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.Key;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
 
 /**
  * 用于在图片读取到内存后对图片进行修改
  */
-public interface ImageProcessor extends Identifier {
+public interface ImageProcessor extends Key {
     /**
      * 修改图片并返回修改后的图片，请不要回收原图片
      *

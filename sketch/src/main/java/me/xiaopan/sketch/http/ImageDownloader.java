@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.BaseRequest;
@@ -41,7 +40,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 负责下载并缓存图片
  */
-public class ImageDownloader implements Identifier {
+public class ImageDownloader {
     private static final String NAME = "ImageDownloader";
 
     /**
@@ -379,7 +378,7 @@ public class ImageDownloader implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return NAME;
     }
 }

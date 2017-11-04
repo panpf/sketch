@@ -432,34 +432,43 @@ public class LoadOptions extends DownloadOptions {
     public String makeKey() {
         StringBuilder builder = new StringBuilder();
         if (maxSize != null) {
-            builder.append("_").append(maxSize.getKey());
+            if (builder.length() > 0) builder.append('-');
+            builder.append(maxSize.getKey());
         }
         if (resize != null) {
-            builder.append("_").append(resize.getKey());
+            if (builder.length() > 0) builder.append('-');
+            builder.append(resize.getKey());
             if (thumbnailMode) {
-                builder.append("_").append("thumbnailMode");
+                if (builder.length() > 0) builder.append('-');
+                builder.append("thumbnailMode");
             }
         }
         if (correctImageOrientationDisabled) {
-            builder.append("_").append("correctImageOrientationDisabled");
+            if (builder.length() > 0) builder.append('-');
+            builder.append("ignoreOrientation");
         }
         if (lowQualityImage) {
-            builder.append("_").append("lowQualityImage");
+            if (builder.length() > 0) builder.append('-');
+            builder.append("lowQuality");
         }
         if (inPreferQualityOverSpeed) {
-            builder.append("_").append("preferQuality");
+            if (builder.length() > 0) builder.append('-');
+            builder.append("preferQuality");
         }
         if (decodeGifImage) {
-            builder.append("_").append("decodeGifImage");
+            if (builder.length() > 0) builder.append('-');
+            builder.append("gif");
         }
         if (bitmapConfig != null) {
-            builder.append("_").append(bitmapConfig.name());
+            if (builder.length() > 0) builder.append('-');
+            builder.append(bitmapConfig.name());
         }
         if (processor != null) {
             // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
             String processorKey = processor.getKey();
             if (!TextUtils.isEmpty(processorKey)) {
-                builder.append("_").append(processorKey);
+                if (builder.length() > 0) builder.append('-');
+                builder.append(processorKey);
             }
         }
         return builder.toString();
@@ -470,16 +479,19 @@ public class LoadOptions extends DownloadOptions {
     public String makeStateImageKey() {
         StringBuilder builder = new StringBuilder();
         if (resize != null) {
-            builder.append("_").append(resize.getKey());
+            if (builder.length() > 0) builder.append('-');
+            builder.append(resize.getKey());
         }
         if (lowQualityImage) {
-            builder.append("_").append("lowQualityImage");
+            if (builder.length() > 0) builder.append('-');
+            builder.append("lowQuality");
         }
         if (processor != null) {
             // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
             String processorKey = processor.getKey();
             if (!TextUtils.isEmpty(processorKey)) {
-                builder.append("_").append(processorKey);
+                if (builder.length() > 0) builder.append('-');
+                builder.append(processorKey);
             }
         }
         return builder.toString();

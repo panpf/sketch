@@ -25,6 +25,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 
+import java.util.Arrays;
+
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ResizeCalculator;
@@ -35,10 +37,19 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class RoundRectImageProcessor extends WrappedImageProcessor {
-    private static final String KEY = "RoundRectImageProcessor";
 
+    @NonNull
     private float[] cornerRadius;
 
+    /**
+     * 创建一个圆角矩形图片处理器
+     *
+     * @param topLeftRadius         左上角圆角角度
+     * @param topRightRadius        右上角圆角角度
+     * @param bottomLeftRadius      左下角圆角角度
+     * @param bottomRightRadius     右下角圆角角度
+     * @param wrappedImageProcessor 嵌套一个图片处理器
+     */
     public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         cornerRadius = new float[]{topLeftRadius, topLeftRadius,
@@ -47,27 +58,35 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
                 bottomRightRadius, bottomRightRadius};
     }
 
+    /**
+     * 创建一个圆角矩形图片处理器
+     *
+     * @param topLeftRadius     左上角圆角角度
+     * @param topRightRadius    右上角圆角角度
+     * @param bottomLeftRadius  左下角圆角角度
+     * @param bottomRightRadius 右下角圆角角度
+     */
     public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
         this(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, null);
     }
 
+    /**
+     * 创建一个圆角矩形图片处理器
+     *
+     * @param cornerRadius          圆角角度
+     * @param wrappedImageProcessor 嵌套一个图片处理器
+     */
     public RoundRectImageProcessor(float cornerRadius, WrappedImageProcessor wrappedImageProcessor) {
         this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, wrappedImageProcessor);
     }
 
+    /**
+     * 创建一个圆角矩形图片处理器
+     *
+     * @param cornerRadius 圆角角度
+     */
     public RoundRectImageProcessor(float cornerRadius) {
         this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, null);
-    }
-
-    @Override
-    public String onGetKey() {
-        if (cornerRadius != null) {
-            return String.format("%s(cornerRadius=[%sx%s,%sx%s,%sx%s,%sx%s])",
-                    KEY, cornerRadius[0], cornerRadius[1], cornerRadius[2], cornerRadius[3],
-                    cornerRadius[4], cornerRadius[5], cornerRadius[6], cornerRadius[7]);
-        } else {
-            return KEY;
-        }
     }
 
     @Override
@@ -115,7 +134,19 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
         return roundRectBitmap;
     }
 
+    @NonNull
     public float[] getCornerRadius() {
         return cornerRadius;
+    }
+
+    @NonNull
+    @Override
+    public String onToString() {
+        return String.format("%s(%s)", "RoundRectImageProcessor", Arrays.toString(cornerRadius));
+    }
+
+    @Override
+    public String onGetKey() {
+        return String.format("%s(%s)", "RoundRect", Arrays.toString(cornerRadius));
     }
 }

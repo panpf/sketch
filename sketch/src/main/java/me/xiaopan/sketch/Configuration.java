@@ -174,7 +174,7 @@ public final class Configuration {
             if (oldDiskCache != null) {
                 oldDiskCache.close();
             }
-            SLog.w(NAME, "diskCache=%s", diskCache.getKey());
+            SLog.w(NAME, "diskCache=%s", diskCache.toString());
         }
         return this;
     }
@@ -206,7 +206,7 @@ public final class Configuration {
             if (oldBitmapPool != null) {
                 oldBitmapPool.close();
             }
-            SLog.w(NAME, "bitmapPool = %s", bitmapPool.getKey());
+            SLog.w(NAME, "bitmapPool=%s", bitmapPool.toString());
         }
         return this;
     }
@@ -237,7 +237,7 @@ public final class Configuration {
             if (oldMemoryCache != null) {
                 oldMemoryCache.close();
             }
-            SLog.w(NAME, "memoryCache=", memoryCache.getKey());
+            SLog.w(NAME, "memoryCache=", memoryCache.toString());
         }
         return this;
     }
@@ -265,7 +265,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (processedImageCache != null) {
             this.processedImageCache = processedImageCache;
-            SLog.w(NAME, "processedCache=", processedImageCache.getKey());
+            SLog.w(NAME, "processedCache=", processedImageCache.toString());
         }
         return this;
     }
@@ -294,7 +294,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (httpStack != null) {
             this.httpStack = httpStack;
-            SLog.w(NAME, "httpStack=", httpStack.getKey());
+            SLog.w(NAME, "httpStack=", httpStack.toString());
         }
         return this;
     }
@@ -321,7 +321,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (decoder != null) {
             this.decoder = decoder;
-            SLog.w(NAME, "decoder=%s", decoder.getKey());
+            SLog.w(NAME, "decoder=%s", decoder.toString());
         }
         return this;
     }
@@ -348,7 +348,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (downloader != null) {
             this.downloader = downloader;
-            SLog.w(NAME, "downloader=%s", downloader.getKey());
+            SLog.w(NAME, "downloader=%s", downloader.toString());
         }
         return this;
     }
@@ -375,7 +375,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (orientationCorrector != null) {
             this.orientationCorrector = orientationCorrector;
-            SLog.w(NAME, "orientationCorrector=%s", orientationCorrector.getKey());
+            SLog.w(NAME, "orientationCorrector=%s", orientationCorrector.toString());
         }
         return this;
     }
@@ -403,7 +403,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (defaultDisplayer != null) {
             this.defaultDisplayer = defaultDisplayer;
-            SLog.w(NAME, "defaultDisplayer=%s", defaultDisplayer.getKey());
+            SLog.w(NAME, "defaultDisplayer=%s", defaultDisplayer.toString());
         }
         return this;
     }
@@ -430,7 +430,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (resizeProcessor != null) {
             this.resizeProcessor = resizeProcessor;
-            SLog.w(NAME, "resizeProcessor=%s", resizeProcessor.getKey());
+            SLog.w(NAME, "resizeProcessor=%s", resizeProcessor.toString());
         }
         return this;
     }
@@ -457,7 +457,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
-            SLog.w(NAME, "resizeCalculator=%s", resizeCalculator.getKey());
+            SLog.w(NAME, "resizeCalculator=%s", resizeCalculator.toString());
         }
         return this;
     }
@@ -484,7 +484,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (sizeCalculator != null) {
             this.sizeCalculator = sizeCalculator;
-            SLog.w(NAME, "sizeCalculator=%s", sizeCalculator.getKey());
+            SLog.w(NAME, "sizeCalculator=%s", sizeCalculator.toString());
         }
         return this;
     }
@@ -512,7 +512,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (freeRideManager != null) {
             this.freeRideManager = freeRideManager;
-            SLog.w(NAME, "freeRideManager=%s", freeRideManager.getKey());
+            SLog.w(NAME, "freeRideManager=%s", freeRideManager.toString());
         }
         return this;
     }
@@ -543,7 +543,7 @@ public final class Configuration {
             if (oldRequestExecutor != null) {
                 oldRequestExecutor.shutdown();
             }
-            SLog.w(NAME, "executor=%s", executor.getKey());
+            SLog.w(NAME, "executor=%s", executor.toString());
         }
         return this;
     }
@@ -570,7 +570,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
-            SLog.w(NAME, "helperFactory=%s", helperFactory.getKey());
+            SLog.w(NAME, "helperFactory=%s", helperFactory.toString());
         }
         return this;
     }
@@ -597,7 +597,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
-            SLog.w(NAME, "requestFactory=%s", requestFactory.getKey());
+            SLog.w(NAME, "requestFactory=%s", requestFactory.toString());
         }
         return this;
     }
@@ -625,7 +625,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (errorTracker != null) {
             this.errorTracker = errorTracker;
-            SLog.w(NAME, "errorTracker=%s", errorTracker.getKey());
+            SLog.w(NAME, "errorTracker=%s", errorTracker.toString());
         }
         return this;
     }
@@ -749,31 +749,31 @@ public final class Configuration {
     }
 
     @NonNull
-    public String getInfo() {
+    public String toString() {
         return NAME + ": " +
-                "\n" + "uriModelManager：" + uriModelManager.getKey() +
-                "\n" + "optionsFilterManager：" + optionsFilterManager.getKey() +
+                "\n" + "uriModelManager：" + uriModelManager.toString() +
+                "\n" + "optionsFilterManager：" + optionsFilterManager.toString() +
 
-                "\n" + "diskCache：" + diskCache.getKey() +
-                "\n" + "bitmapPool：" + bitmapPool.getKey() +
-                "\n" + "memoryCache：" + memoryCache.getKey() +
-                "\n" + "processedImageCache：" + processedImageCache.getKey() +
+                "\n" + "diskCache：" + diskCache.toString() +
+                "\n" + "bitmapPool：" + bitmapPool.toString() +
+                "\n" + "memoryCache：" + memoryCache.toString() +
+                "\n" + "processedImageCache：" + processedImageCache.toString() +
 
-                "\n" + "httpStack：" + httpStack.getKey() +
-                "\n" + "decoder：" + decoder.getKey() +
-                "\n" + "downloader：" + downloader.getKey() +
-                "\n" + "orientationCorrector：" + orientationCorrector.getKey() +
+                "\n" + "httpStack：" + httpStack.toString() +
+                "\n" + "decoder：" + decoder.toString() +
+                "\n" + "downloader：" + downloader.toString() +
+                "\n" + "orientationCorrector：" + orientationCorrector.toString() +
 
-                "\n" + "defaultDisplayer：" + defaultDisplayer.getKey() +
-                "\n" + "resizeProcessor：" + resizeProcessor.getKey() +
-                "\n" + "resizeCalculator：" + resizeCalculator.getKey() +
-                "\n" + "sizeCalculator：" + sizeCalculator.getKey() +
+                "\n" + "defaultDisplayer：" + defaultDisplayer.toString() +
+                "\n" + "resizeProcessor：" + resizeProcessor.toString() +
+                "\n" + "resizeCalculator：" + resizeCalculator.toString() +
+                "\n" + "sizeCalculator：" + sizeCalculator.toString() +
 
-                "\n" + "freeRideManager：" + freeRideManager.getKey() +
-                "\n" + "executor：" + executor.getKey() +
-                "\n" + "helperFactory：" + helperFactory.getKey() +
-                "\n" + "requestFactory：" + requestFactory.getKey() +
-                "\n" + "errorTracker：" + errorTracker.getKey() +
+                "\n" + "freeRideManager：" + freeRideManager.toString() +
+                "\n" + "executor：" + executor.toString() +
+                "\n" + "helperFactory：" + helperFactory.toString() +
+                "\n" + "requestFactory：" + requestFactory.toString() +
+                "\n" + "errorTracker：" + errorTracker.toString() +
 
                 "\n" + "pauseDownload：" + optionsFilterManager.isPauseDownloadEnabled() +
                 "\n" + "pauseLoad：" + optionsFilterManager.isPauseLoadEnabled() +

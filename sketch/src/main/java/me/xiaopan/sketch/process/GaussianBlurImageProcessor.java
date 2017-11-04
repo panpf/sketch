@@ -12,18 +12,17 @@ import me.xiaopan.sketch.request.Resize;
  * 高斯模糊图片处理器
  */
 public class GaussianBlurImageProcessor extends WrappedImageProcessor {
-    private static final String KEY = "GaussianBlurImageProcessor";
 
     private static final int NO_LAYER_COLOR = -1;
     private static final int DEFAULT_RADIUS = 15;
 
     private int radius; // 模糊半径，取值为0到100
-    private int layerColor; // 图层颜色，在模糊后的图片上加一层颜色
+    private int maskColor; // 图层颜色，在模糊后的图片上加一层颜色
 
-    private GaussianBlurImageProcessor(int radius, int layerColor, WrappedImageProcessor wrappedImageProcessor) {
+    private GaussianBlurImageProcessor(int radius, int maskColor, WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         this.radius = radius;
-        this.layerColor = layerColor;
+        this.maskColor = maskColor;
     }
 
     /**
@@ -76,7 +75,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 创建一个指定半径的高斯模糊图片处理器
      *
-     * @param radius                模糊半径，取值为0到100
+     * @param radius                模糊半径，取值为 0 到 100
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
@@ -88,7 +87,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 创建一个指定半径的高斯模糊图片处理器
      *
-     * @param radius 模糊半径，取值为0到100
+     * @param radius 模糊半径，取值为 0 到 100
      * @return GaussianBlurImageProcessor
      */
     @SuppressWarnings("unused")
@@ -108,7 +107,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     }
 
     /**
-     * 创建一个半径为15的高斯模糊图片处理器
+     * 创建一个半径为 15 的高斯模糊图片处理器
      *
      * @return GaussianBlurImageProcessor
      */
@@ -334,27 +333,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
         }
     }
 
-    /**
-     * 获取模糊半径
-     */
-    @SuppressWarnings("unused")
-    public int getRadius() {
-        return radius;
-    }
-
-    /**
-     * 获取图层颜色
-     */
-    @SuppressWarnings("unused")
-    public int getLayerColor() {
-        return layerColor;
-    }
-
-    @Override
-    public String onGetKey() {
-        return String.format("%s(radius=%d,maskColor=%d)", KEY, radius, layerColor);
-    }
-
     @NonNull
     @Override
     public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
@@ -370,11 +348,38 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
         }
 
         // layer color handle
-        if (layerColor != NO_LAYER_COLOR) {
+        if (maskColor != NO_LAYER_COLOR) {
             Canvas canvas = new Canvas(blurBitmap);
-            canvas.drawColor(layerColor);
+            canvas.drawColor(maskColor);
         }
 
         return blurBitmap;
+    }
+
+    /**
+     * 获取模糊半径
+     */
+    @SuppressWarnings("unused")
+    public int getRadius() {
+        return radius;
+    }
+
+    /**
+     * 获取图层颜色
+     */
+    @SuppressWarnings("unused")
+    public int getMaskColor() {
+        return maskColor;
+    }
+
+    @NonNull
+    @Override
+    public String onToString() {
+        return String.format("%s(radius=%d,maskColor=%d)", "GaussianBlurImageProcessor", radius, maskColor);
+    }
+
+    @Override
+    public String onGetKey() {
+        return String.format("%s(radius=%d,maskColor=%d)", "GaussianBlur", radius, maskColor);
     }
 }

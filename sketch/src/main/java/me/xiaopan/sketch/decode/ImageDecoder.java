@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.datasource.DataSource;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -46,7 +45,7 @@ import me.xiaopan.sketch.util.ExifInterface;
  * <li>缓存经过处理的图片</li>
  * </ol>
  */
-public class ImageDecoder implements Identifier {
+public class ImageDecoder {
     private static final String NAME = "ImageDecoder";
 
     private DecodeTimeAnalyze timeAnalyze = new DecodeTimeAnalyze();
@@ -202,7 +201,7 @@ public class ImageDecoder implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return NAME;
     }
 }

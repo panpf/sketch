@@ -27,7 +27,6 @@ import me.xiaopan.sketch.decode.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 public class ResizeImageProcessor implements ImageProcessor {
-    private static final String KEY = "ResizeImageProcessor";
 
     @NonNull
     @Override
@@ -64,7 +63,13 @@ public class ResizeImageProcessor implements ImageProcessor {
 
     @NonNull
     @Override
+    public String toString() {
+        return "ResizeImageProcessor";
+    }
+
+    @Nullable
+    @Override
     public String getKey() {
-        return KEY;
+        return "Resize";
     }
 }

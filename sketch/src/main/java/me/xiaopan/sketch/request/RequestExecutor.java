@@ -29,12 +29,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import me.xiaopan.sketch.Identifier;
-
 /**
  * 请求执行器
  */
-public class RequestExecutor implements Identifier {
+public class RequestExecutor {
     public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
     public static final int DEFAULT_NET_THREAD_POOL_SIZE = 3;
 
@@ -139,7 +137,7 @@ public class RequestExecutor implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("%s(%s", KEY, shutdown ? "shutdown" : "running)");
     }
 

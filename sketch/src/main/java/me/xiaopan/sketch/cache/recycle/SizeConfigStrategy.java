@@ -3,6 +3,7 @@ package me.xiaopan.sketch.cache.recycle;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,8 +45,7 @@ public class SizeConfigStrategy implements LruPoolStrategy {
 
     private final KeyPool keyPool = new KeyPool();
     private final GroupedLinkedMap<Key, Bitmap> groupedMap = new GroupedLinkedMap<Key, Bitmap>();
-    private final Map<Bitmap.Config, NavigableMap<Integer, Integer>> sortedSizes =
-            new HashMap<Bitmap.Config, NavigableMap<Integer, Integer>>();
+    private final Map<Bitmap.Config, NavigableMap<Integer, Integer>> sortedSizes = new HashMap<Bitmap.Config, NavigableMap<Integer, Integer>>();
 
     @Override
     public void put(Bitmap bitmap) {
@@ -157,6 +157,12 @@ public class SizeConfigStrategy implements LruPoolStrategy {
             sb.replace(sb.length() - 2, sb.length(), "");
         }
         return sb.append(")}").toString();
+    }
+
+    @Nullable
+    @Override
+    public String getKey() {
+        return "SizeConfigStrategy";
     }
 
     // Visible for testing.

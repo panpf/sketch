@@ -22,6 +22,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -32,15 +33,25 @@ import me.xiaopan.sketch.request.Resize;
  */
 @SuppressWarnings("unused")
 public class RotateImageProcessor extends WrappedImageProcessor {
-    private static final String KEY = "RotateImageProcessor";
 
     private int degrees;
 
+    /**
+     * 创建一个图片旋转处理器
+     *
+     * @param degrees               旋转角度
+     * @param wrappedImageProcessor 嵌套一个图片处理器
+     */
     public RotateImageProcessor(int degrees, WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         this.degrees = degrees;
     }
 
+    /**
+     * 创建一个图片旋转处理器
+     *
+     * @param degrees 旋转角度
+     */
     public RotateImageProcessor(int degrees) {
         this(degrees, null);
     }
@@ -82,13 +93,20 @@ public class RotateImageProcessor extends WrappedImageProcessor {
         return rotate(bitmap, degrees, sketch.getConfiguration().getBitmapPool());
     }
 
+    @NonNull
+    @Override
+    public String onToString() {
+        return String.format("%s(%d)", "RotateImageProcessor", degrees);
+    }
+
+    @Nullable
     @Override
     public String onGetKey() {
-        // 0度或360度时不加标识，这样做是为了避免浪费合适的内存缓存
+        // 0 度或 360 度时不加标识，这样做是为了避免浪费合适的内存缓存
         if (degrees % 360 == 0) {
             return null;
-        } else {
-            return String.format("%s(degrees=%d)", KEY, degrees);
         }
+
+        return String.format("%s(%d)", "Rotate", degrees);
     }
 }

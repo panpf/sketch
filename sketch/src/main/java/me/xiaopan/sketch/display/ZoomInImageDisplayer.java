@@ -106,8 +106,8 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
 
     @NonNull
     @Override
-    public String getKey() {
-        return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",
+    public String toString() {
+        return String.format("%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)",
                 KEY, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 

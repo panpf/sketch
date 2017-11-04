@@ -19,7 +19,6 @@ package me.xiaopan.sketch.request;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
 
 /**
@@ -29,7 +28,7 @@ import me.xiaopan.sketch.drawable.SketchShapeBitmapDrawable;
  * <p>
  * 当使用 {@link ShapeSize} 时，就可以使用同一个 {@link android.graphics.Bitmap} 在绘制时显示出不同的尺寸，避免了产生多个差别很小的 {@link android.graphics.Bitmap}，提高了内存缓存利用率
  */
-public class ShapeSize implements Identifier {
+public class ShapeSize {
     private int width;
     private int height;
     private ImageView.ScaleType scaleType;
@@ -89,7 +88,7 @@ public class ShapeSize implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("ShapeSize(%dx%d)", width, height);
     }
 

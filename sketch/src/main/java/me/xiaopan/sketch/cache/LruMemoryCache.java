@@ -194,7 +194,7 @@ public class LruMemoryCache implements MemoryCache {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return String.format("%s(maxSize=%s)", NAME, Formatter.formatFileSize(context, getMaxSize()));
     }
 

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.SLog;
 
 /**
@@ -31,7 +30,7 @@ import me.xiaopan.sketch.SLog;
  * 对于相同的请求（不同类型条件不一样），只要第一个请求执行完毕了，后续请求可以直接使用第一个请求的结果，那么我们可以将所有后续的请求都绑定在第一个请求上，
  * 等第一个请求执行完毕后直接将结果交给后续请求处理即可，对于这样的情况我们称之为顺风车
  */
-public class FreeRideManager implements Identifier {
+public class FreeRideManager {
     private static final String NAME = "FreeRideManager";
 
     private final Object displayFreeRideProviderMapLock = new Object();
@@ -99,7 +98,7 @@ public class FreeRideManager implements Identifier {
                 boolean success = childFreeRide.processDisplayFreeRide();
 
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "display. callback free ride. %s. %s  <------  %s",
+                    SLog.d(NAME, "display. callback free ride. %s. %s  <-  %s",
                             success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
                 }
             }
@@ -197,7 +196,7 @@ public class FreeRideManager implements Identifier {
                 boolean success = childFreeRide.processDownloadFreeRide();
 
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "download. callback free ride. %s. %s  <------  %s",
+                    SLog.d(NAME, "download. callback free ride. %s. %s  <-  %s",
                             success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
                 }
             }
@@ -237,7 +236,7 @@ public class FreeRideManager implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return NAME;
     }
 

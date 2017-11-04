@@ -24,7 +24,6 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.datasource.DiskCacheDataSource;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -36,7 +35,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 对读到内存后又再次处理过的图片进行缓存，下次就不用再处理了，可加快加载速度
  */
-public class ProcessedImageCache implements Identifier {
+public class ProcessedImageCache {
 
     /**
      * 判断是否可以使用此功能
@@ -160,7 +159,7 @@ public class ProcessedImageCache implements Identifier {
 
     @NonNull
     @Override
-    public String getKey() {
+    public String toString() {
         return "ProcessedImageCache";
     }
 }
