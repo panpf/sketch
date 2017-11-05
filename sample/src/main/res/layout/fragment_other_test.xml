@@ -5,7 +5,7 @@
     android:clipChildren="false"
     android:background="@android:color/white">
 
-    <me.xiaopan.sketchsample.widget.DoubleFinsEmptyView
+    <me.panpf.sketch.sample.widget.DoubleFinsEmptyView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <me.xiaopan.sketchsample.widget.SampleImageView
+        <me.panpf.sketch.sample.widget.SampleImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"

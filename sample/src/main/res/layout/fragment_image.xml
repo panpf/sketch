@@ -4,19 +4,19 @@
     android:layout_height="match_parent"
     android:paddingTop="8dp">
 
-    <me.xiaopan.sketchsample.widget.SampleImageView
+    <me.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_imageFragment_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name" />
 
-    <me.xiaopan.sketchsample.widget.MappingView
+    <me.panpf.sketch.sample.widget.MappingView
         android:id="@+id/mapping_imageFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
 
-    <me.xiaopan.sketchsample.widget.HintView
+    <me.panpf.sketch.sample.widget.HintView
         android:id="@+id/hint_imageFragment_hint"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <me.xiaopan.sketchsample.widget.SampleImageView
+    <me.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_rotateFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"

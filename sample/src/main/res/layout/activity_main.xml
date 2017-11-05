@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <me.xiaopan.sketchsample.widget.SampleImageView
+    <me.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_main_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start">
 
-            <me.xiaopan.sketchsample.widget.SampleImageView
+            <me.panpf.sketch.sample.widget.SampleImageView
                 android:id="@+id/image_main_menuBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

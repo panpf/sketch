@@ -21,6 +21,7 @@
 
 sample app:
 * :bug: 修复 UNSPLASH 页面没有加载完数据就切换到别的页面时崩溃的 BUG
+* :hammer: 重构包名为 me.panpf.sketch.sample
 
 待办：
 * 重写 block_display.md ，然后在 zoom.md 中引用

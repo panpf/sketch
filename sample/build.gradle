@@ -10,7 +10,7 @@ android {
     buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
     defaultConfig {
-        applicationId "me.xiaopan.sketchsample"
+        applicationId "me.panpf.sketch.sample"
         minSdkVersion MIN_SDK_VERSION.toInteger()
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode VERSION_CODE.toInteger()
