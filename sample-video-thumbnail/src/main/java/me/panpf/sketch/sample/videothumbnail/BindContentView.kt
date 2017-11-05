@@ -1,4 +1,4 @@
-package me.xiaopan.ssvt
+package me.panpf.sketch.sample.videothumbnail
 
 import java.lang.annotation.Inherited
 

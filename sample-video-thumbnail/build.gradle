@@ -6,7 +6,7 @@ android {
     buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
     defaultConfig {
-        applicationId "me.xiaopan.ssvt"
+        applicationId "me.panpf.sketch.sample.videothumbnail"
         minSdkVersion 14
         targetSdkVersion TARGET_SDK_VERSION_LIBRARY.toInteger()
         versionCode VERSION_CODE.toInteger()

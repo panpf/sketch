@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.ssvt
+package me.panpf.sketch.sample.videothumbnail
 
 import android.content.Intent
 import android.net.Uri
