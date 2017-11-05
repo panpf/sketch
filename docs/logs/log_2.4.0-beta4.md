@@ -15,7 +15,7 @@
   * Sketch.LoadOptions getLoadOptions(Enum<?>)
   * Sketch.DisplayOptions getDisplayOptions(Enum<?>)
 
-为何要移除？经实际使用发现，即使在Application中第一时间存储Options，也会出现取不到本应该存在的Options的情况，因此推荐改用懒加载的方式管理Options，详情可参考Demo里的 [ImageOptions.java](https://github.com/panpf/sketch/blob/master/sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.java) 或 [如何管理多个Options.md](https://github.com/panpf/sketch/blob/master/docs/wiki/options_manage.md)
+为何要移除？经实际使用发现，即使在Application中第一时间存储Options，也会出现取不到本应该存在的Options的情况，因此推荐改用懒加载的方式管理Options，详情可参考Demo里的 [ImageOptions.java](https://github.com/panpf/sketch/blob/master/sample/src/main/java/me/panpf/sketchsample/ImageOptions.java) 或 [如何管理多个Options.md](https://github.com/panpf/sketch/blob/master/docs/wiki/options_manage.md)
 
 ### Initializer
 :sparkles: 新增Initializer可以在AndroidManifest.xml中配置初始化类，这样就不用在Application中初始化了，可减轻Application的负担，也可百分之百保证第一时间完成Sketch的初始化，详情请参考[initializer.md](https://github.com/panpf/sketch/blob/master/docs/wiki/initializer.md)

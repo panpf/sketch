@@ -162,7 +162,7 @@ app.icon uri 用于显示已安装 app 的图标，对应方法如下：
 
 ```java
 // Make uri
-String appIconUri = AppIconUriModel.makeUri("me.xiaopan.sketchsample", 241);
+String appIconUri = AppIconUriModel.makeUri("me.panpf.sketch.sample", 2500);
 
 // Use SketchImageVie
 SketchImageView sketchImageView = ...;
@@ -176,5 +176,5 @@ Sketch.with(context).load(appIconUri, new LoadListener(){...}).commit();
 ```
 
 
-[UriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
+[UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
 [uri_model]: uri_model.md

@@ -1,9 +1,9 @@
 package me.panpf.sketch.sample
 
 import android.content.Context
-import me.xiaopan.sketch.Configuration
-import me.xiaopan.sketch.Initializer
-import me.xiaopan.sketch.SLog
+import me.panpf.sketch.Configuration
+import me.panpf.sketch.Initializer
+import me.panpf.sketch.SLog
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.XpkIconUriModel

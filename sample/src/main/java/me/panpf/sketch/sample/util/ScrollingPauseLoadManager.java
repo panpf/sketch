@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
-import me.xiaopan.sketch.Sketch;
+import me.panpf.sketch.Sketch;
 
 /**
  * 滚动中暂停暂停加载新图片管理器支持RecyclerView和AbsListView

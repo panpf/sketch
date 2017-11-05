@@ -175,7 +175,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * ![QQ Group][qq_group_image]
 
 ### License
-    Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+    Copyright (C) 2013 Peng fei Pan <sky@panpf.me>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -212,7 +212,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
 [sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
-[UriModel]: sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
+[UriModel]: sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
 
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md

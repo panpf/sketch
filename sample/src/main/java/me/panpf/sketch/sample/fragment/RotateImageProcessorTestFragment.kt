@@ -3,8 +3,8 @@ package me.panpf.sketch.sample.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import me.xiaopan.sketch.display.TransitionImageDisplayer
-import me.xiaopan.sketch.process.RotateImageProcessor
+import me.panpf.sketch.display.TransitionImageDisplayer
+import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView

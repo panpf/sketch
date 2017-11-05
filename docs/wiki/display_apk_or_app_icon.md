@@ -29,13 +29,13 @@ Sketch.with(context).load(apkIconUri, new LoadListener(){...}).commit();
 [Sketch] 还支持显示已安装 APP 的图标，是通过 [AppIconUriModel] 实现的此功能，uri 如下:
 
 ```
-app.icon://com.xiaopan.sketchsample/241
+app.icon://me.panpf.sketch.sample/2500
 ```
 
 [SketchImageView]、[Sketch] 提供了相应的方法可供使用，如下：
 
 ```java
-Sting appIconUri = AppIconUriModel.makeUri("com.xiaopan.sketchsample", 241);
+Sting appIconUri = AppIconUriModel.makeUri("me.panpf.sketch.sample", 2500);
 
 // SketchImageView
 SketchImageView sketchImageView = ...;
@@ -48,8 +48,8 @@ Sketch.with(context).display(appIconUri, sketchImageView).commit();
 Sketch.with(context).load(appIconUri, new LoadListener(){...}).commit();
 ```
 
-[Sketch]: ../../sketch/src/main/java/me/xiaopan/sketch/Sketch.java
-[ApkIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/ApkIconUriModel.java
-[AppIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AppIconUriModel.java
-[SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
-[Sketch]: ../../sketch/src/main/java/me/xiaopan/sketch/Sketch.java
+[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
+[ApkIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/ApkIconUriModel.java
+[AppIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
+[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
+[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java

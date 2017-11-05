@@ -66,4 +66,4 @@ IllegalStateException: ImageView's width and height are not fixed, can not be ap
 
 [Resize].byViewFixedSize() 只能用于 display 请求
 
-[Resize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/Resize.java
+[Resize]: ../../sketch/src/main/java/me/panpf/sketch/request/Resize.java

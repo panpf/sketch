@@ -79,8 +79,8 @@
 >* :sparkles: 新增`onInBitmapException(String, int, int imageHeight, int, Bitmap)`用来监控在BitmapFactory中使用inBitmap时发生的异常
 
 ##### Log
->* :hammer: `Log` 日志分不同的类型分别提供开关控制，详见[SLogType.java](../../sketch/src/main/java/me/xiaopan/sketch/SLogType.java)
->* :sparkles: `SLogTracker` 新增SLogTracker用于收集Sketch的日志，详情可参看示例APP中的[SampleLogTracker.java](../../sample/src/main/java/me/xiaopan/sketchsample/SampleLogTracker.java)
+>* :hammer: `Log` 日志分不同的类型分别提供开关控制，详见[SLogType.java](../../sketch/src/main/java/me/panpf/sketch/SLogType.java)
+>* :sparkles: `SLogTracker` 新增SLogTracker用于收集Sketch的日志，详情可参看示例APP中的[SampleLogTracker.java](../../sample/src/main/java/me/panpf/sketchsample/SampleLogTracker.java)
 
 ##### 其它
 >* :arrow_up: `minSdkVersion` 最低支持版本升到9

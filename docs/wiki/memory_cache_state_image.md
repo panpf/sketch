@@ -92,5 +92,5 @@ public class ImageFragment extends Fragment {
 
 更详细的实现细节请参考示例 app
 
-[MemoryCacheStateImage]: ../../sketch/src/main/java/me/xiaopan/sketch/state/MemoryCacheStateImage.java
-[SketchUtils]: ../../sketch/src/main/java/me/xiaopan/sketch/util/SketchUtils.java
+[MemoryCacheStateImage]: ../../sketch/src/main/java/me/panpf/sketch/state/MemoryCacheStateImage.java
+[SketchUtils]: ../../sketch/src/main/java/me/panpf/sketch/util/SketchUtils.java

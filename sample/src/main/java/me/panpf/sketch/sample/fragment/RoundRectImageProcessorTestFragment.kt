@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
-import me.xiaopan.sketch.display.TransitionImageDisplayer
-import me.xiaopan.sketch.process.RoundRectImageProcessor
+import me.panpf.sketch.display.TransitionImageDisplayer
+import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView

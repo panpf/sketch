@@ -51,9 +51,9 @@ import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.widget.SampleImageView
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
 import me.xiaopan.psts.PagerSlidingTabStrip
-import me.xiaopan.sketch.SLog
-import me.xiaopan.sketch.Sketch
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.SLog
+import me.panpf.sketch.Sketch
+import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import java.util.*

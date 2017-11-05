@@ -13,7 +13,7 @@ import android.text.format.Formatter
 import android.view.View
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
 import me.xiaopan.assemblyadapter.FixedRecyclerItemInfo
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R

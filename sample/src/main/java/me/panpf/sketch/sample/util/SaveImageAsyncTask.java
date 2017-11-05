@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import me.xiaopan.sketch.datasource.DataSource;
-import me.xiaopan.sketch.util.SketchUtils;
+import me.panpf.sketch.datasource.DataSource;
+import me.panpf.sketch.util.SketchUtils;
 
 /**
  * 保存图片异步任务

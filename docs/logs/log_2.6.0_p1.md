@@ -18,6 +18,7 @@
 * :bug: 修复开启解码 gif 后内存缓存失效的 bug
 * :bug: 修复在生成 WrappedImageProcessor 的 key 时崩溃的错误，并且优化 key 的格式
 * :hammer: 重构 WrappedImageProcessor 的 getKey() 和 toString() 方法，所有子类都需要重新适配
+* :hammer: 重构包名为 me.panpf.sketch
 
 sample app:
 * :bug: 修复 UNSPLASH 页面没有加载完数据就切换到别的页面时崩溃的 BUG

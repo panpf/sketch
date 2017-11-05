@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2013 Peng fei Pan <sky@panpf.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.util.SketchUtils
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*

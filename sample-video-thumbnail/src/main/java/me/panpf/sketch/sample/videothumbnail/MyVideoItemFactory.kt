@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
-import me.xiaopan.sketch.SketchImageView
-import me.xiaopan.sketch.display.TransitionImageDisplayer
+import me.panpf.sketch.SketchImageView
+import me.panpf.sketch.display.TransitionImageDisplayer
 
 class MyVideoItemFactory(private val listener: MyVideoItemListener?) : AssemblyRecyclerItemFactory<MyVideoItemFactory.MyVideoItem>() {
 

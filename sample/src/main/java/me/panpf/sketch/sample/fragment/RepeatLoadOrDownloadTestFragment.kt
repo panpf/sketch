@@ -4,7 +4,7 @@ import android.content.pm.ApplicationInfo
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
-import me.xiaopan.sketch.uri.ApkIconUriModel
+import me.panpf.sketch.uri.ApkIconUriModel
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R

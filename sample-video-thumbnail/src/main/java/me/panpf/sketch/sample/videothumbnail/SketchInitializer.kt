@@ -2,8 +2,8 @@ package me.panpf.sketch.sample.videothumbnail
 
 import android.content.Context
 
-import me.xiaopan.sketch.Configuration
-import me.xiaopan.sketch.Initializer
+import me.panpf.sketch.Configuration
+import me.panpf.sketch.Initializer
 
 class SketchInitializer : Initializer {
 

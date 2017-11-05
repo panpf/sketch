@@ -5,13 +5,13 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.decode.ImageSizeCalculator;
-import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.uri.AbsBitmapDiskCacheUriModel;
-import me.xiaopan.sketch.uri.GetDataSourceException;
-import me.xiaopan.sketch.util.SketchUtils;
+import me.panpf.sketch.SLog;
+import me.panpf.sketch.Sketch;
+import me.panpf.sketch.decode.ImageSizeCalculator;
+import me.panpf.sketch.request.MaxSize;
+import me.panpf.sketch.uri.AbsBitmapDiskCacheUriModel;
+import me.panpf.sketch.uri.GetDataSourceException;
+import me.panpf.sketch.util.SketchUtils;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class VideoThumbnailUriModel extends AbsBitmapDiskCacheUriModel {

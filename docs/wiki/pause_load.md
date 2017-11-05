@@ -32,4 +32,4 @@ listView.setOnScrollListener(new ScrollingPauseLoadManager(context));
 注意：
 * 推荐只在性比较差的设备上开启此功能，你可以通过 Android 版本号来判断，比如针对 4.4 以下的设备开启此功能
 
-[ScrollingPauseLoadManager]: ../../sample/src/main/java/me/xiaopan/sketchsample/util/ScrollingPauseLoadManager.java
+[ScrollingPauseLoadManager]: ../../sample/src/main/java/me/panpf/sketchsample/util/ScrollingPauseLoadManager.java

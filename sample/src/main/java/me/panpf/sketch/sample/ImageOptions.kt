@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2017 Peng fei Pan <sky@panpf.me>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,17 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.annotation.IntDef
 import android.util.SparseArray
-import me.xiaopan.sketch.display.TransitionImageDisplayer
-import me.xiaopan.sketch.process.GaussianBlurImageProcessor
-import me.xiaopan.sketch.request.DisplayOptions
-import me.xiaopan.sketch.request.DownloadOptions
-import me.xiaopan.sketch.request.LoadOptions
-import me.xiaopan.sketch.request.ShapeSize
-import me.xiaopan.sketch.shaper.CircleImageShaper
-import me.xiaopan.sketch.shaper.RoundRectImageShaper
-import me.xiaopan.sketch.state.DrawableStateImage
-import me.xiaopan.sketch.state.OldStateImage
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.display.TransitionImageDisplayer
+import me.panpf.sketch.process.GaussianBlurImageProcessor
+import me.panpf.sketch.request.DisplayOptions
+import me.panpf.sketch.request.DownloadOptions
+import me.panpf.sketch.request.LoadOptions
+import me.panpf.sketch.request.ShapeSize
+import me.panpf.sketch.shaper.CircleImageShaper
+import me.panpf.sketch.shaper.RoundRectImageShaper
+import me.panpf.sketch.state.DrawableStateImage
+import me.panpf.sketch.state.OldStateImage
+import me.panpf.sketch.util.SketchUtils
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 

@@ -21,7 +21,7 @@
 res/layout/item_user.xml
 
 ```xml
-<me.xiaopan.sketch.SketchImageView
+<me.panpf.sketch.SketchImageView
     android:id="@+id/image_main"
     android:layout_width="130dp"
     android:layout_height="130dp"/>
@@ -153,4 +153,4 @@ sketchImageView.setClickRetryOnDisplayErrorEnabled(true);
 [uri]: uri.md
 [options]: options.md
 [listener]: listener.md
-[SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
+[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java

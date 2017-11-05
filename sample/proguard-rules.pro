@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in /Users/xiaopan/Program/android/sdk/tools/proguard/proguard-android.txt
+# in ${sdk.dir}/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -12,8 +12,6 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
--dontwarn me.xiaopan.android.inject.***
-
 # 不混淆SearchView，因为发现混淆的时候会把SearchView的构造函数给弄丢了，导致无法实例化
 -keep class android.support.v7.widget.SearchView { *; }
 

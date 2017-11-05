@@ -129,26 +129,26 @@ configuration.getUriModelManager().add(new MyUriModel());
 * [AbsStreamDiskCacheUriModel] ：适用于通过 InputStream 读取图片的，你只需返回图片的 InputStream 即可，例如 [Base64UriModel]
 * [AbsBitmapDiskCacheUriModel] ：适用于先拿到图片的 bitmap 再把 bitmap 保存到 [DiskCache] 的，你只需返回图片的 bitmap 即可，例如 [ApkIconUriModel]
 
-[UriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
-[AssetUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AssetUriModel.java
-[HttpUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/HttpUriModel.java
-[HttpsUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/HttpsUriModel.java
-[DrawableUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/DrawableUriModel.java
-[FileUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/FileUriModel.java
-[FileVariantUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/FileVariantUriModel.java
-[AndroidResUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AndroidResUriModel.java
-[AbsDiskCacheUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AbsDiskCacheUriModel.java
-[AbsStreamDiskCacheUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AbsStreamDiskCacheUriModel.java
-[XpkIconUriModel]: ../../sample/src/main/java/me/xiaopan/sketchsample/util/XpkIconUriModel.java
-[Base64UriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/Base64UriModel.java
-[Base64VariantUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/Base64VariantUriModel.java
-[AbsBitmapDiskCacheUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AbsBitmapDiskCacheUriModel.java
-[ApkIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/ApkIconUriModel.java
-[VideoThumbnailUriModel]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/ssvt/VideoThumbnailUriModel.java
-[AppIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AppIconUriModel.java
-[ContentUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/ContentUriModel.java
-[DiskCache]: ../../sketch/src/main/java/me/xiaopan/sketch/cache/DiskCache.java
-[DownloadResult]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DownloadResult.java
-[DataSource]: ../../sketch/src/main/java/me/xiaopan/sketch/datasource/DataSource.java
+[UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
+[AssetUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AssetUriModel.java
+[HttpUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/HttpUriModel.java
+[HttpsUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/HttpsUriModel.java
+[DrawableUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/DrawableUriModel.java
+[FileUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/FileUriModel.java
+[FileVariantUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/FileVariantUriModel.java
+[AndroidResUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AndroidResUriModel.java
+[AbsDiskCacheUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AbsDiskCacheUriModel.java
+[AbsStreamDiskCacheUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AbsStreamDiskCacheUriModel.java
+[XpkIconUriModel]: ../../sample/src/main/java/me/panpf/sketchsample/util/XpkIconUriModel.java
+[Base64UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/Base64UriModel.java
+[Base64VariantUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/Base64VariantUriModel.java
+[AbsBitmapDiskCacheUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AbsBitmapDiskCacheUriModel.java
+[ApkIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/ApkIconUriModel.java
+[VideoThumbnailUriModel]: ../../sample-video-thumbnail/src/main/java/me/panpf/sketch/sample/videothumbnail/VideoThumbnailUriModel.java
+[AppIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
+[ContentUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/ContentUriModel.java
+[DiskCache]: ../../sketch/src/main/java/me/panpf/sketch/cache/DiskCache.java
+[DownloadResult]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadResult.java
+[DataSource]: ../../sketch/src/main/java/me/panpf/sketch/datasource/DataSource.java
 
 [统一资源标志符 - 维基百科]: https://zh.wikipedia.org/wiki/%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E6%A0%87%E5%BF%97%E7%AC%A6

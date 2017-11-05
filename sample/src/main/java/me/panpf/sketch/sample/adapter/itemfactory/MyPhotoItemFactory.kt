@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bindView

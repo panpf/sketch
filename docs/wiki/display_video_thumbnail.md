@@ -42,9 +42,9 @@ sketchImageView.displayImage(videoFileUri);
 
 5.如果你想要使用其它的视频处理库，只需将 [VideoThumbnailUriModel.java] 的 getContent(Context, String) 方法的实现替换掉即可
 
-[Sketch]: ../../sketch/src/main/java/me/xiaopan/sketch/Sketch.java
-[UriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
+[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
+[UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
 [sample-video-thumbnail]: ../../sample-video-thumbnail/
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
-[VideoThumbnailUriModel.java]: ../../sample-video-thumbnail/src/main/java/me/xiaopan/ssvt/VideoThumbnailUriModel.java
-[UriModelManager]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModelManager.java
+[VideoThumbnailUriModel.java]: ../../sample-video-thumbnail/src/main/java/me/panpf/sketch/sample/videothumbnail/VideoThumbnailUriModel.java
+[UriModelManager]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModelManager.java

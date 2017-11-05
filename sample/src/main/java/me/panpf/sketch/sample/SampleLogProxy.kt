@@ -6,9 +6,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.text.TextUtils
 import android.util.Log
-import me.xiaopan.sketch.SLog
-import me.xiaopan.sketch.util.ObjectPool
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.SLog
+import me.panpf.sketch.util.ObjectPool
+import me.panpf.sketch.util.SketchUtils
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException

@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.*
 import android.preference.PreferenceManager
-import me.xiaopan.sketch.uri.AssetUriModel
-import me.xiaopan.sketch.util.ExifInterface
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.uri.AssetUriModel
+import me.panpf.sketch.util.ExifInterface
+import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.sample.AssetImage
 import java.io.*
 

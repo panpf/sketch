@@ -44,5 +44,5 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 IllegalStateException: ImageView's width and height are not fixed, can not be applied with the ShapeSize.byViewFixedSize() function
 ```
 
-[ShapeSize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/ShapeSize.java
-[DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
+[ShapeSize]: ../../sketch/src/main/java/me/panpf/sketch/request/ShapeSize.java
+[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java

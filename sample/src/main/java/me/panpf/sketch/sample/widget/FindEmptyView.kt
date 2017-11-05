@@ -8,7 +8,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.util.SketchUtils
 
 class FindEmptyView : View {
     private var fullRectList: List<Rect>? = null

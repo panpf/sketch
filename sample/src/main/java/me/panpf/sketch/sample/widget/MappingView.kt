@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2016 Peng fei Pan <sky@panpf.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
-import me.xiaopan.sketch.SLog
-import me.xiaopan.sketch.SketchImageView
-import me.xiaopan.sketch.drawable.SketchLoadingDrawable
-import me.xiaopan.sketch.util.SketchUtils
-import me.xiaopan.sketch.zoom.BlockDisplayer
-import me.xiaopan.sketch.zoom.Size
+import me.panpf.sketch.SLog
+import me.panpf.sketch.SketchImageView
+import me.panpf.sketch.drawable.SketchLoadingDrawable
+import me.panpf.sketch.util.SketchUtils
+import me.panpf.sketch.zoom.BlockDisplayer
+import me.panpf.sketch.zoom.Size
 
 class MappingView : SketchImageView {
 

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
-import me.xiaopan.sketch.uri.ApkIconUriModel
-import me.xiaopan.sketch.uri.AppIconUriModel
+import me.panpf.sketch.uri.ApkIconUriModel
+import me.panpf.sketch.uri.AppIconUriModel
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.AppInfo

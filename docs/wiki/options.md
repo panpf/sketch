@@ -120,12 +120,12 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 
 ``使用 options() 方法和使用属性专用方法设置同一个属性时并不会冲突，就看谁最后执行``
 
-[RequestLevel]: ../../sketch/src/main/java/com/xiaopan/sketch/request/RequestLevel.java
+[RequestLevel]: ../../sketch/src/main/java/me/panpf/sketch/request/RequestLevel.java
 [load_android_download]: load_android_download.md
 [disk_cache]: disk_cache.md
 [memory_cache]: memory_cache.md
 [thumbnail_mode]: thumbnail_mode.md
-[ImageType]: ../../sketch/src/main/java/com/xiaopan/sketch/decode/ImageType.java
+[ImageType]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageType.java
 [max_size]: max_size.md
 [resize]: resize.md
 [image_processor]: image_processor.md
@@ -138,6 +138,6 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener(){...}
 [shape_size]: shape_size.md
 [pause_load]: pause_load.md
 [pause_download]: pause_download.md
-[DownloadOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DownloadOptions.java
-[LoadOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
+[DownloadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadOptions.java
+[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java

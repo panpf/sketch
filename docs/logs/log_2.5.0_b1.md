@@ -94,29 +94,29 @@ sample app：
 * 默认关闭 长按显示图片详情的功能，交由 "Long Clock Show Image Info" 开关控制
 * 现在视频缩略图模块 从 sample app 中抽离出去成为一个单独的 module [sample-video-thumbnail] 
 
-[Sketch]: ../../sketch/src/main/java/me/xiaopan/sketch/Sketch.java
-[SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
-[SketchUtils]: ../../sketch/src/main/java/me/xiaopan/sketch/util/SketchUtils.java
-[ImageShaper]: ../../sketch/src/main/java/me/xiaopan/sketch/shaper/ImageShaper.java
-[CancelCause]: ../../sketch/src/main/java/me/xiaopan/sketch/request/CancelCause.java
-[DownloadListener]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DownloadListener.java
-[LoadListener]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadListener.java
-[DisplayListener]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayListener.java
-[Resize]: ../../sketch/src/main/java/me/xiaopan/sketch/request/Resize.java
-[LoadOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DisplayOptions.java
-[DownloadHelper]: ../../sketch/src/main/java/me/xiaopan/sketch/request/DownloadHelper.java
-[LoadHelper]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadHelper.java
-[LoadHelper]: ../../sketch/src/main/java/me/xiaopan/sketch/request/LoadHelper.java
-[OptionsFilter]: ../../sketch/src/main/java/me/xiaopan/sketch/optionsfilter/OptionsFilter.java
-[Configuration]: ../../sketch/src/main/java/me/xiaopan/sketch/Configuration.java
-[ImageZoomer]: ../../sketch/src/main/java/me/xiaopan/sketch/viewfun/zoom/ImageZoomer.java
-[Initializer]: ../../sketch/src/main/java/me/xiaopan/sketch/Initializer.java
-[UriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/UriModel.java
-[AppIconUriModel]: ../../sketch/src/main/java/me/xiaopan/sketch/uri/AppIconUriModel.java
-[SLog]: ../../sketch/src/main/java/me/xiaopan/sketch/SLog.java
-[ImageProcessor]: ../../sketch/src/main/java/me/xiaopan/sketch/process/ImageProcessor.java
-[WrappedImageProcessor]: ../../sketch/src/main/java/me/xiaopan/sketch/process/WrappedImageProcessor.java
+[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
+[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
+[SketchUtils]: ../../sketch/src/main/java/me/panpf/sketch/util/SketchUtils.java
+[ImageShaper]: ../../sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
+[CancelCause]: ../../sketch/src/main/java/me/panpf/sketch/request/CancelCause.java
+[DownloadListener]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadListener.java
+[LoadListener]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadListener.java
+[DisplayListener]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayListener.java
+[Resize]: ../../sketch/src/main/java/me/panpf/sketch/request/Resize.java
+[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
+[DownloadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadHelper.java
+[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
+[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
+[OptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
+[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
+[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/viewfun/zoom/ImageZoomer.java
+[Initializer]: ../../sketch/src/main/java/me/panpf/sketch/Initializer.java
+[UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
+[AppIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
+[SLog]: ../../sketch/src/main/java/me/panpf/sketch/SLog.java
+[ImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
+[WrappedImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
 
 [log]: ../wiki/log.md
 [resize]: ../wiki/resize.md

@@ -27,6 +27,6 @@ public class MyErrorTracker extends ErrorTracker {
 Sketch.with(context).getConfiguration().setErrorTracker(new MyErrorTracker());
 ```
 
-[Sketch]: ../../sketch/src/main/java/me/xiaopan/sketch/Sketch.java
-[Configuration]: ../../sketch/src/main/java/me/xiaopan/sketch/Configuration.java
-[ErrorTracker]: ../../sketch/src/main/java/me/xiaopan/sketch/ErrorTracker.java
+[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
+[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
+[ErrorTracker]: ../../sketch/src/main/java/me/panpf/sketch/ErrorTracker.java

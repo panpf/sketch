@@ -3,7 +3,7 @@ package me.panpf.sketch.sample.fragment
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import me.xiaopan.sketch.SketchImageView
+import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R

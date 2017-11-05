@@ -2,10 +2,10 @@ package me.panpf.sketch.sample
 
 import android.content.Context
 import android.content.pm.PackageManager
-import me.xiaopan.sketch.uri.AndroidResUriModel
-import me.xiaopan.sketch.uri.ApkIconUriModel
-import me.xiaopan.sketch.uri.AppIconUriModel
-import me.xiaopan.sketch.uri.DrawableUriModel
+import me.panpf.sketch.uri.AndroidResUriModel
+import me.panpf.sketch.uri.ApkIconUriModel
+import me.panpf.sketch.uri.AppIconUriModel
+import me.panpf.sketch.uri.DrawableUriModel
 import java.util.*
 
 object AssetImage {

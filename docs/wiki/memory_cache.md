@@ -66,5 +66,5 @@ SLog.removeLoggable(SLog.TYPE_CACHE);
 * put(String, SketchRefBitmap)：将图片放到缓存中
 
 
-[MemoryCache]: ../../sketch/src/main/java/me/xiaopan/sketch/cache/MemoryCache.java
-[LruMemoryCache]: ../../sketch/src/main/java/me/xiaopan/sketch/cache/LruMemoryCache.java
+[MemoryCache]: ../../sketch/src/main/java/me/panpf/sketch/cache/MemoryCache.java
+[LruMemoryCache]: ../../sketch/src/main/java/me/panpf/sketch/cache/LruMemoryCache.java

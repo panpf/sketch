@@ -93,7 +93,7 @@ Sketch.with(context).download("http://t.cn/RShdS1f", new DownloadListener() {
 * 不能在主线程开启同步，否则会运行时抛异常
 * 不仅下载、加载的主体过程会在当前调用线程执行，listener 回调也会在当前调用线程执行，更多listener内容请参考 [监听开始、成功、失败以及下载进度事件][listener.md]
 
-[SketchImageView]: ../../sketch/src/main/java/me/xiaopan/sketch/SketchImageView.java
+[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
 [options]: options.md
 [listener]: listener.md
 [sketch_image_view]: sketch_image_view.md

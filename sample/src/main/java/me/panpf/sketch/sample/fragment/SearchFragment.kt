@@ -16,7 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
 import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
-import me.xiaopan.sketch.util.SketchUtils
+import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R

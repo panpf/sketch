@@ -2,8 +2,8 @@ package me.panpf.sketch.sample.fragment
 
 import android.os.Bundle
 import android.view.View
-import me.xiaopan.sketch.display.TransitionImageDisplayer
-import me.xiaopan.sketch.process.ReflectionImageProcessor
+import me.panpf.sketch.display.TransitionImageDisplayer
+import me.panpf.sketch.process.ReflectionImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView

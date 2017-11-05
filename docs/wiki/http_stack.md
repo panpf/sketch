@@ -21,6 +21,6 @@
 Sketch.with(context).getConfiguration().setHttpStack(new MyHttpStack());
 ```
 
-[HttpStack]: ../../sketch/src/main/java/me/xiaopan/sketch/http/HttpStack.java
-[HurlStack]: ../../sketch/src/main/java/me/xiaopan/sketch/http/HurlStack.java
-[Configuration]: ../../sketch/src/main/java/me/xiaopan/sketch/Configuration.java
+[HttpStack]: ../../sketch/src/main/java/me/panpf/sketch/http/HttpStack.java
+[HurlStack]: ../../sketch/src/main/java/me/panpf/sketch/http/HurlStack.java
+[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java

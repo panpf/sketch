@@ -98,7 +98,7 @@
 * :hammer: 新增 onNotFoundGifSoError(Throwable) 方法，用于准确通报找不到 gif so 文件错误，onDecodeGifImageError(Throwable, LoadRequest, int, int, String) 方法将不会再收到找不到 gif so 文件错误
 
 ### Options
-:fire: 整个移除使用枚举存储和获取Options的功能。为何要移除？经实际使用发现，即使在Application中第一时间存储Options，也会出现取不到本应该存在的Options的情况，因此推荐改用懒加载的方式管理Options，详情可参考Demo里的 [ImageOptions.java](https://github.com/panpf/sketch/blob/master/sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.java) 或 [如何管理多个Options.md](https://github.com/panpf/sketch/blob/master/docs/wiki/options_manage.md)。涉及以下方法
+:fire: 整个移除使用枚举存储和获取Options的功能。为何要移除？经实际使用发现，即使在Application中第一时间存储Options，也会出现取不到本应该存在的Options的情况，因此推荐改用懒加载的方式管理Options，详情可参考Demo里的 [ImageOptions.java](https://github.com/panpf/sketch/blob/master/sample/src/main/java/me/panpf/sketchsample/ImageOptions.java) 或 [如何管理多个Options.md](https://github.com/panpf/sketch/blob/master/docs/wiki/options_manage.md)。涉及以下方法
   * DisplayHelper.optionsByName(Enum<?>)
   * LoadHelper.optionsByName(Enum<?>)
   * DownloadHelper.optionsByName(Enum<?>)
@@ -125,14 +125,14 @@
 * :hammer: 调整目录结构
     * SketchImageView 的各种 Function、LargeImageViewer 以及 ImageZoomer 由 me.xiaopan.sketch.feature 移到 me.xiaopan.sketch.viewfun
     * ImagePreprocessor 相关类由 me.xiaopan.sketch.feature移到 me.xiaopan.sketch.preprocess
-    * ImageSizeCalculator 和 ResizeCalculator由 me.xiaopan.sketch.feature 移到 me.xiaopan.sketch.decode
+    * ImageSizeCalculator 和 ResizeCalculator  由 me.xiaopan.sketch.feature 移到 me.xiaopan.sketch.decode
 
 ### Sample APP：
 * :hammer: 图片详情页右下角设置按钮改为长按
 * :hammer: 图片详情页点击显示底部四个按钮挪到了长按--更多功能里
 * :sparkles: 图片详情页点击关闭页面
 * :sparkles: 增加自动纠正图片方向测试页面
-* :sparkles: 增加base64图片测试页面
+* :sparkles: 增加 base64 图片测试页面
 * :art: 优化侧滑选项的命名
 * :sparkles: drawable、asset、content 来源的图片可以使用分享、保存和设置壁纸功能了
 * :sparkles: 可以在任意位置长按图片查看图片信息

@@ -136,5 +136,5 @@ MyImageView imageView = ...;
 imageView.setOptions(ImageOptions.ROUND_RECT);
 ```
 
-[ImageOptions.kt]: ../../sample/src/main/java/me/xiaopan/sketchsample/ImageOptions.kt
-[SampleImageView.kt]: ../../sample/src/main/java/me/xiaopan/sketchsample/widget/SampleImageView.kt
+[ImageOptions.kt]: ../../sample/src/main/java/me/panpf/sketchsample/ImageOptions.kt
+[SampleImageView.kt]: ../../sample/src/main/java/me/panpf/sketchsample/widget/SampleImageView.kt

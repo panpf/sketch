@@ -10,10 +10,10 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.uri.AbsStreamDiskCacheUriModel;
-import me.xiaopan.sketch.uri.GetDataSourceException;
-import me.xiaopan.sketch.util.SketchUtils;
+import me.panpf.sketch.SLog;
+import me.panpf.sketch.uri.AbsStreamDiskCacheUriModel;
+import me.panpf.sketch.uri.GetDataSourceException;
+import me.panpf.sketch.util.SketchUtils;
 
 public class XpkIconUriModel extends AbsStreamDiskCacheUriModel {
 
