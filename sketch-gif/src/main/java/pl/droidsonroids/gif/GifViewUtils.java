@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import me.xiaopan.sketch.gif.R;
+import me.panpf.sketch.gif.R;
 
 final class GifViewUtils {
 	static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";

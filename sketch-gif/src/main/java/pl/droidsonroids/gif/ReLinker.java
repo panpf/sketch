@@ -30,7 +30,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import me.xiaopan.sketch.gif.BuildConfig;
+import me.panpf.sketch.gif.BuildConfig;
 
 /**
  * Based on https://github.com/KeepSafe/ReLinker

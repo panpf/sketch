@@ -41,7 +41,7 @@ public class SketchGifFactory {
             synchronized (SketchGifFactory.class) {
                 if (existGifLibrary == 0) {
                     try {
-                        Class.forName("me.xiaopan.sketch.gif.BuildConfig");
+                        Class.forName("me.panpf.sketch.gif.BuildConfig");
                         Class.forName("pl.droidsonroids.gif.GifDrawable");
                         existGifLibrary = 1;
                     } catch (ClassNotFoundException e) {

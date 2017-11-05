@@ -21,7 +21,7 @@ import android.widget.ImageView.ScaleType;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.gif.R;
+import me.panpf.sketch.gif.R;
 import pl.droidsonroids.gif.annotations.Beta;
 
 /**

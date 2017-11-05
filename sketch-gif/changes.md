@@ -8,10 +8,10 @@ GifDrawable：
 * recycle()方法中回收mBuffer部分抽离出一个单独的方法，可供子类继承修改
 
 GifTextView：
-* R的包名改为me.xiaopan.sketch.gif.R
+* R的包名改为me.panpf.sketch.gif.R
 
 GifViewUtils
-* R的包名改为me.xiaopan.sketch.gif.R
+* R的包名改为me.panpf.sketch.gif.R
 
 ReLinker.java
-* R的包名改为me.xiaopan.sketch.gif.R
+* R的包名改为me.panpf.sketch.gif.R
