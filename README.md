@@ -175,7 +175,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * ![QQ Group][qq_group_image]
 
 ### License
-    Copyright (C) 2013 Peng fei Pan <sky@panpf.me>
+    Copyright (C) 2017 Peng fei Pan <sky@panpf.me>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

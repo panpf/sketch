@@ -7,14 +7,14 @@ File jksFile = jksFileName != null && "" != jksFileName.trim() ? file(jksFileNam
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
-    buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
     defaultConfig {
         applicationId "me.panpf.sketch.sample.videothumbnail"
+
         minSdkVersion 14
-        targetSdkVersion TARGET_SDK_VERSION_LIBRARY.toInteger()
+        targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode VERSION_CODE.toInteger()
-        versionName "${VERSION_NAME}"
+        versionName VERSION_NAME
 
         ndk {
             abiFilters "armeabi", 'x86'
