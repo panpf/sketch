@@ -71,10 +71,10 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.Initializer;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
+import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.datasource.DataSource;
@@ -346,7 +346,13 @@ public class SketchUtils {
         if (!dir.exists() && !dir.mkdirs()) {
             return 0;
         }
-        StatFs dirStatFs = new StatFs(dir.getPath());
+        StatFs dirStatFs;
+        try {
+            dirStatFs = new StatFs(dir.getPath());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return 0;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return dirStatFs.getAvailableBytes();
         } else {
@@ -363,7 +369,13 @@ public class SketchUtils {
         if (!dir.exists() && !dir.mkdirs()) {
             return 0;
         }
-        StatFs dirStatFs = new StatFs(dir.getPath());
+        StatFs dirStatFs;
+        try {
+            dirStatFs = new StatFs(dir.getPath());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return 0;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return dirStatFs.getTotalBytes();
         } else {
