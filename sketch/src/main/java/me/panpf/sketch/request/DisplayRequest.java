@@ -27,12 +27,14 @@ import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.MemoryCache;
+import me.panpf.sketch.display.ImageDisplayer;
 import me.panpf.sketch.drawable.SketchBitmapDrawable;
 import me.panpf.sketch.drawable.SketchDrawable;
 import me.panpf.sketch.drawable.SketchGifDrawable;
 import me.panpf.sketch.drawable.SketchRefBitmap;
 import me.panpf.sketch.drawable.SketchRefDrawable;
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable;
+import me.panpf.sketch.state.StateImage;
 import me.panpf.sketch.uri.UriModel;
 
 /**
@@ -225,7 +227,8 @@ public class DisplayRequest extends LoadRequest {
     }
 
     private void displayImage(Drawable drawable) {
-        if (isCanceled()) {
+        SketchView sketchView = requestAndViewBinder.getView();
+        if (isCanceled() || sketchView == null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
             }
@@ -257,20 +260,19 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getShapeSize(), displayOptions.getShaper());
         }
 
-        SketchView viewInterface = requestAndViewBinder.getView();
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             String drawableInfo = "unknown";
             if (drawable instanceof SketchRefDrawable) {
                 drawableInfo = ((SketchRefDrawable) drawable).getInfo();
             }
             SLog.d(getLogName(), "Display image completed. %s. %s. view(%s). %s. %s",
-                    displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(viewInterface.hashCode()), getThreadName(), getKey());
+                    displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(sketchView.hashCode()), getThreadName(), getKey());
         }
 
         // 一定要在 ImageDisplayer().display 之前执行
         setStatus(Status.COMPLETED);
 
-        displayOptions.getDisplayer().display(viewInterface, drawable);
+        displayOptions.getDisplayer().display(sketchView, drawable);
 
         if (displayListener != null) {
             displayListener.onCompleted(displayResult.getDrawable(), displayResult.getImageFrom(), displayResult.getImageAttrs());
@@ -279,7 +281,8 @@ public class DisplayRequest extends LoadRequest {
 
     @Override
     protected void runErrorInMainThread() {
-        if (isCanceled()) {
+        SketchView sketchView = requestAndViewBinder.getView();
+        if (isCanceled() || sketchView == null) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
                 SLog.d(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
             }
@@ -288,9 +291,13 @@ public class DisplayRequest extends LoadRequest {
 
         setStatus(Status.FAILED);
 
-        if (displayOptions.getErrorImage() != null) {
-            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(getContext(), requestAndViewBinder.getView(), displayOptions);
-            displayOptions.getDisplayer().display(requestAndViewBinder.getView(), errorDrawable);
+        ImageDisplayer displayer = displayOptions.getDisplayer();
+        StateImage errorImage = displayOptions.getErrorImage();
+        if (displayer != null && errorImage != null) {
+            Drawable errorDrawable = errorImage.getDrawable(getContext(), sketchView, displayOptions);
+            if (errorDrawable != null) {
+                displayer.display(sketchView, errorDrawable);
+            }
         }
 
         if (displayListener != null) {
