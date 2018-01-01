@@ -88,7 +88,9 @@ public abstract class BaseRequest {
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        if (this.status != Status.CANCELED) {
+            this.status = status;
+        }
     }
 
     public ErrorCause getErrorCause() {
