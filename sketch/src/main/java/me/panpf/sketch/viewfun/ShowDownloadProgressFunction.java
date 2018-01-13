@@ -21,7 +21,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -83,9 +82,7 @@ public class ShowDownloadProgressFunction extends ViewFunction {
                 canvas.clipPath(maskPath);
             } catch (UnsupportedOperationException e) {
                 SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                }
+                view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 e.printStackTrace();
             }
         }

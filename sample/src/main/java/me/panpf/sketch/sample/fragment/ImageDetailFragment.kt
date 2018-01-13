@@ -16,25 +16,23 @@
 
 package me.panpf.sketch.sample.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter
-import me.panpf.sketch.util.SketchUtils
-import me.panpf.sketch.zoom.ImageZoomer
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.adapter.itemfactory.ImageFragmentItemFactory
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
 import me.panpf.sketch.sample.widget.ZoomOutPageTransformer
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.zoom.ImageZoomer
+import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -77,11 +75,7 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
         viewPagerPlayer = ViewPagerPlayer(viewPager)
         PageNumberSetter(currentItemTextView, viewPager)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            viewPager.setPageTransformer(false, ZoomOutPageTransformer())
-        } else {
-            viewPager.pageMargin = SketchUtils.dp2px(activity, 8)
-        }
+        viewPager.setPageTransformer(false, ZoomOutPageTransformer())
 
         if (imageList != null) {
             val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList)

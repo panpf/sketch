@@ -87,10 +87,6 @@ public class BlockDisplayer {
 
         this.matrix = new Matrix();
         this.drawBlockPaint = new Paint();
-
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            SLog.e(NAME, "BlockDisplayer minimum support to GINGERBREAD_MR1");
-        }
     }
 
 
@@ -98,10 +94,6 @@ public class BlockDisplayer {
 
 
     public void reset() {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            return;
-        }
-
         ImageView imageView = imageZoomer.getImageView();
 
         Drawable previewDrawable = SketchUtils.getLastDrawable(imageZoomer.getImageView().getDrawable());
@@ -115,7 +107,6 @@ public class BlockDisplayer {
             final int imageHeight = sketchDrawable.getOriginHeight();
 
             drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight;
-            drawableQualified &= SketchUtils.sdkSupportBitmapRegionDecoder();
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
@@ -152,10 +143,6 @@ public class BlockDisplayer {
      * 回收资源，回收后需要重新执行 {@link #reset()} 才能使用
      */
     public void recycle(String why) {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            return;
-        }
-
         running = false;
         clean(why);
         blockExecutor.recycle(why);
@@ -167,10 +154,6 @@ public class BlockDisplayer {
      * 清理资源，不影响继续使用
      */
     private void clean(String why) {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            return;
-        }
-
         blockExecutor.cleanDecode(why);
 
         matrix.reset();
@@ -187,10 +170,6 @@ public class BlockDisplayer {
 
 
     public void onDraw(Canvas canvas) {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder() || !isReady()) {
-            return;
-        }
-
         if (blockManager.blockList != null && blockManager.blockList.size() > 0) {
             int saveCount = canvas.save();
             canvas.concat(matrix);
@@ -221,10 +200,6 @@ public class BlockDisplayer {
     }
 
     public void onMatrixChanged() {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            return;
-        }
-
         if (!isReady() && !isInitializing()) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
                 SLog.d(NAME, "BlockDisplayer not available. onMatrixChanged. %s", imageUri);
@@ -319,10 +294,6 @@ public class BlockDisplayer {
      */
     @SuppressWarnings("unused")
     public void setPause(boolean pause) {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            return;
-        }
-
         if (pause == paused) {
             return;
         }

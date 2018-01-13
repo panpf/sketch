@@ -38,11 +38,11 @@ public class MemorySizeCalculator {
 
         if (targetMemoryCacheSize + targetPoolSize <= maxSize) {
             memoryCacheSize = targetMemoryCacheSize;
-            bitmapPoolSize = BitmapPoolUtils.sdkSupportInBitmap() ? targetPoolSize : 0;
+            bitmapPoolSize = targetPoolSize;
         } else {
             int part = Math.round((float) maxSize / (BITMAP_POOL_TARGET_SCREENS + MEMORY_CACHE_TARGET_SCREENS));
             memoryCacheSize = part * MEMORY_CACHE_TARGET_SCREENS;
-            bitmapPoolSize = BitmapPoolUtils.sdkSupportInBitmap() ? part * BITMAP_POOL_TARGET_SCREENS : 0;
+            bitmapPoolSize = part * BITMAP_POOL_TARGET_SCREENS;
         }
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
@@ -66,8 +66,7 @@ public class MemorySizeCalculator {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private static boolean isLowMemoryDevice(ActivityManager activityManager) {
         final int sdkInt = Build.VERSION.SDK_INT;
-        return sdkInt < Build.VERSION_CODES.HONEYCOMB
-                || (sdkInt >= Build.VERSION_CODES.KITKAT && activityManager.isLowRamDevice());
+        return sdkInt >= Build.VERSION_CODES.KITKAT && activityManager.isLowRamDevice();
     }
 
     /**

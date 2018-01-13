@@ -30,17 +30,13 @@ import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.decode.ImageSizeCalculator;
 import me.panpf.sketch.util.SketchUtils;
-import me.panpf.sketch.zoom.gestures.ActionListener;
-import me.panpf.sketch.zoom.gestures.OnScaleDragGestureListener;
-import me.panpf.sketch.zoom.gestures.ScaleDragGestureDetector;
-import me.panpf.sketch.zoom.gestures.ScaleDragGestureDetectorCompat;
 
 import static me.panpf.sketch.zoom.ImageZoomer.NAME;
 
 /**
  * 缩放和拖拽处理，控制 Matrix 变化，更新 Matrix
  */
-class ScaleDragHelper implements OnScaleDragGestureListener, ActionListener {
+class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureListener, ScaleDragGestureDetector.ActionListener {
 
     private static final int EDGE_NONE = -1;
     private static final int EDGE_START = 0;
@@ -67,7 +63,8 @@ class ScaleDragHelper implements OnScaleDragGestureListener, ActionListener {
     public ScaleDragHelper(Context context, ImageZoomer imageZoomer) {
         Context appContext = context.getApplicationContext();
         this.imageZoomer = imageZoomer;
-        this.scaleDragGestureDetector = ScaleDragGestureDetectorCompat.newInstance(appContext, this);
+        this.scaleDragGestureDetector = new ScaleDragGestureDetector(appContext);
+        this.scaleDragGestureDetector.setOnGestureListener(this);
         this.scaleDragGestureDetector.setActionListener(this);
     }
 

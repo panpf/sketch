@@ -18,7 +18,6 @@ package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.support.annotation.NonNull;
 
 import java.util.LinkedList;
@@ -151,8 +150,7 @@ public class ImageDecoder {
 
         // Set whether priority is given to quality or speed
         BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
-                && request.getOptions().isInPreferQualityOverSpeed()) {
+        if (request.getOptions().isInPreferQualityOverSpeed()) {
             decodeOptions.inPreferQualityOverSpeed = true;
         }
 

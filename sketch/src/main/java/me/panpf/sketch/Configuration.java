@@ -16,11 +16,9 @@
 
 package me.panpf.sketch;
 
-import android.annotation.TargetApi;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.support.annotation.NonNull;
 
 import me.panpf.sketch.cache.BitmapPool;
@@ -114,9 +112,7 @@ public final class Configuration {
         this.requestFactory = new RequestFactory();
         this.errorTracker = new ErrorTracker(context);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(context));
-        }
+        context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(context));
     }
 
     /**
@@ -782,7 +778,6 @@ public final class Configuration {
                 "\n" + "mobileDataPauseDownload：" + isMobileDataPauseDownloadEnabled();
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private static class MemoryChangedListener implements ComponentCallbacks2 {
         private Context context;
 

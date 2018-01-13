@@ -64,7 +64,7 @@ Please refer to the details [URI type and usage guide][uri]
 
 #### Import Sketch
 
-1.Add dependencies to the dependencies node of the app's build.gradle file
+Add dependencies to the dependencies node of the app's build.gradle file
 
 ```groovy
 compile 'me.panpf:sketch:$sketch_version'
@@ -81,31 +81,6 @@ compile 'me.panpf:sketch-gif:$sketch_gif_version'
 Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_image]][sketch_gif_version_link] `(Do not "v")`
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
-
-2.If need compatible with Android 3.2 and below, then need to call release cache method in Application (Android 4.0 above can be directly through the Context registration and callback)
-
-```java
-public class MyApplication extends Application {    
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(getBaseContext()).onTrimMemory(level);
-        }
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(getBaseContext()).onLowMemory();
-        }
-    }
-}
-```
 
 #### Use SketchImageView Display Image
 

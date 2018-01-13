@@ -17,12 +17,10 @@
 package me.panpf.sketch.decode;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -60,10 +58,6 @@ public class ImageDecodeUtils {
 
     @SuppressLint("ObsoleteSdkInt")
     public static Bitmap decodeRegionBitmap(DataSource dataSource, Rect srcRect, BitmapFactory.Options options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return null;
-        }
-
         InputStream inputStream;
         try {
             inputStream = dataSource.getInputStream();
@@ -129,16 +123,9 @@ public class ImageDecodeUtils {
     /**
      * 通过异常类型以及 message 确定是不是由 inBitmap 导致的解码失败
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static boolean isInBitmapDecodeError(Throwable throwable, BitmapFactory.Options options, boolean fromBitmapRegionDecoder) {
-        if (fromBitmapRegionDecoder) {
-            if (!BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
-                return false;
-            }
-        } else {
-            if (!BitmapPoolUtils.sdkSupportInBitmap()) {
-                return false;
-            }
+        if (fromBitmapRegionDecoder && !BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
+            return false;
         }
 
         if (!(throwable instanceof IllegalArgumentException)) {
@@ -156,18 +143,11 @@ public class ImageDecodeUtils {
     /**
      * 反馈 inBitmap 解码失败，并回收 inBitmap
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void recycleInBitmapOnDecodeError(ErrorTracker errorTracker, BitmapPool bitmapPool,
                                                     String imageUri, int imageWidth, int imageHeight, String imageMimeType,
                                                     Throwable throwable, BitmapFactory.Options decodeOptions, boolean fromBitmapRegionDecoder) {
-        if (fromBitmapRegionDecoder) {
-            if (!BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
-                return;
-            }
-        } else {
-            if (!BitmapPoolUtils.sdkSupportInBitmap()) {
-                return;
-            }
+        if (fromBitmapRegionDecoder && !BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
+            return;
         }
 
         errorTracker.onInBitmapDecodeError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, decodeOptions.inSampleSize, decodeOptions.inBitmap);
@@ -180,10 +160,6 @@ public class ImageDecodeUtils {
      * 通过异常类型以及 message 确定是不是由 srcRect 导致的解码失败
      */
     public static boolean isSrcRectDecodeError(Throwable throwable, int imageWidth, int imageHeight, Rect srcRect) {
-        if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            return false;
-        }
-
         if (!(throwable instanceof IllegalArgumentException)) {
             return false;
         }

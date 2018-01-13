@@ -16,7 +16,6 @@
 
 package me.panpf.sketch.http;
 
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -132,11 +131,6 @@ public class HurlStack implements HttpStack {
         connection.setConnectTimeout(connectTimeout);
         connection.setReadTimeout(readTimeout);
         connection.setDoInput(true);
-
-        // HTTP connection reuse which was buggy pre-froyo
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) {
-            connection.setRequestProperty("http.keepAlive", "false");
-        }
 
         if (userAgent != null) {
             connection.setRequestProperty("User-Agent", userAgent);

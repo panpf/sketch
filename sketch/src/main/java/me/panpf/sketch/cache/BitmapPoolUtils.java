@@ -31,13 +31,6 @@ public class BitmapPoolUtils {
     private static final String NAME = "BitmapPoolUtils";
 
     /**
-     * SDK版本是否支持inBitmap，适用于BitmapFactory
-     */
-    public static boolean sdkSupportInBitmap() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-    }
-
-    /**
      * SDK版本是否支持inBitmap，适用于BitmapRegionDecoder
      */
     public static boolean sdkSupportInBitmapForRegionDecoder() {
@@ -54,12 +47,7 @@ public class BitmapPoolUtils {
      * @param bitmapPool  BitmapPool 从这个池子里找可复用的Bitmap
      * @return true：找到了可复用的Bitmap
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static boolean setInBitmapFromPool(BitmapFactory.Options options, int outWidth, int outHeight, String outMimeType, BitmapPool bitmapPool) {
-        if (!sdkSupportInBitmap()) {
-            return false;
-        }
-
         if (outWidth == 0 || outHeight == 0) {
             SLog.e(NAME, "outWidth or ourHeight is 0");
             return false;
@@ -83,8 +71,7 @@ public class BitmapPoolUtils {
             int finalWidth = SketchUtils.ceil(outWidth, inSampleSize);
             int finalHeight = SketchUtils.ceil(outHeight, inSampleSize);
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize == 1
-                && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
+        } else if (inSampleSize == 1 && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
             inBitmap = bitmapPool.get(outWidth, outHeight, options.inPreferredConfig);
         }
 

@@ -391,17 +391,7 @@ public class SketchUtils {
      */
     @SuppressWarnings("WeakerAccess")
     @SuppressLint("LongLogTag")
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public static String[] getAllAvailableSdcardPath(Context context) {
-        // 获取所有的存储器的路径
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                return new String[]{Environment.getExternalStorageDirectory().getPath()};
-            } else {
-                return null;
-            }
-        }
-
         String[] paths;
         Method getVolumePathsMethod;
         try {
@@ -888,18 +878,10 @@ public class SketchUtils {
     }
 
     /**
-     * 根据API版本判断是否支持读取图片碎片
-     */
-    public static boolean sdkSupportBitmapRegionDecoder() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
-    }
-
-    /**
      * 根据图片格式型判断是否支持读取图片碎片
      */
     public static boolean formatSupportBitmapRegionDecoder(@Nullable ImageType imageType) {
-        return imageType != null && (imageType == ImageType.JPEG || imageType == ImageType.PNG ||
-                (imageType == ImageType.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
+        return imageType != null && (imageType == ImageType.JPEG || imageType == ImageType.PNG || imageType == ImageType.WEBP);
     }
 
     /**
@@ -1065,10 +1047,8 @@ public class SketchUtils {
             return 0;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return bitmap.getAllocationByteCount();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return bitmap.getByteCount();
         } else {
-            return bitmap.getRowBytes() * bitmap.getHeight();
+            return bitmap.getByteCount();
         }
     }
 
@@ -1261,11 +1241,6 @@ public class SketchUtils {
     }
 
     public static int getPointerIndex(int action) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            return (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-        } else {
-            //noinspection deprecation
-            return (action & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
-        }
+        return (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
     }
 }

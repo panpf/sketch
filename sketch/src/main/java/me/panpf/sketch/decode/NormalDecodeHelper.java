@@ -58,7 +58,7 @@ public class NormalDecodeHelper extends DecodeHelper {
         }
 
         // Set inBitmap from bitmap pool
-        if (BitmapPoolUtils.sdkSupportInBitmap() && !request.getOptions().isBitmapPoolDisabled()) {
+        if (!request.getOptions().isBitmapPoolDisabled()) {
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             BitmapPoolUtils.setInBitmapFromPool(decodeOptions,
                     boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmapPool);

@@ -17,12 +17,8 @@
 package me.panpf.sketch.sample
 
 import android.app.Application
-import android.os.Build
-
 import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
-
-import me.panpf.sketch.Sketch
 
 class SampleApplication : Application() {
 
@@ -32,22 +28,6 @@ class SampleApplication : Application() {
 
         if (!LeakCanary.isInAnalyzerProcess(this)) {
             LeakCanary.install(this)
-        }
-    }
-
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(baseContext).onTrimMemory(level)
-        }
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(baseContext).onLowMemory()
         }
     }
 }

@@ -105,7 +105,7 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback {
 
     @Override
     public void jumpToCurrentState() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && wrappedDrawable != null) {
+        if (wrappedDrawable != null) {
             wrappedDrawable.jumpToCurrentState();
         }
     }

@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,14 +16,10 @@ import me.panpf.sketch.Sketch
 import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageDecodeUtils
+import me.panpf.sketch.sample.*
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
-import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 import java.io.IOException
 
 @BindContentView(R.layout.fragment_in_bitmap_test)
@@ -120,10 +115,8 @@ class InBitmapTestFragment : BaseFragment() {
     private fun testSizeSame() {
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
-                if (BitmapPoolUtils.sdkSupportInBitmap()) {
-                    options.inBitmap = Bitmap.createBitmap(options.outWidth, options.outHeight, options.inPreferredConfig)
-                    options.inMutable = true
-                }
+                options.inBitmap = Bitmap.createBitmap(options.outWidth, options.outHeight, options.inPreferredConfig)
+                options.inMutable = true
                 super.configOptions(options)
             }
         }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
@@ -132,10 +125,8 @@ class InBitmapTestFragment : BaseFragment() {
     private fun testLargeSize() {
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
-                if (BitmapPoolUtils.sdkSupportInBitmap()) {
-                    options.inBitmap = Bitmap.createBitmap(options.outWidth + 10, options.outHeight + 5, options.inPreferredConfig)
-                    options.inMutable = true
-                }
+                options.inBitmap = Bitmap.createBitmap(options.outWidth + 10, options.outHeight + 5, options.inPreferredConfig)
+                options.inMutable = true
                 super.configOptions(options)
             }
         }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
@@ -144,10 +135,8 @@ class InBitmapTestFragment : BaseFragment() {
     private fun testSizeNoSame() {
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
-                if (BitmapPoolUtils.sdkSupportInBitmap()) {
-                    options.inBitmap = Bitmap.createBitmap(options.outHeight, options.outWidth, options.inPreferredConfig)
-                    options.inMutable = true
-                }
+                options.inBitmap = Bitmap.createBitmap(options.outHeight, options.outWidth, options.inPreferredConfig)
+                options.inMutable = true
                 super.configOptions(options)
             }
         }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
@@ -156,13 +145,11 @@ class InBitmapTestFragment : BaseFragment() {
     private fun inSampleSize() {
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
-                if (BitmapPoolUtils.sdkSupportInBitmap()) {
-                    options.inSampleSize = 2
-                    val finalWidth = SketchUtils.ceil(options.outWidth, options.inSampleSize.toFloat())
-                    val finalHeight = SketchUtils.ceil(options.outHeight, options.inSampleSize.toFloat())
-                    options.inBitmap = Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)
-                    options.inMutable = true
-                }
+                options.inSampleSize = 2
+                val finalWidth = SketchUtils.ceil(options.outWidth, options.inSampleSize.toFloat())
+                val finalHeight = SketchUtils.ceil(options.outHeight, options.inSampleSize.toFloat())
+                options.inBitmap = Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)
+                options.inMutable = true
                 super.configOptions(options)
             }
         }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
@@ -201,17 +188,15 @@ class InBitmapTestFragment : BaseFragment() {
 
             builder.append("\n").append("inSampleSize: ").append(options.inSampleSize)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                if (options.inBitmap != null) {
-                    builder.append("\n")
-                            .append("inBitmap: ")
-                            .append(Integer.toHexString(options.inBitmap.hashCode()))
-                            .append(", ").append(options.inBitmap.width).append("x").append(options.inBitmap.height)
-                            .append(", ").append(options.inBitmap.isMutable)
-                            .append(", ").append(SketchUtils.getByteCount(options.inBitmap))
-                } else {
-                    builder.append("\n").append("inBitmap: ").append("null")
-                }
+            if (options.inBitmap != null) {
+                builder.append("\n")
+                        .append("inBitmap: ")
+                        .append(Integer.toHexString(options.inBitmap.hashCode()))
+                        .append(", ").append(options.inBitmap.width).append("x").append(options.inBitmap.height)
+                        .append(", ").append(options.inBitmap.isMutable)
+                        .append(", ").append(SketchUtils.getByteCount(options.inBitmap))
+            } else {
+                builder.append("\n").append("inBitmap: ").append("null")
             }
 
             var newBitmap: Bitmap? = null

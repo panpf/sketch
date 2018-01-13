@@ -19,7 +19,6 @@ package me.panpf.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -50,9 +49,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
     @Override
     public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
         LoadOptions loadOptions = request.getOptions();
-        if (!loadOptions.isThumbnailMode()
-                || !SketchUtils.sdkSupportBitmapRegionDecoder()
-                || !SketchUtils.formatSupportBitmapRegionDecoder(imageType)) {
+        if (!loadOptions.isThumbnailMode() || !SketchUtils.formatSupportBitmapRegionDecoder(imageType)) {
             return false;
         }
 
@@ -77,8 +74,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         orientationCorrector.rotateSize(boundOptions, exifOrientation);
 
         // 缩略图模式强制质量优先
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
-                && !decodeOptions.inPreferQualityOverSpeed) {
+        if (!decodeOptions.inPreferQualityOverSpeed) {
             decodeOptions.inPreferQualityOverSpeed = true;
         }
 

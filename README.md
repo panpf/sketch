@@ -64,7 +64,7 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 
 #### 导入 Sketch
 
-1.在 app 的 build.gradle 文件的 dependencies 节点中加入依赖
+在 app 的 build.gradle 文件的 dependencies 节点中加入依赖
 
 ```groovy
 compile 'me.panpf:sketch:$sketch_version'
@@ -81,31 +81,6 @@ compile 'me.panpf:sketch-gif:$sketch_gif_version'
 请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link] `(不要"v")`
 
 `Android Studio 会自动合并 AAR 中所包含的权限和混淆配置`
-
-2.如果需要兼容 Android 3.2 及以下的版本，那么需要在 Application 中调用释放缓存的方法（Android 4.0 以上能直接通过 Context 注册并回调）
-
-```java
-public class MyApplication extends Application {    
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(getBaseContext()).onTrimMemory(level);
-        }
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Sketch.with(getBaseContext()).onLowMemory();
-        }
-    }
-}
-```
 
 #### 使用 SketchImageView 显示图片
 

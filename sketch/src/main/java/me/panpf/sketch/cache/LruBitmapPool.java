@@ -1,7 +1,6 @@
 package me.panpf.sketch.cache;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -133,7 +132,6 @@ public class LruBitmapPool implements BitmapPool {
         return true;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     @Override
     public synchronized Bitmap getDirty(int width, int height, @NonNull Bitmap.Config config) {
         if (closed) {
@@ -163,9 +161,7 @@ public class LruBitmapPool implements BitmapPool {
             hits++;
             currentSize -= strategy.getSize(result);
             tracker.remove(result);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                result.setHasAlpha(true);
-            }
+            result.setHasAlpha(true);
         }
         dump();
 

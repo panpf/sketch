@@ -23,7 +23,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -236,14 +235,6 @@ public class Sketch {
      */
     @Keep
     public void onTrimMemory(int level) {
-        // ICE_CREAM_SANDWICH以上版本已经自动注册了onTrimMemory监听，因此无需再在你的Application的onTrimMemory方法中调用此方法
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
-            if (!SketchUtils.invokeIn(stackTraceElements, Application.class, "onTrimMemory")) {
-                return;
-            }
-        }
-
         SLog.w(null, "Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
 
         configuration.getMemoryCache().trimMemory(level);
@@ -255,14 +246,6 @@ public class Sketch {
      */
     @Keep
     public void onLowMemory() {
-        // ICE_CREAM_SANDWICH以上版本已经自动注册了onLowMemory监听，因此无需再在你的Application的onLowMemory方法中调用此方法
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
-            if (!SketchUtils.invokeIn(stackTraceElements, Application.class, "onLowMemory")) {
-                return;
-            }
-        }
-
         SLog.w(null, "Memory is very low, clean memory cache and bitmap pool");
 
         configuration.getMemoryCache().clear();

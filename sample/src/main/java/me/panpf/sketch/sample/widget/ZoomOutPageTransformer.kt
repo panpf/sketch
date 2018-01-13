@@ -1,11 +1,8 @@
 package me.panpf.sketch.sample.widget
 
-import android.annotation.TargetApi
-import android.os.Build
 import android.support.v4.view.ViewPager
 import android.view.View
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class ZoomOutPageTransformer : ViewPager.PageTransformer {
 
     override fun transformPage(view: View, position: Float) {

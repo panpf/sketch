@@ -18,6 +18,7 @@ package me.panpf.sketch.zoom;
 
 import android.graphics.RectF;
 import android.widget.ImageView;
+import android.widget.OverScroller;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.SketchUtils;
@@ -26,12 +27,12 @@ class FlingRunner implements Runnable {
     private ImageZoomer imageZoomer;
     private ScaleDragHelper scaleDragHelper;
 
-    private ScrollerProxy scroller;
+    private OverScroller scroller;
     private int currentX;
     private int currentY;
 
     FlingRunner(ImageZoomer imageZoomer, ScaleDragHelper scaleDragHelper) {
-        this.scroller = ScrollerProxy.getScroller(imageZoomer.getImageView().getContext());
+        this.scroller = new OverScroller(imageZoomer.getImageView().getContext());
         this.imageZoomer = imageZoomer;
         this.scaleDragHelper = scaleDragHelper;
     }
@@ -128,9 +129,6 @@ class FlingRunner implements Runnable {
         if (scroller != null) {
             scroller.forceFinished(true);
         }
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView != null) {
-            imageView.removeCallbacks(this);
-        }
+        imageZoomer.getImageView().removeCallbacks(this);
     }
 }

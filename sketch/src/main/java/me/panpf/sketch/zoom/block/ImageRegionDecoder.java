@@ -16,14 +16,12 @@
 
 package me.panpf.sketch.zoom.block;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,12 +118,10 @@ public class ImageRegionDecoder {
         return exifOrientation;
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public boolean isReady() {
         return regionDecoder != null && !regionDecoder.isRecycled();
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public void recycle() {
         if (isReady()) {
             regionDecoder.recycle();
@@ -133,7 +129,6 @@ public class ImageRegionDecoder {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
         if (isReady()) {
             return regionDecoder.decodeRegion(srcRect, options);
