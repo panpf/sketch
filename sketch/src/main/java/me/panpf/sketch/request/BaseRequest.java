@@ -88,7 +88,7 @@ public abstract class BaseRequest {
     }
 
     public void setStatus(Status status) {
-        if (this.status != Status.CANCELED) {
+        if (!isFinished()) {
             this.status = status;
         }
     }
@@ -121,7 +121,7 @@ public abstract class BaseRequest {
     }
 
     public boolean isFinished() {
-        return status == null || status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
+        return status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
     }
 
     public boolean isCanceled() {

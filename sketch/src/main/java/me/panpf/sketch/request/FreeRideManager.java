@@ -95,11 +95,16 @@ public class FreeRideManager {
 
             String providerId = freeRideProvider.getDisplayFreeRideLog();
             for (DisplayFreeRide childFreeRide : freeRideSet) {
-                boolean success = childFreeRide.processDisplayFreeRide();
+                if (!childFreeRide.isCanceled()) {
+                    boolean success = childFreeRide.processDisplayFreeRide();
 
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "display. callback free ride. %s. %s  <-  %s",
-                            success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                        SLog.d(NAME, "display. callback free ride. %s. %s  <-  %s",
+                                success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
+                    }
+                } else {
+                    SLog.w(NAME, "display. callback free ride. %s. %s  <-  %s",
+                            "canceled", childFreeRide.getDisplayFreeRideLog(), providerId);
                 }
             }
             freeRideSet.clear();
@@ -193,11 +198,16 @@ public class FreeRideManager {
 
             String providerId = freeRideProvider.getDownloadFreeRideLog();
             for (DownloadFreeRide childFreeRide : freeRideSet) {
-                boolean success = childFreeRide.processDownloadFreeRide();
+                if (!childFreeRide.isCanceled()) {
+                    boolean success = childFreeRide.processDownloadFreeRide();
 
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "download. callback free ride. %s. %s  <-  %s",
-                            success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
+                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                        SLog.d(NAME, "download. callback free ride. %s. %s  <-  %s",
+                                success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
+                    }
+                } else {
+                    SLog.w(NAME, "download. callback free ride. %s. %s  <-  %s",
+                            "canceled", childFreeRide.getDownloadFreeRideLog(), providerId);
                 }
             }
             freeRideSet.clear();
@@ -245,6 +255,11 @@ public class FreeRideManager {
      */
     public interface DisplayFreeRide {
         /**
+         * 已取消
+         */
+        boolean isCanceled();
+
+        /**
          * 获取显示顺风车KEY
          */
         String getDisplayFreeRideKey();
@@ -281,6 +296,11 @@ public class FreeRideManager {
      * 下载顺风车
      */
     public interface DownloadFreeRide {
+        /**
+         * 已取消
+         */
+        boolean isCanceled();
+
         /**
          * 获取下载顺风车KEY
          */
