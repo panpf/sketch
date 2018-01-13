@@ -91,6 +91,8 @@ dependencies {
 
     implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+
+    implementation "com.google.android:flexbox:${FLEXBOX}"
 }
 
 repositories {

@@ -1,5 +1,6 @@
 package me.panpf.sketch.sample.adapter.itemfactory
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +9,15 @@ import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
+import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.widget.SampleImageView
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
 
-class UnsplashPhotosItemFactory(private val unsplashPhotosItemEventListener: UnsplashPhotosItemEventListener?) : AssemblyRecyclerItemFactory<UnsplashPhotosItemFactory.UnsplashPhotosItem>() {
+class UnsplashPhotosItemFactory(private val activity: Activity,
+                                private val unsplashPhotosItemEventListener: UnsplashPhotosItemEventListener?)
+    : AssemblyRecyclerItemFactory<UnsplashPhotosItemFactory.UnsplashPhotosItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is UnsplashImage
@@ -57,13 +62,19 @@ class UnsplashPhotosItemFactory(private val unsplashPhotosItemEventListener: Uns
 
             imageView.layoutParams?.let {
                 it.width = itemWidth
-                it.height = (itemWidth / (image.width / image.height.toFloat())).toInt()
+                if (!imageView.context.isPortraitOrientation()) {
+                    it.width += DeviceUtils.getWindowHeightSupplement(activity)
+                }
+                it.height = (it.width / (image.width / image.height.toFloat())).toInt()
                 imageView.layoutParams = it
             }
 
             rootViewGroup.layoutParams?.let {
                 it.width = itemWidth
-                it.height = (itemWidth / (image.width / image.height.toFloat())).toInt()
+                if (!imageView.context.isPortraitOrientation()) {
+                    it.width += DeviceUtils.getWindowHeightSupplement(activity)
+                }
+                it.height = (it.width / (image.width / image.height.toFloat())).toInt()
                 rootViewGroup.layoutParams = it
             }
 

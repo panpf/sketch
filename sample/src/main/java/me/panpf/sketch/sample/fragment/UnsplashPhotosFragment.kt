@@ -9,8 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -20,9 +18,11 @@ import me.panpf.sketch.sample.adapter.itemfactory.LoadMoreItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.UnsplashPhotosItemFactory
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
+import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.widget.HintView
-import me.panpf.sketch.sample.bindView
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
+import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -171,7 +171,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             }
 
             val adapter = AssemblyRecyclerAdapter(images)
-            adapter.addItemFactory(UnsplashPhotosItemFactory(fragment))
+            adapter.addItemFactory(UnsplashPhotosItemFactory(fragment.activity, fragment))
             adapter.setLoadMoreItem(LoadMoreItemFactory(fragment))
 
             fragment.recyclerView.adapter = adapter

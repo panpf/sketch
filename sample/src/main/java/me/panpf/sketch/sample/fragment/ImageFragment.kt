@@ -15,24 +15,18 @@ import android.widget.ImageView
 import android.widget.Toast
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.datasource.DataSource
-import me.panpf.sketch.display.FadeInImageDisplayer
 import me.panpf.sketch.decode.ImageAttrs
+import me.panpf.sketch.display.FadeInImageDisplayer
 import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.drawable.SketchGifDrawable
 import me.panpf.sketch.drawable.SketchRefBitmap
 import me.panpf.sketch.request.*
-import me.panpf.sketch.state.MemoryCacheStateImage
-import me.panpf.sketch.uri.FileUriModel
-import me.panpf.sketch.uri.GetDataSourceException
-import me.panpf.sketch.uri.UriModel
-import me.panpf.sketch.util.SketchUtils
-import me.panpf.sketch.zoom.ImageZoomer
-import me.panpf.sketch.zoom.Size
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.activity.PageBackgApplyCallback
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
@@ -40,7 +34,13 @@ import me.panpf.sketch.sample.util.SaveImageAsyncTask
 import me.panpf.sketch.sample.widget.HintView
 import me.panpf.sketch.sample.widget.MappingView
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.state.MemoryCacheStateImage
+import me.panpf.sketch.uri.FileUriModel
+import me.panpf.sketch.uri.GetDataSourceException
+import me.panpf.sketch.uri.UriModel
+import me.panpf.sketch.util.SketchUtils
+import me.panpf.sketch.zoom.ImageZoomer
+import me.panpf.sketch.zoom.Size
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.File
@@ -154,10 +154,17 @@ class ImageFragment : BaseFragment() {
 
         inner class ImageDisplayListener : DisplayListener {
             override fun onStarted() {
+                if (view == null) {
+                    return
+                }
                 hintView.loading(null)
             }
 
             override fun onCompleted(drawable: Drawable, imageFrom: ImageFrom, imageAttrs: ImageAttrs) {
+                if (view == null) {
+                    return
+                }
+
                 hintView.hidden()
 
                 setWindowBackgroundHelper.onDisplayCompleted()
@@ -165,10 +172,18 @@ class ImageFragment : BaseFragment() {
             }
 
             override fun onError(cause: ErrorCause) {
+                if (view == null) {
+                    return
+                }
+
                 hintView.hint(R.drawable.ic_error, "Image display failed", "Again", View.OnClickListener { imageView.displayImage(finalShowImageUrl) })
             }
 
             override fun onCanceled(cause: CancelCause) {
+                if (view == null) {
+                    return
+                }
+
                 @Suppress("NON_EXHAUSTIVE_WHEN")
                 when (cause) {
                     CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "Pause to download new image for saving traffic", "I do not care", View.OnClickListener {
@@ -190,6 +205,10 @@ class ImageFragment : BaseFragment() {
         inner class ImageDownloadProgressListener : DownloadProgressListener {
 
             override fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int) {
+                if (view == null) {
+                    return
+                }
+
                 hintView.setProgress(totalLength, completedLength)
             }
         }

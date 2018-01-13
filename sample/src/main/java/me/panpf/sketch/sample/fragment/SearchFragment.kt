@@ -8,15 +8,13 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
-import me.panpf.sketch.util.SketchUtils
+import com.google.android.flexbox.FlexboxItemDecoration
+import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -27,10 +25,12 @@ import me.panpf.sketch.sample.adapter.itemfactory.StaggeredImageItemFactory
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bean.BaiduImageSearchResult
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
-import me.panpf.sketch.sample.bindView
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
+import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -132,10 +132,9 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
         refreshLayout.setOnRefreshListener(this)
 
         recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view!!.context))
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        val padding = SketchUtils.dp2px(activity, 2)
-        recyclerView.setPadding(padding, padding, padding, padding)
-        recyclerView.clipToPadding = false
+
+        recyclerView.layoutManager = FlexboxLayoutManager(context)
+        recyclerView.addItemDecoration(FlexboxItemDecoration(context))
 
         if (adapter == null) {
             refreshLayout.post { onRefresh() }

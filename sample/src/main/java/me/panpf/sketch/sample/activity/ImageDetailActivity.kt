@@ -24,6 +24,7 @@ import android.view.MotionEvent
 import android.view.View
 import me.panpf.sketch.sample.*
 import me.panpf.sketch.sample.fragment.ImageDetailFragment
+import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.widget.SampleImageView
 
@@ -45,7 +46,12 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
         backgroundImageView.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels + DeviceUtils.getWindowHeightSupplement(this)
+            it.height = resources.displayMetrics.heightPixels
+            if (isPortraitOrientation()) {
+                it.height += DeviceUtils.getWindowHeightSupplement(this)
+            } else {
+                it.width += DeviceUtils.getWindowHeightSupplement(this)
+            }
             backgroundImageView.layoutParams = it
         }
 

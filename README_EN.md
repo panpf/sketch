@@ -5,7 +5,7 @@
 [![License][license_image]][license_link]
 [![Logs][logs_image]][logs_link]
 [![Version][sketch_version_image]][sketch_version_link]
-[![API][api_10_image]][api_10_link]
+[![API][min_api_image]][min_api_link]
 ![QQ Group][qq_group_image]
 
 [中文版本 README.md](README.md)
@@ -54,13 +54,11 @@ Please refer to the details [URI type and usage guide][uri]
 
 ### Supported Image Format
 
-|Image Format|Supported Version|
-|:---|:---|
-|jpeg|[![api_10_image]][api_10_link]|
-|png|[![api_10_image]][api_10_link]|
-|gif|[![api_10_image]][api_10_link]|
-|bmp|[![api_10_image]][api_10_link]|
-|webp|[![api_14_image]][api_14_link]|
+* jpeg
+* png
+* gif
+* bmp
+* webp
 
 ### Getting Started
 
@@ -204,10 +202,8 @@ More:
 [sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
 [sketch_gif_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
-[api_10_image]: https://img.shields.io/badge/API-10%2B-orange.svg
-[api_10_link]: https://android-arsenal.com/api?level=10
-[api_14_image]: https://img.shields.io/badge/API-14%2B-blue.svg
-[api_14_link]: https://android-arsenal.com/api?level=14
+[min_api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
+[min_api_link]: https://android-arsenal.com/api?level=14
 [email_image]: https://img.shields.io/badge/Email-sky@panpf.me-red.svg
 
 [sample_app_download_qrcode]: docs/sketch-sample.png

@@ -35,6 +35,8 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import me.panpf.sketch.SLog
+import me.panpf.sketch.Sketch
 import me.panpf.sketch.sample.*
 import me.panpf.sketch.sample.adapter.itemfactory.CheckMenuItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.InfoMenuItemFactory
@@ -44,16 +46,15 @@ import me.panpf.sketch.sample.bean.CheckMenu
 import me.panpf.sketch.sample.bean.InfoMenu
 import me.panpf.sketch.sample.event.CacheCleanEvent
 import me.panpf.sketch.sample.fragment.*
+import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.util.AnimationUtils
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.widget.SampleImageView
+import me.panpf.sketch.util.SketchUtils
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
 import me.xiaopan.psts.PagerSlidingTabStrip
-import me.panpf.sketch.SLog
-import me.panpf.sketch.Sketch
-import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import java.util.*
@@ -91,7 +92,12 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
         backgroundImageView.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels + DeviceUtils.getWindowHeightSupplement(this)
+            it.height = resources.displayMetrics.heightPixels
+            if (isPortraitOrientation()) {
+                it.height += DeviceUtils.getWindowHeightSupplement(this)
+            } else {
+                it.width += DeviceUtils.getWindowHeightSupplement(this)
+            }
             backgroundImageView.layoutParams = it
         }
 
@@ -100,7 +106,12 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
         menuBackgroundImageView.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels + DeviceUtils.getWindowHeightSupplement(this)
+            it.height = resources.displayMetrics.heightPixels
+            if (isPortraitOrientation()) {
+                it.height += DeviceUtils.getWindowHeightSupplement(this)
+            } else {
+                it.width += DeviceUtils.getWindowHeightSupplement(this)
+            }
             menuBackgroundImageView.layoutParams = it
         }
 
@@ -153,7 +164,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
     private fun initData() {
         val adapter = AssemblyRecyclerAdapter(makeMenuList())
         adapter.addItemFactory(MenuTitleItemFactory())
-        adapter.addItemFactory(PageMenuItemFactory(object : PageMenuItemFactory.OnClickItemListener{
+        adapter.addItemFactory(PageMenuItemFactory(object : PageMenuItemFactory.OnClickItemListener {
             override fun onClickItem(page: Page) {
                 switchPage(page)
             }

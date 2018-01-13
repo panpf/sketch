@@ -3,17 +3,17 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
-import me.panpf.sketch.util.SketchUtils
+import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.widget.SampleImageView
+import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
+import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
 
 class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyRecyclerItemFactory<StaggeredImageItemFactory.StaggeredImageItem>() {
-    private var itemWidth: Int = 0
 
     override fun isTarget(o: Any): Boolean {
         return o is BaiduImage
@@ -37,17 +37,18 @@ class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickList
             imageView.setOptions(ImageOptions.RECT)
 
             imageView.page = SampleImageView.Page.SEARCH_LIST
+
+            imageView.layoutParams?.let {
+                if (it is FlexboxLayoutManager.LayoutParams) {
+                    it.flexGrow = 1.0f
+                }
+            }
         }
 
         override fun onSetData(i: Int, image: BaiduImage) {
-            if (itemWidth == 0) {
-                val screenWidth = imageView.context.resources.displayMetrics.widthPixels
-                itemWidth = (screenWidth - SketchUtils.dp2px(imageView.context, 4) * 3) / 2
-            }
-
             imageView.layoutParams?.let {
-                it.width = itemWidth
-                it.height = (itemWidth / (image.width / image.height.toFloat())).toInt()
+                it.height = imageView.context.resources.displayMetrics.heightPixels / (if (imageView.context.isPortraitOrientation()) 5 else 2)
+                it.width = (it.height / (image.height / image.width.toFloat())).toInt()
                 imageView.layoutParams = it
             }
 

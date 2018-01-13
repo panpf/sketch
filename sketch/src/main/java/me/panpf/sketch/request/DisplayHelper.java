@@ -625,12 +625,12 @@ public class DisplayHelper {
             }
         }
 
-        // 如果没有设置 ScaleType 的话就从 ImageView 身上取
+        // 检查 ShapeSize 的 ScaleType
         if (shapeSize != null && shapeSize.getScaleType() == null && sketchView != null) {
             shapeSize.setScaleType(viewInfo.getScaleType());
         }
 
-        // 检查 Resize 的宽高都必须大于 0
+        // 检查 ShapeSize 的宽高都必须大于 0
         if (shapeSize != null && (shapeSize.getWidth() == 0 || shapeSize.getHeight() == 0)) {
             throw new IllegalArgumentException("ShapeSize width and height must be > 0");
         }
@@ -648,7 +648,7 @@ public class DisplayHelper {
             }
         }
 
-        // 如果没有设置 ScaleType 的话就从 ImageView 身上取
+        // 检查 Resize 的 ScaleType
         if (resize != null && resize.getScaleType() == null && sketchView != null) {
             resize.setScaleType(viewInfo.getScaleType());
         }

@@ -5,7 +5,7 @@
 [![License][license_image]][license_link]
 [![Logs][logs_image]][logs_link]
 [![Sketch Version][sketch_version_image]][sketch_version_link]
-[![API][api_10_image]][api_10_link]
+[![API][min_api_image]][min_api_link]
 ![QQ Group][qq_group_image]
 
 [English version of the README.md](README_EN.md)
@@ -54,13 +54,11 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 
 ### 支持的图片类型
 
-|Image Format|Supported Version|
-|:---|:---|
-|jpeg|[![api_10_image]][api_10_link]|
-|png|[![api_10_image]][api_10_link]|
-|gif|[![api_10_image]][api_10_link]|
-|bmp|[![api_10_image]][api_10_link]|
-|webp|[![api_14_image]][api_14_link]|
+* jpeg
+* png
+* gif
+* bmp
+* webp
 
 ### 开始使用
 
@@ -204,10 +202,8 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
 [sketch_gif_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
-[api_10_image]: https://img.shields.io/badge/API-10%2B-orange.svg
-[api_10_link]: https://android-arsenal.com/api?level=10
-[api_14_image]: https://img.shields.io/badge/API-14%2B-blue.svg
-[api_14_link]: https://android-arsenal.com/api?level=14
+[min_api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
+[min_api_link]: https://android-arsenal.com/api?level=14
 [email_image]: https://img.shields.io/badge/Email-sky@panpf.me-red.svg
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
