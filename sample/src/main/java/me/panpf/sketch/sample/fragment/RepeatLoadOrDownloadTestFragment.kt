@@ -1,16 +1,13 @@
 package me.panpf.sketch.sample.fragment
 
-import android.content.pm.ApplicationInfo
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
-import me.panpf.sketch.uri.ApkIconUriModel
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.sample.bindView
-import java.lang.ref.WeakReference
+import me.panpf.sketch.sample.widget.SampleImageView
+import me.panpf.sketch.uri.ApkIconUriModel
 
 @BindContentView(R.layout.fragment_repeat_load_or_download_test)
 class RepeatLoadOrDownloadTestFragment : BaseFragment() {
@@ -45,7 +42,15 @@ class RepeatLoadOrDownloadTestFragment : BaseFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadAppList()
+        val selfApkFile = context.applicationInfo.publicSourceDir
+        imageView1.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView2.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView3.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView4.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView5.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView6.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView7.displayImage(ApkIconUriModel.makeUri(selfApkFile))
+        imageView8.displayImage(ApkIconUriModel.makeUri(selfApkFile))
 
         imageView9.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg")
         imageView10.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg")
@@ -64,42 +69,5 @@ class RepeatLoadOrDownloadTestFragment : BaseFragment() {
         imageView36.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg")
         imageView37.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg")
         imageView38.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg")
-    }
-
-    private fun loadAppList() {
-        LoadAppTask(WeakReference(this)).execute(0)
-    }
-
-    private class LoadAppTask(private val fragmentWeakReference: WeakReference<RepeatLoadOrDownloadTestFragment>) : AsyncTask<Int, Int, String>() {
-
-        override fun doInBackground(vararg params: Int?): String? {
-            val fragment = fragmentWeakReference.get() ?: return null
-
-            val packageManager = fragment.context.packageManager
-            val packageInfoList = packageManager.getInstalledPackages(0)
-            packageInfoList
-                    .asSequence()
-                    .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM <= 0 }
-                    .forEach { return it.applicationInfo.sourceDir }
-
-            return null
-        }
-
-        override fun onPostExecute(apkPath: String?) {
-            val fragment = fragmentWeakReference.get() ?: return
-
-            if (apkPath == null) {
-                return
-            }
-
-            fragment.imageView1.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView2.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView3.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView4.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView5.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView6.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView7.displayImage(ApkIconUriModel.makeUri(apkPath))
-            fragment.imageView8.displayImage(ApkIconUriModel.makeUri(apkPath))
-        }
     }
 }
