@@ -208,6 +208,25 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 		this(GifInfoHandle.openUri(resolver, uri), null, null, true);
 	}
 
+	/**
+	 * Creates drawable from {@link InputSource}.
+	 *
+	 * @param inputSource                The {@link InputSource} concrete subclass used to construct {@link GifDrawable}.
+	 * @param oldDrawable                The old drawable that will be reused to save the memory. Can be null.
+	 * @param executor                   The executor for rendering tasks. Can be null.
+	 * @param isRenderingTriggeredOnDraw True if rendering of the next frame is scheduled after drawing current one, false otherwise.
+	 * @param options                    Options controlling various GIF parameters.
+	 * @throws IOException if input source is invalid.
+	 */
+	protected GifDrawable(@NonNull InputSource inputSource,
+	                      @Nullable GifDrawable oldDrawable,
+	                      @Nullable ScheduledThreadPoolExecutor executor,
+	                      boolean isRenderingTriggeredOnDraw,
+	                      @NonNull GifOptions options) throws IOException {
+
+		this(inputSource.createHandleWith(options), oldDrawable, executor, isRenderingTriggeredOnDraw);
+	}
+
 	GifDrawable(GifInfoHandle gifInfoHandle, final GifDrawable oldDrawable, ScheduledThreadPoolExecutor executor, boolean isRenderingTriggeredOnDraw) {
 		mIsRenderingTriggeredOnDraw = isRenderingTriggeredOnDraw;
 		mExecutor = executor != null ? executor : GifRenderingExecutor.getInstance();
@@ -230,9 +249,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 		} else {
 			mBuffer = oldBitmap;
 		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-			mBuffer.setHasAlpha(!gifInfoHandle.isOpaque());
-		}
+		mBuffer.setHasAlpha(!gifInfoHandle.isOpaque());
 		mSrcRect = new Rect(0, 0, mNativeInfoHandle.getWidth(), mNativeInfoHandle.getHeight());
 		mInvalidationHandler = new InvalidationHandler(this);
 		mRenderTask.doWork();
@@ -718,7 +735,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	 * @throws IllegalArgumentException if x, y exceed the drawable's bounds
 	 * @throws IllegalStateException    if drawable is recycled
 	 */
-	public int getPixel(int x, int y) {
+	public int getPixel(@IntRange(from = 0) int x, @IntRange(from = 0) int y) {
 		if (x >= mNativeInfoHandle.getWidth()) { //need to check explicitly because reused bitmap may be larger
 			throw new IllegalArgumentException("x must be < width");
 		}
@@ -826,9 +843,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	 */
 	public Bitmap getCurrentFrame() {
 		final Bitmap copy = mBuffer.copy(mBuffer.getConfig(), mBuffer.isMutable());
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-			copy.setHasAlpha(mBuffer.hasAlpha());
-		}
+		copy.setHasAlpha(mBuffer.hasAlpha());
 		return copy;
 	}
 
@@ -955,6 +970,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	 */
 	public void setCornerRadius(@FloatRange(from = 0) final float cornerRadius) {
 		mTransform = new CornerRadiusTransform(cornerRadius);
+		mTransform.onBoundsChange(mDstRect);
 	}
 
 	/**
@@ -975,6 +991,9 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	 */
 	public void setTransform(@Nullable Transform transform) {
 		mTransform = transform;
+		if (mTransform != null) {
+			mTransform.onBoundsChange(mDstRect);
+		}
 	}
 
 	/**

@@ -1,6 +1,6 @@
 集成 android-gif-drawable 后对其源码的修改
 
-版本：1.2.6 
+版本：1.2.10
 
 GifDrawable：
 * Bitmap mBuffer字段的访问范围由包级别改为protected

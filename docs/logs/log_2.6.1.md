@@ -4,3 +4,4 @@ bug:
 
 
 最低支持 API 升至 14
+升级 android-gif-drawable-1.2.10

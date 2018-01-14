@@ -21,7 +21,7 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 ### 支持的特性
 
 * `多种 URI 支持`. 支持 `http://`、`https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg`、 `/sdcard/sample.jpg`、`drawable://`、`data:image/`、`data:img/`、`android.resource://`、`apk.icon://`、`app.icon://` 等 URI，通过 [UriModel] 还可以扩展支持的 URI
-* `支持 gif 图片`. 集成了 [android-gif-drawable] 1.2.6 可以方便的显示 gif 图片
+* `支持 gif 图片`. 集成了 [android-gif-drawable] 1.2.10 可以方便的显示 gif 图片
 * `支持手势缩放`. 支持手势缩放功能，在 [PhotoView] 的基础上进行了优化，增加了滚动条，定位等功能
 * `支持分块显示超大图`. 支持分块显示超大图功能，从此再大的图片也不怕了
 * `支持三级缓存`. 通过 LruMemoryCache、LruDiskCache 复用图片，加快显示时间；通过 LruBitmapPool 复用 Bitmap，减少因 GC 而造成的卡顿

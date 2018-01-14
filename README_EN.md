@@ -21,7 +21,7 @@ Scan qrcode to download, or [Click me download][sample_app_download_link]
 ### Supported Features
 
 * `Multiple URL support`. Support `http://`、`https://`、`asset://`、`content://`、`file:///sdcard/sample.jpg`、 `/sdcard/sample.jpg`、`drawable://`、`data:image/`、`data:img/`、`android.resource://`、`apk.icon://`、`app.icon://` URI, The supported URIs can also be extended via [UriModel]
-* `Support gif`. Include [android-gif-drawable] 1.2.6 can be easily displayed gif pictures
+* `Support gif`. Include [android-gif-drawable] 1.2.10 can be easily displayed gif pictures
 * `Support gesture zoom`. Support gesture zoom function, optimized on [PhotoView] (https://github.com/chrisbanes/PhotoView), added scroll bar, positioning and other functions
 * `Support block display huge image`. Support block display huge image function, from then the huge image is not afraid
 * `Support level 3 cache`. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
