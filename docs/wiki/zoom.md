@@ -221,6 +221,6 @@ public boolean dispatchTouchEvent(MotionEvent ev) {
 [Picasso]: https://github.com/square/picasso
 [gesture-imageview]: https://github.com/jasonpolites/gesture-imageview
 [PhotoView]: https://github.com/chrisbanes/PhotoView
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/viewfun/zoom/ImageZoomer.java
+[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
 [ImageSizeCalculator]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageSizeCalculator.java
 [block_display.md]: block_display.md 
