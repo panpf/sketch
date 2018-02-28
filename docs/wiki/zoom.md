@@ -183,7 +183,7 @@ sketchImageView.getZoomer().setOnScaleChangeListener(OnScaleChangeListener)
 sketchImageView.getZoomer().addOnMatrixChangeListener(OnMatrixChangeListener)
 
 // 删除一个Matrix变化监听器
-imageZoomer.removeOnMatrixChangeListener(OnMatrixChangeListener)
+sketchImageView.getZoomer().removeOnMatrixChangeListener(OnMatrixChangeListener)
 
 // 单击ImageView监听器
 sketchImageView.getZoomer().setOnViewTapListener(OnViewTapListener);
