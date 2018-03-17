@@ -27,7 +27,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
 import java.lang.ref.WeakReference
@@ -42,7 +42,7 @@ class VideoListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, 
 
     var adapter: AssemblyRecyclerAdapter? = null
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         refreshLayout.setOnRefreshListener(this)
@@ -100,12 +100,10 @@ private class LoadVideoListTask constructor(fragment: VideoListFragment) : Async
     }
 
     override fun doInBackground(params: Array<Void>): List<VideoItem>? {
-        val fragment = fragmentWeakReference.get()
-        if (fragment == null || fragment.context == null) {
-            return null
-        }
+        val fragment = fragmentWeakReference.get() ?: return null
+        val context = fragment.context ?: return null
 
-        val cursor = fragment.context.contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        val cursor = context.contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(MediaStore.Video.Media.TITLE, MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE, MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATE_TAKEN, MediaStore.Video.Media.MIME_TYPE), null, null,
                 MediaStore.Video.Media.DATE_TAKEN + " DESC") ?: return null
 

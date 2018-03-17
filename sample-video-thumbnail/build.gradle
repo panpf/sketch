@@ -45,11 +45,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':sketch')
 
-    implementation "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
+    implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
     implementation "com.android.support.constraint:constraint-layout:${CONSTRAINT_LAYOUT_VERSION}"
 
-    implementation "me.xiaopan:assemblyadapter:${ASSEMBLY_ADAPTER_VERSION}"
+    implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
 
     implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
 }

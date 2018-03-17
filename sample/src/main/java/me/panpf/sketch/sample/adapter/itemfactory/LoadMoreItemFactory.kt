@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import me.xiaopan.assemblyadapter.AssemblyLoadMoreRecyclerItemFactory
-import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
+import me.panpf.adapter.AssemblyLoadMoreRecyclerItemFactory
+import me.panpf.adapter.OnRecyclerLoadMoreListener
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bindView
 

@@ -19,7 +19,7 @@ class RotateImageProcessorTestFragment : BaseFragment() {
 
     private var degrees = 45
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // 缩小图片，处理速度更快，更少的内存消耗

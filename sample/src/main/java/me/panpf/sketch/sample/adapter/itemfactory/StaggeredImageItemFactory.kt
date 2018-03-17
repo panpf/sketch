@@ -10,8 +10,8 @@ import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyRecyclerItem
+import me.panpf.adapter.AssemblyRecyclerItemFactory
 
 class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyRecyclerItemFactory<StaggeredImageItemFactory.StaggeredImageItem>() {
 

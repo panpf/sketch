@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyRecyclerItem
+import me.panpf.adapter.AssemblyRecyclerItemFactory
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.AppScanning
 import me.panpf.sketch.sample.bindView

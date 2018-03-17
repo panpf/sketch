@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
+import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.OnRecyclerLoadMoreListener
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -21,8 +23,6 @@ import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.widget.HintView
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,7 +49,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -81,6 +81,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
     }
 
     override fun onClickImage(position: Int, image: UnsplashImage, optionsKey: String) {
+        val activity = activity ?: return
         var finalOptionsKey: String? = optionsKey
         // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
         if (finalOptionsKey!!.contains("Resize")
@@ -150,6 +151,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
         override fun onFailure(call: Call<List<UnsplashImage>>, t: Throwable) {
             val fragment = reference.get() ?: return
+            val activity = fragment.activity ?: return
             if (!fragment.isViewCreated) {
                 return
             }
@@ -159,11 +161,12 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
                 fragment.refreshLayout.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
-                Toast.makeText(fragment.activity, HintView.getCauseByException(fragment.activity, t), Toast.LENGTH_LONG).show()
+                Toast.makeText(fragment.activity, HintView.getCauseByException(activity, t), Toast.LENGTH_LONG).show()
             }
         }
 
         private fun create(fragment: UnsplashPhotosFragment, response: Response<List<UnsplashImage>>) {
+            val activity = fragment.activity ?: return
             val images = response.body()
             if (images == null || images.isEmpty()) {
                 fragment.hintView.empty("No photos")
@@ -171,7 +174,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             }
 
             val adapter = AssemblyRecyclerAdapter(images)
-            adapter.addItemFactory(UnsplashPhotosItemFactory(fragment.activity, fragment))
+            adapter.addItemFactory(UnsplashPhotosItemFactory(activity, fragment))
             adapter.setLoadMoreItem(LoadMoreItemFactory(fragment))
 
             fragment.recyclerView.adapter = adapter

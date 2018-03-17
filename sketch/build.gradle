@@ -30,5 +30,5 @@ apply from: "../bintrayUpload.gradle"
 
 dependencies {
     compileOnly project(':sketch-gif')
-    implementation "com.android.support:support-annotations:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support:support-annotations:${SUPPORT_VERSION}"
 }

@@ -3,8 +3,8 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.TextView
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyRecyclerItem
+import me.panpf.adapter.AssemblyRecyclerItemFactory
 import me.panpf.sketch.uri.ApkIconUriModel
 import me.panpf.sketch.uri.AppIconUriModel
 import me.panpf.sketch.sample.ImageOptions

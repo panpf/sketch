@@ -15,7 +15,7 @@ import me.panpf.sketch.sample.bindView
 class ReflectionImageProcessorTestFragment : BaseFragment() {
     val imageView: SampleImageView by bindView(R.id.image_reflectionFragment)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // 缩小图片，处理速度更快，更少的内存消耗

@@ -39,8 +39,9 @@ class RepeatLoadOrDownloadTestFragment : BaseFragment() {
     val imageView37: SampleImageView by bindView(R.id.image_repeatLoadOrDownloadTest_37)
     val imageView38: SampleImageView by bindView(R.id.image_repeatLoadOrDownloadTest_38)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val context = context ?: return
 
         val selfApkFile = context.applicationInfo.publicSourceDir
         imageView1.displayImage(ApkIconUriModel.makeUri(selfApkFile))

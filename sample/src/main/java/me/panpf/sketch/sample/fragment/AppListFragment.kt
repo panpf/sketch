@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.View
-import me.xiaopan.assemblyadapter.FragmentArrayPagerAdapter
-import me.xiaopan.psts.PagerSlidingTabStrip
+import me.panpf.adapter.FragmentArrayPagerAdapter
+import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -43,7 +43,7 @@ class AppListFragment : BaseFragment() {
         super.onResume()
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (fragmentAdapter == null) {
             val fragments = arrayOfNulls<Fragment>(2)
@@ -56,6 +56,6 @@ class AppListFragment : BaseFragment() {
     }
 
     interface GetAppListTagStripListener {
-        fun onGetAppListTabStrip(): PagerSlidingTabStrip
+        fun onGetAppListTabStrip(): PagerIndicator
     }
 }

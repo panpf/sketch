@@ -69,6 +69,9 @@ class ImageFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val activity = activity ?: return
+
         setWindowBackgroundHelper.onCreate(activity)
 
         arguments?.let {
@@ -77,11 +80,11 @@ class ImageFragment : BaseFragment() {
             showTools = it.getBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
         }
 
-        val showHighDefinitionImage = AppConfig.getBoolean(context, AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
+        val showHighDefinitionImage = AppConfig.getBoolean(activity, AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
         finalShowImageUrl = if (showHighDefinitionImage) image.rawQualityUrl else image.normalQualityUrl
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         zoomHelper.onViewCreated()
@@ -126,6 +129,7 @@ class ImageFragment : BaseFragment() {
         }
 
         private fun initOptions() {
+            val activity = activity ?: return
             imageView.page = SampleImageView.Page.DETAIL
 
             val options = imageView.options
@@ -227,6 +231,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun onUserVisibleChanged() {
+            val activity = activity ?: return
             imageView.zoomer?.let {
                 if (AppConfig.getBoolean(activity, AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE)) {
                     it.blockDisplayer.setPause(!isVisibleToUser)  // 不可见的时候暂停超大图查看器，节省内存
@@ -237,6 +242,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun onReadModeConfigChanged() {
+            val activity = activity ?: return
             imageView.zoomer?.let {
                 it.isReadMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
             }
@@ -361,7 +367,7 @@ class ImageFragment : BaseFragment() {
 
                 menuItemList.add(MenuItem(
                         "Image Info",
-                        DialogInterface.OnClickListener { _, _ -> imageView.showInfo(activity) }
+                        DialogInterface.OnClickListener { _, _ -> activity?.let { it1 -> imageView.showInfo(it1) } }
                 ))
                 menuItemList.add(MenuItem(
                         "Zoom/Rotate/Block Display",
@@ -541,6 +547,8 @@ class ImageFragment : BaseFragment() {
         }
 
         fun getImageFile(imageUri: String?): File? {
+            val context = context ?: return null
+
             if (TextUtils.isEmpty(imageUri)) {
                 return null
             }
@@ -560,16 +568,16 @@ class ImageFragment : BaseFragment() {
                 return null
             }
 
-            try {
-                return dataSource.getFile(context.externalCacheDir, null)
+            return try {
+                dataSource.getFile(context.externalCacheDir, null)
             } catch (e: IOException) {
                 e.printStackTrace()
-                return null
+                null
             }
-
         }
 
         fun share() {
+            val activity = activity ?: return
             val drawable = imageView.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
@@ -597,6 +605,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun setWallpaper() {
+            val activity = activity ?: return
             val drawable = imageView.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
@@ -618,6 +627,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun save() {
+            val context = context ?: return
             val drawable = imageView.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {

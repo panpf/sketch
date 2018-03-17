@@ -12,8 +12,8 @@ import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyRecyclerItem
+import me.panpf.adapter.AssemblyRecyclerItemFactory
 
 class UnsplashPhotosItemFactory(private val activity: Activity,
                                 private val unsplashPhotosItemEventListener: UnsplashPhotosItemEventListener?)

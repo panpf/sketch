@@ -24,12 +24,8 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.util.SketchUtils
-import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.sketch.sample.*
 import me.panpf.sketch.sample.activity.ImageDetailActivity
 import me.panpf.sketch.sample.activity.PageBackgApplyCallback
 import me.panpf.sketch.sample.adapter.itemfactory.MyPhotoItemFactory
@@ -39,7 +35,7 @@ import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.lang.ref.WeakReference
@@ -67,7 +63,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         refreshLayout.setOnRefreshListener(this)
@@ -97,6 +93,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
     }
 
     override fun onClickImage(position: Int, optionsKey: String) {
+        val activity = activity ?: return
         var finalOptionsKey: String? = optionsKey
         // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
         if (finalOptionsKey!!.contains("Resize")
@@ -151,15 +148,16 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
 
         override fun doInBackground(params: Array<Void>): List<String>? {
             val fragment = fragmentWeakReference.get() ?: return null
+            val context = fragment.context ?: return null
 
-            var cursor = fragment.context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            var cursor = context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN), null, null,
                     MediaStore.Images.Media.DATE_TAKEN + " DESC")
 
-            val generator = ImageOrientationCorrectTestFileGenerator.getInstance(fragment.context)
+            val generator = ImageOrientationCorrectTestFileGenerator.getInstance(context)
             val testFilePaths = generator.filePaths
 
-            val allUris = AssetImage.getAll(fragment.context)
+            val allUris = AssetImage.getAll(context)
             val imageListSize = cursor?.count ?: 0 + allUris.size + testFilePaths.size
             val imagePathList = ArrayList<String>(imageListSize)
 

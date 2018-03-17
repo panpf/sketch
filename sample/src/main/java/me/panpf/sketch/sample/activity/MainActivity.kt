@@ -35,6 +35,8 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.SLog
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.sample.*
@@ -53,8 +55,6 @@ import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.util.SketchUtils
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.psts.PagerSlidingTabStrip
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import java.util.*
@@ -67,7 +67,7 @@ import java.util.*
 class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener, PageBackgApplyCallback {
 
     val contentView: View by bindView(R.id.layout_main_content)
-    val appListTabStrip: PagerSlidingTabStrip by bindView(R.id.tabStrip_main_appList)
+    val appListTabStrip: PagerIndicator by bindView(R.id.tabStrip_main_appList)
     val drawerLayout: DrawerLayout by bindView(R.id.drawer_main_content)
     val menuRecyclerView: RecyclerView by bindView(R.id.recycler_main_menu)
     val leftMenuView: ViewGroup by bindView(R.id.layout_main_leftMenu)
@@ -265,9 +265,9 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
         // 同步状态，这一步很重要，要不然初始
         toggleDrawable!!.syncState()
-        toggleDrawable!!.onDrawerSlide(null, 1.0f)
-        toggleDrawable!!.onDrawerSlide(null, 0.5f)
-        toggleDrawable!!.onDrawerSlide(null, 0.0f)
+        toggleDrawable!!.onDrawerSlide(leftMenuView, 1.0f)
+        toggleDrawable!!.onDrawerSlide(leftMenuView, 0.5f)
+        toggleDrawable!!.onDrawerSlide(leftMenuView, 0.0f)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -309,7 +309,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         }
     }
 
-    override fun onGetAppListTabStrip(): PagerSlidingTabStrip {
+    override fun onGetAppListTabStrip(): PagerIndicator {
         return appListTabStrip
     }
 
@@ -403,7 +403,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         }
     }
 
-    class TitleTabFactory(val titles: Array<String>, val context: Context) : PagerSlidingTabStrip.TabViewFactory {
+    class TitleTabFactory(val titles: Array<String>, val context: Context) : PagerIndicator.TabViewFactory {
 
         override fun addTabs(viewGroup: ViewGroup, i: Int) {
             titles.withIndex().forEach { (index, title) ->

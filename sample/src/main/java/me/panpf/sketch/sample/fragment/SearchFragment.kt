@@ -3,6 +3,7 @@ package me.panpf.sketch.sample.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.NonNull
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
@@ -29,8 +30,8 @@ import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener
+import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.OnRecyclerLoadMoreListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -94,6 +95,9 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
         searchView.queryHint = searchKeyword
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(s: String): Boolean {
+                val activity = activity ?: return false
+                val fragmentManager = fragmentManager ?: return false
+
                 var s = s
                 s = s.trim { it <= ' ' }
                 if ("" == s) {
@@ -126,12 +130,12 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(@NonNull view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         refreshLayout.setOnRefreshListener(this)
 
-        recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view!!.context))
+        recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         recyclerView.layoutManager = FlexboxLayoutManager(context)
         recyclerView.addItemDecoration(FlexboxItemDecoration(context))
@@ -176,6 +180,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
     }
 
     override fun onItemClick(position: Int, image: BaiduImage, loadingImageOptionsInfo: String) {
+        val activity = activity ?: return
         val imageList = adapter!!.dataList as List<BaiduImage>
         val urlList = imageList.map { Image(it.url!!, it.url!!) }
         ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", urlList), loadingImageOptionsInfo, position - adapter!!.headerItemCount)
@@ -220,6 +225,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
         override fun onFailure(call: Call<BaiduImageSearchResult>, t: Throwable) {
             val fragment = reference.get() ?: return
+            val activity = fragment.activity ?: return
             if (!fragment.isViewCreated) {
                 return
             }
@@ -231,7 +237,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
                 fragment.refreshLayout.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
-                Toast.makeText(fragment.activity, HintView.getCauseByException(fragment.activity, t), Toast.LENGTH_LONG).show()
+                Toast.makeText(fragment.activity, HintView.getCauseByException(activity, t), Toast.LENGTH_LONG).show()
             }
         }
 

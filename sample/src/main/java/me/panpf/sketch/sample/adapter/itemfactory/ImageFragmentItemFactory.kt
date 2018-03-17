@@ -3,7 +3,7 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.support.v4.app.Fragment
 
-import me.xiaopan.assemblyadapter.AssemblyFragmentItemFactory
+import me.panpf.adapter.AssemblyFragmentItemFactory
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.fragment.ImageFragment
 import me.panpf.sketch.sample.util.AppConfig

@@ -74,11 +74,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.android.support:appcompat-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_LIBRARY_VERSION}"
+    implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
+    implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
 
-    implementation "me.xiaopan:pagerslidingtabstrip:${PAGER_SLIDING_TAB_STRIP_VERSION}"
-    implementation "me.xiaopan:assemblyadapter:${ASSEMBLY_ADAPTER_VERSION}"
+    implementation "me.panpf:pager-indicator:${PAGER_INDICATOR}"
+    implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
 
     implementation project(':sketch')
     normalImplementation project(':sketch-gif')

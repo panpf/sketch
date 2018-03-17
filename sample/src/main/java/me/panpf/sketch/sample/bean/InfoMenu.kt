@@ -1,6 +1,6 @@
 package me.panpf.sketch.sample.bean
 
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.AssemblyRecyclerAdapter
 
 abstract class InfoMenu(val title: String) {
     open fun getInfo(): String? {

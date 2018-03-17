@@ -35,7 +35,7 @@ class ResizeImageProcessorTestFragment : BaseFragment() {
     private var scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
     private var currentCheckedButton: View? = null
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         imageView.options.displayer = TransitionImageDisplayer()

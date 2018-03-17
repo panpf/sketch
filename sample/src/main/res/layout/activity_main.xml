@@ -25,7 +25,7 @@
 
                 <include layout="@layout/include_toolbar" />
 
-                <me.xiaopan.psts.PagerSlidingTabStrip
+                <me.panpf.pagerid.PagerIndicator
                     android:id="@+id/tabStrip_main_appList"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"

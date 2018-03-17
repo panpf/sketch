@@ -6,12 +6,8 @@ import android.widget.SeekBar
 import android.widget.TextView
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.GaussianBlurImageProcessor
-import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.*
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_gaussian_blur)
 class GaussianBlurImageProcessorTestFragment : BaseFragment() {
@@ -21,7 +17,7 @@ class GaussianBlurImageProcessorTestFragment : BaseFragment() {
 
     private var progress = 15
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // 通过maxSize限制缩小读到内存的图片的尺寸，尺寸越小高斯模糊越快

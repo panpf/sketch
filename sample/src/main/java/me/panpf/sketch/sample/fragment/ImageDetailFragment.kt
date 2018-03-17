@@ -22,6 +22,7 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import me.panpf.adapter.AssemblyFragmentStatePagerAdapter
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -32,7 +33,6 @@ import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
 import me.panpf.sketch.sample.widget.ZoomOutPageTransformer
 import me.panpf.sketch.zoom.ImageZoomer
-import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -70,8 +70,10 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val context = context ?: return
 
         viewPagerPlayer = ViewPagerPlayer(viewPager)
         PageNumberSetter(currentItemTextView, viewPager)
@@ -79,7 +81,7 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
         if (imageList != null) {
             val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList)
-            pagerAdapter.addItemFactory(ImageFragmentItemFactory(activity, loadingImageOptionsKey))
+            pagerAdapter.addItemFactory(ImageFragmentItemFactory(context, loadingImageOptionsKey))
             viewPager.adapter = pagerAdapter
             viewPager.currentItem = position
             currentItemTextView.text = String.format("%d", position + 1)
@@ -118,7 +120,7 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
             Toast.makeText(activity, "Stop auto play", Toast.LENGTH_SHORT).show()
         } else {
-            activity.finish()
+            activity?.finish()
         }
     }
 

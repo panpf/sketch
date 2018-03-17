@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import me.panpf.sketch.Configuration
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
@@ -35,11 +34,7 @@ class InBitmapTestFragment : BaseFragment() {
     val lastView: View by bindView(R.id.view_inBitmapTestFragment_last)
     val nextView: View by bindView(R.id.view_inBitmapTestFragment_next)
 
-    internal var index = 0
-
-    val configuration: Configuration by lazy {
-        Sketch.with(activity).configuration
-    }
+    private var index = 0
 
     private var currentMode: View? = null
 
@@ -62,7 +57,7 @@ class InBitmapTestFragment : BaseFragment() {
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         lastView.setOnClickListener {
@@ -113,6 +108,7 @@ class InBitmapTestFragment : BaseFragment() {
     }
 
     private fun testSizeSame() {
+        val activity = activity ?: return
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
                 options.inBitmap = Bitmap.createBitmap(options.outWidth, options.outHeight, options.inPreferredConfig)
@@ -123,6 +119,7 @@ class InBitmapTestFragment : BaseFragment() {
     }
 
     private fun testLargeSize() {
+        val activity = activity ?: return
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
                 options.inBitmap = Bitmap.createBitmap(options.outWidth + 10, options.outHeight + 5, options.inPreferredConfig)
@@ -133,6 +130,7 @@ class InBitmapTestFragment : BaseFragment() {
     }
 
     private fun testSizeNoSame() {
+        val activity = activity ?: return
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
                 options.inBitmap = Bitmap.createBitmap(options.outHeight, options.outWidth, options.inPreferredConfig)
@@ -143,6 +141,7 @@ class InBitmapTestFragment : BaseFragment() {
     }
 
     private fun inSampleSize() {
+        val activity = activity ?: return
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
                 options.inSampleSize = 2
@@ -157,11 +156,7 @@ class InBitmapTestFragment : BaseFragment() {
 
     private open inner class TestTask(context: Context) : AsyncTask<String, Int, Bitmap?>() {
         protected var builder = StringBuilder()
-        private val context: Context
-
-        init {
-            this.context = context.applicationContext
-        }
+        private val context: Context = context.applicationContext
 
         override fun doInBackground(vararg params: String): Bitmap? {
             val imageUri = params[0]
@@ -206,8 +201,8 @@ class InBitmapTestFragment : BaseFragment() {
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
 
-                val errorTracker = configuration.errorTracker
-                val bitmapPool = configuration.bitmapPool
+                val errorTracker = Sketch.with(context).configuration.errorTracker
+                val bitmapPool = Sketch.with(context).configuration.bitmapPool
                 if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, false)) {
                     ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool,
                             imageUri, options.outWidth, options.outHeight, options.outMimeType, throwable, options, false)
@@ -241,7 +236,7 @@ class InBitmapTestFragment : BaseFragment() {
             imageView.setImageBitmap(bitmap)
             textView.text = builder.toString()
 
-            if (!BitmapPoolUtils.freeBitmapToPool(oldBitmap, configuration.bitmapPool)) {
+            if (!BitmapPoolUtils.freeBitmapToPool(oldBitmap, Sketch.with(context).configuration.bitmapPool)) {
                 Log.w("BitmapPoolTest", "recycle")
             }
         }

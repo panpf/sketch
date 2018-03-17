@@ -3,11 +3,7 @@ package me.panpf.sketch.sample.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
-import me.panpf.sketch.sample.BuildConfig
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.sample.*
 
 /**
  * 关于 Fragment
@@ -17,7 +13,7 @@ class AboutFragment : BaseFragment() {
     val versionTextView: TextView by bindView(R.id.text_about_versions)
     val typesTextView: TextView by bindView(R.id.text_about_types)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         versionTextView.text = getString(R.string.text_version, BuildConfig.VERSION_NAME)

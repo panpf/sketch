@@ -11,9 +11,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
-import me.xiaopan.assemblyadapter.FixedRecyclerItemInfo
-import me.panpf.sketch.util.SketchUtils
+import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.FixedRecyclerItemInfo
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -21,12 +20,13 @@ import me.panpf.sketch.sample.adapter.itemfactory.AppItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.AppScanningItemFactory
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.bean.AppScanning
+import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.FileScanner
 import me.panpf.sketch.sample.util.FileUtils
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.util.XpkInfo
 import me.panpf.sketch.sample.widget.HintView
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.util.SketchUtils
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
@@ -45,7 +45,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
     private var fileScanner: FileScanner? = null
     private var scanningItemInfo: FixedRecyclerItemInfo? = null
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         refreshLayout.isEnabled = false
@@ -71,7 +71,9 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
     }
 
     private fun loadAppList() {
-        LoadAppsTask(WeakReference(this)).execute("")
+        context?.let {
+            LoadAppsTask(WeakReference(this)).execute("")
+        }
     }
 
     override fun onClickApp(position: Int, appInfo: AppInfo) {
@@ -91,18 +93,18 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
     private class LoadAppsTask(internal var fragmentWeakReference: WeakReference<AppPackageListFragment>) : AsyncTask<String, Int, Array<String>>() {
 
         override fun onPreExecute() {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                fragment.fileScanner = FileScanner(MyFileChecker(fragment.context.applicationContext), MyScanListener(fragmentWeakReference))
-                fragment.fileScanner!!.setDirFilter(MyDirFilter())
+            val fragment = fragmentWeakReference.get() ?: return
+            val context = fragment.context?.applicationContext ?: return
 
-                val adapter = AssemblyRecyclerAdapter(ArrayList<Any>())
-                adapter.addItemFactory(AppItemFactory(fragment))
-                fragment.scanningItemInfo = adapter.addHeaderItem(AppScanningItemFactory(), AppScanning())
+            fragment.fileScanner = FileScanner(MyFileChecker(context), MyScanListener(fragmentWeakReference))
+            fragment.fileScanner!!.setDirFilter(MyDirFilter())
 
-                fragment.recyclerView.adapter = adapter
-                fragment.adapter = adapter
-            }
+            val adapter = AssemblyRecyclerAdapter(ArrayList<Any>())
+            adapter.addItemFactory(AppItemFactory(fragment))
+            fragment.scanningItemInfo = adapter.addHeaderItem(AppScanningItemFactory(), AppScanning())
+
+            fragment.recyclerView.adapter = adapter
+            fragment.adapter = adapter
         }
 
         override fun doInBackground(vararg params: String): Array<String>? {
@@ -245,7 +247,8 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
         override fun onFinished() {}
 
         private fun parseFromApk(context: Context, file: File): AppInfo? {
-            val packageInfo = context.packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES) ?: return null
+            val packageInfo = context.packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES)
+                    ?: return null
             packageInfo.applicationInfo.sourceDir = file.path
             packageInfo.applicationInfo.publicSourceDir = file.path
 

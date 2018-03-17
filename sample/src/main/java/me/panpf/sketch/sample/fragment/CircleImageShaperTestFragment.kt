@@ -6,13 +6,9 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import me.panpf.sketch.display.TransitionImageDisplayer
-import me.panpf.sketch.shaper.CircleImageShaper
-import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.*
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.shaper.CircleImageShaper
 
 @BindContentView(R.layout.fragment_circle_image_shaper)
 class CircleImageShaperTestFragment : BaseFragment() {
@@ -22,7 +18,7 @@ class CircleImageShaperTestFragment : BaseFragment() {
 
     private var strokeProgress = 5
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 

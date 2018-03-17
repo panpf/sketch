@@ -25,7 +25,7 @@ class RoundRectImageShaperTestFragment : BaseFragment() {
     private var radiusProgress = 20
     private var strokeProgress = 5
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         imageView.options.displayer = TransitionImageDisplayer()

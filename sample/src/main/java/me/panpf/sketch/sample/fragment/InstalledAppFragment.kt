@@ -7,16 +7,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.adapter.itemfactory.AppItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.AppListHeaderItemFactory
 import me.panpf.sketch.sample.bean.AppInfo
+import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
-import me.panpf.sketch.sample.bindView
 import net.sourceforge.pinyin4j.PinyinHelper
 import java.io.File
 import java.lang.ref.WeakReference
@@ -33,7 +33,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
 
     private val adapter: AssemblyRecyclerAdapter? = null
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView.layoutManager = LinearLayoutManager(view!!.context)
@@ -54,6 +54,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
     }
 
     override fun onClickApp(position: Int, appInfo: AppInfo) {
+        val context = context ?: return
         val intent = context.packageManager.getLaunchIntentForPackage(appInfo.packageName)
         try {
             startActivity(intent)
@@ -72,8 +73,9 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
 
         override fun doInBackground(vararg params: Int?): List<AppInfo>? {
             val fragment = fragmentWeakReference.get() ?: return null
+            val context = fragment.context ?: return null
 
-            val packageManager = fragment.context.packageManager
+            val packageManager = context.packageManager
             val packageInfoList = packageManager.getInstalledPackages(0)
             val appInfoList = ArrayList<AppInfo>(packageInfoList.size)
             for (packageInfo in packageInfoList) {

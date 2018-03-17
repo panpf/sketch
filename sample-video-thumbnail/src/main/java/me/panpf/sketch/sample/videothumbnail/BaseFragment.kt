@@ -8,12 +8,12 @@ import android.view.ViewGroup
 
 open class BaseFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val bindContentView = javaClass.getAnnotation(BindContentView::class.java)
-        if (bindContentView != null && bindContentView.value > 0) {
-            return inflater!!.inflate(bindContentView.value, container, false)
+        return if (bindContentView != null && bindContentView.value > 0) {
+            inflater.inflate(bindContentView.value, container, false)
         } else {
-            return super.onCreateView(inflater, container, savedInstanceState)
+            super.onCreateView(inflater, container, savedInstanceState)
         }
     }
 

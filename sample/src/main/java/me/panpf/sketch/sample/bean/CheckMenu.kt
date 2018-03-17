@@ -3,7 +3,7 @@ package me.panpf.sketch.sample.bean
 import android.content.Context
 import android.view.View
 
-import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.sample.util.AppConfig
 
 class CheckMenu(private val context: Context, var title: String, private val key: AppConfig.Key,

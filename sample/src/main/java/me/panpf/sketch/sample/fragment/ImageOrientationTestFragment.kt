@@ -30,7 +30,7 @@ class ImageOrientationTestFragment : BaseFragment() {
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         beforeImageView.options.isCorrectImageOrientationDisabled = true
@@ -40,7 +40,7 @@ class ImageOrientationTestFragment : BaseFragment() {
     }
 
     companion object {
-        private val PARAM_REQUIRED_STRING_FILE_PATH = "PARAM_REQUIRED_STRING_FILE_PATH"
+        private const val PARAM_REQUIRED_STRING_FILE_PATH = "PARAM_REQUIRED_STRING_FILE_PATH"
 
         fun build(filePath: String): ImageOrientationTestFragment {
             val bundle = Bundle()

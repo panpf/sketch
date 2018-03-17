@@ -1,6 +1,7 @@
 package me.panpf.sketch.sample
 
 import android.os.Bundle
+import android.support.annotation.NonNull
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +17,16 @@ open class BaseFragment : Fragment() {
         dataTransferHelper.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val bindContentView = javaClass.getAnnotation(BindContentView::class.java)
         return if (bindContentView != null && bindContentView.value > 0) {
-            inflater!!.inflate(bindContentView.value, container, false)
+            inflater.inflate(bindContentView.value, container, false)
         } else {
             super.onCreateView(inflater, container, savedInstanceState)
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(@NonNull view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isViewCreated = true
     }
@@ -63,9 +64,9 @@ open class BaseFragment : Fragment() {
         isViewCreated = false
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        dataTransferHelper.onSaveInstanceState(outState!!)
+        dataTransferHelper.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {

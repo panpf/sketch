@@ -158,7 +158,7 @@ object ImageOptions {
         protected abstract fun onCreateOptions(context: Context): DownloadOptions
     }
 
-    @IntDef(RECT.toLong(), CIRCULAR_STROKE.toLong(), WINDOW_BACKGROUND.toLong(), ROUND_RECT.toLong(), LIST_FULL.toLong())
+    @IntDef(RECT, CIRCULAR_STROKE, WINDOW_BACKGROUND, ROUND_RECT, LIST_FULL)
     @Retention(RetentionPolicy.SOURCE)
     annotation class Type
 }
