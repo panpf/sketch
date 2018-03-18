@@ -18,131 +18,75 @@ package me.panpf.sketch.sample.videothumbnail
 
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
-import java.lang.ref.WeakReference
-import java.util.*
 
 @BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, MyVideoItemFactory.MyVideoItemListener {
+class VideoListFragment : BaseFragment(), MyVideoItemFactory.MyVideoItemListener {
 
-    val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
-    val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    val hintView: TextView by bindView(R.id.hint_recyclerFragment)
+    private val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
+    private val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
+    private val hintView: TextView by bindView(R.id.hint_recyclerFragment)
 
-    var adapter: AssemblyRecyclerAdapter? = null
+    private val videoThumbViewModel: VideoThumbViewModel by bindViewModel(VideoThumbViewModel::class)
+
+    private val adapter: AssemblyRecyclerAdapter by lazy {
+        val adapter = AssemblyRecyclerAdapter(null as List<*>?)
+        adapter.addItemFactory(MyVideoItemFactory(this))
+        adapter
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        refreshLayout.setOnRefreshListener(this)
-
         recyclerView.layoutManager = LinearLayoutManager(activity)
+
         val padding = SketchUtils.dp2px(activity, 2)
         recyclerView.setPadding(padding, padding, padding, padding)
         recyclerView.clipToPadding = false
 
-        if (adapter != null) {
-            recyclerView.adapter = adapter
-            recyclerView.scheduleLayoutAnimation()
-        } else {
-            refreshLayout.post {
-                refreshLayout.isRefreshing = true
-                onRefresh()
-            }
-        }
-    }
+        recyclerView.adapter = adapter
 
-    override fun onRefresh() {
-        if (activity != null) {
-            LoadVideoListTask(this).execute()
+        videoThumbViewModel.videoList.observe(this, android.arch.lifecycle.Observer {
+            adapter.dataList = it
+            refreshLayout.isRefreshing = false
+
+            if (adapter.dataCount <= 0) {
+                hintView.text = "No videos"
+                hintView.visibility = View.VISIBLE
+            } else {
+                hintView.visibility = View.GONE
+            }
+        })
+
+        refreshLayout.setOnRefreshListener {
+            hintView.visibility = View.GONE
+            videoThumbViewModel.refreshVideoList()
         }
+
+        refreshLayout.isRefreshing = true
+        hintView.visibility = View.VISIBLE
+
+        // TODO 实现加载更多
     }
 
     override fun onClickVideo(position: Int, videoItem: VideoItem) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.fromFile(File(videoItem.path))
-        intent.type = videoItem.mimeType
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(Uri.fromFile(File(videoItem.path)), videoItem.mimeType)
+        }
 
         try {
             startActivity(intent)
         } catch (e: Throwable) {
             e.printStackTrace()
-
-            Toast.makeText(context, "Not found can play video app", Toast.LENGTH_LONG).show()
+            longToast("Not found can play video app")
         }
-    }
-}
-
-private class LoadVideoListTask constructor(fragment: VideoListFragment) : AsyncTask<Void, Int, List<VideoItem>>() {
-    private val fragmentWeakReference: WeakReference<VideoListFragment> = WeakReference(fragment)
-
-    override fun onPreExecute() {
-        super.onPreExecute()
-
-        val fragment = fragmentWeakReference.get()
-        if (fragment == null || fragment.context == null) {
-            return
-        }
-
-        fragment.hintView.visibility = View.GONE
-    }
-
-    override fun doInBackground(params: Array<Void>): List<VideoItem>? {
-        val fragment = fragmentWeakReference.get() ?: return null
-        val context = fragment.context ?: return null
-
-        val cursor = context.contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Video.Media.TITLE, MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE, MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATE_TAKEN, MediaStore.Video.Media.MIME_TYPE), null, null,
-                MediaStore.Video.Media.DATE_TAKEN + " DESC") ?: return null
-
-        val imagePathList = ArrayList<VideoItem>(cursor.count)
-        while (cursor.moveToNext()) {
-            val video = VideoItem()
-            video.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE))
-            video.path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
-            video.mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE))
-            video.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
-            video.duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)).toLong()
-            video.date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_TAKEN))
-            imagePathList.add(video)
-        }
-        cursor.close()
-        return imagePathList
-    }
-
-    override fun onPostExecute(imageUriList: List<VideoItem>?) {
-        val fragment = fragmentWeakReference.get()
-        if (fragment == null || fragment.context == null) {
-            return
-        }
-
-        fragment.refreshLayout.isRefreshing = false
-
-        if (imageUriList == null || imageUriList.isEmpty()) {
-            fragment.hintView.text = "No videos"
-            fragment.hintView.visibility = View.VISIBLE
-            fragment.recyclerView.adapter = null
-            return
-        }
-
-        val adapter = AssemblyRecyclerAdapter(imageUriList)
-        adapter.addItemFactory(MyVideoItemFactory(fragment))
-
-        fragment.recyclerView.adapter = adapter
-        fragment.recyclerView.scheduleLayoutAnimation()
-
-        fragment.adapter = adapter
     }
 }

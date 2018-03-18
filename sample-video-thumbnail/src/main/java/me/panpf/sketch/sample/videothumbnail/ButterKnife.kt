@@ -1,3 +1,5 @@
+@file:Suppress("RedundantVisibilityModifier")
+
 package me.panpf.sketch.sample.videothumbnail
 
 import android.app.Activity

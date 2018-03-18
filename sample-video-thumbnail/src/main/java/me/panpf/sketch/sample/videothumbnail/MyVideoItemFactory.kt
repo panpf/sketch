@@ -24,11 +24,11 @@ class MyVideoItemFactory(private val listener: MyVideoItemListener?) : AssemblyR
     }
 
     inner class MyVideoItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<VideoItem>(itemLayoutId, parent) {
-        val iconImageView: SketchImageView by bindView(R.id.image_myVideoItem_icon)
-        val nameTextView: TextView by bindView(R.id.text_myVideoItem_name)
-        val sizeTextView: TextView by bindView(R.id.text_myVideoItem_size)
-        val dateTextView: TextView by bindView(R.id.text_myVideoItem_date)
-        val durationTextView: TextView by bindView(R.id.text_myVideoItem_duration)
+        private val iconImageView: SketchImageView by bindView(R.id.image_myVideoItem_icon)
+        private val nameTextView: TextView by bindView(R.id.text_myVideoItem_name)
+        private val sizeTextView: TextView by bindView(R.id.text_myVideoItem_size)
+        private val dateTextView: TextView by bindView(R.id.text_myVideoItem_date)
+        private val durationTextView: TextView by bindView(R.id.text_myVideoItem_duration)
 
         override fun onConfigViews(context: Context) {
             getItemView().setOnClickListener {

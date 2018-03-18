@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 Properties localProperties = openProperties("local.properties")
 String jksFileName = localProperties.getProperty("sample.storeFile")
@@ -48,6 +49,13 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
     implementation "com.android.support.constraint:constraint-layout:${CONSTRAINT_LAYOUT_VERSION}"
+
+    implementation "android.arch.lifecycle:extensions:${LIFECYCLE_VERSION}"
+    implementation "android.arch.lifecycle:viewmodel:${LIFECYCLE_VERSION}"
+    implementation "android.arch.lifecycle:livedata:${LIFECYCLE_VERSION}"
+    annotationProcessor "android.arch.lifecycle:compiler:${LIFECYCLE_VERSION}"
+
+    implementation "androidx.core:core-ktx:${XCORE_KTX_VERSION}"
 
     implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
 
