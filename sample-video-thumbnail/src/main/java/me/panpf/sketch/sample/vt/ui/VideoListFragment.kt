@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.panpf.sketch.sample.videothumbnail
+package me.panpf.sketch.sample.vt.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -25,11 +25,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.sketch.sample.vt.*
+import me.panpf.sketch.sample.vt.bean.VideoInfo
+import me.panpf.sketch.sample.vt.ext.bindView
+import me.panpf.sketch.sample.vt.ext.bindViewModel
+import me.panpf.sketch.sample.vt.ext.longToast
+import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
+import me.panpf.sketch.sample.vt.vm.VideoThumbViewModel
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
 
 @BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment(), MyVideoItemFactory.MyVideoItemListener {
+class VideoListFragment : BaseFragment(), VideoInfoItemFactory.MyVideoItemListener {
 
     private val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
     private val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
@@ -39,7 +46,7 @@ class VideoListFragment : BaseFragment(), MyVideoItemFactory.MyVideoItemListener
 
     private val adapter: AssemblyRecyclerAdapter by lazy {
         val adapter = AssemblyRecyclerAdapter(null as List<*>?)
-        adapter.addItemFactory(MyVideoItemFactory(this))
+        adapter.addItemFactory(VideoInfoItemFactory(this))
         adapter
     }
 
@@ -77,9 +84,9 @@ class VideoListFragment : BaseFragment(), MyVideoItemFactory.MyVideoItemListener
         // TODO 实现加载更多
     }
 
-    override fun onClickVideo(position: Int, videoItem: VideoItem) {
+    override fun onClickVideo(position: Int, videoInfo: VideoInfo) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(Uri.fromFile(File(videoItem.path)), videoItem.mimeType)
+            setDataAndType(Uri.fromFile(File(videoInfo.path)), videoInfo.mimeType)
         }
 
         try {

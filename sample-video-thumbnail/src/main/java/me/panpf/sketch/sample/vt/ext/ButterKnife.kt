@@ -1,6 +1,6 @@
-@file:Suppress("RedundantVisibilityModifier")
+@file:Suppress("RedundantVisibilityModifier", "unused")
 
-package me.panpf.sketch.sample.videothumbnail
+package me.panpf.sketch.sample.vt.ext
 
 import android.app.Activity
 import android.app.Dialog
@@ -103,15 +103,22 @@ private fun viewNotFound(id:Int, desc: KProperty<*>): Nothing =
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> required(id: Int, finder: T.(Int) -> View?)
-        = Lazy { t: T, desc -> t.finder(id) as V? ?: viewNotFound(id, desc) }
+        = Lazy { t: T, desc ->
+    t.finder(id) as V? ?: viewNotFound(id, desc)
+}
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> optional(id: Int, finder: T.(Int) -> View?)
-        = Lazy { t: T, desc ->  t.finder(id) as V? }
+        = Lazy { t: T, desc -> t.finder(id) as V? }
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> required(ids: IntArray, finder: T.(Int) -> View?)
-        = Lazy { t: T, desc -> ids.map { t.finder(it) as V? ?: viewNotFound(it, desc) } }
+        = Lazy { t: T, desc ->
+    ids.map {
+        t.finder(it) as V?
+                ?: viewNotFound(it, desc)
+    }
+}
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> optional(ids: IntArray, finder: T.(Int) -> View?)

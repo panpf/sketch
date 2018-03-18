@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.panpf.sketch.sample.videothumbnail">
+    package="me.panpf.sketch.sample.vt">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -9,7 +9,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,7 +18,7 @@
         </activity>
 
         <meta-data
-            android:name="me.panpf.sketch.sample.videothumbnail.SketchInitializer"
+            android:name="me.panpf.sketch.sample.vt.util.SketchInitializer"
             android:value="SKETCH_INITIALIZER" />
 
         <meta-data

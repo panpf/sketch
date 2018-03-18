@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample.videothumbnail
+package me.panpf.sketch.sample.vt
 
 import java.lang.annotation.Inherited
 

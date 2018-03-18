@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample.videothumbnail
+package me.panpf.sketch.sample.vt.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import me.panpf.sketch.sample.vt.R
 
 class MainActivity : AppCompatActivity() {
 
