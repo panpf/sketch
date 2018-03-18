@@ -1,17 +1,25 @@
 package me.panpf.sketch.sample.vt.repo
 
 import android.app.Application
+import android.arch.lifecycle.MutableLiveData
 import android.os.AsyncTask
 import android.provider.MediaStore
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 
 object DataRepository {
-    fun loadVideoList(application: Application, callback: Callback<List<VideoInfo>>) {
-        LoadVideoListTask(application, callback).execute()
+    fun loadVideoList(application: Application): MutableLiveData<List<VideoInfo>> {
+        val videoListLiveData = MutableLiveData<List<VideoInfo>>()
+        LoadVideoListTask(application, videoListLiveData).execute()
+        return videoListLiveData
+    }
+
+    fun refreshList(application: Application, videoListLiveData: MutableLiveData<List<VideoInfo>>) {
+        LoadVideoListTask(application, videoListLiveData).execute()
     }
 }
 
-private class LoadVideoListTask constructor(val application: Application, val callback: Callback<List<VideoInfo>>)
+private class LoadVideoListTask constructor(
+        val application: Application, val videoListLiveData: MutableLiveData<List<VideoInfo>>)
     : AsyncTask<Void, Int, List<VideoInfo>>() {
 
     override fun doInBackground(params: Array<Void>): List<VideoInfo>? {
@@ -37,11 +45,6 @@ private class LoadVideoListTask constructor(val application: Application, val ca
     }
 
     override fun onPostExecute(videoList: List<VideoInfo>?) {
-        callback.onCompleted(videoList)
+        videoListLiveData.postValue(videoList)
     }
-}
-
-
-interface Callback<in DATA> {
-    fun onCompleted(t: DATA?)
 }
