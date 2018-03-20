@@ -16,7 +16,6 @@
 
 package me.panpf.sketch.sample.vt.ui
 
-import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -34,6 +33,7 @@ import me.panpf.sketch.sample.vt.ext.bindView
 import me.panpf.sketch.sample.vt.ext.bindViewModel
 import me.panpf.sketch.sample.vt.ext.longToast
 import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
+import me.panpf.sketch.sample.vt.util.NonNullObserver
 import me.panpf.sketch.sample.vt.vm.VideoThumbViewModel
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
@@ -68,28 +68,26 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemList
             videoThumbViewModel.loadVideoList()
         }
 
-        videoThumbViewModel.videoList.observe(this, Observer {
-            it?.let {
-                when {
-                    it.isLoadingStatus() -> {
-                        refreshLayout.isRefreshing = true
-                        hintView.visibility = View.GONE
-                    }
-                    it.isErrorStatus() -> {
-                        hintView.text = it.message ?: "Error! No message"
-                        refreshLayout.isRefreshing = false
-                        hintView.visibility = View.VISIBLE
-                    }
-                    it.isEmptyData() -> {
-                        hintView.text = "No video"
-                        refreshLayout.isRefreshing = false
-                        hintView.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        adapter.dataList = it.getNoEmptyData()
-                        refreshLayout.isRefreshing = false
-                        hintView.visibility = View.GONE
-                    }
+        videoThumbViewModel.videoList.observeNonNull(this, NonNullObserver {
+            when {
+                it.isLoadingStatus() -> {
+                    refreshLayout.isRefreshing = true
+                    hintView.visibility = View.GONE
+                }
+                it.isErrorStatus() -> {
+                    hintView.text = it.message ?: "Error! No message"
+                    refreshLayout.isRefreshing = false
+                    hintView.visibility = View.VISIBLE
+                }
+                it.isEmptyData() -> {
+                    hintView.text = "No video"
+                    refreshLayout.isRefreshing = false
+                    hintView.visibility = View.VISIBLE
+                }
+                else -> {
+                    adapter.dataList = it.getNoEmptyData()
+                    refreshLayout.isRefreshing = false
+                    hintView.visibility = View.GONE
                 }
             }
         })
