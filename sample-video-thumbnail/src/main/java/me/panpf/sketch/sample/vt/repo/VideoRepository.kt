@@ -4,23 +4,23 @@ import android.app.Application
 import android.arch.lifecycle.MutableLiveData
 import android.os.AsyncTask
 import android.provider.MediaStore
+import me.panpf.sketch.sample.vt.bean.ApiResponse
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 
 object DataRepository {
-    fun loadVideoList(application: Application): MutableLiveData<List<VideoInfo>> {
-        val videoListLiveData = MutableLiveData<List<VideoInfo>>()
-        LoadVideoListTask(application, videoListLiveData).execute()
-        return videoListLiveData
-    }
-
-    fun refreshList(application: Application, videoListLiveData: MutableLiveData<List<VideoInfo>>) {
-        LoadVideoListTask(application, videoListLiveData).execute()
+    fun loadVideoList(application: Application, videoListResponse: MutableLiveData<ApiResponse<List<VideoInfo>>>) {
+        LoadVideoListTask(application, videoListResponse).execute()
     }
 }
 
 private class LoadVideoListTask constructor(
-        val application: Application, val videoListLiveData: MutableLiveData<List<VideoInfo>>)
+        val application: Application, val videoListResponse: MutableLiveData<ApiResponse<List<VideoInfo>>>)
     : AsyncTask<Void, Int, List<VideoInfo>>() {
+
+    override fun onPreExecute() {
+        super.onPreExecute()
+        videoListResponse.value = ApiResponse.loading(null)
+    }
 
     override fun doInBackground(params: Array<Void>): List<VideoInfo>? {
         val cursor = application.contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -45,6 +45,6 @@ private class LoadVideoListTask constructor(
     }
 
     override fun onPostExecute(videoList: List<VideoInfo>?) {
-        videoListLiveData.postValue(videoList)
+        videoListResponse.value = ApiResponse.success(videoList)
     }
 }

@@ -16,6 +16,7 @@
 
 package me.panpf.sketch.sample.vt.ui
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,7 +26,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.sample.vt.*
+import me.panpf.sketch.sample.vt.BaseFragment
+import me.panpf.sketch.sample.vt.BindContentView
+import me.panpf.sketch.sample.vt.R
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 import me.panpf.sketch.sample.vt.ext.bindView
 import me.panpf.sketch.sample.vt.ext.bindViewModel
@@ -36,7 +39,7 @@ import me.panpf.sketch.util.SketchUtils
 import java.io.File
 
 @BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment(), VideoInfoItemFactory.MyVideoItemListener {
+class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemListener {
 
     private val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
     private val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
@@ -61,25 +64,35 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.MyVideoItemListen
 
         recyclerView.adapter = adapter
 
-        videoThumbViewModel.videoList.observe(this, android.arch.lifecycle.Observer {
-            adapter.dataList = it
-            refreshLayout.isRefreshing = false
-
-            if (adapter.dataCount <= 0) {
-                hintView.text = "No videos"
-                hintView.visibility = View.VISIBLE
-            } else {
-                hintView.visibility = View.GONE
-            }
-        })
-
         refreshLayout.setOnRefreshListener {
-            hintView.visibility = View.GONE
-            videoThumbViewModel.refreshVideoList()
+            videoThumbViewModel.loadVideoList()
         }
 
-        refreshLayout.isRefreshing = true
-        hintView.visibility = View.VISIBLE
+        videoThumbViewModel.videoList.observe(this, Observer {
+            it?.let {
+                when {
+                    it.isLoadingStatus() -> {
+                        refreshLayout.isRefreshing = true
+                        hintView.visibility = View.GONE
+                    }
+                    it.isErrorStatus() -> {
+                        hintView.text = it.message ?: "Error! No message"
+                        refreshLayout.isRefreshing = false
+                        hintView.visibility = View.VISIBLE
+                    }
+                    it.isEmptyData() -> {
+                        hintView.text = "No video"
+                        refreshLayout.isRefreshing = false
+                        hintView.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        adapter.dataList = it.getNoEmptyData()
+                        refreshLayout.isRefreshing = false
+                        hintView.visibility = View.GONE
+                    }
+                }
+            }
+        })
 
         // TODO 实现加载更多
     }

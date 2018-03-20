@@ -50,4 +50,8 @@ class VideoInfo {
         }
         return tempFormattedSize!!
     }
+
+    override fun toString(): String {
+        return "VideoInfo(title=$title, path=$path, mimeType=$mimeType, duration=$duration, date=$date, size=$size, tempFormattedSize=$tempFormattedSize)"
+    }
 }

@@ -9,10 +9,10 @@ import me.panpf.adapter.AssemblyRecyclerItemFactory
 import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.vt.R
-import me.panpf.sketch.sample.vt.util.VideoThumbnailUriModel
 import me.panpf.sketch.sample.vt.ext.bindView
+import me.panpf.sketch.sample.vt.util.VideoThumbnailUriModel
 
-class VideoInfoItemFactory(private val listener: MyVideoItemListener?) : AssemblyRecyclerItemFactory<VideoInfoItemFactory.VideoInfoItem>() {
+class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : AssemblyRecyclerItemFactory<VideoInfoItemFactory.VideoInfoItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is me.panpf.sketch.sample.vt.bean.VideoInfo
@@ -22,7 +22,7 @@ class VideoInfoItemFactory(private val listener: MyVideoItemListener?) : Assembl
         return VideoInfoItem(R.layout.list_item_my_video, viewGroup)
     }
 
-    interface MyVideoItemListener {
+    interface VideoInfoItemListener {
         fun onClickVideo(position: Int, videoInfo: me.panpf.sketch.sample.vt.bean.VideoInfo)
     }
 
