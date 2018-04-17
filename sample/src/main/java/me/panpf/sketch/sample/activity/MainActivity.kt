@@ -35,6 +35,7 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.SLog
@@ -242,7 +243,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
                 }
             }
 
-            override fun onClick(adapter: AssemblyRecyclerAdapter) {
+            override fun onClick(adapter: AssemblyAdapter?) {
                 switchLogLevel()
             }
         })
@@ -451,12 +452,12 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
             }
         }
 
-        override fun onClick(adapter: AssemblyRecyclerAdapter) {
+        override fun onClick(adapter: AssemblyAdapter?) {
             when (type) {
                 "Memory" -> {
                     Sketch.with(activity).configuration.memoryCache.clear()
                     menuClickListener.onClick(null)
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
 
                     EventBus.getDefault().post(CacheCleanEvent())
                 }
@@ -466,7 +467,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
                 "BitmapPool" -> {
                     Sketch.with(activity).configuration.bitmapPool.clear()
                     menuClickListener.onClick(null)
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
 
                     EventBus.getDefault().post(CacheCleanEvent())
                 }
@@ -474,7 +475,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         }
 
         class CleanCacheTask(val activityReference: WeakReference<MainActivity>,
-                             val adapter: AssemblyRecyclerAdapter,
+                             val adapter: AssemblyAdapter?,
                              val menuClickListener: View.OnClickListener) : AsyncTask<Int, Int, Int>() {
 
             override fun doInBackground(vararg params: Int?): Int? {
@@ -490,7 +491,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
                 activityReference.get()?.let {
                     menuClickListener.onClick(null)
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
 
                     EventBus.getDefault().post(CacheCleanEvent())
                 }

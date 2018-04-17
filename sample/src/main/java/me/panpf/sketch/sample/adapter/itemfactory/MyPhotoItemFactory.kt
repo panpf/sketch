@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import android.view.ViewGroup
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
@@ -15,7 +15,7 @@ import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.widget.SampleImageView
 
-class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?) : AssemblyRecyclerItemFactory<MyPhotoItemFactory.PhotoAlbumItem>() {
+class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?) : AssemblyItemFactory<MyPhotoItemFactory.PhotoAlbumItem>() {
     private var itemSize: Int = 0
 
     override fun isTarget(o: Any): Boolean {
@@ -48,7 +48,7 @@ class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?
         fun onClickImage(position: Int, optionsKey: String)
     }
 
-    inner class PhotoAlbumItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<String>(itemLayoutId, parent) {
+    inner class PhotoAlbumItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<String>(itemLayoutId, parent) {
         val imageView: SampleImageView by bindView(R.id.image_myPhotoItem)
 
         override fun onConfigViews(context: Context) {

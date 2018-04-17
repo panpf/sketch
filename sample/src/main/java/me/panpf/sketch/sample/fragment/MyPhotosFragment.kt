@@ -103,8 +103,8 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         }
 
         val urlList = adapter!!.dataList
-        val imageArrayList = ArrayList<Image>(urlList.size)
-        urlList.mapTo(imageArrayList) { Image(it as String, it) }
+        val imageArrayList = ArrayList<Image>(urlList?.size ?: 0)
+        urlList?.mapTo(imageArrayList) { Image(it as String, it) }
 
         ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", imageArrayList), finalOptionsKey, position)
     }

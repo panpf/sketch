@@ -12,7 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.adapter.FixedRecyclerItemInfo
+import me.panpf.adapter.FixedItemInfo
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -43,7 +43,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var fileScanner: FileScanner? = null
-    private var scanningItemInfo: FixedRecyclerItemInfo? = null
+    private var scanningItemInfo: FixedItemInfo? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -149,7 +149,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
             if (fragment != null) {
                 if (fileItem is AppInfo) {
 
-                    fragment.adapter!!.dataList.add(fileItem)
+                    fragment.adapter!!.dataList?.add(fileItem)
 
                     val appScanning = fragment.scanningItemInfo!!.data as AppScanning
                     appScanning.count = fragment.adapter!!.dataCount

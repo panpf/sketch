@@ -16,6 +16,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
+import me.panpf.adapter.AssemblyAdapter
+import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -30,8 +33,6 @@ import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
-import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.adapter.OnRecyclerLoadMoreListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,7 +42,7 @@ import java.lang.ref.WeakReference
  * 图片搜索Fragment
  */
 @BindContentView(R.layout.fragment_recycler)
-class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
+class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
     val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
@@ -170,7 +171,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
     }
 
     override fun onRefresh() {
-        adapter?.setLoadMoreEnd(false)
+        adapter?.loadMoreFinished(false)
 
         if (!refreshLayout.isRefreshing) {
             refreshLayout.isRefreshing = true
@@ -192,7 +193,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
         NetServices.baiduImage().searchPhoto(searchKeyword, searchKeyword, pageStart, PAGE_SIZE).enqueue(LoadDataCallback(this, pageIndex))
     }
 
-    override fun onLoadMore(assemblyRecyclerAdapter: AssemblyRecyclerAdapter) {
+    override fun onLoadMore(adapter1: AssemblyAdapter) {
         loadData(pageIndex + 1)
     }
 
@@ -277,7 +278,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
             val images = response.body()!!.imageList
             if (images == null || images.size == 0) {
-                fragment.adapter!!.setLoadMoreEnd(true)
+                fragment.adapter!!.loadMoreFinished(true)
                 return
             }
 

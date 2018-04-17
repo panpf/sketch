@@ -3,13 +3,13 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.InfoMenu
 import me.panpf.sketch.sample.bindView
 
-class InfoMenuItemFactory : AssemblyRecyclerItemFactory<InfoMenuItemFactory.InfoMenuItem>() {
+class InfoMenuItemFactory : AssemblyItemFactory<InfoMenuItemFactory.InfoMenuItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is InfoMenu
@@ -19,12 +19,12 @@ class InfoMenuItemFactory : AssemblyRecyclerItemFactory<InfoMenuItemFactory.Info
         return InfoMenuItem(R.layout.list_item_info_menu, viewGroup)
     }
 
-    inner class InfoMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<InfoMenu>(itemLayoutId, parent) {
-        val titleTextView: TextView by bindView(R.id.text_infoMenuItem_title)
-        val infoTextView: TextView by bindView(R.id.text_infoMenuItem_info)
+    inner class InfoMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<InfoMenu>(itemLayoutId, parent) {
+        private val titleTextView: TextView by bindView(R.id.text_infoMenuItem_title)
+        private val infoTextView: TextView by bindView(R.id.text_infoMenuItem_info)
 
         override fun onConfigViews(context: Context) {
-            getItemView().setOnClickListener {
+            itemView.setOnClickListener {
                 data.onClick(adapter)
             }
         }

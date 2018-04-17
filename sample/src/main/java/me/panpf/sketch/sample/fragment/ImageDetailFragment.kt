@@ -22,7 +22,7 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import me.panpf.adapter.AssemblyFragmentStatePagerAdapter
+import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -80,7 +80,7 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
         viewPager.setPageTransformer(false, ZoomOutPageTransformer())
 
         if (imageList != null) {
-            val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList)
+            val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList!!)
             pagerAdapter.addItemFactory(ImageFragmentItemFactory(context, loadingImageOptionsKey))
             viewPager.adapter = pagerAdapter
             viewPager.currentItem = position

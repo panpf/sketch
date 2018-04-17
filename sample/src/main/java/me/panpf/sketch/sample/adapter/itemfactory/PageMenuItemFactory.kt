@@ -3,13 +3,13 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.activity.MainActivity
 import me.panpf.sketch.sample.bindView
 
-class PageMenuItemFactory(private val onClickItemListener: OnClickItemListener) : AssemblyRecyclerItemFactory<PageMenuItemFactory.PageMenuItem>() {
+class PageMenuItemFactory(private val onClickItemListener: OnClickItemListener) : AssemblyItemFactory<PageMenuItemFactory.PageMenuItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is MainActivity.Page
@@ -23,7 +23,7 @@ class PageMenuItemFactory(private val onClickItemListener: OnClickItemListener) 
         fun onClickItem(page: MainActivity.Page)
     }
 
-    inner class PageMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<MainActivity.Page>(itemLayoutId, parent) {
+    inner class PageMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<MainActivity.Page>(itemLayoutId, parent) {
         val textView: TextView by bindView(R.id.text_pageMenuItem)
 
         override fun onConfigViews(context: Context) {

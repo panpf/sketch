@@ -12,12 +12,12 @@ import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 
 class UnsplashPhotosItemFactory(private val activity: Activity,
                                 private val unsplashPhotosItemEventListener: UnsplashPhotosItemEventListener?)
-    : AssemblyRecyclerItemFactory<UnsplashPhotosItemFactory.UnsplashPhotosItem>() {
+    : AssemblyItemFactory<UnsplashPhotosItemFactory.UnsplashPhotosItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is UnsplashImage
@@ -33,7 +33,7 @@ class UnsplashPhotosItemFactory(private val activity: Activity,
         fun onClickUser(position: Int, user: UnsplashImage.User)
     }
 
-    inner class UnsplashPhotosItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<UnsplashImage>(itemLayoutId, parent) {
+    inner class UnsplashPhotosItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<UnsplashImage>(itemLayoutId, parent) {
         val imageView: SampleImageView by bindView(R.id.image_unsplashImageItem)
         val userProfileImageView: SampleImageView by bindView(R.id.image_unsplashImageItem_userProfile)
         val userNameTextView: TextView by bindView(R.id.text_unsplashImageItem_userName)

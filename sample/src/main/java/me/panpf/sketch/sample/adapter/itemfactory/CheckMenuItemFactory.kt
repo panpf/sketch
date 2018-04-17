@@ -4,13 +4,13 @@ import android.content.Context
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.CheckMenu
 import me.panpf.sketch.sample.bindView
 
-class CheckMenuItemFactory : AssemblyRecyclerItemFactory<CheckMenuItemFactory.CheckMenuItem>() {
+class CheckMenuItemFactory : AssemblyItemFactory<CheckMenuItemFactory.CheckMenuItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is CheckMenu
@@ -20,7 +20,7 @@ class CheckMenuItemFactory : AssemblyRecyclerItemFactory<CheckMenuItemFactory.Ch
         return CheckMenuItem(R.layout.list_item_check_box_menu, viewGroup)
     }
 
-    inner class CheckMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<CheckMenu>(itemLayoutId, parent) {
+    inner class CheckMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<CheckMenu>(itemLayoutId, parent) {
         val textView: TextView by bindView(R.id.text_checkBoxMenuItem)
         val checkBox: CheckBox by bindView(R.id.checkBox_checkBoxMenuItem)
 

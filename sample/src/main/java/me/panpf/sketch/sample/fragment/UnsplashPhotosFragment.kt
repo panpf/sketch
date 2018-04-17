@@ -9,8 +9,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
+import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.adapter.OnRecyclerLoadMoreListener
+import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -30,7 +31,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 @BindContentView(R.layout.fragment_recycler)
-class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnRecyclerLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     val hintView: HintView by bindView(R.id.hint_recyclerFragment)
     val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
@@ -111,7 +112,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
     override fun onRefresh() {
         if (adapter != null) {
-            adapter!!.setLoadMoreEnd(false)
+            adapter!!.loadMoreFinished(false)
         }
 
         if (!refreshLayout.isRefreshing) {
@@ -121,7 +122,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         loadData(1)
     }
 
-    override fun onLoadMore(assemblyRecyclerAdapter: AssemblyRecyclerAdapter) {
+    override fun onLoadMore(adapter1: AssemblyAdapter) {
         loadData(pageIndex + 1)
     }
 
@@ -186,7 +187,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         private fun loadMore(fragment: UnsplashPhotosFragment, response: Response<List<UnsplashImage>>) {
             val images = response.body()
             if (images == null || images.isEmpty()) {
-                fragment.adapter!!.setLoadMoreEnd(true)
+                fragment.adapter!!.loadMoreFinished(true)
                 return
             }
 

@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.AppScanning
 import me.panpf.sketch.sample.bindView
 
-class AppScanningItemFactory : AssemblyRecyclerItemFactory<AppScanningItemFactory.AppListHeaderItem>() {
+class AppScanningItemFactory : AssemblyItemFactory<AppScanningItemFactory.AppListHeaderItem>() {
     override fun isTarget(o: Any): Boolean {
         return o is AppScanning
     }
@@ -20,7 +20,7 @@ class AppScanningItemFactory : AssemblyRecyclerItemFactory<AppScanningItemFactor
         return AppListHeaderItem(R.layout.list_item_app_scanning, viewGroup)
     }
 
-    inner class AppListHeaderItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<AppScanning>(itemLayoutId, parent) {
+    inner class AppListHeaderItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<AppScanning>(itemLayoutId, parent) {
         val textView: TextView by bindView(R.id.text_appScanningItem)
         val progressBar: ProgressBar by bindView(R.id.progress_appScanningItem)
 

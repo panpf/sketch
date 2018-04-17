@@ -3,12 +3,12 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bindView
 
-class AppListHeaderItemFactory : AssemblyRecyclerItemFactory<AppListHeaderItemFactory.AppListHeaderItem>() {
+class AppListHeaderItemFactory : AssemblyItemFactory<AppListHeaderItemFactory.AppListHeaderItem>() {
     override fun isTarget(o: Any): Boolean {
         return o is String
     }
@@ -17,7 +17,7 @@ class AppListHeaderItemFactory : AssemblyRecyclerItemFactory<AppListHeaderItemFa
         return AppListHeaderItem(R.layout.list_item_app_list_header, viewGroup)
     }
 
-    inner class AppListHeaderItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<String>(itemLayoutId, parent) {
+    inner class AppListHeaderItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<String>(itemLayoutId, parent) {
         val textView: TextView by bindView(R.id.text_appListHeaderItem)
 
         override fun onConfigViews(context: Context) {

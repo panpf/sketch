@@ -10,10 +10,10 @@ import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 
-class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyRecyclerItemFactory<StaggeredImageItemFactory.StaggeredImageItem>() {
+class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyItemFactory<StaggeredImageItemFactory.StaggeredImageItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is BaiduImage
@@ -27,7 +27,7 @@ class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickList
         fun onItemClick(position: Int, image: BaiduImage, loadingImageOptionsInfo: String)
     }
 
-    inner class StaggeredImageItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<BaiduImage>(itemLayoutId, parent) {
+    inner class StaggeredImageItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<BaiduImage>(itemLayoutId, parent) {
         val imageView: SampleImageView by bindView(R.id.image_staggeredImageItem)
 
         override fun onConfigViews(context: Context) {

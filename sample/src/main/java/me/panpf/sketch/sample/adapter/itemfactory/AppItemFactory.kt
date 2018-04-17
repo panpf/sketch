@@ -3,18 +3,18 @@ package me.panpf.sketch.sample.adapter.itemfactory
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerItem
-import me.panpf.adapter.AssemblyRecyclerItemFactory
-import me.panpf.sketch.uri.ApkIconUriModel
-import me.panpf.sketch.uri.AppIconUriModel
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.XpkIconUriModel
 import me.panpf.sketch.sample.widget.SampleImageView
+import me.panpf.sketch.uri.ApkIconUriModel
+import me.panpf.sketch.uri.AppIconUriModel
 
-class AppItemFactory(private val listener: AppItemListener?) : AssemblyRecyclerItemFactory<AppItemFactory.AppItem>() {
+class AppItemFactory(private val listener: AppItemListener?) : AssemblyItemFactory<AppItemFactory.AppItem>() {
 
     override fun isTarget(o: Any): Boolean {
         return o is AppInfo
@@ -28,7 +28,7 @@ class AppItemFactory(private val listener: AppItemListener?) : AssemblyRecyclerI
         fun onClickApp(position: Int, appInfo: AppInfo)
     }
 
-    inner class AppItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyRecyclerItem<AppInfo>(itemLayoutId, parent) {
+    inner class AppItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<AppInfo>(itemLayoutId, parent) {
         val iconImageView: SampleImageView by bindView(R.id.image_installedApp_icon)
         val nameTextView: TextView by bindView(R.id.text_installedApp_name)
         val infoTextView: TextView by bindView(R.id.text_installedApp_info)

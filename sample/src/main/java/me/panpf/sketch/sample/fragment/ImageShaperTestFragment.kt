@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.View
-import me.panpf.adapter.FragmentArrayPagerAdapter
+import me.panpf.adapter.pager.FragmentArrayPagerAdapter
 import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
