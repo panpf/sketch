@@ -38,6 +38,7 @@ public class AndroidResUriModel extends UriModel {
      * @param drawableResName 图片资源名称
      * @return 例如：android.resource://me.panpf.sketch.sample/mipmap/ic_launch
      */
+    @NonNull
     public static String makeUriByName(@NonNull String packageName, @NonNull String resType, @NonNull String drawableResName) {
         return SCHEME + packageName + "/" + resType + "/" + drawableResName;
     }
@@ -49,6 +50,7 @@ public class AndroidResUriModel extends UriModel {
      * @param drawableResId 图片资源ID
      * @return 例如：android.resource://me.panpf.sketch.sample/1031232
      */
+    @NonNull
     @SuppressWarnings("unused")
     public static String makeUriById(@NonNull String packageName, int drawableResId) {
         return SCHEME + packageName + "/" + String.valueOf(drawableResId);

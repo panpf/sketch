@@ -30,10 +30,11 @@ public class FileVariantUriModel extends FileUriModel {
 
     public static final String SCHEME = "file://";
 
+    @NonNull
     @SuppressWarnings("unused")
-    public static String makeUri(String filePath) {
+    public static String makeUri(@NonNull String filePath) {
         if (TextUtils.isEmpty(filePath)) {
-            return null;
+            throw new IllegalArgumentException("Param filePath is null or empty");
         }
         return !filePath.startsWith(SCHEME) ? SCHEME + filePath : filePath;
     }

@@ -28,9 +28,10 @@ public class AssetUriModel extends UriModel {
 
     public static final String SCHEME = "asset://";
 
-    public static String makeUri(String assetResName) {
+    @NonNull
+    public static String makeUri(@NonNull String assetResName) {
         if (TextUtils.isEmpty(assetResName)) {
-            return null;
+            throw new IllegalArgumentException("Param assetResName is null or empty");
         }
         return !assetResName.startsWith(SCHEME) ? SCHEME + assetResName : assetResName;
     }

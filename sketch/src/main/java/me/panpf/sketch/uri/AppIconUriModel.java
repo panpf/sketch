@@ -34,7 +34,8 @@ public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
     public static final String SCHEME = "app.icon://";
     private static final String NAME = "AppIconUriModel";
 
-    public static String makeUri(String packageName, int versionCode) {
+    @NonNull
+    public static String makeUri(@NonNull String packageName, int versionCode) {
         return SCHEME + packageName + "/" + versionCode;
     }
 

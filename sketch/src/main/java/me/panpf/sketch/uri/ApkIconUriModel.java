@@ -31,7 +31,8 @@ public class ApkIconUriModel extends AbsBitmapDiskCacheUriModel {
     public static final String SCHEME = "apk.icon://";
     private static final String NAME = "ApkIconUriModel";
 
-    public static String makeUri(String filePath) {
+    @NonNull
+    public static String makeUri(@NonNull String filePath) {
         return SCHEME + filePath;
     }
 

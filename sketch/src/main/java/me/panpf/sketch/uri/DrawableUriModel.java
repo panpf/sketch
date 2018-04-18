@@ -31,6 +31,7 @@ public class DrawableUriModel extends UriModel {
     public static final String SCHEME = "drawable://";
     private static final String NAME = "DrawableUriModel";
 
+    @NonNull
     public static String makeUri(@DrawableRes int drawableResId) {
         return SCHEME + String.valueOf(drawableResId);
     }
