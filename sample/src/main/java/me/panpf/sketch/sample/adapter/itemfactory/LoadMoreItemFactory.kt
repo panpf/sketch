@@ -18,8 +18,8 @@ class LoadMoreItemFactory(eventListener: OnLoadMoreListener) : AssemblyLoadMoreI
 
     inner class LoadMoreItem(itemFactory: LoadMoreItemFactory, itemLayoutId: Int, parent: ViewGroup) :
             AssemblyLoadMoreItem<LoadMoreItem>(itemFactory, itemLayoutId, parent) {
-        val progressBar: ProgressBar by bindView(R.id.progress_loadMoreFooter)
-        val tipsTextView: TextView by bindView(R.id.text_loadMoreFooter_content)
+        private val progressBar: ProgressBar by bindView(R.id.progress_loadMoreFooter)
+        private val tipsTextView: TextView by bindView(R.id.text_loadMoreFooter_content)
 
         override fun getErrorRetryView(): View {
             return tipsTextView
@@ -27,17 +27,17 @@ class LoadMoreItemFactory(eventListener: OnLoadMoreListener) : AssemblyLoadMoreI
 
         override fun showLoading() {
             progressBar.visibility = View.VISIBLE
-            tipsTextView.text = "别着急，您的包裹马上就来！"
+            tipsTextView.text = "LOADING..."
         }
 
         override fun showErrorRetry() {
             progressBar.visibility = View.GONE
-            tipsTextView.text = "Sorry！您的包裹运送失败！"
+            tipsTextView.text = "ERROR!"
         }
 
         override fun showEnd() {
             progressBar.visibility = View.GONE
-            tipsTextView.text = "没有您的包裹了！"
+            tipsTextView.text = "THE END"
         }
     }
 }
