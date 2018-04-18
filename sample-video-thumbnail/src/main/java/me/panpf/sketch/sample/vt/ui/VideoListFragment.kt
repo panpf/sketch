@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.sample.vt.ui
 
+import android.arch.lifecycle.Observer
+import android.arch.paging.AssemblyRecyclerPageListAdapter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -24,33 +26,36 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.adapter.AssemblyAdapter
+import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.vt.BaseFragment
 import me.panpf.sketch.sample.vt.BindContentView
 import me.panpf.sketch.sample.vt.R
+import me.panpf.sketch.sample.vt.bean.BoundaryStatus
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 import me.panpf.sketch.sample.vt.ext.bindView
 import me.panpf.sketch.sample.vt.ext.bindViewModel
 import me.panpf.sketch.sample.vt.ext.longToast
+import me.panpf.sketch.sample.vt.item.LoadMoreItemFactory
 import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
-import me.panpf.sketch.sample.vt.util.NonNullObserver
-import me.panpf.sketch.sample.vt.vm.VideoThumbViewModel
+import me.panpf.sketch.sample.vt.vm.VideoListViewModel
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
 
 @BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemListener {
+class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemListener, OnLoadMoreListener {
 
     private val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
     private val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    private val hintView: TextView by bindView(R.id.hint_recyclerFragment)
+    private val hintTextView: TextView by bindView(R.id.hint_recyclerFragment)
 
-    private val videoThumbViewModel: VideoThumbViewModel by bindViewModel(VideoThumbViewModel::class)
+    private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 
-    private val adapter: AssemblyRecyclerAdapter by lazy {
-        val adapter = AssemblyRecyclerAdapter(null as List<*>?)
-        adapter.addItemFactory(VideoInfoItemFactory(this))
-        adapter
+    private val adapter by lazy {
+        AssemblyRecyclerPageListAdapter<VideoInfo>(VideoInfo.DiffCallback()).apply {
+            addItemFactory(VideoInfoItemFactory(this@VideoListFragment))
+            setLoadMoreItem(LoadMoreItemFactory(this@VideoListFragment))
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,34 +70,87 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemList
         recyclerView.adapter = adapter
 
         refreshLayout.setOnRefreshListener {
-            videoThumbViewModel.loadVideoList()
+            videoListViewModel.refresh()
         }
 
-        videoThumbViewModel.videoList.observeNonNull(this, NonNullObserver {
-            when {
-                it.isLoadingStatus() -> {
-                    refreshLayout.isRefreshing = true
-                    hintView.visibility = View.GONE
+        refreshLayout.isEnabled = false
+
+        videoListViewModel.videoListing.observe(this, Observer { pageList ->
+            adapter.submitList(pageList)
+        })
+
+        videoListViewModel.initStatus.observe(this, Observer { initStatus ->
+            initStatus ?: return@Observer
+
+            if (refreshLayout.isRefreshing) {
+                when {
+                    initStatus.isLoading() -> {
+                        hintTextView.visibility = View.GONE
+                    }
+                    initStatus.isError() -> {
+                        refreshLayout.isRefreshing = false
+
+                        hintTextView.text = getString(R.string.hint_loadFailed, initStatus.message)
+                        hintTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
+                        hintTextView.visibility = View.VISIBLE
+                    }
+                    initStatus.isSuccess() -> {
+                        refreshLayout.isRefreshing = false
+
+                        if (videoListViewModel.boundaryStatus.value == BoundaryStatus.ZERO_ITEMS_LOADED) {
+                            hintTextView.text = getString(R.string.hint_empty_list, "Video")
+                            hintTextView.visibility = View.VISIBLE
+                        } else {
+                            hintTextView.visibility = View.GONE
+                        }
+                    }
                 }
-                it.isErrorStatus() -> {
-                    hintView.text = it.message ?: "Error! No message"
-                    refreshLayout.isRefreshing = false
-                    hintView.visibility = View.VISIBLE
-                }
-                it.isEmptyData() -> {
-                    hintView.text = "No video"
-                    refreshLayout.isRefreshing = false
-                    hintView.visibility = View.VISIBLE
-                }
-                else -> {
-                    adapter.dataList = it.getNoEmptyData()
-                    refreshLayout.isRefreshing = false
-                    hintView.visibility = View.GONE
+            } else {
+                when {
+                    initStatus.isLoading() -> {
+                        hintTextView.setText(R.string.hint_loading)
+                        hintTextView.setCompoundDrawables(null, null, null, null)
+                        hintTextView.visibility = View.VISIBLE
+                    }
+                    initStatus.isError() -> {
+                        hintTextView.text = getString(R.string.hint_loadFailed, initStatus.message)
+                        hintTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
+                        hintTextView.visibility = View.VISIBLE
+                    }
+                    initStatus.isSuccess() -> {
+                        if (videoListViewModel.boundaryStatus.value == BoundaryStatus.ZERO_ITEMS_LOADED) {
+                            hintTextView.text = getString(R.string.hint_empty_list, "Video")
+                            hintTextView.visibility = View.VISIBLE
+                        } else {
+                            hintTextView.visibility = View.GONE
+                        }
+                    }
                 }
             }
         })
 
-        // TODO 实现加载更多
+        videoListViewModel.pagingStatus.observe(this, Observer { pagingStatus ->
+            pagingStatus ?: return@Observer
+
+            when {
+                pagingStatus.isLoading() -> {
+                    adapter.loadMoreFinished(false)
+                }
+                pagingStatus.isError() -> {
+                    adapter.loadMoreFailed()
+                }
+            }
+        })
+
+        videoListViewModel.boundaryStatus.observe(this, Observer {
+            if (it == BoundaryStatus.ITEM_AT_END_LOADED) {
+                adapter.loadMoreFinished(true)
+            }
+        })
+    }
+
+    override fun onLoadMore(adapter: AssemblyAdapter) {
+
     }
 
     override fun onClickVideo(position: Int, videoInfo: VideoInfo) {

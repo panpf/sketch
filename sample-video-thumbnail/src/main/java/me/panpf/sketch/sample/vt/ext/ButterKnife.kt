@@ -8,6 +8,7 @@ import android.app.DialogFragment
 import android.app.Fragment
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.View
+import me.panpf.adapter.AssemblyItem
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import android.support.v4.app.DialogFragment as SupportDialogFragment
@@ -137,3 +138,9 @@ private class Lazy<T, V>(private val initializer: (T, KProperty<*>) -> V) : Read
         return value as V
     }
 }
+
+public fun <V : View> AssemblyItem<*>.bindView(id: Int)
+        : ReadOnlyProperty<AssemblyItem<*>, V> = required(id, viewFinder)
+
+private val AssemblyItem<*>.viewFinder: AssemblyItem<*>.(Int) -> View?
+    get() = { itemView.findViewById(it) }

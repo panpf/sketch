@@ -1,6 +1,7 @@
 package me.panpf.sketch.sample.vt.bean
 
 import android.content.Context
+import android.support.v7.util.DiffUtil
 import android.text.format.Formatter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,5 +54,15 @@ class VideoInfo {
 
     override fun toString(): String {
         return "VideoInfo(title=$title, path=$path, mimeType=$mimeType, duration=$duration, date=$date, size=$size, tempFormattedSize=$tempFormattedSize)"
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<VideoInfo>() {
+        override fun areItemsTheSame(oldItem: VideoInfo?, newItem: VideoInfo?): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: VideoInfo?, newItem: VideoInfo?): Boolean {
+            return oldItem != null && newItem != null && oldItem.path.equals(newItem.path)
+        }
     }
 }

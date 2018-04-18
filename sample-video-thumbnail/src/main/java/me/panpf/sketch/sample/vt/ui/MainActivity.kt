@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showVideoList() {
+    private fun showVideoList() {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.frame_mainActivity_content, VideoListFragment())

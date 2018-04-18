@@ -54,8 +54,9 @@ dependencies {
     implementation "android.arch.lifecycle:viewmodel:${LIFECYCLE_VERSION}"
     implementation "android.arch.lifecycle:livedata:${LIFECYCLE_VERSION}"
     annotationProcessor "android.arch.lifecycle:compiler:${LIFECYCLE_VERSION}"
+    implementation "android.arch.paging:runtime:${PAGING_VERSION}"
 
-    implementation "androidx.core:core-ktx:${XCORE_KTX_VERSION}"
+    implementation "androidx.core:core-ktx:${ANDROIDX_CORE_KTX_VERSION}"
 
     implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
 
