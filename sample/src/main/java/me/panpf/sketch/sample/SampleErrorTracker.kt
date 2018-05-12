@@ -23,16 +23,12 @@ import java.util.*
 
 internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
 
-    private val context: Context
+    private val appContext = context.applicationContext
     private var lastUploadInstallFailedTime: Long = 0
     private var lastUploadDecodeNormalImageFailedTime: Long = 0
     private var lastUploadDecodeGifImageFailedTime: Long = 0
     private var lastUploadProcessImageFailedTime: Long = 0
     private var uploadNotFoundGidSoError: Boolean = false
-
-    init {
-        this.context = context.applicationContext
-    }
 
     override fun toString(): String {
         return "SampleErrorTracker"
@@ -47,11 +43,10 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         }
         uploadNotFoundGidSoError = true
 
-        val abis: String
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            abis = Arrays.toString(Build.SUPPORTED_ABIS)
+        val abis = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Arrays.toString(Build.SUPPORTED_ABIS)
         } else {
-            abis = Arrays.toString(arrayOf(Build.CPU_ABI, Build.CPU_ABI2))
+            Arrays.toString(arrayOf(Build.CPU_ABI, Build.CPU_ABI2))
         }
         val message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", abis)
 
@@ -68,34 +63,29 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         }
         lastUploadDecodeGifImageFailedTime = currentTime
 
-        val builder = StringBuilder()
+        val builder = StringBuilder().apply {
+            append("Sketch")
+            append(" - ").append("DecodeGifImageFailed")
+            append(" - ").append(throwable.javaClass.simpleName)
+            append(" - ").append(decodeUri(appContext, request.uri))
 
-        builder.append("Sketch")
-                .append(" - ").append("DecodeGifImageFailed")
-                .append(" - ").append(throwable.javaClass.simpleName)
-                .append(" - ").append(decodeUri(context, request.uri))
+            append("\n")
+            append("exceptionMessage: ").append(throwable.message)
 
-        builder.append("\n").append("exceptionMessage: ").append(throwable.message)
+            if (throwable is OutOfMemoryError) {
+                append("\n")
+                append("memoryInfo: ")
+                append("maxMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().maxMemory()))
+                append(", freeMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().freeMemory()))
+                append(", totalMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().totalMemory()))
+            }
 
-        if (throwable is OutOfMemoryError) {
-            val maxMemory = Runtime.getRuntime().maxMemory()
-            val freeMemory = Runtime.getRuntime().freeMemory()
-            val totalMemory = Runtime.getRuntime().totalMemory()
-            val maxMemoryFormatted = Formatter.formatFileSize(this.context, maxMemory)
-            val freeMemoryFormatted = Formatter.formatFileSize(this.context, freeMemory)
-            val totalMemoryFormatted = Formatter.formatFileSize(this.context, totalMemory)
-            builder.append("\n")
-                    .append("memoryInfo: ")
-                    .append("maxMemory=").append(maxMemoryFormatted)
-                    .append(", freeMemory=").append(freeMemoryFormatted)
-                    .append(", totalMemory=").append(totalMemoryFormatted)
+            append("\n")
+            append("imageInfo: ")
+            append("outWidth=").append(outWidth)
+            append(", outHeight=").append(outHeight)
+            append(", outMimeType=").append(outMimeType)
         }
-
-        builder.append("\n")
-                .append("imageInfo: ")
-                .append("outWidth=").append(outWidth)
-                .append(", outHeight=").append(outHeight)
-                .append(", outMimeType=").append(outMimeType)
 
         CrashReport.postCatchedException(Exception(builder.toString(), throwable))
     }
@@ -115,7 +105,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         builder.append("Sketch")
                 .append(" - ").append("DecodeNormalImageFailed")
                 .append(" - ").append(throwable.javaClass.simpleName)
-                .append(" - ").append(decodeUri(context, request.uri))
+                .append(" - ").append(decodeUri(appContext, request.uri))
 
         builder.append("\n").append("exceptionMessage: ").append(throwable.message)
 
@@ -123,9 +113,9 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
             val maxMemory = Runtime.getRuntime().maxMemory()
             val freeMemory = Runtime.getRuntime().freeMemory()
             val totalMemory = Runtime.getRuntime().totalMemory()
-            val maxMemoryFormatted = Formatter.formatFileSize(this.context, maxMemory)
-            val freeMemoryFormatted = Formatter.formatFileSize(this.context, freeMemory)
-            val totalMemoryFormatted = Formatter.formatFileSize(this.context, totalMemory)
+            val maxMemoryFormatted = Formatter.formatFileSize(this.appContext, maxMemory)
+            val freeMemoryFormatted = Formatter.formatFileSize(this.appContext, freeMemory)
+            val totalMemoryFormatted = Formatter.formatFileSize(this.appContext, totalMemory)
             builder.append("\n").append("memoryInfo: ")
                     .append("maxMemory=").append(maxMemoryFormatted)
                     .append(", freeMemory=").append(freeMemoryFormatted)
@@ -154,12 +144,10 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
 
         builder.append("Sketch")
                 .append(" - ").append("InstallDiskCacheFailed")
-        if (e is UnableCreateDirException) {
-            builder.append(" - ").append("UnableCreateDirException")
-        } else if (e is UnableCreateFileException) {
-            builder.append(" - ").append("UnableCreateFileException")
-        } else {
-            builder.append(" - ").append(e.javaClass.simpleName)
+        when (e) {
+            is UnableCreateDirException -> builder.append(" - ").append("UnableCreateDirException")
+            is UnableCreateFileException -> builder.append(" - ").append("UnableCreateFileException")
+            else -> builder.append(" - ").append(e.javaClass.simpleName)
         }
         builder.append(" - ").append(cacheDir.path)
 
@@ -174,9 +162,9 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
             val availableBytes = SketchUtils.getAvailableBytes(sdcardDir)
             builder.append("\n")
                     .append("sdcardSize: ")
-                    .append(Formatter.formatFileSize(context, availableBytes))
+                    .append(Formatter.formatFileSize(appContext, availableBytes))
                     .append("/")
-                    .append(Formatter.formatFileSize(context, totalBytes))
+                    .append(Formatter.formatFileSize(appContext, totalBytes))
         }
 
         CrashReport.postCatchedException(Exception(builder.toString(), e))
@@ -198,7 +186,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
                         "%s" +
                         "\n%s",
                 processor.toString(),
-                decodeUri(context, imageUri),
+                decodeUri(appContext, imageUri),
                 outOfMemoryInfo
         ), throwable))
     }
@@ -222,7 +210,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
                 "Sketch - BitmapRecycledOnDisplay - " +
                         "%s " +
                         "\ndrawable: %s",
-                decodeUri(context, request.uri),
+                decodeUri(appContext, request.uri),
                 refDrawable.info)))
     }
 
@@ -237,7 +225,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
                         "\ninSampleSize：%d" +
                         "\ninBitmap：%dx%d, %d, %s" +
                         "\nsystemState：%s",
-                decodeUri(context, imageUri),
+                decodeUri(appContext, imageUri),
                 imageWidth, imageHeight, imageMimeType,
                 inSampleSize,
                 inBitmap.width, inBitmap.height, SketchUtils.getByteCount(inBitmap), inBitmap.config,
@@ -257,7 +245,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
                         "\ninSampleSize：%d" +
                         "\nsrcRect：%s" +
                         "\nsystemState：%s",
-                decodeUri(context, imageUri),
+                decodeUri(appContext, imageUri),
                 imageWidth, imageHeight, imageMimeType,
                 srcRect.toString(),
                 inSampleSize,
@@ -286,8 +274,8 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
 
     private val memoryInfo: String
         get() {
-            val freeMemory = Formatter.formatFileSize(context, Runtime.getRuntime().freeMemory())
-            val maxMemory = Formatter.formatFileSize(context, Runtime.getRuntime().maxMemory())
+            val freeMemory = Formatter.formatFileSize(appContext, Runtime.getRuntime().freeMemory())
+            val maxMemory = Formatter.formatFileSize(appContext, Runtime.getRuntime().maxMemory())
             return String.format("%s/%s", freeMemory, maxMemory)
         }
 
@@ -295,7 +283,6 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         get() = String.format(Locale.getDefault(), "%s, %s", systemInfo, memoryInfo)
 
     companion object {
-
-        private val INSTALL_FAILED_RETRY_TIME_INTERVAL = 30 * 60 * 1000
+        private const val INSTALL_FAILED_RETRY_TIME_INTERVAL = 30 * 60 * 1000
     }
 }

@@ -44,11 +44,11 @@ class AppItemFactory(private val listener: AppItemListener?) : AssemblyItemFacto
 
         override fun onSetData(i: Int, appInfo: AppInfo) {
             if (appInfo.isTempInstalled) {
-                iconImageView.displayImage(AppIconUriModel.makeUri(appInfo.id, appInfo.versionCode))
+                iconImageView.displayImage(AppIconUriModel.makeUri(appInfo.id ?: "", appInfo.versionCode))
             } else if (appInfo.isTempXPK) {
                 iconImageView.displayImage(XpkIconUriModel.makeUri(appInfo.apkFilePath))
             } else {
-                iconImageView.displayImage(ApkIconUriModel.makeUri(appInfo.apkFilePath))
+                iconImageView.displayImage(ApkIconUriModel.makeUri(appInfo.apkFilePath ?: ""))
             }
             nameTextView.text = appInfo.name
             infoTextView.text = String.format("v%s  |  %s", appInfo.versionName, appInfo.formattedAppSize)

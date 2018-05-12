@@ -87,7 +87,7 @@ class SampleLogProxy(context: Context) : SLog.Proxy {
         private var logEntryObjectPool: ObjectPool<LogEntry>? = null
         private val logTimeDateFormat: SimpleDateFormat
 
-        private val context: Context
+        private val context = context.applicationContext
 
         private var handler: Handler? = null
         private var handlerThread: HandlerThread? = null
@@ -99,7 +99,6 @@ class SampleLogProxy(context: Context) : SLog.Proxy {
         private var closed: Boolean = false
 
         init {
-            this.context = context.applicationContext
             logEntryObjectPool = ObjectPool(ObjectPool.ObjectFactory { LogEntry(logEntryObjectPool!!) })
             logTimeDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.US)
         }

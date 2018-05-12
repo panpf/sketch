@@ -62,12 +62,12 @@ object ImageOptions {
     const val LIST_FULL = 105
 
     @JvmStatic
-    private val OPTIONS_HOLDER_SPARSE_ARRAY = SparseArray<OptionsHolder>()
+    private val OPTIONS_ARRAY = SparseArray<OptionsHolder>()
 
     init {
         val transitionImageDisplayer = TransitionImageDisplayer()
 
-        OPTIONS_HOLDER_SPARSE_ARRAY.append(ImageOptions.RECT, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(ImageOptions.RECT, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
@@ -78,7 +78,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_HOLDER_SPARSE_ARRAY.append(ImageOptions.CIRCULAR_STROKE, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(ImageOptions.CIRCULAR_STROKE, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
@@ -90,7 +90,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_HOLDER_SPARSE_ARRAY.append(ImageOptions.WINDOW_BACKGROUND, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(ImageOptions.WINDOW_BACKGROUND, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(OldStateImage(DrawableStateImage(R.drawable.shape_window_background)))
@@ -104,7 +104,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_HOLDER_SPARSE_ARRAY.append(ImageOptions.ROUND_RECT, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(ImageOptions.ROUND_RECT, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
@@ -116,7 +116,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_HOLDER_SPARSE_ARRAY.append(ImageOptions.LIST_FULL, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(ImageOptions.LIST_FULL, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 val displayMetrics = context.resources.displayMetrics
                 return DisplayOptions()
@@ -130,15 +130,15 @@ object ImageOptions {
     }
 
     fun getDisplayOptions(context: Context, @Type optionsId: Int): DisplayOptions {
-        return OPTIONS_HOLDER_SPARSE_ARRAY.get(optionsId).getOptions(context) as DisplayOptions
+        return OPTIONS_ARRAY.get(optionsId).getOptions(context) as DisplayOptions
     }
 
     fun getLoadOptions(context: Context, @Type optionsId: Int): LoadOptions {
-        return OPTIONS_HOLDER_SPARSE_ARRAY.get(optionsId).getOptions(context) as LoadOptions
+        return OPTIONS_ARRAY.get(optionsId).getOptions(context) as LoadOptions
     }
 
     fun getDownloadOptions(context: Context, @Type optionsId: Int): DownloadOptions {
-        return OPTIONS_HOLDER_SPARSE_ARRAY.get(optionsId).getOptions(context)
+        return OPTIONS_ARRAY.get(optionsId).getOptions(context)
     }
 
     private abstract class OptionsHolder {

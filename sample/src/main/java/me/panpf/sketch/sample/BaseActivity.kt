@@ -29,7 +29,7 @@ import me.panpf.sketch.sample.util.DataTransferStation
 
 abstract class BaseActivity : AppCompatActivity() {
     val toolbar: Toolbar? by bindOptionalView(R.id.toolbar)
-    val dataTransferHelper = DataTransferStation.PageHelper(this)
+    private val dataTransferHelper = DataTransferStation.PageHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,11 +72,11 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
+        return if (item.itemId == android.R.id.home) {
             onBackPressed()
-            return true
+            true
         } else {
-            return super.onOptionsItemSelected(item)
+            super.onOptionsItemSelected(item)
         }
     }
 
@@ -103,7 +103,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun setFitsSystemWindows() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val contentViewGroup = findViewById(android.R.id.content) as ViewGroup
+            val contentViewGroup = findViewById<ViewGroup>(android.R.id.content)
             if (contentViewGroup != null && contentViewGroup.childCount > 0) {
                 contentViewGroup.getChildAt(0).fitsSystemWindows = true
             }

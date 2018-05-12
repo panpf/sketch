@@ -48,28 +48,23 @@ class VideoListDataSource constructor(context: Context,
                         MediaStore.Video.Media.MIME_TYPE), null, null,
                 MediaStore.Video.Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize)
         val list = ArrayList<VideoInfo>(cursor.count)
-        cursor?.let {
-            try {
-                while (cursor.moveToNext()) {
-                    val video = VideoInfo()
-                    video.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE))
-                    video.path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
-                    video.mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE))
-                    video.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
-                    video.duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)).toLong()
-                    video.date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_TAKEN))
-                    list.add(video)
-                }
-            } finally {
-                cursor.close()
+        cursor?.use {
+            while (cursor.moveToNext()) {
+                val video = VideoInfo()
+                video.title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE))
+                video.path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                video.mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE))
+                video.size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
+                video.duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)).toLong()
+                video.date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_TAKEN))
+                list.add(video)
             }
         }
         return list
     }
 
-    class Factory constructor(context: Context,
-                              private val initStatus: MutableLiveData<Status>,
-                              private val pagingStatus: MutableLiveData<Status>) : DataSource.Factory<Int, VideoInfo>() {
+    class Factory constructor(context: Context, private val initStatus: MutableLiveData<Status>, private val pagingStatus: MutableLiveData<Status>)
+        : DataSource.Factory<Int, VideoInfo>() {
         private val appContext = context.applicationContext
 
         override fun create(): DataSource<Int, VideoInfo> {
