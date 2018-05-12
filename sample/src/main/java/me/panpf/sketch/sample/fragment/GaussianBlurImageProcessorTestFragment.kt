@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_gaussian_blur.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.GaussianBlurImageProcessor
-import me.panpf.sketch.sample.*
+import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.BaseFragment
+import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
 
 @BindContentView(R.layout.fragment_gaussian_blur)
 class GaussianBlurImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_gaussianBlurFragment)
-    val seekBar: SeekBar by bindView(R.id.seekBar_gaussianBlurFragment)
-    val progressTextView: TextView by bindView(R.id.text_gaussianBlurFragment)
+    val imageView: SampleImageView by lazy {image_gaussianBlurFragment}
+    val seekBar: SeekBar by lazy {seekBar_gaussianBlurFragment}
+    val progressTextView: TextView by lazy {text_gaussianBlurFragment}
 
     private var progress = 15
 

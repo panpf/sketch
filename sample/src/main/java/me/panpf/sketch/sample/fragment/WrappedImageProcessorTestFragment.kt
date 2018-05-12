@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_wrapped.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.process.RotateImageProcessor
@@ -14,16 +15,15 @@ import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_wrapped)
 class WrappedImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_wrappedFragment)
-    val widthSeekBar: SeekBar by bindView(R.id.seekBar_wrappedFragment_width)
-    val widthProgressTextView: TextView by bindView(R.id.text_wrappedFragment_width)
-    val heightSeekBar: SeekBar by bindView(R.id.seekBar_wrappedFragment_height)
-    val heightProgressTextView: TextView by bindView(R.id.text_wrappedFragment_height)
-    val rotateButton: View by bindView(R.id.button_wrappedFragment)
+    val imageView: SampleImageView by lazy {image_wrappedFragment}
+    val widthSeekBar: SeekBar by lazy {seekBar_wrappedFragment_width}
+    val widthProgressTextView: TextView by lazy {text_wrappedFragment_width}
+    val heightSeekBar: SeekBar by lazy {seekBar_wrappedFragment_height}
+    val heightProgressTextView: TextView by lazy {text_wrappedFragment_height}
+    val rotateButton: View by lazy {button_wrappedFragment}
 
     private var roundRectRadiusProgress = 30
     private var maskAlphaProgress = 45

@@ -5,14 +5,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import me.panpf.sketch.sample.*
+import kotlinx.android.synthetic.main.fragment_base64_test.*
+import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.BaseFragment
+import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
 
 @BindContentView(R.layout.fragment_base64_test)
 class Base64ImageTestFragment : BaseFragment() {
 
-    val editText: EditText by bindView(R.id.edit_base64TestFragment)
-    val imageView: SampleImageView by bindView(R.id.image_base64TestFragment)
+    val editText: EditText by lazy {edit_base64TestFragment}
+    val imageView: SampleImageView by lazy {image_base64TestFragment}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -3,15 +3,19 @@ package me.panpf.sketch.sample.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import me.panpf.sketch.sample.*
+import kotlinx.android.synthetic.main.fragment_about.*
+import me.panpf.sketch.sample.BaseFragment
+import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.BuildConfig
+import me.panpf.sketch.sample.R
 
 /**
  * 关于 Fragment
  */
 @BindContentView(R.layout.fragment_about)
 class AboutFragment : BaseFragment() {
-    val versionTextView: TextView by bindView(R.id.text_about_versions)
-    val typesTextView: TextView by bindView(R.id.text_about_types)
+    val versionTextView: TextView by lazy {text_about_versions}
+    val typesTextView: TextView by lazy {text_about_types}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

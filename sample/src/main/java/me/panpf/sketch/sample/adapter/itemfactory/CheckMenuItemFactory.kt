@@ -6,13 +6,13 @@ import android.widget.CheckBox
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.CheckMenu
-import me.panpf.sketch.sample.bindView
 
-class CheckMenuItemFactory : AssemblyItemFactory<CheckMenuItemFactory.CheckMenuItem>() {
+class CheckMenuItemFactory : AssemblyItemFactory<CheckMenu>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is CheckMenu
     }
 
@@ -21,18 +21,18 @@ class CheckMenuItemFactory : AssemblyItemFactory<CheckMenuItemFactory.CheckMenuI
     }
 
     inner class CheckMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<CheckMenu>(itemLayoutId, parent) {
-        val textView: TextView by bindView(R.id.text_checkBoxMenuItem)
-        val checkBox: CheckBox by bindView(R.id.checkBox_checkBoxMenuItem)
+        private val textView: TextView by bindView(R.id.text_checkBoxMenuItem)
+        private val checkBox: CheckBox by bindView(R.id.checkBox_checkBoxMenuItem)
 
         override fun onConfigViews(context: Context) {
-            getItemView().setOnClickListener {
-                data.onClick(adapter)
+            itemView.setOnClickListener {
+                data?.onClick(adapter)
             }
         }
 
-        override fun onSetData(i: Int, checkMenu: CheckMenu) {
-            textView.text = checkMenu.title
-            checkBox.isChecked = checkMenu.isChecked
+        override fun onSetData(i: Int, checkMenu: CheckMenu?) {
+            textView.text = checkMenu?.title
+            checkBox.isChecked = checkMenu?.isChecked ?: false
         }
     }
 }

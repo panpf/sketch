@@ -8,17 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
-import me.panpf.sketch.util.SketchUtils
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.widget.SampleImageView
+import me.panpf.sketch.util.SketchUtils
 
-class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?) : AssemblyItemFactory<MyPhotoItemFactory.PhotoAlbumItem>() {
+class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?) : AssemblyItemFactory<String>() {
     private var itemSize: Int = 0
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is String
     }
 
@@ -26,13 +26,10 @@ class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?
         if (itemSize == 0) {
             itemSize = -1
             if (viewGroup is RecyclerView) {
-                var spanCount = 1
-                val recyclerView = viewGroup
-                val layoutManager = recyclerView.layoutManager
-                if (layoutManager is GridLayoutManager) {
-                    spanCount = (recyclerView.layoutManager as GridLayoutManager).spanCount
-                } else if (layoutManager is StaggeredGridLayoutManager) {
-                    spanCount = (recyclerView.layoutManager as StaggeredGridLayoutManager).spanCount
+                val spanCount = when (viewGroup.layoutManager) {
+                    is GridLayoutManager -> (viewGroup.layoutManager as GridLayoutManager).spanCount
+                    is StaggeredGridLayoutManager -> (viewGroup.layoutManager as StaggeredGridLayoutManager).spanCount
+                    else -> 1
                 }
                 if (spanCount > 1) {
                     val screenWidth = viewGroup.getResources().displayMetrics.widthPixels
@@ -67,14 +64,14 @@ class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?
             imageView.page = SampleImageView.Page.PHOTO_LIST
         }
 
-        override fun onSetData(i: Int, imageUri: String) {
+        override fun onSetData(i: Int, imageUri: String?) {
             if (AppConfig.getBoolean(imageView.context, AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST)) {
                 imageView.setOptions(ImageOptions.ROUND_RECT)
             } else {
                 imageView.setOptions(ImageOptions.RECT)
             }
 
-            imageView.displayImage(imageUri)
+            imageView.displayImage(imageUri ?: "")
         }
     }
 }

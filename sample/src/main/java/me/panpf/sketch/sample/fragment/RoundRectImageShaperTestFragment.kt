@@ -5,22 +5,22 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_round_rect_image_shaper.*
 import me.panpf.sketch.display.TransitionImageDisplayer
-import me.panpf.sketch.shaper.RoundRectImageShaper
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
+import me.panpf.sketch.shaper.RoundRectImageShaper
 
 @BindContentView(R.layout.fragment_round_rect_image_shaper)
 class RoundRectImageShaperTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_roundRectImageShaperFragment)
-    val radiusSeekBar: SeekBar by bindView(R.id.seekBar_roundRectImageShaperFragment_radius)
-    val radiusProgressTextView: TextView by bindView(R.id.text_roundRectImageShaperFragment_radius)
-    val strokeSeekBar: SeekBar by bindView(R.id.seekBar_roundRectImageShaperFragment_stroke)
-    val strokeProgressTextView: TextView by bindView(R.id.text_roundRectImageShaperFragment_stroke)
+    val imageView: SampleImageView by lazy {image_roundRectImageShaperFragment}
+    val radiusSeekBar: SeekBar by lazy {seekBar_roundRectImageShaperFragment_radius}
+    val radiusProgressTextView: TextView by lazy {text_roundRectImageShaperFragment_radius}
+    val strokeSeekBar: SeekBar by lazy {seekBar_roundRectImageShaperFragment_stroke}
+    val strokeProgressTextView: TextView by lazy {text_roundRectImageShaperFragment_stroke}
 
     private var radiusProgress = 20
     private var strokeProgress = 5

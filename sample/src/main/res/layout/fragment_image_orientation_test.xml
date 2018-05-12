@@ -11,7 +11,7 @@
         android:textColor="@color/default_text_color_normal"
         android:text="纠正前：" />
 
-    <me.panpf.sketch.sample.widget.InterceptCorrectImageOrientationConfigImageView
+    <me.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_imageOrientationTestFragment_before"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,7 +24,7 @@
         android:textColor="@color/default_text_color_normal"
         android:text="纠正后：" />
 
-    <me.panpf.sketch.sample.widget.InterceptCorrectImageOrientationConfigImageView
+    <me.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_imageOrientationTestFragment_after"
         android:layout_width="match_parent"
         android:layout_height="0dp"

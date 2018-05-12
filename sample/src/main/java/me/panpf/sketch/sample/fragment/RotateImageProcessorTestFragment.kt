@@ -3,6 +3,7 @@ package me.panpf.sketch.sample.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import kotlinx.android.synthetic.main.fragment_rotate.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.sample.AssetImage
@@ -10,12 +11,11 @@ import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_rotate)
 class RotateImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_rotateFragment)
-    val rotateButton: Button by bindView(R.id.button_rotateFragment)
+    val imageView: SampleImageView by lazy {image_rotateFragment}
+    val rotateButton: Button by lazy {button_rotateFragment}
 
     private var degrees = 45
 

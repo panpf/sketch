@@ -22,13 +22,13 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import kotlinx.android.synthetic.main.fragment_detail.*
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.adapter.itemfactory.ImageFragmentItemFactory
 import me.panpf.sketch.sample.bean.Image
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
 import me.panpf.sketch.sample.widget.ZoomOutPageTransformer
@@ -39,9 +39,9 @@ import org.greenrobot.eventbus.Subscribe
 @BindContentView(R.layout.fragment_detail)
 class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
-    val viewPager: ViewPager by bindView(R.id.pager_detail_content)
-    val currentItemTextView: TextView by bindView(R.id.text_detail_currentItem)
-    val countTextView: TextView by bindView(R.id.text_detail_countItem)
+    val viewPager: ViewPager by lazy {pager_detail_content}
+    val currentItemTextView: TextView by lazy {text_detail_currentItem}
+    val countTextView: TextView by lazy {text_detail_countItem}
 
     private var imageList: List<Image>? = null
     private var loadingImageOptionsKey: String? = null

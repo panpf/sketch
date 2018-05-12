@@ -25,10 +25,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import kotlinx.android.synthetic.main.include_toolbar.*
 import me.panpf.sketch.sample.util.DataTransferStation
 
 abstract class BaseActivity : AppCompatActivity() {
-    val toolbar: Toolbar? by bindOptionalView(R.id.toolbar)
+    val toolbarView: Toolbar? by lazy { toolbar}
     private val dataTransferHelper = DataTransferStation.PageHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +42,9 @@ abstract class BaseActivity : AppCompatActivity() {
             setContentView(bindContentView.value)
         }
 
-        if (toolbar != null) {
+        if (toolbarView != null) {
             onPreSetSupportActionBar()
-            setSupportActionBar(toolbar)
+            setSupportActionBar(toolbarView)
             onPostSetSupportActionBar()
         }
     }

@@ -22,7 +22,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import me.panpf.sketch.sample.*
+import kotlinx.android.synthetic.main.activity_only_fragment.*
+import me.panpf.sketch.sample.BaseActivity
+import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.fragment.ImageDetailFragment
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.util.DeviceUtils
@@ -31,8 +35,8 @@ import me.panpf.sketch.sample.widget.SampleImageView
 @BindContentView(R.layout.activity_only_fragment)
 class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
 
-    val backgroundImageView: SampleImageView by bindView(R.id.image_onlyFragment_background)
-    val contentView: View by bindView(R.id.layout_onlyFragment_content)
+    val backgroundImageView: SampleImageView by lazy { image_onlyFragment_background}
+    val contentView: View by lazy { layout_onlyFragment_content}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +61,7 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
 
         backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
-        toolbar?.visibility = View.GONE
+        toolbarView?.visibility = View.GONE
 
         val imageDetailFragment = ImageDetailFragment()
         imageDetailFragment.arguments = intent.extras

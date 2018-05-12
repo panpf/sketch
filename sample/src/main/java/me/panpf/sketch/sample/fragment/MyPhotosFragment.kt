@@ -24,8 +24,12 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.sample.*
+import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.BaseFragment
+import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.activity.ImageDetailActivity
 import me.panpf.sketch.sample.activity.PageBackgApplyCallback
 import me.panpf.sketch.sample.adapter.itemfactory.MyPhotoItemFactory
@@ -47,9 +51,9 @@ import java.util.*
 @BindContentView(R.layout.fragment_recycler)
 class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
-    val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    val hintView: HintView by bindView(R.id.hint_recyclerFragment)
+    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
+    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
+    val hintView: HintView by lazy {hint_recyclerFragment}
 
     private var adapter: AssemblyRecyclerAdapter? = null
 

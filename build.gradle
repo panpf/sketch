@@ -22,5 +22,6 @@ allprojects {
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         jcenter()
         google()
+        maven { url 'https://dl.bintray.com/panpf/maven' }
     }
 }

@@ -13,6 +13,7 @@ import android.text.format.Formatter
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import kotlinx.android.synthetic.main.fragment_image.*
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageAttrs
@@ -26,7 +27,6 @@ import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.activity.PageBackgApplyCallback
 import me.panpf.sketch.sample.bean.Image
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
@@ -50,9 +50,9 @@ import java.util.*
 @BindContentView(R.layout.fragment_image)
 class ImageFragment : BaseFragment() {
 
-    private val imageView: SampleImageView by bindView(R.id.image_imageFragment_image)
-    private val mappingView: MappingView by bindView(R.id.mapping_imageFragment)
-    private val hintView: HintView by bindView(R.id.hint_imageFragment_hint)
+    private val imageView: SampleImageView by lazy {image_imageFragment_image}
+    private val mappingView: MappingView by lazy {mapping_imageFragment}
+    private val hintView: HintView by lazy {hint_imageFragment_hint}
 
     private lateinit var image: Image
     private var loadingImageOptionsKey: String? = null

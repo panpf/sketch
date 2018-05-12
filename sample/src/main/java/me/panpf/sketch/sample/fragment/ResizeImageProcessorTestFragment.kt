@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_resize.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.request.Resize
 import me.panpf.sketch.sample.AssetImage
@@ -12,23 +13,22 @@ import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_resize)
 class ResizeImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_resizeFragment)
-    val widthSeekBar: SeekBar by bindView(R.id.seekBar_resizeFragment_width)
-    val widthProgressTextView: TextView by bindView(R.id.text_resizeFragment_width)
-    val heightSeekBar: SeekBar by bindView(R.id.seekBar_resizeFragment_height)
-    val heightProgressTextView: TextView by bindView(R.id.text_resizeFragment_height)
-    val fixStartButton: View by bindView(R.id.button_resizeFragment_fixStart)
-    val fixCenterButton: View by bindView(R.id.button_resizeFragment_fixCenter)
-    val fixEndButton: View by bindView(R.id.button_resizeFragment_fixEnd)
-    val fixXYButton: View by bindView(R.id.button_resizeFragment_fixXY)
-    val centerButton: View by bindView(R.id.button_resizeFragment_center)
-    val centerCropButton: View by bindView(R.id.button_resizeFragment_centerCrop)
-    val centerInsideButton: View by bindView(R.id.button_resizeFragment_centerInside)
-    val matrixButton: View by bindView(R.id.button_resizeFragment_matrix)
+    val imageView: SampleImageView by lazy {image_resizeFragment}
+    val widthSeekBar: SeekBar by lazy {seekBar_resizeFragment_width}
+    val widthProgressTextView: TextView by lazy {text_resizeFragment_width}
+    val heightSeekBar: SeekBar by lazy {seekBar_resizeFragment_height}
+    val heightProgressTextView: TextView by lazy {text_resizeFragment_height}
+    val fixStartButton: View by lazy {button_resizeFragment_fixStart}
+    val fixCenterButton: View by lazy {button_resizeFragment_fixCenter}
+    val fixEndButton: View by lazy {button_resizeFragment_fixEnd}
+    val fixXYButton: View by lazy {button_resizeFragment_fixXY}
+    val centerButton: View by lazy {button_resizeFragment_center}
+    val centerCropButton: View by lazy {button_resizeFragment_centerCrop}
+    val centerInsideButton: View by lazy {button_resizeFragment_centerInside}
+    val matrixButton: View by lazy {button_resizeFragment_matrix}
 
     private var widthProgress = 50
     private var heightProgress = 50

@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 
-class MenuTitleItemFactory : AssemblyItemFactory<MenuTitleItemFactory.MenuTitleItem>() {
-    override fun isTarget(o: Any): Boolean {
+class MenuTitleItemFactory : AssemblyItemFactory<String>() {
+    override fun match(o: Any?): Boolean {
         return o is String
     }
 
@@ -18,13 +18,13 @@ class MenuTitleItemFactory : AssemblyItemFactory<MenuTitleItemFactory.MenuTitleI
     }
 
     inner class MenuTitleItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<String>(itemLayoutId, parent) {
-        val textView: TextView by bindView(R.id.text_menuTitleItem_title)
+        private val textView: TextView by bindView(R.id.text_menuTitleItem_title)
 
         override fun onConfigViews(context: Context) {
 
         }
 
-        override fun onSetData(i: Int, title: String) {
+        override fun onSetData(i: Int, title: String?) {
             textView.text = title
         }
     }

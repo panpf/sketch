@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_round_rect_image_processor.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
@@ -11,13 +12,12 @@ import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_round_rect_image_processor)
 class RoundRectImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_roundRectImageProcessor)
-    val seekBar: SeekBar by bindView(R.id.seekBar_roundRectImageProcessor)
-    val progressTextView: TextView by bindView(R.id.text_roundRectImageProcessor)
+    val imageView: SampleImageView by lazy {image_roundRectImageProcessor}
+    val seekBar: SeekBar by lazy {seekBar_roundRectImageProcessor}
+    val progressTextView: TextView by lazy {text_roundRectImageProcessor}
 
     private var progress = 30
 

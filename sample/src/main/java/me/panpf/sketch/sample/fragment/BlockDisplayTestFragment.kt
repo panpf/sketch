@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_pager_tab.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
 import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.sample.*
@@ -15,8 +16,8 @@ import me.panpf.sketch.sample.bean.Image
  */
 @BindContentView(R.layout.fragment_pager_tab)
 class BlockDisplayTestFragment : BaseFragment() {
-    private val tabStrip: PagerIndicator by bindView(R.id.tab_pagerTabFragment_tabs)
-    private val viewPager: ViewPager by bindView(R.id.pager_pagerTabFragment_content)
+    private val tabStrip: PagerIndicator by lazy {tab_pagerTabFragment_tabs}
+    private val viewPager: ViewPager by lazy {pager_pagerTabFragment_content}
 
     private var fragmentAdapter: FragmentArrayPagerAdapter? = null
 

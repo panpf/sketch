@@ -35,6 +35,7 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.pagerid.PagerIndicator
@@ -67,13 +68,13 @@ import java.util.*
 @BindContentView(R.layout.activity_main)
 class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener, PageBackgApplyCallback {
 
-    val contentView: View by bindView(R.id.layout_main_content)
-    val appListTabStrip: PagerIndicator by bindView(R.id.tabStrip_main_appList)
-    val drawerLayout: DrawerLayout by bindView(R.id.drawer_main_content)
-    val menuRecyclerView: RecyclerView by bindView(R.id.recycler_main_menu)
-    val leftMenuView: ViewGroup by bindView(R.id.layout_main_leftMenu)
-    val backgroundImageView: SampleImageView by bindView(R.id.image_main_background)
-    val menuBackgroundImageView: SampleImageView by bindView(R.id.image_main_menuBackground)
+    val contentView: View by lazy {layout_main_content}
+    val appListTabStrip: PagerIndicator by lazy {tabStrip_main_appList}
+    val drawerLayout: DrawerLayout by lazy {drawer_main_content}
+    val menuRecyclerView: RecyclerView by lazy {recycler_main_menu}
+    val leftMenuView: ViewGroup by lazy {layout_main_leftMenu}
+    val backgroundImageView: SampleImageView by lazy {image_main_background}
+    val menuBackgroundImageView: SampleImageView by lazy {image_main_menuBackground}
 
     private var lastClickBackTime: Long = 0
     private var page: Page? = null
@@ -128,7 +129,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        toggleDrawable = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+        toggleDrawable = ActionBarDrawerToggle(this, drawerLayout, toolbarView, R.string.drawer_open, R.string.drawer_close)
 
         appListTabStrip.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), baseContext))
 

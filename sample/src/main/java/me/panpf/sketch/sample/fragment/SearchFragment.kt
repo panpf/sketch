@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
+import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
@@ -29,7 +30,6 @@ import me.panpf.sketch.sample.adapter.itemfactory.StaggeredImageItemFactory
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bean.BaiduImageSearchResult
 import me.panpf.sketch.sample.bean.Image
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
@@ -44,9 +44,9 @@ import java.lang.ref.WeakReference
 @BindContentView(R.layout.fragment_recycler)
 class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
-    val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
-    val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    val hintView: HintView by bindView(R.id.hint_recyclerFragment)
+    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
+    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
+    val hintView: HintView by lazy {hint_recyclerFragment}
 
     private var searchKeyword: String? = "GIF"
 
@@ -266,7 +266,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
             val adapter = AssemblyRecyclerAdapter(images)
             adapter.addItemFactory(StaggeredImageItemFactory(fragment))
-            adapter.setLoadMoreItem(LoadMoreItemFactory(fragment).fullSpan(fragment.recyclerView))
+            adapter.setMoreItem(LoadMoreItemFactory(fragment).fullSpan(fragment.recyclerView))
 
             fragment.recyclerView.adapter = adapter
             fragment.adapter = adapter

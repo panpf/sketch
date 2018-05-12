@@ -5,21 +5,21 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.UnsplashImage
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.adapter.AssemblyItem
-import me.panpf.adapter.AssemblyItemFactory
 
 class UnsplashPhotosItemFactory(private val activity: Activity,
                                 private val unsplashPhotosItemEventListener: UnsplashPhotosItemEventListener?)
-    : AssemblyItemFactory<UnsplashPhotosItemFactory.UnsplashPhotosItem>() {
+    : AssemblyItemFactory<UnsplashImage>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is UnsplashImage
     }
 
@@ -35,14 +35,14 @@ class UnsplashPhotosItemFactory(private val activity: Activity,
 
     inner class UnsplashPhotosItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<UnsplashImage>(itemLayoutId, parent) {
         val imageView: SampleImageView by bindView(R.id.image_unsplashImageItem)
-        val userProfileImageView: SampleImageView by bindView(R.id.image_unsplashImageItem_userProfile)
-        val userNameTextView: TextView by bindView(R.id.text_unsplashImageItem_userName)
-        val dateTextView: TextView by bindView(R.id.text_unsplashImageItem_date)
-        val rootViewGroup: ViewGroup by bindView(R.id.layout_unsplashImageItem_root)
+        private val userProfileImageView: SampleImageView by bindView(R.id.image_unsplashImageItem_userProfile)
+        private val userNameTextView: TextView by bindView(R.id.text_unsplashImageItem_userName)
+        private val dateTextView: TextView by bindView(R.id.text_unsplashImageItem_date)
+        private val rootViewGroup: ViewGroup by bindView(R.id.layout_unsplashImageItem_root)
 
         override fun onConfigViews(context: Context) {
             imageView.onClickListener = View.OnClickListener {
-                unsplashPhotosItemEventListener?.onClickImage(adapterPosition, data, imageView.optionsKey)
+                data?.let { it1 -> unsplashPhotosItemEventListener?.onClickImage(adapterPosition, it1, imageView.optionsKey) }
             }
             imageView.setOptions(ImageOptions.LIST_FULL)
 
@@ -51,13 +51,15 @@ class UnsplashPhotosItemFactory(private val activity: Activity,
             userProfileImageView.setOptions(ImageOptions.CIRCULAR_STROKE)
 
             userProfileImageView.onClickListener = View.OnClickListener {
-                unsplashPhotosItemEventListener?.onClickUser(adapterPosition, data.user!!)
+                data?.user?.let { it1 -> unsplashPhotosItemEventListener?.onClickUser(adapterPosition, it1) }
             }
 
             userNameTextView.setOnClickListener { userProfileImageView.performClick() }
         }
 
-        override fun onSetData(i: Int, image: UnsplashImage) {
+        override fun onSetData(i: Int, image: UnsplashImage?) {
+            image ?: return
+
             val itemWidth = imageView.context.resources.displayMetrics.widthPixels
 
             imageView.layoutParams?.let {

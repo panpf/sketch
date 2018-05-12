@@ -4,18 +4,18 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.flexbox.FlexboxLayoutManager
+import me.panpf.adapter.AssemblyItem
+import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.BaiduImage
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.kotlinextends.isPortraitOrientation
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.adapter.AssemblyItem
-import me.panpf.adapter.AssemblyItemFactory
 
-class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyItemFactory<StaggeredImageItemFactory.StaggeredImageItem>() {
+class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyItemFactory<BaiduImage>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is BaiduImage
     }
 
@@ -32,7 +32,7 @@ class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickList
 
         override fun onConfigViews(context: Context) {
             imageView.onClickListener = View.OnClickListener {
-                onItemClickListener?.onItemClick(adapterPosition, data, imageView.optionsKey)
+                data?.let { it1 -> onItemClickListener?.onItemClick(adapterPosition, it1, imageView.optionsKey) }
             }
             imageView.setOptions(ImageOptions.RECT)
 
@@ -45,7 +45,8 @@ class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickList
             }
         }
 
-        override fun onSetData(i: Int, image: BaiduImage) {
+        override fun onSetData(i: Int, image: BaiduImage?) {
+            image ?: return
             imageView.layoutParams?.let {
                 it.height = imageView.context.resources.displayMetrics.heightPixels / (if (imageView.context.isPortraitOrientation()) 5 else 2)
                 it.width = (it.height / (image.height / image.width.toFloat())).toInt()

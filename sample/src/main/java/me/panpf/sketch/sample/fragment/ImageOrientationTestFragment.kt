@@ -3,17 +3,17 @@ package me.panpf.sketch.sample.fragment
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_image_orientation_test.*
 import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_image_orientation_test)
 class ImageOrientationTestFragment : BaseFragment() {
 
-    val beforeImageView: SketchImageView by bindView(R.id.image_imageOrientationTestFragment_before)
-    val afterImageView: SketchImageView by bindView(R.id.image_imageOrientationTestFragment_after)
+    val beforeImageView: SketchImageView by lazy {image_imageOrientationTestFragment_before}
+    val afterImageView: SketchImageView by lazy {image_imageOrientationTestFragment_after}
 
     private var filePath: String? = null
 
@@ -35,6 +35,9 @@ class ImageOrientationTestFragment : BaseFragment() {
 
         beforeImageView.options.isCorrectImageOrientationDisabled = true
         beforeImageView.displayImage(filePath!!)
+
+        TODO("不起作用了")
+        TODO("往回滑动内容消失")
 
         afterImageView.displayImage(filePath!!)
     }

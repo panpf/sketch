@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.vt.R
-import me.panpf.sketch.sample.vt.ext.bindView
+import me.panpf.sketch.sample.vt.bean.VideoInfo
 import me.panpf.sketch.sample.vt.util.VideoThumbnailUriModel
 
-class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : AssemblyItemFactory<VideoInfoItemFactory.VideoInfoItem>() {
+class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : AssemblyItemFactory<VideoInfo>() {
 
     override fun match(o: Any?): Boolean {
         return o is me.panpf.sketch.sample.vt.bean.VideoInfo
@@ -27,7 +28,7 @@ class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : Assem
     }
 
     class VideoInfoItem(itemLayoutId: Int, parent: ViewGroup, private val listener: VideoInfoItemListener?)
-        : AssemblyItem<me.panpf.sketch.sample.vt.bean.VideoInfo>(itemLayoutId, parent) {
+        : AssemblyItem<VideoInfo>(itemLayoutId, parent) {
         private val iconImageView: SketchImageView by bindView(R.id.image_myVideoItem_icon)
         private val noTextView: TextView by bindView(R.id.text_myVideoItem_no)
         private val nameTextView: TextView by bindView(R.id.text_myVideoItem_name)
@@ -37,7 +38,7 @@ class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : Assem
 
         override fun onConfigViews(context: Context) {
             itemView.setOnClickListener {
-                listener?.onClickVideo(position, data)
+                data?.let { it1 -> listener?.onClickVideo(position, it1) }
             }
 
             iconImageView.onClickListener = View.OnClickListener { getItemView().performClick() }
@@ -46,13 +47,13 @@ class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : Assem
                     .setLoadingImage(R.drawable.image_loading).displayer = TransitionImageDisplayer()
         }
 
-        override fun onSetData(i: Int, videoInfo: me.panpf.sketch.sample.vt.bean.VideoInfo) {
+        override fun onSetData(i: Int, videoInfo: VideoInfo?) {
             noTextView.text = (i+1).toString()
-            iconImageView.displayImage(VideoThumbnailUriModel.makeUri(videoInfo.path ?: ""))
-            nameTextView.text = videoInfo.title
-            sizeTextView.text = videoInfo.getTempFormattedSize(sizeTextView.context)
-            dateTextView.text = videoInfo.tempFormattedDate
-            durationTextView.text = videoInfo.tempFormattedDuration
+            iconImageView.displayImage(VideoThumbnailUriModel.makeUri(videoInfo?.path ?: ""))
+            nameTextView.text = videoInfo?.title
+            sizeTextView.text = videoInfo?.getTempFormattedSize(sizeTextView.context)
+            dateTextView.text = videoInfo?.tempFormattedDate
+            durationTextView.text = videoInfo?.tempFormattedDuration
         }
     }
 }

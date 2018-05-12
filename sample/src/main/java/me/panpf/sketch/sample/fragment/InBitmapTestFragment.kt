@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_in_bitmap_test.*
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
@@ -24,15 +25,15 @@ import java.io.IOException
 @BindContentView(R.layout.fragment_in_bitmap_test)
 class InBitmapTestFragment : BaseFragment() {
 
-    val imageView: ImageView by bindView(R.id.image_inBitmapTestFragment)
-    val textView: TextView by bindView(R.id.text_inBitmapTestFragment)
-    val sizeSameButton: Button by bindView(R.id.button_inBitmapTestFragment_sizeSame)
-    val largeSizeButton: Button by bindView(R.id.button_inBitmapTestFragment_largeSize)
-    val sizeNoSameButton: Button by bindView(R.id.button_inBitmapTestFragment_sizeNoSame)
-    val inSampleSizeButton: Button by bindView(R.id.button_inBitmapTestFragment_inSampleSize)
-    val pageNumberTextView: TextView by bindView(R.id.view_inBitmapTestFragment_pageNumber)
-    val lastView: View by bindView(R.id.view_inBitmapTestFragment_last)
-    val nextView: View by bindView(R.id.view_inBitmapTestFragment_next)
+    val imageView: ImageView by lazy {image_inBitmapTestFragment}
+    val textView: TextView by lazy {text_inBitmapTestFragment}
+    val sizeSameButton: Button by lazy {button_inBitmapTestFragment_sizeSame}
+    val largeSizeButton: Button by lazy {button_inBitmapTestFragment_largeSize}
+    val sizeNoSameButton: Button by lazy {button_inBitmapTestFragment_sizeNoSame}
+    val inSampleSizeButton: Button by lazy {button_inBitmapTestFragment_inSampleSize}
+    val pageNumberTextView: TextView by lazy {view_inBitmapTestFragment_pageNumber}
+    val lastView: View by lazy {view_inBitmapTestFragment_last}
+    val nextView: View by lazy {view_inBitmapTestFragment_next}
 
     private var index = 0
 

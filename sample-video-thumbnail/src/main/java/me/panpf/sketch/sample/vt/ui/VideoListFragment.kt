@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.vt.BaseFragment
@@ -33,11 +34,10 @@ import me.panpf.sketch.sample.vt.BindContentView
 import me.panpf.sketch.sample.vt.R
 import me.panpf.sketch.sample.vt.bean.BoundaryStatus
 import me.panpf.sketch.sample.vt.bean.VideoInfo
-import me.panpf.sketch.sample.vt.ext.bindView
-import me.panpf.sketch.sample.vt.ext.bindViewModel
-import me.panpf.sketch.sample.vt.ext.longToast
 import me.panpf.sketch.sample.vt.item.LoadMoreItemFactory
 import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
+import me.panpf.sketch.sample.vt.kxt.bindViewModel
+import me.panpf.sketch.sample.vt.kxt.longToast
 import me.panpf.sketch.sample.vt.vm.VideoListViewModel
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
@@ -45,16 +45,16 @@ import java.io.File
 @BindContentView(R.layout.fragment_recycler)
 class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemListener, OnLoadMoreListener {
 
-    private val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
-    private val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    private val hintTextView: TextView by bindView(R.id.hint_recyclerFragment)
+    private val refreshLayout: SwipeRefreshLayout by lazy { refresh_recyclerFragment }
+    private val recyclerView: RecyclerView by lazy { recycler_recyclerFragment_content}
+    private val hintTextView: TextView by lazy { hint_recyclerFragment}
 
     private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 
     private val adapter by lazy {
         AssemblyRecyclerPageListAdapter<VideoInfo>(VideoInfo.DiffCallback()).apply {
             addItemFactory(VideoInfoItemFactory(this@VideoListFragment))
-            setLoadMoreItem(LoadMoreItemFactory(this@VideoListFragment))
+            setMoreItem(LoadMoreItemFactory(this@VideoListFragment))
         }
     }
 

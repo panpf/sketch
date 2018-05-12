@@ -16,8 +16,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewSwitcher
+import kotlinx.android.synthetic.main.view_hint.view.*
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 import org.apache.http.conn.ConnectTimeoutException
 import java.io.FileNotFoundException
 import java.net.SocketTimeoutException
@@ -27,11 +27,11 @@ import java.net.UnknownHostException
  * 提示视图
  */
 class HintView : LinearLayout {
-    val actionButton: Button by bindView(R.id.button_hint_action)
-    val loadingHintTextView: TextView by bindView(R.id.text_hint_loadingHint)
-    val hintTextView: TextView by bindView(R.id.text_hint_hint)
-    val progressTextView: TextView by bindView(R.id.text_hint_progress)
-    val viewSwitcher: ViewSwitcher by bindView(R.id.viewSwitcher_hint)
+    val actionButton: Button by lazy {button_hint_action}
+    val loadingHintTextView: TextView by lazy {text_hint_loadingHint}
+    val hintTextView: TextView by lazy {text_hint_hint}
+    val progressTextView: TextView by lazy {text_hint_progress}
+    val viewSwitcher: ViewSwitcher by lazy {viewSwitcher_hint}
     private var mode: Mode? = null
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {

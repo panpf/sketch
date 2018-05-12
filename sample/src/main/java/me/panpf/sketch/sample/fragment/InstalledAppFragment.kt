@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
@@ -14,7 +15,6 @@ import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.adapter.itemfactory.AppItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.AppListHeaderItemFactory
 import me.panpf.sketch.sample.bean.AppInfo
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
 import net.sourceforge.pinyin4j.PinyinHelper
@@ -27,16 +27,16 @@ import java.util.*
  */
 @BindContentView(R.layout.fragment_recycler)
 class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
-    val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    val hintView: HintView by bindView(R.id.hint_recyclerFragment)
-    val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
+    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
+    val hintView: HintView by lazy {hint_recyclerFragment}
+    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
 
     private val adapter: AssemblyRecyclerAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(view!!.context)
+        recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         refreshLayout.isEnabled = false

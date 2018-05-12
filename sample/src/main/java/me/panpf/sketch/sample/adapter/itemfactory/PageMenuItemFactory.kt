@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.activity.MainActivity
-import me.panpf.sketch.sample.bindView
 
-class PageMenuItemFactory(private val onClickItemListener: OnClickItemListener) : AssemblyItemFactory<PageMenuItemFactory.PageMenuItem>() {
+class PageMenuItemFactory(private val onClickItemListener: OnClickItemListener) : AssemblyItemFactory<MainActivity.Page>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is MainActivity.Page
     }
 
@@ -24,14 +24,14 @@ class PageMenuItemFactory(private val onClickItemListener: OnClickItemListener) 
     }
 
     inner class PageMenuItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<MainActivity.Page>(itemLayoutId, parent) {
-        val textView: TextView by bindView(R.id.text_pageMenuItem)
+        private val textView: TextView by bindView(R.id.text_pageMenuItem)
 
         override fun onConfigViews(context: Context) {
-            textView.setOnClickListener { onClickItemListener.onClickItem(data) }
+            textView.setOnClickListener { data?.let { it1 -> onClickItemListener.onClickItem(it1) } }
         }
 
-        override fun onSetData(i: Int, pageMenu: MainActivity.Page) {
-            textView.text = pageMenu.showName
+        override fun onSetData(i: Int, pageMenu: MainActivity.Page?) {
+            textView.text = pageMenu?.showName
         }
     }
 }

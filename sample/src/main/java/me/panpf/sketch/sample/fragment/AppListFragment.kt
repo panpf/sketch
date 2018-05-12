@@ -5,19 +5,19 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_pager.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
 import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 
 /**
  * App列表页面，用来展示已安装APP和本地APK列表
  */
 @BindContentView(R.layout.fragment_pager)
 class AppListFragment : BaseFragment() {
-    val viewPager: ViewPager by bindView(R.id.pager_pagerFragment_content)
+    val viewPager: ViewPager by lazy {pager_pagerFragment_content}
 
     var getPagerSlidingTagStripListener: GetAppListTagStripListener? = null
     var fragmentAdapter: FragmentArrayPagerAdapter? = null
@@ -37,10 +37,6 @@ class AppListFragment : BaseFragment() {
         if (getPagerSlidingTagStripListener != null) {
             getPagerSlidingTagStripListener = null
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

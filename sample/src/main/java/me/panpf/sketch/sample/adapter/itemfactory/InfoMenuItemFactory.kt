@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.InfoMenu
-import me.panpf.sketch.sample.bindView
 
-class InfoMenuItemFactory : AssemblyItemFactory<InfoMenuItemFactory.InfoMenuItem>() {
+class InfoMenuItemFactory : AssemblyItemFactory<InfoMenu>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is InfoMenu
     }
 
@@ -25,13 +25,13 @@ class InfoMenuItemFactory : AssemblyItemFactory<InfoMenuItemFactory.InfoMenuItem
 
         override fun onConfigViews(context: Context) {
             itemView.setOnClickListener {
-                data.onClick(adapter)
+                data?.onClick(adapter)
             }
         }
 
-        override fun onSetData(i: Int, infoMenu: InfoMenu) {
-            titleTextView.text = infoMenu.title
-            infoTextView.text = infoMenu.getInfo()
+        override fun onSetData(i: Int, infoMenu: InfoMenu?) {
+            titleTextView.text = infoMenu?.title
+            infoTextView.text = infoMenu?.getInfo()
         }
     }
 }

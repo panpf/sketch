@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_mask.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.sample.AssetImage
@@ -12,13 +13,12 @@ import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.sample.bindView
 
 @BindContentView(R.layout.fragment_mask)
 class MaskImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by bindView(R.id.image_maskFragment)
-    val seekBar: SeekBar by bindView(R.id.seekBar_maskFragment)
-    val progressTextView: TextView by bindView(R.id.text_maskFragment)
+    val imageView: SampleImageView by lazy {image_maskFragment}
+    val seekBar: SeekBar by lazy {seekBar_maskFragment}
+    val progressTextView: TextView by lazy {text_maskFragment}
 
     private var progress = 15
 

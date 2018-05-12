@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
+import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
@@ -21,7 +22,6 @@ import me.panpf.sketch.sample.adapter.itemfactory.LoadMoreItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.UnsplashPhotosItemFactory
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.widget.HintView
 import retrofit2.Call
@@ -33,9 +33,9 @@ import java.util.*
 @BindContentView(R.layout.fragment_recycler)
 class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
-    val hintView: HintView by bindView(R.id.hint_recyclerFragment)
-    val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
+    val hintView: HintView by lazy {hint_recyclerFragment}
+    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
+    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var pageIndex = 1
@@ -176,7 +176,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
             val adapter = AssemblyRecyclerAdapter(images)
             adapter.addItemFactory(UnsplashPhotosItemFactory(activity, fragment))
-            adapter.setLoadMoreItem(LoadMoreItemFactory(fragment))
+            adapter.setMoreItem(LoadMoreItemFactory(fragment))
 
             fragment.recyclerView.adapter = adapter
             fragment.adapter = adapter

@@ -1,6 +1,6 @@
 @file:Suppress("RedundantVisibilityModifier", "unused")
 
-package me.panpf.sketch.sample.vt.ext
+package me.panpf.sketch.sample.vt.kxt
 
 import android.content.Context
 import android.support.annotation.StringRes

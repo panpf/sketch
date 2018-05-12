@@ -4,20 +4,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import me.panpf.adapter.more.AssemblyLoadMoreItem
-import me.panpf.adapter.more.AssemblyLoadMoreItemFactory
+import me.panpf.adapter.ktx.bindView
+import me.panpf.adapter.more.AssemblyMoreItem
+import me.panpf.adapter.more.AssemblyMoreItemFactory
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.vt.R
-import me.panpf.sketch.sample.vt.ext.bindView
 
-class LoadMoreItemFactory(eventListener: OnLoadMoreListener) : AssemblyLoadMoreItemFactory<LoadMoreItemFactory.LoadMoreItem>(eventListener) {
+class LoadMoreItemFactory(eventListener: OnLoadMoreListener) : AssemblyMoreItemFactory<String>(eventListener) {
 
     override fun createAssemblyItem(viewGroup: ViewGroup): LoadMoreItem {
         return LoadMoreItem(this, R.layout.list_footer_load_more, viewGroup)
     }
 
     inner class LoadMoreItem(itemFactory: LoadMoreItemFactory, itemLayoutId: Int, parent: ViewGroup) :
-            AssemblyLoadMoreItem<LoadMoreItem>(itemFactory, itemLayoutId, parent) {
+            AssemblyMoreItem<String>(itemFactory, itemLayoutId, parent) {
         private val progressBar: ProgressBar by bindView(R.id.progress_loadMoreFooter)
         private val tipsTextView: TextView by bindView(R.id.text_loadMoreFooter_content)
 

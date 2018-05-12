@@ -5,18 +5,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.AppInfo
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.XpkIconUriModel
 import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.uri.ApkIconUriModel
 import me.panpf.sketch.uri.AppIconUriModel
 
-class AppItemFactory(private val listener: AppItemListener?) : AssemblyItemFactory<AppItemFactory.AppItem>() {
+class AppItemFactory(private val listener: AppItemListener?) : AssemblyItemFactory<AppInfo>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is AppInfo
     }
 
@@ -29,29 +29,28 @@ class AppItemFactory(private val listener: AppItemListener?) : AssemblyItemFacto
     }
 
     inner class AppItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<AppInfo>(itemLayoutId, parent) {
-        val iconImageView: SampleImageView by bindView(R.id.image_installedApp_icon)
-        val nameTextView: TextView by bindView(R.id.text_installedApp_name)
-        val infoTextView: TextView by bindView(R.id.text_installedApp_info)
+        private val iconImageView: SampleImageView by bindView(R.id.image_installedApp_icon)
+        private val nameTextView: TextView by bindView(R.id.text_installedApp_name)
+        private val infoTextView: TextView by bindView(R.id.text_installedApp_info)
 
         override fun onConfigViews(context: Context) {
             iconImageView.setOptions(ImageOptions.ROUND_RECT)
             iconImageView.page = SampleImageView.Page.APP_LIST
 
-            getItemView().setOnClickListener {
-                listener?.onClickApp(position, data)
-            }
+            itemView.setOnClickListener { data?.let { it1 -> listener?.onClickApp(position, it1) } }
         }
 
-        override fun onSetData(i: Int, appInfo: AppInfo) {
-            if (appInfo.isTempInstalled) {
-                iconImageView.displayImage(AppIconUriModel.makeUri(appInfo.id ?: "", appInfo.versionCode))
-            } else if (appInfo.isTempXPK) {
-                iconImageView.displayImage(XpkIconUriModel.makeUri(appInfo.apkFilePath))
-            } else {
-                iconImageView.displayImage(ApkIconUriModel.makeUri(appInfo.apkFilePath ?: ""))
+        override fun onSetData(i: Int, appInfo: AppInfo?) {
+            when {
+                appInfo?.isTempInstalled == true -> iconImageView.displayImage(
+                        AppIconUriModel.makeUri(appInfo.id ?: "", appInfo.versionCode))
+                appInfo?.isTempXPK == true -> iconImageView.displayImage(
+                        XpkIconUriModel.makeUri(appInfo.apkFilePath ?: ""))
+                else -> iconImageView.displayImage(
+                        ApkIconUriModel.makeUri(appInfo?.apkFilePath ?: ""))
             }
-            nameTextView.text = appInfo.name
-            infoTextView.text = String.format("v%s  |  %s", appInfo.versionName, appInfo.formattedAppSize)
+            nameTextView.text = appInfo?.name
+            infoTextView.text = String.format("v%s  |  %s", appInfo?.versionName, appInfo?.formattedAppSize)
         }
     }
 }

@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
+import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bindView
 
-class AppListHeaderItemFactory : AssemblyItemFactory<AppListHeaderItemFactory.AppListHeaderItem>() {
-    override fun isTarget(o: Any): Boolean {
+class AppListHeaderItemFactory : AssemblyItemFactory<String>() {
+    override fun match(o: Any?): Boolean {
         return o is String
     }
 
@@ -18,13 +18,13 @@ class AppListHeaderItemFactory : AssemblyItemFactory<AppListHeaderItemFactory.Ap
     }
 
     inner class AppListHeaderItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<String>(itemLayoutId, parent) {
-        val textView: TextView by bindView(R.id.text_appListHeaderItem)
+        private val textView: TextView by bindView(R.id.text_appListHeaderItem)
 
         override fun onConfigViews(context: Context) {
 
         }
 
-        override fun onSetData(i: Int, s: String) {
+        override fun onSetData(i: Int, s: String?) {
             textView.text = s
         }
     }

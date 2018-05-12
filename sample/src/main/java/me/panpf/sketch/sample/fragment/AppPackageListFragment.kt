@@ -11,8 +11,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
+import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.adapter.FixedItemInfo
+import me.panpf.adapter.ItemHolder
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
@@ -20,7 +21,6 @@ import me.panpf.sketch.sample.adapter.itemfactory.AppItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.AppScanningItemFactory
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.bean.AppScanning
-import me.panpf.sketch.sample.bindView
 import me.panpf.sketch.sample.util.FileScanner
 import me.panpf.sketch.sample.util.FileUtils
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
@@ -37,20 +37,20 @@ import java.util.zip.ZipFile
  */
 @BindContentView(R.layout.fragment_recycler)
 class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
-    val refreshLayout: SwipeRefreshLayout by bindView(R.id.refresh_recyclerFragment)
-    val recyclerView: RecyclerView by bindView(R.id.recycler_recyclerFragment_content)
-    val hintView: HintView by bindView(R.id.hint_recyclerFragment)
+    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
+    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
+    val hintView: HintView by lazy {hint_recyclerFragment}
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var fileScanner: FileScanner? = null
-    private var scanningItemInfo: FixedItemInfo? = null
+    private var scanningItemInfo: ItemHolder<AppScanning>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         refreshLayout.isEnabled = false
 
-        recyclerView.layoutManager = LinearLayoutManager(view!!.context)
+        recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         if (adapter != null) {
