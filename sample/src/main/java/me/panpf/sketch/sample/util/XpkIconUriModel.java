@@ -20,7 +20,7 @@ public class XpkIconUriModel extends AbsStreamDiskCacheUriModel {
     public static final String SCHEME = "xpk.icon://";
     private static final String NAME = "XpkIconUriModel";
 
-    public static String makeUri(String filePath) {
+    public static String makeUri(@NonNull String filePath) {
         return SCHEME + filePath;
     }
 

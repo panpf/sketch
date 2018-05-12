@@ -14,7 +14,7 @@ import me.panpf.sketch.sample.vt.util.VideoThumbnailUriModel
 
 class VideoInfoItemFactory(private val listener: VideoInfoItemListener?) : AssemblyItemFactory<VideoInfoItemFactory.VideoInfoItem>() {
 
-    override fun isTarget(o: Any): Boolean {
+    override fun match(o: Any?): Boolean {
         return o is me.panpf.sketch.sample.vt.bean.VideoInfo
     }
 

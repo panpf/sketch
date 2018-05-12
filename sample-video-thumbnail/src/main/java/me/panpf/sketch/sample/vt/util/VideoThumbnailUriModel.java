@@ -19,7 +19,7 @@ public class VideoThumbnailUriModel extends AbsBitmapDiskCacheUriModel {
     public static final String SCHEME = "video.thumbnail://";
     private static final String NAME = "VideoThumbnailUriModel";
 
-    public static String makeUri(String filePath) {
+    public static String makeUri(@NonNull String filePath) {
         return SCHEME + filePath;
     }
 
