@@ -60,6 +60,7 @@ dependencies {
 
     implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
     implementation "me.panpf:assembly-adapter-ktx:${ASSEMBLY_ADAPTER_VERSION}"
+    implementation "me.panpf:assembly-paged-list-adapter:${ASSEMBLY_ADAPTER_VERSION}"
 
     implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
 }

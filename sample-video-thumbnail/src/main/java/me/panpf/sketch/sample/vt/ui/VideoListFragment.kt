@@ -17,7 +17,6 @@
 package me.panpf.sketch.sample.vt.ui
 
 import android.arch.lifecycle.Observer
-import android.arch.paging.AssemblyRecyclerPageListAdapter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -26,6 +25,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
+import me.panpf.adapter.paged.AssemblyPagedListAdapter
 import me.panpf.sketch.sample.vt.BaseFragment
 import me.panpf.sketch.sample.vt.BindContentView
 import me.panpf.sketch.sample.vt.R
@@ -45,7 +45,7 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemList
     private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 
     private val adapter by lazy {
-        AssemblyRecyclerPageListAdapter<VideoInfo>(VideoInfo.DiffCallback()).apply {
+        AssemblyPagedListAdapter<VideoInfo>(VideoInfo.DiffCallback()).apply {
             addItemFactory(VideoInfoItemFactory(this@VideoListFragment))
             setMoreItem(LoadMoreItemFactory(this@VideoListFragment))
         }
