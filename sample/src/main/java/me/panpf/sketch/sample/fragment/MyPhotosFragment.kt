@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
@@ -38,7 +37,6 @@ import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
-import me.panpf.sketch.sample.widget.HintView
 import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -50,10 +48,6 @@ import java.util.*
  */
 @BindContentView(R.layout.fragment_recycler)
 class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
-
-    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
-    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
-    val hintView: HintView by lazy {hint_recyclerFragment}
 
     private var adapter: AssemblyRecyclerAdapter? = null
 
@@ -70,20 +64,20 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        refreshLayout.setOnRefreshListener(this)
-        recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view!!.context))
+        refresh_recyclerFragment.setOnRefreshListener(this)
+        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view!!.context))
 
-        recyclerView.layoutManager = GridLayoutManager(activity, 3)
+        recycler_recyclerFragment_content.layoutManager = GridLayoutManager(activity, 3)
         val padding = SketchUtils.dp2px(activity, 2)
-        recyclerView.setPadding(padding, padding, padding, padding)
-        recyclerView.clipToPadding = false
+        recycler_recyclerFragment_content.setPadding(padding, padding, padding, padding)
+        recycler_recyclerFragment_content.clipToPadding = false
 
         if (adapter != null) {
-            recyclerView.adapter = adapter
-            recyclerView.scheduleLayoutAnimation()
+            recycler_recyclerFragment_content.adapter = adapter
+            recycler_recyclerFragment_content.scheduleLayoutAnimation()
         } else {
-            refreshLayout.post {
-                refreshLayout.isRefreshing = true
+            refresh_recyclerFragment.post {
+                refresh_recyclerFragment.isRefreshing = true
                 onRefresh()
             }
         }
@@ -147,7 +141,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
 
             val fragment = fragmentWeakReference.get() ?: return
 
-            fragment.hintView.hidden()
+            fragment.hint_recyclerFragment.hidden()
         }
 
         override fun doInBackground(params: Array<Void>): List<String>? {
@@ -179,19 +173,19 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         override fun onPostExecute(imageUriList: List<String>?) {
             val fragment = fragmentWeakReference.get() ?: return
 
-            fragment.refreshLayout.isRefreshing = false
+            fragment.refresh_recyclerFragment.isRefreshing = false
 
             if (imageUriList == null || imageUriList.isEmpty()) {
-                fragment.hintView.empty("No photos")
-                fragment.recyclerView.adapter = null
+                fragment.hint_recyclerFragment.empty("No photos")
+                fragment.recycler_recyclerFragment_content.adapter = null
                 return
             }
 
             val adapter = AssemblyRecyclerAdapter(imageUriList)
             adapter.addItemFactory(MyPhotoItemFactory(fragment))
 
-            fragment.recyclerView.adapter = adapter
-            fragment.recyclerView.scheduleLayoutAnimation()
+            fragment.recycler_recyclerFragment_content.adapter = adapter
+            fragment.recycler_recyclerFragment_content.scheduleLayoutAnimation()
 
             fragment.adapter = adapter
 

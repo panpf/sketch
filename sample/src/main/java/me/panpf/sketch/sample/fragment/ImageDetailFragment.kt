@@ -18,9 +18,7 @@ package me.panpf.sketch.sample.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.view.ViewPager
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_detail.*
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
@@ -38,10 +36,6 @@ import org.greenrobot.eventbus.Subscribe
 
 @BindContentView(R.layout.fragment_detail)
 class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
-
-    val viewPager: ViewPager by lazy {pager_detail_content}
-    val currentItemTextView: TextView by lazy {text_detail_currentItem}
-    val countTextView: TextView by lazy {text_detail_countItem}
 
     private var imageList: List<Image>? = null
     private var loadingImageOptionsKey: String? = null
@@ -75,17 +69,17 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
         val context = context ?: return
 
-        viewPagerPlayer = ViewPagerPlayer(viewPager)
-        PageNumberSetter(currentItemTextView, viewPager)
-        viewPager.setPageTransformer(false, ZoomOutPageTransformer())
+        viewPagerPlayer = ViewPagerPlayer(pager_detail_content)
+        PageNumberSetter(text_detail_currentItem, pager_detail_content)
+        pager_detail_content.setPageTransformer(false, ZoomOutPageTransformer())
 
         if (imageList != null) {
             val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList!!)
             pagerAdapter.addItemFactory(ImageFragmentItemFactory(context, loadingImageOptionsKey))
-            viewPager.adapter = pagerAdapter
-            viewPager.currentItem = position
-            currentItemTextView.text = String.format("%d", position + 1)
-            countTextView.text = imageList!!.size.toString()
+            pager_detail_content.adapter = pagerAdapter
+            pager_detail_content.currentItem = position
+            text_detail_currentItem.text = String.format("%d", position + 1)
+            text_detail_countItem.text = imageList!!.size.toString()
         }
 
         EventBus.getDefault().register(this)

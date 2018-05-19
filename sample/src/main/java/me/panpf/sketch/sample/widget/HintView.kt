@@ -12,10 +12,7 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
-import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.ViewSwitcher
 import kotlinx.android.synthetic.main.view_hint.view.*
 import me.panpf.sketch.sample.R
 import org.apache.http.conn.ConnectTimeoutException
@@ -27,11 +24,6 @@ import java.net.UnknownHostException
  * 提示视图
  */
 class HintView : LinearLayout {
-    val actionButton: Button by lazy {button_hint_action}
-    val loadingHintTextView: TextView by lazy {text_hint_loadingHint}
-    val hintTextView: TextView by lazy {text_hint_hint}
-    val progressTextView: TextView by lazy {text_hint_progress}
-    val viewSwitcher: ViewSwitcher by lazy {viewSwitcher_hint}
     private var mode: Mode? = null
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -55,31 +47,31 @@ class HintView : LinearLayout {
      * 显示加载中，将使用type格式化“正在加载%s，请稍后…”字符串
      */
     fun loading(message: String?) {
-        loadingHintTextView.text = message
-        loadingHintTextView.visibility = if (TextUtils.isEmpty(message)) View.GONE else View.VISIBLE
+        text_hint_loadingHint.text = message
+        text_hint_loadingHint.visibility = if (TextUtils.isEmpty(message)) View.GONE else View.VISIBLE
         setProgress(0, 0)
 
         if (mode != Mode.LOADING) {
             if (mode == Mode.HINT) {
-                viewSwitcher.setInAnimation(context, R.anim.slide_to_bottom_in)
-                viewSwitcher.setOutAnimation(context, R.anim.slide_to_bottom_out)
+                viewSwitcher_hint.setInAnimation(context, R.anim.slide_to_bottom_in)
+                viewSwitcher_hint.setOutAnimation(context, R.anim.slide_to_bottom_out)
             } else {
-                viewSwitcher.inAnimation = null
-                viewSwitcher.outAnimation = null
+                viewSwitcher_hint.inAnimation = null
+                viewSwitcher_hint.outAnimation = null
             }
             mode = Mode.LOADING
-            actionButton.visibility = View.INVISIBLE
-            viewSwitcher.displayedChild = mode!!.index
+            button_hint_action.visibility = View.INVISIBLE
+            viewSwitcher_hint.displayedChild = mode!!.index
             visibility = View.VISIBLE
         }
     }
 
     fun setProgress(totalLength: Int, completedLength: Int) {
         if (completedLength <= 0) {
-            progressTextView.text = null
+            text_hint_progress.text = null
         } else {
             val ratio = (completedLength.toFloat() / totalLength * 100).toInt()
-            progressTextView.text = String.format("%d%%", ratio)
+            text_hint_progress.text = String.format("%d%%", ratio)
         }
     }
 
@@ -99,41 +91,41 @@ class HintView : LinearLayout {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     fun hint(icon: Int = -1, hint: String, button: String? = null, click: View.OnClickListener? = null, transparent: Boolean = false) {
         if (icon > 0) {
-            val drawables = hintTextView.compoundDrawables
-            hintTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], resources.getDrawable(icon), drawables[2], drawables[3])
+            val drawables = text_hint_hint.compoundDrawables
+            text_hint_hint.setCompoundDrawablesWithIntrinsicBounds(drawables[0], resources.getDrawable(icon), drawables[2], drawables[3])
         } else {
-            val drawables = hintTextView.compoundDrawables
-            hintTextView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, drawables[2], drawables[3])
+            val drawables = text_hint_hint.compoundDrawables
+            text_hint_hint.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, drawables[2], drawables[3])
         }
 
         if (isNotEmpty(hint)) {
-            hintTextView.text = hint
+            text_hint_hint.text = hint
         } else {
-            hintTextView.text = null
+            text_hint_hint.text = null
         }
 
         if (HintView.isNotEmpty(button) && click != null) {
-            actionButton.text = button
-            actionButton.setOnClickListener(click)
-            visibleViewByAlpha(actionButton, true)
+            button_hint_action.text = button
+            button_hint_action.setOnClickListener(click)
+            visibleViewByAlpha(button_hint_action, true)
         } else {
-            actionButton.text = null
-            actionButton.setOnClickListener(null)
-            actionButton.visibility = View.INVISIBLE
+            button_hint_action.text = null
+            button_hint_action.setOnClickListener(null)
+            button_hint_action.visibility = View.INVISIBLE
         }
 
         isClickable = !transparent
 
         if (mode != Mode.HINT) {
             if (mode != null) {
-                viewSwitcher.setInAnimation(context, R.anim.slide_to_top_in)
-                viewSwitcher.setOutAnimation(context, R.anim.slide_to_top_out)
+                viewSwitcher_hint.setInAnimation(context, R.anim.slide_to_top_in)
+                viewSwitcher_hint.setOutAnimation(context, R.anim.slide_to_top_out)
             } else {
-                viewSwitcher.inAnimation = null
-                viewSwitcher.outAnimation = null
+                viewSwitcher_hint.inAnimation = null
+                viewSwitcher_hint.outAnimation = null
             }
             mode = Mode.HINT
-            viewSwitcher.displayedChild = 1
+            viewSwitcher_hint.displayedChild = 1
             visibility = View.VISIBLE
         }
     }
@@ -233,7 +225,7 @@ class HintView : LinearLayout {
      * 隐藏
      */
     fun hidden() {
-        when (viewSwitcher.displayedChild) {
+        when (viewSwitcher_hint.displayedChild) {
             0 -> goneViewByAlpha(this, true)
             1 -> visibility = View.GONE
         }

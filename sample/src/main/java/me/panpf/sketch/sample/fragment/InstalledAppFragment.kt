@@ -2,9 +2,7 @@ package me.panpf.sketch.sample.fragment
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -16,7 +14,6 @@ import me.panpf.sketch.sample.adapter.itemfactory.AppItemFactory
 import me.panpf.sketch.sample.adapter.itemfactory.AppListHeaderItemFactory
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
-import me.panpf.sketch.sample.widget.HintView
 import net.sourceforge.pinyin4j.PinyinHelper
 import java.io.File
 import java.lang.ref.WeakReference
@@ -27,23 +24,20 @@ import java.util.*
  */
 @BindContentView(R.layout.fragment_recycler)
 class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
-    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
-    val hintView: HintView by lazy {hint_recyclerFragment}
-    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
 
     private val adapter: AssemblyRecyclerAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
-        recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view.context))
+        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(view.context)
+        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
-        refreshLayout.isEnabled = false
+        refresh_recyclerFragment.isEnabled = false
 
         if (adapter != null) {
-            recyclerView.adapter = adapter
-            recyclerView.scheduleLayoutAnimation()
+            recycler_recyclerFragment_content.adapter = adapter
+            recycler_recyclerFragment_content.scheduleLayoutAnimation()
         } else {
             loadAppList()
         }
@@ -63,12 +57,12 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
         }
     }
 
-    class LoadAppsTask(val fragmentWeakReference: WeakReference<InstalledAppFragment>) : AsyncTask<Int, Int, List<AppInfo>?>() {
+    class LoadAppsTask(private val fragmentWeakReference: WeakReference<InstalledAppFragment>) : AsyncTask<Int, Int, List<AppInfo>?>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
 
-            fragmentWeakReference.get()?.hintView?.loading(null)
+            fragmentWeakReference.get()?.hint_recyclerFragment?.loading(null)
         }
 
         override fun doInBackground(vararg params: Int?): List<AppInfo>? {
@@ -91,7 +85,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
                 appInfoList.add(appInfo)
             }
 
-            Collections.sort(appInfoList) { lhs, rhs -> (lhs.sortName ?: "").compareTo((rhs.sortName ?: ""))}
+            appInfoList.sortWith(Comparator { lhs, rhs -> (lhs.sortName ?: "").compareTo((rhs.sortName ?: ""))})
 
             return appInfoList
         }
@@ -112,7 +106,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
         override fun onPostExecute(appInfoList: List<AppInfo>?) {
             val fragment = fragmentWeakReference.get() ?: return
 
-            fragment.hintView.hidden()
+            fragment.hint_recyclerFragment.hidden()
 
             val dataList = ArrayList<Any>((appInfoList?.size ?: 0) + 1)
             dataList.add(String.format("您的设备上共安装了%d款应用", appInfoList?.size ?: 0))
@@ -122,8 +116,8 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
             val adapter = AssemblyRecyclerAdapter(dataList)
             adapter.addItemFactory(AppItemFactory(fragment))
             adapter.addItemFactory(AppListHeaderItemFactory())
-            fragment.recyclerView.adapter = adapter
-            fragment.recyclerView.scheduleLayoutAnimation()
+            fragment.recycler_recyclerFragment_content.adapter = adapter
+            fragment.recycler_recyclerFragment_content.scheduleLayoutAnimation()
         }
     }
 }

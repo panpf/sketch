@@ -6,9 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -25,7 +23,6 @@ import me.panpf.sketch.sample.util.FileScanner
 import me.panpf.sketch.sample.util.FileUtils
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.util.XpkInfo
-import me.panpf.sketch.sample.widget.HintView
 import me.panpf.sketch.util.SketchUtils
 import java.io.File
 import java.lang.ref.WeakReference
@@ -37,9 +34,6 @@ import java.util.zip.ZipFile
  */
 @BindContentView(R.layout.fragment_recycler)
 class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
-    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
-    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
-    val hintView: HintView by lazy {hint_recyclerFragment}
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var fileScanner: FileScanner? = null
@@ -48,14 +42,14 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        refreshLayout.isEnabled = false
+        refresh_recyclerFragment.isEnabled = false
 
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
-        recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view.context))
+        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(view.context)
+        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         if (adapter != null) {
-            recyclerView.adapter = adapter
-            recyclerView.scheduleLayoutAnimation()
+            recycler_recyclerFragment_content.adapter = adapter
+            recycler_recyclerFragment_content.scheduleLayoutAnimation()
         } else {
             loadAppList()
         }
@@ -103,7 +97,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
             adapter.addItemFactory(AppItemFactory(fragment))
             fragment.scanningItemInfo = adapter.addHeaderItem(AppScanningItemFactory(), AppScanning())
 
-            fragment.recyclerView.adapter = adapter
+            fragment.recycler_recyclerFragment_content.adapter = adapter
             fragment.adapter = adapter
         }
 
@@ -232,12 +226,10 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
             val fileNameLowerCase = pathname.name.toLowerCase()
             if (pathname.isFile) {
                 val suffix = FileUtils.subSuffix(fileNameLowerCase)
-                if (".apk".equals(suffix, ignoreCase = true)) {
-                    return parseFromApk(context, pathname)
-                } else if (".xpk".equals(suffix, ignoreCase = true)) {
-                    return parseFromXpk(pathname)
-                } else {
-                    return null
+                return when {
+                    ".apk".equals(suffix, ignoreCase = true) -> parseFromApk(context, pathname)
+                    ".xpk".equals(suffix, ignoreCase = true) -> parseFromXpk(pathname)
+                    else -> null
                 }
             }
 

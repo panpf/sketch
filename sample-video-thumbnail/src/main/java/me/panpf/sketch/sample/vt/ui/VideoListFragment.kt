@@ -21,11 +21,8 @@ import android.arch.paging.AssemblyRecyclerPageListAdapter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
@@ -45,10 +42,6 @@ import java.io.File
 @BindContentView(R.layout.fragment_recycler)
 class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemListener, OnLoadMoreListener {
 
-    private val refreshLayout: SwipeRefreshLayout by lazy { refresh_recyclerFragment }
-    private val recyclerView: RecyclerView by lazy { recycler_recyclerFragment_content}
-    private val hintTextView: TextView by lazy { hint_recyclerFragment}
-
     private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 
     private val adapter by lazy {
@@ -61,19 +54,19 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(activity)
 
         val padding = SketchUtils.dp2px(activity, 2)
-        recyclerView.setPadding(padding, padding, padding, padding)
-        recyclerView.clipToPadding = false
+        recycler_recyclerFragment_content.setPadding(padding, padding, padding, padding)
+        recycler_recyclerFragment_content.clipToPadding = false
 
-        recyclerView.adapter = adapter
+        recycler_recyclerFragment_content.adapter = adapter
 
-        refreshLayout.setOnRefreshListener {
+        refresh_recyclerFragment.setOnRefreshListener {
             videoListViewModel.refresh()
         }
 
-        refreshLayout.isEnabled = false
+        refresh_recyclerFragment.isEnabled = false
 
         videoListViewModel.videoListing.observe(this, Observer { pageList ->
             adapter.submitList(pageList)
@@ -82,47 +75,47 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemList
         videoListViewModel.initStatus.observe(this, Observer { initStatus ->
             initStatus ?: return@Observer
 
-            if (refreshLayout.isRefreshing) {
+            if (refresh_recyclerFragment.isRefreshing) {
                 when {
                     initStatus.isLoading() -> {
-                        hintTextView.visibility = View.GONE
+                        hint_recyclerFragment.visibility = View.GONE
                     }
                     initStatus.isError() -> {
-                        refreshLayout.isRefreshing = false
+                        refresh_recyclerFragment.isRefreshing = false
 
-                        hintTextView.text = getString(R.string.hint_loadFailed, initStatus.message)
-                        hintTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
-                        hintTextView.visibility = View.VISIBLE
+                        hint_recyclerFragment.text = getString(R.string.hint_loadFailed, initStatus.message)
+                        hint_recyclerFragment.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
+                        hint_recyclerFragment.visibility = View.VISIBLE
                     }
                     initStatus.isSuccess() -> {
-                        refreshLayout.isRefreshing = false
+                        refresh_recyclerFragment.isRefreshing = false
 
                         if (videoListViewModel.boundaryStatus.value == BoundaryStatus.ZERO_ITEMS_LOADED) {
-                            hintTextView.text = getString(R.string.hint_empty_list, "Video")
-                            hintTextView.visibility = View.VISIBLE
+                            hint_recyclerFragment.text = getString(R.string.hint_empty_list, "Video")
+                            hint_recyclerFragment.visibility = View.VISIBLE
                         } else {
-                            hintTextView.visibility = View.GONE
+                            hint_recyclerFragment.visibility = View.GONE
                         }
                     }
                 }
             } else {
                 when {
                     initStatus.isLoading() -> {
-                        hintTextView.setText(R.string.hint_loading)
-                        hintTextView.setCompoundDrawables(null, null, null, null)
-                        hintTextView.visibility = View.VISIBLE
+                        hint_recyclerFragment.setText(R.string.hint_loading)
+                        hint_recyclerFragment.setCompoundDrawables(null, null, null, null)
+                        hint_recyclerFragment.visibility = View.VISIBLE
                     }
                     initStatus.isError() -> {
-                        hintTextView.text = getString(R.string.hint_loadFailed, initStatus.message)
-                        hintTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
-                        hintTextView.visibility = View.VISIBLE
+                        hint_recyclerFragment.text = getString(R.string.hint_loadFailed, initStatus.message)
+                        hint_recyclerFragment.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
+                        hint_recyclerFragment.visibility = View.VISIBLE
                     }
                     initStatus.isSuccess() -> {
                         if (videoListViewModel.boundaryStatus.value == BoundaryStatus.ZERO_ITEMS_LOADED) {
-                            hintTextView.text = getString(R.string.hint_empty_list, "Video")
-                            hintTextView.visibility = View.VISIBLE
+                            hint_recyclerFragment.text = getString(R.string.hint_empty_list, "Video")
+                            hint_recyclerFragment.visibility = View.VISIBLE
                         } else {
-                            hintTextView.visibility = View.GONE
+                            hint_recyclerFragment.visibility = View.GONE
                         }
                     }
                 }

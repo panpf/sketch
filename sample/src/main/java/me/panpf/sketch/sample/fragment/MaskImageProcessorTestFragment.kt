@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_mask.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
@@ -12,13 +11,9 @@ import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.widget.SampleImageView
 
 @BindContentView(R.layout.fragment_mask)
 class MaskImageProcessorTestFragment : BaseFragment() {
-    val imageView: SampleImageView by lazy {image_maskFragment}
-    val seekBar: SeekBar by lazy {seekBar_maskFragment}
-    val progressTextView: TextView by lazy {text_maskFragment}
 
     private var progress = 15
 
@@ -27,27 +22,27 @@ class MaskImageProcessorTestFragment : BaseFragment() {
 
         // 缩小图片，处理速度更快，更少的内存消耗
         val metrics = resources.displayMetrics
-        imageView.options.setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+        image_maskFragment.options.setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
 
-        imageView.options.displayer = TransitionImageDisplayer()
+        image_maskFragment.options.displayer = TransitionImageDisplayer()
 
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                progressTextView.text = String.format("%d/%d", seekBar.progress, seekBar.max)
+        seekBar_maskFragment.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar_maskFragment: SeekBar, progress: Int, fromUser: Boolean) {
+                text_maskFragment.text = String.format("%d/%d", seekBar_maskFragment.progress, seekBar_maskFragment.max)
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            override fun onStartTrackingTouch(seekBar_maskFragment: SeekBar) {
 
             }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                progress = seekBar.progress
+            override fun onStopTrackingTouch(seekBar_maskFragment: SeekBar) {
+                progress = seekBar_maskFragment.progress
                 apply()
             }
         })
 
-        seekBar.max = 100
-        seekBar.progress = progress
+        seekBar_maskFragment.max = 100
+        seekBar_maskFragment.progress = progress
 
         apply()
     }
@@ -55,7 +50,7 @@ class MaskImageProcessorTestFragment : BaseFragment() {
     private fun apply() {
         val alpha = (progress.toFloat() / 100 * 255).toInt()
         val maskColor = Color.argb(alpha, 0, 0, 0)
-        imageView.options.processor = MaskImageProcessor(maskColor)
-        imageView.displayImage(AssetImage.MASK)
+        image_maskFragment.options.processor = MaskImageProcessor(maskColor)
+        image_maskFragment.displayImage(AssetImage.MASK)
     }
 }

@@ -3,7 +3,6 @@ package me.panpf.sketch.sample.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_pager.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
@@ -17,7 +16,6 @@ import me.panpf.sketch.sample.R
  */
 @BindContentView(R.layout.fragment_pager)
 class AppListFragment : BaseFragment() {
-    val viewPager: ViewPager by lazy {pager_pagerFragment_content}
 
     var getPagerSlidingTagStripListener: GetAppListTagStripListener? = null
     var fragmentAdapter: FragmentArrayPagerAdapter? = null
@@ -47,8 +45,8 @@ class AppListFragment : BaseFragment() {
             fragments[1] = AppPackageListFragment()
             fragmentAdapter = FragmentArrayPagerAdapter(childFragmentManager, fragments)
         }
-        viewPager.adapter = fragmentAdapter
-        getPagerSlidingTagStripListener!!.onGetAppListTabStrip().setViewPager(viewPager)
+        pager_pagerFragment_content.adapter = fragmentAdapter
+        getPagerSlidingTagStripListener!!.onGetAppListTabStrip().setViewPager(pager_pagerFragment_content)
     }
 
     interface GetAppListTagStripListener {

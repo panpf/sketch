@@ -8,15 +8,15 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_in_bitmap_test.*
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageDecodeUtils
-import me.panpf.sketch.sample.*
+import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.BaseFragment
+import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
@@ -24,16 +24,6 @@ import java.io.IOException
 
 @BindContentView(R.layout.fragment_in_bitmap_test)
 class InBitmapTestFragment : BaseFragment() {
-
-    val imageView: ImageView by lazy {image_inBitmapTestFragment}
-    val textView: TextView by lazy {text_inBitmapTestFragment}
-    val sizeSameButton: Button by lazy {button_inBitmapTestFragment_sizeSame}
-    val largeSizeButton: Button by lazy {button_inBitmapTestFragment_largeSize}
-    val sizeNoSameButton: Button by lazy {button_inBitmapTestFragment_sizeNoSame}
-    val inSampleSizeButton: Button by lazy {button_inBitmapTestFragment_inSampleSize}
-    val pageNumberTextView: TextView by lazy {view_inBitmapTestFragment_pageNumber}
-    val lastView: View by lazy {view_inBitmapTestFragment_last}
-    val nextView: View by lazy {view_inBitmapTestFragment_next}
 
     private var index = 0
 
@@ -61,7 +51,7 @@ class InBitmapTestFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lastView.setOnClickListener {
+        view_inBitmapTestFragment_last.setOnClickListener {
             --index
             if (index < 0) {
                 index = AssetImage.IN_BITMAP_SAMPLES.size - Math.abs(index)
@@ -69,32 +59,32 @@ class InBitmapTestFragment : BaseFragment() {
             currentMode!!.performClick()
         }
 
-        nextView.setOnClickListener {
+        view_inBitmapTestFragment_next.setOnClickListener {
             index = ++index % AssetImage.IN_BITMAP_SAMPLES.size
             currentMode!!.performClick()
         }
 
-        sizeSameButton.setOnClickListener { v ->
+        button_inBitmapTestFragment_sizeSame.setOnClickListener { v ->
             testSizeSame()
             updateCheckedStatus(v)
         }
 
-        largeSizeButton.setOnClickListener { v ->
+        button_inBitmapTestFragment_largeSize.setOnClickListener { v ->
             testLargeSize()
             updateCheckedStatus(v)
         }
 
-        sizeNoSameButton.setOnClickListener { v ->
+        button_inBitmapTestFragment_sizeNoSame.setOnClickListener { v ->
             testSizeNoSame()
             updateCheckedStatus(v)
         }
 
-        inSampleSizeButton.setOnClickListener { v ->
+        button_inBitmapTestFragment_inSampleSize.setOnClickListener { v ->
             inSampleSize()
             updateCheckedStatus(v)
         }
 
-        sizeSameButton.performClick()
+        button_inBitmapTestFragment_sizeSame.performClick()
     }
 
     private fun updateCheckedStatus(newView: View) {
@@ -105,7 +95,7 @@ class InBitmapTestFragment : BaseFragment() {
         newView.isEnabled = false
         currentMode = newView
 
-        pageNumberTextView.text = String.format("%d/%d", index + 1, AssetImage.IN_BITMAP_SAMPLES.size)
+        view_inBitmapTestFragment_pageNumber.text = String.format("%d/%d", index + 1, AssetImage.IN_BITMAP_SAMPLES.size)
     }
 
     private fun testSizeSame() {
@@ -231,11 +221,11 @@ class InBitmapTestFragment : BaseFragment() {
             super.onPostExecute(bitmap)
 
             var oldBitmap: Bitmap? = null
-            imageView.drawable?.let {
+            image_inBitmapTestFragment.drawable?.let {
                 oldBitmap = (it as BitmapDrawable).bitmap
             }
-            imageView.setImageBitmap(bitmap)
-            textView.text = builder.toString()
+            image_inBitmapTestFragment.setImageBitmap(bitmap)
+            text_inBitmapTestFragment.text = builder.toString()
 
             if (!BitmapPoolUtils.freeBitmapToPool(oldBitmap, Sketch.with(context).configuration.bitmapPool)) {
                 Log.w("BitmapPoolTest", "recycle")

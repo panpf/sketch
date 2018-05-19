@@ -28,7 +28,6 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.text.format.Formatter
 import android.util.TypedValue
@@ -36,6 +35,7 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.include_toolbar.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.pagerid.PagerIndicator
@@ -55,7 +55,6 @@ import me.panpf.sketch.sample.util.AnimationUtils
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
-import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
@@ -67,14 +66,6 @@ import java.util.*
 @SuppressLint("RtlHardcoded")
 @BindContentView(R.layout.activity_main)
 class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener, PageBackgApplyCallback {
-
-    val contentView: View by lazy {layout_main_content}
-    val appListTabStrip: PagerIndicator by lazy {tabStrip_main_appList}
-    val drawerLayout: DrawerLayout by lazy {drawer_main_content}
-    val menuRecyclerView: RecyclerView by lazy {recycler_main_menu}
-    val leftMenuView: ViewGroup by lazy {layout_main_leftMenu}
-    val backgroundImageView: SampleImageView by lazy {image_main_background}
-    val menuBackgroundImageView: SampleImageView by lazy {image_main_menuBackground}
 
     private var lastClickBackTime: Long = 0
     private var page: Page? = null
@@ -92,7 +83,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
     private fun initViews() {
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        backgroundImageView.layoutParams?.let {
+        image_main_background.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
             it.height = resources.displayMetrics.heightPixels
             if (isPortraitOrientation()) {
@@ -100,13 +91,13 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
             } else {
                 it.width += DeviceUtils.getWindowHeightSupplement(this)
             }
-            backgroundImageView.layoutParams = it
+            image_main_background.layoutParams = it
         }
 
-        backgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
+        image_main_background.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        menuBackgroundImageView.layoutParams?.let {
+        image_main_menuBackground.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
             it.height = resources.displayMetrics.heightPixels
             if (isPortraitOrientation()) {
@@ -114,43 +105,43 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
             } else {
                 it.width += DeviceUtils.getWindowHeightSupplement(this)
             }
-            menuBackgroundImageView.layoutParams = it
+            image_main_menuBackground.layoutParams = it
         }
 
-        menuBackgroundImageView.setOptions(ImageOptions.WINDOW_BACKGROUND)
-        menuBackgroundImageView.options.displayer = null
+        image_main_menuBackground.setOptions(ImageOptions.WINDOW_BACKGROUND)
+        image_main_menuBackground.options.displayer = null
 
-        drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT)
+        drawer_main_content.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT)
 
         // 设置左侧菜单的宽度为屏幕的一半
-        val params = leftMenuView.layoutParams
+        val params = layout_main_leftMenu.layoutParams
         params.width = (resources.displayMetrics.widthPixels * 0.7).toInt()
-        leftMenuView.layoutParams = params
+        layout_main_leftMenu.layoutParams = params
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        toggleDrawable = ActionBarDrawerToggle(this, drawerLayout, toolbarView, R.string.drawer_open, R.string.drawer_close)
+        toggleDrawable = ActionBarDrawerToggle(this, drawer_main_content, toolbar, R.string.drawer_open, R.string.drawer_close)
 
-        appListTabStrip.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), baseContext))
+        tabStrip_main_appList.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), baseContext))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             val statusBarHeight = DeviceUtils.getStatusBarHeight(resources)
             if (statusBarHeight > 0) {
-                contentView.setPadding(contentView.paddingLeft, statusBarHeight, contentView.paddingRight, contentView.paddingBottom)
-                menuRecyclerView.setPadding(contentView.paddingLeft, statusBarHeight, contentView.paddingRight, contentView.paddingBottom)
+                layout_main_content.setPadding(layout_main_content.paddingLeft, statusBarHeight, layout_main_content.paddingRight, layout_main_content.paddingBottom)
+                recycler_main_menu.setPadding(layout_main_content.paddingLeft, statusBarHeight, layout_main_content.paddingRight, layout_main_content.paddingBottom)
             } else {
-                drawerLayout.fitsSystemWindows = true
+                drawer_main_content.fitsSystemWindows = true
             }
         }
 
-        drawerLayout.setDrawerListener(object : DrawerLayout.DrawerListener {
+        drawer_main_content.setDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 toggleDrawable!!.onDrawerSlide(drawerView, slideOffset)
             }
 
             override fun onDrawerOpened(drawerView: View) {
                 toggleDrawable!!.onDrawerOpened(drawerView)
-                menuRecyclerView.adapter.notifyDataSetChanged()
+                recycler_main_menu.adapter.notifyDataSetChanged()
             }
 
             override fun onDrawerClosed(drawerView: View) {
@@ -173,14 +164,14 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         }))
         adapter.addItemFactory(CheckMenuItemFactory())
         adapter.addItemFactory(InfoMenuItemFactory())
-        menuRecyclerView.layoutManager = LinearLayoutManager(baseContext)
-        menuRecyclerView.adapter = adapter
+        recycler_main_menu.layoutManager = LinearLayoutManager(baseContext)
+        recycler_main_menu.adapter = adapter
 
         ImageOrientationCorrectTestFileGenerator.getInstance(baseContext).onAppStart()
     }
 
     private fun makeMenuList(): List<Any> {
-        val menuClickListener = View.OnClickListener { drawerLayout.closeDrawer(Gravity.LEFT) }
+        val menuClickListener = View.OnClickListener { drawer_main_content.closeDrawer(Gravity.LEFT) }
 
         val menuList = ArrayList<Any>()
 
@@ -267,9 +258,9 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
         // 同步状态，这一步很重要，要不然初始
         toggleDrawable!!.syncState()
-        toggleDrawable!!.onDrawerSlide(leftMenuView, 1.0f)
-        toggleDrawable!!.onDrawerSlide(leftMenuView, 0.5f)
-        toggleDrawable!!.onDrawerSlide(leftMenuView, 0.0f)
+        toggleDrawable!!.onDrawerSlide(layout_main_leftMenu, 1.0f)
+        toggleDrawable!!.onDrawerSlide(layout_main_leftMenu, 0.5f)
+        toggleDrawable!!.onDrawerSlide(layout_main_leftMenu, 0.0f)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -284,9 +275,9 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         this.page = newPage
 
         if (page == Page.APP_LIST) {
-            AnimationUtils.visibleViewByAlpha(appListTabStrip)
+            AnimationUtils.visibleViewByAlpha(tabStrip_main_appList)
         } else {
-            AnimationUtils.invisibleViewByAlpha(appListTabStrip)
+            AnimationUtils.invisibleViewByAlpha(tabStrip_main_appList)
         }
 
         supportActionBar!!.title = page!!.showName
@@ -295,15 +286,15 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
                 .replace(R.id.frame_main_content, page!!.fragment)
                 .commitAllowingStateLoss()
 
-        drawerLayout.post { drawerLayout.closeDrawer(Gravity.LEFT) }
+        drawer_main_content.post { drawer_main_content.closeDrawer(Gravity.LEFT) }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                drawerLayout.closeDrawer(Gravity.LEFT)
+            if (drawer_main_content.isDrawerOpen(Gravity.LEFT)) {
+                drawer_main_content.closeDrawer(Gravity.LEFT)
             } else {
-                drawerLayout.openDrawer(Gravity.LEFT)
+                drawer_main_content.openDrawer(Gravity.LEFT)
             }
             return true
         } else {
@@ -312,7 +303,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
     }
 
     override fun onGetAppListTabStrip(): PagerIndicator {
-        return appListTabStrip
+        return tabStrip_main_appList
     }
 
     override fun onBackPressed() {
@@ -339,8 +330,8 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
 
     override fun onApplyBackground(imageUri: String?) {
         if (!TextUtils.isEmpty(imageUri)) {
-            backgroundImageView.displayImage(imageUri ?: "")
-            menuBackgroundImageView.displayImage(imageUri ?: "")
+            image_main_background.displayImage(imageUri ?: "")
+            image_main_menuBackground.displayImage(imageUri ?: "")
         }
     }
 
@@ -357,7 +348,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
                 4 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "ERROR")
                 5 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "NONE")
             }
-            menuRecyclerView.adapter.notifyDataSetChanged()
+            recycler_main_menu.adapter.notifyDataSetChanged()
         }
         builder.setPositiveButton("Cancel", null)
         builder.show()

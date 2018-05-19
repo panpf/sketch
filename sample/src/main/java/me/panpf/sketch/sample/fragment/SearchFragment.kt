@@ -7,7 +7,6 @@ import android.support.annotation.NonNull
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuInflater
@@ -43,10 +42,6 @@ import java.lang.ref.WeakReference
  */
 @BindContentView(R.layout.fragment_recycler)
 class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
-
-    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
-    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
-    val hintView: HintView by lazy {hint_recyclerFragment}
 
     private var searchKeyword: String? = "GIF"
 
@@ -134,15 +129,15 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
     override fun onViewCreated(@NonNull view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        refreshLayout.setOnRefreshListener(this)
+        refresh_recyclerFragment.setOnRefreshListener(this)
 
-        recyclerView.addOnScrollListener(ScrollingPauseLoadManager(view.context))
+        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
-        recyclerView.layoutManager = FlexboxLayoutManager(context)
-        recyclerView.addItemDecoration(FlexboxItemDecoration(context))
+        recycler_recyclerFragment_content.layoutManager = FlexboxLayoutManager(context)
+        recycler_recyclerFragment_content.addItemDecoration(FlexboxItemDecoration(context))
 
         if (adapter == null) {
-            refreshLayout.post { onRefresh() }
+            refresh_recyclerFragment.post { onRefresh() }
         } else {
             setAdapter(adapter)
         }
@@ -165,16 +160,16 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
     }
 
     private fun setAdapter(adapter: AssemblyRecyclerAdapter?) {
-        recyclerView.adapter = adapter
-        recyclerView.scheduleLayoutAnimation()
+        recycler_recyclerFragment_content.adapter = adapter
+        recycler_recyclerFragment_content.scheduleLayoutAnimation()
         this.adapter = adapter
     }
 
     override fun onRefresh() {
         adapter?.loadMoreFinished(false)
 
-        if (!refreshLayout.isRefreshing) {
-            refreshLayout.isRefreshing = true
+        if (!refresh_recyclerFragment.isRefreshing) {
+            refresh_recyclerFragment.isRefreshing = true
         }
 
         loadData(1)
@@ -203,7 +198,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
         init {
             if (pageIndex == 1) {
-                fragment.hintView.hidden()
+                fragment.hint_recyclerFragment.hidden()
             }
         }
 
@@ -221,7 +216,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
                 loadMore(fragment, response)
             }
 
-            fragment.refreshLayout.isRefreshing = false
+            fragment.refresh_recyclerFragment.isRefreshing = false
         }
 
         override fun onFailure(call: Call<BaiduImageSearchResult>, t: Throwable) {
@@ -232,10 +227,10 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
             }
 
             if (pageIndex == 1) {
-                fragment.hintView.failed(t, View.OnClickListener {
+                fragment.hint_recyclerFragment.failed(t, View.OnClickListener {
                     fragment.onRefresh()
                 })
-                fragment.refreshLayout.isRefreshing = false
+                fragment.refresh_recyclerFragment.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
                 Toast.makeText(fragment.activity, HintView.getCauseByException(activity, t), Toast.LENGTH_LONG).show()
@@ -260,15 +255,15 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
             val images = response.body()!!.imageList
             if (images == null || images.size == 0) {
-                fragment.hintView.empty("No photos")
+                fragment.hint_recyclerFragment.empty("No photos")
                 return
             }
 
             val adapter = AssemblyRecyclerAdapter(images)
             adapter.addItemFactory(StaggeredImageItemFactory(fragment))
-            adapter.setMoreItem(LoadMoreItemFactory(fragment).fullSpan(fragment.recyclerView))
+            adapter.setMoreItem(LoadMoreItemFactory(fragment).fullSpan(fragment.recycler_recyclerFragment_content))
 
-            fragment.recyclerView.adapter = adapter
+            fragment.recycler_recyclerFragment_content.adapter = adapter
             fragment.adapter = adapter
 
             fragment.changeBackground(images[0].url)

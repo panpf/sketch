@@ -20,7 +20,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,6 @@ import kotlinx.android.synthetic.main.include_toolbar.*
 import me.panpf.sketch.sample.util.DataTransferStation
 
 abstract class BaseActivity : AppCompatActivity() {
-    val toolbarView: Toolbar? by lazy { toolbar}
     private val dataTransferHelper = DataTransferStation.PageHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +40,9 @@ abstract class BaseActivity : AppCompatActivity() {
             setContentView(bindContentView.value)
         }
 
-        if (toolbarView != null) {
+        if (toolbar != null) {
             onPreSetSupportActionBar()
-            setSupportActionBar(toolbarView)
+            setSupportActionBar(toolbar)
             onPostSetSupportActionBar()
         }
     }

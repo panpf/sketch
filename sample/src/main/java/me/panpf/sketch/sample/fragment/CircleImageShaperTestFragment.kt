@@ -4,21 +4,16 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_circle_image_shaper.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.shaper.CircleImageShaper
 
 @BindContentView(R.layout.fragment_circle_image_shaper)
 class CircleImageShaperTestFragment : BaseFragment() {
-    val imageView: SampleImageView by lazy {image_circleImageShaperFragment}
-    val strokeSeekBar: SeekBar by lazy {seekBar_circleImageShaperFragment_stroke}
-    val strokeProgressTextView: TextView by lazy {text_circleImageShaperFragment_stroke}
 
     private var strokeProgress = 5
 
@@ -26,12 +21,12 @@ class CircleImageShaperTestFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        imageView.options.displayer = TransitionImageDisplayer()
+        image_circleImageShaperFragment.options.displayer = TransitionImageDisplayer()
 
-        strokeSeekBar.max = 100
-        strokeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        seekBar_circleImageShaperFragment_stroke.max = 100
+        seekBar_circleImageShaperFragment_stroke.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                strokeProgressTextView.text = String.format("%d/%d", progress, 100)
+                text_circleImageShaperFragment_stroke.text = String.format("%d/%d", progress, 100)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -39,11 +34,11 @@ class CircleImageShaperTestFragment : BaseFragment() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                strokeProgress = strokeSeekBar.progress
+                strokeProgress = seekBar_circleImageShaperFragment_stroke.progress
                 apply()
             }
         })
-        strokeSeekBar.progress = strokeProgress
+        seekBar_circleImageShaperFragment_stroke.progress = strokeProgress
 
         apply()
     }
@@ -51,7 +46,7 @@ class CircleImageShaperTestFragment : BaseFragment() {
     private fun apply() {
         val imageShaper = CircleImageShaper().setStroke(Color.WHITE, strokeProgress)
 
-        imageView.options.shaper = imageShaper
-        imageView.displayImage(AssetImage.TYPE_TEST_JPG)
+        image_circleImageShaperFragment.options.shaper = imageShaper
+        image_circleImageShaperFragment.displayImage(AssetImage.TYPE_TEST_JPG)
     }
 }

@@ -31,7 +31,6 @@ import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
-import me.panpf.sketch.sample.widget.HintView
 import me.panpf.sketch.sample.widget.MappingView
 import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.state.MemoryCacheStateImage
@@ -49,10 +48,6 @@ import java.util.*
 
 @BindContentView(R.layout.fragment_image)
 class ImageFragment : BaseFragment() {
-
-    private val imageView: SampleImageView by lazy {image_imageFragment_image}
-    private val mappingView: MappingView by lazy {mapping_imageFragment}
-    private val hintView: HintView by lazy {hint_imageFragment_hint}
 
     private lateinit var image: Image
     private var loadingImageOptionsKey: String? = null
@@ -121,18 +116,18 @@ class ImageFragment : BaseFragment() {
 
     private inner class ShowHelper {
         fun onViewCreated() {
-            imageView.displayListener = ImageDisplayListener()
-            imageView.downloadProgressListener = ImageDownloadProgressListener()
+            image_imageFragment_image.displayListener = ImageDisplayListener()
+            image_imageFragment_image.downloadProgressListener = ImageDownloadProgressListener()
 
             initOptions()
-            imageView.displayImage(finalShowImageUrl)
+            image_imageFragment_image.displayImage(finalShowImageUrl)
         }
 
         private fun initOptions() {
             val activity = activity ?: return
-            imageView.page = SampleImageView.Page.DETAIL
+            image_imageFragment_image.page = SampleImageView.Page.DETAIL
 
-            val options = imageView.options
+            val options = image_imageFragment_image.options
 
             // 允许播放 GIF
             options.isDecodeGifImage = true
@@ -161,7 +156,7 @@ class ImageFragment : BaseFragment() {
                 if (view == null) {
                     return
                 }
-                hintView.loading(null)
+                hint_imageFragment_hint.loading(null)
             }
 
             override fun onCompleted(drawable: Drawable, imageFrom: ImageFrom, imageAttrs: ImageAttrs) {
@@ -169,7 +164,7 @@ class ImageFragment : BaseFragment() {
                     return
                 }
 
-                hintView.hidden()
+                hint_imageFragment_hint.hidden()
 
                 setWindowBackgroundHelper.onDisplayCompleted()
                 gifPlayFollowPageVisibleHelper.onDisplayCompleted()
@@ -180,7 +175,7 @@ class ImageFragment : BaseFragment() {
                     return
                 }
 
-                hintView.hint(R.drawable.ic_error, "Image display failed", "Again", View.OnClickListener { imageView.displayImage(finalShowImageUrl) })
+                hint_imageFragment_hint.hint(R.drawable.ic_error, "Image display failed", "Again", View.OnClickListener { image_imageFragment_image.displayImage(finalShowImageUrl) })
             }
 
             override fun onCanceled(cause: CancelCause) {
@@ -190,17 +185,17 @@ class ImageFragment : BaseFragment() {
 
                 @Suppress("NON_EXHAUSTIVE_WHEN")
                 when (cause) {
-                    CancelCause.PAUSE_DOWNLOAD -> hintView.hint(R.drawable.ic_error, "Pause to download new image for saving traffic", "I do not care", View.OnClickListener {
-                        val requestLevel = imageView.options.requestLevel
-                        imageView.options.requestLevel = RequestLevel.NET
-                        imageView.displayImage(finalShowImageUrl)
-                        imageView.options.requestLevel = requestLevel
+                    CancelCause.PAUSE_DOWNLOAD -> hint_imageFragment_hint.hint(R.drawable.ic_error, "Pause to download new image for saving traffic", "I do not care", View.OnClickListener {
+                        val requestLevel = image_imageFragment_image.options.requestLevel
+                        image_imageFragment_image.options.requestLevel = RequestLevel.NET
+                        image_imageFragment_image.displayImage(finalShowImageUrl)
+                        image_imageFragment_image.options.requestLevel = requestLevel
                     })
-                    CancelCause.PAUSE_LOAD -> hintView.hint(R.drawable.ic_error, "Paused to load new image", "Forced to load", View.OnClickListener {
-                        val requestLevel = imageView.options.requestLevel
-                        imageView.options.requestLevel = RequestLevel.NET
-                        imageView.displayImage(finalShowImageUrl)
-                        imageView.options.requestLevel = requestLevel
+                    CancelCause.PAUSE_LOAD -> hint_imageFragment_hint.hint(R.drawable.ic_error, "Paused to load new image", "Forced to load", View.OnClickListener {
+                        val requestLevel = image_imageFragment_image.options.requestLevel
+                        image_imageFragment_image.options.requestLevel = RequestLevel.NET
+                        image_imageFragment_image.displayImage(finalShowImageUrl)
+                        image_imageFragment_image.options.requestLevel = requestLevel
                     })
                 }
             }
@@ -213,14 +208,14 @@ class ImageFragment : BaseFragment() {
                     return
                 }
 
-                hintView.setProgress(totalLength, completedLength)
+                hint_imageFragment_hint.setProgress(totalLength, completedLength)
             }
         }
     }
 
     private inner class ZoomHelper {
         fun onViewCreated() {
-            imageView.isZoomEnabled = AppConfig.getBoolean(imageView.context, AppConfig.Key.SUPPORT_ZOOM)
+            image_imageFragment_image.isZoomEnabled = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.SUPPORT_ZOOM)
 
             onReadModeConfigChanged()   // 初始化阅读模式
             onUserVisibleChanged()  // 初始化超大图查看器的暂停状态，这一步很重要
@@ -232,7 +227,7 @@ class ImageFragment : BaseFragment() {
 
         fun onUserVisibleChanged() {
             val activity = activity ?: return
-            imageView.zoomer?.let {
+            image_imageFragment_image.zoomer?.let {
                 if (AppConfig.getBoolean(activity, AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE)) {
                     it.blockDisplayer.setPause(!isVisibleToUser)  // 不可见的时候暂停超大图查看器，节省内存
                 } else if (isVisibleToUser && it.blockDisplayer.isPaused) {
@@ -243,7 +238,7 @@ class ImageFragment : BaseFragment() {
 
         fun onReadModeConfigChanged() {
             val activity = activity ?: return
-            imageView.zoomer?.let {
+            image_imageFragment_image.zoomer?.let {
                 it.isReadMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
             }
         }
@@ -254,52 +249,52 @@ class ImageFragment : BaseFragment() {
 
         fun onViewCreated() {
             if (!showTools) {
-                mappingView.visibility = View.GONE
+                mapping_imageFragment.visibility = View.GONE
                 return
             }
 
-            if (imageView.zoomer != null) {
+            if (image_imageFragment_image.zoomer != null) {
                 // MappingView 跟随 Matrix 变化刷新显示区域
-                imageView.zoomer?.addOnMatrixChangeListener(zoomMatrixChangedListener)
+                image_imageFragment_image.zoomer?.addOnMatrixChangeListener(zoomMatrixChangedListener)
 
                 // MappingView 跟随碎片变化刷新碎片区域
-                imageView.zoomer?.blockDisplayer?.setOnBlockChangedListener { mappingView.blockChanged(it) }
+                image_imageFragment_image.zoomer?.blockDisplayer?.setOnBlockChangedListener { mapping_imageFragment.blockChanged(it) }
 
                 // 点击 MappingView 定位到指定位置
-                mappingView.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
+                mapping_imageFragment.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
                     override fun onSingleClick(x: Float, y: Float): Boolean {
-                        val drawable = imageView.drawable ?: return false
+                        val drawable = image_imageFragment_image.drawable ?: return false
 
                         if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
                             return false
                         }
 
-                        if (mappingView.width == 0 || mappingView.height == 0) {
+                        if (mapping_imageFragment.width == 0 || mapping_imageFragment.height == 0) {
                             return false
                         }
 
-                        val widthScale = drawable.intrinsicWidth.toFloat() / mappingView.width
-                        val heightScale = drawable.intrinsicHeight.toFloat() / mappingView.height
+                        val widthScale = drawable.intrinsicWidth.toFloat() / mapping_imageFragment.width
+                        val heightScale = drawable.intrinsicHeight.toFloat() / mapping_imageFragment.height
                         val realX = x * widthScale
                         val realY = y * heightScale
 
-                        val showLocationAnimation = AppConfig.getBoolean(imageView.context, AppConfig.Key.LOCATION_ANIMATE)
+                        val showLocationAnimation = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.LOCATION_ANIMATE)
                         location(realX, realY, showLocationAnimation)
                         return true
                     }
                 })
             } else {
-                mappingView.setOnSingleClickListener(null)
-                mappingView.update(Size(0, 0), Rect())
+                mapping_imageFragment.setOnSingleClickListener(null)
+                mapping_imageFragment.update(Size(0, 0), Rect())
             }
 
-            mappingView.options.displayer = FadeInImageDisplayer()
-            mappingView.options.setMaxSize(600, 600)
-            mappingView.displayImage(finalShowImageUrl)
+            mapping_imageFragment.options.displayer = FadeInImageDisplayer()
+            mapping_imageFragment.options.setMaxSize(600, 600)
+            mapping_imageFragment.displayImage(finalShowImageUrl)
         }
 
         fun location(x: Float, y: Float, animate: Boolean): Boolean {
-            imageView.zoomer?.location(x, y, animate)
+            image_imageFragment_image.zoomer?.location(x, y, animate)
             return true
         }
 
@@ -308,7 +303,7 @@ class ImageFragment : BaseFragment() {
 
             override fun onMatrixChanged(imageZoomer: ImageZoomer) {
                 imageZoomer.getVisibleRect(visibleRect)
-                mappingView.update(imageZoomer.drawableSize, visibleRect)
+                mapping_imageFragment.update(imageZoomer.drawableSize, visibleRect)
             }
         }
     }
@@ -335,7 +330,7 @@ class ImageFragment : BaseFragment() {
 
     private inner class GifPlayFollowPageVisibleHelper {
         fun onUserVisibleChanged() {
-            val drawable = imageView.drawable
+            val drawable = image_imageFragment_image.drawable
             val lastDrawable = SketchUtils.getLastDrawable(drawable)
             if (lastDrawable != null && lastDrawable is SketchGifDrawable) {
                 (lastDrawable as SketchGifDrawable).followPageVisible(isVisibleToUser, false)
@@ -343,7 +338,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun onDisplayCompleted() {
-            val drawable = imageView.drawable
+            val drawable = image_imageFragment_image.drawable
             val lastDrawable = SketchUtils.getLastDrawable(drawable)
             if (lastDrawable != null && lastDrawable is SketchGifDrawable) {
                 (lastDrawable as SketchGifDrawable).followPageVisible(isVisibleToUser, true)
@@ -355,26 +350,26 @@ class ImageFragment : BaseFragment() {
 
         fun onViewCreated() {
             // 将单击事件传递给上层 Activity
-            imageView.onClickListener = View.OnClickListener { v ->
+            image_imageFragment_image.onClickListener = View.OnClickListener { v ->
                 val parentFragment = parentFragment
                 if (parentFragment != null && parentFragment is ImageZoomer.OnViewTapListener) {
                     (parentFragment as ImageZoomer.OnViewTapListener).onViewTap(v, 0f, 0f)
                 }
             }
 
-            imageView.setOnLongClickListener {
+            image_imageFragment_image.setOnLongClickListener {
                 val menuItemList = LinkedList<MenuItem>()
 
                 menuItemList.add(MenuItem(
                         "Image Info",
-                        DialogInterface.OnClickListener { _, _ -> activity?.let { it1 -> imageView.showInfo(it1) } }
+                        DialogInterface.OnClickListener { _, _ -> activity?.let { it1 -> image_imageFragment_image.showInfo(it1) } }
                 ))
                 menuItemList.add(MenuItem(
                         "Zoom/Rotate/Block Display",
                         DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
                 ))
                 menuItemList.add(MenuItem(
-                        String.format("Toggle ScaleType (%s)", imageView.zoomer?.scaleType ?: imageView.scaleType),
+                        String.format("Toggle ScaleType (%s)", image_imageFragment_image.zoomer?.scaleType ?: image_imageFragment_image.scaleType),
                         DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
                 ))
                 menuItemList.add(MenuItem(
@@ -418,7 +413,7 @@ class ImageFragment : BaseFragment() {
             val menuItemList = LinkedList<MenuItem>()
 
             // 缩放信息
-            val zoomer = imageView.zoomer
+            val zoomer = image_imageFragment_image.zoomer
             if (zoomer != null) {
                 val zoomInfoBuilder = StringBuilder()
                 val zoomScale = SketchUtils.formatFloat(zoomer.zoomScale, 2)
@@ -466,7 +461,7 @@ class ImageFragment : BaseFragment() {
                 val blockDisplayer = zoomer.blockDisplayer
                 if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
                     menuItemList.add(MenuItem(if (blockDisplayer.isShowBlockBounds) "Hide block bounds" else "Show block bounds",
-                            DialogInterface.OnClickListener { _, _ -> imageView.zoomer?.blockDisplayer?.let { it.isShowBlockBounds = !it.isShowBlockBounds } }))
+                            DialogInterface.OnClickListener { _, _ -> image_imageFragment_image.zoomer?.blockDisplayer?.let { it.isShowBlockBounds = !it.isShowBlockBounds } }))
                 } else {
                     menuItemList.add(MenuItem("Block bounds (No need)", null))
                 }
@@ -477,7 +472,7 @@ class ImageFragment : BaseFragment() {
             // 阅读模式开关
             if (zoomer != null) {
                 menuItemList.add(MenuItem(if (zoomer.isReadMode) "Close read mode" else "Open read mode",
-                        DialogInterface.OnClickListener { _, _ -> imageView.zoomer?.let { it.isReadMode = !it.isReadMode } }))
+                        DialogInterface.OnClickListener { _, _ -> image_imageFragment_image.zoomer?.let { it.isReadMode = !it.isReadMode } }))
             } else {
                 menuItemList.add(MenuItem("Read mode (Zoom disabled)", null))
             }
@@ -486,7 +481,7 @@ class ImageFragment : BaseFragment() {
             if (zoomer != null) {
                 menuItemList.add(MenuItem(String.format("Clockwise rotation 90°（%d）", zoomer.rotateDegrees),
                         DialogInterface.OnClickListener { _, _ ->
-                            imageView.zoomer?.let {
+                            image_imageFragment_image.zoomer?.let {
                                 if (!it.rotateBy(90)) {
                                     Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
                                 }
@@ -532,13 +527,13 @@ class ImageFragment : BaseFragment() {
                 dialog.dismiss()
 
                 when (which) {
-                    0 -> imageView.scaleType = ImageView.ScaleType.CENTER
-                    1 -> imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                    2 -> imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    3 -> imageView.scaleType = ImageView.ScaleType.FIT_START
-                    4 -> imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                    5 -> imageView.scaleType = ImageView.ScaleType.FIT_END
-                    6 -> imageView.scaleType = ImageView.ScaleType.FIT_XY
+                    0 -> image_imageFragment_image.scaleType = ImageView.ScaleType.CENTER
+                    1 -> image_imageFragment_image.scaleType = ImageView.ScaleType.CENTER_CROP
+                    2 -> image_imageFragment_image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    3 -> image_imageFragment_image.scaleType = ImageView.ScaleType.FIT_START
+                    4 -> image_imageFragment_image.scaleType = ImageView.ScaleType.FIT_CENTER
+                    5 -> image_imageFragment_image.scaleType = ImageView.ScaleType.FIT_END
+                    6 -> image_imageFragment_image.scaleType = ImageView.ScaleType.FIT_XY
                 }
             }
 
@@ -578,7 +573,7 @@ class ImageFragment : BaseFragment() {
 
         fun share() {
             val activity = activity ?: return
-            val drawable = imageView.drawable
+            val drawable = image_imageFragment_image.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
                 Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
@@ -606,7 +601,7 @@ class ImageFragment : BaseFragment() {
 
         fun setWallpaper() {
             val activity = activity ?: return
-            val drawable = imageView.drawable
+            val drawable = image_imageFragment_image.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
                 Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
@@ -628,7 +623,7 @@ class ImageFragment : BaseFragment() {
 
         fun save() {
             val context = context ?: return
-            val drawable = imageView.drawable
+            val drawable = image_imageFragment_image.drawable
             val imageUri = if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
             if (TextUtils.isEmpty(imageUri)) {
                 Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()

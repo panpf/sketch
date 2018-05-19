@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -33,10 +32,6 @@ import java.util.*
 @BindContentView(R.layout.fragment_recycler)
 class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
-    val hintView: HintView by lazy {hint_recyclerFragment}
-    val recyclerView: RecyclerView by lazy {recycler_recyclerFragment_content}
-    val refreshLayout: SwipeRefreshLayout by lazy {refresh_recyclerFragment}
-
     private var adapter: AssemblyRecyclerAdapter? = null
     private var pageIndex = 1
 
@@ -53,14 +48,14 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(context)
 
-        refreshLayout.setOnRefreshListener(this)
+        refresh_recyclerFragment.setOnRefreshListener(this)
 
         if (adapter != null) {
-            recyclerView.adapter = adapter
+            recycler_recyclerFragment_content.adapter = adapter
         } else {
-            refreshLayout.post { onRefresh() }
+            refresh_recyclerFragment.post { onRefresh() }
         }
     }
 
@@ -115,8 +110,8 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             adapter!!.loadMoreFinished(false)
         }
 
-        if (!refreshLayout.isRefreshing) {
-            refreshLayout.isRefreshing = true
+        if (!refresh_recyclerFragment.isRefreshing) {
+            refresh_recyclerFragment.isRefreshing = true
         }
 
         loadData(1)
@@ -131,7 +126,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
         init {
             if (pageIndex == 1) {
-                fragment.hintView.hidden()
+                fragment.hint_recyclerFragment.hidden()
             }
         }
 
@@ -147,7 +142,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
                 loadMore(fragment, response)
             }
 
-            fragment.refreshLayout.isRefreshing = false
+            fragment.refresh_recyclerFragment.isRefreshing = false
         }
 
         override fun onFailure(call: Call<List<UnsplashImage>>, t: Throwable) {
@@ -158,8 +153,8 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             }
 
             if (pageIndex == 1) {
-                fragment.hintView.failed(t, View.OnClickListener { fragment.onRefresh() })
-                fragment.refreshLayout.isRefreshing = false
+                fragment.hint_recyclerFragment.failed(t, View.OnClickListener { fragment.onRefresh() })
+                fragment.refresh_recyclerFragment.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
                 Toast.makeText(fragment.activity, HintView.getCauseByException(activity, t), Toast.LENGTH_LONG).show()
@@ -170,7 +165,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             val activity = fragment.activity ?: return
             val images = response.body()
             if (images == null || images.isEmpty()) {
-                fragment.hintView.empty("No photos")
+                fragment.hint_recyclerFragment.empty("No photos")
                 return
             }
 
@@ -178,7 +173,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             adapter.addItemFactory(UnsplashPhotosItemFactory(activity, fragment))
             adapter.setMoreItem(LoadMoreItemFactory(fragment))
 
-            fragment.recyclerView.adapter = adapter
+            fragment.recycler_recyclerFragment_content.adapter = adapter
             fragment.adapter = adapter
 
             fragment.changeBackground(images[0].urls!!.thumb)
