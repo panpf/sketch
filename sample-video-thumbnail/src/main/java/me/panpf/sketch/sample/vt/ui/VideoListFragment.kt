@@ -22,6 +22,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.core.view.setPadding
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
@@ -33,89 +34,93 @@ import me.panpf.sketch.sample.vt.bean.BoundaryStatus
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 import me.panpf.sketch.sample.vt.item.LoadMoreItemFactory
 import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
-import me.panpf.sketch.sample.vt.kxt.bindViewModel
-import me.panpf.sketch.sample.vt.kxt.longToast
+import me.panpf.sketch.sample.vt.ktx.bindViewModel
+import me.panpf.sketch.sample.vt.ktx.dp2px
+import me.panpf.sketch.sample.vt.ktx.longToast
 import me.panpf.sketch.sample.vt.vm.VideoListViewModel
-import me.panpf.sketch.util.SketchUtils
 import java.io.File
 
 @BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemListener, OnLoadMoreListener {
+class VideoListFragment : BaseFragment(), OnLoadMoreListener {
 
     private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 
-    private val adapter by lazy {
-        AssemblyPagedListAdapter<VideoInfo>(VideoInfo.DiffCallback()).apply {
-            addItemFactory(VideoInfoItemFactory(this@VideoListFragment))
-            setMoreItem(LoadMoreItemFactory(this@VideoListFragment))
-        }
+    private val adapter = AssemblyPagedListAdapter<VideoInfo>(VideoInfo.DiffCallback()).apply {
+        addItemFactory(VideoInfoItemFactory().setOnItemClickListener { _, _, _, _, data ->
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(Uri.fromFile(File(data?.path)), data?.mimeType)
+            }
+
+            try {
+                startActivity(intent)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                longToast("Not found can play video app")
+            }
+        })
+        setMoreItem(LoadMoreItemFactory(this@VideoListFragment))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(activity)
+        recyclerFragment_contentRecycler.layoutManager = LinearLayoutManager(activity)
 
-        val padding = SketchUtils.dp2px(activity, 2)
-        recycler_recyclerFragment_content.setPadding(padding, padding, padding, padding)
-        recycler_recyclerFragment_content.clipToPadding = false
+        recyclerFragment_contentRecycler.setPadding(2.dp2px(checkNotNull(context)))
+        recyclerFragment_contentRecycler.clipToPadding = false
 
-        recycler_recyclerFragment_content.adapter = adapter
+        recyclerFragment_contentRecycler.adapter = adapter
 
-        refresh_recyclerFragment.setOnRefreshListener {
-            videoListViewModel.refresh()
-        }
+        recyclerFragment_refreshLayout.setOnRefreshListener { videoListViewModel.refresh() }
 
-        refresh_recyclerFragment.isEnabled = false
+        recyclerFragment_refreshLayout.isEnabled = false
 
-        videoListViewModel.videoListing.observe(this, Observer { pageList ->
-            adapter.submitList(pageList)
-        })
+        videoListViewModel.videoListing.observe(this, Observer { adapter.submitList(it) })
 
         videoListViewModel.initStatus.observe(this, Observer { initStatus ->
             initStatus ?: return@Observer
 
-            if (refresh_recyclerFragment.isRefreshing) {
+            if (recyclerFragment_refreshLayout.isRefreshing) {
                 when {
                     initStatus.isLoading() -> {
-                        hint_recyclerFragment.visibility = View.GONE
+                        recyclerFragment_loadingText.visibility = View.GONE
                     }
                     initStatus.isError() -> {
-                        refresh_recyclerFragment.isRefreshing = false
+                        recyclerFragment_refreshLayout.isRefreshing = false
 
-                        hint_recyclerFragment.text = getString(R.string.hint_loadFailed, initStatus.message)
-                        hint_recyclerFragment.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
-                        hint_recyclerFragment.visibility = View.VISIBLE
+                        recyclerFragment_loadingText.text = getString(R.string.hint_loadFailed, initStatus.message)
+                        recyclerFragment_loadingText.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
+                        recyclerFragment_loadingText.visibility = View.VISIBLE
                     }
                     initStatus.isSuccess() -> {
-                        refresh_recyclerFragment.isRefreshing = false
+                        recyclerFragment_refreshLayout.isRefreshing = false
 
                         if (videoListViewModel.boundaryStatus.value == BoundaryStatus.ZERO_ITEMS_LOADED) {
-                            hint_recyclerFragment.text = getString(R.string.hint_empty_list, "Video")
-                            hint_recyclerFragment.visibility = View.VISIBLE
+                            recyclerFragment_loadingText.text = getString(R.string.hint_empty_list, "Video")
+                            recyclerFragment_loadingText.visibility = View.VISIBLE
                         } else {
-                            hint_recyclerFragment.visibility = View.GONE
+                            recyclerFragment_loadingText.visibility = View.GONE
                         }
                     }
                 }
             } else {
                 when {
                     initStatus.isLoading() -> {
-                        hint_recyclerFragment.setText(R.string.hint_loading)
-                        hint_recyclerFragment.setCompoundDrawables(null, null, null, null)
-                        hint_recyclerFragment.visibility = View.VISIBLE
+                        recyclerFragment_loadingText.setText(R.string.hint_loading)
+                        recyclerFragment_loadingText.setCompoundDrawables(null, null, null, null)
+                        recyclerFragment_loadingText.visibility = View.VISIBLE
                     }
                     initStatus.isError() -> {
-                        hint_recyclerFragment.text = getString(R.string.hint_loadFailed, initStatus.message)
-                        hint_recyclerFragment.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
-                        hint_recyclerFragment.visibility = View.VISIBLE
+                        recyclerFragment_loadingText.text = getString(R.string.hint_loadFailed, initStatus.message)
+                        recyclerFragment_loadingText.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_error, 0, 0)
+                        recyclerFragment_loadingText.visibility = View.VISIBLE
                     }
                     initStatus.isSuccess() -> {
                         if (videoListViewModel.boundaryStatus.value == BoundaryStatus.ZERO_ITEMS_LOADED) {
-                            hint_recyclerFragment.text = getString(R.string.hint_empty_list, "Video")
-                            hint_recyclerFragment.visibility = View.VISIBLE
+                            recyclerFragment_loadingText.text = getString(R.string.hint_empty_list, "Video")
+                            recyclerFragment_loadingText.visibility = View.VISIBLE
                         } else {
-                            hint_recyclerFragment.visibility = View.GONE
+                            recyclerFragment_loadingText.visibility = View.GONE
                         }
                     }
                 }
@@ -144,18 +149,5 @@ class VideoListFragment : BaseFragment(), VideoInfoItemFactory.VideoInfoItemList
 
     override fun onLoadMore(adapter: AssemblyAdapter) {
 
-    }
-
-    override fun onClickVideo(position: Int, videoInfo: VideoInfo) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(Uri.fromFile(File(videoInfo.path)), videoInfo.mimeType)
-        }
-
-        try {
-            startActivity(intent)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            longToast("Not found can play video app")
-        }
     }
 }

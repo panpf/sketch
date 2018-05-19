@@ -1,6 +1,6 @@
 @file:Suppress("RedundantVisibilityModifier")
 
-package me.panpf.sketch.sample.vt.kxt
+package me.panpf.sketch.sample.vt.ktx
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders

@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_recyclerFragment"
+        android:id="@+id/recyclerFragment_refreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,14 +15,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_recyclerFragment_content"
+            android:id="@+id/recyclerFragment_contentRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
-        android:id="@+id/hint_recyclerFragment"
+        android:id="@+id/recyclerFragment_loadingText"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="center"
