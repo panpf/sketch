@@ -1,6 +1,5 @@
 package me.panpf.sketch.sample.ui
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.NonNull
@@ -22,14 +21,16 @@ import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.item.LoadMoreItemFactory
-import me.panpf.sketch.sample.item.StaggeredImageItemFactory
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bean.BaiduImageSearchResult
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
+import me.panpf.sketch.sample.item.LoadMoreItemFactory
+import me.panpf.sketch.sample.item.StaggeredImageItemFactory
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,15 +47,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
     private var pageIndex = 1
     private var adapter: AssemblyRecyclerAdapter? = null
 
-    private var pageBackgApplyCallback: PageBackgApplyCallback? = null
     private var backgroundImageUri: String? = null
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        if (activity is PageBackgApplyCallback) {
-            pageBackgApplyCallback = activity
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +100,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
                 fragmentManager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                        .replace(R.id.frame_main_content, searchFragment)
+                        .replace(R.id.main_contentFrame, searchFragment)
                         .commit()
 
                 (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -147,14 +140,14 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
     }
 
     override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
-        if (pageBackgApplyCallback != null && isVisibleToUser) {
+        if (isVisibleToUser) {
             changeBackground(backgroundImageUri)
         }
     }
 
     private fun changeBackground(imageUri: String?) {
         this.backgroundImageUri = imageUri
-        pageBackgApplyCallback?.onApplyBackground(backgroundImageUri)
+        backgroundImageUri?.let { EventBus.getDefault().post(ChangeMainPageBgEvent(it)) }
     }
 
     private fun setAdapter(adapter: AssemblyRecyclerAdapter?) {

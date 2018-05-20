@@ -27,6 +27,9 @@ import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.adapter.paged.AssemblyPagedListAdapter
+import me.panpf.ktx.bindViewModel
+import me.panpf.ktx.dp2px
+import me.panpf.ktx.longToast
 import me.panpf.sketch.sample.vt.BaseFragment
 import me.panpf.sketch.sample.vt.BindContentView
 import me.panpf.sketch.sample.vt.R
@@ -34,9 +37,6 @@ import me.panpf.sketch.sample.vt.bean.BoundaryStatus
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 import me.panpf.sketch.sample.vt.item.LoadMoreItemFactory
 import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
-import me.panpf.sketch.sample.vt.ktx.bindViewModel
-import me.panpf.sketch.sample.vt.ktx.dp2px
-import me.panpf.sketch.sample.vt.ktx.longToast
 import me.panpf.sketch.sample.vt.vm.VideoListViewModel
 import java.io.File
 

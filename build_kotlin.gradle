@@ -1,0 +1,8 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+dependencies{
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation "androidx.core:core-ktx:${ANDROIDX_CORE_KTX_VERSION}"
+}

@@ -16,7 +16,6 @@
 
 package me.panpf.sketch.sample.ui
 
-import android.app.Activity
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
@@ -29,9 +28,10 @@ import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.item.MyPhotoItemFactory
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
+import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
+import me.panpf.sketch.sample.item.MyPhotoItemFactory
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
@@ -49,15 +49,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
 
     private var adapter: AssemblyRecyclerAdapter? = null
 
-    private var pageBackgApplyCallback: PageBackgApplyCallback? = null
     private var backgroundImageUri: String? = null
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        if (activity is PageBackgApplyCallback) {
-            pageBackgApplyCallback = activity
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -112,14 +104,14 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
     }
 
     override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
-        if (pageBackgApplyCallback != null && isVisibleToUser) {
+        if (isVisibleToUser) {
             changeBackground(backgroundImageUri)
         }
     }
 
     private fun changeBackground(imageUri: String?) {
         this.backgroundImageUri = imageUri
-        pageBackgApplyCallback?.onApplyBackground(backgroundImageUri)
+        backgroundImageUri?.let { EventBus.getDefault().post(ChangeMainPageBgEvent(it)) }
     }
 
     @Suppress("unused")
@@ -154,7 +146,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
             val testFilePaths = generator.filePaths
 
             val allUris = AssetImage.getAll(context)
-            val imageListSize = cursor?.count ?: 0 + allUris.size + testFilePaths.size
+            val imageListSize = cursor?.count ?: 0+allUris.size+testFilePaths.size
             val imagePathList = ArrayList<String>(imageListSize)
 
             Collections.addAll(imagePathList, *allUris)

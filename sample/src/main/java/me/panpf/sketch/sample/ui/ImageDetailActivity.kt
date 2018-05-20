@@ -21,30 +21,27 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
-import kotlinx.android.synthetic.main.activity_only_fragment.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+import androidx.core.view.updatePadding
+import kotlinx.android.synthetic.main.activity_image_detail.*
+import me.panpf.ktx.isPortraitOrientation
 import me.panpf.sketch.sample.BaseActivity
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.ktx.isPortraitOrientation
 import me.panpf.sketch.sample.util.DeviceUtils
 
-@BindContentView(R.layout.activity_only_fragment)
+@BindContentView(R.layout.activity_image_detail)
 class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            layout_onlyFragment_content.setPadding(layout_onlyFragment_content.paddingLeft,
-                    layout_onlyFragment_content.paddingTop + DeviceUtils.getStatusBarHeight(resources),
-                    layout_onlyFragment_content.paddingRight, layout_onlyFragment_content.paddingBottom)
+            imageDetail_contentFrame.updatePadding(top = imageDetail_contentFrame.paddingTop + DeviceUtils.getStatusBarHeight(resources))
         }
 
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        image_onlyFragment_background.layoutParams?.let {
+        imageDetail_bgImage.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
             it.height = resources.displayMetrics.heightPixels
             if (isPortraitOrientation()) {
@@ -52,19 +49,17 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
             } else {
                 it.width += DeviceUtils.getWindowHeightSupplement(this)
             }
-            image_onlyFragment_background.layoutParams = it
+            imageDetail_bgImage.layoutParams = it
         }
 
-        image_onlyFragment_background.setOptions(ImageOptions.WINDOW_BACKGROUND)
-
-        toolbar?.visibility = View.GONE
+        imageDetail_bgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
         val imageDetailFragment = ImageDetailFragment()
         imageDetailFragment.arguments = intent.extras
 
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.frame_onlyFragment_content, imageDetailFragment)
+                .replace(R.id.imageDetail_contentFrame, imageDetailFragment)
                 .commit()
     }
 
@@ -89,7 +84,7 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
     }
 
     override fun onApplyBackground(imageUri: String?) {
-        imageUri?.let { image_onlyFragment_background.displayImage(it) }
+        imageUri?.let { imageDetail_bgImage.displayImage(it) }
     }
 
     companion object {

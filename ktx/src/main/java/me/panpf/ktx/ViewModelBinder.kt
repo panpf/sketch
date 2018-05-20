@@ -1,6 +1,6 @@
 @file:Suppress("RedundantVisibilityModifier")
 
-package me.panpf.sketch.sample.vt.ktx
+package me.panpf.ktx
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
@@ -12,12 +12,12 @@ import kotlin.reflect.KProperty
 
 @Suppress("unused")
 public fun <V : ViewModel> Fragment.bindViewModel(clazz: KClass<V>): ReadOnlyProperty<Fragment, V> {
-    return ViewModelLazy { ref, _: KProperty<*> -> ViewModelProviders.of(ref).get(clazz.java) }
+    return me.panpf.ktx.ViewModelLazy { ref, _: KProperty<*> -> ViewModelProviders.of(ref).get(clazz.java) }
 }
 
 @Suppress("unused")
 public fun <V : ViewModel> FragmentActivity.bindViewModel(clazz: KClass<V>): ReadOnlyProperty<FragmentActivity, V> {
-    return ViewModelLazy { ref, _: KProperty<*> -> ViewModelProviders.of(ref).get(clazz.java) }
+    return me.panpf.ktx.ViewModelLazy { ref, _: KProperty<*> -> ViewModelProviders.of(ref).get(clazz.java) }
 }
 
 private class ViewModelLazy<in REF, out OUT>(val initializer: (REF, KProperty<*>) -> OUT) : ReadOnlyProperty<REF, OUT> {

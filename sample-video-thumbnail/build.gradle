@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply from: '../build_kotlin.gradle'
 
 Properties localProperties = openProperties("local.properties")
 String jksFileName = localProperties.getProperty("sample.storeFile")
@@ -12,7 +11,7 @@ android {
     defaultConfig {
         applicationId "me.panpf.sketch.sample.videothumbnail"
 
-        minSdkVersion 14
+        minSdkVersion MIN_SDK_VERSION
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode VERSION_CODE.toInteger()
         versionName VERSION_NAME
@@ -41,10 +40,9 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':sketch')
+    implementation project(':ktx')
 
     implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
@@ -55,8 +53,6 @@ dependencies {
     implementation "android.arch.lifecycle:livedata:${LIFECYCLE_VERSION}"
     annotationProcessor "android.arch.lifecycle:compiler:${LIFECYCLE_VERSION}"
     implementation "android.arch.paging:runtime:${PAGING_VERSION}"
-
-    implementation "androidx.core:core-ktx:${ANDROIDX_CORE_KTX_VERSION}"
 
     implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
     implementation "me.panpf:assembly-adapter-ktx:${ASSEMBLY_ADAPTER_VERSION}"

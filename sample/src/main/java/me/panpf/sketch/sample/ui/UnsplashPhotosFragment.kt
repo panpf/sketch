@@ -1,6 +1,5 @@
 package me.panpf.sketch.sample.ui
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,12 +14,14 @@ import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.BaseFragment
 import me.panpf.sketch.sample.BindContentView
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.item.LoadMoreItemFactory
-import me.panpf.sketch.sample.item.UnsplashPhotosItemFactory
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
+import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
+import me.panpf.sketch.sample.item.LoadMoreItemFactory
+import me.panpf.sketch.sample.item.UnsplashPhotosItemFactory
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.widget.HintView
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,15 +34,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
     private var adapter: AssemblyRecyclerAdapter? = null
     private var pageIndex = 1
 
-    private var pageBackgApplyCallback: PageBackgApplyCallback? = null
     private var backgroundImageUri: String? = null
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (activity is PageBackgApplyCallback) {
-            pageBackgApplyCallback = activity as PageBackgApplyCallback
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,14 +52,14 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
 
     override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
-        if (pageBackgApplyCallback != null && isVisibleToUser) {
+        if (isVisibleToUser) {
             changeBackground(backgroundImageUri)
         }
     }
 
     private fun changeBackground(imageUri: String?) {
         this.backgroundImageUri = imageUri
-        pageBackgApplyCallback?.onApplyBackground(backgroundImageUri)
+        backgroundImageUri?.let { EventBus.getDefault().post(ChangeMainPageBgEvent(it)) }
     }
 
     private fun loadData(pageIndex: Int) {

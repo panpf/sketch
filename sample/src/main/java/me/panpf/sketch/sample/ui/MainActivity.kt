@@ -16,236 +16,115 @@
 
 package me.panpf.sketch.sample.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
-import android.text.format.Formatter
 import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.include_toolbar.*
-import me.panpf.adapter.AssemblyAdapter
-import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.ktx.isPortraitOrientation
 import me.panpf.pagerid.PagerIndicator
-import me.panpf.sketch.SLog
-import me.panpf.sketch.Sketch
 import me.panpf.sketch.sample.*
-import me.panpf.sketch.sample.item.CheckMenuItemFactory
-import me.panpf.sketch.sample.item.InfoMenuItemFactory
-import me.panpf.sketch.sample.item.MenuTitleItemFactory
-import me.panpf.sketch.sample.item.PageMenuItemFactory
-import me.panpf.sketch.sample.bean.CheckMenu
-import me.panpf.sketch.sample.bean.InfoMenu
-import me.panpf.sketch.sample.event.CacheCleanEvent
-import me.panpf.sketch.sample.ktx.isPortraitOrientation
+import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
+import me.panpf.sketch.sample.event.CloseDrawerEvent
+import me.panpf.sketch.sample.event.DrawerOpenedEvent
+import me.panpf.sketch.sample.event.SwitchMainPageEvent
 import me.panpf.sketch.sample.util.AnimationUtils
-import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
-import java.lang.ref.WeakReference
-import java.util.*
+import org.greenrobot.eventbus.Subscribe
 
-/**
- * 首页
- */
-@SuppressLint("RtlHardcoded")
 @BindContentView(R.layout.activity_main)
-class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener, PageBackgApplyCallback {
+class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener {
 
     private var lastClickBackTime: Long = 0
     private var page: Page? = null
 
-    private var toggleDrawable: ActionBarDrawerToggle? = null
+    private val toggleDrawable by lazy {
+        ActionBarDrawerToggle(this, main_drawer, main_toolbar, R.string.drawer_open, R.string.drawer_close)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initViews()
-        initData()
-        startService(Intent(baseContext, NotificationService::class.java))
-        switchPage(Page.UNSPLASH)
-    }
-
-    private fun initViews() {
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        image_main_background.layoutParams?.let {
-            it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels
+        main_bgImage.updateLayoutParams {
+            width = resources.displayMetrics.widthPixels
+            height = resources.displayMetrics.heightPixels
             if (isPortraitOrientation()) {
-                it.height += DeviceUtils.getWindowHeightSupplement(this)
+                height += DeviceUtils.getWindowHeightSupplement(this@MainActivity)
             } else {
-                it.width += DeviceUtils.getWindowHeightSupplement(this)
+                width += DeviceUtils.getWindowHeightSupplement(this@MainActivity)
             }
-            image_main_background.layoutParams = it
         }
+        main_bgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
-        image_main_background.setOptions(ImageOptions.WINDOW_BACKGROUND)
+        main_drawer.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.START)
 
-        //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        image_main_menuBackground.layoutParams?.let {
-            it.width = resources.displayMetrics.widthPixels
-            it.height = resources.displayMetrics.heightPixels
-            if (isPortraitOrientation()) {
-                it.height += DeviceUtils.getWindowHeightSupplement(this)
-            } else {
-                it.width += DeviceUtils.getWindowHeightSupplement(this)
-            }
-            image_main_menuBackground.layoutParams = it
-        }
+        // 设置左侧菜单的宽度为屏幕的 70%
+        main_menuFrame.updateLayoutParams { width = (resources.displayMetrics.widthPixels * 0.7).toInt() }
 
-        image_main_menuBackground.setOptions(ImageOptions.WINDOW_BACKGROUND)
-        image_main_menuBackground.options.displayer = null
-
-        drawer_main_content.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT)
-
-        // 设置左侧菜单的宽度为屏幕的一半
-        val params = layout_main_leftMenu.layoutParams
-        params.width = (resources.displayMetrics.widthPixels * 0.7).toInt()
-        layout_main_leftMenu.layoutParams = params
-
+        setSupportActionBar(main_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        toggleDrawable = ActionBarDrawerToggle(this, drawer_main_content, toolbar, R.string.drawer_open, R.string.drawer_close)
 
-        tabStrip_main_appList.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), baseContext))
+        main_pagerIndicator.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), baseContext))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             val statusBarHeight = DeviceUtils.getStatusBarHeight(resources)
             if (statusBarHeight > 0) {
-                layout_main_content.setPadding(layout_main_content.paddingLeft, statusBarHeight, layout_main_content.paddingRight, layout_main_content.paddingBottom)
-                recycler_main_menu.setPadding(layout_main_content.paddingLeft, statusBarHeight, layout_main_content.paddingRight, layout_main_content.paddingBottom)
+                main_contentLayout.updatePadding(top = statusBarHeight)
             } else {
-                drawer_main_content.fitsSystemWindows = true
+                main_drawer.fitsSystemWindows = true
             }
         }
 
-        drawer_main_content.setDrawerListener(object : DrawerLayout.DrawerListener {
+        main_drawer.setDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                toggleDrawable!!.onDrawerSlide(drawerView, slideOffset)
+                toggleDrawable.onDrawerSlide(drawerView, slideOffset)
             }
 
             override fun onDrawerOpened(drawerView: View) {
-                toggleDrawable!!.onDrawerOpened(drawerView)
-                recycler_main_menu.adapter.notifyDataSetChanged()
+                toggleDrawable.onDrawerOpened(drawerView)
+                EventBus.getDefault().post(DrawerOpenedEvent())
             }
 
             override fun onDrawerClosed(drawerView: View) {
-                toggleDrawable!!.onDrawerClosed(drawerView)
+                toggleDrawable.onDrawerClosed(drawerView)
             }
 
             override fun onDrawerStateChanged(newState: Int) {
 
             }
         })
-    }
 
-    private fun initData() {
-        val adapter = AssemblyRecyclerAdapter(makeMenuList())
-        adapter.addItemFactory(MenuTitleItemFactory())
-        adapter.addItemFactory(PageMenuItemFactory(object : PageMenuItemFactory.OnClickItemListener {
-            override fun onClickItem(page: Page) {
-                switchPage(page)
-            }
-        }))
-        adapter.addItemFactory(CheckMenuItemFactory())
-        adapter.addItemFactory(InfoMenuItemFactory())
-        recycler_main_menu.layoutManager = LinearLayoutManager(baseContext)
-        recycler_main_menu.adapter = adapter
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.main_menuFrame, MainMenuFragment())
+                .commit()
+        onSwitchMainPageEvent(SwitchMainPageEvent(Page.UNSPLASH))
 
         ImageOrientationCorrectTestFileGenerator.getInstance(baseContext).onAppStart()
+
+        startService(Intent(baseContext, NotificationService::class.java))
+
+        EventBus.getDefault().register(this)
     }
 
-    private fun makeMenuList(): List<Any> {
-        val menuClickListener = View.OnClickListener { drawer_main_content.closeDrawer(Gravity.LEFT) }
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
 
-        val menuList = ArrayList<Any>()
-
-        menuList.add("Sample Page")
-        Page.normalPage.filterTo(menuList) { !it.isDisable }
-
-        menuList.add("Test Page")
-        Page.testPage.filterTo(menuList) { !it.isDisable }
-
-        menuList.add("Cache Menu")
-        menuList.add(CacheInfoMenu(this@MainActivity, "Memory", "Memory Cache (Click Clean)", menuClickListener))
-        menuList.add(CacheInfoMenu(this@MainActivity, "BitmapPool", "Bitmap Pool (Click Clean)", menuClickListener))
-        menuList.add(CacheInfoMenu(this@MainActivity, "Disk", "Disk Cache (Click Clean)", menuClickListener))
-        menuList.add(CheckMenu(this, "Disable Memory Cache", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Disable Bitmap Pool", AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Disable Disk Cache", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener))
-
-        menuList.add("Gesture Zoom Menu")
-        menuList.add(CheckMenu(this, "Enabled Gesture Zoom In Detail Page", AppConfig.Key.SUPPORT_ZOOM, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Pause Block Display When Page Not Visible In Detail Page", AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE, null, menuClickListener))
-
-        menuList.add("GIF Menu")
-        menuList.add(CheckMenu(this, "Auto Play GIF In List", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Click Play GIF In List", AppConfig.Key.CLICK_PLAY_GIF, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Show GIF Flag In List", AppConfig.Key.SHOW_GIF_FLAG, null, menuClickListener))
-
-        menuList.add("Decode Menu")
-        menuList.add(CheckMenu(this, "In Prefer Quality Over Speed", AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Low Quality Bitmap", AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Enabled Thumbnail Mode In List", AppConfig.Key.THUMBNAIL_MODE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Cache Processed Image In Disk", AppConfig.Key.CACHE_PROCESSED_IMAGE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Disabled Correct Image Orientation", AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION, null, menuClickListener))
-
-        menuList.add("Other Menu")
-        menuList.add(CheckMenu(this, "Show Round Rect In Photo List", AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Show Unsplash Raw Image In Detail Page", AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Show Mapping Thumbnail In Detail Page", AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Show Press Status In List", AppConfig.Key.CLICK_SHOW_PRESSED_STATUS, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Show Image From Corner Mark", AppConfig.Key.SHOW_IMAGE_FROM_FLAG, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Show Download Progress In List", AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Click Show Image On Pause Download In List", AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Click Retry On Error In List", AppConfig.Key.CLICK_RETRY_ON_FAILED, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Scrolling Pause Load Image In List", AppConfig.Key.SCROLLING_PAUSE_LOAD, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Mobile Data Pause Download Image", AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Long Clock Show Image Info", AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO, null, menuClickListener))
-
-        menuList.add("Log Menu")
-        menuList.add(object : InfoMenu("Log Level") {
-            @SuppressLint("SwitchIntDef")
-            override fun getInfo(): String {
-                when (SLog.getLevel()) {
-                    SLog.LEVEL_VERBOSE -> return "VERBOSE"
-                    SLog.LEVEL_DEBUG -> return "DEBUG"
-                    SLog.LEVEL_INFO -> return "INFO"
-                    SLog.LEVEL_WARNING -> return "WARNING"
-                    SLog.LEVEL_ERROR -> return "ERROR"
-                    SLog.LEVEL_NONE -> return "NONE"
-                    else -> return "Unknown"
-                }
-            }
-
-            override fun onClick(adapter: AssemblyAdapter?) {
-                switchLogLevel()
-            }
-        })
-        menuList.add(CheckMenu(this, "Output Flow Log", AppConfig.Key.LOG_REQUEST, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Output Cache Log", AppConfig.Key.LOG_CACHE, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Output Zoom Log", AppConfig.Key.LOG_ZOOM, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Output Zoom Block Display Log", AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Output Used Time Log", AppConfig.Key.LOG_TIME, null, menuClickListener))
-        menuList.add(CheckMenu(this, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null, menuClickListener))
-
-        return menuList
+        super.onDestroy()
     }
 
     override fun isDisableSetFitsSystemWindows(): Boolean {
@@ -256,60 +135,76 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         super.onPostCreate(savedInstanceState)
 
         // 同步状态，这一步很重要，要不然初始
-        toggleDrawable!!.syncState()
-        toggleDrawable!!.onDrawerSlide(layout_main_leftMenu, 1.0f)
-        toggleDrawable!!.onDrawerSlide(layout_main_leftMenu, 0.5f)
-        toggleDrawable!!.onDrawerSlide(layout_main_leftMenu, 0.0f)
+        toggleDrawable.syncState()
+        toggleDrawable.onDrawerSlide(main_menuFrame, 1.0f)
+        toggleDrawable.onDrawerSlide(main_menuFrame, 0.5f)
+        toggleDrawable.onDrawerSlide(main_menuFrame, 0.0f)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        toggleDrawable!!.onConfigurationChanged(newConfig)
+        toggleDrawable.onConfigurationChanged(newConfig)
     }
 
-    private fun switchPage(newPage: Page) {
-        if (this.page == newPage) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    @Subscribe
+    fun onSwitchMainPageEvent(event: SwitchMainPageEvent) {
+        if (this.page == event.page) {
             return
         }
-        this.page = newPage
+        this.page = event.page
 
         if (page == Page.APP_LIST) {
-            AnimationUtils.visibleViewByAlpha(tabStrip_main_appList)
+            AnimationUtils.visibleViewByAlpha(main_pagerIndicator)
         } else {
-            AnimationUtils.invisibleViewByAlpha(tabStrip_main_appList)
+            AnimationUtils.invisibleViewByAlpha(main_pagerIndicator)
         }
 
         supportActionBar!!.title = page!!.showName
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                .replace(R.id.frame_main_content, page!!.fragment)
+                .replace(R.id.main_contentFrame, page!!.fragment)
                 .commitAllowingStateLoss()
 
-        drawer_main_content.post { drawer_main_content.closeDrawer(Gravity.LEFT) }
+        main_drawer.post { main_drawer.closeDrawer(Gravity.START) }
+    }
+
+    @Suppress("unused")
+    @Subscribe
+    fun onCloseDrawerEvent(@Suppress("UNUSED_PARAMETER") closeDrawerEvent: CloseDrawerEvent) {
+        main_drawer.closeDrawer(Gravity.START)
+    }
+
+    @Suppress("unused")
+    @Subscribe
+    fun onChangeMainPageBgEvent(eventChange: ChangeMainPageBgEvent) {
+        if (!TextUtils.isEmpty(eventChange.imageUrl)) {
+            main_bgImage.displayImage(eventChange.imageUrl)
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (drawer_main_content.isDrawerOpen(Gravity.LEFT)) {
-                drawer_main_content.closeDrawer(Gravity.LEFT)
+        return if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if (main_drawer.isDrawerOpen(Gravity.START)) {
+                main_drawer.closeDrawer(Gravity.START)
             } else {
-                drawer_main_content.openDrawer(Gravity.LEFT)
+                main_drawer.openDrawer(Gravity.START)
             }
-            return true
+            true
         } else {
-            return super.onKeyDown(keyCode, event)
+            super.onKeyDown(keyCode, event)
         }
     }
 
     override fun onGetAppListTabStrip(): PagerIndicator {
-        return tabStrip_main_appList
+        return main_pagerIndicator
     }
 
     override fun onBackPressed() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickBackTime > 2000) {
             lastClickBackTime = currentTime
-            Toast.makeText(baseContext, "再按一下返回键退出" + resources.getString(R.string.app_name), Toast.LENGTH_SHORT).show()
+            Toast.makeText(baseContext, "再来一下就可以退出啦！", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -327,75 +222,7 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
         return result
     }
 
-    override fun onApplyBackground(imageUri: String?) {
-        if (!TextUtils.isEmpty(imageUri)) {
-            image_main_background.displayImage(imageUri ?: "")
-            image_main_menuBackground.displayImage(imageUri ?: "")
-        }
-    }
-
-    private fun switchLogLevel() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Switch Log Level")
-        val items = arrayOf("VERBOSE" + if (SLog.getLevel() == SLog.LEVEL_VERBOSE) " (*)" else "", "DEBUG" + if (SLog.getLevel() == SLog.LEVEL_DEBUG) " (*)" else "", "INFO" + if (SLog.getLevel() == SLog.LEVEL_INFO) " (*)" else "", "WARNING" + if (SLog.getLevel() == SLog.LEVEL_WARNING) " (*)" else "", "ERROR" + if (SLog.getLevel() == SLog.LEVEL_ERROR) " (*)" else "", "NONE" + if (SLog.getLevel() == SLog.LEVEL_NONE) " (*)" else "")
-        builder.setItems(items) { dialog, which ->
-            when (which) {
-                0 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "VERBOSE")
-                1 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "DEBUG")
-                2 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "INFO")
-                3 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "WARNING")
-                4 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "ERROR")
-                5 -> AppConfig.putString(baseContext, AppConfig.Key.LOG_LEVEL, "NONE")
-            }
-            recycler_main_menu.adapter.notifyDataSetChanged()
-        }
-        builder.setPositiveButton("Cancel", null)
-        builder.show()
-    }
-
-    enum class Page constructor(val showName: String, val fragmentClass: Class<out Fragment>, val test: Boolean, val isDisable: Boolean) {
-        UNSPLASH("Unsplash", UnsplashPhotosFragment::class.java, false, false),
-        SEARCH("GIF Search", SearchFragment::class.java, false, false),
-        MY_PHOTOS("My Photos", MyPhotosFragment::class.java, false, false),
-        APP_LIST("My Apps", AppListFragment::class.java, false, false),
-        ABOUT("About Sketch", AboutFragment::class.java, false, false),
-
-        BLOCK_DISPLAY_TEST("Block Display Huge Image", BlockDisplayTestFragment::class.java, true, false),
-        IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment::class.java, true, false),
-        IMAGE_SHAPER_TEST("Image Shaper Test", ImageShaperTestFragment::class.java, true, false),
-        REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment::class.java, true, false),
-        IN_BITMAP_TEST("inBitmap Test", InBitmapTestFragment::class.java, true, false),
-        IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment::class.java, true, false),
-        BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
-        OTHER_TEST("Other Test", OtherTestFragment::class.java, true, !BuildConfig.DEBUG);
-
-        val fragment: Fragment?
-            get() {
-                return try {
-                    fragmentClass.newInstance()
-                } catch (e: InstantiationException) {
-                    e.printStackTrace()
-                    null
-                } catch (e: IllegalAccessException) {
-                    e.printStackTrace()
-                    null
-                }
-            }
-
-        companion object {
-            val normalPage: Array<Page>
-                get() {
-                    return values().filterTo(LinkedList<Page>()) { !it.test }.toTypedArray()
-                }
-
-            val testPage: Array<Page>
-                get() {
-                    return values().filterTo(LinkedList<Page>()) { it.test }.toTypedArray()
-                }
-        }
-    }
-
-    class TitleTabFactory(val titles: Array<String>, val context: Context) : PagerIndicator.TabViewFactory {
+    class TitleTabFactory(private val titles: Array<String>, val context: Context) : PagerIndicator.TabViewFactory {
 
         override fun addTabs(viewGroup: ViewGroup, i: Int) {
             titles.withIndex().forEach { (index, title) ->
@@ -411,81 +238,6 @@ class MainActivity : BaseActivity(), AppListFragment.GetAppListTagStripListener,
                 textView.setTextColor(context.resources.getColorStateList(R.color.tab))
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
                 viewGroup.addView(textView)
-            }
-        }
-    }
-
-    class CacheInfoMenu(val activity: MainActivity,
-                        val type: String,
-                        title: String,
-                        val menuClickListener: View.OnClickListener) : InfoMenu(title) {
-        override fun getInfo(): String {
-            when (type) {
-                "Memory" -> {
-                    val memoryCache = Sketch.with(activity).configuration.memoryCache
-                    val usedSizeFormat = Formatter.formatFileSize(activity, memoryCache.size)
-                    val maxSizeFormat = Formatter.formatFileSize(activity, memoryCache.maxSize)
-                    return usedSizeFormat + "/" + maxSizeFormat
-                }
-                "Disk" -> {
-                    val diskCache = Sketch.with(activity).configuration.diskCache
-                    val usedSizeFormat = Formatter.formatFileSize(activity, diskCache.size)
-                    val maxSizeFormat = Formatter.formatFileSize(activity, diskCache.maxSize)
-                    return usedSizeFormat + "/" + maxSizeFormat
-                }
-                "BitmapPool" -> {
-                    val bitmapPool = Sketch.with(activity).configuration.bitmapPool
-                    val usedSizeFormat = Formatter.formatFileSize(activity, bitmapPool.size.toLong())
-                    val maxSizeFormat = Formatter.formatFileSize(activity, bitmapPool.maxSize.toLong())
-                    return usedSizeFormat + "/" + maxSizeFormat
-                }
-                else -> return "Unknown Type"
-            }
-        }
-
-        override fun onClick(adapter: AssemblyAdapter?) {
-            when (type) {
-                "Memory" -> {
-                    Sketch.with(activity).configuration.memoryCache.clear()
-                    menuClickListener.onClick(null)
-                    adapter?.notifyDataSetChanged()
-
-                    EventBus.getDefault().post(CacheCleanEvent())
-                }
-                "Disk" -> {
-                    CleanCacheTask(WeakReference(activity), adapter, menuClickListener).execute(0)
-                }
-                "BitmapPool" -> {
-                    Sketch.with(activity).configuration.bitmapPool.clear()
-                    menuClickListener.onClick(null)
-                    adapter?.notifyDataSetChanged()
-
-                    EventBus.getDefault().post(CacheCleanEvent())
-                }
-            }
-        }
-
-        class CleanCacheTask(val activityReference: WeakReference<MainActivity>,
-                             val adapter: AssemblyAdapter?,
-                             val menuClickListener: View.OnClickListener) : AsyncTask<Int, Int, Int>() {
-
-            override fun doInBackground(vararg params: Int?): Int? {
-                activityReference.get()?.let {
-                    Sketch.with(it as Context).configuration.diskCache.clear()
-                }
-
-                return null
-            }
-
-            override fun onPostExecute(integer: Int?) {
-                super.onPostExecute(integer)
-
-                activityReference.get()?.let {
-                    menuClickListener.onClick(null)
-                    adapter?.notifyDataSetChanged()
-
-                    EventBus.getDefault().post(CacheCleanEvent())
-                }
             }
         }
     }

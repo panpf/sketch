@@ -1,6 +1,5 @@
 package me.panpf.sketch.sample.item
 
-import android.content.Context
 import android.view.ViewGroup
 import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
@@ -17,12 +16,8 @@ class MenuTitleItemFactory : AssemblyItemFactory<String>() {
         return MenuTitleItem(R.layout.list_item_menu_title, viewGroup)
     }
 
-    inner class MenuTitleItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<String>(itemLayoutId, parent) {
+    class MenuTitleItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<String>(itemLayoutId, parent) {
         private val textView: TextView by bindView(R.id.text_menuTitleItem_title)
-
-        override fun onConfigViews(context: Context) {
-
-        }
 
         override fun onSetData(i: Int, title: String?) {
             textView.text = title

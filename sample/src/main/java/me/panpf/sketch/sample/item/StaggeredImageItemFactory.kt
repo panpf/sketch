@@ -7,10 +7,10 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.adapter.ktx.bindView
+import me.panpf.ktx.isPortraitOrientation
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.BaiduImage
-import me.panpf.sketch.sample.ktx.isPortraitOrientation
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickListener?) : AssemblyItemFactory<BaiduImage>() {

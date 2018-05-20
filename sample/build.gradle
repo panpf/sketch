@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply from: '../build_kotlin.gradle'
 
 Properties localProperties = openProperties("local.properties")
 String jksFileName = localProperties.getProperty("sample.storeFile")
@@ -72,11 +71,11 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
+    implementation "com.android.support.constraint:constraint-layout:${CONSTRAINT_LAYOUT_VERSION}"
 
     implementation "me.panpf:pager-indicator:${PAGER_INDICATOR}"
     implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
@@ -84,6 +83,7 @@ dependencies {
 
     implementation project(':sketch')
     normalImplementation project(':sketch-gif')
+    implementation project(':ktx')
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY_ANDROID_VERSION}"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"

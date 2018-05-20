@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample.vt.ktx
+package me.panpf.ktx
 
 import android.content.Context
 

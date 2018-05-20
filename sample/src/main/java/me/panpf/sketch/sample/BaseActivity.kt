@@ -24,7 +24,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.include_toolbar.*
 import me.panpf.sketch.sample.util.DataTransferStation
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -38,12 +37,6 @@ abstract class BaseActivity : AppCompatActivity() {
         val bindContentView = javaClass.getAnnotation(BindContentView::class.java)
         if (bindContentView != null && bindContentView.value > 0) {
             setContentView(bindContentView.value)
-        }
-
-        if (toolbar != null) {
-            onPreSetSupportActionBar()
-            setSupportActionBar(toolbar)
-            onPostSetSupportActionBar()
         }
     }
 
@@ -60,14 +53,6 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun setContentView(view: View) {
         setTransparentStatusBar()
         super.setContentView(view)
-    }
-
-    protected fun onPreSetSupportActionBar() {
-
-    }
-
-    protected fun onPostSetSupportActionBar() {
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
