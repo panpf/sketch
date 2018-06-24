@@ -24,8 +24,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import androidx.core.view.setPadding
 import kotlinx.android.synthetic.main.fragment_recycler.*
-import me.panpf.adapter.AssemblyAdapter
-import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.adapter.paged.AssemblyPagedListAdapter
 import me.panpf.ktx.bindViewModel
 import me.panpf.ktx.dp2px
@@ -41,7 +39,7 @@ import me.panpf.sketch.sample.vt.vm.VideoListViewModel
 import java.io.File
 
 @BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment(), OnLoadMoreListener {
+class VideoListFragment : BaseFragment() {
 
     private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 
@@ -58,22 +56,25 @@ class VideoListFragment : BaseFragment(), OnLoadMoreListener {
                 longToast("Not found can play video app")
             }
         })
-        setMoreItem(LoadMoreItemFactory(this@VideoListFragment))
+        setMoreItem(LoadMoreItemFactory())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerFragment_contentRecycler.layoutManager = LinearLayoutManager(activity)
+        recyclerFragment_contentRecycler.apply {
+            setPadding(2.dp2px(checkNotNull(context)))
+            clipToPadding = false
 
-        recyclerFragment_contentRecycler.setPadding(2.dp2px(checkNotNull(context)))
-        recyclerFragment_contentRecycler.clipToPadding = false
+            layoutManager = LinearLayoutManager(activity)
+            this@apply.adapter = this@VideoListFragment.adapter
+        }
 
-        recyclerFragment_contentRecycler.adapter = adapter
+        recyclerFragment_refreshLayout.apply {
+            setOnRefreshListener { videoListViewModel.refresh() }
 
-        recyclerFragment_refreshLayout.setOnRefreshListener { videoListViewModel.refresh() }
-
-        recyclerFragment_refreshLayout.isEnabled = false
+            isEnabled = false
+        }
 
         videoListViewModel.videoListing.observe(this, Observer { adapter.submitList(it) })
 
@@ -145,9 +146,5 @@ class VideoListFragment : BaseFragment(), OnLoadMoreListener {
                 adapter.loadMoreFinished(true)
             }
         })
-    }
-
-    override fun onLoadMore(adapter: AssemblyAdapter) {
-
     }
 }

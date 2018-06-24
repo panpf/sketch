@@ -10,7 +10,7 @@ import me.panpf.adapter.more.AssemblyMoreItemFactory
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.vt.R
 
-class LoadMoreItemFactory(eventListener: OnLoadMoreListener) : AssemblyMoreItemFactory<String>(eventListener) {
+class LoadMoreItemFactory(eventListener: OnLoadMoreListener? = null) : AssemblyMoreItemFactory<String>(eventListener) {
 
     override fun createAssemblyItem(viewGroup: ViewGroup): LoadMoreItem {
         return LoadMoreItem(this, R.layout.list_footer_load_more, viewGroup)
