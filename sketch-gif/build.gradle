@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
@@ -20,8 +21,20 @@ android {
     }
 }
 
-apply from: "../bintrayUpload.gradle"
-
 dependencies {
     implementation "com.android.support:support-annotations:${SUPPORT_VERSION}"
+}
+
+publish {
+    groupId = 'me.panpf'
+    artifactId = 'sketch-gif'
+    publishVersion = android.defaultConfig.versionName
+    desc = 'Android, Image, Load, GIF'
+    website = 'https://github.com/panpf/sketch'
+
+    def properties = new Properties()
+    properties.load(project.file("local.properties").newDataInputStream())
+    bintrayUser = properties.getProperty("bintray.user")
+    userOrg = properties.getProperty("bintray.userOrg")
+    bintrayKey = properties.getProperty("bintray.apikey")
 }
