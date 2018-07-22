@@ -3,8 +3,8 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_about.*
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.BuildConfig
 import me.panpf.sketch.sample.R
 

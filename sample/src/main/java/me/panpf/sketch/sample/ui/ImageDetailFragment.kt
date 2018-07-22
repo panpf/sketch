@@ -22,8 +22,8 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_detail.*
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.bean.Image

@@ -14,8 +14,8 @@ import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageDecodeUtils
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel

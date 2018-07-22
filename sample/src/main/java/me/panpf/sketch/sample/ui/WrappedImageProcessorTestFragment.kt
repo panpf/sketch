@@ -10,8 +10,8 @@ import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 
 @BindContentView(R.layout.fragment_wrapped)

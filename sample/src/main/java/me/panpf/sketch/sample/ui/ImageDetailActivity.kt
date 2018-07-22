@@ -24,8 +24,8 @@ import android.view.MotionEvent
 import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.activity_image_detail.*
 import me.panpf.ktx.isPortraitOrientation
-import me.panpf.sketch.sample.BaseActivity
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseActivity
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.util.DeviceUtils

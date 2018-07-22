@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.base
 
 import android.graphics.Color
 import android.os.Build

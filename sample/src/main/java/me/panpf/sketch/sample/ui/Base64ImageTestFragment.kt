@@ -6,8 +6,8 @@ import android.text.TextWatcher
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_base64_test.*
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 
 @BindContentView(R.layout.fragment_base64_test)

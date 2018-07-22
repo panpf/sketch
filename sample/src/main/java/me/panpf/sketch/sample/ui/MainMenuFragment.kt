@@ -19,6 +19,8 @@ import me.panpf.ktx.isPortraitOrientation
 import me.panpf.sketch.SLog
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.sample.*
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.bean.CheckMenu
 import me.panpf.sketch.sample.bean.InfoMenu
 import me.panpf.sketch.sample.event.*

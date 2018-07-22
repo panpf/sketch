@@ -7,8 +7,8 @@ import android.widget.SeekBar
 import kotlinx.android.synthetic.main.fragment_circle_image_shaper.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.shaper.CircleImageShaper
 

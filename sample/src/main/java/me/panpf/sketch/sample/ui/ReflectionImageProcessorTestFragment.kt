@@ -6,8 +6,8 @@ import kotlinx.android.synthetic.main.fragment_reflection.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.ReflectionImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 
 @BindContentView(R.layout.fragment_reflection)

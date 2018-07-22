@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.base
 
 import android.os.Bundle
 import android.support.annotation.NonNull

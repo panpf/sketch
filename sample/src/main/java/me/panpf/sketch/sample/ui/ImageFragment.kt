@@ -22,8 +22,8 @@ import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.drawable.SketchGifDrawable
 import me.panpf.sketch.drawable.SketchRefBitmap
 import me.panpf.sketch.request.*
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent

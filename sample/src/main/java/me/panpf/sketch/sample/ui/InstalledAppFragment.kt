@@ -7,8 +7,8 @@ import android.text.format.Formatter
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.sample.BaseFragment
-import me.panpf.sketch.sample.BindContentView
+import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.item.AppItemFactory
 import me.panpf.sketch.sample.item.AppListHeaderItemFactory

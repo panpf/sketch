@@ -34,6 +34,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import me.panpf.ktx.isPortraitOrientation
 import me.panpf.pagerid.PagerIndicator
 import me.panpf.sketch.sample.*
+import me.panpf.sketch.sample.base.BaseActivity
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
 import me.panpf.sketch.sample.event.CloseDrawerEvent
 import me.panpf.sketch.sample.event.DrawerOpenedEvent

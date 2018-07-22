@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.base
 
 import java.lang.annotation.Inherited
 
