@@ -22,18 +22,19 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_detail.*
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.event.RegisterEvent
+import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
 import me.panpf.sketch.sample.widget.ZoomOutPageTransformer
 import me.panpf.sketch.zoom.ImageZoomer
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
+@RegisterEvent
 @BindContentView(R.layout.fragment_detail)
 class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
@@ -81,8 +82,6 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
             text_detail_currentItem.text = String.format("%d", position + 1)
             text_detail_countItem.text = imageList!!.size.toString()
         }
-
-        EventBus.getDefault().register(this)
     }
 
     override fun onResume() {
@@ -100,11 +99,6 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
             recoverPlay = true
         }
         handler!!.removeCallbacks(startPlay)
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroyView()
     }
 
     override fun onViewTap(view: View, x: Float, y: Float) {

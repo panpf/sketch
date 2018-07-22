@@ -5,13 +5,13 @@
     android:layout_gravity="start">
 
     <me.panpf.sketch.sample.widget.SampleImageView
-        android:id="@+id/mainMenuBgImage"
+        android:id="@+id/mainMenuFm_bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/shape_window_background" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/mainMenuRecycler"
+        android:id="@+id/mainMenuFm_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

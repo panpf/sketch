@@ -5,20 +5,19 @@ import android.content.Context
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.text.TextUtils
 import android.text.format.Formatter
 import android.view.View
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import kotlinx.android.synthetic.main.fragment_main_menu.*
+import kotlinx.android.synthetic.main.fm_main_menu.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.ktx.isPortraitOrientation
 import me.panpf.sketch.SLog
 import me.panpf.sketch.Sketch
-import me.panpf.sketch.sample.*
+import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.bean.CheckMenu
@@ -35,14 +34,18 @@ import org.greenrobot.eventbus.Subscribe
 import java.lang.ref.WeakReference
 import java.util.*
 
-@BindContentView(R.layout.fragment_main_menu)
+@RegisterEvent
+@BindContentView(R.layout.fm_main_menu)
 class MainMenuFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 设置左侧菜单的宽度为屏幕的 70%
+        view.updateLayoutParams { width = (resources.displayMetrics.widthPixels * 0.7).toInt() }
+
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        mainMenuBgImage.updateLayoutParams {
+        mainMenuFm_bgImage.updateLayoutParams {
             width = resources.displayMetrics.widthPixels
             height = resources.displayMetrics.heightPixels
             if (isPortraitOrientation()) {
@@ -52,33 +55,25 @@ class MainMenuFragment : BaseFragment() {
             }
         }
 
-        mainMenuBgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
-        mainMenuBgImage.options.displayer = null
+        mainMenuFm_bgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
+        mainMenuFm_bgImage.options.displayer = null
 
         // KITKAT 以后要内容要延伸到状态栏下面，所以菜单列表的顶部要留出状态栏的高度
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            DeviceUtils.getStatusBarHeight(resources).takeIf { it > 0 }?.also { mainMenuRecycler.updatePadding(top = it) }
+            DeviceUtils.getStatusBarHeight(resources).takeIf { it > 0 }?.also { mainMenuFm_recycler.updatePadding(top = it) }
         }
 
-        mainMenuRecycler.layoutManager = LinearLayoutManager(context)
-        mainMenuRecycler.adapter = AssemblyRecyclerAdapter(makeMenuList()).apply {
+        mainMenuFm_recycler.layoutManager = LinearLayoutManager(context)
+        mainMenuFm_recycler.adapter = AssemblyRecyclerAdapter(makeMenuList()).apply {
             addItemFactory(MenuTitleItemFactory())
             addItemFactory(PageMenuItemFactory(object : PageMenuItemFactory.OnClickItemListener {
                 override fun onClickItem(page: Page) {
-                    EventBus.getDefault().post(SwitchMainPageEvent(page))
+                    EventBus.getDefault().post(ChangePageEvent(page))
                 }
             }))
             addItemFactory(CheckMenuItemFactory())
             addItemFactory(InfoMenuItemFactory())
         }
-
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-
-        super.onDestroyView()
     }
 
     private fun makeMenuList(): List<Any> {
@@ -160,7 +155,7 @@ class MainMenuFragment : BaseFragment() {
                             4 -> AppConfig.putString(appContext, AppConfig.Key.LOG_LEVEL, "ERROR")
                             5 -> AppConfig.putString(appContext, AppConfig.Key.LOG_LEVEL, "NONE")
                         }
-                        mainMenuRecycler.adapter.notifyDataSetChanged()
+                        mainMenuFm_recycler.adapter.notifyDataSetChanged()
                     }
                     setPositiveButton("Cancel", null)
                 }.show()
@@ -178,16 +173,14 @@ class MainMenuFragment : BaseFragment() {
 
     @Suppress("unused")
     @Subscribe
-    fun onDrawerOpendEvent(@Suppress("UNUSED_PARAMETER") drawerOpenedEvent: DrawerOpenedEvent) {
-        mainMenuRecycler.adapter.notifyDataSetChanged()
+    fun onEvent(@Suppress("UNUSED_PARAMETER") event: DrawerOpenedEvent) {
+        mainMenuFm_recycler.adapter.notifyDataSetChanged()
     }
 
     @Suppress("unused")
     @Subscribe
-    fun onChangeMainPageBgEvent(eventChange: ChangeMainPageBgEvent) {
-        if (!TextUtils.isEmpty(eventChange.imageUrl)) {
-            mainMenuBgImage.displayImage(eventChange.imageUrl)
-        }
+    fun onEvent(event: ChangeMainPageBgEvent) {
+        mainMenuFm_bgImage.displayImage(event.imageUrl)
     }
 }
 
@@ -258,47 +251,5 @@ class CacheInfoMenu(val context: Context, val type: String, title: String, val m
                 EventBus.getDefault().post(CacheCleanEvent())
             }
         }
-    }
-}
-
-enum class Page constructor(val showName: String, val fragmentClass: Class<out Fragment>, val test: Boolean, val isDisable: Boolean) {
-    UNSPLASH("Unsplash", UnsplashPhotosFragment::class.java, false, false),
-    SEARCH("GIF Search", SearchFragment::class.java, false, false),
-    MY_PHOTOS("My Photos", MyPhotosFragment::class.java, false, false),
-    APP_LIST("My Apps", AppListFragment::class.java, false, false),
-    ABOUT("About Sketch", AboutFragment::class.java, false, false),
-
-    BLOCK_DISPLAY_TEST("Block Display Huge Image", BlockDisplayTestFragment::class.java, true, false),
-    IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment::class.java, true, false),
-    IMAGE_SHAPER_TEST("Image Shaper Test", ImageShaperTestFragment::class.java, true, false),
-    REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment::class.java, true, false),
-    IN_BITMAP_TEST("inBitmap Test", InBitmapTestFragment::class.java, true, false),
-    IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment::class.java, true, false),
-    BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
-    OTHER_TEST("Other Test", OtherTestFragment::class.java, true, !BuildConfig.DEBUG);
-
-    val fragment: Fragment?
-        get() {
-            return try {
-                fragmentClass.newInstance()
-            } catch (e: InstantiationException) {
-                e.printStackTrace()
-                null
-            } catch (e: IllegalAccessException) {
-                e.printStackTrace()
-                null
-            }
-        }
-
-    companion object {
-        val normalPage: Array<Page>
-            get() {
-                return values().filterTo(LinkedList()) { !it.test }.toTypedArray()
-            }
-
-        val testPage: Array<Page>
-            get() {
-                return values().filterTo(LinkedList()) { it.test }.toTypedArray()
-            }
     }
 }

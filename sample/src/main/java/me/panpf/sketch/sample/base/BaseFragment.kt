@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import me.panpf.sketch.sample.util.DataTransferStation
 
-open class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment() {
     val dataTransferHelper = DataTransferStation.PageHelper(this)
     var isViewCreated = false
 

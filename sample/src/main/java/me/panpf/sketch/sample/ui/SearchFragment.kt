@@ -100,7 +100,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
                 fragmentManager
                         .beginTransaction()
                         .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                        .replace(R.id.main_contentFrame, searchFragment)
+                        .replace(R.id.mainFm_contentFrame, searchFragment)
                         .commit()
 
                 (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)

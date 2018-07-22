@@ -22,26 +22,26 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.core.view.updatePadding
-import kotlinx.android.synthetic.main.activity_image_detail.*
+import kotlinx.android.synthetic.main.at_image_detail.*
 import me.panpf.ktx.isPortraitOrientation
-import me.panpf.sketch.sample.base.BaseActivity
-import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.base.BaseActivity
+import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.util.DeviceUtils
 
-@BindContentView(R.layout.activity_image_detail)
+@BindContentView(R.layout.at_image_detail)
 class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            imageDetail_contentFrame.updatePadding(top = imageDetail_contentFrame.paddingTop + DeviceUtils.getStatusBarHeight(resources))
+            imageDetailAt_contentFrame.updatePadding(top = imageDetailAt_contentFrame.paddingTop + DeviceUtils.getStatusBarHeight(resources))
         }
 
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        imageDetail_bgImage.layoutParams?.let {
+        imageDetailAt_bgImage.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
             it.height = resources.displayMetrics.heightPixels
             if (isPortraitOrientation()) {
@@ -49,17 +49,17 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
             } else {
                 it.width += DeviceUtils.getWindowHeightSupplement(this)
             }
-            imageDetail_bgImage.layoutParams = it
+            imageDetailAt_bgImage.layoutParams = it
         }
 
-        imageDetail_bgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
+        imageDetailAt_bgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
         val imageDetailFragment = ImageDetailFragment()
         imageDetailFragment.arguments = intent.extras
 
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.imageDetail_contentFrame, imageDetailFragment)
+                .replace(R.id.imageDetailAt_contentFrame, imageDetailFragment)
                 .commit()
     }
 
@@ -84,7 +84,7 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
     }
 
     override fun onApplyBackground(imageUri: String?) {
-        imageUri?.let { imageDetail_bgImage.displayImage(it) }
+        imageUri?.let { imageDetailAt_bgImage.displayImage(it) }
     }
 
     companion object {

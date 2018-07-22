@@ -6,9 +6,9 @@ import android.view.View
 import kotlinx.android.synthetic.main.fragment_pager_tab.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
 import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.Image
 
 /**
@@ -34,7 +34,7 @@ class BlockDisplayTestFragment : BaseFragment() {
         }
         pager_pagerTabFragment_content.adapter = fragmentAdapter
 
-        tab_pagerTabFragment_tabs.setTabViewFactory(MainActivity.TitleTabFactory(arrayOf("WORLD", "QMSHT", "CWB", "CARD"), activity))
+        tab_pagerTabFragment_tabs.setTabViewFactory(TitleTabFactory(arrayOf("WORLD", "QMSHT", "CWB", "CARD"), activity))
         tab_pagerTabFragment_tabs.setViewPager(pager_pagerTabFragment_content)
     }
 }

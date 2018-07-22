@@ -4,12 +4,12 @@
     android:layout_height="match_parent">
 
     <me.panpf.sketch.sample.widget.SampleImageView
-        android:id="@+id/imageDetail_bgImage"
+        android:id="@+id/imageDetailAt_bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <FrameLayout
-        android:id="@+id/imageDetail_contentFrame"
+        android:id="@+id/imageDetailAt_contentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

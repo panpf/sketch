@@ -27,6 +27,7 @@ import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
+import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
@@ -45,6 +46,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
+@RegisterEvent
 @BindContentView(R.layout.fragment_image)
 class ImageFragment : BaseFragment() {
 
@@ -85,19 +87,12 @@ class ImageFragment : BaseFragment() {
         mappingHelper.onViewCreated()
         clickHelper.onViewCreated()
         showHelper.onViewCreated()
-
-        EventBus.getDefault().register(this)
     }
 
     override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
         zoomHelper.onUserVisibleChanged()
         setWindowBackgroundHelper.onUserVisibleChanged()
         gifPlayFollowPageVisibleHelper.onUserVisibleChanged()
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroyView()
     }
 
     @Suppress("unused")
