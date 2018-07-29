@@ -21,6 +21,7 @@ import android.widget.ImageView.ScaleType;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.decode.ImageSizeCalculator;
+import me.panpf.sketch.util.SketchUtils;
 
 public class Scales {
 
@@ -100,6 +101,20 @@ public class Scales {
 
         // 双击缩放比例始终由最小缩放比例和最大缩放比例组成
         doubleClickZoomScales = new float[]{minZoomScale, maxZoomScale};
+    }
+
+    public float nextScale(final float currentScale) {
+        float currentScaleFormat = SketchUtils.formatFloat(currentScale, 2);
+        float finalScale = -1;
+        for (float scale : doubleClickZoomScales) {
+            if (finalScale == -1) {
+                finalScale = scale;
+            } else if (currentScaleFormat < SketchUtils.formatFloat(scale, 2)) {
+                finalScale = scale;
+                break;
+            }
+        }
+        return finalScale;
     }
 
     public void clean() {

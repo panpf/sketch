@@ -70,7 +70,7 @@ public class ImageZoomer {
 
         this.imageView = imageView;
 
-        this.tapHelper = new TapHelper(appContext, this);
+        this.tapHelper = new TapHelper(appContext, scales, this);
         this.scaleDragHelper = new ScaleDragHelper(appContext, this);
         this.scrollBarHelper = new ScrollBarHelper(appContext, this);
         this.blockDisplayer = new BlockDisplayer(appContext, this);

@@ -488,8 +488,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         final float scale = SketchUtils.formatFloat(getZoomScale(), 2);
         final float fullZoomScale = SketchUtils.formatFloat(imageZoomer.getFullZoomScale(), 2);
         if (scale == fullZoomScale) {
-            float[] zoomScales = imageZoomer.getDoubleClickZoomScales();
-            zoom(zoomScales[zoomScales.length - 1], x, y, false);
+            zoom(imageZoomer.getMaxZoomScale(), x, y, false);
         }
 
         RectF drawRectF = new RectF();
