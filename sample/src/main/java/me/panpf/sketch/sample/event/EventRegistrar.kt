@@ -21,6 +21,9 @@ import android.support.v4.app.FragmentManager as SupportFragmentManager
 @Inherited
 annotation class RegisterEvent
 
+/**
+ * EventBus 事件注册器，只需给 Activity 或 Fragment 加上 RegisterEvent 注解即可自动执行 EventBus.getDefault().register() 和 EventBus.getDefault().unregister()
+ */
 @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 @TargetApi(Build.VERSION_CODES.O)
 class ActivityEventRegistrar : Application.ActivityLifecycleCallbacks {
