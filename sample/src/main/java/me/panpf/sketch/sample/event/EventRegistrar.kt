@@ -26,7 +26,6 @@ annotation class RegisterEvent
 class ActivityEventRegistrar : Application.ActivityLifecycleCallbacks {
 
     private val supportFragmentEventRegister = SupportFragmentEventRegistrar()
-    @RequiresApi(Build.VERSION_CODES.O)
     private var originFragmentEventRegistrar: Any? = null
     private val activityCodes = LinkedList<String>()
 
