@@ -16,11 +16,11 @@ display 显示请求 [Sketch] 会在合适的时候自动取消，如下：
 
 ### load 加载请求
 
-在执行 [LoadHelper].commit() 方法之后你会得到一个 [LoadRequest]，通过其 cancel() 方法可以取消显示请求
+在执行 [LoadHelper].commit() 方法之后你会得到一个 [LoadRequest]，通过其 cancel() 方法可以取消请求
 
 ### download 下载请求
 
-在执行 [DownloadHelper].commit() 方法之后你会得到一个 [DownloadRequest]，通过其 cancel() 方法可以取消显示请求
+在执行 [DownloadHelper].commit() 方法之后你会得到一个 [DownloadRequest]，通过其 cancel() 方法可以取消请求
 
 [Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
 [SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
