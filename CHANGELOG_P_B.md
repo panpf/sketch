@@ -1,3 +1,9 @@
+# v2.6.2 P1
+
+* :arrow_up: Target sdk version upgrade to 28
+* :arrow_up: Support library upgrade to 28.0.0
+* :arrow_up: Min sdk version upgrade to 16
+
 # v2.6.0 P1
 
 这是一个重大重构版本，重点重构了 [ImageZoomer]、HugeImageViewer 以及将包名改为 me.panpf.sketch

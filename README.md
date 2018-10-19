@@ -180,8 +180,8 @@ Please view the [CHANGELOG.md] file
 [sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
 [sketch_gif_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
-[min_api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
-[min_api_link]: https://android-arsenal.com/api?level=14
+[min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
+[min_api_link]: https://android-arsenal.com/api?level=16
 [qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
 
 [CHANGELOG.md]: CHANGELOG.md

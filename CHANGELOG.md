@@ -1,9 +1,3 @@
-# v2.6.2 pre
-
-* :arrow_up: Target sdk version upgrade to 28
-* :arrow_up: Support library upgrade to 28.0.0
-
-
 # v2.6.1
 
 bug：
