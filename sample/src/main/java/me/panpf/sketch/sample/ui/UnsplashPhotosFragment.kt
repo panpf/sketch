@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
@@ -77,6 +77,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             finalOptionsKey = null
         }
 
+        @Suppress("UNCHECKED_CAST")
         val images = adapter!!.dataList as List<UnsplashImage>
         val imageArrayList = ArrayList<Image>(images.size)
         images.mapTo(imageArrayList) { Image(it.urls!!.regular!!, it.urls!!.raw!!) }

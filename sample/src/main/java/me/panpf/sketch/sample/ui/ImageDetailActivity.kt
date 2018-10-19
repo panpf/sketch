@@ -23,7 +23,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.at_image_detail.*
-import me.panpf.ktx.isPortraitOrientation
+import me.panpf.androidxkt.view.isOrientationPortrait
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseActivity
@@ -44,7 +44,7 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
         imageDetailAt_bgImage.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
             it.height = resources.displayMetrics.heightPixels
-            if (isPortraitOrientation()) {
+            if (isOrientationPortrait()) {
                 it.height += DeviceUtils.getWindowHeightSupplement(this)
             } else {
                 it.width += DeviceUtils.getWindowHeightSupplement(this)

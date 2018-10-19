@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.*
 import android.preference.PreferenceManager
+import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.uri.AssetUriModel
 import me.panpf.sketch.util.ExifInterface
 import me.panpf.sketch.util.SketchUtils
-import me.panpf.sketch.sample.AssetImage
 import java.io.*
 
 class ImageOrientationCorrectTestFileGenerator {
@@ -84,13 +84,14 @@ class ImageOrientationCorrectTestFileGenerator {
 
             val sourceBitmap = BitmapFactory.decodeStream(inputStream, null, options)
             SketchUtils.close(inputStream)
+            if(sourceBitmap != null){
+                for (config in files!!) {
+                    val file = File(config.filePath)
+                    generatorTestFile(file, sourceBitmap, config.degrees, config.xScale, config.orientation)
+                }
 
-            for (config in files!!) {
-                val file = File(config.filePath)
-                generatorTestFile(file, sourceBitmap, config.degrees, config.xScale, config.orientation)
+                sourceBitmap.recycle()
             }
-
-            sourceBitmap.recycle()
         }).start()
     }
 

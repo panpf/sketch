@@ -18,9 +18,9 @@ import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bean.BaiduImageSearchResult
 import me.panpf.sketch.sample.bean.Image
@@ -78,6 +78,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.menu_search_view, menu)
+        @Suppress("DEPRECATION")
         val searchView = MenuItemCompat.getActionView(menu!!.findItem(R.id.menu_searchView)) as SearchView
         searchView.queryHint = searchKeyword
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -85,16 +86,15 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
                 val activity = activity ?: return false
                 val fragmentManager = fragmentManager ?: return false
 
-                var s = s
-                s = s.trim { it <= ' ' }
-                if ("" == s) {
+                val keyword = s.trim { it <= ' ' }
+                if ("" == keyword) {
                     Toast.makeText(activity, "搜索关键字不能为空", Toast.LENGTH_LONG).show()
                     return false
                 }
 
-                setTitle(s)
+                setTitle(keyword)
                 val bundle = Bundle()
-                bundle.putString(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD, s)
+                bundle.putString(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD, keyword)
                 val searchFragment = SearchFragment()
                 searchFragment.arguments = bundle
                 fragmentManager
@@ -168,6 +168,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
 
     override fun onItemClick(position: Int, image: BaiduImage, loadingImageOptionsInfo: String) {
         val activity = activity ?: return
+        @Suppress("UNCHECKED_CAST")
         val imageList = adapter!!.dataList as List<BaiduImage>
         val urlList = imageList.map { Image(it.url!!, it.url!!) }
         ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", urlList), loadingImageOptionsInfo, position - adapter!!.headerItemCount)

@@ -25,9 +25,9 @@ import android.view.View
 import androidx.core.view.setPadding
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.paged.AssemblyPagedListAdapter
-import me.panpf.ktx.bindViewModel
-import me.panpf.ktx.dp2px
-import me.panpf.ktx.longToast
+import me.panpf.androidxkt.arch.bindViewModel
+import me.panpf.androidxkt.util.dp2px
+import me.panpf.androidxkt.widget.showLongToast
 import me.panpf.sketch.sample.vt.BaseFragment
 import me.panpf.sketch.sample.vt.BindContentView
 import me.panpf.sketch.sample.vt.R
@@ -53,7 +53,7 @@ class VideoListFragment : BaseFragment() {
                 startActivity(intent)
             } catch (e: Throwable) {
                 e.printStackTrace()
-                longToast("Not found can play video app")
+                showLongToast("Not found can play video app")
             }
         })
         setMoreItem(LoadMoreItemFactory())
@@ -63,7 +63,7 @@ class VideoListFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerFragment_contentRecycler.apply {
-            setPadding(2.dp2px(checkNotNull(context)))
+            setPadding(checkNotNull(context).dp2px(2))
             clipToPadding = false
 
             layoutManager = LinearLayoutManager(activity)

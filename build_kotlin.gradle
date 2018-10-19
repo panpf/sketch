@@ -1,6 +1,10 @@
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+androidExtensions {
+    experimental = true
+}
+
 dependencies{
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
 

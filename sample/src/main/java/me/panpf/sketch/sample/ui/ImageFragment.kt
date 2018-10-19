@@ -14,6 +14,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_image.*
+import me.panpf.androidxkt.args.bindBooleanArgOr
+import me.panpf.androidxkt.args.bindParcelableArg
+import me.panpf.androidxkt.args.bindStringArgOrNull
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageAttrs
@@ -22,13 +25,13 @@ import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.drawable.SketchGifDrawable
 import me.panpf.sketch.drawable.SketchRefBitmap
 import me.panpf.sketch.request.*
+import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.RegisterEvent
-import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
 import me.panpf.sketch.sample.widget.MappingView
@@ -50,9 +53,9 @@ import java.util.*
 @BindContentView(R.layout.fragment_image)
 class ImageFragment : BaseFragment() {
 
-    private lateinit var image: Image
-    private var loadingImageOptionsKey: String? = null
-    private var showTools: Boolean = false
+    private val image by bindParcelableArg<Image>(PARAM_REQUIRED_STRING_IMAGE_URI)
+    private val loadingImageOptionsKey: String? by bindStringArgOrNull(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
+    private val showTools: Boolean by bindBooleanArgOr(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
 
     private lateinit var finalShowImageUrl: String
 
@@ -69,12 +72,6 @@ class ImageFragment : BaseFragment() {
         val activity = activity ?: return
 
         setWindowBackgroundHelper.onCreate(activity)
-
-        arguments?.let {
-            image = it.getParcelable(PARAM_REQUIRED_STRING_IMAGE_URI)
-            loadingImageOptionsKey = it.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
-            showTools = it.getBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
-        }
 
         val showHighDefinitionImage = AppConfig.getBoolean(activity, AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
         finalShowImageUrl = if (showHighDefinitionImage) image.rawQualityUrl else image.normalQualityUrl
@@ -544,7 +541,7 @@ class ImageFragment : BaseFragment() {
 
             val uriModel = UriModel.match(context, imageUri!!)
             if (uriModel == null) {
-                Toast.makeText(activity, "Unknown format uri: " + imageUri, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Unknown format uri: $imageUri", Toast.LENGTH_LONG).show()
                 return null
             }
 
@@ -626,7 +623,7 @@ class ImageFragment : BaseFragment() {
 
             val uriModel = UriModel.match(context, imageUri!!)
             if (uriModel == null) {
-                Toast.makeText(activity, "Unknown format uri: " + imageUri, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Unknown format uri: $imageUri", Toast.LENGTH_LONG).show()
                 return
             }
 
@@ -663,9 +660,9 @@ class ImageFragment : BaseFragment() {
     }
 
     companion object {
-        val PARAM_REQUIRED_STRING_IMAGE_URI = "PARAM_REQUIRED_STRING_IMAGE_URI"
-        val PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY"
-        val PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS = "PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS"
+        const val PARAM_REQUIRED_STRING_IMAGE_URI = "PARAM_REQUIRED_STRING_IMAGE_URI"
+        const val PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY"
+        const val PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS = "PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS"
 
         fun build(image: Image, loadingImageOptionsId: String?, showTools: Boolean): ImageFragment {
             val bundle = Bundle()

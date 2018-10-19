@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package me.panpf.sketch.sample.event
 
 import android.annotation.TargetApi
@@ -99,23 +101,24 @@ class ActivityEventRegistrar : Application.ActivityLifecycleCallbacks {
 @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 @TargetApi(Build.VERSION_CODES.O)
 class SupportFragmentEventRegistrar : SupportFragmentManager.FragmentLifecycleCallbacks() {
-    override fun onFragmentViewCreated(fm: SupportFragmentManager?, f: SupportFragment?, v: View?, savedInstanceState: Bundle?) {
+    override fun onFragmentViewCreated(fm: SupportFragmentManager, f: SupportFragment, v: View, savedInstanceState: Bundle?) {
         super.onFragmentViewCreated(fm, f, v, savedInstanceState)
 
-        if (f?.javaClass?.isAnnotationPresent(RegisterEvent::class.java) == true) {
+        if (f.javaClass.isAnnotationPresent(RegisterEvent::class.java)) {
             EventBus.getDefault().register(f)
         }
     }
 
-    override fun onFragmentViewDestroyed(fm: SupportFragmentManager?, f: SupportFragment?) {
+    override fun onFragmentViewDestroyed(fm: SupportFragmentManager, f: SupportFragment) {
         super.onFragmentViewDestroyed(fm, f)
 
-        if (f?.javaClass?.isAnnotationPresent(RegisterEvent::class.java) == true) {
+        if (f.javaClass.isAnnotationPresent(RegisterEvent::class.java)) {
             EventBus.getDefault().unregister(f)
         }
     }
 }
 
+@Suppress("DEPRECATION")
 @RequiresApi(Build.VERSION_CODES.O)
 class OriginFragmentEventRegistrar : OriginFragmentManager.FragmentLifecycleCallbacks() {
     override fun onFragmentViewCreated(fm: OriginFragmentManager?, f: OriginFragment?, v: View?, savedInstanceState: Bundle?) {

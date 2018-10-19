@@ -113,17 +113,9 @@ enum class Page constructor(val showName: String, val fragmentClass: Class<out F
     BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
     OTHER_TEST("Other Test", OtherTestFragment::class.java, true, !BuildConfig.DEBUG);
 
-    val fragment: Fragment?
+    val fragment: Fragment
         get() {
-            return try {
-                fragmentClass.newInstance()
-            } catch (e: InstantiationException) {
-                e.printStackTrace()
-                null
-            } catch (e: IllegalAccessException) {
-                e.printStackTrace()
-                null
-            }
+            return fragmentClass.newInstance()
         }
 
     companion object {

@@ -32,8 +32,6 @@ import me.panpf.sketch.shaper.RoundRectImageShaper
 import me.panpf.sketch.state.DrawableStateImage
 import me.panpf.sketch.state.OldStateImage
 import me.panpf.sketch.util.SketchUtils
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 
 object ImageOptions {
     /**
@@ -159,6 +157,6 @@ object ImageOptions {
     }
 
     @IntDef(RECT, CIRCULAR_STROKE, WINDOW_BACKGROUND, ROUND_RECT, LIST_FULL)
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(AnnotationRetention.SOURCE)
     annotation class Type
 }

@@ -13,9 +13,10 @@ import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.fm_main_menu.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.ktx.isPortraitOrientation
+import me.panpf.androidxkt.view.isOrientationPortrait
 import me.panpf.sketch.SLog
 import me.panpf.sketch.Sketch
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
@@ -27,7 +28,6 @@ import me.panpf.sketch.sample.item.CheckMenuItemFactory
 import me.panpf.sketch.sample.item.InfoMenuItemFactory
 import me.panpf.sketch.sample.item.MenuTitleItemFactory
 import me.panpf.sketch.sample.item.PageMenuItemFactory
-import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.util.DeviceUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -48,7 +48,7 @@ class MainMenuFragment : BaseFragment() {
         mainMenuFm_bgImage.updateLayoutParams {
             width = resources.displayMetrics.widthPixels
             height = resources.displayMetrics.heightPixels
-            if (isPortraitOrientation()) {
+            if (this@MainMenuFragment.isOrientationPortrait()) {
                 height += DeviceUtils.getWindowHeightSupplement(activity)
             } else {
                 width += DeviceUtils.getWindowHeightSupplement(activity)
@@ -155,7 +155,7 @@ class MainMenuFragment : BaseFragment() {
                             4 -> AppConfig.putString(appContext, AppConfig.Key.LOG_LEVEL, "ERROR")
                             5 -> AppConfig.putString(appContext, AppConfig.Key.LOG_LEVEL, "NONE")
                         }
-                        mainMenuFm_recycler.adapter.notifyDataSetChanged()
+                        mainMenuFm_recycler.adapter?.notifyDataSetChanged()
                     }
                     setPositiveButton("Cancel", null)
                 }.show()
@@ -174,7 +174,7 @@ class MainMenuFragment : BaseFragment() {
     @Suppress("unused")
     @Subscribe
     fun onEvent(@Suppress("UNUSED_PARAMETER") event: DrawerOpenedEvent) {
-        mainMenuFm_recycler.adapter.notifyDataSetChanged()
+        mainMenuFm_recycler.adapter?.notifyDataSetChanged()
     }
 
     @Suppress("unused")

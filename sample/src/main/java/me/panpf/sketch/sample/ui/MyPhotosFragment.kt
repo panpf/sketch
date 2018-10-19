@@ -24,6 +24,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
@@ -33,7 +34,6 @@ import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
 import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.item.MyPhotoItemFactory
-import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.util.SketchUtils
@@ -57,7 +57,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         super.onViewCreated(view, savedInstanceState)
 
         refresh_recyclerFragment.setOnRefreshListener(this)
-        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view!!.context))
+        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         recycler_recyclerFragment_content.layoutManager = GridLayoutManager(activity, 3)
         val padding = SketchUtils.dp2px(activity, 2)
@@ -133,7 +133,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
             val fragment = fragmentWeakReference.get() ?: return null
             val context = fragment.context ?: return null
 
-            var cursor = context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            val cursor = context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN), null, null,
                     MediaStore.Images.Media.DATE_TAKEN + " DESC")
 

@@ -3,8 +3,7 @@ package me.panpf.sketch.sample.vt.bean
 import android.content.Context
 import android.support.v7.util.DiffUtil
 import android.text.format.Formatter
-import java.text.SimpleDateFormat
-import java.util.*
+import me.panpf.javaxkt.util.formatYMDHM
 
 class VideoInfo {
     var title: String? = null
@@ -21,29 +20,22 @@ class VideoInfo {
         val secondsRemaining = second % 60
         val minute = second / 60
         val builder = StringBuilder()
-        if (minute <= 0) {
-            builder.append("00")
-        } else if (minute < 10) {
-            builder.append("0" + minute)
-        } else {
-            builder.append(minute)
+        when {
+            minute <= 0 -> builder.append("00")
+            minute < 10 -> builder.append("0$minute")
+            else -> builder.append(minute)
         }
 
         builder.append(":")
-
-        if (secondsRemaining <= 0) {
-            builder.append("00")
-        } else if (secondsRemaining < 10) {
-            builder.append("0" + secondsRemaining)
-        } else {
-            builder.append(secondsRemaining)
+        when {
+            secondsRemaining <= 0 -> builder.append("00")
+            secondsRemaining < 10 -> builder.append("0$secondsRemaining")
+            else -> builder.append(secondsRemaining)
         }
         builder.toString()
     }
 
-    val tempFormattedDate: String by lazy {
-        SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date(date))
-    }
+    val tempFormattedDate: String by lazy { date.formatYMDHM() }
 
     fun getTempFormattedSize(context: Context): String {
         if (tempFormattedSize == null) {
@@ -57,12 +49,12 @@ class VideoInfo {
     }
 
     class DiffCallback : DiffUtil.ItemCallback<VideoInfo>() {
-        override fun areItemsTheSame(oldItem: VideoInfo?, newItem: VideoInfo?): Boolean {
+        override fun areItemsTheSame(oldItem: VideoInfo, newItem: VideoInfo): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: VideoInfo?, newItem: VideoInfo?): Boolean {
-            return oldItem != null && newItem != null && oldItem.path.equals(newItem.path)
+        override fun areContentsTheSame(oldItem: VideoInfo, newItem: VideoInfo): Boolean {
+            return oldItem.path.equals(newItem.path)
         }
     }
 }

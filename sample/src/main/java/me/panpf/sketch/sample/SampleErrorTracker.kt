@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Environment
 import android.text.format.Formatter
 import com.tencent.bugly.crashreport.CrashReport
+import me.panpf.androidx.hardware.Hardwarex
 import me.panpf.sketch.ErrorTracker
 import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.process.ImageProcessor
@@ -43,12 +44,7 @@ internal class SampleErrorTracker(context: Context) : ErrorTracker(context) {
         }
         uploadNotFoundGidSoError = true
 
-        val abis = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Arrays.toString(Build.SUPPORTED_ABIS)
-        } else {
-            Arrays.toString(arrayOf(Build.CPU_ABI, Build.CPU_ABI2))
-        }
-        val message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", abis)
+        val message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", Hardwarex.getSupportedAbis())
 
         CrashReport.postCatchedException(Exception(message, e))
     }

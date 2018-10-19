@@ -47,7 +47,7 @@ class VideoListDataSource constructor(context: Context,
                         MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATE_TAKEN,
                         MediaStore.Video.Media.MIME_TYPE), null, null,
                 MediaStore.Video.Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize)
-        val list = ArrayList<VideoInfo>(cursor.count)
+        val list = ArrayList<VideoInfo>(cursor?.count ?: 0)
         cursor?.use {
             while (cursor.moveToNext()) {
                 val video = VideoInfo()

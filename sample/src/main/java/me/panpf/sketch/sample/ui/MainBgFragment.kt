@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.updateLayoutParams
 import kotlinx.android.synthetic.main.fm_main_bg.*
-import me.panpf.ktx.isPortraitOrientation
+import me.panpf.androidxkt.view.isOrientationPortrait
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
@@ -25,7 +25,7 @@ class MainBgFragment : BaseFragment() {
         mainBgFm_image.updateLayoutParams {
             width = resources.displayMetrics.widthPixels
             height = resources.displayMetrics.heightPixels
-            if (isPortraitOrientation()) {
+            if (this@MainBgFragment.isOrientationPortrait()) {
                 height += DeviceUtils.getWindowHeightSupplement(activity)
             } else {
                 width += DeviceUtils.getWindowHeightSupplement(activity)

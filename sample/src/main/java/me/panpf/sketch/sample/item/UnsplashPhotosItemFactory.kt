@@ -8,7 +8,7 @@ import android.widget.TextView
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.adapter.ktx.bindView
-import me.panpf.ktx.isPortraitOrientation
+import me.panpf.androidxkt.view.isOrientationPortrait
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.UnsplashImage
@@ -64,7 +64,7 @@ class UnsplashPhotosItemFactory(private val activity: Activity,
 
             imageView.layoutParams?.let {
                 it.width = itemWidth
-                if (!imageView.context.isPortraitOrientation()) {
+                if (!imageView.context.isOrientationPortrait()) {
                     it.width += DeviceUtils.getWindowHeightSupplement(activity)
                 }
                 it.height = (it.width / (image.width / image.height.toFloat())).toInt()
@@ -73,7 +73,7 @@ class UnsplashPhotosItemFactory(private val activity: Activity,
 
             rootViewGroup.layoutParams?.let {
                 it.width = itemWidth
-                if (!imageView.context.isPortraitOrientation()) {
+                if (!imageView.context.isOrientationPortrait()) {
                     it.width += DeviceUtils.getWindowHeightSupplement(activity)
                 }
                 it.height = (it.width / (image.width / image.height.toFloat())).toInt()

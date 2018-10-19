@@ -80,10 +80,12 @@ dependencies {
     implementation "me.panpf:pager-indicator:${PAGER_INDICATOR}"
     implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
     implementation "me.panpf:assembly-adapter-ktx:${ASSEMBLY_ADAPTER_VERSION}"
+    implementation "me.panpf:androidx-kt:${ANDROIDX}"
+    implementation "me.panpf:androidx-kt-args:${ANDROIDX}"
+    implementation "me.panpf:androidx-kt-arch:${ANDROIDX}"
 
     implementation project(':sketch')
     normalImplementation project(':sketch-gif')
-    implementation project(':ktx')
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY_ANDROID_VERSION}"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"

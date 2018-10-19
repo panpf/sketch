@@ -7,7 +7,8 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.adapter.ktx.bindView
-import me.panpf.ktx.isPortraitOrientation
+import me.panpf.androidxkt.view.isOrientationPortrait
+import me.panpf.javaxkt.lang.divide
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.BaiduImage
@@ -28,7 +29,7 @@ class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickList
     }
 
     inner class StaggeredImageItem(itemLayoutId: Int, parent: ViewGroup) : AssemblyItem<BaiduImage>(itemLayoutId, parent) {
-        val imageView: SampleImageView by bindView(R.id.image_staggeredImageItem)
+        private val imageView: SampleImageView by bindView(R.id.image_staggeredImageItem)
 
         override fun onConfigViews(context: Context) {
             imageView.onClickListener = View.OnClickListener {
@@ -48,8 +49,8 @@ class StaggeredImageItemFactory(private val onItemClickListener: OnItemClickList
         override fun onSetData(i: Int, image: BaiduImage?) {
             image ?: return
             imageView.layoutParams?.let {
-                it.height = imageView.context.resources.displayMetrics.heightPixels / (if (imageView.context.isPortraitOrientation()) 5 else 2)
-                it.width = (it.height / (image.height / image.width.toFloat())).toInt()
+                it.height = imageView.context.resources.displayMetrics.heightPixels / (if (imageView.context.isOrientationPortrait()) 5 else 2)
+                it.width = (it.height / (image.height.toFloat().divide(image.width.toFloat()))).toInt()
                 imageView.layoutParams = it
             }
 
