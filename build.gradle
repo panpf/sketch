@@ -1,7 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.71'
     repositories {
         maven { url 'https://mirrors.huaweicloud.com/repository/maven/' } // Huawei Maven mirrors
         maven { url 'https://dl.google.com/dl/android/maven2/' }
@@ -9,10 +8,9 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-//        classpath 'com.novoda:bintray-release:0.8.1'
-        classpath 'guru.stefma.bintrayrelease:bintrayrelease:1.0.0'
+        classpath "com.android.tools.build:gradle:$ANDROID_BUILD_VERSION"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
+        classpath "guru.stefma.bintrayrelease:bintrayrelease:$BINTRAY_RELEASE_VERSION"
     }
 }
 
