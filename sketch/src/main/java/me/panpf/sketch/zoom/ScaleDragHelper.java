@@ -305,45 +305,40 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         final int drawableHeight = imageZoomer.getRotateDegrees() % 180 == 0 ? drawableSize.getHeight() : drawableSize.getWidth();
         final int imageWidth = imageZoomer.getRotateDegrees() % 180 == 0 ? imageSize.getWidth() : imageSize.getHeight();
         final int imageHeight = imageZoomer.getRotateDegrees() % 180 == 0 ? imageSize.getHeight() : imageSize.getWidth();
-
-        final float widthScale = (float) viewSize.getWidth() / drawableWidth;
-        final float heightScale = (float) viewSize.getHeight() / drawableHeight;
         boolean imageThanViewLarge = drawableWidth > viewSize.getWidth() || drawableHeight > viewSize.getHeight();
 
-        if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
-            ImageSizeCalculator sizeCalculator = Sketch.with(imageZoomer.getImageView().getContext()).getConfiguration().getSizeCalculator();
-            if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
-                baseMatrix.postScale(widthScale, widthScale);
-            } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
-                baseMatrix.postScale(heightScale, heightScale);
-            } else {
-                baseMatrix.postTranslate((viewSize.getWidth() - drawableWidth) / 2F, (viewSize.getHeight() - drawableHeight) / 2F);
-            }
-        } else if (scaleType == ScaleType.CENTER_CROP) {
-            float scale = Math.max(widthScale, heightScale);
-            baseMatrix.postScale(scale, scale);
-            baseMatrix.postTranslate((viewSize.getWidth() - drawableWidth * scale) / 2F, (viewSize.getHeight() - drawableHeight * scale) / 2F);
-        } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
-                (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
-            ImageSizeCalculator sizeCalculator = Sketch.with(imageZoomer.getImageView().getContext()).getConfiguration().getSizeCalculator();
-            if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
-                baseMatrix.postScale(widthScale, widthScale);
-            } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
-                baseMatrix.postScale(heightScale, heightScale);
-            } else {
-                RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
-                RectF mTempDst = new RectF(0, 0, viewSize.getWidth(), viewSize.getHeight());
-                Matrix.ScaleToFit scaleToFit;
-                if (scaleType == ScaleType.FIT_START) {
-                    scaleToFit = Matrix.ScaleToFit.START;
-                } else if (scaleType == ScaleType.FIT_END) {
-                    scaleToFit = Matrix.ScaleToFit.END;
-                } else {
-                    scaleToFit = Matrix.ScaleToFit.CENTER;
-                }
-                baseMatrix.setRectToRect(mTempSrc, mTempDst, scaleToFit);
-            }
-        } else if (scaleType == ScaleType.FIT_XY) {
+        final ScaleType finalScaleType;
+        if (scaleType == ScaleType.MATRIX) {
+            finalScaleType = ScaleType.FIT_CENTER;
+        } else if (scaleType == ScaleType.CENTER_INSIDE) {
+            finalScaleType = imageThanViewLarge ? ScaleType.FIT_CENTER : ScaleType.CENTER;
+        } else {
+            finalScaleType = scaleType;
+        }
+
+        float initScale = imageZoomer.getZoomScales().getInitZoomScale();
+
+        ImageSizeCalculator sizeCalculator = Sketch.with(imageZoomer.getImageView().getContext()).getConfiguration().getSizeCalculator();
+        if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+            baseMatrix.postScale(initScale, initScale);
+        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+            baseMatrix.postScale(initScale, initScale);
+        } else if (finalScaleType == ScaleType.CENTER) {
+            baseMatrix.postScale(initScale, initScale);
+            baseMatrix.postTranslate((viewSize.getWidth() - drawableWidth) / 2F, (viewSize.getHeight() - drawableHeight) / 2F);
+        } else if (finalScaleType == ScaleType.CENTER_CROP) {
+            baseMatrix.postScale(initScale, initScale);
+            baseMatrix.postTranslate((viewSize.getWidth() - drawableWidth * initScale) / 2F, (viewSize.getHeight() - drawableHeight * initScale) / 2F);
+        } else if (finalScaleType == ScaleType.FIT_START) {
+            baseMatrix.postScale(initScale, initScale);
+            baseMatrix.postTranslate(0, 0);
+        } else if (finalScaleType == ScaleType.FIT_END) {
+            baseMatrix.postScale(initScale, initScale);
+            baseMatrix.postTranslate(0, (viewSize.getHeight() - drawableHeight * initScale));
+        } else if (finalScaleType == ScaleType.FIT_CENTER) {
+            baseMatrix.postScale(initScale, initScale);
+            baseMatrix.postTranslate(0, (viewSize.getHeight() - drawableHeight * initScale) / 2F);
+        } else if (finalScaleType == ScaleType.FIT_XY) {
             RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
             RectF mTempDst = new RectF(0, 0, viewSize.getWidth(), viewSize.getHeight());
             baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);

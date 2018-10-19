@@ -102,6 +102,7 @@ class MainMenuFragment : BaseFragment() {
         menuList.add(CheckMenu(appContext, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null, menuClickListener))
         menuList.add(CheckMenu(appContext, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null, menuClickListener))
         menuList.add(CheckMenu(appContext, "Pause Block Display When Page Not Visible In Detail Page", AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE, null, menuClickListener))
+        menuList.add(CheckMenu(appContext, "Fixed Three Level Zoom Mode", AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE, null, menuClickListener))
 
         menuList.add("GIF Menu")
         menuList.add(CheckMenu(appContext, "Auto Play GIF In List", AppConfig.Key.PLAY_GIF_ON_LIST, null, menuClickListener))

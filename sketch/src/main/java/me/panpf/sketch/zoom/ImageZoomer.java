@@ -46,7 +46,7 @@ public class ImageZoomer {
     private ScaleType scaleType;    // ImageView 原本的 ScaleType
 
     private Sizes sizes = new Sizes();
-    private Scales scales = new Scales();   // 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出的缩放比例
+    private ZoomScales zoomScales = new AdaptiveTwoLevelScales();
 
     private int rotateDegrees; // 旋转角度
     private int zoomDuration = 200;   // 双击缩放动画持续时间
@@ -70,7 +70,7 @@ public class ImageZoomer {
 
         this.imageView = imageView;
 
-        this.tapHelper = new TapHelper(appContext, scales, this);
+        this.tapHelper = new TapHelper(appContext, this);
         this.scaleDragHelper = new ScaleDragHelper(appContext, this);
         this.scrollBarHelper = new ScrollBarHelper(appContext, this);
         this.blockDisplayer = new BlockDisplayer(appContext, this);
@@ -93,11 +93,11 @@ public class ImageZoomer {
             return false;
         }
 
-        // 为什么要每次都重新获取 ScaleType ？因为在 reset 是可以反复执行的，在此之前 ScaleType 可能会改变
+        // 为什么要每次都重新获取 ScaleType ？因为 reset 是可以反复执行的，在此之前 ScaleType 可能会改变
         scaleType = imageView.getScaleType();
         imageView.setScaleType(ScaleType.MATRIX);
 
-        scales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
+        zoomScales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
         scaleDragHelper.reset();
         blockDisplayer.reset();
         return true;
@@ -112,7 +112,7 @@ public class ImageZoomer {
         }
 
         sizes.clean();
-        scales.clean();
+        zoomScales.clean();
         scaleDragHelper.recycle();
         blockDisplayer.recycle(why);
 
@@ -228,9 +228,9 @@ public class ImageZoomer {
             return false;
         }
 
-        if (scale < scales.minZoomScale || scale > scales.maxZoomScale) {
+        if (scale < zoomScales.getMinZoomScale() || scale > zoomScales.getMaxZoomScale()) {
             SLog.w(NAME, "Scale must be within the range of %s(minScale) and %s(maxScale). %s",
-                    scales.minZoomScale, scales.maxZoomScale, scale);
+                    zoomScales.getMinZoomScale(), zoomScales.getMaxZoomScale(), scale);
             return false;
         }
 
@@ -415,7 +415,7 @@ public class ImageZoomer {
      */
     @SuppressWarnings("unused")
     public float getFullZoomScale() {
-        return scales.fullZoomScale;
+        return zoomScales.getFullZoomScale();
     }
 
     /**
@@ -423,7 +423,7 @@ public class ImageZoomer {
      */
     @SuppressWarnings("unused")
     public float getFillZoomScale() {
-        return scales.fillZoomScale;
+        return zoomScales.getFillZoomScale();
     }
 
     /**
@@ -431,7 +431,7 @@ public class ImageZoomer {
      */
     @SuppressWarnings("unused")
     public float getOriginZoomScale() {
-        return scales.originZoomScale;
+        return zoomScales.getOriginZoomScale();
     }
 
     /**
@@ -439,7 +439,7 @@ public class ImageZoomer {
      */
     @SuppressWarnings("unused")
     public float getMinZoomScale() {
-        return scales.minZoomScale;
+        return zoomScales.getMinZoomScale();
     }
 
     /**
@@ -447,7 +447,7 @@ public class ImageZoomer {
      */
     @SuppressWarnings("unused")
     public float getMaxZoomScale() {
-        return scales.maxZoomScale;
+        return zoomScales.getMaxZoomScale();
     }
 
     /**
@@ -456,7 +456,7 @@ public class ImageZoomer {
     @NonNull
     @SuppressWarnings("WeakerAccess")
     public float[] getDoubleClickZoomScales() {
-        return scales.doubleClickZoomScales;
+        return zoomScales.getZoomScales();
     }
 
     /**
@@ -648,6 +648,20 @@ public class ImageZoomer {
     @SuppressWarnings("unused")
     public void setOnRotateChangeListener(@Nullable OnRotateChangeListener onRotateChangeListener) {
         this.onRotateChangeListener = onRotateChangeListener;
+    }
+
+    @NonNull
+    public ZoomScales getZoomScales() {
+        return zoomScales;
+    }
+
+    public void setZoomScales(@Nullable ZoomScales zoomScales) {
+        if (zoomScales != null) {
+            this.zoomScales = zoomScales;
+        } else {
+            this.zoomScales = new AdaptiveTwoLevelScales();
+        }
+        reset("setZoomScales");
     }
 
     /**

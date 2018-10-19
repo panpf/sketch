@@ -23,10 +23,10 @@ import me.panpf.sketch.drawable.SketchDrawable;
 import me.panpf.sketch.drawable.SketchLoadingDrawable;
 import me.panpf.sketch.util.SketchUtils;
 
-class Sizes {
-    Size viewSize = new Size(); // ImageView 尺寸
-    Size imageSize = new Size();    // 原始图尺寸
-    Size drawableSize = new Size(); // 预览图尺寸
+public class Sizes {
+    public Size viewSize = new Size(); // ImageView 尺寸
+    public Size imageSize = new Size();    // 原始图尺寸
+    public Size drawableSize = new Size(); // 预览图尺寸
 
     void resetSizes(ImageView imageView) {
         final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();

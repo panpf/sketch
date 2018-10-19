@@ -33,6 +33,7 @@ import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
+import me.panpf.sketch.sample.util.FixedThreeLevelScales
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
 import me.panpf.sketch.sample.widget.MappingView
 import me.panpf.sketch.sample.widget.SampleImageView
@@ -41,6 +42,7 @@ import me.panpf.sketch.uri.FileUriModel
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
+import me.panpf.sketch.zoom.AdaptiveTwoLevelScales
 import me.panpf.sketch.zoom.ImageZoomer
 import me.panpf.sketch.zoom.Size
 import org.greenrobot.eventbus.EventBus
@@ -207,6 +209,11 @@ class ImageFragment : BaseFragment() {
     private inner class ZoomHelper {
         fun onViewCreated() {
             image_imageFragment_image.isZoomEnabled = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.SUPPORT_ZOOM)
+            if(AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE)){
+                image_imageFragment_image.zoomer?.setZoomScales(FixedThreeLevelScales())
+            } else {
+                image_imageFragment_image.zoomer?.setZoomScales(AdaptiveTwoLevelScales())
+            }
 
             onReadModeConfigChanged()   // 初始化阅读模式
             onUserVisibleChanged()  // 初始化超大图查看器的暂停状态，这一步很重要
@@ -360,7 +367,8 @@ class ImageFragment : BaseFragment() {
                         DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
                 ))
                 menuItemList.add(MenuItem(
-                        String.format("Toggle ScaleType (%s)", image_imageFragment_image.zoomer?.scaleType ?: image_imageFragment_image.scaleType),
+                        String.format("Toggle ScaleType (%s)", image_imageFragment_image.zoomer?.scaleType
+                                ?: image_imageFragment_image.scaleType),
                         DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
                 ))
                 menuItemList.add(MenuItem(

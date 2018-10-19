@@ -23,20 +23,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import me.panpf.sketch.util.SketchUtils;
 import me.panpf.sketch.viewfun.FunctionCallbackView;
 
 class TapHelper extends GestureDetector.SimpleOnGestureListener {
 
     @NonNull
-    private Scales scales;
-    @NonNull
     private ImageZoomer imageZoomer;
     @NonNull
     private GestureDetector tapGestureDetector;
 
-    TapHelper(@NonNull Context appContext, @NonNull Scales scales, @NonNull ImageZoomer imageZoomer) {
+    TapHelper(@NonNull Context appContext, @NonNull ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
-        this.scales = scales;
         this.tapGestureDetector = new GestureDetector(appContext, this);
     }
 
@@ -93,7 +91,17 @@ class TapHelper extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onDoubleTap(MotionEvent ev) {
         try {
-            imageZoomer.zoom(scales.nextScale(imageZoomer.getZoomScale()), ev.getX(), ev.getY(), true);
+            float currentScaleFormat = SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2);
+            float finalScale = -1;
+            for (float scale : imageZoomer.getZoomScales().getZoomScales()) {
+                if (finalScale == -1) {
+                    finalScale = scale;
+                } else if (currentScaleFormat < SketchUtils.formatFloat(scale, 2)) {
+                    finalScale = scale;
+                    break;
+                }
+            }
+            imageZoomer.zoom(finalScale, true);
         } catch (ArrayIndexOutOfBoundsException e) {
             // Can sometimes happen when getX() and getY() is called
         }
