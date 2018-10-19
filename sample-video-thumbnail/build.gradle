@@ -61,6 +61,11 @@ dependencies {
     implementation "me.panpf:androidx-kt-arch:${ANDROIDX}"
 
     implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY_ANDROID_VERSION}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${LEAK_CANARY_ANDROID_VERSION}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
 }
 
 Properties openProperties(String fileName) {
