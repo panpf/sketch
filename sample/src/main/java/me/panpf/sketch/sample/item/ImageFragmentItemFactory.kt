@@ -6,7 +6,7 @@ import me.panpf.adapter.pager.AssemblyFragmentItemFactory
 
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.ui.ImageFragment
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
 
 class ImageFragmentItemFactory(private val context: Context, private var loadingImageOptionsId: String?) : AssemblyFragmentItemFactory<Image>() {
 

@@ -1,5 +1,6 @@
 package me.panpf.sketch.sample.util
 
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
 import android.os.AsyncTask
@@ -14,11 +15,8 @@ import java.io.InputStream
  * 应用壁纸异步任务
  */
 class ApplyWallpaperAsyncTask(context: Context, private val imageFile: File) : AsyncTask<Int, Int, Boolean>() {
-    private val context: Context
-
-    init {
-        this.context = context.applicationContext
-    }
+    @SuppressLint("StaticFieldLeak")
+    private val context: Context = context.applicationContext
 
     override fun doInBackground(vararg params: Int?): Boolean {
         var inputStream: InputStream? = null

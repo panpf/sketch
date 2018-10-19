@@ -1,8 +1,7 @@
-package me.panpf.sketch.sample.util
+package me.panpf.sketch.sample
 
 import android.content.Context
 import android.preference.PreferenceManager
-import me.panpf.sketch.sample.BuildConfig
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import org.greenrobot.eventbus.EventBus
 

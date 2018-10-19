@@ -33,7 +33,7 @@ import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
 import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.item.MyPhotoItemFactory
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.util.SketchUtils

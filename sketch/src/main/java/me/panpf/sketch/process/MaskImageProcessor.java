@@ -1,6 +1,5 @@
 package me.panpf.sketch.process;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -75,10 +74,7 @@ public class MaskImageProcessor extends WrappedImageProcessor {
         }
         paint.setXfermode(null);
 
-        int saveFlags = Canvas.MATRIX_SAVE_FLAG | Canvas.CLIP_SAVE_FLAG | Canvas.HAS_ALPHA_LAYER_SAVE_FLAG |
-                Canvas.FULL_COLOR_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG;
-        @SuppressLint("WrongConstant")
-        int src = canvas.saveLayer(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint, saveFlags);
+        int src = canvas.saveLayer(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
 
         canvas.drawBitmap(bitmap, 0, 0, null);
 

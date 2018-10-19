@@ -73,13 +73,13 @@ class DoubleFinsEmptyView : LinearLayout {
             }
 
             // 按离左上角的距离排序
-            Collections.sort(childRectList) { o1, o2 ->
+            childRectList.sortWith(Comparator { o1, o2 ->
                 if (o1.top >= o2.bottom || o2.top >= o1.bottom) {
                     o1.top - o2.top
                 } else {
                     o1.left - o2.left
                 }
-            }
+            })
 
             val left = rect.left
             var top = rect.top

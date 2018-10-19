@@ -28,7 +28,7 @@ import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.RegisterEvent
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
 import me.panpf.sketch.sample.widget.MappingView

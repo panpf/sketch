@@ -82,5 +82,4 @@ public class DeviceUtils {
         }
         return 0;
     }
-
 }

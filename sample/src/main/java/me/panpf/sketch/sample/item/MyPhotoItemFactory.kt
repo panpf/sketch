@@ -11,7 +11,7 @@ import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.adapter.ktx.bindView
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.widget.SampleImageView
 import me.panpf.sketch.util.SketchUtils
 

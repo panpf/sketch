@@ -27,7 +27,7 @@ import me.panpf.sketch.sample.item.CheckMenuItemFactory
 import me.panpf.sketch.sample.item.InfoMenuItemFactory
 import me.panpf.sketch.sample.item.MenuTitleItemFactory
 import me.panpf.sketch.sample.item.PageMenuItemFactory
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.util.DeviceUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

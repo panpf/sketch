@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.event
 
 import me.panpf.sketch.sample.ui.Page
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
 
 class ChangePageEvent(val page: Page)
 

@@ -5,7 +5,6 @@ import me.panpf.sketch.Configuration
 import me.panpf.sketch.Initializer
 import me.panpf.sketch.SLog
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
-import me.panpf.sketch.sample.util.AppConfig
 import me.panpf.sketch.sample.util.XpkIconUriModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

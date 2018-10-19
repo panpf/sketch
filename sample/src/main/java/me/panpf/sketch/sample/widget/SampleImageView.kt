@@ -15,14 +15,14 @@ import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.request.RedisplayListener
 import me.panpf.sketch.request.Resize
-import me.panpf.sketch.uri.GetDataSourceException
-import me.panpf.sketch.uri.UriModel
-import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.CacheCleanEvent
-import me.panpf.sketch.sample.util.AppConfig
+import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.uri.GetDataSourceException
+import me.panpf.sketch.uri.UriModel
+import me.panpf.sketch.util.SketchUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.EventBusException
 import org.greenrobot.eventbus.Subscribe
@@ -74,43 +74,51 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     @Subscribe
     fun onEvent(event: AppConfigChangedEvent) {
-        when {
-            AppConfig.Key.SHOW_GIF_FLAG == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+        when (event.key) {
+            AppConfig.Key.SHOW_GIF_FLAG -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setShowGifFlagEnabled(if (AppConfig.getBoolean(context, AppConfig.Key.SHOW_GIF_FLAG)) R.drawable.ic_gif else 0)
             }
-            AppConfig.Key.SHOW_IMAGE_FROM_FLAG == event.key -> isShowImageFromEnabled = AppConfig.getBoolean(context, event.key)
-            AppConfig.Key.CLICK_SHOW_PRESSED_STATUS == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            AppConfig.Key.SHOW_IMAGE_FROM_FLAG -> isShowImageFromEnabled = AppConfig.getBoolean(context, event.key)
+            AppConfig.Key.CLICK_SHOW_PRESSED_STATUS -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 isShowPressedStatusEnabled = AppConfig.getBoolean(context, event.key)
             }
-            AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 isShowDownloadProgressEnabled = AppConfig.getBoolean(context, event.key)
             }
-            AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 isClickRetryOnPauseDownloadEnabled = AppConfig.getBoolean(context, event.key)
             }
-            AppConfig.Key.CLICK_RETRY_ON_FAILED == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            AppConfig.Key.CLICK_RETRY_ON_FAILED -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 isClickRetryOnDisplayErrorEnabled = AppConfig.getBoolean(context, event.key)
             }
-            AppConfig.Key.CLICK_PLAY_GIF == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
+            AppConfig.Key.CLICK_PLAY_GIF -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
                 setClickPlayGifEnabled(if (AppConfig.getBoolean(context, event.key)) R.drawable.ic_video_play else 0)
             }
-            AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD == event.key -> redisplay(null)
-            AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK == event.key -> redisplay(null)
-            AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL == event.key -> redisplay(null)
-            AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY == event.key -> redisplay(null)
-            AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION == event.key -> {
+            AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD -> {
+                redisplay(null)
+            }
+            AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK -> {
+                redisplay(null)
+            }
+            AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL -> {
+                redisplay(null)
+            }
+            AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY -> {
+                redisplay(null)
+            }
+            AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION -> {
                 val correctImageOrientationDisabled = AppConfig.getBoolean(context, event.key)
                 options.isCorrectImageOrientationDisabled = correctImageOrientationDisabled
 
                 redisplay { _, cacheOptions -> cacheOptions.isCorrectImageOrientationDisabled = correctImageOrientationDisabled }
             }
-            AppConfig.Key.PLAY_GIF_ON_LIST == event.key -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST) {
+            AppConfig.Key.PLAY_GIF_ON_LIST -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST) {
                 val playGifOnList = AppConfig.getBoolean(context, event.key)
                 options.isDecodeGifImage = playGifOnList
 
                 redisplay { _, cacheOptions -> cacheOptions.isDecodeGifImage = playGifOnList }
             }
-            AppConfig.Key.THUMBNAIL_MODE == event.key -> if (page == Page.PHOTO_LIST) {
+            AppConfig.Key.THUMBNAIL_MODE -> if (page == Page.PHOTO_LIST) {
                 val thumbnailMode = AppConfig.getBoolean(context, event.key)
                 options.isThumbnailMode = thumbnailMode
                 if (thumbnailMode) {
@@ -128,16 +136,20 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                     }
                 }
             }
-            AppConfig.Key.CACHE_PROCESSED_IMAGE == event.key -> {
+            AppConfig.Key.CACHE_PROCESSED_IMAGE -> {
                 val cacheProcessedImageInDisk = AppConfig.getBoolean(context, event.key)
                 options.isCacheProcessedImageInDisk = cacheProcessedImageInDisk
 
                 redisplay { _, cacheOptions -> cacheOptions.isCacheProcessedImageInDisk = cacheProcessedImageInDisk }
             }
-            AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO == event.key -> if (AppConfig.getBoolean(context, AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO)) {
-                onLongClickListener = longClickShowDrawableInfoListener
-            } else {
-                onLongClickListener = null
+            AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO -> {
+                onLongClickListener = if (AppConfig.getBoolean(context, AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO)) {
+                    longClickShowDrawableInfoListener
+                } else {
+                    null
+                }
+            }
+            else -> {
             }
         }
     }
