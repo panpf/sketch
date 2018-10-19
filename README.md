@@ -12,11 +12,13 @@
 
 Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加载的必备功能外，还支持 GIF，手势缩放、分块显示超大图片、自动纠正图片方向、显示视频缩略图等功能
 
-### 示例 APP
+## 示例 APP
 
 ![sample_app_download_qrcode]
 
 扫描二维码下载或[点我下载][sample_app_download_link]
+
+## 特性
 
 ### 支持的特性
 
@@ -60,9 +62,9 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 * bmp
 * webp
 
-### 开始使用
+## 开始使用
 
-#### 导入 Sketch
+### 导入 Sketch
 
 在 app 的 build.gradle 文件的 dependencies 节点中加入依赖
 
@@ -82,7 +84,7 @@ compile 'me.panpf:sketch-gif:$sketch_gif_version'
 
 `Android Studio 会自动合并 AAR 中所包含的权限和混淆配置`
 
-#### 使用 SketchImageView 显示图片
+### 使用 SketchImageView 显示图片
 
 ```java
 SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
@@ -92,7 +94,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 >* 更多类型 URI 的使用请参考 [URI 类型及使用指南][uri]
 >* 更多 SketchImageView 使用方法请参考 [SketchImageView 使用指南][sketch_image_view]
 
-#### 文档
+### 文档
 
 基础功能：
 * [URI 类型及使用指南][uri]
@@ -136,18 +138,21 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [延迟并统一配置 Sketch][initializer]
 * [配置混淆（Proguard）][proguard_config]
 
-### 特别感谢
+## 更新日志
+
+Please view the [CHANGELOG.md] file
+
+## 特别感谢
 
 * [koral--] - [android-gif-drawable]
 * [chrisbanes] - [PhotoView]
 * [bumptech] - [glide]（BitmapPool）
 
-### 联系我
+## 交流群
 
-* ![Email][email_image]
 * ![QQ Group][qq_group_image]
 
-### License
+## License
     Copyright (C) 2017 Peng fei Pan <sky@panpf.me>
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,8 +168,6 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
     limitations under the License.
 
 
-[qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
-
 [logo_image]: docs/res/logo.png
 [platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
 [android_arsenal_image]: https://img.shields.io/badge/Android%20Arsenal-Sketch-orange.svg?style=true
@@ -179,7 +182,9 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [min_api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
 [min_api_link]: https://android-arsenal.com/api?level=14
-[email_image]: https://img.shields.io/badge/Email-sky@panpf.me-red.svg
+[qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
+
+[CHANGELOG.md]: CHANGELOG.md
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
 [sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk

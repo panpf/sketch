@@ -12,11 +12,13 @@
 
 Sketch is a powerful and comprehensive picture loader on Android, in addition to the necessary features to load the picture, but also supports GIF, gesture zoom, block display huge image, automatically correct the direction of the picture, display video thumbnails and other functions
 
-### Sample APP
+## Sample APP
 
 ![sample_app_download_qrcode]
 
 Scan qrcode to download, or [Click me download][sample_app_download_link]
+
+## Features
 
 ### Supported Features
 
@@ -60,9 +62,9 @@ Please refer to the details [URI type and usage guide][uri]
 * bmp
 * webp
 
-### Getting Started
+## Getting Started
 
-#### Import Sketch
+### Import Sketch
 
 Add dependencies to the dependencies node of the app's build.gradle file
 
@@ -82,7 +84,7 @@ Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_imag
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 
-#### Use SketchImageView Display Image
+### Use SketchImageView Display Image
 
 ```java
 SketchImageView sketchImageView = (SketchImageView) findViewById(R.id.image_main);
@@ -92,7 +94,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 >* To display pictures of other types of URIs, please refer to the [URI type and usage guide][uri]
 >* For more information on how to use SketchImageView [SketchImageView usage guide][uri]
 
-#### Documents:
+### Documents:
 
 Basic functions:
 * [URI type and usage guide][uri]
@@ -136,18 +138,21 @@ More:
 * [Delay and configure Sketch][initializer]
 * [Config proguard][proguard_config]
 
-### Thanks
+## Change Log
+
+Please view the [CHANGELOG.md] file
+
+## Thanks
 
 * [koral--] - [android-gif-drawable]
 * [chrisbanes] - [PhotoView]
 * [bumptech] - [glide]（BitmapPool）
 
-### Contact Me
+## QQ Group
 
-* ![Email][email_image]
 * ![QQ Group][qq_group_image]
 
-### License
+## License
     Copyright (C) 2013 Peng fei Pan <sky@panpf.me>
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,8 +168,6 @@ More:
     limitations under the License.
 
 
-[qq_group_image]: https://img.shields.io/badge/QQ%20Gruop-529630740-red.svg
-
 [logo_image]: docs/res/logo.png
 [platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
 [android_arsenal_image]: https://img.shields.io/badge/Android%20Arsenal-Sketch-orange.svg?style=true
@@ -179,7 +182,9 @@ More:
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [min_api_image]: https://img.shields.io/badge/API-14%2B-orange.svg
 [min_api_link]: https://android-arsenal.com/api?level=14
-[email_image]: https://img.shields.io/badge/Email-sky@panpf.me-red.svg
+[qq_group_image]: https://img.shields.io/badge/QQ%20Gruop-529630740-red.svg
+
+[CHANGELOG.md]: CHANGELOG.md
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
 [sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
