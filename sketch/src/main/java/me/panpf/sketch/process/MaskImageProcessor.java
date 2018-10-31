@@ -74,7 +74,7 @@ public class MaskImageProcessor extends WrappedImageProcessor {
         }
         paint.setXfermode(null);
 
-        int src = canvas.saveLayer(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
+        int src = canvas.saveLayer(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint, Canvas.ALL_SAVE_FLAG);
 
         canvas.drawBitmap(bitmap, 0, 0, null);
 
