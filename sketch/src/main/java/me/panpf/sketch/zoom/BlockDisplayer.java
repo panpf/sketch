@@ -25,6 +25,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -469,6 +470,26 @@ public class BlockDisplayer {
      */
     public void setOnBlockChangedListener(OnBlockChangedListener onBlockChangedListener) {
         this.onBlockChangedListener = onBlockChangedListener;
+    }
+
+    @Nullable
+    public Block getBlockByDrawablePoint(int drawableX, int drawableY) {
+        for (Block block : blockManager.blockList) {
+            if(block.drawRect.contains(drawableX, drawableY)){
+                return block;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public Block getBlockByImagePoint(int imageX, int imageY) {
+        for (Block block : blockManager.blockList) {
+            if(block.srcRect.contains(imageX, imageY)){
+                return block;
+            }
+        }
+        return null;
     }
 
     public interface OnBlockChangedListener {

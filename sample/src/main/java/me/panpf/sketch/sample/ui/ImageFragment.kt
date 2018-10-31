@@ -209,7 +209,7 @@ class ImageFragment : BaseFragment() {
     private inner class ZoomHelper {
         fun onViewCreated() {
             image_imageFragment_image.isZoomEnabled = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.SUPPORT_ZOOM)
-            if(AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE)){
+            if (AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE)) {
                 image_imageFragment_image.zoomer?.setZoomScales(FixedThreeLevelScales())
             } else {
                 image_imageFragment_image.zoomer?.setZoomScales(AdaptiveTwoLevelScales())
@@ -348,10 +348,20 @@ class ImageFragment : BaseFragment() {
 
         fun onViewCreated() {
             // 将单击事件传递给上层 Activity
-            image_imageFragment_image.onClickListener = View.OnClickListener { v ->
+            val zoomer = image_imageFragment_image.zoomer
+            zoomer?.setOnViewTapListener { view, x, y ->
                 val parentFragment = parentFragment
                 if (parentFragment != null && parentFragment is ImageZoomer.OnViewTapListener) {
-                    (parentFragment as ImageZoomer.OnViewTapListener).onViewTap(v, 0f, 0f)
+                    (parentFragment as ImageZoomer.OnViewTapListener).onViewTap(view, x, y)
+                } else {
+                    val drawablePoint = zoomer.touchPointToDrawablePoint(x.toInt(), y.toInt())
+                    val block = if(drawablePoint != null)  zoomer.getBlockByDrawablePoint(drawablePoint.x, drawablePoint.y) else null
+                    if (block?.bitmap != null) {
+                        val imageView = ImageView(activity).apply {
+                            setImageBitmap(block.bitmap)
+                        }
+                        AlertDialog.Builder(activity).setView(imageView).setPositiveButton("取消", null).show()
+                    }
                 }
             }
 

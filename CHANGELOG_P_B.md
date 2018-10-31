@@ -4,6 +4,7 @@
 * :arrow_up: Support library upgrade to 28.0.0
 * :arrow_up: Min sdk version upgrade to 16
 * :sparkles: ImageZoomer supports custom scaling and examples are added to the demo
+* :sparkles: ImageZoomer adds getBlockByDrawablePoint, getBlockByImagePoint, touchPointToDrawablePoint method
 
 # v2.6.0 P1
 

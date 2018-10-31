@@ -19,6 +19,7 @@ package me.panpf.sketch.zoom;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -34,6 +35,7 @@ import android.widget.ImageView.ScaleType;
 import java.util.ArrayList;
 
 import me.panpf.sketch.SLog;
+import me.panpf.sketch.zoom.block.Block;
 
 /**
  * 图片缩放器，接收触摸事件，变换 {@link Matrix}，改变图片的显示效果，代理点击和长按事件
@@ -662,6 +664,34 @@ public class ImageZoomer {
             this.zoomScales = new AdaptiveTwoLevelScales();
         }
         reset("setZoomScales");
+    }
+
+    @Nullable
+    public Block getBlockByDrawablePoint(int drawableX, int drawableY) {
+        return blockDisplayer.getBlockByDrawablePoint(drawableX, drawableY);
+    }
+
+    @Nullable
+    public Block getBlockByImagePoint(int imageX, int imageY) {
+        return blockDisplayer.getBlockByImagePoint(imageX, imageY);
+    }
+
+    /**
+     * view 的触摸点转换成 drawable 上对应的点
+     */
+    @Nullable
+    public Point touchPointToDrawablePoint(int touchX, int touchY) {
+        RectF drawRect = new RectF();
+        getDrawRect(drawRect);
+
+        if (drawRect.contains(touchX, touchY)) {
+            final float zoomScale = getZoomScale();
+            int drawableX = (int) ((Math.abs(drawRect.left) + touchX) / zoomScale);
+            int drawableY = (int) ((Math.abs(drawRect.top) + touchY) / zoomScale);
+            return new Point(drawableX, drawableY);
+        } else {
+            return null;
+        }
     }
 
     /**
