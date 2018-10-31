@@ -1,11 +1,17 @@
-# v2.6.2 P1
+# v2.6.2 Beta1
 
 * :arrow_up: Target sdk version upgrade to 28
 * :arrow_up: Support library upgrade to 28.0.0
 * :arrow_up: Min sdk version upgrade to 16
-* :sparkles: ImageZoomer supports custom scaling and examples are added to the demo
+* :sparkles: [#81] ImageZoomer supports custom scaling and examples are added to the demo, please see the zoom section of the document [zoom]
 * :sparkles: ImageZoomer adds getBlockByDrawablePoint, getBlockByImagePoint, touchPointToDrawablePoint method
-* :bug: Fix bug with black line in the large graph block display function
+* :bug: [#83],[#73] Fix bug with black line in the large graph block display function
+* :bug: Fix bug where MaskImageProcessor expires in version 21 or lower
+
+[zoom]: docs/wiki/zoom.md
+[#73]: https://github.com/panpf/sketch/issues/73
+[#81]: https://github.com/panpf/sketch/issues/81
+[#83]: https://github.com/panpf/sketch/issues/83
 
 # v2.6.0 P1
 
