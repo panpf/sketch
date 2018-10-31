@@ -27,13 +27,13 @@ sketchImageView.setZoomEnabled(true);
 
 ```java
 // 放大 3 倍（不使用动画）
-imageZoomer.zoom(3f);
+sketchImageView.getZoomer().zoom(3f);
 
 // 放大 3 倍并使用动画
-imageZoomer.zoom(3f, true);
+sketchImageView.getZoomer().zoom(3f, true);
 
 // 以 100x200 为中心点放大 3 倍并使用动画
-imageZoomer.zoom(3f, 100f, 200f, true);
+sketchImageView.getZoomer().zoom(3f, 100f, 200f, true);
 ```
 
 注意：
@@ -44,10 +44,10 @@ imageZoomer.zoom(3f, 100f, 200f, true);
 
 ```java
 // 旋转到 180°
-imageZoomer.rotateTo(180);
+sketchImageView.getZoomer().rotateTo(180);
 
 // 顺时针再旋转 90°
-imageZoomer.rotateBy(90);
+sketchImageView.getZoomer().rotateBy(90);
 ```
 
 `目前只支持90°、180°、270°旋转`
@@ -58,10 +58,10 @@ imageZoomer.rotateBy(90);
 
 ```java
 // 定位到 100x200（不用考虑旋转角度）
-imageZoomer.location(100f, 200f);
+sketchImageView.getZoomer().location(100f, 200f);
 
 // 定位到 100x200 并使用动画（不用考虑旋转角度）
-imageZoomer.location(100f, 200f, true);
+sketchImageView.getZoomer().location(100f, 200f, true);
 ```
 
 通过 location 方法设置的位置只是临时性的并不会一直保持，其它任何位移行为和更新行为都会覆盖此位置
@@ -81,7 +81,7 @@ SketchImageView sketchImageView = ...;
 sketchImageView.setZoomEnabled(true);
 
 // 开启阅读模式
-sketchImageView.getImageZoomer().setReadMode(true);
+sketchImageView.getZoomer().setReadMode(true);
 ```
 
 `只有宽是高的 3 倍，或高是宽的 2 倍的图片才能使用阅读模式`
@@ -125,78 +125,78 @@ sketchImageView.getImageZoomer().setReadMode(true);
 
 ```java
 // 禁用手势缩放
-imageZoomer.setZoomable(false);
+sketchImageView.getZoomer().setZoomable(false);
 
 // 设置双击缩放动画时长
-imageZoomer.setZoomDuration(1000);
+sketchImageView.getZoomer().setZoomDuration(1000);
 
 // 设置双击缩放动画插值器
-imageZoomer.setZoomInterpolator(new AccelerateDecelerateInterpolator());
+sketchImageView.getZoomer().setZoomInterpolator(new AccelerateDecelerateInterpolator());
 
 // 修改缩放类型为 FIX_START
-imageZoomer.setScaleType(ScaleType.FIX_START);
+sketchImageView.getZoomer().setScaleType(ScaleType.FIX_START);
 
 // 开启阅读模式
-imageZoomer.setReadMode(true);
+sketchImageView.getZoomer().setReadMode(true);
 ```
 
 ### 获取信息
 
 ```java
 // 获取当前缩放比例
-float zoomScale = imageZoomer.getZoomScale();
+float zoomScale = sketchImageView.getZoomer().getZoomScale();
 
 // 获取当前旋转角度（顺时针）
-float rotateDegrees = imageZoomer.getRotateDegrees();
+float rotateDegrees = sketchImageView.getZoomer().getRotateDegrees();
 
 // 获取缩放类型
-ScaleType scaleType = imageZoomer.getScaleType();
+ScaleType scaleType = sketchImageView.getZoomer().getScaleType();
 
 // 获取最小缩放比例
-float minZoomScale = imageZoomer.getMinZoomScale();
+float minZoomScale = sketchImageView.getZoomer().getMinZoomScale();
 
 // 获取最大缩放比例
-float maxZoomScale = imageZoomer.getMaxZoomScale();
+float maxZoomScale = sketchImageView.getZoomer().getMaxZoomScale();
 
 // 获取当前预览图上的用户能看到的区域（不受旋转影响）
 Rect visibleRect = new Rect();
-imageZoomer.getVisibleRect(visibleRect);
+sketchImageView.getZoomer().getVisibleRect(visibleRect);
 
 // 获取当前绘制Matrix（包含位移、旋转、缩放等等所有的信息）
 Matrix drawMatrix = new Matrix();
-imageZoomer.getDrawMatrix(drawMatrix);
+sketchImageView.getZoomer().getDrawMatrix(drawMatrix);
 
 // 获取当前绘制的区域
 Rect drawRect = new Rect();
-imageZoomer.getDrawRect(drawRect);
+sketchImageView.getZoomer().getDrawRect(drawRect);
 
 // 获取预览图片尺寸
-Point drawableSize = imageZoomer.getDrawableSize();
+Point drawableSize = sketchImageView.getZoomer().getDrawableSize();
 ```
 
 ### 监听
 
 ```java
 // 设置Fling手势监听器
-imageZoomer.setOnDragFlingListener(OnDragFlingListener)
+sketchImageView.getZoomer().setOnDragFlingListener(OnDragFlingListener)
 
 // 设置缩放变化监听器
-imageZoomer.setOnScaleChangeListener(OnScaleChangeListener)
+sketchImageView.getZoomer().setOnScaleChangeListener(OnScaleChangeListener)
 
 // 添加一个Matrix变化监听器
-imageZoomer.addOnMatrixChangeListener(OnMatrixChangeListener)
+sketchImageView.getZoomer().addOnMatrixChangeListener(OnMatrixChangeListener)
 
 // 删除一个Matrix变化监听器
-imageZoomer.removeOnMatrixChangeListener(OnMatrixChangeListener)
+sketchImageView.getZoomer().removeOnMatrixChangeListener(OnMatrixChangeListener)
 
 // 单击ImageView监听器
-imageZoomer.setOnViewTapListener(OnViewTapListener);
+sketchImageView.getZoomer().setOnViewTapListener(OnViewTapListener);
 
 // 长按ImageView监听器
-imageZoomer.setOnViewLongPressListener(OnViewLongPressListener)
+sketchImageView.getZoomer().setOnViewLongPressListener(OnViewLongPressListener)
 
 // 旋转变化监听器
-imageZoomer.setOnRotateChangeListener(OnRotateChangeListener)
+sketchImageView.getZoomer().setOnRotateChangeListener(OnRotateChangeListener)
 ```
 
 当没有注册 OnViewTapListener 或 OnViewLongPressListener 时，[ImageZoomer] 会尝试回调 ImageView 的 OnClickListener 或 OnLongClickListener
