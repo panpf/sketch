@@ -68,8 +68,8 @@ public class BitmapPoolUtils {
 
         Bitmap inBitmap = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int finalWidth = SketchUtils.ceil(outWidth, inSampleSize);
-            int finalHeight = SketchUtils.ceil(outHeight, inSampleSize);
+            int finalWidth = SketchUtils.calculateSamplingSize(outWidth, inSampleSize);
+            int finalHeight = SketchUtils.calculateSamplingSize(outHeight, inSampleSize);
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
         } else if (inSampleSize == 1 && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
             inBitmap = bitmapPool.get(outWidth, outHeight, options.inPreferredConfig);
@@ -138,8 +138,8 @@ public class BitmapPoolUtils {
         int inSampleSize = options.inSampleSize >= 1 ? options.inSampleSize : 1;
         Bitmap.Config config = options.inPreferredConfig;
 
-        int finalWidth = SketchUtils.ceil(srcRect.width(), inSampleSize);
-        int finalHeight = SketchUtils.ceil(srcRect.height(), inSampleSize);
+        int finalWidth = SketchUtils.calculateSamplingSizeForRegion(srcRect.width(), inSampleSize);
+        int finalHeight = SketchUtils.calculateSamplingSizeForRegion(srcRect.height(), inSampleSize);
         Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
 
         if (inBitmap != null) {

@@ -5,6 +5,7 @@
 * :arrow_up: Min sdk version upgrade to 16
 * :sparkles: ImageZoomer supports custom scaling and examples are added to the demo
 * :sparkles: ImageZoomer adds getBlockByDrawablePoint, getBlockByImagePoint, touchPointToDrawablePoint method
+* :bug: Fix bug with black line in the large graph block display function
 
 # v2.6.0 P1
 

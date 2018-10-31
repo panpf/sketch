@@ -68,8 +68,8 @@ public class VideoThumbnailUriModel extends AbsBitmapDiskCacheUriModel {
         ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
         MaxSize maxSize = sizeCalculator.getDefaultImageMaxSize(context);
         int inSampleSize = sizeCalculator.calculateInSampleSize(videoWidth, videoHeight, maxSize.getWidth(), maxSize.getHeight(), false);
-        int finalWidth = SketchUtils.ceil(videoWidth, inSampleSize);
-        int finalHeight = SketchUtils.ceil(videoHeight, inSampleSize);
+        int finalWidth = SketchUtils.calculateSamplingSize(videoWidth, inSampleSize);
+        int finalHeight = SketchUtils.calculateSamplingSize(videoHeight, inSampleSize);
 
         // 大于30分钟的一般是电影或电视剧，这类视频开头一般都一样显示出来也没有意义，所以显示中间的部分
         long timeUs;

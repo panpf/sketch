@@ -1141,8 +1141,12 @@ public class SketchUtils {
         return Integer.toHexString(object.hashCode());
     }
 
-    public static int ceil(int value1, float value2) {
-        return (int) Math.ceil(value1 / value2);
+    public static int calculateSamplingSize(int value1, int inSampleSize) {
+        return (int) Math.ceil(value1 / (float) inSampleSize);
+    }
+
+    public static int calculateSamplingSizeForRegion(int value1, int inSampleSize) {
+        return (int) Math.floor(value1 / (float) inSampleSize);
     }
 
     public static boolean isDisabledARGB4444() {

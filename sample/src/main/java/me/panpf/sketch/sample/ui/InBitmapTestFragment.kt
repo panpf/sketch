@@ -14,9 +14,9 @@ import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageDecodeUtils
 import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
@@ -136,8 +136,8 @@ class InBitmapTestFragment : BaseFragment() {
         object : TestTask(activity) {
             override fun configOptions(options: BitmapFactory.Options) {
                 options.inSampleSize = 2
-                val finalWidth = SketchUtils.ceil(options.outWidth, options.inSampleSize.toFloat())
-                val finalHeight = SketchUtils.ceil(options.outHeight, options.inSampleSize.toFloat())
+                val finalWidth = SketchUtils.calculateSamplingSize(options.outWidth, options.inSampleSize)
+                val finalHeight = SketchUtils.calculateSamplingSize(options.outHeight, options.inSampleSize)
                 options.inBitmap = Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig)
                 options.inMutable = true
                 super.configOptions(options)
