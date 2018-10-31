@@ -6,9 +6,9 @@ Sketch 是目前唯一提供手势缩放支持的图片加载器，代码基于 
 
 ### 对比 PhotoView
 
-对比 [PhotoView] ，[ImageZoomer] 做了以下改进：
+[ImageZoomer] 对比 [PhotoView] 做了以下改进：
 
-1. 双击缩放 从 [PhotoView] 的三级减少到两级，操作更简单
+* 双击缩放 从 [PhotoView] 的三级减少到两级，操作更简单
 * [PhotoView] 的双击缩放比例是固定的，而 [ImageZoomer] 是根据图片的尺寸、ImageView 的宽高以及 ScaleType 动态计算的，体验更好
 * 手动持续缩放时如果超过了最小比例或最大比例时 [PhotoView] 直接就拉不动了，而 [ImageZoomer] 依然可以缩放，超过后会有种拉橡皮筋的感觉，松手后自动回滚到最小或最大缩放比例，体验更好
 * [ImageZoomer] 优化了 scrollEdge 的判断，修复了在不能整除的缩放比例下，无法识别边缘的 BUG
@@ -117,6 +117,10 @@ sketchImageView.getImageZoomer().setReadMode(true);
 * ScaleType 是 FIT_START/FIT_CENTE/FIT_END 或 ScaleType 是 ENTER_INSIDE 并且图尺寸片比 ImageView 大：`Math.max(originZoomScale, fillZoomScale)`
 * ScaleType 是 FIT_XY：`fullZoomScale`
 
+### 自定义缩放比例
+
+[ImageZoomer] 提供了 [ZoomScales] 接口可以自定义最大、最小以及双击缩放比例，可参考 [AdaptiveTwoLevelScales] 实现自定义，然后通过 ImageZoomer.setZoomScales(ZoomScales) 方法设置即可
+
 ### 配置
 
 ```java
@@ -221,6 +225,8 @@ public boolean dispatchTouchEvent(MotionEvent ev) {
 [Picasso]: https://github.com/square/picasso
 [gesture-imageview]: https://github.com/jasonpolites/gesture-imageview
 [PhotoView]: https://github.com/chrisbanes/PhotoView
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/viewfun/zoom/ImageZoomer.java
+[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
 [ImageSizeCalculator]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageSizeCalculator.java
-[block_display.md]: block_display.md 
+[block_display.md]: block_display.md
+[ZoomScales]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ZoomScales.java
+[AdaptiveTwoLevelScales]: ../../sketch/src/main/java/me/panpf/sketch/zoom/AdaptiveTwoLevelScales.java

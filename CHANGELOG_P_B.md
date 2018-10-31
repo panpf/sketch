@@ -210,7 +210,7 @@ sample app：
 [LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
 [OptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
 [Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/viewfun/zoom/ImageZoomer.java
+[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
 [Initializer]: ../../sketch/src/main/java/me/panpf/sketch/Initializer.java
 [UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
 [AppIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
