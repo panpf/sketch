@@ -16,6 +16,7 @@
 
 package me.panpf.sketch.viewfun;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
@@ -106,8 +107,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param playIconResId 播放图标资源ID
      */
+    @SuppressLint("ResourceType")
     public void setClickPlayGifEnabled(@DrawableRes int playIconResId) {
-        //noinspection deprecation
         setClickPlayGifEnabled(playIconResId > 0 ? getResources().getDrawable(playIconResId) : null);
     }
 
@@ -347,9 +348,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param gifFlagDrawableResId gif标识图标
      */
-    @SuppressWarnings("unused")
+    @SuppressLint("ResourceType")
     public void setShowGifFlagEnabled(@DrawableRes int gifFlagDrawableResId) {
-        //noinspection deprecation
         setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
     }
 
