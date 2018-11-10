@@ -143,6 +143,13 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         cancelFling();
     }
 
+    /**
+     * @return true 为滑动顶部 或铺满全屏
+     */
+    protected boolean isTop() {
+        return verScrollEdge == EDGE_START || verScrollEdge == EDGE_BOTH;
+    }
+
     @Override
     public void onDrag(float dx, float dy) {
         ImageView imageView = imageZoomer.getImageView();

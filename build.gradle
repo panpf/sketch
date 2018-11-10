@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$ANDROID_BUILD_VERSION"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-        classpath "guru.stefma.bintrayrelease:bintrayrelease:$BINTRAY_RELEASE_VERSION"
+//        classpath "guru.stefma.bintrayrelease:bintrayrelease:$BINTRAY_RELEASE_VERSION"
     }
 }
 

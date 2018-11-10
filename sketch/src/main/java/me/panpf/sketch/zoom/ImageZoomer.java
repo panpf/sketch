@@ -81,6 +81,14 @@ public class ImageZoomer {
 
     /* -----------主要方法----------- */
 
+    /**
+     * 是否滑到了顶部
+     *
+     * @return
+     */
+    public boolean isTop() {
+        return scaleDragHelper.isTop();
+    }
 
     /**
      * 当 {@link ImageView} 的 {@link Drawable}、{@link ScaleType}、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
