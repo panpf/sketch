@@ -150,6 +150,24 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         return verScrollEdge == EDGE_START || verScrollEdge == EDGE_BOTH;
     }
 
+    /**
+     * 可以横向滚动
+     *
+     * @return
+     */
+    protected boolean canScrollHorizontally() {
+        return horScrollEdge != EDGE_BOTH;
+    }
+
+    /**
+     * 可以垂直滚动
+     *
+     * @return
+     */
+    protected boolean canScrollVertically() {
+        return verScrollEdge != EDGE_BOTH;
+    }
+
     @Override
     public void onDrag(float dx, float dy) {
         ImageView imageView = imageZoomer.getImageView();
