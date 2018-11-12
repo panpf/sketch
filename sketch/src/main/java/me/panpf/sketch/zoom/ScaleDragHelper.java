@@ -202,16 +202,12 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
                 SLog.d(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
-            SLog.e(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
-                    getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), false);
         } else {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
-            SLog.e(NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
-                    getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true);
         }
     }
