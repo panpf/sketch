@@ -579,6 +579,11 @@ public class ImageZoomer {
         }
         this.vReadMode = vReadMode;
         this.hReadMode = hReadMode;
+//        if (this.readMode == readMode) {
+//            return;
+//        }
+//
+//        this.readMode = readMode;
         reset("setReadMode");
     }
 
@@ -594,6 +599,7 @@ public class ImageZoomer {
         }
         this.vReadMode = readMode;
         this.hReadMode = readMode;
+        reset("setReadMode");
     }
 
 

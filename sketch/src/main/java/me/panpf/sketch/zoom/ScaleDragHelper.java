@@ -144,11 +144,6 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     }
 
 
-    /**
-     * 是否滑动顶部
-     *
-     * @return
-     */
     protected boolean isTop() {
         return verScrollEdge == EDGE_START || verScrollEdge == EDGE_BOTH;
     }
