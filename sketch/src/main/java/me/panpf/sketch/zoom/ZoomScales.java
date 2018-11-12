@@ -24,7 +24,7 @@ public interface ZoomScales {
     /**
      * 重置
      */
-    void reset(final Context context, final Sizes sizes, final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode);
+    void reset(final Context context, final Sizes sizes, final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean vReadMode, boolean hReadMode);
 
     /**
      * 最小缩放比例

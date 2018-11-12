@@ -143,12 +143,16 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         cancelFling();
     }
 
+
     /**
-     * @return true 为滑动顶部 或铺满全屏
+     * 是否滑动顶部
+     *
+     * @return
      */
     protected boolean isTop() {
         return verScrollEdge == EDGE_START || verScrollEdge == EDGE_BOTH;
     }
+
 
     /**
      * 可以横向滚动
@@ -183,7 +187,6 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(NAME, "drag. dx: %s, dy: %s", dx, dy);
         }
-
         supportMatrix.postTranslate(dx, dy);
         checkAndApplyMatrix();
 
@@ -204,12 +207,16 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
                 SLog.d(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
+            SLog.e(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+                    getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), false);
         } else {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
                 SLog.d(NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
+            SLog.e(NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+                    getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true);
         }
     }
@@ -323,7 +330,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         Size viewSize = imageZoomer.getViewSize();
         Size imageSize = imageZoomer.getImageSize();
         Size drawableSize = imageZoomer.getDrawableSize();
-        boolean readMode = imageZoomer.isReadMode();
+        boolean vReadMode = imageZoomer.isVReadMode();
+        boolean hReadMode = imageZoomer.ishReadMode();
         ScaleType scaleType = imageZoomer.getScaleType();
 
         final int drawableWidth = imageZoomer.getRotateDegrees() % 180 == 0 ? drawableSize.getWidth() : drawableSize.getHeight();
@@ -344,9 +352,9 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         float initScale = imageZoomer.getZoomScales().getInitZoomScale();
 
         ImageSizeCalculator sizeCalculator = Sketch.with(imageZoomer.getImageView().getContext()).getConfiguration().getSizeCalculator();
-        if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        if (vReadMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
             baseMatrix.postScale(initScale, initScale);
-        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (hReadMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
             baseMatrix.postScale(initScale, initScale);
         } else if (finalScaleType == ScaleType.CENTER) {
             baseMatrix.postScale(initScale, initScale);

@@ -52,7 +52,8 @@ public class ImageZoomer {
 
     private int rotateDegrees; // 旋转角度
     private int zoomDuration = 200;   // 双击缩放动画持续时间
-    private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
+    private boolean vReadMode;   // 阅读模式下，竖图将默认横向充满屏幕  长图阅读模式
+    private boolean hReadMode;   // 阅读模式下，竖图将默认横向充满屏幕  横图阅读模式
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
     private boolean allowParentInterceptOnEdge = true;  // 允许父 ViewGroup 在滑动到边缘时拦截事件
     private OnDragFlingListener onDragFlingListener;
@@ -95,7 +96,7 @@ public class ImageZoomer {
      *
      * @return
      */
-    protected boolean canScrollHorizontally() {
+    public boolean canScrollHorizontally() {
         return scaleDragHelper.canScrollHorizontally();
     }
 
@@ -104,9 +105,10 @@ public class ImageZoomer {
      *
      * @return
      */
-    protected boolean canScrollVertically() {
+    public boolean canScrollVertically() {
         return scaleDragHelper.canScrollVertically();
     }
+
 
     /**
      * 当 {@link ImageView} 的 {@link Drawable}、{@link ScaleType}、尺寸发生改变或旋转角度、阅读模式修改了需要调用此方法重置
@@ -124,8 +126,7 @@ public class ImageZoomer {
         // 为什么要每次都重新获取 ScaleType ？因为 reset 是可以反复执行的，在此之前 ScaleType 可能会改变
         scaleType = imageView.getScaleType();
         imageView.setScaleType(ScaleType.MATRIX);
-
-        zoomScales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, readMode);
+        zoomScales.reset(imageView.getContext(), sizes, scaleType, rotateDegrees, vReadMode, hReadMode);
         scaleDragHelper.reset();
         blockDisplayer.reset();
         return true;
@@ -557,21 +558,42 @@ public class ImageZoomer {
     /**
      * 是否开启了阅读模式，开启后尺寸类似长微博或清明上河图的图片将默认充满屏幕显示
      */
-    public boolean isReadMode() {
-        return readMode;
+    public boolean isVReadMode() {
+        return vReadMode;
+    }
+
+    /**
+     * 是否开启了阅读模式，开启后尺寸类似长微博或清明上河图的图片将默认充满屏幕显示
+     */
+    public boolean ishReadMode() {
+        return hReadMode;
     }
 
     /**
      * 开启阅读模式，开启后尺寸类似长微博或清明上河图的图片将默认充满屏幕显示
      */
     @SuppressWarnings("unused")
-    public void setReadMode(boolean readMode) {
-        if (this.readMode == readMode) {
+    public void setReadMode(boolean vReadMode, boolean hReadMode) {
+        if (this.vReadMode == vReadMode && this.hReadMode == hReadMode) {
             return;
         }
-
-        this.readMode = readMode;
+        this.vReadMode = vReadMode;
+        this.hReadMode = hReadMode;
         reset("setReadMode");
+    }
+
+
+    /**
+     * 开启阅读模式，开启后尺寸类似长微博或清明上河图的图片将默认充满屏幕显示
+     */
+    @SuppressWarnings("unused")
+    public void setReadMode(boolean readMode) {
+
+        if (this.vReadMode == readMode && hReadMode == readMode) {
+            return;
+        }
+        this.vReadMode = readMode;
+        this.hReadMode = readMode;
     }
 
 

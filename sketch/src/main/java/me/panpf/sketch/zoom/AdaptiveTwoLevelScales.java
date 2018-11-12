@@ -40,7 +40,7 @@ public class AdaptiveTwoLevelScales implements ZoomScales {
     private float initZoomScale;
 
     @Override
-    public void reset(final Context context, final Sizes sizes, final ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
+    public void reset(final Context context, final Sizes sizes, final ScaleType scaleType, final float rotateDegrees, final boolean vReadMode, boolean hReadMode) {
         final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
         final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
         final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();
@@ -63,14 +63,14 @@ public class AdaptiveTwoLevelScales implements ZoomScales {
         fullZoomScale = Math.min(widthScale, heightScale);
         fillZoomScale = Math.max(widthScale, heightScale);
         originZoomScale = Math.max((float) imageWidth / drawableWidth, (float) imageHeight / drawableHeight);
-        initZoomScale = getInitScale(context, sizes, finalScaleType, rotateDegrees, readMode);
+        initZoomScale = getInitScale(context, sizes, finalScaleType, rotateDegrees, vReadMode, hReadMode);
 
         ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getSizeCalculator();
-        if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        if (vReadMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale;
             maxZoomScale = Math.max(originZoomScale, fillZoomScale);
-        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (hReadMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale;
             maxZoomScale = Math.max(originZoomScale, fillZoomScale);
@@ -113,7 +113,7 @@ public class AdaptiveTwoLevelScales implements ZoomScales {
         doubleClickZoomScales = new float[]{minZoomScale, maxZoomScale};
     }
 
-    private float getInitScale(final Context context, final Sizes sizes, final ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
+    private float getInitScale(final Context context, final Sizes sizes, final ScaleType scaleType, final float rotateDegrees, final boolean vReadMode, boolean hReadMode) {
         final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
         final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
         final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();
@@ -134,9 +134,9 @@ public class AdaptiveTwoLevelScales implements ZoomScales {
             finalScaleType = scaleType;
         }
 
-        if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        if (vReadMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
             return widthScale;
-        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (hReadMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
             return heightScale;
         } else if (finalScaleType == ScaleType.CENTER) {
             return 1.0f;
