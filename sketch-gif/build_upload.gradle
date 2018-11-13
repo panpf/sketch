@@ -1,0 +1,25 @@
+def localProperties = new Properties()
+def inputStream
+try {
+    inputStream = project.file("local.properties").newDataInputStream()
+    localProperties.load(inputStream)
+} catch (IOException e) {
+    e.printStackTrace()
+} finally {
+    if (inputStream != null) inputStream.close()
+}
+if (!localProperties.isEmpty()) {
+    apply plugin: "guru.stefma.bintrayrelease"
+
+    version = android.defaultConfig.versionName
+    group = 'me.panpf'
+    publish {
+        artifactId = 'sketch-gif'
+        desc = 'Android, Image, Load, GIF'
+        website = 'https://github.com/panpf/sketch'
+        userOrg = localProperties.getProperty("bintray.userOrg")
+        bintrayUser = localProperties.getProperty("bintray.user")
+        bintrayKey = localProperties.getProperty("bintray.apikey")
+    }
+}
+
