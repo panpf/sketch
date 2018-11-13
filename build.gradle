@@ -2,10 +2,10 @@
 
 buildscript {
     repositories {
-        maven { url 'https://mirrors.huaweicloud.com/repository/maven/' } // Huawei Maven mirrors
-        maven { url 'https://dl.google.com/dl/android/maven2/' }
         jcenter()
         google()
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven { url 'https://mirrors.huaweicloud.com/repository/maven/' } // Huawei Maven mirrors
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$ANDROID_BUILD_VERSION"
@@ -16,10 +16,10 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url 'https://mirrors.huaweicloud.com/repository/maven/' } // Huawei Maven mirrors
-        maven { url 'https://dl.google.com/dl/android/maven2/' }
         jcenter()
         google()
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven { url 'https://mirrors.huaweicloud.com/repository/maven/' } // Huawei Maven mirrors
         maven { url 'https://dl.bintray.com/panpf/maven' }
     }
 }
