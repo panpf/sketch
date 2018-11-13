@@ -21,6 +21,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.ViewParent;
 import android.widget.ImageView;
@@ -582,6 +583,29 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
 
     void setZooming(boolean zooming) {
         this.zooming = zooming;
+    }
+
+    /**
+     * 获取显示区域
+     *
+     * @return
+     */
+    protected RectF getDisplayRect() {
+        checkMatrixBounds();
+        return getDisplayRect(getDrawMatrix());
+    }
+
+    private final RectF mDisplayRect = new RectF();
+
+    private RectF getDisplayRect(Matrix matrix) {
+        Drawable d = imageZoomer.getImageView().getDrawable();
+        if (d != null) {
+            mDisplayRect.set(0, 0, d.getIntrinsicWidth(),
+                    d.getIntrinsicHeight());
+            matrix.mapRect(mDisplayRect);
+            return mDisplayRect;
+        }
+        return null;
     }
 
     /**
