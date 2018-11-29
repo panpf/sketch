@@ -3,8 +3,6 @@
 ![Platform][platform_image]
 [![Android Arsenal][android_arsenal_image]][android_arsenal_link]
 [![License][license_image]][license_link]
-[![Logs][logs_image]][logs_link]
-[![Version][sketch_version_image]][sketch_version_link]
 [![API][min_api_image]][min_api_link]
 ![QQ Group][qq_group_image]
 
@@ -174,11 +172,9 @@ Please view the [CHANGELOG.md] file
 [android_arsenal_link]: https://android-arsenal.com/details/1/4165
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
-[logs_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=Logs&colorB=4AC41C
-[logs_link]: https://github.com/panpf/sketch/releases
-[sketch_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
+[sketch_version_image]: https://api.bintray.com/packages/panpf/maven/sketch/images/download.svg
 [sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
-[sketch_gif_version_image]: https://img.shields.io/github/release/panpf/sketch.svg?label=JCenter&colorB=4AC41C
+[sketch_gif_version_image]: https://api.bintray.com/packages/panpf/maven/sketch-gif/images/download.svg
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
 [min_api_link]: https://android-arsenal.com/api?level=16
