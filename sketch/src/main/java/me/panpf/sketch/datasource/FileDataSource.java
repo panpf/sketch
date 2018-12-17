@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.datasource;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;

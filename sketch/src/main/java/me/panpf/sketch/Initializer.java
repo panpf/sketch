@@ -17,7 +17,7 @@
 package me.panpf.sketch;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface Initializer {
     void onInitialize(@NonNull Context context, @NonNull Configuration configuration);

@@ -18,8 +18,8 @@ package me.panpf.sketch.state;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.request.DisplayOptions;

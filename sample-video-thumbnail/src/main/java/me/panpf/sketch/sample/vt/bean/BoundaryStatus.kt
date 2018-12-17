@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.vt.bean
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.PagedList
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagedList
 
 enum class BoundaryStatus {
     ZERO_ITEMS_LOADED,

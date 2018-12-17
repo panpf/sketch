@@ -19,7 +19,7 @@ package me.panpf.sketch.sample
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 import android.util.SparseArray
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.GaussianBlurImageProcessor

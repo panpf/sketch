@@ -17,7 +17,7 @@
 package me.panpf.sketch.cache;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.format.Formatter;
 
 import me.panpf.sketch.SLog;

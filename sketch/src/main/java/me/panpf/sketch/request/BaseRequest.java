@@ -17,7 +17,7 @@
 package me.panpf.sketch.request;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;

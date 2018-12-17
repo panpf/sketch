@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "me.panpf.sketch.sample.videothumbnail"
 
-        minSdkVersion MIN_SDK_VERSION
+        minSdkVersion MIN_SDK_VERSION.toInteger()
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode VERSION_CODE.toInteger()
         versionName VERSION_NAME
@@ -43,29 +43,29 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':sketch')
 
-    implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
-    implementation "com.android.support.constraint:constraint-layout:${CONSTRAINT_LAYOUT_VERSION}"
+    implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
+    implementation "androidx.recyclerview:recyclerview:$ANDROIDX_RECYCLERVIEW"
+    implementation "androidx.constraintlayout:constraintlayout:$ANDROIDX_CONSTRAINTLAYOUT"
 
-    implementation "android.arch.lifecycle:extensions:${LIFECYCLE_VERSION}"
-    implementation "android.arch.lifecycle:viewmodel:${LIFECYCLE_VERSION}"
-    implementation "android.arch.lifecycle:livedata:${LIFECYCLE_VERSION}"
-    annotationProcessor "android.arch.lifecycle:compiler:${LIFECYCLE_VERSION}"
-    implementation "android.arch.paging:runtime:${PAGING_VERSION}"
+    implementation "androidx.lifecycle:lifecycle-extensions:$ANDROIDX_LIFECYCLE"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$ANDROIDX_LIFECYCLE"
+    implementation "androidx.lifecycle:lifecycle-livedata:$ANDROIDX_LIFECYCLE"
+    kapt "androidx.lifecycle:lifecycle-compiler:$ANDROIDX_LIFECYCLE"
+    implementation "androidx.paging:paging-runtime:$ANDROIDX_PAGING"
 
-    implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
-    implementation "me.panpf:assembly-adapter-ktx:${ASSEMBLY_ADAPTER_VERSION}"
-    implementation "me.panpf:assembly-paged-list-adapter:${ASSEMBLY_ADAPTER_VERSION}"
-    implementation "me.panpf:androidx-kt:${ANDROIDX}"
-    implementation "me.panpf:androidx-kt-args:${ANDROIDX}"
-    implementation "me.panpf:androidx-kt-arch:${ANDROIDX}"
+    implementation "me.panpf:assembly-adapter:$ASSEMBLY_ADAPTER_VERSION"
+    implementation "me.panpf:assembly-adapter-ktx:$ASSEMBLY_ADAPTER_VERSION"
+    implementation "me.panpf:assembly-paged-list-adapter:$ASSEMBLY_ADAPTER_VERSION"
+    implementation "me.panpf:androidx-kt:$PANPF_ANDROIDX"
+    implementation "me.panpf:androidx-kt-args:$PANPF_ANDROIDX"
+    implementation "me.panpf:androidx-kt-arch:$PANPF_ANDROIDX"
 
-    implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:${FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION}"
+    implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:$FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION"
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY_ANDROID_VERSION}"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${LEAK_CANARY_ANDROID_VERSION}"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
-    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_ANDROID_VERSION"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$LEAK_CANARY_ANDROID_VERSION"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_ANDROID_VERSION"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_ANDROID_VERSION"
 }
 
 Properties openProperties(String fileName) {

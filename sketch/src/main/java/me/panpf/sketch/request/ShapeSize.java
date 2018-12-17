@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.request;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.ImageView;
 
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable;

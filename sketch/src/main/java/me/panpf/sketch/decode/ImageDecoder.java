@@ -18,7 +18,7 @@ package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;

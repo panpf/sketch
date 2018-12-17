@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.request;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface LoadListener extends Listener {
     /**

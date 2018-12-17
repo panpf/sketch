@@ -7,6 +7,5 @@ androidExtensions {
 
 dependencies{
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
-
-    implementation "androidx.core:core-ktx:${ANDROIDX_CORE_KTX_VERSION}"
+    implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"
 }

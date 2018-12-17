@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_pager_tab.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
@@ -25,7 +25,7 @@ class BlockDisplayTestFragment : BaseFragment() {
 
         if (fragmentAdapter == null) {
             val hugeAssetImageNames = AssetImage.HUGE_IMAGES
-            val fragments = arrayOfNulls<Fragment>(hugeAssetImageNames.size)
+            val fragments = arrayOfNulls<androidx.fragment.app.Fragment>(hugeAssetImageNames.size)
             for (w in hugeAssetImageNames.indices) {
                 val url = hugeAssetImageNames[w]
                 fragments[w] = ImageFragment.build(Image(url, url), null, true)

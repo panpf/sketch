@@ -18,10 +18,10 @@ package me.panpf.sketch.uri;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 
 import java.io.OutputStream;
 
+import androidx.annotation.NonNull;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.util.SketchUtils;

@@ -1,6 +1,6 @@
 android {
     defaultConfig {
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // config espresso test runner
     }
 
@@ -12,13 +12,8 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.0'
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.0') {
-        exclude group: 'com.android.support', module: 'design'
-        exclude group: 'com.android.support', module: 'recyclerview-v7'
-        exclude group: 'com.android.support', module: 'support-v4'
-    }
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-web:2.2.2'
+    testImplementation "junit:junit:$JUNIT_VERSION"
+    androidTestImplementation "com.android.support.test:runner:$ANDROIDX_TEST_RUNNER"
+    androidTestImplementation "com.android.support.test:rules:$ANDROIDX_TEST_RULES"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$ANDROIDX_TEST_ESPRESSO"
 }

@@ -2,7 +2,7 @@ package pl.droidsonroids.gif;
 
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Drawable.Callback;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 

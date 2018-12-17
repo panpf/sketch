@@ -19,9 +19,9 @@ package me.panpf.sketch.viewfun;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import me.panpf.sketch.request.ImageFrom;

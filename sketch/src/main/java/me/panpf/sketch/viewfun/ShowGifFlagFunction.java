@@ -18,7 +18,7 @@ package me.panpf.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.util.SketchUtils;
 

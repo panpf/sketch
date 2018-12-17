@@ -19,7 +19,6 @@ package me.panpf.sketch.sample.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -41,7 +40,7 @@ import org.greenrobot.eventbus.Subscribe
 @RegisterEvent
 @BindContentView(R.layout.at_main)
 class MainActivity : BaseActivity(), MainFragmentCallback {
-    override fun getDrawerLayout(): DrawerLayout = mainAt_drawer
+    override fun getDrawerLayout(): androidx.drawerlayout.widget.DrawerLayout = mainAt_drawer
 
     private var lastClickBackTime: Long = 0
 
@@ -54,7 +53,7 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
             mainAt_drawer.fitsSystemWindows = true
         }
 
-        mainAt_drawer.setDrawerListener(object : DrawerLayout.DrawerListener {
+        mainAt_drawer.setDrawerListener(object : androidx.drawerlayout.widget.DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
             }
 

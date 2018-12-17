@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:src="@drawable/shape_window_background" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainMenuFm_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -24,7 +24,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;

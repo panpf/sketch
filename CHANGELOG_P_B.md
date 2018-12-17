@@ -1,3 +1,7 @@
+# v...
+
+* :arrow_up: Upgrade ti Jetpack
+
 # v2.6.2 Beta1
 
 * :arrow_up: Target sdk version upgrade to 28

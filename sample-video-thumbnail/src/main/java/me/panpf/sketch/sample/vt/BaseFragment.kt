@@ -1,12 +1,12 @@
 package me.panpf.sketch.sample.vt
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-open class BaseFragment : Fragment() {
+open class BaseFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val bindContentView = javaClass.getAnnotation(BindContentView::class.java)

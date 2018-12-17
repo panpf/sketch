@@ -4,8 +4,8 @@ import android.content.ContentResolver;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntRange;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
 import android.view.Surface;
 
 import java.io.FileDescriptor;

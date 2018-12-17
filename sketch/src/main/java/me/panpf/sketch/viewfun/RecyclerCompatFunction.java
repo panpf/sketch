@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.viewfun;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.SketchView;

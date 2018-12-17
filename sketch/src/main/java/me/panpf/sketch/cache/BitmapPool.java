@@ -1,8 +1,8 @@
 package me.panpf.sketch.cache;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * {@link Bitmap} 复用缓存池，用于缓存并复用 {@link Bitmap}，便于解码时直接使用，减少内存分配

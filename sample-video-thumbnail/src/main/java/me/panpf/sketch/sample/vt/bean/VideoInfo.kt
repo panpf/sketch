@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.vt.bean
 
 import android.content.Context
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 import android.text.format.Formatter
 import me.panpf.javaxkt.util.formatYMDHM
 

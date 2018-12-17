@@ -1,9 +1,9 @@
 package me.panpf.sketch.sample.item
 
 import android.content.Context
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import me.panpf.adapter.AssemblyItem
@@ -25,10 +25,10 @@ class MyPhotoItemFactory(private val onImageClickListener: OnImageClickListener?
     override fun createAssemblyItem(viewGroup: ViewGroup): PhotoAlbumItem {
         if (itemSize == 0) {
             itemSize = -1
-            if (viewGroup is RecyclerView) {
+            if (viewGroup is androidx.recyclerview.widget.RecyclerView) {
                 val spanCount = when (viewGroup.layoutManager) {
-                    is GridLayoutManager -> (viewGroup.layoutManager as GridLayoutManager).spanCount
-                    is StaggeredGridLayoutManager -> (viewGroup.layoutManager as StaggeredGridLayoutManager).spanCount
+                    is androidx.recyclerview.widget.GridLayoutManager -> (viewGroup.layoutManager as androidx.recyclerview.widget.GridLayoutManager).spanCount
+                    is androidx.recyclerview.widget.StaggeredGridLayoutManager -> (viewGroup.layoutManager as androidx.recyclerview.widget.StaggeredGridLayoutManager).spanCount
                     else -> 1
                 }
                 if (spanCount > 1) {

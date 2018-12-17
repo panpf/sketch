@@ -1,8 +1,8 @@
 package me.panpf.sketch.sample.vt.ds
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.DataSource
-import android.arch.paging.PositionalDataSource
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
+import androidx.paging.PositionalDataSource
 import android.content.Context
 import android.provider.MediaStore
 import me.panpf.sketch.sample.vt.bean.Status

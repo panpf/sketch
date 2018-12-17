@@ -19,7 +19,7 @@ package me.panpf.sketch;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.DiskCache;

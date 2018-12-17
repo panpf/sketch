@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.format.Formatter
 import android.view.View
 import androidx.core.view.updateLayoutParams
@@ -63,7 +63,7 @@ class MainMenuFragment : BaseFragment() {
             DeviceUtils.getStatusBarHeight(resources).takeIf { it > 0 }?.also { mainMenuFm_recycler.updatePadding(top = it) }
         }
 
-        mainMenuFm_recycler.layoutManager = LinearLayoutManager(context)
+        mainMenuFm_recycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         mainMenuFm_recycler.adapter = AssemblyRecyclerAdapter(makeMenuList()).apply {
             addItemFactory(MenuTitleItemFactory())
             addItemFactory(PageMenuItemFactory(object : PageMenuItemFactory.OnClickItemListener {

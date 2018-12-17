@@ -1,10 +1,10 @@
 package me.panpf.sketch.sample.vt.vm
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.LivePagedListBuilder
-import android.arch.paging.PagedList
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import me.panpf.sketch.sample.vt.bean.BoundaryStatus
 import me.panpf.sketch.sample.vt.bean.BoundaryStatusCallback
 import me.panpf.sketch.sample.vt.bean.Status

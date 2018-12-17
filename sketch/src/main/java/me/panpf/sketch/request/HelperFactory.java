@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.request;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;

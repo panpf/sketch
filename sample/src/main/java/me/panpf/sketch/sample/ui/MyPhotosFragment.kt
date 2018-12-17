@@ -19,8 +19,8 @@ package me.panpf.sketch.sample.ui
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
@@ -47,7 +47,7 @@ import java.util.*
  */
 @RegisterEvent
 @BindContentView(R.layout.fragment_recycler)
-class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener, SwipeRefreshLayout.OnRefreshListener {
+class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
 
@@ -59,7 +59,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         refresh_recyclerFragment.setOnRefreshListener(this)
         recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
-        recycler_recyclerFragment_content.layoutManager = GridLayoutManager(activity, 3)
+        recycler_recyclerFragment_content.layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity, 3)
         val padding = SketchUtils.dp2px(activity, 2)
         recycler_recyclerFragment_content.setPadding(padding, padding, padding, padding)
         recycler_recyclerFragment_content.clipToPadding = false

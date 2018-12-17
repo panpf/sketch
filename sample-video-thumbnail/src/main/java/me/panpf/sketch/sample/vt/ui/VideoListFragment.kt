@@ -16,11 +16,11 @@
 
 package me.panpf.sketch.sample.vt.ui
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import androidx.core.view.setPadding
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -66,14 +66,14 @@ class VideoListFragment : BaseFragment() {
             setPadding(checkNotNull(context).dp2px(2))
             clipToPadding = false
 
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
             this@apply.adapter = this@VideoListFragment.adapter
         }
 
         recyclerFragment_refreshLayout.apply {
             setOnRefreshListener { videoListViewModel.refresh() }
 
-            isEnabled = false
+//            isEnabled = false
         }
 
         videoListViewModel.videoListing.observe(this, Observer { adapter.submitList(it) })

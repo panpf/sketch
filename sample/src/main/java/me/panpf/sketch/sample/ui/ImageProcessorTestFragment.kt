@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_pager_tab.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
@@ -15,7 +15,7 @@ class ImageProcessorTestFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         val activity = activity ?: return
 
-        pager_pagerTabFragment_content.adapter = FragmentArrayPagerAdapter(childFragmentManager, arrayOf<Fragment>(
+        pager_pagerTabFragment_content.adapter = FragmentArrayPagerAdapter(childFragmentManager, arrayOf<androidx.fragment.app.Fragment>(
                 ReflectionImageProcessorTestFragment(),
                 GaussianBlurImageProcessorTestFragment(),
                 RotateImageProcessorTestFragment(),

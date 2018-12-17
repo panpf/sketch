@@ -73,31 +73,31 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
-    implementation "com.android.support.constraint:constraint-layout:${CONSTRAINT_LAYOUT_VERSION}"
+    implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
+    implementation "androidx.recyclerview:recyclerview:$ANDROIDX_RECYCLERVIEW"
+    implementation "androidx.constraintlayout:constraintlayout:$ANDROIDX_CONSTRAINTLAYOUT"
 
-    implementation "me.panpf:pager-indicator:${PAGER_INDICATOR}"
-    implementation "me.panpf:assembly-adapter:${ASSEMBLY_ADAPTER_VERSION}"
-    implementation "me.panpf:assembly-adapter-ktx:${ASSEMBLY_ADAPTER_VERSION}"
-    implementation "me.panpf:androidx-kt:${ANDROIDX}"
-    implementation "me.panpf:androidx-kt-args:${ANDROIDX}"
-    implementation "me.panpf:androidx-kt-arch:${ANDROIDX}"
+    implementation "me.panpf:pager-indicator:$PAGER_INDICATOR"
+    implementation "me.panpf:assembly-adapter:$ASSEMBLY_ADAPTER_VERSION"
+    implementation "me.panpf:assembly-adapter-ktx:$ASSEMBLY_ADAPTER_VERSION"
+    implementation "me.panpf:androidx-kt:$PANPF_ANDROIDX"
+    implementation "me.panpf:androidx-kt-args:$PANPF_ANDROIDX"
+    implementation "me.panpf:androidx-kt-arch:$PANPF_ANDROIDX"
 
     implementation project(':sketch')
     normalImplementation project(':sketch-gif')
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY_ANDROID_VERSION}"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${LEAK_CANARY_ANDROID_VERSION}"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
-    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY_ANDROID_VERSION}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_ANDROID_VERSION"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$LEAK_CANARY_ANDROID_VERSION"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_ANDROID_VERSION"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_ANDROID_VERSION"
 
-    implementation "org.greenrobot:eventbus:${EVENT_BUS_VERSION}"
+    implementation "org.greenrobot:eventbus:$EVENT_BUS_VERSION"
 
-    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
-    implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
 
-    implementation "com.google.android:flexbox:${FLEXBOX}"
+    implementation "com.google.android:flexbox:$FLEXBOX"
 }
 
 repositories {

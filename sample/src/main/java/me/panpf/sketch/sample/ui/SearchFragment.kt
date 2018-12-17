@@ -2,11 +2,11 @@ package me.panpf.sketch.sample.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.support.annotation.NonNull
-import android.support.v4.view.MenuItemCompat
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SearchView
+import androidx.annotation.NonNull
+import androidx.core.view.MenuItemCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
@@ -40,7 +40,7 @@ import java.lang.ref.WeakReference
  * 图片搜索Fragment
  */
 @BindContentView(R.layout.fragment_recycler)
-class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
+class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickListener, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var searchKeyword: String? = "GIF"
 
@@ -76,7 +76,7 @@ class SearchFragment : BaseFragment(), StaggeredImageItemFactory.OnItemClickList
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater!!.inflate(R.menu.menu_search_view, menu)
         @Suppress("DEPRECATION")
         val searchView = MenuItemCompat.getActionView(menu!!.findItem(R.id.menu_searchView)) as SearchView

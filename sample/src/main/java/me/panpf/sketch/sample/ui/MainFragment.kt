@@ -4,15 +4,13 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.fm_main.*
 import me.panpf.pagerid.PagerIndicator
@@ -97,7 +95,7 @@ class MainFragment : BaseFragment(), OnActivityPostCreateCallback, AppListFragme
     }
 }
 
-enum class Page constructor(val showName: String, val fragmentClass: Class<out Fragment>, val test: Boolean, val isDisable: Boolean) {
+enum class Page constructor(val showName: String, val fragmentClass: Class<out androidx.fragment.app.Fragment>, val test: Boolean, val isDisable: Boolean) {
     UNSPLASH("Unsplash", UnsplashPhotosFragment::class.java, false, false),
     SEARCH("GIF Search", SearchFragment::class.java, false, false),
     MY_PHOTOS("My Photos", MyPhotosFragment::class.java, false, false),
@@ -113,7 +111,7 @@ enum class Page constructor(val showName: String, val fragmentClass: Class<out F
     BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
     OTHER_TEST("Other Test", OtherTestFragment::class.java, true, !BuildConfig.DEBUG);
 
-    val fragment: Fragment
+    val fragment: androidx.fragment.app.Fragment
         get() {
             return fragmentClass.newInstance()
         }
@@ -152,5 +150,5 @@ class TitleTabFactory(private val titles: Array<String>, val context: Context) :
 }
 
 interface MainFragmentCallback {
-    fun getDrawerLayout(): DrawerLayout
+    fun getDrawerLayout(): androidx.drawerlayout.widget.DrawerLayout
 }

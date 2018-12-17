@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_pager_tab.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
@@ -21,7 +21,7 @@ class ImageOrientationTestHomeFragment : BaseFragment() {
 
         if (fragmentAdapter == null) {
             val filePaths = ImageOrientationCorrectTestFileGenerator.getInstance(context).filePaths
-            val fragments = arrayOfNulls<Fragment>(filePaths.size)
+            val fragments = arrayOfNulls<androidx.fragment.app.Fragment>(filePaths.size)
             for (w in filePaths.indices) {
                 fragments[w] = ImageOrientationTestFragment.build(filePaths[w])
             }

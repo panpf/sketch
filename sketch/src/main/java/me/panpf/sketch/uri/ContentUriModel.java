@@ -18,7 +18,7 @@ package me.panpf.sketch.uri;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import me.panpf.sketch.datasource.ContentDataSource;

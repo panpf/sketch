@@ -1,6 +1,6 @@
 package me.panpf.sketch.sample.util;
 
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.widget.TextView;
 
 public class PageNumberSetter implements ViewPager.OnPageChangeListener {

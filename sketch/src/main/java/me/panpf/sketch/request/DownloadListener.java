@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.request;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 下载监听器

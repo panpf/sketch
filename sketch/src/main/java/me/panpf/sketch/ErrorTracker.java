@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.format.Formatter;
 
 import java.io.File;

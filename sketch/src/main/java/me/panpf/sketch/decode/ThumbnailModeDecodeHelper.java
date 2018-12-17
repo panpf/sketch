@@ -19,11 +19,11 @@ package me.panpf.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.cache.BitmapPool;

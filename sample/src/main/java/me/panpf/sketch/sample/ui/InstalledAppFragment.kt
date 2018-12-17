@@ -2,7 +2,7 @@ package me.panpf.sketch.sample.ui
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.format.Formatter
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -30,7 +30,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(view.context)
+        recycler_recyclerFragment_content.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(view.context)
         recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         refresh_recyclerFragment.isEnabled = false

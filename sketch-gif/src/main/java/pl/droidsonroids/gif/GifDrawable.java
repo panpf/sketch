@@ -22,12 +22,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RawRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import android.widget.MediaController.MediaPlayerControl;
 
 import java.io.File;

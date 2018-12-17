@@ -17,7 +17,7 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.ImageView;
 
 import me.panpf.sketch.request.Resize;

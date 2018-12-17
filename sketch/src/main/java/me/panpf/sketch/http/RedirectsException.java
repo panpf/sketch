@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.http;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class RedirectsException extends Exception {
     private String newUrl;

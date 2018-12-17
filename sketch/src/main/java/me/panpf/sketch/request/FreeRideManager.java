@@ -16,7 +16,7 @@
 
 package me.panpf.sketch.request;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Map;
 import java.util.Set;

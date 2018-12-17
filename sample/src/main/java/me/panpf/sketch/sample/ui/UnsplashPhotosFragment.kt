@@ -3,8 +3,8 @@ package me.panpf.sketch.sample.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -29,7 +29,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 @BindContentView(R.layout.fragment_recycler)
-class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var pageIndex = 1
@@ -39,7 +39,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_recyclerFragment_content.layoutManager = LinearLayoutManager(context)
+        recycler_recyclerFragment_content.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
 
         refresh_recyclerFragment.setOnRefreshListener(this)
 

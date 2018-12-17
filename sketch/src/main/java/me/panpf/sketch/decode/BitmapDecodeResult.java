@@ -17,7 +17,7 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
