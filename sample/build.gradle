@@ -81,7 +81,6 @@ dependencies {
     implementation "me.panpf:assembly-adapter:$ASSEMBLY_ADAPTER_VERSION"
     implementation "me.panpf:assembly-adapter-ktx:$ASSEMBLY_ADAPTER_VERSION"
     implementation "me.panpf:androidx-kt:$PANPF_ANDROIDX"
-    implementation "me.panpf:androidx-kt-args:$PANPF_ANDROIDX"
     implementation "me.panpf:androidx-kt-arch:$PANPF_ANDROIDX"
 
     implementation project(':sketch')

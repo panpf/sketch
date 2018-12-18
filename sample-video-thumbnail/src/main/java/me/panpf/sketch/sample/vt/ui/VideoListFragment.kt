@@ -16,13 +16,12 @@
 
 package me.panpf.sketch.sample.vt.ui
 
-import androidx.lifecycle.Observer
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import androidx.core.view.setPadding
+import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.paged.AssemblyPagedListAdapter
 import me.panpf.androidxkt.arch.bindViewModel
@@ -70,13 +69,15 @@ class VideoListFragment : BaseFragment() {
             this@apply.adapter = this@VideoListFragment.adapter
         }
 
-        recyclerFragment_refreshLayout.apply {
-            setOnRefreshListener { videoListViewModel.refresh() }
+//        recyclerFragment_refreshLayout.apply { setOnRefreshListener { videoListViewModel.refresh() } }
 
-//            isEnabled = false
-        }
+        recyclerFragment_refreshLayout.apply { setOnRefreshListener {
+            videoListViewModel.getVideoListing(true).observe(this@VideoListFragment, Observer {
+                adapter.submitList(it)
+            })
+        } }
 
-        videoListViewModel.videoListing.observe(this, Observer { adapter.submitList(it) })
+        videoListViewModel.getVideoListing().observe(this, Observer { adapter.submitList(it) })
 
         videoListViewModel.initStatus.observe(this, Observer { initStatus ->
             initStatus ?: return@Observer

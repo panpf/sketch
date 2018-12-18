@@ -57,7 +57,6 @@ dependencies {
     implementation "me.panpf:assembly-adapter-ktx:$ASSEMBLY_ADAPTER_VERSION"
     implementation "me.panpf:assembly-paged-list-adapter:$ASSEMBLY_ADAPTER_VERSION"
     implementation "me.panpf:androidx-kt:$PANPF_ANDROIDX"
-    implementation "me.panpf:androidx-kt-args:$PANPF_ANDROIDX"
     implementation "me.panpf:androidx-kt-arch:$PANPF_ANDROIDX"
 
     implementation "com.github.wseemann:FFmpegMediaMetadataRetriever:$FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION"

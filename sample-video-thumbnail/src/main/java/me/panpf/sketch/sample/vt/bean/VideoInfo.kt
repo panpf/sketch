@@ -1,8 +1,8 @@
 package me.panpf.sketch.sample.vt.bean
 
 import android.content.Context
-import androidx.recyclerview.widget.DiffUtil
 import android.text.format.Formatter
+import androidx.recyclerview.widget.DiffUtil
 import me.panpf.javaxkt.util.formatYMDHM
 
 class VideoInfo {
@@ -50,11 +50,27 @@ class VideoInfo {
 
     class DiffCallback : DiffUtil.ItemCallback<VideoInfo>() {
         override fun areItemsTheSame(oldItem: VideoInfo, newItem: VideoInfo): Boolean {
-            return oldItem == newItem
+            return oldItem.path.equals(newItem.path)
         }
 
         override fun areContentsTheSame(oldItem: VideoInfo, newItem: VideoInfo): Boolean {
-            return oldItem.path.equals(newItem.path)
+            return oldItem == newItem
         }
+
+//        override fun getChangePayload(oldItem: VideoInfo, newItem: VideoInfo): Any? {
+//            return if (sameExceptScore(oldItem, newItem)) {
+//                PAYLOAD_SCORE
+//            } else {
+//                null
+//            }
+//        }
+//    }
+//    private val PAYLOAD_SCORE = Any()
+//
+//    private fun sameExceptScore(oldItem: VideoInfo, newItem: VideoInfo): Boolean {
+//        // DON'T do this copy in a real app, it is just convenient here for the demo :)
+//        // because reddit randomizes scores, we want to pass it as a payload to minimize
+//        // UI updates between refreshes
+//        return oldItem.copy(score = newItem.score) == newItem
     }
 }
