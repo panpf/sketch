@@ -27,10 +27,9 @@ class VideoListViewModel(application: Application) : AndroidViewModel(applicatio
     private var videoListing: LiveData<PagedList<VideoInfo>>? = null
 
     fun getVideoListing(recreate: Boolean = false): LiveData<PagedList<VideoInfo>> {
-        // 已知重复调用 DataSource.invalidate() 方法必现 LoadInitialParams 的 requestedStartPosition 不从 0 开始，所以才在刷新的时候避免重复使用 PagedList
         val oldVideoListing = videoListing
-        if (oldVideoListing != null && !recreate) return oldVideoListing
-//        if (oldVideoListing != null) return oldVideoListing
+//        if (oldVideoListing != null && !recreate) return oldVideoListing
+        if (oldVideoListing != null) return oldVideoListing
         val newVideoListing = LivePagedListBuilder<Int, VideoInfo>(dataSourceFactory, pagedListConfig)
                 .setBoundaryCallback(BoundaryStatusCallback<VideoInfo>(boundaryStatus))
                 .build()
@@ -38,7 +37,7 @@ class VideoListViewModel(application: Application) : AndroidViewModel(applicatio
         return newVideoListing
     }
 
-//    fun refresh() {
-//        videoListing?.value?.dataSource?.invalidate()
-//    }
+    fun refresh() {
+        videoListing?.value?.dataSource?.invalidate()
+    }
 }

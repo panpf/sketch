@@ -1,10 +1,10 @@
 package me.panpf.sketch.sample.vt.ds
 
+import android.content.Context
+import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.PositionalDataSource
-import android.content.Context
-import android.provider.MediaStore
 import me.panpf.sketch.sample.vt.bean.Status
 import me.panpf.sketch.sample.vt.bean.VideoInfo
 
@@ -21,12 +21,14 @@ class VideoListDataSource constructor(context: Context,
         cursor?.let {
             cursor.close()
         }
-
-        val dataList = loadData(params.requestedStartPosition, params.requestedLoadSize)
+        // 已知重复调用 DataSource.invalidate() 方法必现 LoadInitialParams 的 requestedStartPosition 不从 0 开始，所以才在初始化时避免使用 requestedStartPosition
+//        val dataList = loadData(params.requestedStartPosition, params.requestedLoadSize)
+        val dataList = loadData(0, params.requestedLoadSize)
 
         Thread.sleep(1000)
-
-        callback.onResult(dataList, params.requestedStartPosition, count)
+        // 已知重复调用 DataSource.invalidate() 方法必现 LoadInitialParams 的 requestedStartPosition 不从 0 开始，所以才在初始化时避免使用 requestedStartPosition
+//        callback.onResult(dataList, params.requestedStartPosition, count)
+        callback.onResult(dataList, 0, count)
 
         initStatus.postValue(Status.success())
     }

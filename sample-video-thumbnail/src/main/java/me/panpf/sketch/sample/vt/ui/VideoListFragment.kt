@@ -69,13 +69,13 @@ class VideoListFragment : BaseFragment() {
             this@apply.adapter = this@VideoListFragment.adapter
         }
 
-//        recyclerFragment_refreshLayout.apply { setOnRefreshListener { videoListViewModel.refresh() } }
+        recyclerFragment_refreshLayout.apply { setOnRefreshListener { videoListViewModel.refresh() } }
 
-        recyclerFragment_refreshLayout.apply { setOnRefreshListener {
-            videoListViewModel.getVideoListing(true).observe(this@VideoListFragment, Observer {
-                adapter.submitList(it)
-            })
-        } }
+//        recyclerFragment_refreshLayout.apply { setOnRefreshListener {
+//            videoListViewModel.getVideoListing(true).observe(this@VideoListFragment, Observer {
+//                adapter.submitList(it)
+//            })
+//        } }
 
         videoListViewModel.getVideoListing().observe(this, Observer { adapter.submitList(it) })
 
