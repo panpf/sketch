@@ -16,10 +16,10 @@
 
 package me.panpf.sketch.request;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.DiskCache;
@@ -123,11 +123,9 @@ public class DownloadHelper {
             throw new IllegalStateException("Cannot sync perform the download in the UI thread ");
         }
 
-        if (!checkParam()) {
+        if (!checkParams()) {
             return null;
         }
-
-        preProcessOptions();
 
         if (!checkDiskCache()) {
             return null;
@@ -136,7 +134,9 @@ public class DownloadHelper {
         return submitRequest();
     }
 
-    private boolean checkParam() {
+    private boolean checkParams() {
+        sketch.getConfiguration().getOptionsFilterManager().filter(downloadOptions);
+
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_INVALID, sync);
@@ -155,14 +155,10 @@ public class DownloadHelper {
             return false;
         }
 
-        return true;
-    }
-
-    protected void preProcessOptions() {
-        sketch.getConfiguration().getOptionsFilterManager().filter(downloadOptions);
-
         // 根据 URI 和下载选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions.makeKey());
+
+        return true;
     }
 
     private boolean checkDiskCache() {

@@ -2,12 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:clipChildren="false">
 
     <me.panpf.sketch.sample.widget.DoubleFinsEmptyView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:clipChildren="false"/>
+        android:layout_width="160dp"
+        android:layout_height="400dp"
+        android:clipChildren="false" />
+
+    <me.panpf.sketch.sample.widget.SampleImageView
+        android:id="@+id/otherTestF_emptyImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="200dp" />
 </FrameLayout>

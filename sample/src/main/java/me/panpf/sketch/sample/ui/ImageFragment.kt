@@ -14,9 +14,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_image.*
-import me.panpf.androidxkt.args.bindBooleanArgOr
-import me.panpf.androidxkt.args.bindParcelableArg
-import me.panpf.androidxkt.args.bindStringArgOrNull
+import me.panpf.androidxkt.app.bindBooleanArgOr
+import me.panpf.androidxkt.app.bindParcelableArg
+import me.panpf.androidxkt.app.bindStringArgOrNull
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageAttrs

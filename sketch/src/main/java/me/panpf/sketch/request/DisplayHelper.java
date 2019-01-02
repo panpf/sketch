@@ -19,13 +19,13 @@ package me.panpf.sketch.request;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -502,9 +502,9 @@ public class DisplayHelper {
             return null;
         }
 
-        boolean checkResult = checkParam();
+        boolean checkResult = checkParams();
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            Stopwatch.with().record("checkParam");
+            Stopwatch.with().record("checkParams");
         }
         if (!checkResult) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
@@ -512,11 +512,6 @@ public class DisplayHelper {
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
-        }
-
-        preProcessOptions();
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            Stopwatch.with().record("preProcess");
         }
 
         saveParams();
@@ -569,45 +564,7 @@ public class DisplayHelper {
         return request;
     }
 
-    private boolean checkParam() {
-        if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            }
-            sketchView.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
-            return false;
-        }
-
-        if (uriModel == null) {
-            SLog.e(NAME, "Not support uri. %s. view(%s)", uri, Integer.toHexString(sketchView.hashCode()));
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            }
-            sketchView.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
-            return false;
-        }
-
-        return true;
-    }
-
-    protected void preProcessOptions() {
+    private boolean checkParams() {
         Configuration configuration = sketch.getConfiguration();
         ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
         FixedSize fixedSize = viewInfo.getFixedSize();
@@ -615,7 +572,7 @@ public class DisplayHelper {
 
         // 用 ImageVie 的固定宽高作为 ShapeSize
         ShapeSize shapeSize = displayOptions.getShapeSize();
-        if (shapeSize != null && shapeSize instanceof ShapeSize.ByViewFixedSizeShapeSize) {
+        if (shapeSize instanceof ShapeSize.ByViewFixedSizeShapeSize) {
             if (fixedSize != null) {
                 shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
                 displayOptions.setShapeSize(shapeSize);
@@ -638,7 +595,7 @@ public class DisplayHelper {
 
         // 用 ImageVie 的固定宽高作为 Resize
         Resize resize = displayOptions.getResize();
-        if (resize != null && resize instanceof Resize.ByViewFixedSizeResize) {
+        if (resize instanceof Resize.ByViewFixedSizeResize) {
             if (fixedSize != null) {
                 resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType(), resize.getMode());
                 displayOptions.setResize(resize);
@@ -706,8 +663,45 @@ public class DisplayHelper {
 
         configuration.getOptionsFilterManager().filter(displayOptions);
 
+        if (TextUtils.isEmpty(uri)) {
+            SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
+
+            Drawable drawable = null;
+            if (displayOptions.getErrorImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
+            } else if (displayOptions.getLoadingImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+            }
+            sketchView.setImageDrawable(drawable);
+
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
+            return false;
+        }
+
+        if (uriModel == null) {
+            SLog.e(NAME, "Not support uri. %s. view(%s)", uri, Integer.toHexString(sketchView.hashCode()));
+
+            Drawable drawable = null;
+            if (displayOptions.getErrorImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
+            } else if (displayOptions.getLoadingImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+            }
+            sketchView.setImageDrawable(drawable);
+
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
+            return false;
+        }
+
+
         // 根据 URI 和显示选项生成请求 key
         key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey());
+
+        return true;
     }
 
     /**

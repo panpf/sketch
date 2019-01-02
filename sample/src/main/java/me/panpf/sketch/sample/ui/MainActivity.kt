@@ -19,11 +19,11 @@ package me.panpf.sketch.sample.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.GravityCompat
 import kotlinx.android.synthetic.main.at_main.*
 import me.panpf.sketch.sample.NotificationService
 import me.panpf.sketch.sample.R
@@ -47,7 +47,7 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mainAt_drawer.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.START)
+        mainAt_drawer.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, GravityCompat.START)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DeviceUtils.getStatusBarHeight(resources) <= 0) {
             mainAt_drawer.fitsSystemWindows = true
@@ -90,15 +90,15 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
     @Suppress("unused")
     @Subscribe
     fun onEvent(@Suppress("UNUSED_PARAMETER") closeDrawerEvent: CloseDrawerEvent) {
-        mainAt_drawer.closeDrawer(Gravity.START)
+        mainAt_drawer.closeDrawer(GravityCompat.START)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (mainAt_drawer.isDrawerOpen(Gravity.START)) {
-                mainAt_drawer.closeDrawer(Gravity.START)
+            if (mainAt_drawer.isDrawerOpen(GravityCompat.START)) {
+                mainAt_drawer.closeDrawer(GravityCompat.START)
             } else {
-                mainAt_drawer.openDrawer(Gravity.START)
+                mainAt_drawer.openDrawer(GravityCompat.START)
             }
             true
         } else {

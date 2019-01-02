@@ -17,11 +17,11 @@
 package me.panpf.sketch.request;
 
 import android.graphics.Bitmap;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView.ScaleType;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -306,11 +306,9 @@ public class LoadHelper {
             throw new IllegalStateException("Cannot sync perform the load in the UI thread ");
         }
 
-        if (!checkParam()) {
+        if (!checkParams()) {
             return null;
         }
-
-        preProcessOptions();
 
         if (!checkRequestLevel()) {
             return null;
@@ -319,33 +317,12 @@ public class LoadHelper {
         return submitRequest();
     }
 
-    private boolean checkParam() {
-        // LoadRequest 没有内存缓存，加载结果必须通过 Listener 回调才有意义
-        if (loadListener == null) {
-            SLog.e(NAME, "Load request must have LoadListener. %s", uri);
-        }
-
-        if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty");
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_INVALID, sync);
-            return false;
-        }
-
-        if (uriModel == null) {
-            SLog.e(NAME, "Not support uri. %s", uri);
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
-        }
-
-        return true;
-    }
-
-    protected void preProcessOptions() {
+    private boolean checkParams() {
         Configuration configuration = sketch.getConfiguration();
 
         // load 请求不能使用 Resize.ByViewFixedSizeResize
         Resize resize = loadOptions.getResize();
-        if (resize != null && resize instanceof Resize.ByViewFixedSizeResize) {
+        if (resize instanceof Resize.ByViewFixedSizeResize) {
             resize = null;
             loadOptions.setResize(null);
         }
@@ -374,11 +351,29 @@ public class LoadHelper {
             loadOptions.setProcessor(configuration.getResizeProcessor());
         }
 
-
         configuration.getOptionsFilterManager().filter(loadOptions);
+
+        // LoadRequest 没有内存缓存，加载结果必须通过 Listener 回调才有意义
+        if (loadListener == null) {
+            SLog.e(NAME, "Load request must have LoadListener. %s", uri);
+        }
+
+        if (TextUtils.isEmpty(uri)) {
+            SLog.e(NAME, "Uri is empty");
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_INVALID, sync);
+            return false;
+        }
+
+        if (uriModel == null) {
+            SLog.e(NAME, "Not support uri. %s", uri);
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
+            return false;
+        }
 
         // 根据 URI 和加载选项生成请求 ID
         key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions.makeKey());
+
+        return true;
     }
 
     private boolean checkRequestLevel() {

@@ -1,6 +1,7 @@
 # v...
 
 * :arrow_up: Upgrade ti Jetpack
+* :bug: Fix ShapeSize to ShapeSize.byViewFixedSize(), errorImage is not null, but error image can't always be displayed when uri is empty
 
 # v2.6.2 Beta1
 
