@@ -1,3 +1,8 @@
+# v2.7.0
+
+* :arrow_up: Upgrade to Jetpack
+* :bug: Fix ShapeSize to ShapeSize.byViewFixedSize(), errorImage is not null, but error image can't always be displayed when uri is empty
+
 # v2.6.2
 
 * :arrow_up: Target sdk version upgrade to 28
