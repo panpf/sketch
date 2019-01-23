@@ -1,10 +1,11 @@
 import com.android.build.gradle.BaseExtension
+import com.novoda.gradle.release.PublishExtension
+import java.util.Properties
 
 plugins {
     id("com.android.library")
+    id("com.novoda.bintray-release")
 }
-//apply(plugin = "com.android.library")
-//apply(from = "build_test.gradle")
 
 configure<BaseExtension> {
     compileSdkVersion(property("COMPILE_SDK_VERSION").toString().toInt())
@@ -16,6 +17,8 @@ configure<BaseExtension> {
         versionName = property("VERSION_NAME").toString()
 
         consumerProguardFiles("proguard-rules.pro")
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -29,6 +32,22 @@ configure<BaseExtension> {
 dependencies {
     compileOnly(project(":sketch-gif"))
     implementation("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
+
+    testImplementation("junit:junit:${property("JUNIT_VERSION")}")
+    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
+    androidTestImplementation("androidx.test.espresso:espresso-core:${property("ANDROIDX_TEST_ESPRESSO")}")
 }
 
-//apply(from = "build_upload.gradle")
+Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }?.let { localProperties ->
+    configure<PublishExtension> {
+        groupId = "me.panpf"
+        artifactId = "sketch"
+        publishVersion = property("VERSION_NAME").toString()
+        desc = "Android, Image, Load, GIF"
+        website = "https://github.com/panpf/sketch"
+        userOrg = localProperties.getProperty("bintray.userOrg")
+        bintrayUser = localProperties.getProperty("bintray.user")
+        bintrayKey = localProperties.getProperty("bintray.apikey")
+    }
+}

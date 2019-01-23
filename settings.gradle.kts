@@ -1,6 +1,6 @@
 include(
 //        ":sample",
         ":sketch"
-//        ":sketch-gif"
-//        , ":sample-video-thumbnail"
+        ,":sketch-gif"
+        , ":sample-video-thumbnail"
 )
