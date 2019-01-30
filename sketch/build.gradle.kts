@@ -4,7 +4,6 @@ import java.util.Properties
 
 plugins {
     id("com.android.library")
-    id("com.novoda.bintray-release")
 }
 
 configure<BaseExtension> {
@@ -40,6 +39,8 @@ dependencies {
 }
 
 Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }?.let { localProperties ->
+    apply { plugin("com.novoda.bintray-release") }
+
     configure<PublishExtension> {
         groupId = "me.panpf"
         artifactId = "sketch"

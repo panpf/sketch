@@ -1,6 +1,1 @@
-include(
-//        ":sample",
-        ":sketch"
-        ,":sketch-gif"
-        , ":sample-video-thumbnail"
-)
+include(":sample", ":sketch", ":sketch-gif", ":sample-video-thumbnail")
