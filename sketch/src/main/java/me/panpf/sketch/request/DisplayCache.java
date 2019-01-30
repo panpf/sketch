@@ -18,5 +18,6 @@ package me.panpf.sketch.request;
 
 public class DisplayCache {
     public String uri;
+    // todo 删除 optioins，增加 optionskey，
     public DisplayOptions options = new DisplayOptions();
 }

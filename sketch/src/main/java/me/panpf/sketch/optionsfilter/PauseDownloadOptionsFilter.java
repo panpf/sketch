@@ -28,8 +28,12 @@ public class PauseDownloadOptionsFilter implements OptionsFilter {
     @Override
     public void filter(DownloadOptions options) {
         // 仅限 display 和 load 请求
-        if (options instanceof LoadOptions && options.getRequestLevel() == null) {
-            options.setRequestLevel(RequestLevel.LOCAL);
+        if (options instanceof LoadOptions) {
+            // TODO 这里改成了 按大小覆盖之后强制点击显示就不起作用了
+            RequestLevel level = options.getRequestLevel();
+            if (level == null || level.getLevel() > RequestLevel.LOCAL.getLevel()) {
+                options.setRequestLevel(RequestLevel.LOCAL);
+            }
         }
     }
 }

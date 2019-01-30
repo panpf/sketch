@@ -41,6 +41,18 @@ public enum RequestLevel {
         this.level = level;
     }
 
+    @SuppressWarnings("unused")
+    public static RequestLevel fromLevel(int level) {
+        level = level % 3;
+        if (level == 0) {
+            return MEMORY;
+        } else if (level == 1) {
+            return LOCAL;
+        } else {
+            return NET;
+        }
+    }
+
     public int getLevel() {
         return level;
     }

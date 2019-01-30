@@ -17,11 +17,11 @@
 package me.panpf.sketch.request;
 
 import android.graphics.Bitmap;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.decode.ImageType;
@@ -437,6 +437,7 @@ public class LoadOptions extends DownloadOptions {
             builder.append(maxSize.getKey());
         }
         if (resize != null) {
+            // TODO: 2019/1/23 这里计算的时候 resize 有可能是 ByViewFixedSizeResize
             if (builder.length() > 0) builder.append('-');
             builder.append(resize.getKey());
             if (thumbnailMode) {
