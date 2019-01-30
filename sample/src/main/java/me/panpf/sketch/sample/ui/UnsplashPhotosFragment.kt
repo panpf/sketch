@@ -20,6 +20,7 @@ import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
 import me.panpf.sketch.sample.item.LoadMoreItemFactory
 import me.panpf.sketch.sample.item.UnsplashPhotosItemFactory
 import me.panpf.sketch.sample.net.NetServices
+import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.widget.HintView
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
@@ -40,6 +41,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         super.onViewCreated(view, savedInstanceState)
 
         recycler_recyclerFragment_content.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         refresh_recyclerFragment.setOnRefreshListener(this)
 
