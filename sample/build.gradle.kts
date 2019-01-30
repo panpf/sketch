@@ -75,13 +75,11 @@ androidExtensions {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN_VERSION")}")
-    implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE_KTX")}")
-    implementation(fileTree("libs/bugly_1.2.3.8__release.jar"))
-    implementation(fileTree("libs/pinyin4j-2.5.0.jar"))
 
     implementation("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
     implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     implementation("androidx.constraintlayout:constraintlayout:${property("ANDROIDX_CONSTRAINTLAYOUT")}")
+    implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE_KTX")}")
 
     implementation("me.panpf:pager-indicator:${property("PAGER_INDICATOR")}")
     implementation("me.panpf:assembly-adapter:${property("ASSEMBLY_ADAPTER_VERSION")}")
@@ -91,6 +89,9 @@ dependencies {
 
     implementation(project(":sketch"))
     add("normalImplementation", project(":sketch-gif"))
+
+    implementation(files("libs/bugly_1.2.3.8__release.jar"))
+    implementation(files("libs/pinyin4j-2.5.0.jar"))
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${property("LEAK_CANARY_ANDROID_VERSION")}")
     debugImplementation("com.squareup.leakcanary:leakcanary-support-fragment:${property("LEAK_CANARY_ANDROID_VERSION")}")
