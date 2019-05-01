@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peng fei Pan <sky@panpf.me>
+ * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 
 package me.panpf.sketch.http;
 
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;

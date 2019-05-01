@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Peng fei Pan <sky@panpf.me>
+ * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.view.View;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.view.View;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.decode.ImageAttrs;
