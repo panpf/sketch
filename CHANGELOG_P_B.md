@@ -2,6 +2,10 @@
 
 * :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
 
+Behavior change:
+* :sparkles: Support for downloading images without Content-Length and Transfer-Encoding not chunked
+* :fire: Add a new checkpoint when downloading, Content-Type must be image/*
+
 # v2.7.0 Beta1
 
 * :arrow_up: Upgrade to Jetpack

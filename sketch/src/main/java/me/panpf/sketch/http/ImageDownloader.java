@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.panpf.sketch.SLog;
@@ -192,7 +193,7 @@ public class ImageDownloader {
 
             // redirects
             if (responseCode == 301 || responseCode == 302) {
-                String newUri = response.getHeader("Location");
+                String newUri = response.getHeaderField("Location");
                 if (!TextUtils.isEmpty(newUri)) {
                     // To prevent infinite redirection
                     if (uri.equals(request.getUri())) {
@@ -214,15 +215,25 @@ public class ImageDownloader {
             throw new DownloadException(message, ErrorCause.DOWNLOAD_RESPONSE_CODE_EXCEPTION);
         }
 
-        // Check content length, must be greater than 0 or is chunked
-        long contentLength = response.getContentLength();
-        if (contentLength <= 0 && !response.isContentChunked()) {
+        /* content type must be is 'image/*' */
+        final String contentType = response.getContentType();
+        final String finalContentType;
+        if (contentType != null) {
+            String[] contentTypeItems = contentType.split(";");
+            finalContentType = contentTypeItems.length > 0 ? contentTypeItems[0] : null;
+        } else {
+            finalContentType = null;
+        }
+        if (!SketchUtils.matchMimeType("image/*", finalContentType)) {
             response.releaseConnection();
-            String message = String.format("Content length exception. contentLength: %d, responseHeaders: %s. %s. %s",
-                    contentLength, response.getHeadersString(), request.getThreadName(), request.getKey());
+            String message = String.format("Content type not a image. contentType: %s, responseHeaders: %s. %s. %s",
+                    contentType, response.getHeadersString(), request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
             throw new DownloadException(message, ErrorCause.DOWNLOAD_CONTENT_LENGTH_EXCEPTION);
         }
+
+        // Check content length, must be greater than 0 or is chunked
+        final long contentLength = response.getContentLength();
 
         // Get content
         InputStream inputStream;
@@ -285,8 +296,7 @@ public class ImageDownloader {
         }
 
         // Check content fully and commit the disk cache
-        boolean readFully = (contentLength <= 0 && response.isContentChunked()) || completedLength == contentLength;
-        if (readFully) {
+        if (contentLength <= 0 || completedLength == contentLength) {
             if (diskCacheEditor != null) {
                 try {
                     diskCacheEditor.commit();
@@ -300,8 +310,8 @@ public class ImageDownloader {
             if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
             }
-            String message = String.format("The data is not fully read. contentLength:%d, completedLength:%d, ContentChunked:%s. %s. %s",
-                    contentLength, completedLength, response.isContentChunked(), request.getThreadName(), request.getKey());
+            String message = String.format(Locale.US, "The data is not fully read. contentLength:%d, completedLength:%d. %s. %s",
+                    contentLength, completedLength, request.getThreadName(), request.getKey());
             SLog.e(NAME, message);
             throw new DownloadException(message, ErrorCause.DOWNLOAD_DATA_NOT_FULLY_READ);
         }

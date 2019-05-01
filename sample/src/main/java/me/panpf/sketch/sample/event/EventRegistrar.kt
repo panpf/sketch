@@ -7,9 +7,8 @@ import android.app.Activity
 import android.app.Application
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
-import androidx.fragment.app.FragmentActivity
 import android.view.View
+import androidx.annotation.RequiresApi
 import org.greenrobot.eventbus.EventBus
 import java.lang.annotation.Inherited
 import java.util.*
@@ -112,6 +111,7 @@ class SupportFragmentEventRegistrar : SupportFragmentManager.FragmentLifecycleCa
     override fun onFragmentViewDestroyed(fm: SupportFragmentManager, f: SupportFragment) {
         super.onFragmentViewDestroyed(fm, f)
 
+        // todo 这个方法不执行
         if (f.javaClass.isAnnotationPresent(RegisterEvent::class.java)) {
             EventBus.getDefault().unregister(f)
         }

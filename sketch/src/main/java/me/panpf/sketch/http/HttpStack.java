@@ -163,6 +163,11 @@ public interface HttpStack {
         long getContentLength();
 
         /**
+         * 获取内容类型
+         */
+        String getContentType();
+
+        /**
          * 内容是否是分块的？
          */
         boolean isContentChunked();
@@ -171,7 +176,17 @@ public interface HttpStack {
          * 获取响应头
          */
         @Nullable
-        String getHeader(@NonNull String name);
+        String getHeaderField(@NonNull String name);
+
+        /**
+         * 获取响应头并转换成 int
+         */
+        int getHeaderFieldInt(@NonNull String name, int defaultValue);
+
+        /**
+         * 获取响应头并转换成 long
+         */
+        long getHeaderFieldLong(@NonNull String name, long defaultValue);
 
         /**
          * 获取所有的响应头

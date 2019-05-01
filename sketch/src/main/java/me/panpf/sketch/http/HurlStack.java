@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.http;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -178,7 +180,16 @@ public class HurlStack implements HttpStack {
 
         @Override
         public long getContentLength() {
-            return connection.getContentLength();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                return connection.getContentLengthLong();
+            } else {
+                return getHeaderFieldLong("content-length", -1);
+            }
+        }
+
+        @Override
+        public String getContentType() {
+            return connection.getContentType();
         }
 
         @Override
@@ -236,13 +247,32 @@ public class HurlStack implements HttpStack {
             if (transferEncodingValue != null) {
                 transferEncodingValue = transferEncodingValue.trim();
             }
-            return transferEncodingValue != null && "chunked".equalsIgnoreCase(transferEncodingValue);
+            return "chunked".equalsIgnoreCase(transferEncodingValue);
         }
 
         @Nullable
         @Override
-        public String getHeader(@NonNull String name) {
+        public String getHeaderField(@NonNull String name) {
             return connection.getHeaderField(name);
+        }
+
+        @Override
+        public int getHeaderFieldInt(@NonNull String name, int defaultValue) {
+            return connection.getHeaderFieldInt(name, defaultValue);
+        }
+
+        @Override
+        public long getHeaderFieldLong(@NonNull String name, long defaultValue) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                return connection.getHeaderFieldLong(name, defaultValue);
+            } else {
+                String value = connection.getHeaderField(name);
+                try {
+                    return Long.parseLong(value);
+                } catch (Exception e) {
+                    return defaultValue;
+                }
+            }
         }
     }
 }

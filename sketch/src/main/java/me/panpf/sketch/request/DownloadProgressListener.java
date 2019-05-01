@@ -27,5 +27,6 @@ public interface DownloadProgressListener {
      * @param totalLength     总长度
      * @param completedLength 已完成长度
      */
+    // TODO: 2019-05-02 这里用的是 int 改成 long，涉及到的所有代码都要改
     void onUpdateDownloadProgress(int totalLength, int completedLength);
 }

@@ -43,13 +43,14 @@ import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.Closeable;
 import java.io.File;
@@ -1235,7 +1236,6 @@ public class SketchUtils {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
     public static void postOnAnimation(View view, Runnable runnable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.postOnAnimation(runnable);
@@ -1246,5 +1246,30 @@ public class SketchUtils {
 
     public static int getPointerIndex(int action) {
         return (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+    }
+
+    /**
+     * Match MimeType
+     *
+     * @param template For example: application/*
+     * @param mimeType For example: application/zip
+     */
+    public static boolean matchMimeType(@NonNull String template, @Nullable String mimeType) {
+        String[] templateItems = template.split("/");
+        String[] mimeItems = (mimeType != null ? mimeType : "").split("/");
+        boolean result = true;
+        if (templateItems.length > 0 && templateItems.length == mimeItems.length) {
+            for (int index = 0; index < templateItems.length; index++) {
+                String templateItem = templateItems[index].trim();
+                String mimeItem = mimeItems[index].trim();
+                result = "*".equals(templateItem) || templateItem.toLowerCase().equals(mimeItem.toLowerCase());
+                if (!result) {
+                    break;
+                }
+            }
+        } else {
+            result = false;
+        }
+        return result;
     }
 }
