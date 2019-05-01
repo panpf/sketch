@@ -19,8 +19,6 @@ package me.panpf.sketch.sample.ui
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
@@ -73,6 +71,8 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
                 onRefresh()
             }
         }
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onClickImage(position: Int, optionsKey: String) {
@@ -117,6 +117,11 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
                 adapter!!.notifyDataSetChanged()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 
     private class LoadPhotoListTask constructor(private val fragmentWeakReference: WeakReference<MyPhotosFragment>) : AsyncTask<Void, Int, List<String>>() {

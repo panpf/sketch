@@ -62,6 +62,8 @@ class MainFragment : BaseFragment(), OnActivityPostCreateCallback, AppListFragme
         mainFm_pagerIndicator.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), compatActivity))
 
         onEvent(ChangePageEvent(Page.UNSPLASH))
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -92,6 +94,11 @@ class MainFragment : BaseFragment(), OnActivityPostCreateCallback, AppListFragme
 
     override fun onGetPagerIndicator(): PagerIndicator {
         return mainFm_pagerIndicator
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 }
 

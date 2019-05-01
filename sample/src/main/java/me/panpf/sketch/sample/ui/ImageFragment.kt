@@ -86,6 +86,8 @@ class ImageFragment : BaseFragment() {
         mappingHelper.onViewCreated()
         clickHelper.onViewCreated()
         showHelper.onViewCreated()
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
@@ -103,6 +105,11 @@ class ImageFragment : BaseFragment() {
         } else if (AppConfig.Key.READ_MODE == event.key) {
             zoomHelper.onReadModeConfigChanged()
         }
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 
     class PlayImageEvent

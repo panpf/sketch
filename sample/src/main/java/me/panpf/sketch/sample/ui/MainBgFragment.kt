@@ -12,6 +12,7 @@ import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
 import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.util.DeviceUtils
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 @RegisterEvent
@@ -32,11 +33,18 @@ class MainBgFragment : BaseFragment() {
             }
         }
         mainBgFm_image.setOptions(ImageOptions.WINDOW_BACKGROUND)
+
+        EventBus.getDefault().register(this)
     }
 
     @Suppress("unused")
     @Subscribe
     fun onEvent(eventChange: ChangeMainPageBgEvent) {
         mainBgFm_image.displayImage(eventChange.imageUrl)
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 }

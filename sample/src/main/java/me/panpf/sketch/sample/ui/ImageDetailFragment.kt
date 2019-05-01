@@ -32,6 +32,7 @@ import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
 import me.panpf.sketch.sample.widget.ZoomOutPageTransformer
 import me.panpf.sketch.zoom.ImageZoomer
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 @RegisterEvent
@@ -82,6 +83,8 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
             text_detail_currentItem.text = String.format("%d", position + 1)
             text_detail_countItem.text = imageList!!.size.toString()
         }
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onResume() {
@@ -116,6 +119,11 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
     @Subscribe
     fun onEvent(event: ImageFragment.PlayImageEvent) {
         viewPagerPlayer.start()
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 
     private inner class StartPlay : Runnable {

@@ -19,14 +19,13 @@ package me.panpf.sketch.sample
 import android.app.Application
 import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
-import me.panpf.sketch.sample.event.ActivityEventRegistrar
 
 class SampleApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        registerActivityLifecycleCallbacks(ActivityEventRegistrar())
+//        registerActivityLifecycleCallbacks(ActivityEventRegistrar())
 
         CrashReport.initCrashReport(baseContext, "900007777", BuildConfig.DEBUG)
 

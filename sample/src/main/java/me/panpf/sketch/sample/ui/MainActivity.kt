@@ -85,12 +85,26 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
         supportFragmentManager.fragments.forEach { if (it is OnActivityPostCreateCallback) it.onActivityPostCreate() }
     }
 
+    var registed = false
+    override fun onStart() {
+        super.onStart()
+        if (!registed) {
+            registed = true
+            EventBus.getDefault().register(this)
+        }
+    }
+
     override fun isDisableSetFitsSystemWindows() = true
 
     @Suppress("unused")
     @Subscribe
     fun onEvent(@Suppress("UNUSED_PARAMETER") closeDrawerEvent: CloseDrawerEvent) {
         mainAt_drawer.closeDrawer(GravityCompat.START)
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

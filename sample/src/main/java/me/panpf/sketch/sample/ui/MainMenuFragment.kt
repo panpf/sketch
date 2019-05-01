@@ -74,6 +74,8 @@ class MainMenuFragment : BaseFragment() {
             addItemFactory(CheckMenuItemFactory())
             addItemFactory(InfoMenuItemFactory())
         }
+
+        EventBus.getDefault().register(this)
     }
 
     private fun makeMenuList(): List<Any> {
@@ -182,6 +184,11 @@ class MainMenuFragment : BaseFragment() {
     @Subscribe
     fun onEvent(event: ChangeMainPageBgEvent) {
         mainMenuFm_bgImage.displayImage(event.imageUrl)
+    }
+
+    override fun onDestroyView() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroyView()
     }
 }
 
