@@ -1,3 +1,7 @@
+# new
+
+* :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
+
 # v2.7.0 Beta1
 
 * :arrow_up: Upgrade to Jetpack

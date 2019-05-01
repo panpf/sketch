@@ -1,9 +1,11 @@
-import java.util.Properties
+import org.jetbrains.kotlin.gradle.plugin.KaptExtension
+import java.util.*
 
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("android.extensions")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 val localProperties = Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }
@@ -51,6 +53,10 @@ androidExtensions {
     isExperimental = true
 }
 
+configure<KaptExtension> {
+    useBuildCache = true
+}
+
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN_VERSION")}")
     implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE_KTX")}")
@@ -67,7 +73,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.lifecycle:lifecycle-viewmodel:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.lifecycle:lifecycle-livedata:${property("ANDROIDX_LIFECYCLE")}")
-    kapt("androidx.lifecycle:lifecycle-compiler:${property("ANDROIDX_LIFECYCLE")}")
+    "kapt"("androidx.lifecycle:lifecycle-compiler:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.paging:paging-runtime:${property("ANDROIDX_PAGING")}")
 
     implementation("me.panpf:assembly-adapter:${property("ASSEMBLY_ADAPTER_VERSION")}")

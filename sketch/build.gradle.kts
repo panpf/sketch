@@ -1,4 +1,3 @@
-import com.android.build.gradle.BaseExtension
 import com.novoda.gradle.release.PublishExtension
 import java.util.Properties
 
@@ -6,7 +5,7 @@ plugins {
     id("com.android.library")
 }
 
-configure<BaseExtension> {
+android {
     compileSdkVersion(property("COMPILE_SDK_VERSION").toString().toInt())
 
     defaultConfig {
