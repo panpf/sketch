@@ -1,6 +1,7 @@
 # new
 
 * :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
+* feature: TransitionImageDisplayer support setup disable crossFade 
 
 ### Sketch
 

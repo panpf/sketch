@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+
 import androidx.annotation.NonNull;
 
 import me.panpf.sketch.SketchView;
@@ -37,6 +38,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 
     private int duration;
     private boolean alwaysUse;
+    private boolean disableCrossFade;
 
     public TransitionImageDisplayer(int duration, boolean alwaysUse) {
         this.duration = duration;
@@ -53,6 +55,11 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 
     public TransitionImageDisplayer() {
         this(DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public TransitionImageDisplayer setDisableCrossFade(boolean disableCrossFade) {
+        this.disableCrossFade = disableCrossFade;
+        return this;
     }
 
     @Override
@@ -78,7 +85,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
                 TransitionDrawable transitionDrawable = new SketchTransitionDrawable(oldDrawable, newDrawable);
                 sketchView.clearAnimation();
                 sketchView.setImageDrawable(transitionDrawable);
-                transitionDrawable.setCrossFadeEnabled(true);
+                transitionDrawable.setCrossFadeEnabled(!disableCrossFade);
                 transitionDrawable.startTransition(duration);
             }
         }
