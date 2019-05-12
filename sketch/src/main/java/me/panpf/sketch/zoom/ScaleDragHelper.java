@@ -643,4 +643,26 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         // 将可见区域转回原始角度
         SketchUtils.reverseRotateRect(rect, imageZoomer.getRotateDegrees(), drawableSize);
     }
+
+    /**
+     * 可以横向滚动
+     */
+    boolean canScrollHorizontally() {
+        return horScrollEdge != EDGE_BOTH;
+    }
+
+    /**
+     * 可以垂直滚动
+     */
+    boolean canScrollVertically() {
+        return verScrollEdge != EDGE_BOTH;
+    }
+
+    public int getHorScrollEdge() {
+        return horScrollEdge;
+    }
+
+    public int getVerScrollEdge() {
+        return verScrollEdge;
+    }
 }

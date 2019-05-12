@@ -438,6 +438,8 @@ class ImageFragment : BaseFragment() {
                 val visibleRectString = visibleRect.toShortString()
                 zoomInfoBuilder.append("Zoom: ").append(zoomScale).append(" / ").append(visibleRectString)
                 menuItemList.add(MenuItem(zoomInfoBuilder.toString(), null))
+                menuItemList.add(MenuItem("canScrollHorizontally: ${zoomer.canScrollHorizontally().toString()}", null))
+                menuItemList.add(MenuItem("canScrollVertically: ${zoomer.canScrollVertically().toString()}", null))
             } else {
                 menuItemList.add(MenuItem("Zoom (Disabled)", null))
             }

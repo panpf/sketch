@@ -61,7 +61,7 @@ class MainFragment : BaseFragment(), OnActivityPostCreateCallback, AppListFragme
 
         mainFm_pagerIndicator.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), compatActivity))
 
-        onEvent(ChangePageEvent(Page.UNSPLASH))
+        onEvent(ChangePageEvent(Page.MY_PHOTOS))
 
         EventBus.getDefault().register(this)
     }

@@ -23,14 +23,15 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -328,6 +329,28 @@ public class ImageZoomer {
 
 
     /* -----------可获取信息----------- */
+
+    /**
+     * 可以横向滚动
+     */
+    public boolean canScrollHorizontally() {
+        return scaleDragHelper.canScrollHorizontally();
+    }
+
+    /**
+     * 可以垂直滚动
+     */
+    public boolean canScrollVertically() {
+        return scaleDragHelper.canScrollVertically();
+    }
+
+    public int getHorScrollEdge() {
+        return scaleDragHelper.getHorScrollEdge();
+    }
+
+    public int getVerScrollEdge() {
+        return scaleDragHelper.getVerScrollEdge();
+    }
 
 
     @NonNull
