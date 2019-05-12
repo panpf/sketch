@@ -165,12 +165,19 @@ public interface HttpStack {
         /**
          * 获取内容类型
          */
+        @Nullable
         String getContentType();
 
         /**
          * 内容是否是分块的？
          */
         boolean isContentChunked();
+
+        /**
+         * 获取内容编码
+         */
+        @Nullable
+        String getContentEncoding();
 
         /**
          * 获取响应头

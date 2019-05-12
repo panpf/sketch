@@ -173,6 +173,7 @@ public class HurlStack implements HttpStack {
             return connection.getResponseCode();
         }
 
+        @Nullable
         @Override
         public String getMessage() throws IOException {
             return connection.getResponseMessage();
@@ -187,6 +188,7 @@ public class HurlStack implements HttpStack {
             }
         }
 
+        @Nullable
         @Override
         public String getContentType() {
             return connection.getContentType();
@@ -248,6 +250,12 @@ public class HurlStack implements HttpStack {
                 transferEncodingValue = transferEncodingValue.trim();
             }
             return "chunked".equalsIgnoreCase(transferEncodingValue);
+        }
+
+        @Nullable
+        @Override
+        public String getContentEncoding() {
+            return connection.getContentEncoding();
         }
 
         @Nullable
