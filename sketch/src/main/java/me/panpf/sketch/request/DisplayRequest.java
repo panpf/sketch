@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package me.panpf.sketch.request;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
 
 import me.panpf.sketch.ErrorTracker;
@@ -147,22 +148,25 @@ public class DisplayRequest extends LoadRequest {
             MemoryCache memoryCache = getConfiguration().getMemoryCache();
             SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
             if (cachedRefBitmap != null) {
-                if (!cachedRefBitmap.isRecycled()) {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                        SLog.d(getLogName(), "From memory get drawable. bitmap=%s. %s. %s",
-                                cachedRefBitmap.getInfo(), getThreadName(), getKey());
+                // 当 isDecodeGifImage 为 true 时是要播放 gif 的，而内存缓存里的 gif 图都是第一帧静态图片，所以不能用
+                if (!(getOptions().isDecodeGifImage() && "image/gif".equalsIgnoreCase(cachedRefBitmap.getAttrs().getMimeType()))) {
+                    if (!cachedRefBitmap.isRecycled()) {
+                        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                            SLog.d(getLogName(), "From memory get drawable. bitmap=%s. %s. %s",
+                                    cachedRefBitmap.getInfo(), getThreadName(), getKey());
+                        }
+
+                        // 立马标记等待使用，防止被回收
+                        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true);
+
+                        Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
+                        displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
+                        displayCompleted();
+                        return;
+                    } else {
+                        memoryCache.remove(getMemoryCacheKey());
+                        SLog.e(getLogName(), "Memory cache drawable recycled. bitmap=%s. %s. %s", cachedRefBitmap.getInfo(), getThreadName(), getKey());
                     }
-
-                    // 立马标记等待使用，防止被回收
-                    cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true);
-
-                    Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
-                    displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
-                    displayCompleted();
-                    return;
-                } else {
-                    memoryCache.remove(getMemoryCacheKey());
-                    SLog.e(getLogName(), "Memory cache drawable recycled. bitmap=%s. %s. %s", cachedRefBitmap.getInfo(), getThreadName(), getKey());
                 }
             }
         }

@@ -26,6 +26,7 @@ import android.widget.ImageView.ScaleType;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -733,6 +734,12 @@ public class DisplayHelper {
             sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
             String viewCode = Integer.toHexString(sketchView.hashCode());
             SLog.w(NAME, "Memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
+            return true;
+        }
+
+        // 当 isDecodeGifImage 为 true 时是要播放 gif 的，而内存缓存里的 gif 图都是第一帧静态图片，所以不能用
+        if (displayOptions.isDecodeGifImage() && "image/gif".equalsIgnoreCase(cachedRefBitmap.getAttrs().getMimeType())) {
+            SLog.d(NAME, "The picture in the memory cache is just the first frame of the gif. It cannot be used. %s", cachedRefBitmap.getInfo());
             return true;
         }
 

@@ -457,10 +457,6 @@ public class LoadOptions extends DownloadOptions {
             if (builder.length() > 0) builder.append('-');
             builder.append("preferQuality");
         }
-        if (decodeGifImage) {
-            if (builder.length() > 0) builder.append('-');
-            builder.append("gif");
-        }
         if (bitmapConfig != null) {
             if (builder.length() > 0) builder.append('-');
             builder.append(bitmapConfig.name());

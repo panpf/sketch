@@ -5,9 +5,9 @@
 Fix the following bug:
 * Fix: ProcessedCacheDecodeHelper is not used when processedImageDiskCacheKey is the same as uri
 
-Behavior Change:
-* Support for downloading images without Content-Length and Transfer-Encoding not chunked
-* When the decodeGifImage is true, the 'gif' identifier is no longer added to the memoryCacheKey
+The following behavior has changed:
+* Behavior: Support for downloading images without Content-Length and Transfer-Encoding not chunked
+* Behavior: When the decodeGifImage is true, the 'gif' identifier is no longer added to the memoryCacheKey
 
 New Feature:
 * Feature: Add a new checkpoint when downloading, Content-Type must be image/*
