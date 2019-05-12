@@ -1,22 +1,26 @@
 # new
 
-#### Build: 
-* :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
-
 #### Sketch
 
+Fix the following bug:
+* Fix: ProcessedCacheDecodeHelper is not used when processedImageDiskCacheKey is the same as uri
+
 Behavior Change:
-* :sparkles: Support for downloading images without Content-Length and Transfer-Encoding not chunked
-* :fire: Add a new checkpoint when downloading, Content-Type must be image/*
+* Support for downloading images without Content-Length and Transfer-Encoding not chunked
+* When the decodeGifImage is true, the 'gif' identifier is no longer added to the memoryCacheKey
 
 New Feature:
-* feature: TransitionImageDisplayer support setup disable crossFade 
-* feature: ImageZoomer add canScrollVertically,canScrollHorizontally,getVerScrollEdge,getHorScrollEdge method 
+* Feature: Add a new checkpoint when downloading, Content-Type must be image/*
+* Feature: TransitionImageDisplayer support setup disable crossFade 
+* Feature: ImageZoomer add canScrollVertically,canScrollHorizontally,getVerScrollEdge,getHorScrollEdge method
 
 #### Sample App
 
 Fix Bug:
-* :bug: Fix FragmentLifecycleCallbacks.onFragmentViewDestroyed method does not execute a bug that caused memory overflow
+* Fix: Fix FragmentLifecycleCallbacks.onFragmentViewDestroyed method does not execute a bug that caused memory overflow
+
+#### Build: 
+* :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
 
 
 # v2.7.0

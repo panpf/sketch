@@ -17,6 +17,7 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -75,6 +76,10 @@ public class ProcessedImageCache {
     public boolean checkDiskCache(LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+        String diskCacheKey = request.getDiskCacheKey();
+        if (diskCacheKey.equals(processedImageDiskCacheKey)) {
+            return false;
+        }
 
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
@@ -93,6 +98,10 @@ public class ProcessedImageCache {
     public DiskCacheDataSource getDiskCache(LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+        String diskCacheKey = request.getDiskCacheKey();
+        if (diskCacheKey.equals(processedImageDiskCacheKey)) {
+            return null;
+        }
 
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
@@ -117,6 +126,10 @@ public class ProcessedImageCache {
     public void saveToDiskCache(LoadRequest request, Bitmap bitmap) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+        String diskCacheKey = request.getDiskCacheKey();
+        if (diskCacheKey.equals(processedImageDiskCacheKey)) {
+            return;
+        }
 
         ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
         editLock.lock();
