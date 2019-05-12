@@ -16,8 +16,9 @@ New Feature:
 
 #### Sample App
 
-Fix Bug:
 * Fix: Fix FragmentLifecycleCallbacks.onFragmentViewDestroyed method does not execute a bug that caused memory overflow
+* Test: The oversized image for testing is built into the app
+
 
 #### Build: 
 * :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1

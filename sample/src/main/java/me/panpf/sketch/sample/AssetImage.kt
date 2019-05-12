@@ -10,19 +10,19 @@ import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
 object AssetImage {
-    const val TYPE_TEST_JPG = "http://or84z82rx.bkt.clouddn.com/sample.jpg"
-    const val TYPE_TEST_PNG = "http://or84z82rx.bkt.clouddn.com/sample.png"
-    const val TYPE_TEST_GIF = "http://or84z82rx.bkt.clouddn.com/sample.gif"
-    const val TYPE_TEST_WEBP = "http://or84z82rx.bkt.clouddn.com/sample.webp"
-    const val TYPE_TEST_BMP = "http://or84z82rx.bkt.clouddn.com/sample.bmp"
+    const val TYPE_TEST_JPG = "asset://sample.jpg"
+    const val TYPE_TEST_PNG = "asset://sample.png"
+    const val TYPE_TEST_GIF = "asset://sample.gif"
+    const val TYPE_TEST_WEBP = "asset://sample.webp"
+    const val TYPE_TEST_BMP = "asset://sample.bmp"
 
-    const val HUGE_CHANG_WEI_BO = "http://or84z82rx.bkt.clouddn.com/large_chang_wei_bo.jpg"
-    const val HUGE_QMSHT = "http://or84z82rx.bkt.clouddn.com/large_qing_ming_shang_he_tu.jpg"
-    const val HUGE_CARD = "http://or84z82rx.bkt.clouddn.com/large_card.png"
-    const val HUGE_WORLD_MAP = "http://or84z82rx.bkt.clouddn.com/large_world_map.jpg"
+    const val HUGE_CHANG_WEI_BO = "asset://large_chang_wei_bo.jpg"
+    const val HUGE_QMSHT = "asset://large_qing_ming_shang_he_tu.jpg"
+    const val HUGE_CARD = "asset://large_card.png"
+    const val HUGE_WORLD_MAP = "asset://large_world_map.jpg"
 
     const val MEI_NV = "asset://mei_nv.jpg"
-    const val MASK = "http://or84z82rx.bkt.clouddn.com/mask.png"
+    const val MASK = "asset://mask.png"
 
     const val CHUNK = "http://nbachina.qq.com/media/img/players/head/260x190/201935.png"
     const val CHUNK2 = "http://static.yingyonghui.com/is/4398/4398642/256i.webp"
