@@ -1,3 +1,7 @@
+# new version
+
+* fix: Fixed a bug where the Resize(Resize) constructor did not copy the mode field
+
 # v2.7.1 beta1
 
 #### Sketch

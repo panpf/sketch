@@ -66,6 +66,7 @@ public class Resize implements Key {
         this.width = sourceResize.width;
         this.height = sourceResize.height;
         this.scaleType = sourceResize.scaleType;
+        this.mode = sourceResize.mode;
     }
 
     private Resize() {
