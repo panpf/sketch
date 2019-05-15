@@ -17,9 +17,11 @@
 package me.panpf.sketch.uri;
 
 import android.content.Context;
+import android.text.TextUtils;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-import android.text.TextUtils;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.datasource.DataSource;
@@ -33,7 +35,7 @@ public class DrawableUriModel extends UriModel {
 
     @NonNull
     public static String makeUri(@DrawableRes int drawableResId) {
-        return SCHEME + String.valueOf(drawableResId);
+        return SCHEME + drawableResId;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class DrawableUriModel extends UriModel {
 
     @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) throws GetDataSourceException {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) throws GetDataSourceException {
         int resId;
         try {
             resId = Integer.valueOf(getUriContent(uri));

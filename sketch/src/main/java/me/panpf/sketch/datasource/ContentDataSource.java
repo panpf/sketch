@@ -20,8 +20,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,8 +44,9 @@ import me.panpf.sketch.util.SketchUtils;
  * 支持 content://、file://、android.resource:// 格式的 uri
  */
 public class ContentDataSource implements DataSource {
-
+    @NonNull
     private Context context;
+    @NonNull
     private Uri contentUri;
     private long length = -1;
 
@@ -72,8 +75,6 @@ public class ContentDataSource implements DataSource {
         try {
             fileDescriptor = context.getContentResolver().openAssetFileDescriptor(contentUri, "r");
             length = fileDescriptor != null ? fileDescriptor.getLength() : 0;
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             SketchUtils.close(fileDescriptor);
         }
@@ -81,7 +82,7 @@ public class ContentDataSource implements DataSource {
     }
 
     @Override
-    public File getFile(File outDir, String outName) throws IOException {
+    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
         if (outDir == null) {
             return null;
         }

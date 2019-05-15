@@ -17,8 +17,10 @@
 package me.panpf.sketch.uri;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.datasource.AssetsDataSource;
 import me.panpf.sketch.datasource.DataSource;
@@ -55,7 +57,7 @@ public class AssetUriModel extends UriModel {
 
     @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) throws GetDataSourceException {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) throws GetDataSourceException {
         return new AssetsDataSource(context, getUriContent(uri));
     }
 }

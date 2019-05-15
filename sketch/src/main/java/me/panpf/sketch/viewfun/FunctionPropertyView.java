@@ -19,10 +19,12 @@ package me.panpf.sketch.viewfun;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.AttributeSet;
 
 import me.panpf.sketch.request.ImageFrom;
 import me.panpf.sketch.shaper.ImageShaper;
@@ -33,15 +35,15 @@ import me.panpf.sketch.zoom.ImageZoomer;
  */
 public abstract class FunctionPropertyView extends FunctionCallbackView {
 
-    public FunctionPropertyView(Context context) {
+    public FunctionPropertyView(@NonNull Context context) {
         super(context);
     }
 
-    public FunctionPropertyView(Context context, AttributeSet attrs) {
+    public FunctionPropertyView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FunctionPropertyView(Context context, AttributeSet attrs, int defStyle) {
+    public FunctionPropertyView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.zoom;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.SketchUtils;
 
@@ -26,11 +28,14 @@ class ZoomRunner implements Runnable {
     private final long mStartTime;
     private final float mZoomStart;
     private final float mZoomEnd;
-    
+
+    @NonNull
     private ImageZoomer imageZoomer;
+    @NonNull
     private ScaleDragHelper scaleDragHelper;
 
-    ZoomRunner(ImageZoomer imageZoomer, ScaleDragHelper scaleDragHelper, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
+    ZoomRunner(@NonNull ImageZoomer imageZoomer, @NonNull ScaleDragHelper scaleDragHelper, final float currentZoom,
+               final float targetZoom, final float focalX, final float focalY) {
         this.imageZoomer = imageZoomer;
         this.scaleDragHelper = scaleDragHelper;
         this.mFocalX = focalX;

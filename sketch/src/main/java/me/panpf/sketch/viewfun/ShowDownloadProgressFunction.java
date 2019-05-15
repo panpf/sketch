@@ -39,18 +39,23 @@ import me.panpf.sketch.uri.UriModel;
 /**
  * 显示下载进度功能，会在 {@link android.widget.ImageView} 上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
+@SuppressWarnings("WeakerAccess")
 public class ShowDownloadProgressFunction extends ViewFunction {
     static final int DEFAULT_MASK_COLOR = 0x22000000;
 
     private static final String NAME = "ShowProgressFunction";
     private static final int NONE = -1;
 
+    @NonNull
     private FunctionPropertyView view;
     private int maskColor = DEFAULT_MASK_COLOR;
+    @Nullable
     private ImageShaper maskShaper;
 
+    @Nullable
     private Paint maskPaint;
     private float progress = NONE;
+    @Nullable
     private Rect bounds;
 
     public ShowDownloadProgressFunction(@NonNull FunctionPropertyView view) {

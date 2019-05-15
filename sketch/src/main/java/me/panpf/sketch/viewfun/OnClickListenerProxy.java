@@ -18,17 +18,20 @@ package me.panpf.sketch.viewfun;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 
 class OnClickListenerProxy implements View.OnClickListener {
+    @NonNull
     private WeakReference<FunctionCallbackView> viewWeakReference;
 
-    public OnClickListenerProxy(FunctionCallbackView view) {
+    OnClickListenerProxy(@NonNull FunctionCallbackView view) {
         this.viewWeakReference = new WeakReference<>(view);
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(@NonNull View v) {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return;
@@ -47,7 +50,7 @@ class OnClickListenerProxy implements View.OnClickListener {
         }
     }
 
-    public boolean isClickable() {
+    boolean isClickable() {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return false;

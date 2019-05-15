@@ -17,6 +17,7 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.BitmapFactory;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -34,12 +35,14 @@ import me.panpf.sketch.request.LoadRequest;
 public class GifDecodeHelper extends DecodeHelper {
 
     @Override
-    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
-        if (imageType != null && imageType == ImageType.GIF && request.getOptions().isDecodeGifImage()) {
+    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource,
+                         @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
+        if (imageType == ImageType.GIF && request.getOptions().isDecodeGifImage()) {
             if (SketchGifFactory.isExistGifLibrary()) {
                 return true;
             } else {
-                SLog.e("GifDecodeHelper", "Not found libpl_droidsonroids_gif.so. Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
+                SLog.e("GifDecodeHelper", "Not found libpl_droidsonroids_gif.so. " +
+                        "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
             }
         }
         return false;
@@ -47,7 +50,8 @@ public class GifDecodeHelper extends DecodeHelper {
 
     @NonNull
     @Override
-    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions,
+    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource,
+                               @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions,
                                @NonNull BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
         try {
             ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);

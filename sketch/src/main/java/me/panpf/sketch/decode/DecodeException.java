@@ -16,27 +16,32 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.ErrorCause;
 
+@SuppressWarnings("WeakerAccess")
 public class DecodeException extends Exception {
 
+    @NonNull
     private ErrorCause errorCause;
 
-    public DecodeException(Throwable cause, ErrorCause errorCause) {
+    public DecodeException(@NonNull Throwable cause, @NonNull ErrorCause errorCause) {
         super(cause);
         this.errorCause = errorCause;
     }
 
-    public DecodeException(String message, ErrorCause errorCause) {
+    public DecodeException(@NonNull String message, @NonNull ErrorCause errorCause) {
         super(message);
         this.errorCause = errorCause;
     }
 
-    public DecodeException(String message, Throwable cause, ErrorCause errorCause) {
+    public DecodeException(@NonNull String message, @NonNull Throwable cause, @NonNull ErrorCause errorCause) {
         super(message, cause);
         this.errorCause = errorCause;
     }
 
+    @NonNull
     public ErrorCause getErrorCause() {
         return errorCause;
     }

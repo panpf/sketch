@@ -17,11 +17,12 @@
 package me.panpf.sketch.zoom;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.util.SketchUtils;
 import me.panpf.sketch.viewfun.FunctionCallbackView;
@@ -38,17 +39,17 @@ class TapHelper extends GestureDetector.SimpleOnGestureListener {
         this.tapGestureDetector = new GestureDetector(appContext, this);
     }
 
-    boolean onTouchEvent(MotionEvent event) {
+    boolean onTouchEvent(@NonNull MotionEvent event) {
         return tapGestureDetector.onTouchEvent(event);
     }
 
     @Override
-    public boolean onDown(MotionEvent e) {
+    public boolean onDown(@NonNull MotionEvent e) {
         return true;
     }
 
     @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
+    public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
         ImageView imageView = imageZoomer.getImageView();
         ImageZoomer.OnViewTapListener tapListener = imageZoomer.getOnViewTapListener();
         if (tapListener != null) {
@@ -69,7 +70,7 @@ class TapHelper extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
-    public void onLongPress(MotionEvent e) {
+    public void onLongPress(@NonNull MotionEvent e) {
         super.onLongPress(e);
 
         ImageView imageView = imageZoomer.getImageView();
@@ -89,7 +90,7 @@ class TapHelper extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
-    public boolean onDoubleTap(MotionEvent ev) {
+    public boolean onDoubleTap(@NonNull MotionEvent ev) {
         try {
             float currentScaleFormat = SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2);
             float finalScale = -1;

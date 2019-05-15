@@ -17,6 +17,7 @@
 package me.panpf.sketch.optionsfilter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,11 +40,17 @@ import me.panpf.sketch.request.LoadListener;
  */
 public class OptionsFilterManager {
 
+    @Nullable
     private PauseDownloadOptionsFilter pauseDownloadOptionsFilter;
+    @Nullable
     private PauseLoadOptionsFilter pauseLoadOptionsFilter;
+    @Nullable
     private LowQualityOptionsFilter lowQualityOptionsFilter;
+    @Nullable
     private InPreferQualityOverSpeedOptionsFilter inPreferQualityOverSpeedOptionsFilter;
+    @Nullable
     private MobileDataPauseDownloadController mobileDataPauseDownloadController;
+    @Nullable
     private List<OptionsFilter> extrasFilters;
 
     /**

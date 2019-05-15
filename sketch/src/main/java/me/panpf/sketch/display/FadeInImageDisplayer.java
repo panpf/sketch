@@ -1,16 +1,18 @@
 package me.panpf.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
+
+import androidx.annotation.NonNull;
+
+import java.util.Locale;
 
 import me.panpf.sketch.SketchView;
 
 /**
  * 渐入动画
  */
-@SuppressWarnings("unused")
 public class FadeInImageDisplayer implements ImageDisplayer {
     private static final String KEY = "FadeInImageDisplayer";
 
@@ -36,9 +38,6 @@ public class FadeInImageDisplayer implements ImageDisplayer {
 
     @Override
     public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable == null) {
-            return;
-        }
         AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
         animation.setInterpolator(new DecelerateInterpolator());
         animation.setDuration(duration);
@@ -60,6 +59,6 @@ public class FadeInImageDisplayer implements ImageDisplayer {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(duration=%d,alwaysUse=%s)", KEY, duration, alwaysUse);
+        return String.format(Locale.US, "%s(duration=%d,alwaysUse=%s)", KEY, duration, alwaysUse);
     }
 }

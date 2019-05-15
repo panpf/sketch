@@ -21,9 +21,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.ImageView;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
@@ -33,12 +34,14 @@ import me.panpf.sketch.request.Resize;
 /**
  * 圆形图片处理器
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("WeakerAccess")
 public class CircleImageProcessor extends WrappedImageProcessor {
 
+
+    @Nullable
     private static CircleImageProcessor instance;
 
-    public CircleImageProcessor(WrappedImageProcessor wrappedProcessor) {
+    public CircleImageProcessor(@Nullable WrappedImageProcessor wrappedProcessor) {
         super(wrappedProcessor);
     }
 
@@ -77,9 +80,6 @@ public class CircleImageProcessor extends WrappedImageProcessor {
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
         ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 newBitmapSize, newBitmapSize, scaleType, resize != null && resize.getMode() == Resize.Mode.EXACTLY_SAME);
-        if (mapping == null) {
-            return bitmap;
-        }
 
         Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();

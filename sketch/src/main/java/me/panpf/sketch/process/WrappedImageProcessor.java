@@ -17,9 +17,10 @@
 package me.panpf.sketch.process;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
@@ -29,10 +30,12 @@ import me.panpf.sketch.request.Resize;
 /**
  * 用于组合两个 {@link ImageProcessor} 一起使用，可以无限嵌套
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class WrappedImageProcessor extends ResizeImageProcessor {
+    @Nullable
     private WrappedImageProcessor wrappedProcessor;
 
-    protected WrappedImageProcessor(WrappedImageProcessor wrappedProcessor) {
+    protected WrappedImageProcessor(@Nullable WrappedImageProcessor wrappedProcessor) {
         this.wrappedProcessor = wrappedProcessor;
     }
 
@@ -67,7 +70,7 @@ public abstract class WrappedImageProcessor extends ResizeImageProcessor {
     @NonNull
     public abstract Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage);
 
-    @SuppressWarnings("unused")
+    @Nullable
     public WrappedImageProcessor getWrappedProcessor() {
         return wrappedProcessor;
     }

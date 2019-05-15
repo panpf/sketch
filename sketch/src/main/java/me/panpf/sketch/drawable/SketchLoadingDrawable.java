@@ -19,6 +19,9 @@ package me.panpf.sketch.drawable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.request.DisplayRequest;
@@ -30,12 +33,16 @@ import me.panpf.sketch.util.ExifInterface;
  * 加载中占位图专用 {@link Drawable}，可绑定请求
  */
 public class SketchLoadingDrawable extends DrawableWrapper implements SketchRefDrawable {
+
+    @NonNull
     private WeakReference<DisplayRequest> weakReference;
 
+    @Nullable
     private SketchRefDrawable refDrawable;
+    @Nullable
     private SketchDrawable sketchDrawable;
 
-    public SketchLoadingDrawable(Drawable drawable, DisplayRequest displayRequest) {
+    public SketchLoadingDrawable(@Nullable Drawable drawable, @NonNull DisplayRequest displayRequest) {
         super(drawable);
         this.weakReference = new WeakReference<>(displayRequest);
 
@@ -47,19 +54,20 @@ public class SketchLoadingDrawable extends DrawableWrapper implements SketchRefD
         }
     }
 
+    @Nullable
     public DisplayRequest getRequest() {
         return weakReference.get();
     }
 
     @Override
-    public void setIsDisplayed(String callingStation, boolean displayed) {
+    public void setIsDisplayed(@NonNull String callingStation, boolean displayed) {
         if (refDrawable != null) {
             refDrawable.setIsDisplayed(callingStation, displayed);
         }
     }
 
     @Override
-    public void setIsWaitingUse(String callingStation, boolean waitingUse) {
+    public void setIsWaitingUse(@NonNull String callingStation, boolean waitingUse) {
         if (refDrawable != null) {
             refDrawable.setIsWaitingUse(callingStation, waitingUse);
         }
@@ -70,11 +78,13 @@ public class SketchLoadingDrawable extends DrawableWrapper implements SketchRefD
         return refDrawable != null && refDrawable.isRecycled();
     }
 
+    @Nullable
     @Override
     public String getKey() {
         return sketchDrawable != null ? sketchDrawable.getKey() : null;
     }
 
+    @Nullable
     @Override
     public String getUri() {
         return sketchDrawable != null ? sketchDrawable.getUri() : null;
@@ -105,11 +115,13 @@ public class SketchLoadingDrawable extends DrawableWrapper implements SketchRefD
         return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
     }
 
+    @Nullable
     @Override
     public Bitmap.Config getBitmapConfig() {
         return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
     }
 
+    @Nullable
     @Override
     public ImageFrom getImageFrom() {
         return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;

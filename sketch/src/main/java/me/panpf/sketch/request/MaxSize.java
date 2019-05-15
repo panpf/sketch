@@ -18,6 +18,8 @@ package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 import me.panpf.sketch.Key;
 
 /**
@@ -58,7 +60,7 @@ public class MaxSize implements Key {
     @NonNull
     @Override
     public String toString() {
-        return String.format("MaxSize(%dx%d)", width, height);
+        return String.format(Locale.US, "MaxSize(%dx%d)", width, height);
     }
 
     @Override

@@ -16,13 +16,11 @@
 
 package me.panpf.sketch.util;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -65,6 +63,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -89,6 +88,7 @@ import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.zoom.Size;
 import me.panpf.sketch.zoom.block.Block;
 
+@SuppressWarnings("WeakerAccess")
 public class SketchUtils {
 
     private static final float[] MATRIX_VALUES = new float[9];
@@ -102,7 +102,9 @@ public class SketchUtils {
      * @param logName         Print log is used identify log type
      * @param bitmapPool      Try to find Reusable bitmap from bitmapPool
      */
-    public static Bitmap readApkIcon(Context context, String apkFilePath, boolean lowQualityImage, String logName, BitmapPool bitmapPool) {
+    @Nullable
+    public static Bitmap readApkIcon(@NonNull Context context, @NonNull String apkFilePath, boolean lowQualityImage,
+                                     @NonNull String logName, @NonNull BitmapPool bitmapPool) {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
@@ -130,7 +132,8 @@ public class SketchUtils {
     /**
      * Drawable into Bitmap. Each time a new bitmap is drawn
      */
-    public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage, BitmapPool bitmapPool) {
+    @Nullable
+    public static Bitmap drawableToBitmap(@Nullable Drawable drawable, boolean lowQualityImage, @Nullable BitmapPool bitmapPool) {
         if (drawable == null || drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             return null;
         }
@@ -154,8 +157,7 @@ public class SketchUtils {
      *
      * @return true：成功
      */
-    @SuppressWarnings("WeakerAccess")
-    public static boolean cleanDir(File dir) {
+    public static boolean cleanDir(@Nullable File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             return true;
         }
@@ -179,8 +181,7 @@ public class SketchUtils {
      * @param file 给定的文件
      * @return true：删除成功；false：删除失败
      */
-    @SuppressWarnings("unused")
-    public static boolean deleteFile(File file) {
+    public static boolean deleteFile(@Nullable File file) {
         if (file == null || !file.exists()) {
             return true;
         }
@@ -197,8 +198,7 @@ public class SketchUtils {
      * @param fileName 例如：test.txt
      * @param suffix   例如：.txt
      */
-    @SuppressWarnings("unused")
-    public static boolean checkSuffix(String fileName, String suffix) {
+    public static boolean checkSuffix(@Nullable String fileName, @NonNull String suffix) {
         if (fileName == null) {
             return false;
         }
@@ -215,7 +215,7 @@ public class SketchUtils {
         return suffix.equalsIgnoreCase(fileNameSuffix);
     }
 
-    public static void close(Closeable closeable) {
+    public static void close(@Nullable Closeable closeable) {
         if (closeable == null) {
             return;
         }
@@ -235,7 +235,7 @@ public class SketchUtils {
         }
     }
 
-    public static void close(AssetFileDescriptor fileDescriptor) {
+    public static void close(@Nullable AssetFileDescriptor fileDescriptor) {
         if (fileDescriptor == null) {
             return;
         }
@@ -247,7 +247,7 @@ public class SketchUtils {
         }
     }
 
-    public static boolean isGifImage(Drawable drawable) {
+    public static boolean isGifImage(@Nullable Drawable drawable) {
         if (drawable != null) {
             LayerDrawable layerDrawable;
             while (drawable instanceof LayerDrawable) {
@@ -264,6 +264,7 @@ public class SketchUtils {
         return false;
     }
 
+    @NonNull
     public static String viewLayoutFormatted(int size) {
         if (size >= 0) {
             return String.valueOf(size);
@@ -286,11 +287,11 @@ public class SketchUtils {
     /**
      * 获取当前进程的名字
      */
-    @SuppressWarnings("WeakerAccess")
+    @Nullable
     public static String getProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am != null ? am.getRunningAppProcesses() : null;
         if (runningApps == null) {
             return null;
         }
@@ -305,16 +306,15 @@ public class SketchUtils {
     /**
      * 当前进程是不是主进程
      */
-    @SuppressWarnings("unused")
-    public static boolean isMainProcess(Context context) {
+    public static boolean isMainProcess(@NonNull Context context) {
         return context.getPackageName().equalsIgnoreCase(getProcessName(context));
     }
 
     /**
      * 获取短的当前进程的名字，例如进程名字为 com.my.app:push，那么短名字就是 :push
      */
-    @SuppressWarnings({"unused", "WeakerAccess"})
-    public static String getSimpleProcessName(Context context) {
+    @Nullable
+    public static String getSimpleProcessName(@NonNull Context context) {
         String processName = getProcessName(context);
         if (processName == null) {
             return null;
@@ -327,8 +327,8 @@ public class SketchUtils {
     /**
      * 获取 app 缓存目录，优先考虑 sdcard 上的缓存目录
      */
-    @SuppressWarnings("WeakerAccess")
-    public static File getAppCacheDir(Context context) {
+    @Nullable
+    public static File getAppCacheDir(@NonNull Context context) {
         File appCacheDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             appCacheDir = context.getExternalCacheDir();
@@ -342,8 +342,7 @@ public class SketchUtils {
     /**
      * 获取给定目录的可用大小
      */
-    @SuppressWarnings("WeakerAccess")
-    public static long getAvailableBytes(File dir) {
+    public static long getAvailableBytes(@NonNull File dir) {
         if (!dir.exists() && !dir.mkdirs()) {
             return 0;
         }
@@ -365,8 +364,7 @@ public class SketchUtils {
     /**
      * 获取给定目录的总大小
      */
-    @SuppressWarnings("unused")
-    public static long getTotalBytes(File dir) {
+    public static long getTotalBytes(@NonNull File dir) {
         if (!dir.exists() && !dir.mkdirs()) {
             return 0;
         }
@@ -390,9 +388,8 @@ public class SketchUtils {
      *
      * @return 所有可用的 sdcard 的路径
      */
-    @SuppressWarnings("WeakerAccess")
-    @SuppressLint("LongLogTag")
-    public static String[] getAllAvailableSdcardPath(Context context) {
+    @Nullable
+    public static String[] getAllAvailableSdcardPath(@NonNull Context context) {
         String[] paths;
         Method getVolumePathsMethod;
         try {
@@ -450,11 +447,11 @@ public class SketchUtils {
                 storagePathIterator.remove();
             }
         }
-        return storagePathList.toArray(new String[storagePathList.size()]);
+        return storagePathList.toArray(new String[0]);
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public static String appendProcessName(Context context, String dirName) {
+    @NonNull
+    public static String appendProcessName(@NonNull Context context, @NonNull String dirName) {
         // 目录名字加上进程名字的后缀，不同的进程不同目录，以兼容多进程
         String simpleProcessName = SketchUtils.getSimpleProcessName(context);
         if (simpleProcessName != null) {
@@ -468,13 +465,13 @@ public class SketchUtils {
         return dirName;
     }
 
-    public static File getDefaultSketchCacheDir(Context context, String dirName, boolean compatManyProcess) {
+    @NonNull
+    public static File getDefaultSketchCacheDir(@NonNull Context context, @NonNull String dirName, boolean compatManyProcess) {
         File appCacheDir = SketchUtils.getAppCacheDir(context);
         return new File(appCacheDir, compatManyProcess ? appendProcessName(context, dirName) : dirName);
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public static boolean testCreateFile(File cacheDir) throws Exception {
+    public static boolean testCreateFile(@NonNull File cacheDir) throws Exception {
         File parentDir = cacheDir;
         while (parentDir != null) {
             // 先向上找到一个已存在的目录
@@ -520,7 +517,8 @@ public class SketchUtils {
      * @return 你应当以返回的目录为最终可用的目录
      * @throws NoSpaceException 可用空间小于 minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      */
-    public static File buildCacheDir(Context context, String dirName, boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
+    @NonNull
+    public static File buildCacheDir(@NonNull Context context, @NonNull String dirName, boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
                                      boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException, UnableCreateDirException, UnableCreateFileException {
         List<File> appCacheDirs = new LinkedList<>();
 
@@ -606,10 +604,11 @@ public class SketchUtils {
     /**
      * 从 {@link SketchView} 上查找 {@link DisplayRequest}
      */
-    public static DisplayRequest findDisplayRequest(SketchView sketchView) {
+    @Nullable
+    public static DisplayRequest findDisplayRequest(@Nullable SketchView sketchView) {
         if (sketchView != null) {
             final Drawable drawable = sketchView.getDrawable();
-            if (drawable != null && drawable instanceof SketchLoadingDrawable) {
+            if (drawable instanceof SketchLoadingDrawable) {
                 return ((SketchLoadingDrawable) drawable).getRequest();
             }
         }
@@ -627,8 +626,9 @@ public class SketchUtils {
      * @param bitmap          {@link Bitmap}
      * @param byteCount       {@link Bitmap} 占用字节数
      */
-    public static String makeImageInfo(String type, int imageWidth, int imageHeight, String mimeType,
-                                       int exifOrientation, Bitmap bitmap, long byteCount, String key) {
+    @NonNull
+    public static String makeImageInfo(@Nullable String type, int imageWidth, int imageHeight, @Nullable String mimeType,
+                                       int exifOrientation, @Nullable Bitmap bitmap, long byteCount, @Nullable String key) {
         if (bitmap == null) {
             return "Unknown";
         }
@@ -637,7 +637,7 @@ public class SketchUtils {
         String hashCode = Integer.toHexString(bitmap.hashCode());
         String config = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
         String finalKey = key != null ? String.format(", key=%s", key) : "";
-        return String.format("%s(image=%dx%d,%s,%s, bitmap=%dx%d,%s,%d,%s%s)",
+        return String.format(Locale.US, "%s(image=%dx%d,%s,%s, bitmap=%dx%d,%s,%d,%s%s)",
                 type, imageWidth, imageHeight, mimeType, ImageOrientationCorrector.toName(exifOrientation),
                 bitmap.getWidth(), bitmap.getHeight(), config, byteCount, hashCode,
                 finalKey);
@@ -646,7 +646,8 @@ public class SketchUtils {
     /**
      * 如果是 {@link LayerDrawable}，则返回其最后一张图片，不是的就返回自己
      */
-    public static Drawable getLastDrawable(Drawable drawable) {
+    @Nullable
+    public static Drawable getLastDrawable(@Nullable Drawable drawable) {
         if (drawable == null) {
             return null;
         }
@@ -671,8 +672,7 @@ public class SketchUtils {
      * @param matrix     {@link Matrix}
      * @param whichValue 指定的位置，例如 {@link Matrix#MSCALE_X}
      */
-    @SuppressWarnings("unused")
-    public static float getMatrixValue(Matrix matrix, int whichValue) {
+    public static float getMatrixValue(@NonNull Matrix matrix, int whichValue) {
         synchronized (MATRIX_VALUES) {
             matrix.getValues(MATRIX_VALUES);
             return MATRIX_VALUES[whichValue];
@@ -682,12 +682,11 @@ public class SketchUtils {
     /**
      * 从 {@link Matrix} 中获取缩放比例
      */
-    public static float getMatrixScale(Matrix matrix) {
+    public static float getMatrixScale(@NonNull Matrix matrix) {
         synchronized (MATRIX_VALUES) {
             matrix.getValues(MATRIX_VALUES);
             final float scaleX = MATRIX_VALUES[Matrix.MSCALE_X];
             final float skewY = MATRIX_VALUES[Matrix.MSKEW_Y];
-            //noinspection SuspiciousNameCombination
             return (float) Math.sqrt((float) Math.pow(scaleX, 2) + (float) Math.pow(skewY, 2));
         }
     }
@@ -695,13 +694,11 @@ public class SketchUtils {
     /**
      * 从 {@link Matrix} 中获取旋转角度
      */
-    @SuppressWarnings("unused")
-    public static int getMatrixRotateDegrees(Matrix matrix) {
+    public static int getMatrixRotateDegrees(@NonNull Matrix matrix) {
         synchronized (MATRIX_VALUES) {
             matrix.getValues(MATRIX_VALUES);
             final float skewX = MATRIX_VALUES[Matrix.MSKEW_X];
             final float scaleX = MATRIX_VALUES[Matrix.MSCALE_X];
-            //noinspection SuspiciousNameCombination
             final int degrees = (int) Math.round(Math.atan2(skewX, scaleX) * (180 / Math.PI));
             if (degrees < 0) {
                 return Math.abs(degrees);
@@ -716,8 +713,7 @@ public class SketchUtils {
     /**
      * 从 {@link Matrix} 中获取偏移位置
      */
-    @SuppressWarnings("unused")
-    public static void getMatrixTranslation(Matrix matrix, PointF point) {
+    public static void getMatrixTranslation(@NonNull Matrix matrix, @NonNull PointF point) {
         synchronized (MATRIX_VALUES) {
             matrix.getValues(MATRIX_VALUES);
             point.x = MATRIX_VALUES[Matrix.MTRANS_X];
@@ -728,11 +724,10 @@ public class SketchUtils {
     /**
      * 获取 OpenGL 的版本
      */
-    @SuppressWarnings("unused")
-    public static String getOpenGLVersion(Context context) {
+    @NonNull
+    public static String getOpenGLVersion(@NonNull Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        ConfigurationInfo info = am.getDeviceConfigurationInfo();
-        return info.getGlEsVersion();
+        return am != null ? am.getDeviceConfigurationInfo().getGlEsVersion() : "";
     }
 
     /**
@@ -882,27 +877,27 @@ public class SketchUtils {
      * 根据图片格式型判断是否支持读取图片碎片
      */
     public static boolean formatSupportBitmapRegionDecoder(@Nullable ImageType imageType) {
-        return imageType != null && (imageType == ImageType.JPEG || imageType == ImageType.PNG || imageType == ImageType.WEBP);
+        return imageType == ImageType.JPEG || imageType == ImageType.PNG || imageType == ImageType.WEBP;
     }
 
     /**
      * 判断两个矩形是否相交
      */
-    public static boolean isCross(Rect rect1, Rect rect2) {
+    public static boolean isCross(@NonNull Rect rect1, @NonNull Rect rect2) {
         return rect1.left < rect2.right && rect2.left < rect1.right && rect1.top < rect2.bottom && rect2.top < rect1.bottom;
     }
 
     /**
      * dp 转换成 px
      */
-    public static int dp2px(Context context, int dpValue) {
+    public static int dp2px(@NonNull Context context, int dpValue) {
         return (int) ((dpValue * context.getResources().getDisplayMetrics().density) + 0.5);
     }
 
     /**
      * 将一个旋转了一定度数的矩形转回来（只能是 90 度的倍数）
      */
-    public static void reverseRotateRect(Rect rect, int rotateDegrees, Size drawableSize) {
+    public static void reverseRotateRect(@NonNull Rect rect, int rotateDegrees, @NonNull Size drawableSize) {
         if (rotateDegrees % 90 != 0) {
             return;
         }
@@ -951,7 +946,7 @@ public class SketchUtils {
     /**
      * 旋转一个点（只能是 90 的倍数）
      */
-    public static void rotatePoint(PointF point, int rotateDegrees, Size drawableSize) {
+    public static void rotatePoint(@NonNull PointF point, int rotateDegrees, @NonNull Size drawableSize) {
         if (rotateDegrees % 90 != 0) {
             return;
         }
@@ -983,7 +978,6 @@ public class SketchUtils {
      * @param optionsKey 选项 key
      * @see SketchImageView#getOptionsKey()
      */
-    @SuppressWarnings("unused")
     @NonNull
     public static String makeRequestKey(@NonNull String imageUri, @NonNull UriModel uriModel, @NonNull String optionsKey) {
         if (uriModel.isConvertShortUriForKey()) {
@@ -1009,7 +1003,8 @@ public class SketchUtils {
     /**
      * 将一个碎片列表转换成字符串
      */
-    public static String blockListToString(List<Block> blockList) {
+    @Nullable
+    public static String blockListToString(@Nullable List<Block> blockList) {
         if (blockList == null) {
             return null;
         }
@@ -1034,7 +1029,8 @@ public class SketchUtils {
     /**
      * 根据指定的 {@link Bitmap} 配置获取合适的压缩格式
      */
-    public static Bitmap.CompressFormat bitmapConfigToCompressFormat(Bitmap.Config config) {
+    @NonNull
+    public static Bitmap.CompressFormat bitmapConfigToCompressFormat(@Nullable Bitmap.Config config) {
         return config == Bitmap.Config.RGB_565 ?
                 Bitmap.CompressFormat.JPEG : Bitmap.CompressFormat.PNG;
     }
@@ -1042,7 +1038,7 @@ public class SketchUtils {
     /**
      * 获取 {@link Bitmap} 占用内存大小，单位字节
      */
-    public static int getByteCount(Bitmap bitmap) {
+    public static int getByteCount(@Nullable Bitmap bitmap) {
         // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
         if (bitmap == null || bitmap.isRecycled()) {
             return 0;
@@ -1056,14 +1052,14 @@ public class SketchUtils {
     /**
      * 根据宽、高和配置计算所占用的字节数
      */
-    public static int computeByteCount(int width, int height, Bitmap.Config config) {
+    public static int computeByteCount(int width, int height, @Nullable Bitmap.Config config) {
         return width * height * getBytesPerPixel(config);
     }
 
     /**
      * 获取指定配置单个像素所占的字节数
      */
-    public static int getBytesPerPixel(Bitmap.Config config) {
+    public static int getBytesPerPixel(@Nullable Bitmap.Config config) {
         // A bitmap by decoding a gif has null "config" in certain environments.
         if (config == null) {
             config = Bitmap.Config.ARGB_8888;
@@ -1088,6 +1084,7 @@ public class SketchUtils {
     /**
      * 获取修剪级别的名称
      */
+    @NonNull
     public static String getTrimLevelName(int level) {
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_COMPLETE:
@@ -1112,7 +1109,7 @@ public class SketchUtils {
     /**
      * 指定的栈历史中是否存在指定的类的指定的方法
      */
-    public static boolean invokeIn(StackTraceElement[] stackTraceElements, Class<?> cla, String methodName) {
+    public static boolean invokeIn(@Nullable StackTraceElement[] stackTraceElements, @NonNull Class<?> cla, @NonNull String methodName) {
         if (stackTraceElements == null || stackTraceElements.length == 0) {
             return false;
         }
@@ -1134,7 +1131,8 @@ public class SketchUtils {
         return false;
     }
 
-    public static String toHexString(Object object) {
+    @Nullable
+    public static String toHexString(@Nullable Object object) {
         if (object == null) {
             return null;
         }
@@ -1154,7 +1152,8 @@ public class SketchUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
-    public static String generatorTempFileName(DataSource dataSource, String uri) {
+    @Nullable
+    public static String generatorTempFileName(@NonNull DataSource dataSource, @NonNull String uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         try {
@@ -1174,7 +1173,8 @@ public class SketchUtils {
 
     }
 
-    public static Initializer findInitializer(Context context) {
+    @Nullable
+    public static Initializer findInitializer(@NonNull Context context) {
         ApplicationInfo appInfo;
         try {
             appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
@@ -1225,7 +1225,8 @@ public class SketchUtils {
      * @param filePath 文件路径，要获取文件的修改时间
      * @return 文件 uri 的磁盘缓存 key
      */
-    public static String createFileUriDiskCacheKey(String uri, String filePath) {
+    @NonNull
+    public static String createFileUriDiskCacheKey(@NonNull String uri, @NonNull String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
             long lastModifyTime = file.lastModified();
@@ -1236,7 +1237,7 @@ public class SketchUtils {
         }
     }
 
-    public static void postOnAnimation(View view, Runnable runnable) {
+    public static void postOnAnimation(@NonNull View view, @NonNull Runnable runnable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.postOnAnimation(runnable);
         } else {

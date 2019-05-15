@@ -17,10 +17,11 @@
 package me.panpf.sketch.request;
 
 import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.ImageView;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
@@ -34,6 +35,7 @@ import me.panpf.sketch.state.StateImage;
 /**
  * 显示选项，适用于 {@link Sketch#display(String, SketchView)} 方法 和 {@link SketchImageView}
  */
+@SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
 public class DisplayOptions extends LoadOptions {
     /**
      * 禁用内存缓存
@@ -43,40 +45,48 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 图片显示器，用来在加载完成后显示图片
      */
+    @Nullable
     private ImageDisplayer displayer;
 
     /**
      * 正在加载时显示的图片
      */
+    @Nullable
     private StateImage loadingImage;
 
     /**
      * 加载失败时显示的图片
      */
+    @Nullable
     private StateImage errorImage;
 
     /**
      * 暂停下载时显示的图片
      */
+    @Nullable
     private StateImage pauseDownloadImage;
 
     /**
      * 图片整形器，用于绘制时修改图片的形状
      */
+    @Nullable
     private ImageShaper shaper;
 
     /**
      * 绘制时修改图片的尺寸
      */
+    @Nullable
     private ShapeSize shapeSize;
 
     public DisplayOptions() {
         reset();
     }
 
-    public DisplayOptions(DisplayOptions from) {
+    public DisplayOptions(@NonNull DisplayOptions from) {
         copy(from);
     }
+
+    //todo 可以用泛型来解决，返回类型自动转换的问题
 
     /**
      * @return {@link DisplayOptions}. 为了支持链式调用
@@ -235,9 +245,8 @@ public class DisplayOptions extends LoadOptions {
      * @param cacheInMemoryDisabled 禁止使用内存缓存
      * @return {@link DisplayOptions}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
-    public DisplayOptions setCacheInMemoryDisabled(@SuppressWarnings("SameParameterValue") boolean cacheInMemoryDisabled) {
+    public DisplayOptions setCacheInMemoryDisabled(boolean cacheInMemoryDisabled) {
         this.cacheInMemoryDisabled = cacheInMemoryDisabled;
         return this;
     }
@@ -314,7 +323,6 @@ public class DisplayOptions extends LoadOptions {
      * @param errorImage 加载失败时显示的图片
      * @return {@link DisplayOptions}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public DisplayOptions setErrorImage(@Nullable StateImage errorImage) {
         this.errorImage = errorImage;
@@ -349,7 +357,6 @@ public class DisplayOptions extends LoadOptions {
      * @param pauseDownloadImage 暂停下载时显示的图片
      * @return {@link DisplayOptions}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public DisplayOptions setPauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
         this.pauseDownloadImage = pauseDownloadImage;
@@ -419,7 +426,6 @@ public class DisplayOptions extends LoadOptions {
      * @param shapeHeight 绘制时应该显示的高
      * @return {@link DisplayOptions}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public DisplayOptions setShapeSize(int shapeWidth, int shapeHeight) {
         return setShapeSize(new ShapeSize(shapeWidth, shapeHeight));
@@ -433,7 +439,6 @@ public class DisplayOptions extends LoadOptions {
      * @param scaleType   指定在绘制时如果显示原图片
      * @return {@link DisplayOptions}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public DisplayOptions setShapeSize(int shapeWidth, int shapeHeight, @Nullable ImageView.ScaleType scaleType) {
         return setShapeSize(new ShapeSize(shapeWidth, shapeHeight, scaleType));

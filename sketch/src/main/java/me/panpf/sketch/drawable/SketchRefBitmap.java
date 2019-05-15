@@ -18,6 +18,8 @@ package me.panpf.sketch.drawable;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
@@ -34,13 +36,15 @@ public class SketchRefBitmap extends SketchBitmap {
     private int displayRefCount;    // 真正显示引用
     private int waitingUseRefCount; // 等待使用引用
 
+    @NonNull
     private BitmapPool bitmapPool;
 
-    public SketchRefBitmap(Bitmap bitmap, String key, String uri, ImageAttrs imageAttrs, BitmapPool bitmapPool) {
+    public SketchRefBitmap(@NonNull Bitmap bitmap, @NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs, @NonNull BitmapPool bitmapPool) {
         super(bitmap, key, uri, imageAttrs);
         this.bitmapPool = bitmapPool;
     }
 
+    @NonNull
     @Override
     public String getInfo() {
         if (isRecycled()) {
@@ -65,7 +69,7 @@ public class SketchRefBitmap extends SketchBitmap {
      * @param callingStation 调用位置
      * @param displayed      显示
      */
-    public synchronized void setIsDisplayed(String callingStation, boolean displayed) {
+    public synchronized void setIsDisplayed(@NonNull String callingStation, boolean displayed) {
         if (displayed) {
             displayRefCount++;
             referenceChanged(callingStation);
@@ -81,7 +85,7 @@ public class SketchRefBitmap extends SketchBitmap {
      * @param callingStation 调用位置
      * @param cached         缓存
      */
-    public synchronized void setIsCached(String callingStation, boolean cached) {
+    public synchronized void setIsCached(@NonNull String callingStation, boolean cached) {
         if (cached) {
             memoryCacheRefCount++;
             referenceChanged(callingStation);
@@ -97,7 +101,7 @@ public class SketchRefBitmap extends SketchBitmap {
      * @param callingStation 调用位置
      * @param waitingUse     等待使用
      */
-    public synchronized void setIsWaitingUse(String callingStation, boolean waitingUse) {
+    public synchronized void setIsWaitingUse(@NonNull String callingStation, boolean waitingUse) {
         if (waitingUse) {
             waitingUseRefCount++;
             referenceChanged(callingStation);
@@ -112,7 +116,7 @@ public class SketchRefBitmap extends SketchBitmap {
      *
      * @param callingStation 调用位置
      */
-    private void referenceChanged(String callingStation) {
+    private void referenceChanged(@NonNull String callingStation) {
         if (isRecycled()) {
             SLog.e(NAME, "Recycled. %s. %s", callingStation, getKey());
             return;

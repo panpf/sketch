@@ -16,12 +16,15 @@
 
 package me.panpf.sketch.util;
 
+import androidx.annotation.NonNull;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Key 计数器
  */
 public class KeyCounter {
+    @NonNull
     private AtomicInteger number;
 
     public KeyCounter() {

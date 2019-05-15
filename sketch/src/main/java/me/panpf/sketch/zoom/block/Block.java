@@ -19,6 +19,9 @@ package me.panpf.sketch.zoom.block;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.util.KeyCounter;
@@ -27,19 +30,25 @@ import me.panpf.sketch.util.KeyCounter;
  * 碎片
  */
 public class Block {
+    @NonNull
     public Rect drawRect = new Rect();
+    @NonNull
     public Rect srcRect = new Rect();
     public int inSampleSize;
     public float scale = -1;
 
+    @Nullable
     public ImageRegionDecoder decoder;
 
+    @Nullable
     public Bitmap bitmap;
+    @NonNull
     public Rect bitmapDrawSrcRect = new Rect();
 
     // 用来取消解码任务，开始解码这个碎片的时候会获取当时的key
     // 然后在解码过程的各个环节都会检验key是否已经失效
     // 因此如果想取消解码这个碎片，只需刷新key即可
+    @NonNull
     private KeyCounter keyCounter = new KeyCounter();
 
     public boolean isEmpty() {
@@ -58,7 +67,7 @@ public class Block {
     }
 
     @SuppressWarnings("unused")
-    public void clean(BitmapPool bitmapPool) {
+    public void clean(@NonNull BitmapPool bitmapPool) {
         if (bitmap != null) {
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             bitmap = null;
@@ -81,6 +90,7 @@ public class Block {
         keyCounter.refresh();
     }
 
+    @NonNull
     public String getInfo() {
         //noinspection StringBufferReplaceableByString
         StringBuilder builder = new StringBuilder();

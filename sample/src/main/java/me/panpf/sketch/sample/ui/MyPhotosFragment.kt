@@ -22,6 +22,7 @@ import android.provider.MediaStore
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
+import me.panpf.javaxkt.util.requireNotNull
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.R
@@ -58,7 +59,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
 
         recycler_recyclerFragment_content.layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity, 3)
-        val padding = SketchUtils.dp2px(activity, 2)
+        val padding = SketchUtils.dp2px(activity.requireNotNull(), 2)
         recycler_recyclerFragment_content.setPadding(padding, padding, padding, padding)
         recycler_recyclerFragment_content.clipToPadding = false
 

@@ -20,12 +20,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.request.DisplayCache;
@@ -39,32 +40,34 @@ import me.panpf.sketch.uri.UriModel;
  */
 public abstract class FunctionCallbackView extends ImageView implements SketchView {
 
+    @Nullable
     OnClickListener wrappedClickListener;
+    @Nullable
     OnLongClickListener longClickListener;
+    @Nullable
     DisplayListener wrappedDisplayListener;
+    @Nullable
     DownloadProgressListener wrappedProgressListener;
 
+    @Nullable
     private ViewFunctions functions;
+    @NonNull
     private ProgressListenerProxy progressListenerProxy;
+    @NonNull
     private DisplayListenerProxy displayListenerProxy;
+    @NonNull
     private OnClickListenerProxy clickListenerProxy;
 
-    public FunctionCallbackView(Context context) {
-        super(context);
-        init();
+    public FunctionCallbackView(@NonNull Context context) {
+        this(context, null, 0);
     }
 
-    public FunctionCallbackView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    public FunctionCallbackView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public FunctionCallbackView(Context context, AttributeSet attrs, int defStyle) {
+    public FunctionCallbackView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
-    }
-
-    private void init() {
         displayListenerProxy = new DisplayListenerProxy(this);
         progressListenerProxy = new ProgressListenerProxy(this);
         clickListenerProxy = new OnClickListenerProxy(this);

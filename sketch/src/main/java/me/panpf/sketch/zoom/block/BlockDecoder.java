@@ -18,6 +18,9 @@ package me.panpf.sketch.zoom.block;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.KeyCounter;
 import me.panpf.sketch.zoom.BlockDisplayer;
@@ -29,13 +32,16 @@ public class BlockDecoder {
 
     private static final String NAME = "BlockDecoder";
 
+    @NonNull
     private KeyCounter initKeyCounter;
+    @Nullable
     private ImageRegionDecoder decoder;
+    @NonNull
     private BlockDisplayer blockDisplayer;
     private boolean running;
     private boolean initializing;
 
-    public BlockDecoder(BlockDisplayer blockDisplayer) {
+    public BlockDecoder(@NonNull BlockDisplayer blockDisplayer) {
         this.blockDisplayer = blockDisplayer;
         this.initKeyCounter = new KeyCounter();
     }
@@ -43,7 +49,7 @@ public class BlockDecoder {
     /**
      * 设置新的图片
      */
-    public void setImage(String imageUri, boolean correctImageOrientationDisabled) {
+    public void setImage(@Nullable String imageUri, boolean correctImageOrientationDisabled) {
         clean("setImage");
 
         if (decoder != null) {
@@ -62,7 +68,7 @@ public class BlockDecoder {
     /**
      * 解码
      */
-    void decodeBlock(Block block) {
+    void decodeBlock(@NonNull Block block) {
         if (!isReady()) {
             SLog.w(NAME, "not ready. decodeBlock. %s", block.getInfo());
             return;
@@ -72,7 +78,7 @@ public class BlockDecoder {
         blockDisplayer.getBlockExecutor().submitDecodeBlock(block.getKey(), block);
     }
 
-    void clean(String why) {
+    void clean(@NonNull String why) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "clean. %s", why);
         }
@@ -80,7 +86,7 @@ public class BlockDecoder {
         initKeyCounter.refresh();
     }
 
-    public void recycle(String why) {
+    public void recycle(@NonNull String why) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "recycle. %s", why);
         }
@@ -90,7 +96,7 @@ public class BlockDecoder {
         }
     }
 
-    public void initCompleted(String imageUri, ImageRegionDecoder decoder) {
+    public void initCompleted(@NonNull String imageUri, @NonNull ImageRegionDecoder decoder) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "init completed. %s", imageUri);
         }
@@ -99,7 +105,7 @@ public class BlockDecoder {
         this.decoder = decoder;
     }
 
-    public void initError(String imageUri, Exception e) {
+    public void initError(@NonNull String imageUri, @NonNull Exception e) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
@@ -115,6 +121,7 @@ public class BlockDecoder {
         return running && initializing;
     }
 
+    @Nullable
     public ImageRegionDecoder getDecoder() {
         return decoder;
     }

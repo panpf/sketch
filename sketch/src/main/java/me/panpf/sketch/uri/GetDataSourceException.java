@@ -16,16 +16,19 @@
 
 package me.panpf.sketch.uri;
 
+import androidx.annotation.NonNull;
+
 public class GetDataSourceException extends Exception {
-    public GetDataSourceException(String message) {
+
+    public GetDataSourceException(@NonNull String message) {
         super(message);
     }
 
-    public GetDataSourceException(String message, Throwable cause) {
+    public GetDataSourceException(@NonNull String message, @NonNull Throwable cause) {
         super(message, cause);
     }
 
-    public GetDataSourceException(Throwable cause) {
+    public GetDataSourceException(@NonNull Throwable cause) {
         super(cause);
     }
 }

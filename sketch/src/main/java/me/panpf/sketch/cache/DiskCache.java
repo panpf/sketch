@@ -66,7 +66,6 @@ public interface DiskCache {
      * @return {@link File}
      */
     @NonNull
-    @SuppressWarnings("unused")
     File getCacheDir();
 
     /**
@@ -91,7 +90,6 @@ public interface DiskCache {
     /**
      * 是否已禁用
      */
-    @SuppressWarnings("unused")
     boolean isDisabled();
 
     /**
@@ -109,7 +107,6 @@ public interface DiskCache {
     /**
      * 是否已关闭
      */
-    @SuppressWarnings("unused")
     boolean isClosed();
 
     /**

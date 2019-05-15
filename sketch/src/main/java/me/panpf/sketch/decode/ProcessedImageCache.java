@@ -41,7 +41,7 @@ public class ProcessedImageCache {
     /**
      * 判断是否可以使用此功能
      */
-    public boolean canUse(LoadOptions loadOptions) {
+    public boolean canUse(@NonNull LoadOptions loadOptions) {
         if (!loadOptions.isCacheProcessedImageInDisk()) {
             return false;
         }
@@ -73,7 +73,7 @@ public class ProcessedImageCache {
         return inSampleSize >= 8;
     }
 
-    public boolean checkDiskCache(LoadRequest request) {
+    public boolean checkDiskCache(@NonNull LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
         String diskCacheKey = request.getDiskCacheKey();
@@ -95,7 +95,7 @@ public class ProcessedImageCache {
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
     @Nullable
-    public DiskCacheDataSource getDiskCache(LoadRequest request) {
+    public DiskCacheDataSource getDiskCache(@NonNull LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
         String diskCacheKey = request.getDiskCacheKey();
@@ -123,7 +123,7 @@ public class ProcessedImageCache {
     /**
      * 保存 {@link Bitmap} 到磁盘缓存
      */
-    public void saveToDiskCache(LoadRequest request, Bitmap bitmap) {
+    public void saveToDiskCache(@NonNull LoadRequest request, @NonNull Bitmap bitmap) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
         String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
         String diskCacheKey = request.getDiskCacheKey();

@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.optionsfilter;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.DownloadOptions;
 import me.panpf.sketch.request.LoadOptions;
 
@@ -25,7 +27,7 @@ import me.panpf.sketch.request.LoadOptions;
 public class LowQualityOptionsFilter implements OptionsFilter {
 
     @Override
-    public void filter(DownloadOptions options) {
+    public void filter(@NonNull DownloadOptions options) {
         if (options instanceof LoadOptions) {
             ((LoadOptions) options).setLowQualityImage(true);
         }

@@ -24,7 +24,11 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
@@ -33,7 +37,7 @@ import me.panpf.sketch.request.Resize;
 /**
  * 倒影图片处理器
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("WeakerAccess")
 public class ReflectionImageProcessor extends WrappedImageProcessor {
 
     private static final int DEFAULT_REFLECTION_SPACING = 2;
@@ -49,7 +53,7 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
      * @param reflectionScale       倒影的高度所占原图高度比例，取值为 0 到 1
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale, WrappedImageProcessor wrappedImageProcessor) {
+    public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         this.reflectionSpacing = reflectionSpacing;
         this.reflectionScale = reflectionScale;
@@ -70,7 +74,7 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
      *
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public ReflectionImageProcessor(WrappedImageProcessor wrappedImageProcessor) {
+    public ReflectionImageProcessor(@Nullable WrappedImageProcessor wrappedImageProcessor) {
         this(DEFAULT_REFLECTION_SPACING, DEFAULT_REFLECTION_SCALE, wrappedImageProcessor);
     }
 
@@ -83,7 +87,7 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
 
     @NonNull
     @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean lowQualityImage) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
         if (bitmap.isRecycled()) {
             return bitmap;
         }
@@ -127,11 +131,11 @@ public class ReflectionImageProcessor extends WrappedImageProcessor {
     @NonNull
     @Override
     public String onToString() {
-        return String.format("%s(scale=%s,spacing=%d)", "ReflectionImageProcessor", reflectionScale, reflectionSpacing);
+        return String.format(Locale.US, "%s(scale=%s,spacing=%d)", "ReflectionImageProcessor", reflectionScale, reflectionSpacing);
     }
 
     @Override
     public String onGetKey() {
-        return String.format("%s(scale=%s,spacing=%d)", "Reflection", reflectionScale, reflectionSpacing);
+        return String.format(Locale.US, "%s(scale=%s,spacing=%d)", "Reflection", reflectionScale, reflectionSpacing);
     }
 }

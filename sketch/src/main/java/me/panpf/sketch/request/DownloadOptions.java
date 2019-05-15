@@ -27,6 +27,7 @@ import me.panpf.sketch.uri.UriModel;
 /**
  * 下载选项，适用于 {@link Sketch#download(String, DownloadListener)} 方法
  */
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class DownloadOptions {
     /**
      * 禁用磁盘缓存
@@ -36,6 +37,7 @@ public class DownloadOptions {
     /**
      * 请求 level，限制请求处理深度，参考 {@link RequestLevel}
      */
+    @Nullable
     private RequestLevel requestLevel;
 
     public DownloadOptions() {
@@ -47,7 +49,6 @@ public class DownloadOptions {
      *
      * @param from 从这个 {@link DownloadOptions} 里拷贝属性
      */
-    @SuppressWarnings("unused")
     public DownloadOptions(@NonNull DownloadOptions from) {
         copy(from);
     }

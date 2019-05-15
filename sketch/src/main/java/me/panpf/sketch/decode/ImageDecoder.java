@@ -19,9 +19,11 @@ package me.panpf.sketch.decode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.datasource.DataSource;
@@ -47,8 +49,11 @@ import me.panpf.sketch.util.ExifInterface;
 public class ImageDecoder {
     private static final String NAME = "ImageDecoder";
 
+    @NonNull
     private DecodeTimeAnalyze timeAnalyze = new DecodeTimeAnalyze();
+    @NonNull
     private List<DecodeHelper> decodeHelperList;
+    @NonNull
     private List<ResultProcessor> resultProcessorList;
 
     public ImageDecoder() {
@@ -113,7 +118,7 @@ public class ImageDecoder {
      * @throws DecodeException 解码失败了
      */
     @NonNull
-    private DecodeResult doDecode(LoadRequest request) throws DecodeException {
+    private DecodeResult doDecode(@NonNull LoadRequest request) throws DecodeException {
         DataSource dataSource;
         try {
             dataSource = request.getDataSourceWithPressedCache();
@@ -134,7 +139,7 @@ public class ImageDecoder {
 
         // Exclude images with a width of less than or equal to 1
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            String cause = String.format("Image width or height less than or equal to 1px. imageSize: %dx%d", boundOptions.outWidth, boundOptions.outHeight);
+            String cause = String.format(Locale.US, "Image width or height less than or equal to 1px. imageSize: %dx%d", boundOptions.outWidth, boundOptions.outHeight);
             ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null);
             throw new DecodeException(cause, ErrorCause.DECODE_BOUND_RESULT_IMAGE_SIZE_INVALID);
         }
@@ -187,7 +192,7 @@ public class ImageDecoder {
      * @param result  {@link DecodeResult}
      * @throws ProcessException 处理失败了
      */
-    private void doProcess(LoadRequest request, DecodeResult result) throws ProcessException {
+    private void doProcess(@NonNull LoadRequest request, @Nullable DecodeResult result) throws ProcessException {
         if (result == null || result.isBanProcess()) {
             return;
         }

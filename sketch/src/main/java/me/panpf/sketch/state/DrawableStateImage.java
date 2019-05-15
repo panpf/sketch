@@ -31,12 +31,12 @@ import me.panpf.sketch.shaper.ImageShaper;
 /**
  * 给什么图片显示什么图片，支持 {@link ShapeSize} 和 {@link ImageShaper}
  */
-@SuppressWarnings("unused")
 public class DrawableStateImage implements StateImage {
+    @Nullable
     private Drawable originDrawable;
     private int resId = -1;
 
-    public DrawableStateImage(Drawable drawable) {
+    public DrawableStateImage(@NonNull Drawable drawable) {
         this.originDrawable = drawable;
     }
 
@@ -54,14 +54,14 @@ public class DrawableStateImage implements StateImage {
 
         ShapeSize shapeSize = displayOptions.getShapeSize();
         ImageShaper imageShaper = displayOptions.getShaper();
-        if ((shapeSize != null || imageShaper != null) && drawable != null
-                && drawable instanceof BitmapDrawable) {
+        if ((shapeSize != null || imageShaper != null) && drawable instanceof BitmapDrawable) {
             drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
         }
 
         return drawable;
     }
 
+    @Nullable
     public Drawable getOriginDrawable() {
         return originDrawable;
     }

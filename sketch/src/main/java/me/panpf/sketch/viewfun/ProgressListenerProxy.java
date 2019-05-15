@@ -16,14 +16,17 @@
 
 package me.panpf.sketch.viewfun;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.request.DownloadProgressListener;
 
 class ProgressListenerProxy implements DownloadProgressListener {
+    @NonNull
     private WeakReference<FunctionCallbackView> viewWeakReference;
 
-    public ProgressListenerProxy(FunctionCallbackView view) {
+    ProgressListenerProxy(@NonNull FunctionCallbackView view) {
         this.viewWeakReference = new WeakReference<>(view);
     }
 

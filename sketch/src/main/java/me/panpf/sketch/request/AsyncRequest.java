@@ -1,14 +1,19 @@
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.uri.UriModel;
 
+@SuppressWarnings("WeakerAccess")
 abstract class AsyncRequest extends BaseRequest implements Runnable {
 
+    @Nullable
     private RunStatus runStatus;
     private boolean sync;
 
-    AsyncRequest(Sketch sketch, String uri, UriModel uriModel, String key) {
+    AsyncRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key) {
         super(sketch, uri, uriModel, key);
     }
 

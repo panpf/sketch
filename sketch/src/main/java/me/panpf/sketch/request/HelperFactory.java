@@ -17,6 +17,7 @@
 package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;
@@ -24,20 +25,25 @@ import me.panpf.sketch.SketchView;
 /**
  * 负责创建 {@link DisplayHelper}、{@link LoadHelper}、{@link DownloadHelper}
  */
+@SuppressWarnings("WeakerAccess")
 public class HelperFactory {
     private static final String KEY = "HelperFactory";
 
+    @Nullable
     private DisplayHelper cacheDisplayHelper;
 
-    public DownloadHelper getDownloadHelper(@NonNull Sketch sketch, String uri, DownloadListener listener) {
+    @NonNull
+    public DownloadHelper getDownloadHelper(@NonNull Sketch sketch, @NonNull String uri, @Nullable DownloadListener listener) {
         return new DownloadHelper(sketch, uri, listener);
     }
 
-    public LoadHelper getLoadHelper(@NonNull Sketch sketch, String uri, LoadListener listener) {
+    @NonNull
+    public LoadHelper getLoadHelper(@NonNull Sketch sketch, @NonNull String uri, @Nullable LoadListener listener) {
         return new LoadHelper(sketch, uri, listener);
     }
 
-    public DisplayHelper getDisplayHelper(@NonNull Sketch sketch, String uri, SketchView sketchView) {
+    @NonNull
+    public DisplayHelper getDisplayHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
         if (this.cacheDisplayHelper == null) {
             this.cacheDisplayHelper = new DisplayHelper();
         }

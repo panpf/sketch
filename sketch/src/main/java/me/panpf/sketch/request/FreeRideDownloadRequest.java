@@ -16,6 +16,9 @@
 
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,19 +31,23 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 支持顺风车功能的下载请求
  */
+@SuppressWarnings("WeakerAccess")
 public class FreeRideDownloadRequest extends DownloadRequest implements FreeRideManager.DownloadFreeRide {
+    @Nullable
     private Set<FreeRideManager.DownloadFreeRide> downloadFreeRideSet;
 
-    public FreeRideDownloadRequest(Sketch sketch, String uri, UriModel uriModel, String key, DownloadOptions options,
-                                   DownloadListener downloadListener, DownloadProgressListener downloadProgressListener) {
+    public FreeRideDownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
+                                   @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, options, downloadListener, downloadProgressListener);
     }
 
+    @NonNull
     @Override
     public String getDownloadFreeRideKey() {
         return getUri();
     }
 
+    @NonNull
     @Override
     public String getDownloadFreeRideLog() {
         return String.format("%s@%s", SketchUtils.toHexString(this), getKey());
@@ -93,6 +100,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         downloadFreeRideSet.add(request);
     }
 
+    @Nullable
     @Override
     public Set<FreeRideManager.DownloadFreeRide> getDownloadFreeRideSet() {
         return downloadFreeRideSet;
@@ -122,7 +130,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
         if (downloadFreeRideSet != null && !downloadFreeRideSet.isEmpty()) {
             for (FreeRideManager.DownloadFreeRide freeRide : downloadFreeRideSet) {
-                if (freeRide != null && freeRide instanceof DownloadRequest) {
+                if (freeRide instanceof DownloadRequest) {
                     ((DownloadRequest) freeRide).updateProgress(totalLength, completedLength);
                 }
             }

@@ -27,26 +27,35 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.SketchUtils;
 
 class ScrollBarHelper {
 
+    @NonNull
     private ImageZoomer imageZoomer;
+    @NonNull
     private Paint scrollBarPaint;
 
     private int scrollBarSize;
     private int scrollBarMargin;
     private int scrollBarRadius;
     private int scrollBarAlpha = 51;
+    @NonNull
     private RectF scrollBarRectF = new RectF();
+    @NonNull
     private RectF tempDisplayRectF = new RectF();
 
+    @NonNull
     private Handler handler;
+    @NonNull
     private HiddenScrollBarRunner hiddenScrollBarRunner;
+    @NonNull
     private FadeScrollBarRunner fadeScrollBarRunner;
 
-    ScrollBarHelper(Context context, ImageZoomer imageZoomer) {
+    ScrollBarHelper(@NonNull Context context, @NonNull ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
 
         scrollBarPaint = new Paint();
@@ -61,7 +70,7 @@ class ScrollBarHelper {
         fadeScrollBarRunner = new FadeScrollBarRunner(context);
     }
 
-    void onDraw(Canvas canvas) {
+    void onDraw(@NonNull Canvas canvas) {
         final RectF drawRectF = tempDisplayRectF;
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
@@ -146,9 +155,10 @@ class ScrollBarHelper {
     }
 
     private class FadeScrollBarRunner implements Runnable {
+        @NonNull
         private Scroller scroller;
 
-        FadeScrollBarRunner(Context context) {
+        FadeScrollBarRunner(@NonNull Context context) {
             this.scroller = new Scroller(context, new DecelerateInterpolator());
             scroller.forceFinished(true);
         }

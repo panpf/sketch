@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.optionsfilter;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.DownloadOptions;
 
 /**
@@ -27,5 +29,5 @@ public interface OptionsFilter {
      *
      * @param options {@link DownloadOptions}
      */
-    void filter(DownloadOptions options);
+    void filter(@NonNull DownloadOptions options);
 }

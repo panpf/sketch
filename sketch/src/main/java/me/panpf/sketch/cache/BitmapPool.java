@@ -24,7 +24,6 @@ public interface BitmapPool {
      *
      * @param sizeMultiplier 取值范围 0 到 1.
      */
-    @SuppressWarnings("unused")
     void setSizeMultiplier(float sizeMultiplier);
 
     /**
@@ -73,7 +72,6 @@ public interface BitmapPool {
     /**
      * 是否已禁用
      */
-    @SuppressWarnings("unused")
     boolean isDisabled();
 
     /**
@@ -99,7 +97,6 @@ public interface BitmapPool {
     /**
      * 是否已关闭
      */
-    @SuppressWarnings("unused")
     boolean isClosed();
 
     /**

@@ -17,8 +17,9 @@
 package me.panpf.sketch.uri;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import java.io.File;
 
@@ -31,7 +32,6 @@ public class FileVariantUriModel extends FileUriModel {
     public static final String SCHEME = "file://";
 
     @NonNull
-    @SuppressWarnings("unused")
     public static String makeUri(@NonNull String filePath) {
         if (TextUtils.isEmpty(filePath)) {
             throw new IllegalArgumentException("Param filePath is null or empty");

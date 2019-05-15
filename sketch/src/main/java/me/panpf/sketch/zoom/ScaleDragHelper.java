@@ -26,6 +26,9 @@ import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.decode.ImageSizeCalculator;
@@ -43,16 +46,24 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     private static final int EDGE_END = 1;
     private static final int EDGE_BOTH = 2;
 
+    @NonNull
     private ImageZoomer imageZoomer;
 
+    @NonNull
     private Matrix baseMatrix = new Matrix(); // 存储默认的缩放和位移信息
+    @NonNull
     private Matrix supportMatrix = new Matrix(); // 存储用户通过触摸事件产生的缩放、位移和外部设置的旋转信息
+    @NonNull
     private Matrix drawMatrix = new Matrix(); // 存储 configMatrix 和 userMatrix 融合后的信息，用于绘制
 
+    @Nullable
     private FlingRunner flingRunner;  // 执行飞速滚动
+    @Nullable
     private LocationRunner locationRunner;  // 定位执行器
+    @NonNull
     private ScaleDragGestureDetector scaleDragGestureDetector;  // 缩放和拖拽手势识别器
 
+    @NonNull
     private RectF tempDisplayRectF = new RectF();
     private int horScrollEdge = EDGE_NONE; // 横向滚动边界
     private int verScrollEdge = EDGE_NONE; // 竖向滚动边界
@@ -60,10 +71,9 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     private float tempLastScaleFocusX, tempLastScaleFocusY;  // 缓存最后一次缩放手势的坐标，在恢复缩放比例时使用
     private boolean zooming;    // 缩放中状态
 
-    public ScaleDragHelper(Context context, ImageZoomer imageZoomer) {
-        Context appContext = context.getApplicationContext();
+    ScaleDragHelper(@NonNull Context context, @NonNull ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
-        this.scaleDragGestureDetector = new ScaleDragGestureDetector(appContext);
+        this.scaleDragGestureDetector = new ScaleDragGestureDetector(context.getApplicationContext());
         this.scaleDragGestureDetector.setOnGestureListener(this);
         this.scaleDragGestureDetector.setActionListener(this);
     }
@@ -71,6 +81,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     /**
      * 获取边界名称，log 专用
      */
+    @NonNull
     private static String getScrollEdgeName(int scrollEdge) {
         if (scrollEdge == EDGE_NONE) {
             return "NONE";
@@ -85,7 +96,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         }
     }
 
-    private static void requestDisallowInterceptTouchEvent(ImageView imageView, boolean disallowIntercept) {
+    private static void requestDisallowInterceptTouchEvent(@NonNull ImageView imageView, boolean disallowIntercept) {
         ViewParent parent = imageView.getParent();
         if (parent != null) {
             parent.requestDisallowInterceptTouchEvent(disallowIntercept);
@@ -102,7 +113,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         cancelFling();
     }
 
-    boolean onTouchEvent(MotionEvent event) {// 定位操作不能被打断
+    boolean onTouchEvent(@NonNull MotionEvent event) {// 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner.isRunning()) {
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
@@ -129,7 +140,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     }
 
     @Override
-    public void onActionDown(MotionEvent ev) {
+    public void onActionDown(@NonNull MotionEvent ev) {
         tempLastScaleFocusX = 0;
         tempLastScaleFocusY = 0;
 
@@ -269,7 +280,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     }
 
     @Override
-    public void onActionUp(MotionEvent ev) {
+    public void onActionUp(@NonNull MotionEvent ev) {
         float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
         if (currentScale < SketchUtils.formatFloat(imageZoomer.getMinZoomScale(), 2)) {
             // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
@@ -287,7 +298,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     }
 
     @Override
-    public void onActionCancel(MotionEvent ev) {
+    public void onActionCancel(@NonNull MotionEvent ev) {
         onActionUp(ev);
     }
 

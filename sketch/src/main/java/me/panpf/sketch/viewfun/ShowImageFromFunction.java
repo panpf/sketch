@@ -20,9 +20,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.view.View;
 
 import me.panpf.sketch.drawable.SketchDrawable;
 import me.panpf.sketch.drawable.SketchLoadingDrawable;
@@ -40,6 +41,7 @@ import me.panpf.sketch.util.SketchUtils;
  * <li>紫色：内存
  * </ul>
  */
+@SuppressWarnings("WeakerAccess")
 public class ShowImageFromFunction extends ViewFunction {
     private static final int FROM_FLAG_COLOR_MEMORY = 0x88A020F0;
     private static final int FROM_FLAG_COLOR_MEMORY_CACHE = 0x8800FF00;
@@ -47,13 +49,17 @@ public class ShowImageFromFunction extends ViewFunction {
     private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
 
+    @NonNull
     private View view;
 
+    @Nullable
     private Path imageFromPath;
+    @Nullable
     private Paint imageFromPaint;
+    @Nullable
     private ImageFrom imageFrom;
 
-    public ShowImageFromFunction(View view) {
+    public ShowImageFromFunction(@NonNull View view) {
         this.view = view;
     }
 
@@ -139,11 +145,12 @@ public class ShowImageFromFunction extends ViewFunction {
         return oldImageFrom != newImageFrom;
     }
 
+    @Nullable
     public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
-    public void setImageFrom(ImageFrom imageFrom) {
+    public void setImageFrom(@Nullable ImageFrom imageFrom) {
         this.imageFrom = imageFrom;
     }
 }

@@ -3,6 +3,9 @@ package me.panpf.sketch.sample.util;
 import android.content.Context;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.zoom.Sizes;
 import me.panpf.sketch.zoom.ZoomScales;
 
@@ -17,7 +20,7 @@ public class FixedThreeLevelScales implements ZoomScales {
     private float originZoomScale;  // 能够让图片按照真实尺寸一比一显示的缩放比例
 
     @Override
-    public void reset(final Context context, final Sizes sizes, final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
+    public void reset(@NonNull final Context context, @NonNull final Sizes sizes, @Nullable final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
         final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
         final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
         final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();

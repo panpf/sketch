@@ -17,8 +17,10 @@
 package me.panpf.sketch.uri;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 
@@ -37,7 +39,7 @@ public class FileUriModel extends UriModel {
 
     @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) {
         return new FileDataSource(new File(uri));
     }
 }

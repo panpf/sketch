@@ -19,8 +19,10 @@ package me.panpf.sketch.datasource;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,11 +43,13 @@ import me.panpf.sketch.util.SketchUtils;
  */
 public class AssetsDataSource implements DataSource {
 
+    @NonNull
     private Context context;
+    @NonNull
     private String assetsFilePath;
     private long length = -1;
 
-    public AssetsDataSource(Context context, String assetsFilePath) {
+    public AssetsDataSource(@NonNull Context context, @NonNull String assetsFilePath) {
         this.context = context;
         this.assetsFilePath = assetsFilePath;
     }
@@ -65,9 +69,7 @@ public class AssetsDataSource implements DataSource {
         AssetFileDescriptor fileDescriptor = null;
         try {
             fileDescriptor = context.getAssets().openFd(assetsFilePath);
-            length = fileDescriptor != null ? fileDescriptor.getLength() : 0;
-        } catch (IOException e) {
-            e.printStackTrace();
+            length = fileDescriptor.getLength();
         } finally {
             SketchUtils.close(fileDescriptor);
         }
@@ -75,7 +77,7 @@ public class AssetsDataSource implements DataSource {
     }
 
     @Override
-    public File getFile(File outDir, String outName) throws IOException {
+    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
         if (outDir == null) {
             return null;
         }

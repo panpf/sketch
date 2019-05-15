@@ -19,8 +19,10 @@ package me.panpf.sketch.datasource;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,12 +42,12 @@ import me.panpf.sketch.util.SketchUtils;
  * 用于读取来自 drawable 资源的图片
  */
 public class DrawableDataSource implements DataSource {
-
+    @NonNull
     private Context context;
     private int drawableId;
     private long length = -1;
 
-    public DrawableDataSource(Context context, int drawableId) {
+    public DrawableDataSource(@NonNull Context context, int drawableId) {
         this.context = context;
         this.drawableId = drawableId;
     }
@@ -73,7 +75,7 @@ public class DrawableDataSource implements DataSource {
     }
 
     @Override
-    public File getFile(File outDir, String outName) throws IOException {
+    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
         if (outDir == null) {
             return null;
         }

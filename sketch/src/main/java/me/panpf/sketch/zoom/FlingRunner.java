@@ -20,18 +20,24 @@ import android.graphics.RectF;
 import android.widget.ImageView;
 import android.widget.OverScroller;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.SketchUtils;
 
+@SuppressWarnings("WeakerAccess")
 class FlingRunner implements Runnable {
+    @NonNull
     private ImageZoomer imageZoomer;
+    @NonNull
     private ScaleDragHelper scaleDragHelper;
 
+    @NonNull
     private OverScroller scroller;
     private int currentX;
     private int currentY;
 
-    FlingRunner(ImageZoomer imageZoomer, ScaleDragHelper scaleDragHelper) {
+    FlingRunner(@NonNull ImageZoomer imageZoomer, @NonNull ScaleDragHelper scaleDragHelper) {
         this.scroller = new OverScroller(imageZoomer.getImageView().getContext());
         this.imageZoomer = imageZoomer;
         this.scaleDragHelper = scaleDragHelper;
@@ -120,15 +126,12 @@ class FlingRunner implements Runnable {
         SketchUtils.postOnAnimation(imageZoomer.getImageView(), this);
     }
 
-    @SuppressWarnings("WeakerAccess")
     public void cancelFling() {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
             SLog.d(ImageZoomer.NAME, "cancel fling");
         }
 
-        if (scroller != null) {
-            scroller.forceFinished(true);
-        }
+        scroller.forceFinished(true);
         imageZoomer.getImageView().removeCallbacks(this);
     }
 }

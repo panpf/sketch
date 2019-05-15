@@ -77,6 +77,8 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
         ImageOrientationCorrectTestFileGenerator.getInstance(baseContext).onAppStart()
 
         startService(Intent(baseContext, NotificationService::class.java))
+
+        // todo 申请读写存储权限
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -124,7 +126,7 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickBackTime > 2000) {
             lastClickBackTime = currentTime
-            Toast.makeText(baseContext, "再按一下退出 ${getString(R.string.app_name)}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(baseContext, "再按一下退出", Toast.LENGTH_SHORT).show()
             return
         }
 

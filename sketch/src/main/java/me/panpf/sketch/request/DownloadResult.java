@@ -16,31 +16,41 @@
 
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.cache.DiskCache;
 
+@SuppressWarnings("WeakerAccess")
 public class DownloadResult {
+    @Nullable
     private DiskCache.Entry diskCacheEntry;
+    @Nullable
     private byte[] imageData;
+    @NonNull
     private ImageFrom imageFrom;
 
-    public DownloadResult(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
+    public DownloadResult(@NonNull DiskCache.Entry diskCacheEntry, @NonNull ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
         this.imageFrom = imageFrom;
     }
 
-    public DownloadResult(byte[] imageData, ImageFrom imageFrom) {
+    public DownloadResult(@NonNull byte[] imageData, @NonNull ImageFrom imageFrom) {
         this.imageData = imageData;
         this.imageFrom = imageFrom;
     }
 
+    @Nullable
     public DiskCache.Entry getDiskCacheEntry() {
         return diskCacheEntry;
     }
 
+    @Nullable
     public byte[] getImageData() {
         return imageData;
     }
 
+    @NonNull
     public ImageFrom getImageFrom() {
         return imageFrom;
     }

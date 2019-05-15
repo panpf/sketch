@@ -18,8 +18,10 @@ package me.panpf.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.drawable.SketchGifDrawable;
 import me.panpf.sketch.request.DisplayOptions;
@@ -30,20 +32,25 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 点击播放 gif 功能
  */
+@SuppressWarnings("WeakerAccess")
 public class ClickPlayGifFunction extends ViewFunction {
+    @NonNull
     private FunctionCallbackView view;
+    @Nullable
     private Drawable playIconDrawable;
 
     private boolean canClickPlay;
+    @Nullable
     private Drawable lastDrawable;
     private int cacheViewWidth;
     private int cacheViewHeight;
     private int iconDrawLeft;
     private int iconDrawTop;
 
+    @Nullable
     private PlayGifRedisplayListener redisplayListener;
 
-    public ClickPlayGifFunction(FunctionCallbackView view) {
+    public ClickPlayGifFunction(@NonNull FunctionCallbackView view) {
         this.view = view;
     }
 
@@ -116,7 +123,7 @@ public class ClickPlayGifFunction extends ViewFunction {
     private static class PlayGifRedisplayListener implements RedisplayListener {
 
         @Override
-        public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+        public void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions) {
             cacheOptions.setLoadingImage(new OldStateImage());
             cacheOptions.setDecodeGifImage(true);
         }

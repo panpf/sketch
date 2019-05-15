@@ -17,10 +17,11 @@
 package me.panpf.sketch;
 
 import android.content.Context;
+import android.util.AttributeSet;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.AttributeSet;
 
 import me.panpf.sketch.request.DisplayCache;
 import me.panpf.sketch.request.DisplayRequest;
@@ -33,15 +34,15 @@ import me.panpf.sketch.viewfun.FunctionPropertyView;
  */
 public class SketchImageView extends FunctionPropertyView {
 
-    public SketchImageView(Context context) {
+    public SketchImageView(@NonNull Context context) {
         super(context);
     }
 
-    public SketchImageView(Context context, AttributeSet attrs) {
+    public SketchImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SketchImageView(Context context, AttributeSet attrs, int defStyle) {
+    public SketchImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

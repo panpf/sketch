@@ -6,19 +6,18 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.format.Formatter
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.ItemHolder
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.item.AppItemFactory
-import me.panpf.sketch.sample.item.AppScanningItemFactory
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.bean.AppScanning
+import me.panpf.sketch.sample.item.AppItemFactory
+import me.panpf.sketch.sample.item.AppScanningItemFactory
 import me.panpf.sketch.sample.util.FileScanner
 import me.panpf.sketch.sample.util.FileUtils
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
@@ -104,7 +103,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
         override fun doInBackground(vararg params: String): Array<String>? {
             val fragment = fragmentWeakReference.get()
             if (fragment != null) {
-                return SketchUtils.getAllAvailableSdcardPath(fragment.context)
+                return SketchUtils.getAllAvailableSdcardPath(fragment.requireContext())
             }
             return null
         }

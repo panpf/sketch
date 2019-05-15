@@ -17,37 +17,45 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.request.ImageFrom;
 
 public class BitmapDecodeResult implements DecodeResult {
+
+    @NonNull
     private Bitmap bitmap;
+    @NonNull
     private ImageAttrs imageAttrs;
+    @Nullable
     private ImageFrom imageFrom;
 
     private boolean banProcess;
     private boolean processed;
 
-    public BitmapDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull Bitmap bitmap) {
+    BitmapDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull Bitmap bitmap) {
         this.imageAttrs = imageAttrs;
         this.bitmap = bitmap;
     }
 
+    @NonNull
     @Override
     public ImageAttrs getImageAttrs() {
         return imageAttrs;
     }
 
+    @Nullable
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
     @Override
-    public void setImageFrom(ImageFrom imageFrom) {
+    public void setImageFrom(@NonNull ImageFrom imageFrom) {
         this.imageFrom = imageFrom;
     }
 
@@ -56,6 +64,7 @@ public class BitmapDecodeResult implements DecodeResult {
         return banProcess;
     }
 
+    @NonNull
     @Override
     public BitmapDecodeResult setBanProcess(boolean banProcess) {
         this.banProcess = banProcess;
@@ -67,6 +76,7 @@ public class BitmapDecodeResult implements DecodeResult {
         return processed;
     }
 
+    @NonNull
     @Override
     public BitmapDecodeResult setProcessed(boolean processed) {
         this.processed = processed;
@@ -74,10 +84,8 @@ public class BitmapDecodeResult implements DecodeResult {
     }
 
     @Override
-    public void recycle(BitmapPool bitmapPool) {
-        if (bitmap != null) {
-            BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
-        }
+    public void recycle(@NonNull BitmapPool bitmapPool) {
+        BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
     }
 
     @NonNull
@@ -85,7 +93,10 @@ public class BitmapDecodeResult implements DecodeResult {
         return bitmap;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setBitmap(@NonNull Bitmap bitmap) {
+        //noinspection ConstantConditions
+        if (bitmap != null) {
+            this.bitmap = bitmap;
+        }
     }
 }

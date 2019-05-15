@@ -53,21 +53,33 @@ import me.panpf.sketch.util.Stopwatch;
 /**
  * 组织、收集、初始化显示参数，最后执行 {@link #commit()} 提交请求
  */
+@SuppressWarnings("WeakerAccess")
 public class DisplayHelper {
     private static final String NAME = "DisplayHelper";
 
+    @Nullable
     private Sketch sketch;
 
+    @Nullable
     private String uri;
+    @Nullable
     private UriModel uriModel;
+
+    @Nullable
     private String key;
+    @NonNull
     private DisplayOptions displayOptions = new DisplayOptions();
+    @Nullable
     private DisplayListener displayListener;
+    @Nullable
     private DownloadProgressListener downloadProgressListener;
 
+    @NonNull
     private ViewInfo viewInfo = new ViewInfo();
+    @Nullable
     private SketchView sketchView;
 
+    @NonNull
     public DisplayHelper init(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
         this.sketch = sketch;
         this.uri = uri;
@@ -119,7 +131,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             displayOptions.setRequestLevel(requestLevel);
@@ -133,7 +144,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper disableCacheInDisk() {
         displayOptions.setCacheInDiskDisabled(true);
         return this;
@@ -145,7 +155,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper disableBitmapPool() {
         displayOptions.setBitmapPoolDisabled(true);
         return this;
@@ -157,7 +166,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper decodeGifImage() {
         displayOptions.setDecodeGifImage(true);
         return this;
@@ -170,7 +178,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper maxSize(@Nullable MaxSize maxSize) {
         displayOptions.setMaxSize(maxSize);
         return this;
@@ -184,7 +191,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper maxSize(int maxWidth, int maxHeight) {
         displayOptions.setMaxSize(maxWidth, maxHeight);
         return this;
@@ -247,7 +253,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper processor(@Nullable ImageProcessor processor) {
         displayOptions.setProcessor(processor);
         return this;
@@ -260,7 +265,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper bitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
         displayOptions.setBitmapConfig(bitmapConfig);
         return this;
@@ -273,7 +277,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         displayOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
         return this;
@@ -285,7 +288,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper thumbnailMode() {
         displayOptions.setThumbnailMode(true);
         return this;
@@ -297,7 +299,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper cacheProcessedImageInDisk() {
         displayOptions.setCacheProcessedImageInDisk(true);
         return this;
@@ -309,7 +310,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper disableCorrectImageOrientation() {
         displayOptions.setCorrectImageOrientationDisabled(true);
         return this;
@@ -321,7 +321,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper disableCacheInMemory() {
         displayOptions.setCacheInMemoryDisabled(true);
         return this;
@@ -334,7 +333,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper displayer(@Nullable ImageDisplayer displayer) {
         displayOptions.setDisplayer(displayer);
         return this;
@@ -347,7 +345,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper loadingImage(@Nullable StateImage loadingImage) {
         displayOptions.setLoadingImage(loadingImage);
         return this;
@@ -360,7 +357,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper loadingImage(@DrawableRes int drawableResId) {
         displayOptions.setLoadingImage(drawableResId);
         return this;
@@ -373,7 +369,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper errorImage(@Nullable StateImage errorImage) {
         displayOptions.setErrorImage(errorImage);
         return this;
@@ -386,7 +381,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper errorImage(@DrawableRes int drawableResId) {
         displayOptions.setErrorImage(drawableResId);
         return this;
@@ -399,7 +393,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper pauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
         displayOptions.setPauseDownloadImage(pauseDownloadImage);
         return this;
@@ -412,7 +405,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper pauseDownloadImage(@DrawableRes int drawableResId) {
         displayOptions.setPauseDownloadImage(drawableResId);
         return this;
@@ -425,7 +417,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper shaper(@Nullable ImageShaper imageShaper) {
         displayOptions.setShaper(imageShaper);
         return this;
@@ -438,7 +429,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper shapeSize(@Nullable ShapeSize shapeSize) {
         displayOptions.setShapeSize(shapeSize);
         return this;
@@ -452,7 +442,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper shapeSize(int shapeWidth, int shapeHeight) {
         displayOptions.setShapeSize(shapeWidth, shapeHeight);
         return this;
@@ -467,7 +456,6 @@ public class DisplayHelper {
      * @return {@link DisplayHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DisplayHelper shapeSize(int shapeWidth, int shapeHeight, ScaleType scaleType) {
         displayOptions.setShapeSize(shapeWidth, shapeHeight, scaleType);
         return this;

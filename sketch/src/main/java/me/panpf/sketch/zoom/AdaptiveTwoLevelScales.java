@@ -19,6 +19,9 @@ package me.panpf.sketch.zoom;
 import android.content.Context;
 import android.widget.ImageView.ScaleType;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.decode.ImageSizeCalculator;
 
@@ -40,7 +43,7 @@ public class AdaptiveTwoLevelScales implements ZoomScales {
     private float initZoomScale;
 
     @Override
-    public void reset(final Context context, final Sizes sizes, final ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
+    public void reset(@NonNull final Context context, @NonNull final Sizes sizes, @Nullable final ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
         final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
         final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
         final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();
@@ -113,7 +116,7 @@ public class AdaptiveTwoLevelScales implements ZoomScales {
         doubleClickZoomScales = new float[]{minZoomScale, maxZoomScale};
     }
 
-    private float getInitScale(final Context context, final Sizes sizes, final ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
+    private float getInitScale(@NonNull final Context context, @NonNull final Sizes sizes, @NonNull final ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
         final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
         final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
         final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();

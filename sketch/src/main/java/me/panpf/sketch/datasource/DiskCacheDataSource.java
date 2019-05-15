@@ -17,6 +17,7 @@
 package me.panpf.sketch.datasource;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +25,8 @@ import java.io.InputStream;
 
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.DiskCache;
-import me.panpf.sketch.decode.NotFoundGifLibraryException;
 import me.panpf.sketch.decode.ImageAttrs;
+import me.panpf.sketch.decode.NotFoundGifLibraryException;
 import me.panpf.sketch.drawable.SketchGifDrawable;
 import me.panpf.sketch.drawable.SketchGifFactory;
 import me.panpf.sketch.request.ImageFrom;
@@ -34,13 +35,14 @@ import me.panpf.sketch.request.ImageFrom;
  * 用于读取来自磁盘缓存的图片
  */
 public class DiskCacheDataSource implements DataSource {
-
+    @NonNull
     private DiskCache.Entry diskCacheEntry;
+    @NonNull
     private ImageFrom imageFrom;
     private long length = -1;
     private boolean fromProcessedCache; // 标识是否来自已处理缓存，后续对已处理缓存的图片会有额外处理
 
-    public DiskCacheDataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
+    public DiskCacheDataSource(@NonNull DiskCache.Entry diskCacheEntry, @NonNull ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
         this.imageFrom = imageFrom;
     }
@@ -62,7 +64,7 @@ public class DiskCacheDataSource implements DataSource {
     }
 
     @Override
-    public File getFile(File outDir, String outName) {
+    public File getFile(@Nullable File outDir, @Nullable String outName) {
         return diskCacheEntry.getFile();
     }
 
@@ -72,6 +74,7 @@ public class DiskCacheDataSource implements DataSource {
         return imageFrom;
     }
 
+    @NonNull
     public DiskCache.Entry getDiskCacheEntry() {
         return diskCacheEntry;
     }
@@ -87,6 +90,7 @@ public class DiskCacheDataSource implements DataSource {
         return fromProcessedCache;
     }
 
+    @NonNull
     public DiskCacheDataSource setFromProcessedCache(boolean fromProcessedCache) {
         this.fromProcessedCache = fromProcessedCache;
         return this;

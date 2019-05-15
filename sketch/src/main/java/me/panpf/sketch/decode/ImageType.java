@@ -18,6 +18,9 @@ package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.util.SketchUtils;
 
@@ -29,19 +32,24 @@ public enum ImageType {
     PNG("image/png", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
     WEBP("image/webp", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
     GIF("image/gif", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
-    BMP("image/bmp", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),;
+    BMP("image/bmp", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
+    ;
 
+    @NonNull
     String mimeType;
+    @NonNull
     Bitmap.Config bestConfig;
+    @NonNull
     Bitmap.Config lowQualityConfig;
 
-    ImageType(String mimeType, Bitmap.Config bestConfig, Bitmap.Config lowQualityConfig) {
+    ImageType(@NonNull String mimeType, @NonNull Bitmap.Config bestConfig, @NonNull Bitmap.Config lowQualityConfig) {
         this.mimeType = mimeType;
         this.bestConfig = bestConfig;
         this.lowQualityConfig = lowQualityConfig;
     }
 
-    public static ImageType valueOfMimeType(String mimeType) {
+    @Nullable
+    public static ImageType valueOfMimeType(@Nullable String mimeType) {
         if (ImageType.JPEG.mimeType.equalsIgnoreCase(mimeType)) {
             return ImageType.JPEG;
         } else if (ImageType.PNG.mimeType.equalsIgnoreCase(mimeType)) {
@@ -57,28 +65,34 @@ public enum ImageType {
         }
     }
 
+    @NonNull
     public Bitmap.Config getConfig(boolean lowQualityImage) {
         return lowQualityImage ? lowQualityConfig : bestConfig;
     }
 
+    @NonNull
     public String getMimeType() {
         return mimeType;
     }
 
-    @SuppressWarnings("unused")
-    public void setBestConfig(Bitmap.Config bestConfig) {
-        this.bestConfig = bestConfig;
-    }
-
-    @SuppressWarnings("unused")
-    public void setLowQualityConfig(Bitmap.Config lowQualityConfig) {
-        if (lowQualityConfig == Bitmap.Config.ARGB_4444 && SketchUtils.isDisabledARGB4444()) {
-            lowQualityConfig = Bitmap.Config.ARGB_8888;
+    public void setBestConfig(@NonNull Bitmap.Config bestConfig) {
+        //noinspection ConstantConditions
+        if (bestConfig != null) {
+            this.bestConfig = bestConfig;
         }
-        this.lowQualityConfig = lowQualityConfig;
     }
 
-    public boolean equals(String mimeType) {
+    public void setLowQualityConfig(@NonNull Bitmap.Config lowQualityConfig) {
+        //noinspection ConstantConditions
+        if (lowQualityConfig != null) {
+            if (lowQualityConfig == Bitmap.Config.ARGB_4444 && SketchUtils.isDisabledARGB4444()) {
+                lowQualityConfig = Bitmap.Config.ARGB_8888;
+            }
+            this.lowQualityConfig = lowQualityConfig;
+        }
+    }
+
+    public boolean equals(@Nullable String mimeType) {
         return this.mimeType.equalsIgnoreCase(mimeType);
     }
 }

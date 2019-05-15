@@ -18,7 +18,9 @@ package me.panpf.sketch.http;
 
 import androidx.annotation.NonNull;
 
+@SuppressWarnings("WeakerAccess")
 public class RedirectsException extends Exception {
+    @NonNull
     private String newUrl;
 
     public RedirectsException(@NonNull String newUrl) {

@@ -70,7 +70,7 @@ public abstract class AbsDiskCacheUriModel<Content> extends UriModel {
     }
 
     @NonNull
-    private DataSource readContent(Context context, String uri, String diskCacheKey) throws GetDataSourceException {
+    private DataSource readContent(@NonNull Context context, @NonNull String uri, @NonNull String diskCacheKey) throws GetDataSourceException {
         Content content = getContent(context, uri);
 
         DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();

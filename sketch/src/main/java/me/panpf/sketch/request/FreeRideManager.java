@@ -17,6 +17,7 @@
 package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -30,18 +31,23 @@ import me.panpf.sketch.SLog;
  * 对于相同的请求（不同类型条件不一样），只要第一个请求执行完毕了，后续请求可以直接使用第一个请求的结果，那么我们可以将所有后续的请求都绑定在第一个请求上，
  * 等第一个请求执行完毕后直接将结果交给后续请求处理即可，对于这样的情况我们称之为顺风车
  */
+@SuppressWarnings("WeakerAccess")
 public class FreeRideManager {
     private static final String NAME = "FreeRideManager";
 
+    @NonNull
     private final Object displayFreeRideProviderMapLock = new Object();
+    @NonNull
     private final Object downloadFreeRideProviderMapLock = new Object();
+    @Nullable
     private Map<String, DisplayFreeRide> displayFreeRideProviderMap;
+    @Nullable
     private Map<String, DownloadFreeRide> downloadFreeRideProviderMap;
 
     /**
      * 成为显示顺风车主
      */
-    public void registerDisplayFreeRideProvider(DisplayFreeRide provider) {
+    public void registerDisplayFreeRideProvider(@NonNull DisplayFreeRide provider) {
         if (!provider.canByDisplayFreeRide()) {
             return;
         }
@@ -67,7 +73,7 @@ public class FreeRideManager {
     /**
      * 取消显示顺风车主身份并回调那些显示顺风车
      */
-    public void unregisterDisplayFreeRideProvider(DisplayFreeRide provider) {
+    public void unregisterDisplayFreeRideProvider(@NonNull DisplayFreeRide provider) {
         if (!provider.canByDisplayFreeRide()) {
             return;
         }
@@ -117,7 +123,7 @@ public class FreeRideManager {
      * @param childFreeRide {@link DisplayFreeRide}
      * @return 坐上了
      */
-    public boolean byDisplayFreeRide(DisplayFreeRide childFreeRide) {
+    public boolean byDisplayFreeRide(@NonNull DisplayFreeRide childFreeRide) {
         if (!childFreeRide.canByDisplayFreeRide()) {
             return false;
         }
@@ -144,7 +150,7 @@ public class FreeRideManager {
     /**
      * 成为下载顺风车主
      */
-    public void registerDownloadFreeRideProvider(DownloadFreeRide provider) {
+    public void registerDownloadFreeRideProvider(@NonNull DownloadFreeRide provider) {
         if (!provider.canByDownloadFreeRide()) {
             return;
         }
@@ -170,7 +176,7 @@ public class FreeRideManager {
     /**
      * 取消下载顺风车主身份并回调那些下载顺风车
      */
-    public void unregisterDownloadFreeRideProvider(DownloadFreeRide provider) {
+    public void unregisterDownloadFreeRideProvider(@NonNull DownloadFreeRide provider) {
         if (!provider.canByDownloadFreeRide()) {
             return;
         }
@@ -220,7 +226,7 @@ public class FreeRideManager {
      * @param childFreeRide {@link DownloadFreeRide}
      * @return 坐上了
      */
-    public boolean byDownloadFreeRide(DownloadFreeRide childFreeRide) {
+    public boolean byDownloadFreeRide(@NonNull DownloadFreeRide childFreeRide) {
         if (!childFreeRide.canByDownloadFreeRide()) {
             return false;
         }
@@ -262,11 +268,13 @@ public class FreeRideManager {
         /**
          * 获取显示顺风车KEY
          */
+        @NonNull
         String getDisplayFreeRideKey();
 
         /**
          * 获取日志
          */
+        @NonNull
         String getDisplayFreeRideLog();
 
         /**
@@ -282,6 +290,7 @@ public class FreeRideManager {
         /**
          * 获取显示顺风车集合
          */
+        @Nullable
         Set<DisplayFreeRide> getDisplayFreeRideSet();
 
         /**
@@ -304,11 +313,13 @@ public class FreeRideManager {
         /**
          * 获取下载顺风车KEY
          */
+        @NonNull
         String getDownloadFreeRideKey();
 
         /**
          * 获取日志
          */
+        @NonNull
         String getDownloadFreeRideLog();
 
         /**
@@ -324,6 +335,7 @@ public class FreeRideManager {
         /**
          * 获取下载顺风车集合
          */
+        @Nullable
         Set<DownloadFreeRide> getDownloadFreeRideSet();
 
         /**

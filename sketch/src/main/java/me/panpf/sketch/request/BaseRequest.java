@@ -17,23 +17,35 @@
 package me.panpf.sketch.request;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.uri.UriModel;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class BaseRequest {
+    @NonNull
     private Sketch sketch;
+    @NonNull
     private String uri;
+    @NonNull
     private UriModel uriModel;
+    @NonNull
     private String key;
 
+    @Nullable
     private String diskCacheKey;
+    @NonNull
     private String logName = "Request";
+    @Nullable
     private Status status;
+    @Nullable
     private ErrorCause errorCause;
+    @Nullable
     private CancelCause cancelCause;
 
     BaseRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key) {
@@ -43,6 +55,7 @@ public abstract class BaseRequest {
         this.key = key;
     }
 
+    @NonNull
     public Sketch getSketch() {
         return sketch;
     }
@@ -55,14 +68,17 @@ public abstract class BaseRequest {
         return sketch.getConfiguration();
     }
 
+    @NonNull
     public String getUri() {
         return uri;
     }
 
+    @NonNull
     public UriModel getUriModel() {
         return uriModel;
     }
 
+    @NonNull
     public String getKey() {
         return key;
     }
@@ -74,15 +90,16 @@ public abstract class BaseRequest {
         return diskCacheKey;
     }
 
+    @NonNull
     public String getLogName() {
         return logName;
     }
 
-    void setLogName(String logName) {
+    void setLogName(@NonNull String logName) {
         this.logName = logName;
     }
 
-    @SuppressWarnings("unused")
+    @Nullable
     public Status getStatus() {
         return status;
     }
@@ -93,11 +110,11 @@ public abstract class BaseRequest {
         }
     }
 
+    @Nullable
     public ErrorCause getErrorCause() {
         return errorCause;
     }
 
-    @SuppressWarnings("unused")
     protected void setErrorCause(@NonNull ErrorCause cause) {
         if (!isFinished()) {
             this.errorCause = cause;
@@ -107,6 +124,7 @@ public abstract class BaseRequest {
         }
     }
 
+    @Nullable
     public CancelCause getCancelCause() {
         return cancelCause;
     }
@@ -143,7 +161,7 @@ public abstract class BaseRequest {
      *
      * @return false：request finished
      */
-    public boolean cancel(CancelCause cancelCause) {
+    public boolean cancel(@NonNull CancelCause cancelCause) {
         if (!isFinished()) {
             doCancel(cancelCause);
             return true;
@@ -152,6 +170,7 @@ public abstract class BaseRequest {
         }
     }
 
+    @NonNull
     public String getThreadName() {
         return Thread.currentThread().getName();
     }

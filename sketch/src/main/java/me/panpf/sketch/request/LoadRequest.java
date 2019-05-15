@@ -18,6 +18,7 @@ package me.panpf.sketch.request;
 
 import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -37,14 +38,18 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 加载请求
  */
+@SuppressWarnings("WeakerAccess")
 public class LoadRequest extends FreeRideDownloadRequest {
+    @NonNull
     private LoadOptions loadOptions;
+    @Nullable
     private LoadListener loadListener;
 
+    @Nullable
     private LoadResult loadResult;
 
-    public LoadRequest(Sketch sketch, String uri, UriModel uriModel, String key, LoadOptions loadOptions,
-                       LoadListener loadListener, DownloadProgressListener downloadProgressListener) {
+    public LoadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull LoadOptions loadOptions,
+                       @Nullable LoadListener loadListener, @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, loadOptions, null, downloadProgressListener);
 
         this.loadOptions = loadOptions;
@@ -56,6 +61,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     /**
      * 获取已处理功能使用的磁盘缓存 key
      */
+    @NonNull
     public String getProcessedDiskCacheKey() {
         return getKey();
     }
@@ -88,6 +94,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     /**
      * 获取加载选项
      */
+    @NonNull
     @Override
     public LoadOptions getOptions() {
         return loadOptions;
@@ -96,6 +103,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     /**
      * 获取加载结果
      */
+    @Nullable
     public LoadResult getLoadResult() {
         return loadResult;
     }
@@ -277,14 +285,14 @@ public class LoadRequest extends FreeRideDownloadRequest {
             return;
         }
 
-        if (loadListener != null) {
+        if (loadListener != null && getErrorCause() != null) {
             loadListener.onError(getErrorCause());
         }
     }
 
     @Override
     protected void runCanceledInMainThread() {
-        if (loadListener != null) {
+        if (loadListener != null && getCancelCause() != null) {
             loadListener.onCanceled(getCancelCause());
         }
     }

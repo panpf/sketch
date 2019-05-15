@@ -16,6 +16,9 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.request.ImageFrom;
 
@@ -29,6 +32,7 @@ public interface DecodeResult {
      *
      * @return {@link ImageAttrs}
      */
+    @NonNull
     ImageAttrs getImageAttrs();
 
     /**
@@ -36,6 +40,7 @@ public interface DecodeResult {
      *
      * @return {@link ImageFrom}
      */
+    @Nullable
     ImageFrom getImageFrom();
 
     /**
@@ -43,7 +48,7 @@ public interface DecodeResult {
      *
      * @param imageFrom {@link ImageFrom}
      */
-    void setImageFrom(ImageFrom imageFrom);
+    void setImageFrom(@NonNull ImageFrom imageFrom);
 
     /**
      * 是否禁止对图片进行后期处理
@@ -56,6 +61,7 @@ public interface DecodeResult {
      * @param banProcess 是否禁止对图片进行后期处理
      * @return {@link DecodeResult}
      */
+    @NonNull
     DecodeResult setBanProcess(boolean banProcess);
 
     /**
@@ -69,6 +75,7 @@ public interface DecodeResult {
      * @param processed 否经过了后期处理
      * @return {@link DecodeResult}
      */
+    @NonNull
     DecodeResult setProcessed(boolean processed);
 
     /**
@@ -76,5 +83,5 @@ public interface DecodeResult {
      *
      * @param bitmapPool {@link BitmapPool}
      */
-    void recycle(BitmapPool bitmapPool);
+    void recycle(@NonNull BitmapPool bitmapPool);
 }

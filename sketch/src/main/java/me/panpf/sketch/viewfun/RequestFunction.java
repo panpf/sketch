@@ -35,16 +35,20 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 请求基本功能，更新图片显示引用计数和在onDetachedFromWindow的时候取消请求并清空图片
  */
+@SuppressWarnings("WeakerAccess")
 public class RequestFunction extends ViewFunction {
+    @NonNull
     private SketchView sketchView;
 
+    @NonNull
     private DisplayOptions displayOptions = new DisplayOptions();
+    @Nullable
     private DisplayCache displayCache;
 
     private boolean oldDrawableFromSketch;
     private boolean newDrawableFromSketch;
 
-    public RequestFunction(SketchView sketchView) {
+    public RequestFunction(@NonNull SketchView sketchView) {
         this.sketchView = sketchView;
     }
 
@@ -56,7 +60,7 @@ public class RequestFunction extends ViewFunction {
      * @param isDisplayed    是否已显示
      * @return true：drawable或其子Drawable是SketchDrawable
      */
-    private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
+    private static boolean notifyDrawable(@NonNull String callingStation, @Nullable Drawable drawable, final boolean isDisplayed) {
         if (drawable == null) {
             return false;
         }
@@ -101,7 +105,7 @@ public class RequestFunction extends ViewFunction {
 
         // 如果当前图片是来自Sketch，那么就有可能在这里被主动回收，因此要主动设置ImageView的drawable为null
         final Drawable oldDrawable = sketchView.getDrawable();
-        return oldDrawable != null && notifyDrawable("onDetachedFromWindow", oldDrawable, false);
+        return notifyDrawable("onDetachedFromWindow", oldDrawable, false);
     }
 
     @Override
@@ -118,24 +122,24 @@ public class RequestFunction extends ViewFunction {
         return false;
     }
 
+    @Nullable
     public DisplayCache getDisplayCache() {
         return displayCache;
     }
 
-    public void setDisplayCache(DisplayCache displayCache) {
+    public void setDisplayCache(@Nullable DisplayCache displayCache) {
         this.displayCache = displayCache;
     }
 
-    @SuppressWarnings("unused")
     public boolean isOldDrawableFromSketch() {
         return oldDrawableFromSketch;
     }
 
-    @SuppressWarnings("unused")
     public boolean isNewDrawableFromSketch() {
         return newDrawableFromSketch;
     }
 
+    @NonNull
     public DisplayOptions getDisplayOptions() {
         return displayOptions;
     }

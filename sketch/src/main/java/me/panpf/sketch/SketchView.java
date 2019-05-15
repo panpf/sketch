@@ -21,12 +21,13 @@ import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.request.DisplayCache;
 import me.panpf.sketch.request.DisplayListener;
@@ -79,7 +80,6 @@ public interface SketchView {
      * @param drawableResId drawable 资源 id
      */
     @Nullable
-    @SuppressWarnings("unused")
     DisplayRequest displayResourceImage(@DrawableRes int drawableResId);
 
     /**
@@ -88,7 +88,6 @@ public interface SketchView {
      * @param assetFileName assets 文件夹下的图片文件的名称
      */
     @Nullable
-    @SuppressWarnings("unused")
     DisplayRequest displayAssetImage(@NonNull String assetFileName);
 
     /**
@@ -97,7 +96,6 @@ public interface SketchView {
      * @param uri 来自 {@link ContentProvider} 的图片 uri，例如：content://、file://，使用 {@link ContentResolver#openInputStream(Uri)} api 读取图片
      */
     @Nullable
-    @SuppressWarnings("unused")
     DisplayRequest displayContentImage(@NonNull String uri);
 
     /**
@@ -136,7 +134,6 @@ public interface SketchView {
     /**
      * 设置下载进度监听器
      */
-    @SuppressWarnings("unused")
     void setDownloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener);
 
     /**

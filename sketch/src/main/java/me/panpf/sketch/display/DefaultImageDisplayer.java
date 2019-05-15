@@ -32,9 +32,6 @@ public class DefaultImageDisplayer implements ImageDisplayer {
 
     @Override
     public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable == null) {
-            return;
-        }
         sketchView.clearAnimation();
         sketchView.setImageDrawable(newDrawable);
     }

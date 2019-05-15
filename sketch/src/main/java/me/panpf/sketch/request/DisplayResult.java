@@ -18,27 +18,36 @@ package me.panpf.sketch.request;
 
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.decode.ImageAttrs;
 
+@SuppressWarnings("WeakerAccess")
 public class DisplayResult {
+    @NonNull
     private Drawable drawable;
+    @NonNull
     private ImageAttrs imageAttrs;
+    @NonNull
     private ImageFrom imageFrom;
 
-    public DisplayResult(Drawable drawable, ImageFrom imageFrom, ImageAttrs imageAttrs) {
+    public DisplayResult(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
         this.drawable = drawable;
         this.imageFrom = imageFrom;
         this.imageAttrs = imageAttrs;
     }
 
+    @NonNull
     public Drawable getDrawable() {
         return drawable;
     }
 
+    @NonNull
     public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
+    @NonNull
     public ImageAttrs getImageAttrs() {
         return imageAttrs;
     }

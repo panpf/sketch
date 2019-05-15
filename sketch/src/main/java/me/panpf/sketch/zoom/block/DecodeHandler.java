@@ -24,6 +24,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.Configuration;
@@ -39,18 +42,23 @@ import me.panpf.sketch.decode.ImageType;
 /**
  * 解码处理器，运行在解码线程中，负责解码
  */
+@SuppressWarnings("WeakerAccess")
 public class DecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
     private boolean disableInBitmap;
 
+    @NonNull
     private WeakReference<BlockExecutor> reference;
+    @NonNull
     private BitmapPool bitmapPool;
+    @NonNull
     private ErrorTracker errorTracker;
+    @NonNull
     private ImageOrientationCorrector orientationCorrector;
 
-    public DecodeHandler(Looper looper, BlockExecutor executor) {
+    public DecodeHandler(@NonNull Looper looper, @NonNull BlockExecutor executor) {
         super(looper);
         this.reference = new WeakReference<>(executor);
 
@@ -61,16 +69,14 @@ public class DecodeHandler extends Handler {
     }
 
     @Override
-    public void handleMessage(Message msg) {
+    public void handleMessage(@NonNull Message msg) {
         BlockExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
             decodeExecutor.callbackHandler.cancelDelayDestroyThread();
         }
 
-        switch (msg.what) {
-            case WHAT_DECODE:
-                decode(decodeExecutor, msg.arg1, (Block) msg.obj);
-                break;
+        if (msg.what == WHAT_DECODE) {
+            decode(decodeExecutor, msg.arg1, (Block) msg.obj);
         }
 
         if (decodeExecutor != null) {
@@ -78,14 +84,14 @@ public class DecodeHandler extends Handler {
         }
     }
 
-    public void postDecode(int key, Block block) {
+    public void postDecode(int key, @NonNull Block block) {
         Message message = obtainMessage(DecodeHandler.WHAT_DECODE);
         message.arg1 = key;
         message.obj = block;
         message.sendToTarget();
     }
 
-    private void decode(BlockExecutor executor, int key, Block block) {
+    private void decode(@Nullable BlockExecutor executor, int key, @NonNull Block block) {
         if (executor == null) {
             SLog.w(NAME, "weak reference break. key: %d, block=%s", key, block.getInfo());
             return;
@@ -182,7 +188,7 @@ public class DecodeHandler extends Handler {
         executor.callbackHandler.postDecodeCompleted(key, block, bitmap, useTime);
     }
 
-    public void clean(String why) {
+    public void clean(@NonNull String why) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
             SLog.d(NAME, "clean. %s", why);
         }

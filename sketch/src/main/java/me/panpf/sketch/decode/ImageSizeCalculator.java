@@ -18,10 +18,12 @@
 package me.panpf.sketch.decode;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
 
@@ -41,7 +43,7 @@ public class ImageSizeCalculator {
     private int openGLMaxTextureSize = -1;
     private float targetSizeScale = 1.1f;
 
-    private static int getWidth(SketchView sketchView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
+    private static int getWidth(@Nullable SketchView sketchView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
         if (sketchView == null) {
             return 0;
         }
@@ -64,7 +66,7 @@ public class ImageSizeCalculator {
         return width;
     }
 
-    private static int getHeight(SketchView sketchView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
+    private static int getHeight(@Nullable SketchView sketchView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
         if (sketchView == null) {
             return 0;
         }
@@ -87,7 +89,7 @@ public class ImageSizeCalculator {
         return height;
     }
 
-    private static int getViewFieldValue(Object object, String fieldName) {
+    private static int getViewFieldValue(@NonNull Object object, @NonNull String fieldName) {
         int value = 0;
         try {
             Field field = ImageView.class.getDeclaredField(fieldName);
@@ -105,7 +107,6 @@ public class ImageSizeCalculator {
     /**
      * 获取 OpenGL 所允许的最大尺寸
      */
-    @SuppressWarnings("WeakerAccess")
     public int getOpenGLMaxTextureSize() {
         if (openGLMaxTextureSize == -1) {
             openGLMaxTextureSize = SketchUtils.getOpenGLMaxTextureSize();
@@ -116,7 +117,6 @@ public class ImageSizeCalculator {
     /**
      * 设置 OpenGL 所允许的最大尺寸,用来计算 inSampleSize
      */
-    @SuppressWarnings("unused")
     public void setOpenGLMaxTextureSize(int openGLMaxTextureSize) {
         this.openGLMaxTextureSize = openGLMaxTextureSize;
     }
@@ -127,11 +127,12 @@ public class ImageSizeCalculator {
      * @param sketchView 你需要根据 {@link ImageView} 的宽高来计算
      * @return {@link MaxSize}
      */
-    public MaxSize calculateImageMaxSize(SketchView sketchView) {
+    @Nullable
+    public MaxSize calculateImageMaxSize(@Nullable SketchView sketchView) {
         int width = getWidth(sketchView, true, true, false);
         int height = getHeight(sketchView, true, true, false);
 
-        if (width <= 0 && height <= 0) {
+        if (sketchView == null || (width <= 0 && height <= 0)) {
             return null;
         }
 
@@ -156,7 +157,8 @@ public class ImageSizeCalculator {
      * @param context 上下文
      * @return {@link MaxSize}
      */
-    public MaxSize getDefaultImageMaxSize(Context context) {
+    @NonNull
+    public MaxSize getDefaultImageMaxSize(@NonNull Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
     }
@@ -167,7 +169,8 @@ public class ImageSizeCalculator {
      * @param sketchView 你需要根据 {@link ImageView} 的宽高来计算
      * @return {@link FixedSize}
      */
-    public FixedSize calculateImageFixedSize(SketchView sketchView) {
+    @Nullable
+    public FixedSize calculateImageFixedSize(@NonNull SketchView sketchView) {
         ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
         if (layoutParams == null || layoutParams.width <= 0 || layoutParams.height <= 0) {
             return null;
@@ -283,13 +286,12 @@ public class ImageSizeCalculator {
     /**
      * 根据请求和图片类型判断是否使用更小的缩略图
      */
-    public boolean canUseSmallerThumbnails(LoadRequest loadRequest, ImageType imageType) {
+    public boolean canUseSmallerThumbnails(@NonNull LoadRequest loadRequest, @NonNull ImageType imageType) {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getViewInfo().isUseSmallerThumbnails() &&
                 SketchUtils.formatSupportBitmapRegionDecoder(imageType);
     }
 
-    @SuppressWarnings("unused")
     public float getTargetSizeScale() {
         return targetSizeScale;
     }
@@ -299,7 +301,6 @@ public class ImageSizeCalculator {
      *
      * @param targetSizeScale 将 targetSize 稍微放大一点儿
      */
-    @SuppressWarnings("unused")
     public void setTargetSizeScale(float targetSizeScale) {
         this.targetSizeScale = targetSizeScale;
     }

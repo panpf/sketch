@@ -20,6 +20,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.SLog;
@@ -32,25 +35,24 @@ class InitHandler extends Handler {
     private static final String NAME = "InitHandler";
     private static final int WHAT_INIT = 1002;
 
+    @NonNull
     private WeakReference<BlockExecutor> reference;
 
-    public InitHandler(Looper looper, BlockExecutor decodeExecutor) {
+    InitHandler(@NonNull Looper looper, @NonNull BlockExecutor decodeExecutor) {
         super(looper);
         reference = new WeakReference<>(decodeExecutor);
     }
 
     @Override
-    public void handleMessage(Message msg) {
+    public void handleMessage(@NonNull Message msg) {
         BlockExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
             decodeExecutor.callbackHandler.cancelDelayDestroyThread();
         }
 
-        switch (msg.what) {
-            case WHAT_INIT:
-                Wrapper wrapper = (Wrapper) msg.obj;
-                init(decodeExecutor, wrapper.imageUri, wrapper.correctImageOrientationDisabled, msg.arg1, wrapper.keyCounter);
-                break;
+        if (msg.what == WHAT_INIT) {
+            Wrapper wrapper = (Wrapper) msg.obj;
+            init(decodeExecutor, wrapper.imageUri, wrapper.correctImageOrientationDisabled, msg.arg1, wrapper.keyCounter);
         }
 
         if (decodeExecutor != null) {
@@ -58,7 +60,7 @@ class InitHandler extends Handler {
         }
     }
 
-    public void postInit(String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
+    void postInit(@NonNull String imageUri, boolean correctImageOrientationDisabled, int key, @NonNull KeyCounter keyCounter) {
         removeMessages(WHAT_INIT);
 
         Message message = obtainMessage(WHAT_INIT);
@@ -67,7 +69,7 @@ class InitHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void init(BlockExecutor decodeExecutor, String imageUri, boolean correctImageOrientationDisabled, int key, KeyCounter keyCounter) {
+    private void init(@Nullable BlockExecutor decodeExecutor, @NonNull String imageUri, boolean correctImageOrientationDisabled, int key, @NonNull KeyCounter keyCounter) {
         if (decodeExecutor == null) {
             SLog.w(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             return;
@@ -88,7 +90,7 @@ class InitHandler extends Handler {
             return;
         }
 
-        if (decoder == null || !decoder.isReady()) {
+        if (!decoder.isReady()) {
             decodeExecutor.callbackHandler.postInitError(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
             return;
         }
@@ -111,12 +113,15 @@ class InitHandler extends Handler {
         removeMessages(WHAT_INIT);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static class Wrapper {
+        @NonNull
         public String imageUri;
+        @NonNull
         public KeyCounter keyCounter;
         public boolean correctImageOrientationDisabled;
 
-        public Wrapper(String imageUri, boolean correctImageOrientationDisabled, KeyCounter keyCounter) {
+        public Wrapper(@NonNull String imageUri, boolean correctImageOrientationDisabled, @NonNull KeyCounter keyCounter) {
             this.imageUri = imageUri;
             this.correctImageOrientationDisabled = correctImageOrientationDisabled;
             this.keyCounter = keyCounter;

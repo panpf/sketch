@@ -17,6 +17,7 @@
 package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -27,15 +28,20 @@ import me.panpf.sketch.uri.UriModel;
 /**
  * 下载请求
  */
+@SuppressWarnings("WeakerAccess")
 public class DownloadRequest extends AsyncRequest {
+    @Nullable
     protected DownloadResult downloadResult;
 
+    @NonNull
     private DownloadOptions options;
+    @Nullable
     private DownloadListener downloadListener;
+    @Nullable
     private DownloadProgressListener downloadProgressListener;
 
-    public DownloadRequest(Sketch sketch, String uri, UriModel uriModel, String key, DownloadOptions options,
-                           DownloadListener downloadListener, DownloadProgressListener downloadProgressListener) {
+    public DownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
+                           @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key);
 
         this.options = options;
@@ -48,6 +54,8 @@ public class DownloadRequest extends AsyncRequest {
     /**
      * 获取下载选项
      */
+    @NonNull
+    // todo getOptions 可以通过泛型做到自动转换
     public DownloadOptions getOptions() {
         return options;
     }
@@ -55,7 +63,7 @@ public class DownloadRequest extends AsyncRequest {
     /**
      * 获取下载结果
      */
-    @SuppressWarnings("unused")
+    @Nullable
     public DownloadResult getDownloadResult() {
         return downloadResult;
     }
@@ -217,14 +225,14 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
-        if (downloadListener != null) {
+        if (downloadListener != null && getErrorCause() != null) {
             downloadListener.onError(getErrorCause());
         }
     }
 
     @Override
     protected void runCanceledInMainThread() {
-        if (downloadListener != null) {
+        if (downloadListener != null && getCancelCause() != null) {
             downloadListener.onCanceled(getCancelCause());
         }
     }

@@ -16,13 +16,14 @@
 
 package me.panpf.sketch.decode;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,11 +41,12 @@ import me.panpf.sketch.request.LoadRequest;
 import me.panpf.sketch.request.MaxSize;
 import me.panpf.sketch.util.SketchUtils;
 
+@SuppressWarnings("WeakerAccess")
 public class ImageDecodeUtils {
 
-    public static Bitmap decodeBitmap(DataSource dataSource, BitmapFactory.Options options) throws IOException {
+    public static Bitmap decodeBitmap(@NonNull DataSource dataSource, @NonNull BitmapFactory.Options options) throws IOException {
         InputStream inputStream = null;
-        Bitmap bitmap = null;
+        Bitmap bitmap;
 
         try {
             inputStream = dataSource.getInputStream();
@@ -56,8 +58,7 @@ public class ImageDecodeUtils {
         return bitmap;
     }
 
-    @SuppressLint("ObsoleteSdkInt")
-    public static Bitmap decodeRegionBitmap(DataSource dataSource, Rect srcRect, BitmapFactory.Options options) {
+    public static Bitmap decodeRegionBitmap(@NonNull DataSource dataSource, @NonNull Rect srcRect, @NonNull BitmapFactory.Options options) {
         InputStream inputStream;
         try {
             inputStream = dataSource.getInputStream();
@@ -82,7 +83,7 @@ public class ImageDecodeUtils {
         return bitmap;
     }
 
-    static void decodeSuccess(@NonNull Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, LoadRequest loadRequest, String logName) {
+    static void decodeSuccess(@NonNull Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, @NonNull LoadRequest loadRequest, @NonNull String logName) {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
             if (loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
@@ -97,7 +98,7 @@ public class ImageDecodeUtils {
         }
     }
 
-    static void decodeError(LoadRequest request, DataSource dataSource, String logName, String cause, Throwable tr) {
+    static void decodeError(@NonNull LoadRequest request, @Nullable DataSource dataSource, @NonNull String logName, @NonNull String cause, @Nullable Throwable tr) {
         if (tr != null) {
             SLog.e(logName, Log.getStackTraceString(tr));
         }
@@ -123,7 +124,7 @@ public class ImageDecodeUtils {
     /**
      * 通过异常类型以及 message 确定是不是由 inBitmap 导致的解码失败
      */
-    public static boolean isInBitmapDecodeError(Throwable throwable, BitmapFactory.Options options, boolean fromBitmapRegionDecoder) {
+    public static boolean isInBitmapDecodeError(@NonNull Throwable throwable, @NonNull BitmapFactory.Options options, boolean fromBitmapRegionDecoder) {
         if (fromBitmapRegionDecoder && !BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
             return false;
         }
@@ -143,9 +144,9 @@ public class ImageDecodeUtils {
     /**
      * 反馈 inBitmap 解码失败，并回收 inBitmap
      */
-    public static void recycleInBitmapOnDecodeError(ErrorTracker errorTracker, BitmapPool bitmapPool,
-                                                    String imageUri, int imageWidth, int imageHeight, String imageMimeType,
-                                                    Throwable throwable, BitmapFactory.Options decodeOptions, boolean fromBitmapRegionDecoder) {
+    public static void recycleInBitmapOnDecodeError(@NonNull ErrorTracker errorTracker, @NonNull BitmapPool bitmapPool,
+                                                    @NonNull String imageUri, int imageWidth, int imageHeight, @NonNull String imageMimeType,
+                                                    @NonNull Throwable throwable, @NonNull BitmapFactory.Options decodeOptions, boolean fromBitmapRegionDecoder) {
         if (fromBitmapRegionDecoder && !BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
             return;
         }
@@ -159,7 +160,7 @@ public class ImageDecodeUtils {
     /**
      * 通过异常类型以及 message 确定是不是由 srcRect 导致的解码失败
      */
-    public static boolean isSrcRectDecodeError(Throwable throwable, int imageWidth, int imageHeight, Rect srcRect) {
+    public static boolean isSrcRectDecodeError(@NonNull Throwable throwable, int imageWidth, int imageHeight, @NonNull Rect srcRect) {
         if (!(throwable instanceof IllegalArgumentException)) {
             return false;
         }

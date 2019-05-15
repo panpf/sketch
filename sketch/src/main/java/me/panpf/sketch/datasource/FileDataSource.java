@@ -17,6 +17,7 @@
 package me.panpf.sketch.datasource;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,10 +36,11 @@ import me.panpf.sketch.request.ImageFrom;
  */
 public class FileDataSource implements DataSource {
 
+    @NonNull
     private File file;
     private long length = -1;
 
-    public FileDataSource(File file) {
+    public FileDataSource(@NonNull File file) {
         this.file = file;
     }
 
@@ -59,7 +61,7 @@ public class FileDataSource implements DataSource {
     }
 
     @Override
-    public File getFile(File outDir, String outName) {
+    public File getFile(@Nullable File outDir, @Nullable String outName) {
         return file;
     }
 

@@ -17,13 +17,16 @@
 package me.panpf.sketch.cache;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.format.Formatter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -45,12 +48,17 @@ public class LruDiskCache implements DiskCache {
 
     private int maxSize;
     private int appVersionCode;
+    @NonNull
     private File cacheDir;
+    @NonNull
     private Context context;
+    @Nullable
     private DiskLruCache cache;
+    @NonNull
     private Configuration configuration;
     private boolean closed;
     private boolean disabled;
+    @Nullable
     private Map<String, ReentrantLock> editLockMap;
 
     /**
@@ -61,7 +69,7 @@ public class LruDiskCache implements DiskCache {
      * @param appVersionCode app 版本，用于删除旧缓存，想要主动删除旧缓存时更新这个值即可
      * @param maxSize        最大容量
      */
-    public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
+    public LruDiskCache(@NonNull Context context, @NonNull Configuration configuration, int appVersionCode, int maxSize) {
         context = context.getApplicationContext();
         this.context = context;
         this.maxSize = maxSize;
@@ -81,7 +89,7 @@ public class LruDiskCache implements DiskCache {
      * 检查缓存目录是否存在并可用
      */
     protected boolean checkCacheDir() {
-        return cacheDir != null && cacheDir.exists();
+        return cacheDir.exists();
     }
 
     /**
@@ -354,7 +362,7 @@ public class LruDiskCache implements DiskCache {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
+        return String.format(Locale.US, "%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
                 NAME, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
     }
 

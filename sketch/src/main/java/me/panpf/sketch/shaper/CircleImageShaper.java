@@ -33,16 +33,17 @@ public class CircleImageShaper implements ImageShaper {
     private int strokeWidth;
     private int strokeColor;
 
+    @Nullable
     private Paint strokePaint;
+    @Nullable
     private Rect boundsBack;
+    @Nullable
     private Path path;
 
-    @SuppressWarnings("unused")
     public int getStrokeColor() {
         return strokeColor;
     }
 
-    @SuppressWarnings("unused")
     @NonNull
     public CircleImageShaper setStroke(int strokeColor, int strokeWidth) {
         this.strokeColor = strokeColor;
@@ -51,7 +52,6 @@ public class CircleImageShaper implements ImageShaper {
         return this;
     }
 
-    @SuppressWarnings("unused")
     public int getStrokeWidth() {
         return strokeWidth;
     }

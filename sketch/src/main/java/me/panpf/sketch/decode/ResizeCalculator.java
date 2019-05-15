@@ -17,8 +17,10 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.Rect;
-import androidx.annotation.NonNull;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.request.Resize;
 
@@ -28,6 +30,7 @@ import me.panpf.sketch.request.Resize;
 public class ResizeCalculator {
     private static final String KEY = "ResizeCalculator";
 
+    @NonNull
     public static Rect srcMappingStartRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         float widthScale = (float) originalImageWidth / targetImageWidth;
         float heightScale = (float) originalImageHeight / targetImageHeight;
@@ -39,6 +42,7 @@ public class ResizeCalculator {
         return new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
     }
 
+    @NonNull
     public static Rect srcMappingCenterRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         float widthScale = (float) originalImageWidth / targetImageWidth;
         float heightScale = (float) originalImageHeight / targetImageHeight;
@@ -50,6 +54,7 @@ public class ResizeCalculator {
         return new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
     }
 
+    @NonNull
     public static Rect srcMappingEndRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         float widthScale = (float) originalImageWidth / targetImageWidth;
         float heightScale = (float) originalImageHeight / targetImageHeight;
@@ -69,6 +74,7 @@ public class ResizeCalculator {
         return new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
     }
 
+    @NonNull
     public static Rect srcMatrixRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         if (originalImageWidth > targetImageWidth && originalImageHeight > targetImageHeight) {
             return new Rect(0, 0, targetImageWidth, targetImageHeight);
@@ -82,6 +88,7 @@ public class ResizeCalculator {
         }
     }
 
+    @NonNull
     public static int[] scaleTargetSize(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         if (targetImageWidth > originalImageWidth || targetImageHeight > originalImageHeight) {
             float scale = Math.abs(targetImageWidth - originalImageWidth) < Math.abs(targetImageHeight - originalImageHeight)
@@ -110,15 +117,11 @@ public class ResizeCalculator {
      * @param exactlySame  强制使新图片的尺寸和 resizeWidth、resizeHeight 一致
      * @return 计算结果
      */
+    @NonNull
     public Mapping calculator(int imageWidth, int imageHeight, int resizeWidth, int resizeHeight,
-                              ImageView.ScaleType scaleType, boolean exactlySame) {
+                              @Nullable ImageView.ScaleType scaleType, boolean exactlySame) {
         if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
-            Mapping mapping = new Mapping();
-            mapping.imageWidth = imageWidth;
-            mapping.imageHeight = imageHeight;
-            mapping.srcRect = new Rect(0, 0, imageWidth, imageHeight);
-            mapping.destRect = mapping.srcRect;
-            return mapping;
+            return new Mapping(imageWidth, imageHeight, new Rect(0, 0, imageWidth, imageHeight), new Rect(0, 0, imageWidth, imageHeight));
         }
 
         if (scaleType == null) {
@@ -153,18 +156,22 @@ public class ResizeCalculator {
             srcRect = srcMappingCenterRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
         }
 
-        Mapping mapping = new Mapping();
-        mapping.imageWidth = newImageWidth;
-        mapping.imageHeight = newImageHeight;
-        mapping.srcRect = srcRect;
-        mapping.destRect = destRect;
-        return mapping;
+        return new Mapping(newImageWidth, newImageHeight, srcRect, destRect);
     }
 
     public static class Mapping {
         public int imageWidth;
         public int imageHeight;
+        @NonNull
         public Rect srcRect;
+        @NonNull
         public Rect destRect;
+
+        public Mapping(int imageWidth, int imageHeight, @NonNull Rect srcRect, @NonNull Rect destRect) {
+            this.imageWidth = imageWidth;
+            this.imageHeight = imageHeight;
+            this.srcRect = srcRect;
+            this.destRect = destRect;
+        }
     }
 }

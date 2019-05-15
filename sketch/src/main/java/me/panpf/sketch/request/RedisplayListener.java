@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+
 public interface RedisplayListener {
-    void onPreCommit(String cacheUri, DisplayOptions cacheOptions);
+    void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions);
 }

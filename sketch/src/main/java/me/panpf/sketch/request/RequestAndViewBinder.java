@@ -16,6 +16,9 @@
 
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.SketchView;
@@ -24,18 +27,22 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * Request与ImageView的关系绑定器
  */
+@SuppressWarnings("WeakerAccess")
 public class RequestAndViewBinder {
+    @Nullable
     private DisplayRequest displayRequest;
+    @NonNull
     private WeakReference<SketchView> imageViewReference;
 
-    public RequestAndViewBinder(SketchView imageView) {
+    public RequestAndViewBinder(@NonNull SketchView imageView) {
         this.imageViewReference = new WeakReference<>(imageView);
     }
 
-    public void setDisplayRequest(DisplayRequest displayRequest) {
+    public void setDisplayRequest(@Nullable DisplayRequest displayRequest) {
         this.displayRequest = displayRequest;
     }
 
+    @Nullable
     public SketchView getView() {
         final SketchView sketchView = imageViewReference.get();
         if (displayRequest != null) {

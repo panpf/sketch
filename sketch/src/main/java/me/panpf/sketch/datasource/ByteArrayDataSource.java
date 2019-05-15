@@ -16,8 +16,10 @@
 
 package me.panpf.sketch.datasource;
 
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -39,10 +41,12 @@ import me.panpf.sketch.util.SketchUtils;
  */
 public class ByteArrayDataSource implements DataSource {
 
+    @NonNull
     private byte[] data;
+    @NonNull
     private ImageFrom imageFrom;
 
-    public ByteArrayDataSource(byte[] data, ImageFrom imageFrom) {
+    public ByteArrayDataSource(@NonNull byte[] data, @NonNull ImageFrom imageFrom) {
         this.data = data;
         this.imageFrom = imageFrom;
     }
@@ -59,7 +63,7 @@ public class ByteArrayDataSource implements DataSource {
     }
 
     @Override
-    public File getFile(File outDir, String outName) throws IOException {
+    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
         if (outDir == null) {
             return null;
         }

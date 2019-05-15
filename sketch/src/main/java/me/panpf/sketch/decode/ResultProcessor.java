@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.LoadRequest;
 
 /**
@@ -30,5 +32,5 @@ public interface ResultProcessor {
      * @param result  {@link DecodeResult}
      * @throws ProcessException 后期处理失败了
      */
-    void process(LoadRequest request, DecodeResult result) throws ProcessException;
+    void process(@NonNull LoadRequest request, @NonNull DecodeResult result) throws ProcessException;
 }

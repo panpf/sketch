@@ -7,6 +7,9 @@ import android.os.Build;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.SLog;
 
 /**
@@ -15,17 +18,17 @@ import me.panpf.sketch.SLog;
  */
 public class MemorySizeCalculator {
     // Visible for testing.
-    static final int BYTES_PER_ARGB_8888_PIXEL = 4;
-    static final int MEMORY_CACHE_TARGET_SCREENS = 3;
-    static final int BITMAP_POOL_TARGET_SCREENS = 3;
-    static final float MAX_SIZE_MULTIPLIER = 0.4f;
-    static final float LOW_MEMORY_MAX_SIZE_MULTIPLIER = 0.33f;
+    private static final int BYTES_PER_ARGB_8888_PIXEL = 4;
+    private static final int MEMORY_CACHE_TARGET_SCREENS = 3;
+    private static final int BITMAP_POOL_TARGET_SCREENS = 3;
+    private static final float MAX_SIZE_MULTIPLIER = 0.4f;
+    private static final float LOW_MEMORY_MAX_SIZE_MULTIPLIER = 0.33f;
     private static final String NAME = "MemorySizeCalculator";
     private final int bitmapPoolSize;
     private final int memoryCacheSize;
 
     // Visible for testing.
-    public MemorySizeCalculator(Context context) {
+    public MemorySizeCalculator(@NonNull Context context) {
         context = context.getApplicationContext();
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -48,25 +51,25 @@ public class MemorySizeCalculator {
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
             SLog.d(NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(context, memoryCacheSize), toMb(context, bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(context, maxSize),
-                    activityManager.getMemoryClass(), isLowMemoryDevice(activityManager));
+                    activityManager != null ? activityManager.getMemoryClass() : -1, isLowMemoryDevice(activityManager));
         }
     }
 
-    private static int getMaxSize(ActivityManager activityManager) {
-        final int memoryClassBytes = activityManager.getMemoryClass() * 1024 * 1024;
+    private static int getMaxSize(@Nullable ActivityManager activityManager) {
+        final int memoryClassBytes = activityManager != null ? activityManager.getMemoryClass() * 1024 * 1024 : 100;
         final boolean isLowMemoryDevice = isLowMemoryDevice(activityManager);
         return Math.round(memoryClassBytes
                 * (isLowMemoryDevice ? LOW_MEMORY_MAX_SIZE_MULTIPLIER : MAX_SIZE_MULTIPLIER));
     }
 
-    private static String toMb(Context context, int bytes) {
+    private static String toMb(@NonNull Context context, int bytes) {
         return Formatter.formatFileSize(context, bytes);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static boolean isLowMemoryDevice(ActivityManager activityManager) {
+    private static boolean isLowMemoryDevice(@Nullable ActivityManager activityManager) {
         final int sdkInt = Build.VERSION.SDK_INT;
-        return sdkInt >= Build.VERSION_CODES.KITKAT && activityManager.isLowRamDevice();
+        return activityManager == null || sdkInt >= Build.VERSION_CODES.KITKAT && activityManager.isLowRamDevice();
     }
 
     /**

@@ -17,8 +17,9 @@
 package me.panpf.sketch.cache;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.format.Formatter;
+
+import androidx.annotation.NonNull;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.drawable.SketchRefBitmap;
@@ -31,7 +32,9 @@ import me.panpf.sketch.util.SketchUtils;
 public class LruMemoryCache implements MemoryCache {
     private static final String NAME = "LruMemoryCache";
 
+    @NonNull
     private final LruCache<String, SketchRefBitmap> cache;
+    @NonNull
     private Context context;
     private boolean closed;
     private boolean disabled;
@@ -42,7 +45,7 @@ public class LruMemoryCache implements MemoryCache {
      * @param context {@link Context}
      * @param maxSize 最大容量
      */
-    public LruMemoryCache(Context context, int maxSize) {
+    public LruMemoryCache(@NonNull Context context, int maxSize) {
         context = context.getApplicationContext();
         this.context = context;
         this.cache = new RefBitmapLruCache(maxSize);
@@ -200,7 +203,7 @@ public class LruMemoryCache implements MemoryCache {
 
     private static class RefBitmapLruCache extends LruCache<String, SketchRefBitmap> {
 
-        public RefBitmapLruCache(int maxSize) {
+        RefBitmapLruCache(int maxSize) {
             super(maxSize);
         }
 

@@ -35,6 +35,7 @@ public class GifDecodeResult implements DecodeResult {
         this.gifDrawable = gifDrawable;
     }
 
+    @NonNull
     @Override
     public ImageAttrs getImageAttrs() {
         return imageAttrs;
@@ -46,7 +47,7 @@ public class GifDecodeResult implements DecodeResult {
     }
 
     @Override
-    public void setImageFrom(ImageFrom imageFrom) {
+    public void setImageFrom(@NonNull ImageFrom imageFrom) {
         this.imageFrom = imageFrom;
     }
 
@@ -55,6 +56,7 @@ public class GifDecodeResult implements DecodeResult {
         return banProcess;
     }
 
+    @NonNull
     @Override
     public GifDecodeResult setBanProcess(boolean banProcess) {
         this.banProcess = banProcess;
@@ -66,6 +68,7 @@ public class GifDecodeResult implements DecodeResult {
         return processed;
     }
 
+    @NonNull
     @Override
     public GifDecodeResult setProcessed(boolean processed) {
         this.processed = processed;
@@ -73,7 +76,7 @@ public class GifDecodeResult implements DecodeResult {
     }
 
     @Override
-    public void recycle(BitmapPool bitmapPool) {
+    public void recycle(@NonNull BitmapPool bitmapPool) {
         if (gifDrawable != null) {
             gifDrawable.recycle();
         }

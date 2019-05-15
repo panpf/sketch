@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Locale;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.request.Resize;
 
@@ -19,7 +21,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     private int radius; // 模糊半径，取值为0到100
     private int maskColor; // 图层颜色，在模糊后的图片上加一层颜色
 
-    private GaussianBlurImageProcessor(int radius, int maskColor, WrappedImageProcessor wrappedImageProcessor) {
+    private GaussianBlurImageProcessor(int radius, int maskColor, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         this.radius = radius;
         this.maskColor = maskColor;
@@ -33,8 +35,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
-    public static GaussianBlurImageProcessor make(int radius, int layerColor, WrappedImageProcessor wrappedImageProcessor) {
+    public static GaussianBlurImageProcessor make(int radius, int layerColor, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         return new GaussianBlurImageProcessor(radius, layerColor, wrappedImageProcessor);
     }
 
@@ -45,7 +46,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param layerColor 图层颜色，在模糊后的图片上加一层颜色
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
     public static GaussianBlurImageProcessor make(int radius, int layerColor) {
         return new GaussianBlurImageProcessor(radius, layerColor, null);
     }
@@ -57,8 +57,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
-    public static GaussianBlurImageProcessor makeLayerColor(int layerColor, WrappedImageProcessor wrappedImageProcessor) {
+    public static GaussianBlurImageProcessor makeLayerColor(int layerColor, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         return new GaussianBlurImageProcessor(DEFAULT_RADIUS, layerColor, wrappedImageProcessor);
     }
 
@@ -79,8 +78,7 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
-    public static GaussianBlurImageProcessor makeRadius(int radius, WrappedImageProcessor wrappedImageProcessor) {
+    public static GaussianBlurImageProcessor makeRadius(int radius, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         return new GaussianBlurImageProcessor(radius, NO_LAYER_COLOR, wrappedImageProcessor);
     }
 
@@ -90,7 +88,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param radius 模糊半径，取值为 0 到 100
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
     public static GaussianBlurImageProcessor makeRadius(int radius) {
         return new GaussianBlurImageProcessor(radius, NO_LAYER_COLOR, null);
     }
@@ -101,7 +98,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      * @param wrappedImageProcessor 嵌套一个图片处理器
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
     public static GaussianBlurImageProcessor make(WrappedImageProcessor wrappedImageProcessor) {
         return new GaussianBlurImageProcessor(DEFAULT_RADIUS, NO_LAYER_COLOR, wrappedImageProcessor);
     }
@@ -111,7 +107,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
      *
      * @return GaussianBlurImageProcessor
      */
-    @SuppressWarnings("unused")
     public static GaussianBlurImageProcessor make() {
         return new GaussianBlurImageProcessor(DEFAULT_RADIUS, NO_LAYER_COLOR, null);
     }
@@ -119,7 +114,8 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 快速高斯模糊
      */
-    public static Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
+    @Nullable
+    public static Bitmap fastGaussianBlur(@NonNull Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
         Bitmap bitmap;
         if (canReuseInBitmap) {
             bitmap = sentBitmap;
@@ -359,7 +355,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 获取模糊半径
      */
-    @SuppressWarnings("unused")
     public int getRadius() {
         return radius;
     }
@@ -367,7 +362,6 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     /**
      * 获取图层颜色
      */
-    @SuppressWarnings("unused")
     public int getMaskColor() {
         return maskColor;
     }
@@ -375,11 +369,11 @@ public class GaussianBlurImageProcessor extends WrappedImageProcessor {
     @NonNull
     @Override
     public String onToString() {
-        return String.format("%s(radius=%d,maskColor=%d)", "GaussianBlurImageProcessor", radius, maskColor);
+        return String.format(Locale.US, "%s(radius=%d,maskColor=%d)", "GaussianBlurImageProcessor", radius, maskColor);
     }
 
     @Override
     public String onGetKey() {
-        return String.format("%s(radius=%d,maskColor=%d)", "GaussianBlur", radius, maskColor);
+        return String.format(Locale.US, "%s(radius=%d,maskColor=%d)", "GaussianBlur", radius, maskColor);
     }
 }

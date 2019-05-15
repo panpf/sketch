@@ -16,50 +16,53 @@
 
 package me.panpf.sketch.util;
 
+import androidx.annotation.NonNull;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
+@SuppressWarnings("WeakerAccess")
 public class ObjectPool<T> {
     private static final int MAX_POOL_SIZE = 10;
     private final Object editLock = new Object();
 
+    @NonNull
     private Queue<T> cacheQueue;
+    @NonNull
     private ObjectFactory<T> objectFactory;
     private int maxPoolSize;
 
-    public ObjectPool(ObjectFactory<T> objectFactory, int maxPoolSize) {
+    public ObjectPool(@NonNull ObjectFactory<T> objectFactory, int maxPoolSize) {
         this.objectFactory = objectFactory;
         this.maxPoolSize = maxPoolSize;
         this.cacheQueue = new LinkedList<T>();
     }
 
-    @SuppressWarnings("unused")
-    public ObjectPool(ObjectFactory<T> objectFactory) {
+    public ObjectPool(@NonNull ObjectFactory<T> objectFactory) {
         this(objectFactory, MAX_POOL_SIZE);
     }
 
-    public ObjectPool(final Class<T> classType, int maxPoolSize) {
+    public ObjectPool(@NonNull final Class<T> classType, int maxPoolSize) {
         this(new ObjectFactory<T>() {
+            @NonNull
             @Override
             public T newObject() {
                 try {
                     return classType.newInstance();
                 } catch (InstantiationException e) {
-                    e.printStackTrace();
-                    return null;
+                    throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    return null;
+                    throw new RuntimeException(e);
                 }
             }
         }, maxPoolSize);
     }
 
-    @SuppressWarnings("unused")
-    public ObjectPool(final Class<T> classType) {
+    public ObjectPool(@NonNull final Class<T> classType) {
         this(classType, MAX_POOL_SIZE);
     }
 
+    @NonNull
     public T get() {
         synchronized (editLock) {
             T t = !cacheQueue.isEmpty() ? cacheQueue.poll() : objectFactory.newObject();
@@ -70,7 +73,7 @@ public class ObjectPool<T> {
         }
     }
 
-    public void put(T t) {
+    public void put(@NonNull T t) {
         synchronized (editLock) {
             if (cacheQueue.size() < maxPoolSize) {
                 if (t instanceof CacheStatus) {
@@ -87,12 +90,10 @@ public class ObjectPool<T> {
         }
     }
 
-    @SuppressWarnings("unused")
     public int getMaxPoolSize() {
         return maxPoolSize;
     }
 
-    @SuppressWarnings("unused")
     public void setMaxPoolSize(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
 
@@ -114,12 +115,12 @@ public class ObjectPool<T> {
     }
 
     public interface ObjectFactory<T> {
+        @NonNull
         T newObject();
     }
 
     public interface CacheStatus {
 
-        @SuppressWarnings("unused")
         boolean isInCachePool();
 
         void setInCachePool(boolean inCachePool);

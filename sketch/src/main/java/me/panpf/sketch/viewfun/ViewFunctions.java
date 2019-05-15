@@ -18,9 +18,10 @@ package me.panpf.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.view.MotionEvent;
 
 import me.panpf.sketch.decode.ImageAttrs;
 import me.panpf.sketch.request.CancelCause;
@@ -29,15 +30,24 @@ import me.panpf.sketch.request.ImageFrom;
 import me.panpf.sketch.uri.UriModel;
 
 class ViewFunctions {
+    @NonNull
     RequestFunction requestFunction;
+    @NonNull
     RecyclerCompatFunction recyclerCompatFunction;
 
+    @Nullable
     ShowImageFromFunction showImageFromFunction;
+    @Nullable
     ShowDownloadProgressFunction showDownloadProgressFunction;
+    @Nullable
     ShowPressedFunction showPressedFunction;
+    @Nullable
     ShowGifFlagFunction showGifFlagFunction;
+    @Nullable
     ClickRetryFunction clickRetryFunction;
+    @Nullable
     ImageZoomFunction zoomFunction;
+    @Nullable
     ClickPlayGifFunction clickPlayGifFunction;
 
     ViewFunctions(FunctionCallbackView view) {

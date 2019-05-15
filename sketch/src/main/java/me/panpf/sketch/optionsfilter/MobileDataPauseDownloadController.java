@@ -8,6 +8,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.Configuration;
@@ -15,12 +17,15 @@ import me.panpf.sketch.Configuration;
 /**
  * 全局移动数据或有流量限制的 WIFI 下暂停下载控制器
  */
+@SuppressWarnings("WeakerAccess")
 public class MobileDataPauseDownloadController {
+    @NonNull
     private NetworkChangedBroadcastReceiver receiver;
     private boolean opened;
+    @NonNull
     private Configuration configuration;
 
-    public MobileDataPauseDownloadController(Configuration configuration) {
+    public MobileDataPauseDownloadController(@NonNull Configuration configuration) {
         receiver = new NetworkChangedBroadcastReceiver(configuration.getContext(), this);
         this.configuration = configuration;
     }
@@ -57,9 +62,9 @@ public class MobileDataPauseDownloadController {
      *
      * @param context {@link Context}
      */
-    private void updateStatus(Context context) {
+    private void updateStatus(@NonNull Context context) {
         ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         boolean pause = false;
         if (networkInfo != null && networkInfo.isAvailable()) {
             if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
@@ -77,17 +82,19 @@ public class MobileDataPauseDownloadController {
      * 监听网络变化的广播
      */
     private static class NetworkChangedBroadcastReceiver extends BroadcastReceiver {
+        @NonNull
         private Context context;
+        @NonNull
         private WeakReference<MobileDataPauseDownloadController> weakReference;
 
-        public NetworkChangedBroadcastReceiver(Context context, MobileDataPauseDownloadController download) {
+        public NetworkChangedBroadcastReceiver(@NonNull Context context, @NonNull MobileDataPauseDownloadController download) {
             this.context = context.getApplicationContext();
             this.weakReference = new WeakReference<>(download);
         }
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+        public void onReceive(@NonNull Context context, @NonNull Intent intent) {
+            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
                 MobileDataPauseDownloadController pauseDownloadController = weakReference.get();
                 if (pauseDownloadController != null) {
                     pauseDownloadController.updateStatus(context);

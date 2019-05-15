@@ -23,6 +23,9 @@ import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -40,16 +43,21 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 图片碎片解码器，支持纠正图片方向
  */
+@SuppressWarnings("WeakerAccess")
 public class ImageRegionDecoder {
 
     private final int exifOrientation;
+    @NonNull
     private Point imageSize;
+    @NonNull
     private String imageUri;
+    @Nullable
     private ImageType imageType;
+    @Nullable
     private BitmapRegionDecoder regionDecoder;
 
-    ImageRegionDecoder(String imageUri, Point imageSize, ImageType imageType,
-                       int exifOrientation, BitmapRegionDecoder regionDecoder) {
+    public ImageRegionDecoder(@NonNull String imageUri, @NonNull Point imageSize, @Nullable ImageType imageType,
+                               int exifOrientation, @NonNull BitmapRegionDecoder regionDecoder) {
         this.imageUri = imageUri;
         this.imageSize = imageSize;
         this.imageType = imageType;
@@ -100,16 +108,17 @@ public class ImageRegionDecoder {
         return new ImageRegionDecoder(imageUri, imageSize, imageType, exifOrientation, regionDecoder);
     }
 
-    @SuppressWarnings("unused")
+    @NonNull
     public Point getImageSize() {
         return imageSize;
     }
 
+    @Nullable
     public ImageType getImageType() {
         return imageType;
     }
 
-    @SuppressWarnings("unused")
+    @NonNull
     public String getImageUri() {
         return imageUri;
     }
@@ -123,14 +132,14 @@ public class ImageRegionDecoder {
     }
 
     public void recycle() {
-        if (isReady()) {
+        if (regionDecoder != null && isReady()) {
             regionDecoder.recycle();
             regionDecoder = null;
         }
     }
 
     public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
-        if (isReady()) {
+        if (regionDecoder != null && isReady()) {
             return regionDecoder.decodeRegion(srcRect, options);
         } else {
             return null;

@@ -20,13 +20,18 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.request.ImageFrom;
 import me.panpf.sketch.util.ExifInterface;
 
 public class SketchTransitionDrawable extends TransitionDrawable implements SketchDrawable {
+
+    @Nullable
     private SketchDrawable sketchDrawable;
 
-    public SketchTransitionDrawable(Drawable oldDrawable, Drawable newDrawable) {
+    public SketchTransitionDrawable(@NonNull Drawable oldDrawable, @NonNull Drawable newDrawable) {
         super(new Drawable[]{oldDrawable, newDrawable});
 
         if (newDrawable instanceof SketchDrawable) {
@@ -34,11 +39,13 @@ public class SketchTransitionDrawable extends TransitionDrawable implements Sket
         }
     }
 
+    @Nullable
     @Override
     public String getKey() {
         return sketchDrawable != null ? sketchDrawable.getKey() : null;
     }
 
+    @Nullable
     @Override
     public String getUri() {
         return sketchDrawable != null ? sketchDrawable.getUri() : null;
@@ -54,6 +61,7 @@ public class SketchTransitionDrawable extends TransitionDrawable implements Sket
         return sketchDrawable != null ? sketchDrawable.getOriginHeight() : 0;
     }
 
+    @Nullable
     @Override
     public String getMimeType() {
         return sketchDrawable != null ? sketchDrawable.getMimeType() : null;
@@ -69,16 +77,19 @@ public class SketchTransitionDrawable extends TransitionDrawable implements Sket
         return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
     }
 
+    @Nullable
     @Override
     public Bitmap.Config getBitmapConfig() {
         return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
     }
 
+    @Nullable
     @Override
     public ImageFrom getImageFrom() {
         return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
     }
 
+    @Nullable
     @Override
     public String getInfo() {
         return sketchDrawable != null ? sketchDrawable.getInfo() : null;

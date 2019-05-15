@@ -36,20 +36,28 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 加载 Helper，负责组织、收集、初始化加载参数，最后执行 commit() 提交请求
  */
+@SuppressWarnings("WeakerAccess")
 public class LoadHelper {
     private static final String NAME = "LoadHelper";
 
+    @NonNull
     private Sketch sketch;
     private boolean sync;
 
+    @NonNull
     private String uri;
+    @Nullable
     private UriModel uriModel;
+    @Nullable
     private String key;
+    @NonNull
     private LoadOptions loadOptions = new LoadOptions();
+    @Nullable
     private LoadListener loadListener;
+    @Nullable
     private DownloadProgressListener downloadProgressListener;
 
-    public LoadHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull LoadListener loadListener) {
+    public LoadHelper(@NonNull Sketch sketch, @NonNull String uri, @Nullable LoadListener loadListener) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriModel = UriModel.match(sketch, uri);
@@ -63,7 +71,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             loadOptions.setRequestLevel(requestLevel);
@@ -77,7 +84,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper disableCacheInDisk() {
         loadOptions.setCacheInDiskDisabled(true);
         return this;
@@ -89,7 +95,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper disableBitmapPool() {
         loadOptions.setBitmapPoolDisabled(true);
         return this;
@@ -101,7 +106,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper decodeGifImage() {
         loadOptions.setDecodeGifImage(true);
         return this;
@@ -114,7 +118,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper maxSize(@Nullable MaxSize maxSize) {
         loadOptions.setMaxSize(maxSize);
         return this;
@@ -128,7 +131,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper maxSize(int maxWidth, int maxHeight) {
         loadOptions.setMaxSize(maxWidth, maxHeight);
         return this;
@@ -191,7 +193,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper processor(@Nullable ImageProcessor processor) {
         loadOptions.setProcessor(processor);
         return this;
@@ -204,7 +205,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper bitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
         loadOptions.setBitmapConfig(bitmapConfig);
         return this;
@@ -217,7 +217,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         loadOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
         return this;
@@ -229,7 +228,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper thumbnailMode() {
         loadOptions.setThumbnailMode(true);
         return this;
@@ -241,7 +239,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper cacheProcessedImageInDisk() {
         loadOptions.setCacheProcessedImageInDisk(true);
         return this;
@@ -253,7 +250,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper disableCorrectImageOrientation() {
         loadOptions.setCorrectImageOrientationDisabled(true);
         return this;
@@ -277,7 +273,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper downloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
         return this;
@@ -289,7 +284,6 @@ public class LoadHelper {
      * @return {@link LoadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper sync() {
         this.sync = true;
         return this;

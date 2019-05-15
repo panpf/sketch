@@ -18,9 +18,10 @@ package me.panpf.sketch.uri;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 
 import me.panpf.sketch.datasource.ContentDataSource;
 import me.panpf.sketch.datasource.DataSource;
@@ -51,9 +52,8 @@ public class AndroidResUriModel extends UriModel {
      * @return 例如：android.resource://me.panpf.sketch.sample/1031232
      */
     @NonNull
-    @SuppressWarnings("unused")
     public static String makeUriById(@NonNull String packageName, int drawableResId) {
-        return SCHEME + packageName + "/" + String.valueOf(drawableResId);
+        return SCHEME + packageName + "/" + drawableResId;
     }
 
     @Override

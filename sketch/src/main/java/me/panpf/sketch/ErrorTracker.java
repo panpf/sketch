@@ -5,8 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
-import androidx.annotation.NonNull;
 import android.text.format.Formatter;
+
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.util.Arrays;
@@ -26,11 +27,12 @@ import me.panpf.sketch.zoom.block.Block;
 public class ErrorTracker {
     private static final String NAME = "ErrorTracker";
 
+
+    @NonNull
     private Context context;
 
-    public ErrorTracker(Context context) {
-        context = context.getApplicationContext();
-        this.context = context;
+    public ErrorTracker(@NonNull Context context) {
+        this.context = context.getApplicationContext();
     }
 
     /**

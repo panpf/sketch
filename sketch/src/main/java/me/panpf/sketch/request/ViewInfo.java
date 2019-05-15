@@ -18,11 +18,17 @@ package me.panpf.sketch.request;
 
 import android.widget.ImageView.ScaleType;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;
 
+@SuppressWarnings("WeakerAccess")
 public class ViewInfo {
+    @Nullable
     private ScaleType scaleType;
+    @Nullable
     private FixedSize fixedSize;
     private boolean useSmallerThumbnails;
 
@@ -30,18 +36,18 @@ public class ViewInfo {
 
     }
 
-    public ViewInfo(ViewInfo viewInfo) {
+    public ViewInfo(@NonNull ViewInfo viewInfo) {
         copy(viewInfo);
     }
 
-    public void copy(ViewInfo viewInfo) {
+    public void copy(@NonNull ViewInfo viewInfo) {
         this.scaleType = viewInfo.scaleType;
         this.fixedSize = viewInfo.fixedSize;
         this.useSmallerThumbnails = viewInfo.useSmallerThumbnails;
     }
 
-    public void reset(SketchView sketchView, Sketch sketch) {
-        if (sketchView != null) {
+    public void reset(@Nullable SketchView sketchView, @Nullable Sketch sketch) {
+        if (sketchView != null && sketch != null) {
             this.scaleType = sketchView.getScaleType();
             this.fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
             this.useSmallerThumbnails = sketchView.isUseSmallerThumbnails();
@@ -52,10 +58,12 @@ public class ViewInfo {
         }
     }
 
+    @Nullable
     public FixedSize getFixedSize() {
         return fixedSize;
     }
 
+    @Nullable
     public ScaleType getScaleType() {
         return scaleType;
     }

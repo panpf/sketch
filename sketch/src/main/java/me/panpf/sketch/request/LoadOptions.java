@@ -33,15 +33,18 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 加载选项，适用于 {@link Sketch#load(String, LoadListener)} 方法
  */
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class LoadOptions extends DownloadOptions {
     /**
      * 新的尺寸，用于调整图片尺寸
      */
+    @Nullable
     private Resize resize;
 
     /**
      * 最大尺寸，用于计算 inSampleSize 缩小图片
      */
+    @Nullable
     private MaxSize maxSize;
 
     /**
@@ -67,6 +70,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 图片处理器，在图片读取到内存后对图片进行修改
      */
+    @Nullable
     private ImageProcessor processor;
 
     /**
@@ -74,6 +78,7 @@ public class LoadOptions extends DownloadOptions {
      *
      * @see #lowQualityImage
      */
+    @Nullable
     private Bitmap.Config bitmapConfig;
 
     /**
@@ -96,7 +101,6 @@ public class LoadOptions extends DownloadOptions {
         reset();
     }
 
-    @SuppressWarnings("unused")
     public LoadOptions(@NonNull LoadOptions from) {
         copy(from);
     }

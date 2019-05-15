@@ -42,30 +42,46 @@ import me.panpf.sketch.zoom.block.Block;
  * 图片缩放器，接收触摸事件，变换 {@link Matrix}，改变图片的显示效果，代理点击和长按事件
  */
 // TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
+@SuppressWarnings("WeakerAccess")
 public class ImageZoomer {
     public static final String NAME = "ImageZoomer";
 
+    @NonNull
     private ImageView imageView;
+    @Nullable
     private ScaleType scaleType;    // ImageView 原本的 ScaleType
 
+    @NonNull
     private Sizes sizes = new Sizes();
+    @NonNull
     private ZoomScales zoomScales = new AdaptiveTwoLevelScales();
 
     private int rotateDegrees; // 旋转角度
     private int zoomDuration = 200;   // 双击缩放动画持续时间
     private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
+    @NonNull
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
     private boolean allowParentInterceptOnEdge = true;  // 允许父 ViewGroup 在滑动到边缘时拦截事件
+    @Nullable
     private OnDragFlingListener onDragFlingListener;
+    @Nullable
     private OnScaleChangeListener onScaleChangeListener;
+    @Nullable
     private OnRotateChangeListener onRotateChangeListener;
+    @Nullable
     private OnViewTapListener onViewTapListener;
+    @Nullable
     private OnViewLongPressListener onViewLongPressListener;
+    @Nullable
     private ArrayList<OnMatrixChangeListener> onMatrixChangeListenerList;
 
+    @NonNull
     private TapHelper tapHelper;
+    @NonNull
     private ScaleDragHelper scaleDragHelper;
+    @NonNull
     private ScrollBarHelper scrollBarHelper;
+    @NonNull
     private BlockDisplayer blockDisplayer;
 
     public ImageZoomer(@NonNull ImageView imageView) {
@@ -479,7 +495,6 @@ public class ImageZoomer {
      * 获取双击缩放比例
      */
     @NonNull
-    @SuppressWarnings("WeakerAccess")
     public float[] getDoubleClickZoomScales() {
         return zoomScales.getZoomScales();
     }
@@ -533,7 +548,7 @@ public class ImageZoomer {
     /**
      * 获取 {@link ScaleType}
      */
-    @NonNull
+    @Nullable
     public ScaleType getScaleType() {
         return scaleType;
     }
@@ -720,7 +735,6 @@ public class ImageZoomer {
     /**
      * 飞速拖拽监听器
      */
-    @SuppressWarnings("WeakerAccess")
     public interface OnDragFlingListener {
         void onFling(float startX, float startY, float velocityX, float velocityY);
     }
@@ -742,7 +756,6 @@ public class ImageZoomer {
     /**
      * 缩放监听器
      */
-    @SuppressWarnings("WeakerAccess")
     public interface OnScaleChangeListener {
         void onScaleChanged(float scaleFactor, float focusX, float focusY);
     }

@@ -18,20 +18,24 @@ package me.panpf.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.zoom.ImageZoomer;
 
 /**
  * {@link ImageView} 缩放功能
  */
+@SuppressWarnings("WeakerAccess")
 public class ImageZoomFunction extends ViewFunction {
 
+    @NonNull
     private ImageZoomer zoomer;
 
-    public ImageZoomFunction(FunctionPropertyView view) {
+    public ImageZoomFunction(@NonNull FunctionPropertyView view) {
         this.zoomer = new ImageZoomer(view);
     }
 
@@ -52,7 +56,7 @@ public class ImageZoomFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+    public boolean onDrawableChanged(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
         zoomer.reset("onDrawableChanged");
         return false;
     }

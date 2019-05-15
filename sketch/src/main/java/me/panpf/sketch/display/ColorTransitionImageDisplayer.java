@@ -21,12 +21,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 import me.panpf.sketch.SketchView;
 
 /**
  * 颜色渐入图片显示器
  */
-@SuppressWarnings("unused")
 public class ColorTransitionImageDisplayer implements ImageDisplayer {
     private static final String KEY = "ColorTransitionImageDisplayer";
 
@@ -54,9 +55,6 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable == null) {
-            return;
-        }
         TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(color), newDrawable});
         sketchView.clearAnimation();
         sketchView.setImageDrawable(transitionDrawable);
@@ -67,7 +65,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(duration=%d,color=%d,alwaysUse=%s)", KEY, duration, color, alwaysUse);
+        return String.format(Locale.US, "%s(duration=%d,color=%d,alwaysUse=%s)", KEY, duration, color, alwaysUse);
     }
 
     @Override

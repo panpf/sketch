@@ -35,12 +35,13 @@ import me.panpf.sketch.shaper.ImageShaper;
 /**
  * 从内存缓存中获取图片作为状态图片，支持 {@link ShapeSize} 和 {@link ImageShaper}
  */
-@SuppressWarnings("unused")
 public class MemoryCacheStateImage implements StateImage {
+    @NonNull
     private String memoryCacheKey;
+    @Nullable
     private StateImage whenEmptyImage;
 
-    public MemoryCacheStateImage(String memoryCacheKey, StateImage whenEmptyImage) {
+    public MemoryCacheStateImage(@NonNull String memoryCacheKey, @Nullable StateImage whenEmptyImage) {
         this.memoryCacheKey = memoryCacheKey;
         this.whenEmptyImage = whenEmptyImage;
     }
@@ -68,10 +69,12 @@ public class MemoryCacheStateImage implements StateImage {
         return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, sketchView, displayOptions) : null;
     }
 
+    @NonNull
     public String getMemoryCacheKey() {
         return memoryCacheKey;
     }
 
+    @Nullable
     public StateImage getWhenEmptyImage() {
         return whenEmptyImage;
     }

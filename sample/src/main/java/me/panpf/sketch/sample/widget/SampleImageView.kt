@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.util.AttributeSet
 import android.view.View
+import me.panpf.javaxkt.util.requireNotNull
 import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageOrientationCorrector
@@ -15,11 +16,11 @@ import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.request.RedisplayListener
 import me.panpf.sketch.request.Resize
+import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
 import me.panpf.sketch.sample.event.CacheCleanEvent
-import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
@@ -206,11 +207,11 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
             messageBuilder.append(sketchDrawable.key)
 
-            val uriModel = UriModel.match(context, sketchDrawable.uri)
+            val uriModel = UriModel.match(context, sketchDrawable.uri.requireNotNull())
             var dataSource: DataSource? = null
             if (uriModel != null) {
                 try {
-                    dataSource = uriModel.getDataSource(context, sketchDrawable.uri, null)
+                    dataSource = uriModel.getDataSource(context, sketchDrawable.uri.requireNotNull(), null)
                 } catch (e: GetDataSourceException) {
                     e.printStackTrace()
                 }

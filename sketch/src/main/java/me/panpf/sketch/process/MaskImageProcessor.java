@@ -5,7 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
@@ -16,6 +20,7 @@ import me.panpf.sketch.request.Resize;
  */
 public class MaskImageProcessor extends WrappedImageProcessor {
 
+    @Nullable
     private Paint paint;
     private int maskColor;
 
@@ -25,7 +30,7 @@ public class MaskImageProcessor extends WrappedImageProcessor {
      * @param maskColor        遮罩颜色
      * @param wrappedProcessor 嵌套一个图片处理器
      */
-    public MaskImageProcessor(int maskColor, WrappedImageProcessor wrappedProcessor) {
+    public MaskImageProcessor(int maskColor, @Nullable WrappedImageProcessor wrappedProcessor) {
         super(wrappedProcessor);
         this.maskColor = maskColor;
     }
@@ -89,7 +94,6 @@ public class MaskImageProcessor extends WrappedImageProcessor {
     /**
      * 获取遮罩颜色
      */
-    @SuppressWarnings("unused")
     public int getMaskColor() {
         return maskColor;
     }
@@ -97,11 +101,11 @@ public class MaskImageProcessor extends WrappedImageProcessor {
     @NonNull
     @Override
     public String onToString() {
-        return String.format("%s(%d)", "MaskImageProcessor", maskColor);
+        return String.format(Locale.US, "%s(%d)", "MaskImageProcessor", maskColor);
     }
 
     @Override
     public String onGetKey() {
-        return String.format("%s(%d)", "Mask", maskColor);
+        return String.format(Locale.US, "%s(%d)", "Mask", maskColor);
     }
 }

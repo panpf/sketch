@@ -16,8 +16,11 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
+@SuppressWarnings("WeakerAccess")
 public class CorrectOrientationException extends Exception {
-    public CorrectOrientationException(String message) {
+    public CorrectOrientationException(@NonNull String message) {
         super(message);
     }
 }

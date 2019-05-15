@@ -41,14 +41,12 @@ public interface HttpStack {
      *
      * @param maxRetryCount 最大重试次数
      */
-    @SuppressWarnings("unused")
     @NonNull
     HttpStack setMaxRetryCount(int maxRetryCount);
 
     /**
      * 获取连接超时时间，单位毫秒，默认值是 {@link HttpStack#DEFAULT_CONNECT_TIMEOUT}
      */
-    @SuppressWarnings("unused")
     int getConnectTimeout();
 
     /**
@@ -56,14 +54,12 @@ public interface HttpStack {
      *
      * @param connectTimeout 连接超时时间，单位毫秒
      */
-    @SuppressWarnings("unused")
     @NonNull
     HttpStack setConnectTimeout(int connectTimeout);
 
     /**
      * 获取读取超时时间，单位毫秒，默认值是 {@link HttpStack#DEFAULT_READ_TIMEOUT}
      */
-    @SuppressWarnings("unused")
     int getReadTimeout();
 
     /**
@@ -71,14 +67,12 @@ public interface HttpStack {
      *
      * @param readTimeout 读取超时时间，单位毫秒
      */
-    @SuppressWarnings("unused")
     @NonNull
     HttpStack setReadTimeout(int readTimeout);
 
     /**
      * 获取自定义请求头中的 User-Agent 属性
      */
-    @SuppressWarnings("unused")
     @Nullable
     String getUserAgent();
 
@@ -87,14 +81,12 @@ public interface HttpStack {
      *
      * @param userAgent 请求头中的 User-Agent 属性
      */
-    @SuppressWarnings("unused")
     @NonNull
     HttpStack setUserAgent(String userAgent);
 
     /**
      * 获取扩展请求属性
      */
-    @SuppressWarnings("unused")
     @Nullable
     Map<String, String> getExtraHeaders();
 
@@ -103,14 +95,12 @@ public interface HttpStack {
      *
      * @param extraHeaders 扩展请求属性集
      */
-    @SuppressWarnings("unused")
     @NonNull
     HttpStack setExtraHeaders(Map<String, String> extraHeaders);
 
     /**
      * 获取可存在多个的请求属性
      */
-    @SuppressWarnings("unused")
     @Nullable
     Map<String, String> getAddExtraHeaders();
 
@@ -119,7 +109,6 @@ public interface HttpStack {
      *
      * @param extraHeaders 扩展请求属性集
      */
-    @SuppressWarnings("unused")
     @NonNull
     HttpStack addExtraHeaders(Map<String, String> extraHeaders);
 
@@ -135,7 +124,7 @@ public interface HttpStack {
     /**
      * 是否可以重试
      */
-    boolean canRetry(Throwable throwable);
+    boolean canRetry(@NonNull Throwable throwable);
 
     /**
      * 统一响应接口
@@ -153,7 +142,6 @@ public interface HttpStack {
          *
          * @throws IOException IO
          */
-        @SuppressWarnings("unused")
         @Nullable
         String getMessage() throws IOException;
 

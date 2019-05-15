@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+
 /**
  * 决定请求的处理深度
  */
@@ -41,7 +43,7 @@ public enum RequestLevel {
         this.level = level;
     }
 
-    @SuppressWarnings("unused")
+    @NonNull
     public static RequestLevel fromLevel(int level) {
         level = level % 3;
         if (level == 0) {

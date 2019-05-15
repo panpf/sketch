@@ -24,6 +24,8 @@ import android.graphics.RectF;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Locale;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.request.Resize;
@@ -31,7 +33,6 @@ import me.panpf.sketch.request.Resize;
 /**
  * 旋转图片处理器
  */
-@SuppressWarnings("unused")
 public class RotateImageProcessor extends WrappedImageProcessor {
 
     private int degrees;
@@ -42,7 +43,7 @@ public class RotateImageProcessor extends WrappedImageProcessor {
      * @param degrees               旋转角度
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public RotateImageProcessor(int degrees, WrappedImageProcessor wrappedImageProcessor) {
+    public RotateImageProcessor(int degrees, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         this.degrees = degrees;
     }
@@ -56,7 +57,7 @@ public class RotateImageProcessor extends WrappedImageProcessor {
         this(degrees, null);
     }
 
-    public static Bitmap rotate(Bitmap bitmap, int degrees, BitmapPool bitmapPool) {
+    public static Bitmap rotate(@NonNull Bitmap bitmap, int degrees, @NonNull BitmapPool bitmapPool) {
         Matrix matrix = new Matrix();
         matrix.setRotate(degrees);
 
@@ -96,7 +97,7 @@ public class RotateImageProcessor extends WrappedImageProcessor {
     @NonNull
     @Override
     public String onToString() {
-        return String.format("%s(%d)", "RotateImageProcessor", degrees);
+        return String.format(Locale.US, "%s(%d)", "RotateImageProcessor", degrees);
     }
 
     @Nullable
@@ -107,6 +108,6 @@ public class RotateImageProcessor extends WrappedImageProcessor {
             return null;
         }
 
-        return String.format("%s(%d)", "Rotate", degrees);
+        return String.format(Locale.US, "%s(%d)", "Rotate", degrees);
     }
 }

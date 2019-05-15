@@ -21,8 +21,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+
+import java.util.Locale;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -73,7 +76,7 @@ public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
         }
 
         if (packageInfo.versionCode != versionCode) {
-            String cause = String.format("App versionCode mismatch, %d != %d. %s", packageInfo.versionCode, versionCode, uri);
+            String cause = String.format(Locale.US, "App versionCode mismatch, %d != %d. %s", packageInfo.versionCode, versionCode, uri);
             SLog.e(NAME, cause);
             throw new GetDataSourceException(cause);
         }

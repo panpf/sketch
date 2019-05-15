@@ -16,17 +16,19 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
 public class ProcessException extends Exception {
 
-    public ProcessException(Throwable cause) {
+    public ProcessException(@NonNull Throwable cause) {
         super(cause);
     }
 
-    public ProcessException(String message, Throwable cause) {
+    public ProcessException(@NonNull String message, @NonNull Throwable cause) {
         super(message, cause);
     }
 
-    public ProcessException(String message) {
+    public ProcessException(@NonNull String message) {
         super(message);
     }
 }

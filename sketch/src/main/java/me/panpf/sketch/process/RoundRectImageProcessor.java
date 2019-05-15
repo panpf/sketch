@@ -23,7 +23,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Arrays;
 
@@ -35,7 +37,7 @@ import me.panpf.sketch.request.Resize;
 /**
  * 圆角矩形图片处理器
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"WeakerAccess"})
 public class RoundRectImageProcessor extends WrappedImageProcessor {
 
     @NonNull
@@ -50,7 +52,8 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
      * @param bottomRightRadius     右下角圆角角度
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, WrappedImageProcessor wrappedImageProcessor) {
+    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius,
+                                   float bottomRightRadius, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         super(wrappedImageProcessor);
         cornerRadius = new float[]{topLeftRadius, topLeftRadius,
                 topRightRadius, topRightRadius,
@@ -76,7 +79,7 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
      * @param cornerRadius          圆角角度
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public RoundRectImageProcessor(float cornerRadius, WrappedImageProcessor wrappedImageProcessor) {
+    public RoundRectImageProcessor(float cornerRadius, @Nullable WrappedImageProcessor wrappedImageProcessor) {
         this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, wrappedImageProcessor);
     }
 
@@ -96,7 +99,7 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
 
     @NonNull
     @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean lowQualityImage) {
+    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
         if (bitmap.isRecycled()) {
             return bitmap;
         }
@@ -107,9 +110,6 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
                 resize != null ? resize.getHeight() : bitmap.getHeight(),
                 resize != null ? resize.getScaleType() : null,
                 resize != null && resize.getMode() == Resize.Mode.EXACTLY_SAME);
-        if (mapping == null) {
-            return bitmap;
-        }
 
         Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();

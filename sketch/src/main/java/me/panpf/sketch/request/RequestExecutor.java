@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -32,15 +33,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 请求执行器
  */
+@SuppressWarnings("WeakerAccess")
 public class RequestExecutor {
     public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
     public static final int DEFAULT_NET_THREAD_POOL_SIZE = 3;
 
     private static final String KEY = "RequestExecutor";
 
+    @Nullable
     private ExecutorService netTaskExecutor;    //网络任务执行器
+    @Nullable
     private ExecutorService localTaskExecutor;    //本地任务执行器
+    @Nullable
     private Handler dispatchHandler;
+    @Nullable
     private DispatchThread dispatchThread;
     private boolean shutdown;
     private int localThreadPoolSize;
@@ -55,7 +61,7 @@ public class RequestExecutor {
         this(DEFAULT_LOCAL_THREAD_POOL_SIZE, DEFAULT_NET_THREAD_POOL_SIZE);
     }
 
-    public void submitDispatch(Runnable runnable) {
+    public void submitDispatch(@NonNull Runnable runnable) {
         if (shutdown) {
             return;
         }
@@ -73,7 +79,7 @@ public class RequestExecutor {
         dispatchHandler.obtainMessage(0, runnable).sendToTarget();
     }
 
-    public void submitLoad(Runnable runnable) {
+    public void submitLoad(@NonNull Runnable runnable) {
         if (shutdown) {
             return;
         }
@@ -95,7 +101,7 @@ public class RequestExecutor {
         localTaskExecutor.execute(runnable);
     }
 
-    public void submitDownload(Runnable runnable) {
+    public void submitDownload(@NonNull Runnable runnable) {
         if (shutdown) {
             return;
         }
@@ -117,8 +123,7 @@ public class RequestExecutor {
         netTaskExecutor.execute(runnable);
     }
 
-    @SuppressWarnings("unused")
-    public void setLocalTaskExecutor(ExecutorService localTaskExecutor) {
+    public void setLocalTaskExecutor(@NonNull ExecutorService localTaskExecutor) {
         if (shutdown) {
             return;
         }
@@ -126,8 +131,7 @@ public class RequestExecutor {
         this.localTaskExecutor = localTaskExecutor;
     }
 
-    @SuppressWarnings("unused")
-    public void setNetTaskExecutor(ExecutorService netTaskExecutor) {
+    public void setNetTaskExecutor(@NonNull ExecutorService netTaskExecutor) {
         if (shutdown) {
             return;
         }
@@ -189,18 +193,22 @@ public class RequestExecutor {
     }
 
     private static class DefaultThreadFactory implements ThreadFactory {
+        @NonNull
         private final ThreadGroup group;
+        @NonNull
         private final AtomicInteger threadNumber = new AtomicInteger(1);
+        @NonNull
         private final String namePrefix;
 
-        private DefaultThreadFactory(String namePrefix) {
+        private DefaultThreadFactory(@NonNull String namePrefix) {
             SecurityManager s = System.getSecurityManager();
             group = (s != null) ? s.getThreadGroup() :
                     Thread.currentThread().getThreadGroup();
             this.namePrefix = namePrefix;
         }
 
-        public Thread newThread(Runnable r) {
+        @NonNull
+        public Thread newThread(@NonNull Runnable r) {
             Thread t = new Thread(group, r,
                     namePrefix + threadNumber.getAndIncrement(),
                     0);

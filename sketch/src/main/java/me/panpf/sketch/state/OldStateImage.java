@@ -19,9 +19,10 @@ package me.panpf.sketch.state;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.ImageView;
 
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.drawable.SketchLoadingDrawable;
@@ -34,12 +35,11 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 使用当前 {@link ImageView} 正在显示的图片作为状态图片
  */
-@SuppressWarnings("unused")
 public class OldStateImage implements StateImage {
+    @Nullable
     private StateImage whenEmptyImage;
 
-    @SuppressWarnings("unused")
-    public OldStateImage(StateImage whenEmptyImage) {
+    public OldStateImage(@Nullable StateImage whenEmptyImage) {
         this.whenEmptyImage = whenEmptyImage;
     }
 
@@ -51,7 +51,7 @@ public class OldStateImage implements StateImage {
     public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
         Drawable drawable = SketchUtils.getLastDrawable(sketchView.getDrawable());
 
-        if (drawable != null && drawable instanceof SketchLoadingDrawable) {
+        if (drawable instanceof SketchLoadingDrawable) {
             drawable = ((SketchLoadingDrawable) drawable).getWrappedDrawable();
         }
 

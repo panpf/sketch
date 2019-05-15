@@ -21,6 +21,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.SLog;
@@ -41,10 +43,12 @@ class CallbackHandler extends Handler {
     private static final int WHAT_DECODE_COMPLETED = 2004;
     private static final int WHAT_DECODE_FAILED = 2005;
 
+    @NonNull
     private BitmapPool bitmapPool;
+    @NonNull
     private WeakReference<BlockExecutor> executorReference;
 
-    public CallbackHandler(Looper looper, BlockExecutor executor) {
+    CallbackHandler(@NonNull Looper looper, @NonNull BlockExecutor executor) {
         super(looper);
         executorReference = new WeakReference<>(executor);
         bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
@@ -79,7 +83,7 @@ class CallbackHandler extends Handler {
     /**
      * 延迟三十秒停止解码线程
      */
-    public void postDelayRecycleDecodeThread() {
+    void postDelayRecycleDecodeThread() {
         cancelDelayDestroyThread();
 
         Message destroyMessage = obtainMessage(CallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
@@ -96,33 +100,33 @@ class CallbackHandler extends Handler {
     /**
      * 取消停止解码线程的延迟任务
      */
-    public void cancelDelayDestroyThread() {
+    void cancelDelayDestroyThread() {
         removeMessages(CallbackHandler.WHAT_RECYCLE_DECODE_THREAD);
     }
 
 
-    public void postInitCompleted(ImageRegionDecoder decoder, String imageUri, int initKey, KeyCounter keyCounter) {
+    void postInitCompleted(ImageRegionDecoder decoder, String imageUri, int initKey, KeyCounter keyCounter) {
         Message message = obtainMessage(CallbackHandler.WHAT_INIT_COMPLETED);
         message.arg1 = initKey;
         message.obj = new InitResult(decoder, imageUri, keyCounter);
         message.sendToTarget();
     }
 
-    public void postInitError(Exception e, String imageUri, int key, KeyCounter keyCounter) {
+    void postInitError(Exception e, String imageUri, int key, KeyCounter keyCounter) {
         Message message = obtainMessage(CallbackHandler.WHAT_INIT_FAILED);
         message.arg1 = key;
         message.obj = new InitErrorResult(e, imageUri, keyCounter);
         message.sendToTarget();
     }
 
-    public void postDecodeCompleted(int key, Block block, Bitmap bitmap, int useTime) {
+    void postDecodeCompleted(int key, Block block, Bitmap bitmap, int useTime) {
         Message message = obtainMessage(CallbackHandler.WHAT_DECODE_COMPLETED);
         message.arg1 = key;
         message.obj = new DecodeResult(bitmap, block, useTime);
         message.sendToTarget();
     }
 
-    public void postDecodeError(int key, Block block, DecodeHandler.DecodeErrorException exception) {
+    void postDecodeError(int key, Block block, DecodeHandler.DecodeErrorException exception) {
         Message message = obtainMessage(CallbackHandler.WHAT_DECODE_FAILED);
         message.arg1 = key;
         message.obj = new DecodeErrorResult(block, exception);
@@ -192,11 +196,13 @@ class CallbackHandler extends Handler {
     }
 
     private static final class DecodeResult {
+        @NonNull
         public Block block;
+        @NonNull
         public Bitmap bitmap;
-        public int useTime;
+        int useTime;
 
-        public DecodeResult(Bitmap bitmap, Block block, int useTime) {
+        DecodeResult(@NonNull Bitmap bitmap, @NonNull Block block, int useTime) {
             this.bitmap = bitmap;
             this.block = block;
             this.useTime = useTime;
@@ -204,21 +210,26 @@ class CallbackHandler extends Handler {
     }
 
     private static final class DecodeErrorResult {
+        @NonNull
         public Block block;
+        @NonNull
         public DecodeHandler.DecodeErrorException exception;
 
-        public DecodeErrorResult(Block block, DecodeHandler.DecodeErrorException exception) {
+        DecodeErrorResult(@NonNull Block block, @NonNull DecodeHandler.DecodeErrorException exception) {
             this.block = block;
             this.exception = exception;
         }
     }
 
     private static final class InitResult {
-        public String imageUrl;
-        public ImageRegionDecoder imageRegionDecoder;
-        public KeyCounter keyCounter;
+        @NonNull
+        String imageUrl;
+        @NonNull
+        ImageRegionDecoder imageRegionDecoder;
+        @NonNull
+        KeyCounter keyCounter;
 
-        public InitResult(ImageRegionDecoder imageRegionDecoder, String imageUrl, KeyCounter keyCounter) {
+        InitResult(@NonNull ImageRegionDecoder imageRegionDecoder, @NonNull String imageUrl, @NonNull KeyCounter keyCounter) {
             this.imageRegionDecoder = imageRegionDecoder;
             this.imageUrl = imageUrl;
             this.keyCounter = keyCounter;
@@ -226,11 +237,14 @@ class CallbackHandler extends Handler {
     }
 
     private static final class InitErrorResult {
-        public String imageUrl;
+        @NonNull
+        String imageUrl;
+        @NonNull
         public Exception exception;
-        public KeyCounter keyCounter;
+        @NonNull
+        KeyCounter keyCounter;
 
-        public InitErrorResult(Exception exception, String imageUrl, KeyCounter keyCounter) {
+        InitErrorResult(@NonNull Exception exception, @NonNull String imageUrl, @NonNull KeyCounter keyCounter) {
             this.exception = exception;
             this.imageUrl = imageUrl;
             this.keyCounter = keyCounter;

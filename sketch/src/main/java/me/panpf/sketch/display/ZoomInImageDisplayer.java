@@ -17,18 +17,21 @@
 package me.panpf.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 import me.panpf.sketch.SketchView;
 
 /**
  * 由小到大图片显示器
  */
-@SuppressWarnings("unused")
 public class ZoomInImageDisplayer implements ImageDisplayer {
     private static final String KEY = "ZoomInImageDisplayer";
     private static final float DEFAULT_FROM = 0.5f;
@@ -36,10 +39,11 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
     private int duration;
     private float fromX;
     private float fromY;
+    @Nullable
     private Interpolator interpolator;
     private boolean alwaysUse;
 
-    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration, boolean alwaysUse) {
+    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, int duration, boolean alwaysUse) {
         this.duration = duration;
         this.fromY = fromY;
         this.fromX = fromX;
@@ -47,15 +51,15 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
         this.alwaysUse = alwaysUse;
     }
 
-    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, int duration) {
         this(fromX, fromY, interpolator, duration, false);
     }
 
-    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, boolean alwaysUse) {
+    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, boolean alwaysUse) {
         this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
-    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator) {
+    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator) {
         this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, false);
     }
 
@@ -67,11 +71,11 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
         this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
     }
 
-    public ZoomInImageDisplayer(Interpolator interpolator, boolean alwaysUse) {
+    public ZoomInImageDisplayer(@Nullable Interpolator interpolator, boolean alwaysUse) {
         this(DEFAULT_FROM, DEFAULT_FROM, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
-    public ZoomInImageDisplayer(Interpolator interpolator) {
+    public ZoomInImageDisplayer(@Nullable Interpolator interpolator) {
         this(DEFAULT_FROM, DEFAULT_FROM, interpolator, DEFAULT_ANIMATION_DURATION, false);
     }
 
@@ -93,9 +97,6 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
 
     @Override
     public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable == null) {
-            return;
-        }
         ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setInterpolator(interpolator);
         scaleAnimation.setDuration(duration);
@@ -107,7 +108,7 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)",
+        return String.format(Locale.US, "%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)",
                 KEY, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 
@@ -129,6 +130,7 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
         return fromY;
     }
 
+    @Nullable
     public Interpolator getInterpolator() {
         return interpolator;
     }

@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.LoadRequest;
 
 /**
@@ -24,7 +26,7 @@ import me.panpf.sketch.request.LoadRequest;
 public class ProcessedResultCacheProcessor implements ResultProcessor {
 
     @Override
-    public void process(LoadRequest request, DecodeResult result) {
+    public void process(@NonNull LoadRequest request, @NonNull DecodeResult result) {
         if (result.isBanProcess()) {
             return;
         }

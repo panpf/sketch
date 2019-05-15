@@ -18,6 +18,9 @@ package me.panpf.sketch.request;
 
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,20 +35,25 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 支持显示顺风车的请求
  */
+@SuppressWarnings("WeakerAccess")
 public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideManager.DisplayFreeRide {
+
+    @Nullable
     private Set<FreeRideManager.DisplayFreeRide> displayFreeRideSet;
 
-    public FreeRideDisplayRequest(Sketch sketch, String uri, UriModel uriModel, String key, DisplayOptions displayOptions,
-                                  ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
-                                  DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
+    public FreeRideDisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DisplayOptions displayOptions,
+                                  @NonNull ViewInfo viewInfo, @NonNull RequestAndViewBinder requestAndViewBinder,
+                                  @Nullable DisplayListener displayListener, @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, displayOptions, viewInfo, requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
+    @NonNull
     @Override
     public String getDisplayFreeRideLog() {
         return String.format("%s@%s", SketchUtils.toHexString(this), getKey());
     }
 
+    @NonNull
     @Override
     public String getDisplayFreeRideKey() {
         return getKey();
@@ -102,6 +110,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
         displayFreeRideSet.add(request);
     }
 
+    @Nullable
     @Override
     public Set<FreeRideManager.DisplayFreeRide> getDisplayFreeRideSet() {
         return displayFreeRideSet;

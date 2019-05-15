@@ -29,17 +29,25 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 下载 Helper，负责组织、收集、初始化下载参数，最后执行 commit() 提交请求
  */
+@SuppressWarnings("WeakerAccess")
 public class DownloadHelper {
     private static final String NAME = "DownloadHelper";
 
+    @NonNull
     private Sketch sketch;
     private boolean sync;
 
+    @NonNull
     private String uri;
+    @Nullable
     private UriModel uriModel;
+    @Nullable
     private String key;
+    @NonNull
     private DownloadOptions downloadOptions = new DownloadOptions();
+    @Nullable
     private DownloadListener downloadListener;
+    @Nullable
     private DownloadProgressListener downloadProgressListener;
 
     public DownloadHelper(@NonNull Sketch sketch, @NonNull String uri, @Nullable DownloadListener downloadListener) {
@@ -56,7 +64,6 @@ public class DownloadHelper {
      * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DownloadHelper requestLevel(@Nullable RequestLevel requestLevel) {
         if (requestLevel != null) {
             downloadOptions.setRequestLevel(requestLevel);
@@ -70,7 +77,6 @@ public class DownloadHelper {
      * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DownloadHelper disableCacheInDisk() {
         downloadOptions.setCacheInDiskDisabled(true);
         return this;
@@ -94,7 +100,6 @@ public class DownloadHelper {
      * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DownloadHelper downloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
         return this;
@@ -106,7 +111,6 @@ public class DownloadHelper {
      * @return {@link DownloadHelper}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DownloadHelper sync() {
         this.sync = true;
         return this;

@@ -16,9 +16,12 @@
 
 package me.panpf.sketch.request;
 
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.ImageView;
+
+import java.util.Locale;
 
 import me.panpf.sketch.Key;
 
@@ -31,10 +34,12 @@ public class Resize implements Key {
 
     private int width;
     private int height;
+    @NonNull
     private Mode mode = Mode.ASPECT_RATIO_SAME;
+    @Nullable
     private ImageView.ScaleType scaleType;
 
-    public Resize(int width, int height, ImageView.ScaleType scaleType, Mode mode) {
+    public Resize(int width, int height, @Nullable ImageView.ScaleType scaleType, @Nullable Mode mode) {
         this.width = width;
         this.height = height;
         this.scaleType = scaleType;
@@ -43,13 +48,13 @@ public class Resize implements Key {
         }
     }
 
-    public Resize(int width, int height, ImageView.ScaleType scaleType) {
+    public Resize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
         this.width = width;
         this.height = height;
         this.scaleType = scaleType;
     }
 
-    public Resize(int width, int height, Mode mode) {
+    public Resize(int width, int height, @Nullable Mode mode) {
         this.width = width;
         this.height = height;
         if (mode != null) {
@@ -62,7 +67,7 @@ public class Resize implements Key {
         this.height = height;
     }
 
-    public Resize(Resize sourceResize) {
+    public Resize(@NonNull Resize sourceResize) {
         this.width = sourceResize.width;
         this.height = sourceResize.height;
         this.scaleType = sourceResize.scaleType;
@@ -75,8 +80,7 @@ public class Resize implements Key {
     /**
      * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
      */
-    @SuppressWarnings("unused")
-    public static Resize byViewFixedSize(Mode mode) {
+    public static Resize byViewFixedSize(@NonNull Mode mode) {
         if (mode == Mode.EXACTLY_SAME) {
             return ByViewFixedSizeResize.INSTANCE_EXACTLY_SAME;
         } else {
@@ -87,16 +91,17 @@ public class Resize implements Key {
     /**
      * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
      */
-    @SuppressWarnings("unused")
+    @NonNull
     public static Resize byViewFixedSize() {
         return ByViewFixedSizeResize.INSTANCE;
     }
 
+    @Nullable
     public ImageView.ScaleType getScaleType() {
         return scaleType;
     }
 
-    void setScaleType(ImageView.ScaleType scaleType) {
+    void setScaleType(@Nullable ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
     }
 
@@ -126,7 +131,7 @@ public class Resize implements Key {
     @NonNull
     @Override
     public String toString() {
-        return String.format("Resize(%dx%d-%s-%s)", width, height, scaleType != null ? scaleType.name() : "null", mode.name());
+        return String.format(Locale.US, "Resize(%dx%d-%s-%s)", width, height, scaleType != null ? scaleType.name() : "null", mode.name());
     }
 
     @NonNull

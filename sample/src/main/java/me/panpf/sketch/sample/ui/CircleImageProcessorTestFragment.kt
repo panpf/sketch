@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_reflection.*
+import me.panpf.javaxkt.util.requireNotNull
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.CircleImageProcessor
 import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.util.SketchUtils
 
 @BindContentView(R.layout.fragment_reflection)
@@ -23,7 +24,7 @@ class CircleImageProcessorTestFragment : BaseFragment() {
         image_reflectionFragment.options.setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
 
         val layoutParams = image_reflectionFragment.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.bottomMargin = SketchUtils.dp2px(activity, 16)
+        layoutParams.bottomMargin = SketchUtils.dp2px(activity.requireNotNull(), 16)
         layoutParams.rightMargin = layoutParams.bottomMargin
         layoutParams.topMargin = layoutParams.rightMargin
         layoutParams.leftMargin = layoutParams.topMargin

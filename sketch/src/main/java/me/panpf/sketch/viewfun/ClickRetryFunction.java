@@ -16,9 +16,10 @@
 
 package me.panpf.sketch.viewfun;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.view.View;
 
 import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.DisplayOptions;
@@ -30,6 +31,7 @@ import me.panpf.sketch.uri.UriModel;
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击 {@link android.widget.ImageView} 重新或强制显示图片
  */
+@SuppressWarnings("WeakerAccess")
 public class ClickRetryFunction extends ViewFunction {
     private boolean clickRetryOnDisplayErrorEnabled;
     private boolean clickRetryOnPauseDownloadEnabled;
@@ -37,10 +39,11 @@ public class ClickRetryFunction extends ViewFunction {
     private boolean displayError;
     private boolean pauseDownload;
 
+    @NonNull
     private FunctionCallbackView view;
     private RedisplayListener redisplayListener;
 
-    public ClickRetryFunction(FunctionCallbackView view) {
+    public ClickRetryFunction(@NonNull FunctionCallbackView view) {
         this.view = view;
     }
 
@@ -118,7 +121,7 @@ public class ClickRetryFunction extends ViewFunction {
     private class RetryOnPauseDownloadRedisplayListener implements RedisplayListener {
 
         @Override
-        public void onPreCommit(String cacheUri, DisplayOptions cacheOptions) {
+        public void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions) {
             if (clickRetryOnPauseDownloadEnabled && pauseDownload) {
                 cacheOptions.setRequestLevel(RequestLevel.NET);
             }

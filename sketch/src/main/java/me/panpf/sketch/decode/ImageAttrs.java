@@ -16,16 +16,19 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
 /**
  * 图片的真实宽、高、格式、方向等属性
  */
 public class ImageAttrs {
     private int width;
     private int height;
+    @NonNull
     private String mimeType;
     private int exifOrientation;
 
-    public ImageAttrs(String mimeType, int width, int height, int exifOrientation) {
+    public ImageAttrs(@NonNull String mimeType, int width, int height, int exifOrientation) {
         this.mimeType = mimeType;
         this.width = width;
         this.height = height;
@@ -36,6 +39,7 @@ public class ImageAttrs {
         return exifOrientation;
     }
 
+    @NonNull
     public String getMimeType() {
         return mimeType;
     }

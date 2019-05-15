@@ -21,6 +21,8 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import androidx.annotation.NonNull;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -46,32 +48,44 @@ public class BlockManager {
     private static final String NAME = "BlockManager";
 
     public int blockBaseNumber = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
+    @NonNull
     public Rect drawRect = new Rect(); // 绘制区域，可见区域加大一圈就是绘制区域，为的是提前将四周加载出来，用户缓慢滑动时可直接看到
+    @NonNull
     public Rect decodeRect = new Rect();   // 解码区域，真正需要解码的区域，是以绘制区域为基础，滑动时哪边不够了就在扩展哪边，解码区域一定比绘制区域大
+    @NonNull
     public Rect drawSrcRect = new Rect();
+    @NonNull
     public Rect decodeSrcRect = new Rect();
-    public List<Block> blockList = new LinkedList<Block>();
-    public Rect visibleRect = new Rect();  // 可见区域，当前用户真正能看见的区域
+    @NonNull
+    public List<Block> blockList = new LinkedList<>();
+    @NonNull
+    private Rect visibleRect = new Rect();  // 可见区域，当前用户真正能看见的区域
 
+    @NonNull
     private Context context;
+    @NonNull
     private BitmapPool bitmapPool;
+    @NonNull
     private BlockDisplayer blockDisplayer;
+    @NonNull
     private ObjectPool<Block> blockPool = new ObjectPool<>(new ObjectPool.ObjectFactory<Block>() {
+        @NonNull
         @Override
         public Block newObject() {
             return new Block();
         }
     }, 60);
+    @NonNull
     private ObjectPool<Rect> rectPool = new ObjectPool<>(new ObjectPool.ObjectFactory<Rect>() {
+        @NonNull
         @Override
         public Rect newObject() {
             return new Rect();
         }
     }, 20);
 
-    public BlockManager(Context context, BlockDisplayer blockDisplayer) {
-        context = context.getApplicationContext();
-        this.context = context;
+    public BlockManager(@NonNull Context context, @NonNull BlockDisplayer blockDisplayer) {
+        this.context = context.getApplicationContext();
         this.bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         this.blockDisplayer = blockDisplayer;
     }
@@ -441,7 +455,7 @@ public class BlockManager {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            /**
+            /*
              * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，这里的处理办法是暂时改用旧版的排序算法再次排序
              */
 
@@ -475,7 +489,7 @@ public class BlockManager {
                         Rect rightEmptyRect = rectPool.get();
                         rightEmptyRect.set(lastRect.drawRect.right, top, rect.right, bottom);
                         if (emptyRectList == null) {
-                            emptyRectList = new LinkedList<Rect>();
+                            emptyRectList = new LinkedList<>();
                         }
                         emptyRectList.add(rightEmptyRect);
                     }
@@ -490,7 +504,7 @@ public class BlockManager {
                     Rect leftEmptyRect = rectPool.get();
                     leftEmptyRect.set(left, childRect.drawRect.top, childRect.drawRect.left, childRect.drawRect.bottom);
                     if (emptyRectList == null) {
-                        emptyRectList = new LinkedList<Rect>();
+                        emptyRectList = new LinkedList<>();
                     }
                     emptyRectList.add(leftEmptyRect);
                 }
@@ -500,7 +514,7 @@ public class BlockManager {
                     Rect topEmptyRect = rectPool.get();
                     topEmptyRect.set(left, top, childRect.drawRect.right, childRect.drawRect.top);
                     if (emptyRectList == null) {
-                        emptyRectList = new LinkedList<Rect>();
+                        emptyRectList = new LinkedList<>();
                     }
                     emptyRectList.add(topEmptyRect);
                 }
@@ -515,7 +529,7 @@ public class BlockManager {
                         Rect leftEmptyRect = rectPool.get();
                         leftEmptyRect.set(right, top, childRect.drawRect.left, bottom);
                         if (emptyRectList == null) {
-                            emptyRectList = new LinkedList<Rect>();
+                            emptyRectList = new LinkedList<>();
                         }
                         emptyRectList.add(leftEmptyRect);
                     }
@@ -525,7 +539,7 @@ public class BlockManager {
                         Rect topEmptyRect = rectPool.get();
                         topEmptyRect.set(childRect.drawRect.left, top, childRect.drawRect.right, childRect.drawRect.top);
                         if (emptyRectList == null) {
-                            emptyRectList = new LinkedList<Rect>();
+                            emptyRectList = new LinkedList<>();
                         }
                         emptyRectList.add(topEmptyRect);
                     }
@@ -543,7 +557,7 @@ public class BlockManager {
             Rect rightEmptyRect = rectPool.get();
             rightEmptyRect.set(right, top, rect.right, bottom);
             if (emptyRectList == null) {
-                emptyRectList = new LinkedList<Rect>();
+                emptyRectList = new LinkedList<>();
             }
             emptyRectList.add(rightEmptyRect);
         }
@@ -552,7 +566,7 @@ public class BlockManager {
             Rect bottomEmptyRect = rectPool.get();
             bottomEmptyRect.set(rect.left, bottom, rect.right, rect.bottom);
             if (emptyRectList == null) {
-                emptyRectList = new LinkedList<Rect>();
+                emptyRectList = new LinkedList<>();
             }
             emptyRectList.add(bottomEmptyRect);
         }
@@ -685,7 +699,7 @@ public class BlockManager {
     }
 
     public long getAllocationByteCount() {
-        if (blockList == null || blockList.size() <= 0) {
+        if (blockList.size() <= 0) {
             return 0;
         }
 

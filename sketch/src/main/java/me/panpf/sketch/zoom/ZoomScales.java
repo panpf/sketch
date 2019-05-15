@@ -19,12 +19,15 @@ package me.panpf.sketch.zoom;
 import android.content.Context;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public interface ZoomScales {
 
     /**
      * 重置
      */
-    void reset(final Context context, final Sizes sizes, final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode);
+    void reset(@NonNull final Context context, @NonNull final Sizes sizes, @Nullable final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode);
 
     /**
      * 最小缩放比例

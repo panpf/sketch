@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.decode;
 
+import androidx.annotation.NonNull;
+
 import java.text.DecimalFormat;
 
 import me.panpf.sketch.SLog;
@@ -29,7 +31,7 @@ public class DecodeTimeAnalyze {
         return System.currentTimeMillis();
     }
 
-    public synchronized void decodeEnd(long startTime, String logName, String key) {
+    public synchronized void decodeEnd(long startTime, @NonNull String logName, String key) {
         long useTime = System.currentTimeMillis() - startTime;
         if ((Long.MAX_VALUE - decodeCount) < 1 || (Long.MAX_VALUE - useTimeCount) < useTime) {
             decodeCount = 0;

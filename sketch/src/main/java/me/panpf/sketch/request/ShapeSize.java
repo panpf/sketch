@@ -16,8 +16,12 @@
 
 package me.panpf.sketch.request;
 
-import androidx.annotation.NonNull;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable;
 
@@ -31,6 +35,7 @@ import me.panpf.sketch.drawable.SketchShapeBitmapDrawable;
 public class ShapeSize {
     private int width;
     private int height;
+    @Nullable
     private ImageView.ScaleType scaleType;
 
     public ShapeSize(int width, int height) {
@@ -38,7 +43,7 @@ public class ShapeSize {
         this.height = height;
     }
 
-    public ShapeSize(int width, int height, ImageView.ScaleType scaleType) {
+    public ShapeSize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
         this.width = width;
         this.height = height;
         this.scaleType = scaleType;
@@ -50,7 +55,7 @@ public class ShapeSize {
     /**
      * 使用 {@link ImageView} 的固定尺寸作为 {@link ShapeSize}
      */
-    @SuppressWarnings("unused")
+    @NonNull
     public static ShapeSize byViewFixedSize() {
         return ByViewFixedSizeShapeSize.INSTANCE;
     }
@@ -63,11 +68,12 @@ public class ShapeSize {
         return height;
     }
 
+    @Nullable
     public ImageView.ScaleType getScaleType() {
         return scaleType;
     }
 
-    void setScaleType(ImageView.ScaleType scaleType) {
+    void setScaleType(@Nullable ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
     }
 
@@ -89,7 +95,7 @@ public class ShapeSize {
     @NonNull
     @Override
     public String toString() {
-        return String.format("ShapeSize(%dx%d)", width, height);
+        return String.format(Locale.US, "ShapeSize(%dx%d)", width, height);
     }
 
     /**

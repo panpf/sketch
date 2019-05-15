@@ -54,33 +54,54 @@ import me.panpf.sketch.uri.UriModelManager;
 /**
  * {@link Sketch} 唯一配置类
  */
+@SuppressWarnings({"unused", "WeakerAccess", "UnusedReturnValue"})
 public final class Configuration {
     private static final String NAME = "Configuration";
 
+    @NonNull
     private Context context;
 
+    @NonNull
     private UriModelManager uriModelManager;
+    @NonNull
     private OptionsFilterManager optionsFilterManager;
 
+    @NonNull
     private DiskCache diskCache;
+    @NonNull
     private BitmapPool bitmapPool;
+    @NonNull
     private MemoryCache memoryCache;
+    @NonNull
     private ProcessedImageCache processedImageCache;
 
+    @NonNull
     private HttpStack httpStack;
+    @NonNull
     private ImageDecoder decoder;
+    @NonNull
     private ImageDownloader downloader;
+    @NonNull
     private ImageOrientationCorrector orientationCorrector;
 
+    @NonNull
     private ImageDisplayer defaultDisplayer;
+    @NonNull
     private ImageProcessor resizeProcessor;
+    @NonNull
     private ResizeCalculator resizeCalculator;
+    @NonNull
     private ImageSizeCalculator sizeCalculator;
 
+    @NonNull
     private RequestExecutor executor;
+    @NonNull
     private FreeRideManager freeRideManager;
+    @NonNull
     private HelperFactory helperFactory;
+    @NonNull
     private RequestFactory requestFactory;
+    @NonNull
     private ErrorTracker errorTracker;
 
     Configuration(@NonNull Context context) {
@@ -140,6 +161,7 @@ public final class Configuration {
      *
      * @return {@link OptionsFilterManager}. {@link OptionsFilter} 管理器
      */
+    @NonNull
     public OptionsFilterManager getOptionsFilterManager() {
         return optionsFilterManager;
     }
@@ -161,15 +183,12 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setDiskCache(@NonNull DiskCache newDiskCache) {
         //noinspection ConstantConditions
         if (newDiskCache != null) {
             DiskCache oldDiskCache = diskCache;
             diskCache = newDiskCache;
-            if (oldDiskCache != null) {
-                oldDiskCache.close();
-            }
+            oldDiskCache.close();
             SLog.w(NAME, "diskCache=%s", diskCache.toString());
         }
         return this;
@@ -181,7 +200,6 @@ public final class Configuration {
      * @return {@link BitmapPool}. {@link Bitmap} 复用管理器
      */
     @NonNull
-    @SuppressWarnings("unused")
     public BitmapPool getBitmapPool() {
         return bitmapPool;
     }
@@ -193,15 +211,12 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setBitmapPool(@NonNull BitmapPool newBitmapPool) {
         //noinspection ConstantConditions
         if (newBitmapPool != null) {
             BitmapPool oldBitmapPool = this.bitmapPool;
             this.bitmapPool = newBitmapPool;
-            if (oldBitmapPool != null) {
-                oldBitmapPool.close();
-            }
+            oldBitmapPool.close();
             SLog.w(NAME, "bitmapPool=%s", bitmapPool.toString());
         }
         return this;
@@ -224,15 +239,12 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setMemoryCache(@NonNull MemoryCache memoryCache) {
         //noinspection ConstantConditions
         if (memoryCache != null) {
             MemoryCache oldMemoryCache = this.memoryCache;
             this.memoryCache = memoryCache;
-            if (oldMemoryCache != null) {
-                oldMemoryCache.close();
-            }
+            oldMemoryCache.close();
             SLog.w(NAME, "memoryCache=", memoryCache.toString());
         }
         return this;
@@ -244,7 +256,6 @@ public final class Configuration {
      * @return {@link ProcessedImageCache}. 已处理图片缓存器
      */
     @NonNull
-    @SuppressWarnings("unused")
     public ProcessedImageCache getProcessedImageCache() {
         return processedImageCache;
     }
@@ -256,7 +267,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setProcessedImageCache(@NonNull ProcessedImageCache processedImageCache) {
         //noinspection ConstantConditions
         if (processedImageCache != null) {
@@ -273,7 +283,6 @@ public final class Configuration {
      * @return {@link HttpStack} HTTP 请求执行器
      */
     @NonNull
-    @SuppressWarnings("unused")
     public HttpStack getHttpStack() {
         return httpStack;
     }
@@ -285,7 +294,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setHttpStack(@NonNull HttpStack httpStack) {
         //noinspection ConstantConditions
         if (httpStack != null) {
@@ -312,7 +320,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setDecoder(@NonNull ImageDecoder decoder) {
         //noinspection ConstantConditions
         if (decoder != null) {
@@ -339,7 +346,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setDownloader(@NonNull ImageDownloader downloader) {
         //noinspection ConstantConditions
         if (downloader != null) {
@@ -366,7 +372,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setOrientationCorrector(@NonNull ImageOrientationCorrector orientationCorrector) {
         //noinspection ConstantConditions
         if (orientationCorrector != null) {
@@ -394,7 +399,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setDefaultDisplayer(@NonNull ImageDisplayer defaultDisplayer) {
         //noinspection ConstantConditions
         if (defaultDisplayer != null) {
@@ -421,7 +425,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setResizeProcessor(@NonNull ImageProcessor resizeProcessor) {
         //noinspection ConstantConditions
         if (resizeProcessor != null) {
@@ -448,7 +451,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setResizeCalculator(@NonNull ResizeCalculator resizeCalculator) {
         //noinspection ConstantConditions
         if (resizeCalculator != null) {
@@ -475,7 +477,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setSizeCalculator(@NonNull ImageSizeCalculator sizeCalculator) {
         //noinspection ConstantConditions
         if (sizeCalculator != null) {
@@ -503,7 +504,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setFreeRideManager(@NonNull FreeRideManager freeRideManager) {
         //noinspection ConstantConditions
         if (freeRideManager != null) {
@@ -530,15 +530,12 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setExecutor(@NonNull RequestExecutor newRequestExecutor) {
         //noinspection ConstantConditions
         if (newRequestExecutor != null) {
             RequestExecutor oldRequestExecutor = executor;
             executor = newRequestExecutor;
-            if (oldRequestExecutor != null) {
-                oldRequestExecutor.shutdown();
-            }
+            oldRequestExecutor.shutdown();
             SLog.w(NAME, "executor=%s", executor.toString());
         }
         return this;
@@ -561,7 +558,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setHelperFactory(@NonNull HelperFactory helperFactory) {
         //noinspection ConstantConditions
         if (helperFactory != null) {
@@ -588,7 +584,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setRequestFactory(@NonNull RequestFactory requestFactory) {
         //noinspection ConstantConditions
         if (requestFactory != null) {
@@ -604,7 +599,6 @@ public final class Configuration {
      * @return {@link ErrorTracker}. 错误跟踪器
      */
     @NonNull
-    @SuppressWarnings("unused")
     public ErrorTracker getErrorTracker() {
         return errorTracker;
     }
@@ -616,7 +610,6 @@ public final class Configuration {
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
-    @SuppressWarnings("unused")
     public Configuration setErrorTracker(@NonNull ErrorTracker errorTracker) {
         //noinspection ConstantConditions
         if (errorTracker != null) {
@@ -630,7 +623,6 @@ public final class Configuration {
     /**
      * 全局暂停下载新图片？
      */
-    @SuppressWarnings("unused")
     public boolean isPauseDownloadEnabled() {
         return optionsFilterManager.isPauseDownloadEnabled();
     }
@@ -641,7 +633,6 @@ public final class Configuration {
      * @param pauseDownloadEnabled 全局暂停下载新图片
      * @return {@link Configuration}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public Configuration setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
         if (optionsFilterManager.isPauseDownloadEnabled() != pauseDownloadEnabled) {
@@ -664,7 +655,6 @@ public final class Configuration {
      * @param pauseLoadEnabled 全局暂停加载新图片
      * @return {@link Configuration}. 为了支持链式调用
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public Configuration setPauseLoadEnabled(boolean pauseLoadEnabled) {
         if (optionsFilterManager.isPauseLoadEnabled() != pauseLoadEnabled) {
@@ -701,7 +691,6 @@ public final class Configuration {
      *
      * @return true：质量优先；false：速度优先
      */
-    @SuppressWarnings("unused")
     public boolean isInPreferQualityOverSpeedEnabled() {
         return optionsFilterManager.isInPreferQualityOverSpeedEnabled();
     }
@@ -724,7 +713,6 @@ public final class Configuration {
     /**
      * 全局移动数据下暂停下载？
      */
-    @SuppressWarnings("unused")
     public boolean isMobileDataPauseDownloadEnabled() {
         return optionsFilterManager.isMobileDataPauseDownloadEnabled();
     }
@@ -779,9 +767,10 @@ public final class Configuration {
     }
 
     private static class MemoryChangedListener implements ComponentCallbacks2 {
+        @NonNull
         private Context context;
 
-        public MemoryChangedListener(Context context) {
+        private MemoryChangedListener(@NonNull Context context) {
             this.context = context.getApplicationContext();
         }
 

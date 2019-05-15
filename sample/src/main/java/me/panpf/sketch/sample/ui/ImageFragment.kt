@@ -141,7 +141,7 @@ class ImageFragment : BaseFragment() {
                     memoryCacheKey = SketchUtils.makeRequestKey(image.normalQualityUrl, uriModel, loadingImageOptionsKey!!)
                     cachedRefBitmap = Sketch.with(activity).configuration.memoryCache.get(memoryCacheKey)
                 }
-                if (cachedRefBitmap != null) {
+                if (cachedRefBitmap != null && memoryCacheKey != null) {
                     options.loadingImage = MemoryCacheStateImage(memoryCacheKey, null)
                 } else {
                     options.displayer = FadeInImageDisplayer()

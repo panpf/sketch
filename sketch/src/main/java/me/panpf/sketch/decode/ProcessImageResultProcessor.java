@@ -18,6 +18,8 @@ package me.panpf.sketch.decode;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.process.ImageProcessor;
@@ -28,7 +30,7 @@ import me.panpf.sketch.request.LoadRequest;
 public class ProcessImageResultProcessor implements ResultProcessor {
 
     @Override
-    public void process(LoadRequest request, DecodeResult result) throws ProcessException {
+    public void process(@NonNull LoadRequest request, @NonNull DecodeResult result) throws ProcessException {
         if (result.isBanProcess()) {
             return;
         }

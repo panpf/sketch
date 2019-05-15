@@ -23,6 +23,8 @@ import android.graphics.drawable.TransitionDrawable;
 
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.drawable.SketchDrawable;
 import me.panpf.sketch.drawable.SketchGifDrawable;
@@ -57,6 +59,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         this(DEFAULT_ANIMATION_DURATION, false);
     }
 
+    @NonNull
     public TransitionImageDisplayer setDisableCrossFade(boolean disableCrossFade) {
         this.disableCrossFade = disableCrossFade;
         return this;
@@ -64,9 +67,6 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable == null) {
-            return;
-        }
         if (newDrawable instanceof SketchGifDrawable) {
             sketchView.clearAnimation();
             sketchView.setImageDrawable(newDrawable);
@@ -106,6 +106,6 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(duration=%d,alwaysUse=%s)", KEY, duration, alwaysUse);
+        return String.format(Locale.US, "%s(duration=%d,alwaysUse=%s)", KEY, duration, alwaysUse);
     }
 }

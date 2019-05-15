@@ -18,42 +18,54 @@ package me.panpf.sketch.request;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.decode.DecodeResult;
 import me.panpf.sketch.decode.ImageAttrs;
 import me.panpf.sketch.drawable.SketchGifDrawable;
 
+@SuppressWarnings("WeakerAccess")
 public class LoadResult {
+    @Nullable
     private Bitmap bitmap;
+    @Nullable
     private SketchGifDrawable gifDrawable;
+    @NonNull
     private ImageFrom imageFrom;
+    @NonNull
     private ImageAttrs imageAttrs;
 
-    public LoadResult(Bitmap bitmap, DecodeResult decodeResult) {
+    public LoadResult(@NonNull Bitmap bitmap, @NonNull DecodeResult decodeResult) {
         this.bitmap = bitmap;
 
         this.imageAttrs = decodeResult.getImageAttrs();
         this.imageFrom = decodeResult.getImageFrom();
     }
 
-    public LoadResult(SketchGifDrawable gifDrawable, DecodeResult decodeResult) {
+    public LoadResult(@NonNull SketchGifDrawable gifDrawable, @NonNull DecodeResult decodeResult) {
         this.gifDrawable = gifDrawable;
 
         this.imageAttrs = decodeResult.getImageAttrs();
         this.imageFrom = decodeResult.getImageFrom();
     }
 
+    @Nullable
     public Bitmap getBitmap() {
         return bitmap;
     }
 
+    @Nullable
     public SketchGifDrawable getGifDrawable() {
         return gifDrawable;
     }
 
+    @NonNull
     public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
+    @NonNull
     public ImageAttrs getImageAttrs() {
         return imageAttrs;
     }

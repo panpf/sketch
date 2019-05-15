@@ -70,7 +70,6 @@ public interface MemoryCache {
     /**
      * 是否禁用
      */
-    @SuppressWarnings("unused")
     boolean isDisabled();
 
     /**
@@ -88,7 +87,6 @@ public interface MemoryCache {
     /**
      * 是否已关闭
      */
-    @SuppressWarnings("unused")
     boolean isClosed();
 
     /**

@@ -49,7 +49,6 @@ import me.panpf.sketch.util.SketchUtils;
  * 可以使用 Options 中配置的 {@link ImageProcessor} 和 {@link Resize} 修改原图片，同样支持 {@link ShapeSize} 和 {@link ImageShaper}
  */
 // TODO: 2017/10/30 重命名为 MakerDrawableStateImage 并像 DrawableStateImage 一样支持 drawable
-@SuppressWarnings("unused")
 public class MakerStateImage implements StateImage {
     private int resId;
 
@@ -68,15 +67,15 @@ public class MakerStateImage implements StateImage {
 
         ShapeSize shapeSize = displayOptions.getShapeSize();
         ImageShaper imageShaper = displayOptions.getShaper();
-        if ((shapeSize != null || imageShaper != null) && drawable != null
-                && drawable instanceof BitmapDrawable) {
+        if ((shapeSize != null || imageShaper != null) && drawable instanceof BitmapDrawable) {
             drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
         }
 
         return drawable;
     }
 
-    private Drawable makeDrawable(Sketch sketch, DisplayOptions options) {
+    @Nullable
+    private Drawable makeDrawable(@NonNull Sketch sketch, @NonNull DisplayOptions options) {
         Configuration configuration = sketch.getConfiguration();
 
         ImageProcessor processor = options.getProcessor();
@@ -114,7 +113,7 @@ public class MakerStateImage implements StateImage {
         boolean tempLowQualityImage = configuration.isLowQualityImageEnabled() || options.isLowQualityImage();
         //noinspection deprecation
         Drawable drawable = configuration.getContext().getResources().getDrawable(resId);
-        if (drawable != null && drawable instanceof BitmapDrawable) {
+        if (drawable instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         } else {
             bitmap = SketchUtils.drawableToBitmap(drawable, tempLowQualityImage, bitmapPool);

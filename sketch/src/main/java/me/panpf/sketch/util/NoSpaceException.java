@@ -16,9 +16,12 @@
 
 package me.panpf.sketch.util;
 
+import androidx.annotation.NonNull;
+
+@SuppressWarnings("WeakerAccess")
 public class NoSpaceException extends Exception {
 
-    public NoSpaceException(String detailMessage) {
+    public NoSpaceException(@NonNull String detailMessage) {
         super(detailMessage);
     }
 }

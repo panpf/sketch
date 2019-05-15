@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.optionsfilter;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.DisplayOptions;
 import me.panpf.sketch.request.DownloadOptions;
 import me.panpf.sketch.request.RequestLevel;
@@ -26,7 +28,7 @@ import me.panpf.sketch.request.RequestLevel;
 public class PauseLoadOptionsFilter implements OptionsFilter {
 
     @Override
-    public void filter(DownloadOptions options) {
+    public void filter(@NonNull DownloadOptions options) {
         // 仅限 display 请求
         if (options instanceof DisplayOptions) {
             // TODO 这里改成了 按大小覆盖之后强制点击显示就不起作用了

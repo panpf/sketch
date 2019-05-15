@@ -21,6 +21,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
@@ -41,16 +42,23 @@ import me.panpf.sketch.uri.UriModel;
 /**
  * 显示请求
  */
+@SuppressWarnings("WeakerAccess")
 public class DisplayRequest extends LoadRequest {
+
+    @Nullable
     protected DisplayResult displayResult;
+    @NonNull
     private DisplayOptions displayOptions;
+    @Nullable
     private DisplayListener displayListener;
+    @NonNull
     private ViewInfo viewInfo;
+    @NonNull
     private RequestAndViewBinder requestAndViewBinder;
 
-    public DisplayRequest(Sketch sketch, String uri, UriModel uriModel, String key, DisplayOptions displayOptions,
-                          ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
-                          DownloadProgressListener downloadProgressListener) {
+    public DisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DisplayOptions displayOptions,
+                          @NonNull ViewInfo viewInfo, @NonNull RequestAndViewBinder requestAndViewBinder, @Nullable DisplayListener displayListener,
+                          @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener);
 
         this.viewInfo = viewInfo;
@@ -65,6 +73,7 @@ public class DisplayRequest extends LoadRequest {
     /**
      * 获取内存缓存 key
      */
+    @NonNull
     public String getMemoryCacheKey() {
         return getKey();
     }
@@ -72,6 +81,7 @@ public class DisplayRequest extends LoadRequest {
     /**
      * 获取 View 信息
      */
+    @NonNull
     public ViewInfo getViewInfo() {
         return viewInfo;
     }
@@ -79,6 +89,7 @@ public class DisplayRequest extends LoadRequest {
     /**
      * 获取显示选项
      */
+    @NonNull
     @Override
     public DisplayOptions getOptions() {
         return displayOptions;

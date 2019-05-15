@@ -16,18 +16,25 @@
 
 package me.panpf.sketch.util;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.text.DecimalFormat;
 
 import me.panpf.sketch.SLog;
 
 public class Stopwatch {
+    @Nullable
     private static Stopwatch instance;
     private long startTime;
     private long lastTime;
     private long decodeCount;
     private long useTimeCount;
+    @Nullable
     private StringBuilder builder;
+    @Nullable
     private String logName;
+    @NonNull
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     public static Stopwatch with() {
@@ -41,14 +48,14 @@ public class Stopwatch {
         return instance;
     }
 
-    public void start(String logName) {
+    public void start(@NonNull String logName) {
         this.logName = logName;
         startTime = System.currentTimeMillis();
         lastTime = startTime;
         builder = new StringBuilder();
     }
 
-    public void record(String nodeName) {
+    public void record(@NonNull String nodeName) {
         if (builder != null) {
             long currentTime = System.currentTimeMillis();
             long useTime = currentTime - lastTime;
@@ -61,7 +68,7 @@ public class Stopwatch {
         }
     }
 
-    public void print(String requestId) {
+    public void print(@NonNull String requestId) {
         if (builder != null) {
             long totalTime = System.currentTimeMillis() - startTime;
 

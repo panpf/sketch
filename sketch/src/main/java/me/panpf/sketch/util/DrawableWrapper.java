@@ -26,16 +26,20 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class DrawableWrapper extends Drawable implements Drawable.Callback {
 
+    @Nullable
     private Drawable wrappedDrawable;
 
-    public DrawableWrapper(Drawable drawable) {
+    public DrawableWrapper(@Nullable Drawable drawable) {
         setWrappedDrawable(drawable);
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         if (wrappedDrawable != null) {
             wrappedDrawable.draw(canvas);
         }
@@ -94,10 +98,11 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public boolean setState(final int[] stateSet) {
+    public boolean setState(@NonNull final int[] stateSet) {
         return wrappedDrawable != null ? wrappedDrawable.setState(stateSet) : super.setState(stateSet);
     }
 
+    @NonNull
     @Override
     public int[] getState() {
         return wrappedDrawable != null ? wrappedDrawable.getState() : super.getState();
@@ -110,6 +115,7 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback {
         }
     }
 
+    @NonNull
     @Override
     public Drawable getCurrent() {
         return wrappedDrawable != null ? wrappedDrawable.getCurrent() : super.getCurrent();
@@ -151,7 +157,7 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public boolean getPadding(Rect padding) {
+    public boolean getPadding(@NonNull Rect padding) {
         return wrappedDrawable != null ? wrappedDrawable.getPadding(padding) : super.getPadding(padding);
     }
 
@@ -187,7 +193,7 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public void setTintMode(PorterDuff.Mode tintMode) {
+    public void setTintMode(@NonNull PorterDuff.Mode tintMode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && wrappedDrawable != null) {
             wrappedDrawable.setTintMode(tintMode);
         }
@@ -209,27 +215,27 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback {
 
 
     @Override
-    public void invalidateDrawable(Drawable who) {
+    public void invalidateDrawable(@NonNull Drawable who) {
         invalidateSelf();
     }
 
     @Override
-    public void scheduleDrawable(Drawable who, Runnable what, long when) {
+    public void scheduleDrawable(@NonNull Drawable who, @NonNull Runnable what, long when) {
         scheduleSelf(what, when);
     }
 
     @Override
-    public void unscheduleDrawable(Drawable who, Runnable what) {
+    public void unscheduleDrawable(@NonNull Drawable who, @NonNull Runnable what) {
         unscheduleSelf(what);
     }
 
 
-    @SuppressWarnings("unused")
+    @Nullable
     public Drawable getWrappedDrawable() {
         return wrappedDrawable;
     }
 
-    public void setWrappedDrawable(Drawable drawable) {
+    public void setWrappedDrawable(@Nullable Drawable drawable) {
         if (drawable == this) {
             return;
         }

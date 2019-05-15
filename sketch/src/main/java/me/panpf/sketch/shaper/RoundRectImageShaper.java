@@ -30,23 +30,32 @@ import me.panpf.sketch.request.ShapeSize;
 /**
  * 圆角矩形的绘制时图片整形器，还可以有描边
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"WeakerAccess"})
 public class RoundRectImageShaper implements ImageShaper {
     private float[] outerRadii;
+    @NonNull
     private Rect boundsCached = new Rect();
 
+    @NonNull
     private Path bitmapPath = new Path();
+    @Nullable
     private Path innerStrokePath;
+    @Nullable
     private Path outerStrokePath;
+    @Nullable
     private Path clipPath;
 
     private int strokeWidth;
     private int strokeColor;
 
+    @Nullable
     private Paint strokePaint;
 
+    @Nullable
     private Rect boundsBack;
+    @Nullable
     private RectF rectF;
+    @Nullable
     private Path path;
 
     public RoundRectImageShaper(float[] radiis) {
@@ -69,12 +78,10 @@ public class RoundRectImageShaper implements ImageShaper {
         return outerRadii;
     }
 
-    @SuppressWarnings("unused")
     public int getStrokeColor() {
         return strokeColor;
     }
 
-    @SuppressWarnings("unused")
     @NonNull
     public RoundRectImageShaper setStroke(int strokeColor, int strokeWidth) {
         this.strokeColor = strokeColor;
@@ -83,7 +90,6 @@ public class RoundRectImageShaper implements ImageShaper {
         return this;
     }
 
-    @SuppressWarnings("unused")
     public int getStrokeWidth() {
         return strokeWidth;
     }

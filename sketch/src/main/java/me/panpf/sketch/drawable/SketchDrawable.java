@@ -18,17 +18,21 @@ package me.panpf.sketch.drawable;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.request.ImageFrom;
 
 public interface SketchDrawable {
     /**
      * 获取图片 ID
      */
+    @Nullable
     String getKey();
 
     /**
      * 获取图片 uri
      */
+    @Nullable
     String getUri();
 
     /**
@@ -44,6 +48,7 @@ public interface SketchDrawable {
     /**
      * 获取图片类型
      */
+    @Nullable
     String getMimeType();
 
     /**
@@ -59,15 +64,18 @@ public interface SketchDrawable {
     /**
      * 获取 {@link Bitmap} 配置
      */
+    @Nullable
     Bitmap.Config getBitmapConfig();
 
     /**
      * 获取图片来源
      */
+    @Nullable
     ImageFrom getImageFrom();
 
     /**
      * 获取一些信息
      */
+    @Nullable
     String getInfo();
 }

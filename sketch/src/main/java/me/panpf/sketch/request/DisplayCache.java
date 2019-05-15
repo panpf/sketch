@@ -16,8 +16,13 @@
 
 package me.panpf.sketch.request;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class DisplayCache {
+    @Nullable
     public String uri;
     // todo 删除 optioins，增加 optionskey，
+    @NonNull
     public DisplayOptions options = new DisplayOptions();
 }

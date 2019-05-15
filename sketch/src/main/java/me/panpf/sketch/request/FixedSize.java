@@ -18,6 +18,8 @@ package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 /**
  * {@link android.widget.ImageView} 的固定尺寸，只能是通过 layout_width 和 layout_height 设置的固定值才能算是固定尺寸
  */
@@ -56,6 +58,6 @@ public class FixedSize {
     @NonNull
     @Override
     public String toString() {
-        return String.format("FixedSize(%dx%d)", width, height);
+        return String.format(Locale.US, "FixedSize(%dx%d)", width, height);
     }
 }

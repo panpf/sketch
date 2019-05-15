@@ -25,6 +25,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +42,7 @@ public class ImageOrientationCorrector {
 
     public static final int PAINT_FLAGS = Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG;
 
+    @NonNull
     public static String toName(int exifOrientation) {
         switch (exifOrientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
@@ -140,7 +142,7 @@ public class ImageOrientationCorrector {
      *
      * @param mimeType 从图片文件中取出的图片的mimeTye
      */
-    public boolean support(String mimeType) {
+    public boolean support(@Nullable String mimeType) {
         return ImageType.JPEG.getMimeType().equalsIgnoreCase(mimeType);
     }
 
@@ -160,7 +162,7 @@ public class ImageOrientationCorrector {
      * @param inputStream 文件输入流
      * @return exif 保存的原始方向
      */
-    public int readExifOrientation(InputStream inputStream) throws IOException {
+    public int readExifOrientation(@NonNull InputStream inputStream) throws IOException {
         ExifInterface exifInterface = new ExifInterface(inputStream);
         return exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
     }
@@ -172,8 +174,7 @@ public class ImageOrientationCorrector {
      * @param inputStream 输入流
      * @return exif 保存的原始方向
      */
-    @SuppressWarnings("unused")
-    public int readExifOrientation(String mimeType, InputStream inputStream) throws IOException {
+    public int readExifOrientation(@Nullable String mimeType, @NonNull InputStream inputStream) throws IOException {
         if (!support(mimeType)) {
             return ExifInterface.ORIENTATION_UNDEFINED;
         }
@@ -188,7 +189,7 @@ public class ImageOrientationCorrector {
      * @param dataSource DataSource
      * @return exif 保存的原始方向
      */
-    public int readExifOrientation(String mimeType, DataSource dataSource) {
+    public int readExifOrientation(@Nullable String mimeType, @NonNull DataSource dataSource) {
         if (!support(mimeType)) {
             return ExifInterface.ORIENTATION_UNDEFINED;
         }
@@ -210,7 +211,8 @@ public class ImageOrientationCorrector {
      *
      * @param exifOrientation 图片方向
      */
-    public Bitmap rotate(Bitmap bitmap, int exifOrientation, BitmapPool bitmapPool) {
+    @Nullable
+    public Bitmap rotate(@NonNull Bitmap bitmap, int exifOrientation, @NonNull BitmapPool bitmapPool) {
         if (!hasRotate(exifOrientation)) {
             return null;
         }
@@ -226,7 +228,7 @@ public class ImageOrientationCorrector {
 
         // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
         int degrees = getExifOrientationDegrees(exifOrientation);
-        Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : null;
+        Bitmap.Config config = bitmap.getConfig();
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888;
         }
@@ -247,7 +249,7 @@ public class ImageOrientationCorrector {
      *
      * @param exifOrientation 图片方向
      */
-    public void rotateSize(ImageAttrs imageAttrs, int exifOrientation) {
+    public void rotateSize(@NonNull ImageAttrs imageAttrs, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
         }
@@ -265,7 +267,7 @@ public class ImageOrientationCorrector {
      *
      * @param exifOrientation 图片方向
      */
-    public void rotateSize(BitmapFactory.Options options, int exifOrientation) {
+    public void rotateSize(@NonNull BitmapFactory.Options options, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
         }
@@ -284,7 +286,7 @@ public class ImageOrientationCorrector {
      *
      * @param exifOrientation 图片方向
      */
-    public void rotateSize(Point size, int exifOrientation) {
+    public void rotateSize(@NonNull Point size, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
         }
@@ -303,8 +305,7 @@ public class ImageOrientationCorrector {
      *
      * @param exifOrientation 图片方向
      */
-    @SuppressWarnings("SuspiciousNameCombination")
-    public void reverseRotate(Rect srcRect, int imageWidth, int imageHeight, int exifOrientation) {
+    public void reverseRotate(@NonNull Rect srcRect, int imageWidth, int imageHeight, int exifOrientation) {
         if (!hasRotate(exifOrientation)) {
             return;
         }

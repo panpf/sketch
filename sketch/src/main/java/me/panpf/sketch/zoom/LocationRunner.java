@@ -20,6 +20,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.SketchUtils;
 
@@ -27,14 +29,17 @@ import me.panpf.sketch.util.SketchUtils;
  * 定位执行器
  */
 class LocationRunner implements Runnable {
+    @NonNull
     private ImageZoomer imageZoomer;
+    @NonNull
     private ScaleDragHelper scaleDragHelper;
 
+    @NonNull
     private Scroller scroller;
     private int currentX;
     private int currentY;
 
-    LocationRunner(ImageZoomer imageZoomer, ScaleDragHelper scaleDragHelper) {
+    LocationRunner(@NonNull ImageZoomer imageZoomer, @NonNull ScaleDragHelper scaleDragHelper) {
         this.scroller = new Scroller(imageZoomer.getImageView().getContext(), new AccelerateDecelerateInterpolator());
         this.imageZoomer = imageZoomer;
         this.scaleDragHelper = scaleDragHelper;
@@ -96,8 +101,6 @@ class LocationRunner implements Runnable {
     void cancel() {
         scroller.forceFinished(true);
         ImageView imageView = imageZoomer.getImageView();
-        if (imageView != null) {
-            imageView.removeCallbacks(this);
-        }
+        imageView.removeCallbacks(this);
     }
 }

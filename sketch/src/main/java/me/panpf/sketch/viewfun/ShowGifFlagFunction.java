@@ -18,25 +18,31 @@ package me.panpf.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.util.SketchUtils;
 
 /**
  * 显示 gif 标识功能，使用者指定一个小图标，如果当前显示的图片是 gif 图就会在 {@link android.widget.ImageView} 的右下角显示这个小图标
  */
+@SuppressWarnings("WeakerAccess")
 public class ShowGifFlagFunction extends ViewFunction {
+    @NonNull
     private FunctionCallbackView view;
+    @Nullable
     private Drawable gifFlagDrawable;
 
     private boolean gifImage;
     private float iconDrawLeft;
     private float iconDrawTop;
+    @Nullable
     private Drawable lastDrawable;
     private int cacheViewWidth;
     private int cacheViewHeight;
 
-    public ShowGifFlagFunction(FunctionCallbackView view) {
+    public ShowGifFlagFunction(@NonNull FunctionCallbackView view) {
         this.view = view;
     }
 

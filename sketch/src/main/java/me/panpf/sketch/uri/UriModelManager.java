@@ -16,9 +16,10 @@
 
 package me.panpf.sketch.uri;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +48,7 @@ import java.util.List;
  */
 public class UriModelManager {
 
+    @NonNull
     private List<UriModel> uriModelList = new LinkedList<>();
 
     public UriModelManager() {

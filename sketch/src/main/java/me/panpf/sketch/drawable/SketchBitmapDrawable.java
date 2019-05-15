@@ -19,14 +19,18 @@ package me.panpf.sketch.drawable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.request.ImageFrom;
 
 public class SketchBitmapDrawable extends BitmapDrawable implements SketchRefDrawable {
 
+    @NonNull
     private SketchRefBitmap refBitmap;
+    @NonNull
     private ImageFrom imageFrom;
 
-    public SketchBitmapDrawable(SketchRefBitmap refBitmap, ImageFrom imageFrom) {
+    public SketchBitmapDrawable(@NonNull SketchRefBitmap refBitmap, @NonNull ImageFrom imageFrom) {
         super(null, refBitmap.getBitmap());
 
         if (refBitmap.isRecycled()) {
@@ -41,6 +45,7 @@ public class SketchBitmapDrawable extends BitmapDrawable implements SketchRefDra
         setTargetDensity(refBitmap.getBitmap().getDensity());
     }
 
+    @NonNull
     @Override
     public String getKey() {
         return refBitmap.getKey();
@@ -71,6 +76,7 @@ public class SketchBitmapDrawable extends BitmapDrawable implements SketchRefDra
         return refBitmap.getAttrs().getExifOrientation();
     }
 
+    @NonNull
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;

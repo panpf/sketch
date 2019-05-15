@@ -30,6 +30,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.decode.ResizeCalculator;
 import me.panpf.sketch.request.ImageFrom;
@@ -43,20 +46,29 @@ import me.panpf.sketch.util.ExifInterface;
 public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
 
+    @NonNull
     private BitmapDrawable bitmapDrawable;
+    @Nullable
     private ShapeSize shapeSize;
+    @Nullable
     private ImageShaper shaper;
 
+    @NonNull
     private Paint paint;
+    @NonNull
     private Rect srcRect;
+    @Nullable
     private BitmapShader bitmapShader;
 
+    @Nullable
     private SketchRefDrawable refDrawable;
+    @Nullable
     private SketchDrawable sketchDrawable;
 
+    @NonNull
     private ResizeCalculator resizeCalculator;
 
-    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper shaper) {
+    public SketchShapeBitmapDrawable(@NonNull Context context, @NonNull BitmapDrawable bitmapDrawable, @Nullable ShapeSize shapeSize, @Nullable ImageShaper shaper) {
         Bitmap bitmap = bitmapDrawable.getBitmap();
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException(bitmap == null ? "bitmap is null" : "bitmap recycled");
@@ -104,7 +116,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         if (shaper != null && bitmapShader != null) {
             shaper.draw(canvas, paint, bounds);
         } else {
-            canvas.drawBitmap(bitmap, srcRect != null && !srcRect.isEmpty() ? srcRect : null, bounds, paint);
+            canvas.drawBitmap(bitmap, !srcRect.isEmpty() ? srcRect : null, bounds, paint);
         }
     }
 
@@ -190,7 +202,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
             shaderMatrix.postScale(scale, scale);
 
             // 显示图片中间部分
-            if (srcRect != null && !srcRect.isEmpty()) {
+            if (!srcRect.isEmpty()) {
                 shaderMatrix.postTranslate(-srcRect.left * scale, -srcRect.top * scale);
             }
 
@@ -200,12 +212,12 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         }
     }
 
-    @SuppressWarnings("unused")
+    @NonNull
     public BitmapDrawable getBitmapDrawable() {
         return bitmapDrawable;
     }
 
-    @SuppressWarnings("unused")
+    @Nullable
     public ShapeSize getShapeSize() {
         return shapeSize;
     }
@@ -215,12 +227,12 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         invalidateSelf();
     }
 
-    @SuppressWarnings("unused")
+    @Nullable
     public ImageShaper getShaper() {
         return shaper;
     }
 
-    public void setShaper(ImageShaper shaper) {
+    public void setShaper(@Nullable ImageShaper shaper) {
         this.shaper = shaper;
 
         if (this.shaper != null) {
@@ -238,11 +250,13 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         invalidateSelf();
     }
 
+    @Nullable
     @Override
     public String getKey() {
         return sketchDrawable != null ? sketchDrawable.getKey() : null;
     }
 
+    @Nullable
     @Override
     public String getUri() {
         return sketchDrawable != null ? sketchDrawable.getUri() : null;
@@ -258,6 +272,7 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         return sketchDrawable != null ? sketchDrawable.getOriginHeight() : 0;
     }
 
+    @Nullable
     @Override
     public String getMimeType() {
         return sketchDrawable != null ? sketchDrawable.getMimeType() : null;
@@ -273,30 +288,33 @@ public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDraw
         return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
     }
 
+    @Nullable
     @Override
     public Bitmap.Config getBitmapConfig() {
         return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
     }
 
+    @Nullable
     @Override
     public ImageFrom getImageFrom() {
         return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
     }
 
+    @Nullable
     @Override
     public String getInfo() {
         return sketchDrawable != null ? sketchDrawable.getInfo() : null;
     }
 
     @Override
-    public void setIsDisplayed(String callingStation, boolean displayed) {
+    public void setIsDisplayed(@NonNull String callingStation, boolean displayed) {
         if (refDrawable != null) {
             refDrawable.setIsDisplayed(callingStation, displayed);
         }
     }
 
     @Override
-    public void setIsWaitingUse(String callingStation, boolean waitingUse) {
+    public void setIsWaitingUse(@NonNull String callingStation, boolean waitingUse) {
         if (refDrawable != null) {
             refDrawable.setIsWaitingUse(callingStation, waitingUse);
         }

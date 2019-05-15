@@ -20,12 +20,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.request.DisplayCache;
@@ -34,18 +35,24 @@ import me.panpf.sketch.shaper.ImageShaper;
 /**
  * 显示按下状态，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
  */
+@SuppressWarnings("WeakerAccess")
 public class ShowPressedFunction extends ViewFunction {
     static final int DEFAULT_MASK_COLOR = 0x33000000;
     private static final String NAME = "ShowPressedFunction";
 
+    @NonNull
     private FunctionPropertyView view;
+    @Nullable
     private ImageShaper maskShaper;
     private int maskColor = DEFAULT_MASK_COLOR;
 
     private boolean showProcessed;
     private boolean singleTapUp;
+    @Nullable
     private Paint maskPaint;
+    @NonNull
     private GestureDetector gestureDetector;
+    @Nullable
     private Rect bounds;
 
     public ShowPressedFunction(@NonNull FunctionPropertyView view) {

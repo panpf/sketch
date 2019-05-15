@@ -17,28 +17,32 @@
 package me.panpf.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 import me.panpf.sketch.SketchView;
 
 /**
  * 由大到小图片显示器
  */
-@SuppressWarnings("unused")
 public class ZoomOutImageDisplayer implements ImageDisplayer {
     private static final String KEY = "ZoomOutImageDisplayer";
 
     private int duration;
     private float fromX;
     private float fromY;
+    @Nullable
     private Interpolator interpolator;
     private boolean alwaysUse;
 
-    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration, boolean alwaysUse) {
+    public ZoomOutImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, int duration, boolean alwaysUse) {
         this.duration = duration;
         this.fromX = fromX;
         this.fromY = fromY;
@@ -46,15 +50,15 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
         this.alwaysUse = alwaysUse;
     }
 
-    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+    public ZoomOutImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, int duration) {
         this(fromX, fromY, interpolator, duration, false);
     }
 
-    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, boolean alwaysUse) {
+    public ZoomOutImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, boolean alwaysUse) {
         this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
-    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator) {
+    public ZoomOutImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator) {
         this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, false);
     }
 
@@ -66,11 +70,11 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
         this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
     }
 
-    public ZoomOutImageDisplayer(Interpolator interpolator, boolean alwaysUse) {
+    public ZoomOutImageDisplayer(@Nullable Interpolator interpolator, boolean alwaysUse) {
         this(1.5f, 1.5f, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
-    public ZoomOutImageDisplayer(Interpolator interpolator) {
+    public ZoomOutImageDisplayer(@Nullable Interpolator interpolator) {
         this(1.5f, 1.5f, interpolator, DEFAULT_ANIMATION_DURATION, false);
     }
 
@@ -92,9 +96,6 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
 
     @Override
     public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable == null) {
-            return;
-        }
         ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setInterpolator(interpolator);
         scaleAnimation.setDuration(duration);
@@ -106,7 +107,7 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)",
+        return String.format(Locale.US, "%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)",
                 KEY, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 
@@ -128,6 +129,7 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
         return fromY;
     }
 
+    @Nullable
     public Interpolator getInterpolator() {
         return interpolator;
     }

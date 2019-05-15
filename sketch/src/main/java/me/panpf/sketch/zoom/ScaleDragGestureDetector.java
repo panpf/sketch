@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* ******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ****************************************************************************** */
 
 package me.panpf.sketch.zoom;
 
@@ -22,27 +22,35 @@ import android.view.ScaleGestureDetector;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.util.SketchUtils;
 
+@SuppressWarnings("WeakerAccess")
 public class ScaleDragGestureDetector {
 
     private static final String NAME = "ScaleDragGestureDetector";
     private static final int INVALID_POINTER_ID = -1;
     private final float mTouchSlop;
     private final float mMinimumVelocity;
+    @NonNull
     private final ScaleGestureDetector mDetector;
+    @Nullable
     private OnScaleDragGestureListener mListener;
+    @Nullable
     private ActionListener actionListener;
 
     private float mLastTouchX;
     private float mLastTouchY;
+    @Nullable
     private VelocityTracker mVelocityTracker;
     private boolean mIsDragging;
     private int mActivePointerId = INVALID_POINTER_ID;
     private int mActivePointerIndex = 0;
 
-    public ScaleDragGestureDetector(Context context) {
+    public ScaleDragGestureDetector(@Nullable Context context) {
         final ViewConfiguration configuration = ViewConfiguration.get(context);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mTouchSlop = configuration.getScaledTouchSlop();
@@ -72,11 +80,11 @@ public class ScaleDragGestureDetector {
         });
     }
 
-    public void setOnGestureListener(OnScaleDragGestureListener listener) {
+    public void setOnGestureListener(@Nullable OnScaleDragGestureListener listener) {
         this.mListener = listener;
     }
 
-    public void setActionListener(ActionListener actionListener) {
+    public void setActionListener(@Nullable ActionListener actionListener) {
         this.actionListener = actionListener;
     }
 
@@ -84,7 +92,7 @@ public class ScaleDragGestureDetector {
         return mIsDragging;
     }
 
-    protected float getActiveX(MotionEvent ev) {
+    protected float getActiveX(@NonNull MotionEvent ev) {
         try {
             return ev.getX(mActivePointerIndex);
         } catch (Exception e) {
@@ -92,7 +100,7 @@ public class ScaleDragGestureDetector {
         }
     }
 
-    protected float getActiveY(MotionEvent ev) {
+    protected float getActiveY(@NonNull MotionEvent ev) {
         try {
             return ev.getY(mActivePointerIndex);
         } catch (Exception e) {
@@ -104,7 +112,7 @@ public class ScaleDragGestureDetector {
         return mDetector.isInProgress();
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(@NonNull MotionEvent ev) {
         try {
             mDetector.onTouchEvent(ev);
         } catch (IllegalArgumentException e) {
@@ -248,11 +256,11 @@ public class ScaleDragGestureDetector {
     }
 
     public interface ActionListener {
-        void onActionDown(MotionEvent ev);
+        void onActionDown(@NonNull MotionEvent ev);
 
-        void onActionUp(MotionEvent ev);
+        void onActionUp(@NonNull MotionEvent ev);
 
-        void onActionCancel(MotionEvent ev);
+        void onActionCancel(@NonNull MotionEvent ev);
     }
 
     public interface OnScaleDragGestureListener {

@@ -28,9 +28,10 @@ import me.panpf.sketch.request.ErrorCause;
 import me.panpf.sketch.request.ImageFrom;
 
 class DisplayListenerProxy implements DisplayListener {
+    @NonNull
     private WeakReference<FunctionCallbackView> viewWeakReference;
 
-    public DisplayListenerProxy(FunctionCallbackView view) {
+    DisplayListenerProxy(@NonNull FunctionCallbackView view) {
         this.viewWeakReference = new WeakReference<>(view);
     }
 

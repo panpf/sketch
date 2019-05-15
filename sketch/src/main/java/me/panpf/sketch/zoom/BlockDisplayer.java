@@ -25,9 +25,11 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -50,36 +52,47 @@ import me.panpf.sketch.zoom.block.ImageRegionDecoder;
  * 对于超大图片，分块显示可见区域
  */
 // TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
+@SuppressWarnings("WeakerAccess")
 public class BlockDisplayer {
     private static final String NAME = "BlockDisplayer";
 
+    @NonNull
     private Context context;
+    @NonNull
     private ImageZoomer imageZoomer;
 
     private Matrix tempDrawMatrix;
     private Rect tempVisibleRect;
 
+    @NonNull
     private BlockExecutor blockExecutor;
+    @NonNull
     private BlockDecoder blockDecoder;
+    @NonNull
     private BlockManager blockManager;
 
     private float zoomScale;
     private float lastZoomScale;
+    @NonNull
     private Paint drawBlockPaint;
+    @Nullable
     private Paint drawBlockRectPaint;
+    @Nullable
     private Paint drawLoadingBlockRectPaint;
+    @NonNull
     private Matrix matrix;
 
     private boolean running;
     private boolean paused;
+    @Nullable
     private String imageUri;
 
     private boolean showBlockBounds;
+    @Nullable
     private BlockDisplayer.OnBlockChangedListener onBlockChangedListener;
 
-    public BlockDisplayer(Context context, ImageZoomer imageZoomer) {
-        context = context.getApplicationContext();
-        this.context = context;
+    public BlockDisplayer(@NonNull Context context, @NonNull ImageZoomer imageZoomer) {
+        this.context = context.getApplicationContext();
         this.imageZoomer = imageZoomer;
 
         this.blockExecutor = new BlockExecutor(new ExecutorCallback());
@@ -100,7 +113,7 @@ public class BlockDisplayer {
         Drawable previewDrawable = SketchUtils.getLastDrawable(imageZoomer.getImageView().getDrawable());
         SketchDrawable sketchDrawable = null;
         boolean drawableQualified = false;
-        if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof SketchLoadingDrawable)) {
+        if (previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof SketchLoadingDrawable)) {
             sketchDrawable = (SketchDrawable) previewDrawable;
             final int previewWidth = previewDrawable.getIntrinsicWidth();
             final int previewHeight = previewDrawable.getIntrinsicHeight();
@@ -143,7 +156,7 @@ public class BlockDisplayer {
     /**
      * 回收资源，回收后需要重新执行 {@link #reset()} 才能使用
      */
-    public void recycle(String why) {
+    public void recycle(@NonNull String why) {
         running = false;
         clean(why);
         blockExecutor.recycle(why);
@@ -154,7 +167,7 @@ public class BlockDisplayer {
     /**
      * 清理资源，不影响继续使用
      */
-    private void clean(String why) {
+    private void clean(@NonNull String why) {
         blockExecutor.cleanDecode(why);
 
         matrix.reset();
@@ -171,12 +184,12 @@ public class BlockDisplayer {
 
 
     public void onDraw(Canvas canvas) {
-        if (blockManager.blockList != null && blockManager.blockList.size() > 0) {
+        if (blockManager.blockList.size() > 0) {
             int saveCount = canvas.save();
             canvas.concat(matrix);
 
             for (Block block : blockManager.blockList) {
-                if (!block.isEmpty()) {
+                if (!block.isEmpty() && block.bitmap != null) {
                     canvas.drawBitmap(block.bitmap, block.bitmapDrawSrcRect, block.drawRect, drawBlockPaint);
                     if (showBlockBounds) {
                         if (drawBlockRectPaint == null) {
@@ -282,10 +295,12 @@ public class BlockDisplayer {
         imageZoomer.getImageView().invalidate();
     }
 
+    @NonNull
     public BlockDecoder getBlockDecoder() {
         return blockDecoder;
     }
 
+    @NonNull
     public BlockExecutor getBlockExecutor() {
         return blockExecutor;
     }
@@ -293,7 +308,6 @@ public class BlockDisplayer {
     /**
      * 设置是否暂停，暂停后会清除所有的碎片，并不会再解码新的碎片
      */
-    @SuppressWarnings("unused")
     public void setPause(boolean pause) {
         if (pause == paused) {
             return;
@@ -319,7 +333,6 @@ public class BlockDisplayer {
         }
     }
 
-    @SuppressWarnings("unused")
     public boolean isPaused() {
         return paused;
     }
@@ -327,7 +340,6 @@ public class BlockDisplayer {
     /**
      * 工作中？
      */
-    @SuppressWarnings("unused")
     public boolean isWorking() {
         return !TextUtils.isEmpty(imageUri);
     }
@@ -356,7 +368,6 @@ public class BlockDisplayer {
     /**
      * 设置是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
      */
-    @SuppressWarnings("unused")
     public void setShowBlockBounds(boolean showBlockBounds) {
         this.showBlockBounds = showBlockBounds;
         invalidateView();
@@ -386,7 +397,6 @@ public class BlockDisplayer {
     /**
      * 获取图片的类型
      */
-    @SuppressWarnings("unused")
     public ImageType getImageType() {
         return blockDecoder.isReady() ? blockDecoder.getDecoder().getImageType() : null;
     }
@@ -394,6 +404,7 @@ public class BlockDisplayer {
     /**
      * 获取图片URI
      */
+    @Nullable
     public String getImageUri() {
         return imageUri;
     }
@@ -401,7 +412,6 @@ public class BlockDisplayer {
     /**
      * 获取绘制区域
      */
-    @SuppressWarnings("unused")
     public Rect getDrawRect() {
         return blockManager.drawRect;
     }
@@ -437,7 +447,6 @@ public class BlockDisplayer {
     /**
      * 获取碎片数量
      */
-    @SuppressWarnings("unused")
     public int getBlockSize() {
         return blockManager.blockList.size();
     }
@@ -445,7 +454,6 @@ public class BlockDisplayer {
     /**
      * 获取碎片占用的内存，单位字节
      */
-    @SuppressWarnings("unused")
     public long getAllocationByteCount() {
         return blockManager.getAllocationByteCount();
     }
@@ -460,7 +468,7 @@ public class BlockDisplayer {
     /**
      * 获取碎片变化监听器
      */
-    @SuppressWarnings("unused")
+    @Nullable
     public OnBlockChangedListener getOnBlockChangedListener() {
         return onBlockChangedListener;
     }
@@ -468,7 +476,7 @@ public class BlockDisplayer {
     /**
      * 获取碎片变化监听器
      */
-    public void setOnBlockChangedListener(OnBlockChangedListener onBlockChangedListener) {
+    public void setOnBlockChangedListener(@Nullable OnBlockChangedListener onBlockChangedListener) {
         this.onBlockChangedListener = onBlockChangedListener;
     }
 
@@ -493,18 +501,19 @@ public class BlockDisplayer {
     }
 
     public interface OnBlockChangedListener {
-        void onBlockChanged(BlockDisplayer blockDisplayer);
+        void onBlockChanged(@NonNull BlockDisplayer blockDisplayer);
     }
 
     private class ExecutorCallback implements BlockExecutor.Callback {
 
+        @NonNull
         @Override
         public Context getContext() {
             return context;
         }
 
         @Override
-        public void onInitCompleted(String imageUri, ImageRegionDecoder decoder) {
+        public void onInitCompleted(@NonNull String imageUri, @NonNull ImageRegionDecoder decoder) {
             if (!running) {
                 SLog.w(NAME, "stop running. initCompleted. %s", imageUri);
                 return;
@@ -516,7 +525,7 @@ public class BlockDisplayer {
         }
 
         @Override
-        public void onInitError(String imageUri, Exception e) {
+        public void onInitError(@NonNull String imageUri, @NonNull Exception e) {
             if (!running) {
                 SLog.w(NAME, "stop running. initError. %s", imageUri);
                 return;
@@ -526,7 +535,7 @@ public class BlockDisplayer {
         }
 
         @Override
-        public void onDecodeCompleted(Block block, Bitmap bitmap, int useTime) {
+        public void onDecodeCompleted(@NonNull Block block, @NonNull Bitmap bitmap, int useTime) {
             if (!running) {
                 SLog.w(NAME, "stop running. decodeCompleted. block=%s", block.getInfo());
                 BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
@@ -537,7 +546,7 @@ public class BlockDisplayer {
         }
 
         @Override
-        public void onDecodeError(Block block, DecodeHandler.DecodeErrorException exception) {
+        public void onDecodeError(@NonNull Block block, @NonNull DecodeHandler.DecodeErrorException exception) {
             if (!running) {
                 SLog.w(NAME, "stop running. decodeError. block=%s", block.getInfo());
                 return;

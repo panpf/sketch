@@ -17,8 +17,10 @@
 package me.panpf.sketch.uri;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -46,7 +48,7 @@ public class HttpUriModel extends UriModel {
 
     @NonNull
     @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) throws GetDataSourceException {
+    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) throws GetDataSourceException {
         if (downloadResult != null) {
             DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
             if (diskCacheEntry != null) {

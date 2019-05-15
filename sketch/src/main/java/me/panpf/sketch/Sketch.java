@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,11 +23,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.widget.ImageView;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.ImageView;
 
 import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.DisplayHelper;
@@ -51,8 +52,9 @@ import me.panpf.sketch.util.SketchUtils;
 public class Sketch {
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
 
+    @Nullable
     private static volatile Sketch instance;
-
+    @NonNull
     private Configuration configuration;
 
     private Sketch(@NonNull Context context) {
@@ -60,29 +62,28 @@ public class Sketch {
     }
 
     /**
-     * 获取 {@link Sketch} 实例
-     *
-     * @param context 用于初始化 {@link Sketch}
-     * @return {@link Sketch}
+     * Get a unique instance
      */
     @NonNull
     public static Sketch with(@NonNull Context context) {
-        if (instance == null) {
-            synchronized (Sketch.class) {
-                if (instance == null) {
-                    Sketch newInstance = new Sketch(context);
-                    SLog.i(null, "Version %s %s(%d) -> %s",
-                            BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.toString());
+        Sketch oldInstance = instance;
+        if (oldInstance != null) return oldInstance;
 
-                    Initializer initializer = SketchUtils.findInitializer(context);
-                    if (initializer != null) {
-                        initializer.onInitialize(context.getApplicationContext(), newInstance.configuration);
-                    }
-                    instance = newInstance;
-                }
+        synchronized (Sketch.class) {
+            oldInstance = instance;
+            if (oldInstance != null) return oldInstance;
+
+            Sketch newInstance = new Sketch(context);
+            SLog.i(null, "Version %s %s(%d) -> %s",
+                    BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.toString());
+
+            Initializer initializer = SketchUtils.findInitializer(context);
+            if (initializer != null) {
+                initializer.onInitialize(context.getApplicationContext(), newInstance.configuration);
             }
+            instance = newInstance;
+            return newInstance;
         }
-        return instance;
     }
 
     /**
@@ -91,7 +92,6 @@ public class Sketch {
      * @param sketchView 会通过 {@link SketchView} 的 {@link Drawable} 找到正在执行的请求，然后取消它
      * @return true：当前 {@link SketchView} 有正在执行的任务并且取消成功；false：当前 {@link SketchView} 没有正在执行的任务
      */
-    @SuppressWarnings("unused")
     public static boolean cancel(@NonNull SketchView sketchView) {
         final DisplayRequest displayRequest = SketchUtils.findDisplayRequest(sketchView);
         if (displayRequest != null && !displayRequest.isFinished()) {
@@ -120,7 +120,6 @@ public class Sketch {
      * @return {@link DownloadHelper} 你可以继续通过 {@link DownloadHelper} 设置参数，最后调用其 {@link DownloadHelper#commit()} 方法提交
      */
     @NonNull
-    @SuppressWarnings("unused")
     public DownloadHelper download(@NonNull String uri, @Nullable DownloadListener listener) {
         return configuration.getHelperFactory().getDownloadHelper(this, uri, listener);
     }
@@ -145,7 +144,6 @@ public class Sketch {
      * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper loadFromAsset(@NonNull String assetFileName, @Nullable LoadListener listener) {
         String uri = AssetUriModel.makeUri(assetFileName);
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
@@ -159,7 +157,6 @@ public class Sketch {
      * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper loadFromResource(@DrawableRes int drawableResId, @Nullable LoadListener listener) {
         String uri = DrawableUriModel.makeUri(drawableResId);
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
@@ -173,7 +170,6 @@ public class Sketch {
      * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
      */
     @NonNull
-    @SuppressWarnings("unused")
     public LoadHelper loadFromContent(@NonNull String uri, @Nullable LoadListener listener) {
         return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
     }

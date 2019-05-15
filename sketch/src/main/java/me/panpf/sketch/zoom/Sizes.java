@@ -19,16 +19,21 @@ package me.panpf.sketch.zoom;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import me.panpf.sketch.drawable.SketchDrawable;
 import me.panpf.sketch.drawable.SketchLoadingDrawable;
 import me.panpf.sketch.util.SketchUtils;
 
 public class Sizes {
+    @NonNull
     public Size viewSize = new Size(); // ImageView 尺寸
+    @NonNull
     public Size imageSize = new Size();    // 原始图尺寸
+    @NonNull
     public Size drawableSize = new Size(); // 预览图尺寸
 
-    void resetSizes(ImageView imageView) {
+    void resetSizes(@NonNull ImageView imageView) {
         final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
         final int imageViewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
         if (imageViewWidth == 0 || imageViewHeight == 0) {

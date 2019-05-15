@@ -22,6 +22,9 @@ import android.os.Build;
 import android.os.HandlerThread;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.panpf.sketch.SLog;
@@ -30,19 +33,26 @@ import me.panpf.sketch.util.KeyCounter;
 /**
  * 碎片解码执行器，负责初始化解码器以及管理解码线程
  */
+@SuppressWarnings("WeakerAccess")
 public class BlockExecutor {
     private static final String NAME = "BlockExecutor";
     private static final AtomicInteger THREAD_NUMBER = new AtomicInteger();
 
+    @NonNull
     private final Object handlerThreadLock = new Object();
 
+    @NonNull
     Callback callback;
+    @NonNull
     CallbackHandler callbackHandler;
+    @Nullable
     private HandlerThread handlerThread;
+    @Nullable
     private InitHandler initHandler;
+    @Nullable
     private DecodeHandler decodeHandler;
 
-    public BlockExecutor(Callback callback) {
+    public BlockExecutor(@NonNull Callback callback) {
         this.callback = callback;
         this.callbackHandler = new CallbackHandler(Looper.getMainLooper(), this);
     }
@@ -76,23 +86,27 @@ public class BlockExecutor {
     /**
      * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitError(Exception)方法回调
      */
-    public void submitInit(String imageUri, KeyCounter keyCounter, boolean correctImageOrientationDisabled) {
+    public void submitInit(@NonNull String imageUri, @NonNull KeyCounter keyCounter, boolean correctImageOrientationDisabled) {
         installHandlerThread();
-        initHandler.postInit(imageUri, correctImageOrientationDisabled, keyCounter.getKey(), keyCounter);
+        if (initHandler != null) {
+            initHandler.postInit(imageUri, correctImageOrientationDisabled, keyCounter.getKey(), keyCounter);
+        }
     }
 
     /**
      * 提交一个解码请求
      */
-    public void submitDecodeBlock(int key, Block block) {
+    public void submitDecodeBlock(int key, @NonNull Block block) {
         installHandlerThread();
-        decodeHandler.postDecode(key, block);
+        if (decodeHandler != null) {
+            decodeHandler.postDecode(key, block);
+        }
     }
 
     /**
      * 取消所有的解码任务
      */
-    public void cleanDecode(String why) {
+    public void cleanDecode(@NonNull String why) {
         if (decodeHandler != null) {
             decodeHandler.clean(why);
         }
@@ -101,7 +115,7 @@ public class BlockExecutor {
     /**
      * 回收所有资源
      */
-    public void recycle(String why) {
+    public void recycle(@NonNull String why) {
         if (initHandler != null) {
             initHandler.clean(why);
         }
@@ -140,14 +154,15 @@ public class BlockExecutor {
     }
 
     public interface Callback {
+        @NonNull
         Context getContext();
 
-        void onInitCompleted(String imageUri, ImageRegionDecoder decoder);
+        void onInitCompleted(@NonNull String imageUri, @NonNull ImageRegionDecoder decoder);
 
-        void onInitError(String imageUri, Exception e);
+        void onInitError(@NonNull String imageUri, @NonNull Exception e);
 
-        void onDecodeCompleted(Block block, Bitmap bitmap, int useTime);
+        void onDecodeCompleted(@NonNull Block block, @NonNull Bitmap bitmap, int useTime);
 
-        void onDecodeError(Block block, DecodeHandler.DecodeErrorException exception);
+        void onDecodeError(@NonNull Block block, @NonNull DecodeHandler.DecodeErrorException exception);
     }
 }

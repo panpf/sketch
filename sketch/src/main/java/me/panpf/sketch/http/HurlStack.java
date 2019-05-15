@@ -27,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import me.panpf.sketch.util.SketchUtils;
@@ -114,14 +115,14 @@ public class HurlStack implements HttpStack {
     }
 
     @Override
-    public boolean canRetry(Throwable throwable) {
+    public boolean canRetry(@NonNull Throwable throwable) {
         return throwable instanceof SocketTimeoutException;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
+        return String.format(Locale.US, "%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
                 KEY, maxRetryCount, connectTimeout, readTimeout, userAgent);
     }
 

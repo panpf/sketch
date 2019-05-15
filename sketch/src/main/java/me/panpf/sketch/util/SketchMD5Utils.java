@@ -16,6 +16,8 @@
 
 package me.panpf.sketch.util;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,6 +30,7 @@ public class SketchMD5Utils {
      */
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static ObjectPool<MessageDigest> digestObjectPool = new ObjectPool<MessageDigest>(new ObjectPool.ObjectFactory<MessageDigest>() {
+        @NonNull
         @Override
         public MessageDigest newObject() {
             try {

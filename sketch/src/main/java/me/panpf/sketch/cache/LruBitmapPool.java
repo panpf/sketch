@@ -5,8 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.text.format.Formatter;
+
+import androidx.annotation.NonNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +45,7 @@ public class LruBitmapPool implements BitmapPool {
     private boolean closed;
     private boolean disabled;
 
-    LruBitmapPool(Context context, int maxSize, @NonNull LruPoolStrategy strategy, @NonNull Set<Bitmap.Config> allowedConfigs) {
+    public LruBitmapPool(Context context, int maxSize, @NonNull LruPoolStrategy strategy, @NonNull Set<Bitmap.Config> allowedConfigs) {
         this.context = context.getApplicationContext();
         this.initialMaxSize = maxSize;
         this.maxSize = maxSize;
@@ -68,7 +69,6 @@ public class LruBitmapPool implements BitmapPool {
      * @param maxSize        最大容量
      * @param allowedConfigs {@link Bitmap.Config} 白名单
      */
-    @SuppressWarnings("unused")
     public LruBitmapPool(Context context, int maxSize, @NonNull Set<Bitmap.Config> allowedConfigs) {
         this(context, maxSize, getDefaultStrategy(), allowedConfigs);
     }
@@ -84,8 +84,7 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private static Set<Bitmap.Config> getDefaultAllowedConfigs() {
-        Set<Bitmap.Config> configs = new HashSet<>();
-        configs.addAll(Arrays.asList(Bitmap.Config.values()));
+        Set<Bitmap.Config> configs = new HashSet<>(Arrays.asList(Bitmap.Config.values()));
         if (Build.VERSION.SDK_INT >= 19) {
             configs.add(null);
         }
