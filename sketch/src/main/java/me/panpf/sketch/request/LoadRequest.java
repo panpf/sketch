@@ -40,8 +40,6 @@ import me.panpf.sketch.util.SketchUtils;
  */
 @SuppressWarnings("WeakerAccess")
 public class LoadRequest extends FreeRideDownloadRequest {
-    @NonNull
-    private LoadOptions loadOptions;
     @Nullable
     private LoadListener loadListener;
 
@@ -52,10 +50,18 @@ public class LoadRequest extends FreeRideDownloadRequest {
                        @Nullable LoadListener loadListener, @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, loadOptions, null, downloadProgressListener);
 
-        this.loadOptions = loadOptions;
         this.loadListener = loadListener;
 
         setLogName("LoadRequest");
+    }
+
+    /**
+     * 获取加载选项
+     */
+    @NonNull
+    @Override
+    public LoadOptions getOptions() {
+        return (LoadOptions) super.getOptions();
     }
 
     /**
@@ -89,15 +95,6 @@ public class LoadRequest extends FreeRideDownloadRequest {
         }
 
         return getDataSource();
-    }
-
-    /**
-     * 获取加载选项
-     */
-    @NonNull
-    @Override
-    public LoadOptions getOptions() {
-        return loadOptions;
     }
 
     /**

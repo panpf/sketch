@@ -86,8 +86,6 @@ public class DisplayOptions extends LoadOptions {
         copy(from);
     }
 
-    //todo 可以用泛型来解决，返回类型自动转换的问题
-
     /**
      * @return {@link DisplayOptions}. 为了支持链式调用
      */

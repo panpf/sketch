@@ -47,8 +47,6 @@ public class DisplayRequest extends LoadRequest {
 
     @Nullable
     protected DisplayResult displayResult;
-    @NonNull
-    private DisplayOptions displayOptions;
     @Nullable
     private DisplayListener displayListener;
     @NonNull
@@ -62,12 +60,20 @@ public class DisplayRequest extends LoadRequest {
         super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener);
 
         this.viewInfo = viewInfo;
-        this.displayOptions = displayOptions;
         this.requestAndViewBinder = requestAndViewBinder;
         this.displayListener = displayListener;
 
         this.requestAndViewBinder.setDisplayRequest(this);
         setLogName("DisplayRequest");
+    }
+
+    /**
+     * 获取显示选项
+     */
+    @NonNull
+    @Override
+    public DisplayOptions getOptions() {
+        return (DisplayOptions) super.getOptions();
     }
 
     /**
@@ -84,15 +90,6 @@ public class DisplayRequest extends LoadRequest {
     @NonNull
     public ViewInfo getViewInfo() {
         return viewInfo;
-    }
-
-    /**
-     * 获取显示选项
-     */
-    @NonNull
-    @Override
-    public DisplayOptions getOptions() {
-        return displayOptions;
     }
 
     @Override
@@ -115,7 +112,7 @@ public class DisplayRequest extends LoadRequest {
 
     @Override
     protected void doError(@NonNull ErrorCause errorCause) {
-        if (displayListener != null || displayOptions.getErrorImage() != null) {
+        if (displayListener != null || getOptions().getErrorImage() != null) {
             setErrorCause(errorCause);
             postRunError();
         } else {
@@ -154,6 +151,7 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // Check memory cache
+        DisplayOptions displayOptions = getOptions();
         if (!displayOptions.isCacheInDiskDisabled()) {
             setStatus(Status.CHECK_MEMORY_CACHE);
             MemoryCache memoryCache = getConfiguration().getMemoryCache();
@@ -188,6 +186,7 @@ public class DisplayRequest extends LoadRequest {
     @Override
     protected void loadCompleted() {
         LoadResult loadResult = getLoadResult();
+        DisplayOptions displayOptions = getOptions();
         if (loadResult != null && loadResult.getBitmap() != null) {
             Bitmap bitmap = loadResult.getBitmap();
 
@@ -270,6 +269,7 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 显示图片
+        DisplayOptions displayOptions = getOptions();
         if ((displayOptions.getShapeSize() != null || displayOptions.getShaper() != null) && drawable instanceof BitmapDrawable) {
             drawable = new SketchShapeBitmapDrawable(getConfiguration().getContext(), (BitmapDrawable) drawable,
                     displayOptions.getShapeSize(), displayOptions.getShaper());
@@ -306,6 +306,7 @@ public class DisplayRequest extends LoadRequest {
 
         setStatus(Status.FAILED);
 
+        DisplayOptions displayOptions = getOptions();
         ImageDisplayer displayer = displayOptions.getDisplayer();
         StateImage errorImage = displayOptions.getErrorImage();
         if (displayer != null && errorImage != null) {
@@ -315,14 +316,14 @@ public class DisplayRequest extends LoadRequest {
             }
         }
 
-        if (displayListener != null) {
+        if (displayListener != null && getErrorCause() != null) {
             displayListener.onError(getErrorCause());
         }
     }
 
     @Override
     protected void runCanceledInMainThread() {
-        if (displayListener != null) {
+        if (displayListener != null && getCancelCause() != null) {
             displayListener.onCanceled(getCancelCause());
         }
     }

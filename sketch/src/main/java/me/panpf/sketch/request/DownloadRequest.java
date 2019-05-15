@@ -55,7 +55,6 @@ public class DownloadRequest extends AsyncRequest {
      * 获取下载选项
      */
     @NonNull
-    // todo getOptions 可以通过泛型做到自动转换
     public DownloadOptions getOptions() {
         return options;
     }
