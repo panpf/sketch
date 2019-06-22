@@ -1,4 +1,4 @@
-# new version
+# v2.7.1 beta2
 
 * fix: Fixed a bug where the Resize(Resize) constructor did not copy the mode field
 * feature: Improve @NonNull and @Nullable annotations
