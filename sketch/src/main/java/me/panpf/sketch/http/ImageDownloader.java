@@ -17,27 +17,16 @@
 package me.panpf.sketch.http;
 
 import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Locale;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.cache.DiskCache;
-import me.panpf.sketch.request.BaseRequest;
-import me.panpf.sketch.request.CanceledException;
-import me.panpf.sketch.request.DownloadRequest;
-import me.panpf.sketch.request.DownloadResult;
-import me.panpf.sketch.request.ErrorCause;
-import me.panpf.sketch.request.ImageFrom;
+import me.panpf.sketch.request.*;
 import me.panpf.sketch.util.DiskLruCache;
 import me.panpf.sketch.util.SketchUtils;
+
+import java.io.*;
+import java.util.Locale;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 负责下载并缓存图片
@@ -215,26 +204,6 @@ public class ImageDownloader {
             throw new DownloadException(message, ErrorCause.DOWNLOAD_RESPONSE_CODE_EXCEPTION);
         }
 
-        /* content type must be is 'image/*' */
-        final String contentType = response.getContentType();
-        final String finalContentType;
-        if (contentType != null) {
-            String[] contentTypeItems = contentType.split(";");
-            finalContentType = contentTypeItems.length > 0 ? contentTypeItems[0] : null;
-        } else {
-            finalContentType = null;
-        }
-        if (!SketchUtils.matchMimeType("image/*", finalContentType)) {
-            response.releaseConnection();
-            String message = String.format("Content type not a image. contentType: %s, responseHeaders: %s. %s. %s",
-                    contentType, response.getHeadersString(), request.getThreadName(), request.getKey());
-            SLog.e(NAME, message);
-            throw new DownloadException(message, ErrorCause.DOWNLOAD_CONTENT_LENGTH_EXCEPTION);
-        }
-
-        // Check content length, must be greater than 0 or is chunked
-        final long contentLength = response.getContentLength();
-
         // Get content
         InputStream inputStream;
         try {
@@ -272,6 +241,8 @@ public class ImageDownloader {
         } else {
             outputStream = new ByteArrayOutputStream();
         }
+
+        final long contentLength = response.getContentLength();
 
         // Read data
         request.setStatus(BaseRequest.Status.READ_DATA);
