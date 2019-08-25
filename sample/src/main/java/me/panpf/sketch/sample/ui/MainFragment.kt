@@ -29,7 +29,8 @@ class MainFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            view.updatePadding(top = DeviceUtils.getStatusBarHeight(resources))
+            main_contentGroup.updatePadding(top = DeviceUtils.getStatusBarHeight(resources))
+            main_recyclerMenu.updatePadding(top = DeviceUtils.getStatusBarHeight(resources))
         }
 
         main_recyclerMenu.apply {
