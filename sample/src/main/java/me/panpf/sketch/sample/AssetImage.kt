@@ -63,7 +63,15 @@ object AssetImage {
 
     fun getTestUris(context: Context): Array<String> {
         return try {
-            arrayOf(URI_TEST_ASSET, URI_TEST_APP, ApkIconUriModel.makeUri(context.packageManager.getApplicationInfo(context.packageName, 0).sourceDir), URI_TEST_ANDR_RES_BY_NAME, URI_TEST_ANDR_RES_BY_NAME2, URI_TEST_ANDR_RES_BY_ID, URI_TEST_ANDR_RES_BY_NAME3, URI_TEST_BASE64, URI_TEST_DRAWABLE)
+            arrayOf(URI_TEST_ASSET,
+                    URI_TEST_APP,
+                    ApkIconUriModel.makeUri(context.packageManager.getApplicationInfo(context.packageName, 0).sourceDir),
+                    URI_TEST_ANDR_RES_BY_NAME,
+                    URI_TEST_ANDR_RES_BY_NAME2,
+                    URI_TEST_ANDR_RES_BY_ID,
+                    URI_TEST_ANDR_RES_BY_NAME3,
+                    URI_TEST_BASE64,
+                    URI_TEST_DRAWABLE)
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
             arrayOf()
