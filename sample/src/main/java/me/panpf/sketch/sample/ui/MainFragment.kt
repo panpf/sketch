@@ -1,161 +1,113 @@
 package me.panpf.sketch.sample.ui
 
-import android.content.Context
-import android.content.res.Configuration
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import kotlinx.android.synthetic.main.fm_main.*
-import me.panpf.pagerid.PagerIndicator
-import me.panpf.sketch.sample.BuildConfig
+import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_main.*
+import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.event.ChangePageEvent
-import me.panpf.sketch.sample.event.CloseDrawerEvent
 import me.panpf.sketch.sample.event.RegisterEvent
-import me.panpf.sketch.sample.util.AnimationUtils
+import me.panpf.sketch.sample.item.MenuTitleItem
+import me.panpf.sketch.sample.item.PageMenuItem
 import me.panpf.sketch.sample.util.DeviceUtils
-import me.panpf.sketch.util.SketchUtils
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import java.util.*
 
 @RegisterEvent
-@BindContentView(R.layout.fm_main)
-class MainFragment : BaseFragment(), OnActivityPostCreateCallback, AppListFragment.GetPagerIndicatorCallback {
+@BindContentView(R.layout.fragment_main)
+class MainFragment : BaseFragment() {
 
-    private lateinit var toggleDrawable: ActionBarDrawerToggle
-    private var page: Page? = null
+    var page: Page? = null
 
-    override fun onActivityPostCreate() {
-        toggleDrawable.syncState()
-    }
-
+    @SuppressLint("ObsoleteSdkInt")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 空出顶部的状态栏
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val statusBarHeight = DeviceUtils.getStatusBarHeight(resources)
-            if (statusBarHeight > 0) {
-                view.updatePadding(top = statusBarHeight)
+            view.updatePadding(top = DeviceUtils.getStatusBarHeight(resources))
+        }
+
+        main_recyclerMenu.apply {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+            val pages = arrayOf(
+                    "Samples"
+                    , Page.PHOTOS
+                    , Page.UNSPLASH
+                    , Page.GIF
+                    , Page.APPS
+                    , Page.APKS
+                    , Page.SETTINGS
+                    , Page.ABOUT
+                    , "Test"
+                    , Page.BLOCK_DISPLAY_TEST
+                    , Page.IMAGE_PROCESSOR_TEST
+                    , Page.IMAGE_SHAPER_TEST
+                    , Page.REPEAT_LOAD_OR_DOWNLOAD_TEST
+                    , Page.IN_BITMAP_TEST
+                    , Page.IMAGE_ORIENTATION_TEST
+                    , Page.BASE64_IMAGE_TEST
+                    , Page.OTHER_TEST
+            )
+            adapter = AssemblyRecyclerAdapter(pages).apply {
+                addItemFactory(MenuTitleItem.Factory())
+                addItemFactory(PageMenuItem.Factory().setOnItemClickListener { _, _, _, _, data ->
+                    val page = data ?: return@setOnItemClickListener
+                    showPage(page)
+                    main_drawerLayout.closeDrawer(GravityCompat.START)
+                })
+            }
+
+            updateLayoutParams { width = (resources.displayMetrics.widthPixels * 0.7).toInt() }
+        }
+
+        main_drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, GravityCompat.START)
+
+        main_toolbar.apply {
+            navigationIcon = resources.getDrawable(R.drawable.ic_menu)
+            setNavigationOnClickListener {
+                if (main_drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    main_drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    main_drawerLayout.openDrawer(GravityCompat.START)
+                }
             }
         }
 
-        val compatActivity = activity as AppCompatActivity
-        compatActivity.setSupportActionBar(mainFm_toolbar)
-        compatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        compatActivity.supportActionBar?.setHomeButtonEnabled(true)
-
-        val drawerLayout = (activity as MainFragmentCallback).getDrawerLayout()
-        toggleDrawable = ActionBarDrawerToggle(compatActivity, drawerLayout, mainFm_toolbar, R.string.drawer_open, R.string.drawer_close)
-        drawerLayout.addDrawerListener(toggleDrawable)
-
-        mainFm_pagerIndicator.setTabViewFactory(TitleTabFactory(arrayOf("APP", "PACKAGE"), compatActivity))
-
-        onEvent(ChangePageEvent(Page.MY_PHOTOS))
-
-        EventBus.getDefault().register(this)
+        showPage(Page.PHOTOS)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        toggleDrawable.onConfigurationChanged(newConfig)
-    }
+    private fun showPage(newPage: Page) {
+        if (this.page == newPage) return
+        this.page = newPage
 
-    @Subscribe
-    fun onEvent(event: ChangePageEvent) {
-        if (this.page == event.page) return
-        this.page = event.page
-
-        if (page == Page.APP_LIST) {
-            AnimationUtils.visibleViewByAlpha(mainFm_pagerIndicator)
-        } else {
-            AnimationUtils.invisibleViewByAlpha(mainFm_pagerIndicator)
-        }
-
-        val compatActivity = activity as AppCompatActivity
-        compatActivity.supportActionBar!!.title = page!!.showName
+        main_toolbar.title = newPage.showName
         childFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                .replace(R.id.mainFm_contentFrame, page!!.fragment)
+                .replace(R.id.main_contentFrame, newPage.fragmentClass.newInstance())
                 .commitAllowingStateLoss()
-
-        EventBus.getDefault().post(CloseDrawerEvent())
-    }
-
-    override fun onGetPagerIndicator(): PagerIndicator {
-        return mainFm_pagerIndicator
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroyView()
     }
 }
 
-enum class Page constructor(val showName: String, val fragmentClass: Class<out androidx.fragment.app.Fragment>, val test: Boolean, val isDisable: Boolean) {
-    UNSPLASH("Unsplash", UnsplashPhotosFragment::class.java, false, false),
-    SEARCH("GIF Search", SearchFragment::class.java, false, false),
-    MY_PHOTOS("My Photos", MyPhotosFragment::class.java, false, false),
-    APP_LIST("My Apps", AppListFragment::class.java, false, false),
-    ABOUT("About Sketch", AboutFragment::class.java, false, false),
+enum class Page(val showName: String, val fragmentClass: Class<out Fragment>) {
+    PHOTOS("Photos", PhotosFragment::class.java),
+    UNSPLASH("Unsplash", UnsplashFragment::class.java),
+    GIF("GIF", GifFragment::class.java),
+    APPS("Apps", AppsFragment::class.java),
+    APKS("Apks", ApksFragment::class.java),
+    SETTINGS("Settings", SettingsFragment::class.java),
+    ABOUT("About", AboutFragment::class.java),
 
-    BLOCK_DISPLAY_TEST("Block Display Huge Image", BlockDisplayTestFragment::class.java, true, false),
-    IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment::class.java, true, false),
-    IMAGE_SHAPER_TEST("Image Shaper Test", ImageShaperTestFragment::class.java, true, false),
-    REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment::class.java, true, false),
-    IN_BITMAP_TEST("inBitmap Test", InBitmapTestFragment::class.java, true, false),
-    IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment::class.java, true, false),
-    BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java, true, false),
-    OTHER_TEST("Other Test", OtherTestFragment::class.java, true, !BuildConfig.DEBUG);
-
-    val fragment: androidx.fragment.app.Fragment
-        get() {
-            return fragmentClass.newInstance()
-        }
-
-    companion object {
-        val normalPage: Array<Page>
-            get() {
-                return values().filterTo(LinkedList()) { !it.test }.toTypedArray()
-            }
-
-        val testPage: Array<Page>
-            get() {
-                return values().filterTo(LinkedList()) { it.test }.toTypedArray()
-            }
-    }
-}
-
-class TitleTabFactory(private val titles: Array<String>, val context: Context) : PagerIndicator.TabViewFactory {
-
-    override fun addTabs(viewGroup: ViewGroup, i: Int) {
-        titles.withIndex().forEach { (index, title) ->
-            val textView = TextView(context)
-            textView.text = title
-            val padding = SketchUtils.dp2px(context, 12)
-            when (index) {
-                0 -> textView.setPadding(padding, padding, padding / 2, padding)
-                (titles.size - 1) -> textView.setPadding(padding / 2, padding, padding, padding)
-                else -> textView.setPadding(padding / 2, padding, padding / 2, padding)
-            }
-            textView.gravity = Gravity.CENTER
-            textView.setTextColor(context.resources.getColorStateList(R.color.tab))
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-            viewGroup.addView(textView)
-        }
-    }
-}
-
-interface MainFragmentCallback {
-    fun getDrawerLayout(): androidx.drawerlayout.widget.DrawerLayout
+    BLOCK_DISPLAY_TEST("Huge Image Test", BlockDisplayTestFragment::class.java),
+    IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment::class.java),
+    IMAGE_SHAPER_TEST("Image Shaper Test", ImageShaperTestFragment::class.java),
+    REPEAT_LOAD_OR_DOWNLOAD_TEST("Repeat Load Or Download Test", RepeatLoadOrDownloadTestFragment::class.java),
+    IN_BITMAP_TEST("inBitmap Test", InBitmapTestFragment::class.java),
+    IMAGE_ORIENTATION_TEST("Image Orientation Test", ImageOrientationTestHomeFragment::class.java),
+    BASE64_IMAGE_TEST("Base64 Image Test", Base64ImageTestFragment::class.java),
+    OTHER_TEST("Other Test", OtherTestFragment::class.java);
 }

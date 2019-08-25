@@ -29,4 +29,6 @@ public interface DownloadListener extends Listener {
     void onStarted();
 
     void onCompleted(@NonNull DownloadResult result);
+
+    // todo 提供 SimpleListener
 }

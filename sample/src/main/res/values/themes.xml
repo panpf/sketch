@@ -1,15 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
-
-    <!-- 配置不同版本上的差异 -->
-    <style name="CompatTheme" parent="BaseTheme">
-
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:textAppearance">@style/Text</item>
     </style>
-
-    <!-- 真正使用的主题，在BaseThemeCompatTheme的基础上定义所有版本均支持的样式 -->
-    <style name="AppTheme" parent="CompatTheme">
-        <item name="android:windowBackground">@drawable/shape_window_background</item>
-    </style>
-
 </resources>

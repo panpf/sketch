@@ -2,7 +2,6 @@ package me.panpf.sketch.sample.ui
 
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.format.Formatter
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -23,7 +22,7 @@ import java.util.*
  * 已安装APP列表
  */
 @BindContentView(R.layout.fragment_recycler)
-class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
+class AppsFragment : BaseFragment(), AppItemFactory.AppItemListener {
 
     private val adapter: AssemblyRecyclerAdapter? = null
 
@@ -57,7 +56,7 @@ class InstalledAppFragment : BaseFragment(), AppItemFactory.AppItemListener {
         }
     }
 
-    class LoadAppsTask(private val fragmentWeakReference: WeakReference<InstalledAppFragment>) : AsyncTask<Int, Int, List<AppInfo>?>() {
+    class LoadAppsTask(private val fragmentWeakReference: WeakReference<AppsFragment>) : AsyncTask<Int, Int, List<AppInfo>?>() {
 
         override fun onPreExecute() {
             super.onPreExecute()

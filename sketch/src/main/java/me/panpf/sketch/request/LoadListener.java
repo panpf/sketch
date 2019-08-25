@@ -26,4 +26,6 @@ public interface LoadListener extends Listener {
     void onStarted();
 
     void onCompleted(@NonNull LoadResult result);
+
+    // todo 提供 SimpleListener
 }

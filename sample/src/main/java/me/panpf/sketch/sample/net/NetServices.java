@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetServices {
     private static UnsplashService unsplashService;
-    private static BaiduImageService baiduService;
+    private static TenorService tenorService;
 
     private NetServices() {
     }
@@ -24,17 +24,17 @@ public class NetServices {
         return unsplashService;
     }
 
-    public static BaiduImageService baiduImage() {
-        if (baiduService == null) {
+    public static TenorService tenor() {
+        if (tenorService == null) {
             synchronized (NetServices.class) {
-                if (baiduService == null) {
-                    baiduService = new Retrofit.Builder()
-                            .baseUrl("http://image.baidu.com")
+                if (tenorService == null) {
+                    tenorService = new Retrofit.Builder()
+                            .baseUrl("https://api.tenor.com")
                             .addConverterFactory(GsonConverterFactory.create())
-                            .build().create(BaiduImageService.class);
+                            .build().create(TenorService.class);
                 }
             }
         }
-        return baiduService;
+        return tenorService;
     }
 }

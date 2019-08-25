@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="default_text_color_normal">#AEFFFFFF</color>
-    <color name="default_text_color_selected">#FFFFFF</color>
-    <color name="default_text_color_subtitle">#33FFFFFF</color>
+    <color name="colorPrimary">#2E3440</color>
+    <color name="colorPrimaryDark">#2E3440</color>
+    <color name="colorAccent">#bf5660</color>
+    <color name="windowBackground">#2E3440</color>
 
-    <color name="window_background_start">#222635</color>
-    <color name="window_background_center">#222635</color>
-    <color name="window_background_end">#222635</color>
+    <color name="text_normal">#AEFFFFFF</color>
+    <color name="text_selected">#FFFFFF</color>
+    <color name="text_title">#FFFFFF</color>
+    <color name="text_subtitle">#33FFFFFF</color>
 
-    <color name="list_item_background_pressed">#33FFFFFF</color>
+    <color name="list_item_background_pressed">#33000000</color>
 </resources>

@@ -1,10 +1,9 @@
 package me.panpf.sketch.sample.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_recycler.*
@@ -16,8 +15,7 @@ import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
-import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
-import me.panpf.sketch.sample.item.LoadMoreItemFactory
+import me.panpf.sketch.sample.item.LoadMoreItem
 import me.panpf.sketch.sample.item.UnsplashPhotosItemFactory
 import me.panpf.sketch.sample.net.NetServices
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
@@ -30,12 +28,10 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 @BindContentView(R.layout.fragment_recycler)
-class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
+class UnsplashFragment : BaseFragment(), UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var pageIndex = 1
-
-    private var backgroundImageUri: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,18 +46,6 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         } else {
             refresh_recyclerFragment.post { onRefresh() }
         }
-    }
-
-
-    override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
-        if (isVisibleToUser) {
-            changeBackground(backgroundImageUri)
-        }
-    }
-
-    private fun changeBackground(imageUri: String?) {
-        this.backgroundImageUri = imageUri
-        backgroundImageUri?.let { EventBus.getDefault().post(ChangeMainPageBgEvent(it)) }
     }
 
     private fun loadData(pageIndex: Int) {
@@ -115,8 +99,8 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
         loadData(pageIndex + 1)
     }
 
-    private class LoadDataCallback internal constructor(fragment: UnsplashPhotosFragment, private val pageIndex: Int) : Callback<List<UnsplashImage>> {
-        private val reference: WeakReference<UnsplashPhotosFragment> = WeakReference(fragment)
+    private class LoadDataCallback internal constructor(fragment: UnsplashFragment, private val pageIndex: Int) : Callback<List<UnsplashImage>> {
+        private val reference: WeakReference<UnsplashFragment> = WeakReference(fragment)
 
         init {
             if (pageIndex == 1) {
@@ -155,7 +139,7 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
             }
         }
 
-        private fun create(fragment: UnsplashPhotosFragment, response: Response<List<UnsplashImage>>) {
+        private fun create(fragment: UnsplashFragment, response: Response<List<UnsplashImage>>) {
             val activity = fragment.activity ?: return
             val images = response.body()
             if (images == null || images.isEmpty()) {
@@ -165,15 +149,13 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
             val adapter = AssemblyRecyclerAdapter(images)
             adapter.addItemFactory(UnsplashPhotosItemFactory(activity, fragment))
-            adapter.setMoreItem(LoadMoreItemFactory(fragment))
+            adapter.setMoreItem(LoadMoreItem.Factory(fragment))
 
             fragment.recycler_recyclerFragment_content.adapter = adapter
             fragment.adapter = adapter
-
-            fragment.changeBackground(images[0].urls!!.thumb)
         }
 
-        private fun loadMore(fragment: UnsplashPhotosFragment, response: Response<List<UnsplashImage>>) {
+        private fun loadMore(fragment: UnsplashFragment, response: Response<List<UnsplashImage>>) {
             val images = response.body()
             if (images == null || images.isEmpty()) {
                 fragment.adapter!!.loadMoreFinished(true)
@@ -182,8 +164,6 @@ class UnsplashPhotosFragment : BaseFragment(), UnsplashPhotosItemFactory.Unsplas
 
             fragment.adapter!!.addAll(images)
             fragment.adapter!!.loadMoreFinished(images.size < 20)
-
-            fragment.changeBackground(images[0].urls!!.thumb)
         }
     }
 }

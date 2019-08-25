@@ -47,16 +47,27 @@ android {
         }
     }
 
-    flavorDimensions("app")
+    flavorDimensions("default")
 
     productFlavors {
         create("normal") {
-            setDimension("app")
+            setDimension("default")
+        }
+
+        create("lollipop") {
+            setDimension("default")
+            minSdkVersion(21)
         }
 
         // 为了测试没有导入 sketch-gif 时是否可以正常运行
-        create("nogiflib") {
-            setDimension("app")
+        create("normalNogiflib") {
+            setDimension("default")
+        }
+
+        // 为了测试没有导入 sketch-gif 时是否可以正常运行
+        create("lollipopNogiflib") {
+            setDimension("default")
+            minSdkVersion(21)
         }
     }
 
@@ -90,6 +101,7 @@ dependencies {
 
     implementation(project(":sketch"))
     add("normalImplementation", project(":sketch-gif"))
+    add("lollipopImplementation", project(":sketch-gif"))
 
     implementation(files("libs/bugly_1.2.3.8__release.jar"))
     implementation(files("libs/pinyin4j-2.5.0.jar"))
@@ -105,6 +117,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:${property("RETROFIT_VERSION")}")
 
     implementation("com.google.android:flexbox:${property("FLEXBOX")}")
+    implementation("com.google.android.material:material:${property("MATERIAL")}")
 }
 
 fun getGitVersion(): String = Runtime.getRuntime().exec("git rev-parse --short HEAD").inputStream.use { it.bufferedReader().readText().trim() }

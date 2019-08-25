@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/text_menuTitleItem_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:text="页面"
-        android:textColor="@color/default_text_color_normal"
+        android:paddingLeft="20dp"
+        android:paddingTop="16dp"
+        android:paddingRight="20dp"
+        android:singleLine="true"
+        android:textColor="@color/text_subtitle"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Page" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="8dp"
-        android:background="#AEFFFFFF" />
+        android:layout_marginRight="20dp"
+        android:background="@color/text_subtitle" />
 </LinearLayout>

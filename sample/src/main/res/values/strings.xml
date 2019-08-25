@@ -2,9 +2,6 @@
 <resources>
     <string name="app_name">Sketch Sample</string>
 
-    <string name="drawer_open">Open</string>
-    <string name="drawer_close">Close</string>
-
     <string name="text_library_intro">
         Sketch is a powerful and comprehensive picture loader on Android, in addition to the necessary features to load the picture, but also supports GIF, gesture zoom, block display huge image, automatically correct the direction of the picture, display video thumbnails and other functions.
         \n
@@ -34,7 +31,8 @@
         \n 1. android-gif-drawable
         \n 2. PhotoView
         \n 3. Glide（BitmapPool）
-        \n 4. http://image.baidu.com
+        \n 4. https://tenor.com
+        \n 5. https://unsplash.com
     </string>
     <string name="text_loadMore">LOADING…</string>
 </resources>

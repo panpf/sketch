@@ -1,31 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TextAppearance_ImageTitle">
-        <item name="android:background">@drawable/shape_linear_gradient_transparent_to_black</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">@dimen/image_title_padding</item>
-        <item name="android:gravity">left</item>
-        <item name="android:singleLine">true</item>
+    <style name="Text" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/text_subtitle</item>
     </style>
 
-    <style name="TextAppearance_ImageName">
-        <item name="android:background">@drawable/shape_round_corners_black_translucent</item>
+    <style name="Text_DrawerMenu" parent="Text">
+        <item name="android:background">@drawable/list_item</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:singleLine">true</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="menu_item">
+    <style name="Settings_Item">
         <item name="android:minHeight">50dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:background">@drawable/selector_list_item</item>
+        <item name="android:background">@drawable/list_item</item>
     </style>
 </resources>

@@ -63,10 +63,6 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
                 .commit()
     }
 
-    override fun isDisableSetFitsSystemWindows(): Boolean {
-        return true
-    }
-
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         var result = true
         try {

@@ -16,117 +16,55 @@
 
 package me.panpf.sketch.sample.ui
 
+import android.Manifest
 import android.content.Intent
-import android.os.Build
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
-import android.widget.Toast
-import androidx.core.view.GravityCompat
-import kotlinx.android.synthetic.main.at_main.*
+import androidx.core.app.ActivityCompat
+import me.panpf.androidxkt.widget.showShortToast
 import me.panpf.sketch.sample.NotificationService
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseActivity
-import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.event.CloseDrawerEvent
-import me.panpf.sketch.sample.event.DrawerOpenedEvent
-import me.panpf.sketch.sample.event.RegisterEvent
-import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
-@RegisterEvent
-@BindContentView(R.layout.at_main)
-class MainActivity : BaseActivity(), MainFragmentCallback {
-    override fun getDrawerLayout(): androidx.drawerlayout.widget.DrawerLayout = mainAt_drawer
+class MainActivity : BaseActivity() {
 
     private var lastClickBackTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mainAt_drawer.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, GravityCompat.START)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DeviceUtils.getStatusBarHeight(resources) <= 0) {
-            mainAt_drawer.fitsSystemWindows = true
-        }
-
-        mainAt_drawer.setDrawerListener(object : androidx.drawerlayout.widget.DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-            }
-
-            override fun onDrawerOpened(drawerView: View) {
-                EventBus.getDefault().post(DrawerOpenedEvent())
-            }
-
-            override fun onDrawerClosed(drawerView: View) {
-            }
-
-            override fun onDrawerStateChanged(newState: Int) {
-
-            }
-        })
-
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.mainAt_menuFrame, MainMenuFragment())
-                .replace(R.id.mainAt_contentFrame, MainFragment())
-                .commit()
-
         ImageOrientationCorrectTestFileGenerator.getInstance(baseContext).onAppStart()
-
         startService(Intent(baseContext, NotificationService::class.java))
-
-        // todo 申请读写存储权限
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        supportFragmentManager.fragments.forEach { if (it is OnActivityPostCreateCallback) it.onActivityPostCreate() }
-    }
-
-    var registed = false
-    override fun onStart() {
-        super.onStart()
-        if (!registed) {
-            registed = true
-            EventBus.getDefault().register(this)
-        }
-    }
-
-    override fun isDisableSetFitsSystemWindows() = true
-
-    @Suppress("unused")
-    @Subscribe
-    fun onEvent(@Suppress("UNUSED_PARAMETER") closeDrawerEvent: CloseDrawerEvent) {
-        mainAt_drawer.closeDrawer(GravityCompat.START)
-    }
-
-    override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroy()
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (mainAt_drawer.isDrawerOpen(GravityCompat.START)) {
-                mainAt_drawer.closeDrawer(GravityCompat.START)
-            } else {
-                mainAt_drawer.openDrawer(GravityCompat.START)
-            }
-            true
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            showContent()
         } else {
-            super.onKeyDown(keyCode, event)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1101)
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1101) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                showContent()
+            } else {
+                finish()
+            }
+        }
+    }
+
+    private fun showContent() {
+        supportFragmentManager.beginTransaction()
+                .replace(android.R.id.content, MainFragment())
+                .commit()
     }
 
     override fun onBackPressed() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickBackTime > 2000) {
             lastClickBackTime = currentTime
-            Toast.makeText(baseContext, "再按一下退出", Toast.LENGTH_SHORT).show()
+            showShortToast("Click again to exit")
             return
         }
 
@@ -141,8 +79,4 @@ class MainActivity : BaseActivity(), MainFragmentCallback {
             true
         }
     }
-}
-
-interface OnActivityPostCreateCallback {
-    fun onActivityPostCreate()
 }

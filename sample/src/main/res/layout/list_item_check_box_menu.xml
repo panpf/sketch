@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/menu_item"
+    style="@style/Settings_Item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/text_checkBoxMenuItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/default_text_color_normal"
+        android:textColor="@color/text_normal"
         tools:text="显示按下状态" />
 
     <CheckBox

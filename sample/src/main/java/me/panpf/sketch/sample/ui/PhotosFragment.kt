@@ -20,9 +20,11 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.javaxkt.util.requireNotNull
+import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.R
@@ -30,9 +32,8 @@ import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
-import me.panpf.sketch.sample.event.ChangeMainPageBgEvent
 import me.panpf.sketch.sample.event.RegisterEvent
-import me.panpf.sketch.sample.item.MyPhotoItemFactory
+import me.panpf.sketch.sample.item.MyPhotoItem
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.util.SketchUtils
@@ -41,16 +42,11 @@ import org.greenrobot.eventbus.Subscribe
 import java.lang.ref.WeakReference
 import java.util.*
 
-/**
- * 本地相册页面
- */
 @RegisterEvent
 @BindContentView(R.layout.fragment_recycler)
-class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
+class PhotosFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
-
-    private var backgroundImageUri: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,38 +72,10 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         EventBus.getDefault().register(this)
     }
 
-    override fun onClickImage(position: Int, optionsKey: String) {
-        val activity = activity ?: return
-        var finalOptionsKey: String? = optionsKey
-        // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-        if (finalOptionsKey!!.contains("Resize")
-                || finalOptionsKey.contains("ImageProcessor")
-                || finalOptionsKey.contains("thumbnailMode")) {
-            finalOptionsKey = null
-        }
-
-        val urlList = adapter!!.dataList
-        val imageArrayList = ArrayList<Image>(urlList?.size ?: 0)
-        urlList?.mapTo(imageArrayList) { Image(it as String, it) }
-
-        ImageDetailActivity.launch(activity, dataTransferHelper.put("urlList", imageArrayList), finalOptionsKey, position)
-    }
-
     override fun onRefresh() {
         if (activity != null) {
             LoadPhotoListTask(WeakReference(this)).execute()
         }
-    }
-
-    override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
-        if (isVisibleToUser) {
-            changeBackground(backgroundImageUri)
-        }
-    }
-
-    private fun changeBackground(imageUri: String?) {
-        this.backgroundImageUri = imageUri
-        backgroundImageUri?.let { EventBus.getDefault().post(ChangeMainPageBgEvent(it)) }
     }
 
     @Suppress("unused")
@@ -125,7 +93,7 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
         super.onDestroyView()
     }
 
-    private class LoadPhotoListTask constructor(private val fragmentWeakReference: WeakReference<MyPhotosFragment>) : AsyncTask<Void, Int, List<String>>() {
+    private class LoadPhotoListTask constructor(private val fragmentWeakReference: WeakReference<PhotosFragment>) : AsyncTask<Void, Int, List<String>>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -173,14 +141,27 @@ class MyPhotosFragment : BaseFragment(), MyPhotoItemFactory.OnImageClickListener
             }
 
             val adapter = AssemblyRecyclerAdapter(imageUriList)
-            adapter.addItemFactory(MyPhotoItemFactory(fragment))
+            adapter.addItemFactory(MyPhotoItem.Factory().setOnViewClickListener(R.id.image_myPhotoItem){ _, view, position, _, _ ->
+                val activity = fragment.activity ?: return@setOnViewClickListener
+                var finalOptionsKey: String? = (view as SketchImageView).optionsKey
+                // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
+                if (finalOptionsKey!!.contains("Resize")
+                        || finalOptionsKey.contains("ImageProcessor")
+                        || finalOptionsKey.contains("thumbnailMode")) {
+                    finalOptionsKey = null
+                }
+
+                val urlList = adapter.dataList
+                val imageArrayList = ArrayList<Image>(urlList?.size ?: 0)
+                urlList?.mapTo(imageArrayList) { Image(it as String, it) }
+
+                ImageDetailActivity.launch(activity, fragment.dataTransferHelper.put("urlList", imageArrayList), finalOptionsKey, position)
+            })
 
             fragment.recycler_recyclerFragment_content.adapter = adapter
             fragment.recycler_recyclerFragment_content.scheduleLayoutAnimation()
 
             fragment.adapter = adapter
-
-            fragment.changeBackground(imageUriList[0])
         }
     }
 }

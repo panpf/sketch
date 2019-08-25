@@ -32,4 +32,6 @@ public interface DisplayListener extends Listener {
     void onStarted();
 
     void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs);
+
+    // todo 提供 SimpleListener
 }

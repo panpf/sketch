@@ -28,11 +28,8 @@ import java.lang.ref.WeakReference
 import java.util.*
 import java.util.zip.ZipFile
 
-/**
- * 本地安装包页面
- */
 @BindContentView(R.layout.fragment_recycler)
-class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
+class ApksFragment : BaseFragment(), AppItemFactory.AppItemListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
     private var fileScanner: FileScanner? = null
@@ -83,7 +80,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
 
     }
 
-    private class LoadAppsTask(internal var fragmentWeakReference: WeakReference<AppPackageListFragment>) : AsyncTask<String, Int, Array<String>>() {
+    private class LoadAppsTask(internal var fragmentWeakReference: WeakReference<ApksFragment>) : AsyncTask<String, Int, Array<String>>() {
 
         override fun onPreExecute() {
             val fragment = fragmentWeakReference.get() ?: return
@@ -120,7 +117,7 @@ class AppPackageListFragment : BaseFragment(), AppItemFactory.AppItemListener {
         }
     }
 
-    private class MyScanListener(internal var fragmentWeakReference: WeakReference<AppPackageListFragment>) : FileScanner.ScanListener {
+    private class MyScanListener(internal var fragmentWeakReference: WeakReference<ApksFragment>) : FileScanner.ScanListener {
         private val startTime = System.currentTimeMillis()
 
         override fun onStarted() {

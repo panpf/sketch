@@ -1,7 +1,7 @@
 package me.panpf.sketch.sample.event
 
-import me.panpf.sketch.sample.ui.Page
 import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.sample.ui.Page
 
 class ChangePageEvent(val page: Page)
 
@@ -13,4 +13,4 @@ class DrawerOpenedEvent
 
 class CloseDrawerEvent
 
-class ChangeMainPageBgEvent(val imageUrl: String)
+// todo 改成 live data

@@ -10,34 +10,34 @@ import me.panpf.adapter.more.AssemblyMoreItemFactory
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.sample.R
 
-class LoadMoreItemFactory(eventListener: OnLoadMoreListener) : AssemblyMoreItemFactory<LoadMoreItemFactory.LoadMoreItem>(eventListener) {
+class LoadMoreItem(itemFactory: Factory, parent: ViewGroup) :
+        AssemblyMoreItem<LoadMoreItem>(itemFactory, R.layout.list_footer_load_more, parent) {
+    private val progressBar: ProgressBar by bindView(R.id.progress_loadMoreFooter)
+    private val tipsTextView: TextView by bindView(R.id.text_loadMoreFooter_content)
 
-    override fun createAssemblyItem(viewGroup: ViewGroup): LoadMoreItem {
-        return LoadMoreItem(this, R.layout.list_footer_load_more, viewGroup)
+    override fun getErrorRetryView(): View {
+        return tipsTextView
     }
 
-    inner class LoadMoreItem(itemFactory: LoadMoreItemFactory, itemLayoutId: Int, parent: ViewGroup) :
-            AssemblyMoreItem<LoadMoreItem>(itemFactory, itemLayoutId, parent) {
-        private val progressBar: ProgressBar by bindView(R.id.progress_loadMoreFooter)
-        private val tipsTextView: TextView by bindView(R.id.text_loadMoreFooter_content)
+    override fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+        tipsTextView.text = "LOADING..."
+    }
 
-        override fun getErrorRetryView(): View {
-            return tipsTextView
-        }
+    override fun showErrorRetry() {
+        progressBar.visibility = View.GONE
+        tipsTextView.text = "ERROR!"
+    }
 
-        override fun showLoading() {
-            progressBar.visibility = View.VISIBLE
-            tipsTextView.text = "LOADING..."
-        }
+    override fun showEnd() {
+        progressBar.visibility = View.GONE
+        tipsTextView.text = "THE END"
+    }
 
-        override fun showErrorRetry() {
-            progressBar.visibility = View.GONE
-            tipsTextView.text = "ERROR!"
-        }
+    class Factory(eventListener: OnLoadMoreListener) : AssemblyMoreItemFactory<LoadMoreItem>(eventListener) {
 
-        override fun showEnd() {
-            progressBar.visibility = View.GONE
-            tipsTextView.text = "THE END"
+        override fun createAssemblyItem(viewGroup: ViewGroup): LoadMoreItem {
+            return LoadMoreItem(this, viewGroup)
         }
     }
 }

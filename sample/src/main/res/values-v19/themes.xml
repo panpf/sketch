@@ -1,8 +1,0 @@
-<resources>
-
-    <!-- 兼容主题样式，配置在API19以上的差异 -->
-    <style name="CompatTheme" parent="BaseTheme">
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-</resources>

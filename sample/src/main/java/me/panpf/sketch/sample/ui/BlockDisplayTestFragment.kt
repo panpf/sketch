@@ -1,7 +1,6 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_pager_tab.*
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
@@ -10,6 +9,7 @@ import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.item.TitleTabFactory
 
 /**
  * 大图页面，用来展示Sketch显示大图的能力

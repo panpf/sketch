@@ -91,7 +91,6 @@ object ImageOptions {
         OPTIONS_ARRAY.append(ImageOptions.WINDOW_BACKGROUND, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
-                        .setLoadingImage(OldStateImage(DrawableStateImage(R.drawable.shape_window_background)))
                         .setProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
                         .setCacheProcessedImageInDisk(true)
                         .setBitmapConfig(Bitmap.Config.ARGB_8888)   // 效果比较重要

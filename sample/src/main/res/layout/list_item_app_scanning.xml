@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/default_text_color_normal"
+        android:textColor="@color/text_normal"
         android:textSize="14sp" />
 
     <ProgressBar

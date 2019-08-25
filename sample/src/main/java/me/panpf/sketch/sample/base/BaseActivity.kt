@@ -19,19 +19,19 @@ package me.panpf.sketch.sample.base
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import me.panpf.sketch.sample.util.DataTransferStation
 
 abstract class BaseActivity : AppCompatActivity() {
+
     private val dataTransferHelper = DataTransferStation.PageHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setTransparentStatusBar()
         dataTransferHelper.onCreate(savedInstanceState)
 
         val bindContentView = javaClass.getAnnotation(BindContentView::class.java)
@@ -40,41 +40,6 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    override fun setContentView(layoutResID: Int) {
-        setTransparentStatusBar()
-        super.setContentView(layoutResID)
-    }
-
-    override fun setContentView(view: View, params: ViewGroup.LayoutParams) {
-        setTransparentStatusBar()
-        super.setContentView(view, params)
-    }
-
-    override fun setContentView(view: View) {
-        setTransparentStatusBar()
-        super.setContentView(view)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onContentChanged() {
-        super.onContentChanged()
-
-        if (!isDisableSetFitsSystemWindows()) {
-            setFitsSystemWindows()
-        }
-    }
-
-    /**
-     * 让状态栏完全透明
-     */
     private fun setTransparentStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = window
@@ -83,19 +48,6 @@ abstract class BaseActivity : AppCompatActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = Color.TRANSPARENT
         }
-    }
-
-    private fun setFitsSystemWindows() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val contentViewGroup = findViewById<ViewGroup>(android.R.id.content)
-            if (contentViewGroup != null && contentViewGroup.childCount > 0) {
-                contentViewGroup.getChildAt(0).fitsSystemWindows = true
-            }
-        }
-    }
-
-    open fun isDisableSetFitsSystemWindows(): Boolean{
-        return false
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

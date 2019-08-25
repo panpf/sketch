@@ -37,4 +37,6 @@ public interface Listener {
      * @param cause 原因
      */
     void onCanceled(@NonNull CancelCause cause);
+
+    // todo 提供 SimpleListener
 }
