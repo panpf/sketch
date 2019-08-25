@@ -2,13 +2,13 @@ package me.panpf.sketch.sample.bean
 
 import com.google.gson.annotations.SerializedName
 
-class TenorSearchResponse(@SerializedName("results") val dataList: List<TenorData>)
+class TenorSearchResponse(@SerializedName("results") val dataList: List<TenorData>?)
 
-class TenorData(@SerializedName("media") private val media: List<TenorMedia>) {
-    val gifMedia: TenorMediaData
-        get() = media[0].gifMedia
-    val tinyGifMedia: TenorMediaData
-        get() = media[0].tinyGifMedia
+class TenorData(@SerializedName("media") private val media: List<TenorMedia>?) {
+    val gifMedia: TenorMediaData?
+        get() = media?.get(0)?.gifMedia
+    val tinyGifMedia: TenorMediaData?
+        get() = media?.get(0)?.tinyGifMedia
 }
 
 class TenorMedia(@SerializedName("gif") val gifMedia: TenorMediaData, @SerializedName("tinygif") val tinyGifMedia: TenorMediaData)

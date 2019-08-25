@@ -39,7 +39,8 @@ class MainFragment : BaseFragment() {
                     "Samples"
                     , Page.PHOTOS
                     , Page.UNSPLASH
-                    , Page.GIF
+                    , Page.BAIDU_GIF
+                    , Page.TENOR_GIF
                     , Page.APPS
                     , Page.APKS
                     , Page.SETTINGS
@@ -97,7 +98,8 @@ class MainFragment : BaseFragment() {
 enum class Page(val showName: String, val fragmentClass: Class<out Fragment>) {
     PHOTOS("Photos", PhotosFragment::class.java),
     UNSPLASH("Unsplash", UnsplashFragment::class.java),
-    GIF("GIF", GifFragment::class.java),
+    BAIDU_GIF("Baidu GIF", BaiduGifFragment::class.java),
+    TENOR_GIF("Tenor GIF", TenorGifFragment::class.java),
     APPS("Apps", AppsFragment::class.java),
     APKS("Apks", ApksFragment::class.java),
     SETTINGS("Settings", SettingsFragment::class.java),

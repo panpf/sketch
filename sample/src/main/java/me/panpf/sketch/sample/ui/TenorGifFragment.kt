@@ -29,7 +29,7 @@ import retrofit2.Response
 import java.lang.ref.WeakReference
 
 @BindContentView(R.layout.fragment_recycler)
-class GifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
+class TenorGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var pageIndex = 1
     private var adapter: AssemblyRecyclerAdapter? = null
@@ -77,9 +77,9 @@ class GifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoad
         loadData(pageIndex + 1)
     }
 
-    private class LoadDataCallback internal constructor(fragment: GifFragment, private val pageIndex: Int) : Callback<TenorSearchResponse> {
+    private class LoadDataCallback internal constructor(fragment: TenorGifFragment, private val pageIndex: Int) : Callback<TenorSearchResponse> {
 
-        private val reference: WeakReference<GifFragment> = WeakReference(fragment)
+        private val reference: WeakReference<TenorGifFragment> = WeakReference(fragment)
 
         init {
             if (pageIndex == 1) {
@@ -120,7 +120,7 @@ class GifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoad
             }
         }
 
-        private fun create(fragment: GifFragment, response: Response<TenorSearchResponse>) {
+        private fun create(fragment: TenorGifFragment, response: Response<TenorSearchResponse>) {
 
             val images = response.body()?.dataList
             if (images == null || images.isEmpty()) {
@@ -133,7 +133,7 @@ class GifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoad
                 val activity = fragment.activity ?: return@setOnItemClickListener
                 @Suppress("UNCHECKED_CAST")
                 val imageList = adapter.dataList as List<TenorData>
-                val urlList = imageList.map { Image(it.gifMedia.url, it.gifMedia.url) }
+                val urlList = imageList.map { Image(it.gifMedia?.url.orEmpty(), it.gifMedia?.url.orEmpty()) }
                 val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
                 ImageDetailActivity.launch(activity, fragment.dataTransferHelper.put("urlList", urlList), loadingImageOptionsInfo, position - adapter.headerItemCount)
             })
@@ -143,7 +143,7 @@ class GifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoad
             fragment.adapter = adapter
         }
 
-        private fun loadMore(fragment: GifFragment, response: Response<TenorSearchResponse>) {
+        private fun loadMore(fragment: TenorGifFragment, response: Response<TenorSearchResponse>) {
             val images = response.body()?.dataList
             if (images == null || images.isEmpty()) {
                 fragment.adapter!!.loadMoreFinished(true)

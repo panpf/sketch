@@ -10,10 +10,10 @@ import me.panpf.androidxkt.view.isOrientationPortrait
 import me.panpf.javaxkt.lang.divide
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.bean.TenorData
+import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.widget.SampleImageView
 
-class StaggeredImageItem(parent: ViewGroup) : AssemblyItem<TenorData>(R.layout.list_item_image_staggered, parent) {
+class BaiduStaggeredImageItem(parent: ViewGroup) : AssemblyItem<BaiduImage>(R.layout.list_item_image_staggered, parent) {
     private val imageView: SampleImageView by bindView(R.id.image_staggeredImageItem)
 
     override fun onConfigViews(context: Context) {
@@ -28,21 +28,21 @@ class StaggeredImageItem(parent: ViewGroup) : AssemblyItem<TenorData>(R.layout.l
         }
     }
 
-    override fun onSetData(i: Int, image: TenorData?) {
+    override fun onSetData(i: Int, image: BaiduImage?) {
         image ?: return
         imageView.layoutParams?.let {
             it.height = imageView.context.resources.displayMetrics.heightPixels / (if (imageView.context.isOrientationPortrait()) 5 else 2)
-            it.width = (it.height / (image.gifMedia?.height?.toFloat().divide(image.gifMedia?.width?.toFloat()))).toInt()
+            it.width = (it.height / (image.height.toFloat().divide(image.width.toFloat()))).toInt()
             imageView.layoutParams = it
         }
 
-        imageView.displayImage(image.gifMedia?.url.orEmpty())
+        imageView.displayImage(image.url.orEmpty())
     }
 
-    class Factory : AssemblyItemFactory<TenorData>() {
+    class Factory : AssemblyItemFactory<BaiduImage>() {
 
-        override fun match(o: Any?): Boolean = o is TenorData
+        override fun match(o: Any?): Boolean = o is BaiduImage
 
-        override fun createAssemblyItem(viewGroup: ViewGroup) = StaggeredImageItem(viewGroup)
+        override fun createAssemblyItem(viewGroup: ViewGroup) = BaiduStaggeredImageItem(viewGroup)
     }
 }
