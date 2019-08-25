@@ -30,7 +30,6 @@ import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
-import me.panpf.sketch.sample.widget.ZoomOutPageTransformer
 import me.panpf.sketch.zoom.ImageZoomer
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -73,7 +72,6 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
         viewPagerPlayer = ViewPagerPlayer(pager_detail_content)
         PageNumberSetter(text_detail_currentItem, pager_detail_content)
-        pager_detail_content.setPageTransformer(false, ZoomOutPageTransformer())
 
         if (imageList != null) {
             val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList!!)
