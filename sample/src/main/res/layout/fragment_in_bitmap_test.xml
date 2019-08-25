@@ -44,7 +44,7 @@
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:padding="4dp"
-                android:src="@drawable/ic_action_previous_item" />
+                android:src="@drawable/ic_arrow_left" />
 
             <TextView
                 android:id="@+id/view_inBitmapTestFragment_pageNumber"
@@ -60,7 +60,7 @@
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:padding="4dp"
-                android:src="@drawable/ic_action_next_item" />
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <TextView

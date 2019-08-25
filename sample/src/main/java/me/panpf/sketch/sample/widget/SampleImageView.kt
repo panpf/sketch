@@ -93,7 +93,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                 isClickRetryOnDisplayErrorEnabled = AppConfig.getBoolean(context, event.key)
             }
             AppConfig.Key.CLICK_PLAY_GIF -> if (page == Page.PHOTO_LIST || page == Page.SEARCH_LIST || page == Page.UNSPLASH_LIST || page == Page.APP_LIST) {
-                setClickPlayGifEnabled(if (AppConfig.getBoolean(context, event.key)) R.drawable.ic_video_play else 0)
+                setClickPlayGifEnabled(if (AppConfig.getBoolean(context, event.key)) R.drawable.ic_play else 0)
             }
             AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD -> {
                 redisplay(null)

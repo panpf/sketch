@@ -65,7 +65,7 @@ class MainFragment : BaseFragment() {
             updateLayoutParams { width = (resources.displayMetrics.widthPixels * 0.7).toInt() }
         }
 
-        main_drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, GravityCompat.START)
+        main_drawerLayout.setDrawerShadow(R.drawable.shadow_drawer_left, GravityCompat.START)
 
         main_toolbar.apply {
             navigationIcon = resources.getDrawable(R.drawable.ic_menu)

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/text_appScanningItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,6 +16,5 @@
         android:id="@+id/progress_appScanningItem"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginLeft="16dp"
-        android:indeterminateDrawable="@drawable/progressbar_indeterminate_spinner_blue" />
+        android:layout_marginLeft="16dp"/>
 </LinearLayout>
