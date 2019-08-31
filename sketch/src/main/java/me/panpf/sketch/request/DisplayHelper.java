@@ -80,10 +80,10 @@ public class DisplayHelper {
     private SketchView sketchView;
 
     @NonNull
-    public DisplayHelper init(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
+    public DisplayHelper init(@NonNull Sketch sketch, @Nullable String uri, @NonNull SketchView sketchView) {
         this.sketch = sketch;
         this.uri = uri;
-        this.uriModel = UriModel.match(sketch, uri);
+        this.uriModel = uri != null ? UriModel.match(sketch, uri) : null;
         this.sketchView = sketchView;
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
@@ -481,6 +481,7 @@ public class DisplayHelper {
      */
     @Nullable
     public DisplayRequest commit() {
+        // 把 url null 和 uriModel 的检测提前，单独个方法叫 check param 其它的 processOptions
         if (!SketchUtils.isMainThread()) {
             SLog.w(NAME, "Please perform a commit in the UI thread. view(%s). %s",
                     Integer.toHexString(sketchView.hashCode()), uri);
@@ -557,7 +558,6 @@ public class DisplayHelper {
         Configuration configuration = sketch.getConfiguration();
         ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
         FixedSize fixedSize = viewInfo.getFixedSize();
-
 
         // 用 ImageVie 的固定宽高作为 ShapeSize
         ShapeSize shapeSize = displayOptions.getShapeSize();
@@ -653,18 +653,7 @@ public class DisplayHelper {
         configuration.getOptionsFilterManager().filter(displayOptions);
 
         if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            }
-            sketchView.setImageDrawable(drawable);
-
+            sketchView.setImageDrawable(null);
             CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
             return false;
         }

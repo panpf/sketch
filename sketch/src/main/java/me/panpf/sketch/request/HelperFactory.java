@@ -43,7 +43,7 @@ public class HelperFactory {
     }
 
     @NonNull
-    public DisplayHelper getDisplayHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
+    public DisplayHelper getDisplayHelper(@NonNull Sketch sketch, @Nullable String uri, @NonNull SketchView sketchView) {
         if (this.cacheDisplayHelper == null) {
             this.cacheDisplayHelper = new DisplayHelper();
         }

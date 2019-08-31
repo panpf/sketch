@@ -48,7 +48,7 @@ public class SketchImageView extends FunctionPropertyView {
 
     @Nullable
     @Override
-    public DisplayRequest displayImage(@NonNull String uri) {
+    public DisplayRequest displayImage(@Nullable String uri) {
         return Sketch.with(getContext()).display(uri, this).commit();
     }
 

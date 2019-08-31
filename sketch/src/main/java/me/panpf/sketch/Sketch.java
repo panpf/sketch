@@ -182,7 +182,7 @@ public class Sketch {
      * @return {@link DisplayHelper} 你可以继续通过 {@link DisplayHelper} 设置参数，最后调用其 {@link DisplayHelper#commit()} 方法提交
      */
     @NonNull
-    public DisplayHelper display(@NonNull String uri, @NonNull SketchView sketchView) {
+    public DisplayHelper display(@Nullable String uri, @NonNull SketchView sketchView) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
     }
 

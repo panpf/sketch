@@ -3,6 +3,7 @@
 * fix: Fixed a bug where the Resize(Resize) constructor did not copy the mode field
 * feature: Improve @NonNull and @Nullable annotations
 * fix: Content-Type is no longer required to be 'image/*' because not all servers adhere to this standard
+* behavior: Now the SketchImageView.displayImage(Uri) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
 
 # v2.7.1 beta1
 
