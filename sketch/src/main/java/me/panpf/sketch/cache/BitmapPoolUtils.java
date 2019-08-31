@@ -70,6 +70,19 @@ public class BitmapPoolUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int finalWidth = SketchUtils.calculateSamplingSize(outWidth, inSampleSize);
             int finalHeight = SketchUtils.calculateSamplingSize(outHeight, inSampleSize);
+            while (finalWidth <= 0 || finalHeight <= 0) {
+                inSampleSize /= 2;
+                if (inSampleSize == 0) {
+                    finalWidth = outWidth;
+                    finalHeight = outHeight;
+                } else {
+                    finalWidth = SketchUtils.calculateSamplingSizeForRegion(outWidth, inSampleSize);
+                    finalHeight = SketchUtils.calculateSamplingSizeForRegion(outHeight, inSampleSize);
+                }
+            }
+            if (inSampleSize != options.inSampleSize) {
+                options.inSampleSize = inSampleSize;
+            }
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
         } else if (inSampleSize == 1 && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
             inBitmap = bitmapPool.get(outWidth, outHeight, options.inPreferredConfig);
@@ -140,6 +153,20 @@ public class BitmapPoolUtils {
 
         int finalWidth = SketchUtils.calculateSamplingSizeForRegion(srcRect.width(), inSampleSize);
         int finalHeight = SketchUtils.calculateSamplingSizeForRegion(srcRect.height(), inSampleSize);
+        while (finalWidth <= 0 || finalHeight <= 0) {
+            inSampleSize /= 2;
+            if (inSampleSize == 0) {
+                finalWidth = srcRect.width();
+                finalHeight = srcRect.height();
+            } else {
+                finalWidth = SketchUtils.calculateSamplingSizeForRegion(srcRect.width(), inSampleSize);
+                finalHeight = SketchUtils.calculateSamplingSizeForRegion(srcRect.height(), inSampleSize);
+            }
+        }
+        if (inSampleSize != options.inSampleSize) {
+            options.inSampleSize = inSampleSize;
+        }
+
         Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
 
         if (inBitmap != null) {

@@ -1,10 +1,15 @@
+# v2.7.1 beta3
+
+* behavior: Now the SketchImageView.displayImage(Uri) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
+* bug: Fix SketchImageView setting setImageDrawable(null) will still display the old image when scrolling in the list
+* bug: [#119](https://github.com/panpf/sketch/issues/119) Fix BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder() method throws a 'java.lang.IllegalArgumentException: width and height must be > 0' exception bug 
+
+
 # v2.7.1 beta2
 
 * fix: Fixed a bug where the Resize(Resize) constructor did not copy the mode field
 * feature: Improve @NonNull and @Nullable annotations
 * fix: Content-Type is no longer required to be 'image/*' because not all servers adhere to this standard
-* behavior: Now the SketchImageView.displayImage(Uri) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
-* bug: Fix SketchImageView setting setImageDrawable(null) will still display the old image when scrolling in the list
 
 # v2.7.1 beta1
 
