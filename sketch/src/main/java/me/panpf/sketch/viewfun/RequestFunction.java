@@ -102,6 +102,7 @@ public class RequestFunction extends ViewFunction {
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             potentialRequest.cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
         }
+        // todo 尝试不再主动清空图片
 
         // 如果当前图片是来自Sketch，那么就有可能在这里被主动回收，因此要主动设置ImageView的drawable为null
         final Drawable oldDrawable = sketchView.getDrawable();

@@ -30,6 +30,7 @@ import me.panpf.sketch.uri.UriModel;
  * <br>可是 RequestFunction 在 onDetachedFromWindow 的时候会主动清空 Drawable 导致没有重新走 onBindViewHolder 的 Item 会没有 Drawable 而显示空白
  * <br>因此 RecyclerCompatFunction 就判断了如果在 onAttachedToWindow 之前没有调用相关显示图片的方法就会根据 DisplayCache 恢复之前的图片
  */
+// todo 尝试不再主动清空图片
 @SuppressWarnings("WeakerAccess")
 public class RecyclerCompatFunction extends ViewFunction {
     private static final String NAME = "RecyclerCompatFunction";

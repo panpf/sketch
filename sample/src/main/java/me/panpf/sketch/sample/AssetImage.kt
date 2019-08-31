@@ -27,7 +27,7 @@ object AssetImage {
     const val CHUNK = "http://nbachina.qq.com/media/img/players/head/260x190/201935.png"
     const val CHUNK2 = "http://static.yingyonghui.com/is/4398/4398642/256i.webp"
 
-    val URI_TEST_ANDR_RES_BY_NAME = AndroidResUriModel.makeUriByName(BuildConfig.APPLICATION_ID, "drawable", "ic_video_play")
+    val URI_TEST_ANDR_RES_BY_NAME = AndroidResUriModel.makeUriByName(BuildConfig.APPLICATION_ID, "drawable", "ic_play") // todo 支持 svg 图片
     val URI_TEST_ANDR_RES_BY_NAME2 = AndroidResUriModel.makeUriByName(BuildConfig.APPLICATION_ID, "mipmap", "ic_launcher")
     val URI_TEST_ANDR_RES_BY_ID = AndroidResUriModel.makeUriById(BuildConfig.APPLICATION_ID, R.mipmap.ic_launcher)
     val URI_TEST_ANDR_RES_BY_NAME3 = AndroidResUriModel.makeUriByName("com.android.settings", "drawable", "ic_launcher")
