@@ -4,6 +4,7 @@
 * feature: Improve @NonNull and @Nullable annotations
 * fix: Content-Type is no longer required to be 'image/*' because not all servers adhere to this standard
 * behavior: Now the SketchImageView.displayImage(Uri) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
+* bug: Fix SketchImageView setting setImageDrawable(null) will still display the old image when scrolling in the list
 
 # v2.7.1 beta1
 

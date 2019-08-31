@@ -73,7 +73,7 @@ public class SketchImageView extends FunctionPropertyView {
     @Override
     public boolean redisplay(@Nullable RedisplayListener listener) {
         DisplayCache displayCache = getDisplayCache();
-        if (displayCache == null) {
+        if (displayCache == null || displayCache.uri == null) {
             return false;
         }
 

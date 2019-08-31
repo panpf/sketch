@@ -190,6 +190,9 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     private void setDrawable(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
+        if (newDrawable == null) {
+            getFunctions().requestFunction.clean();
+        }
         if (oldDrawable != newDrawable) {
             if (getFunctions().onDrawableChanged(callPosition, oldDrawable, newDrawable)) {
                 invalidate();

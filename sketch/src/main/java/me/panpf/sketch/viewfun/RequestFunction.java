@@ -143,4 +143,11 @@ public class RequestFunction extends ViewFunction {
     public DisplayOptions getDisplayOptions() {
         return displayOptions;
     }
+
+    public void clean(){
+        if (displayCache != null) {
+            displayCache.uri = null;
+            displayCache.options.reset();
+        }
+    }
 }
