@@ -653,7 +653,18 @@ public class DisplayHelper {
         configuration.getOptionsFilterManager().filter(displayOptions);
 
         if (TextUtils.isEmpty(uri)) {
-            sketchView.setImageDrawable(null);
+            SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
+
+            Drawable drawable = null;
+            if (displayOptions.getErrorImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
+            } else if (displayOptions.getLoadingImage() != null) {
+                Context context = sketch.getConfiguration().getContext();
+                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+            }
+            sketchView.setImageDrawable(drawable);
+
             CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
             return false;
         }

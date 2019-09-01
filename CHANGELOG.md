@@ -1,6 +1,9 @@
+# v2.7.1 beta4
+* behavior: Restore SketchImageView.displayImage(String) method displays errorImage when passing in null
+
 # v2.7.1 beta3
 
-* behavior: Now the SketchImageView.displayImage(Uri) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
+* behavior: Now the SketchImageView.displayImage(String) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
 * bug: Fix SketchImageView setting setImageDrawable(null) will still display the old image when scrolling in the list
 * bug: [#119](https://github.com/panpf/sketch/issues/119) Fix BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder() method throws a 'java.lang.IllegalArgumentException: width and height must be > 0' exception bug 
 
