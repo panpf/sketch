@@ -70,7 +70,7 @@ Add dependencies to the dependencies node of the app's build.gradle file
 compile 'me.panpf:sketch:$sketch_version'
 ```
 
-Replace `$sketch_version` with the latest version [![sketch_version_image]][sketch_version_link] `(Do not "v")`
+Replace `$sketch_version` with the latest version [![sketch_version_image]][sketch_version_link]
 
 If you need to play GIF add sketch-gif dependencies
 
@@ -78,7 +78,7 @@ If you need to play GIF add sketch-gif dependencies
 compile 'me.panpf:sketch-gif:$sketch_gif_version'
 ```
 
-Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_image]][sketch_gif_version_link] `(Do not "v")`
+Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_image]][sketch_gif_version_link]
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 

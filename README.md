@@ -70,7 +70,7 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 compile 'me.panpf:sketch:$sketch_version'
 ```
 
-请自行替换 `$sketch_version` 为最新的版本 [![sketch_version_image]][sketch_version_link] `(不要"v")`
+请自行替换 `$sketch_version` 为最新的版本 [![sketch_version_image]][sketch_version_link]
 
 如果需要播放 GIF 就添加 sketch-gif 的依赖
 
@@ -78,7 +78,7 @@ compile 'me.panpf:sketch:$sketch_version'
 compile 'me.panpf:sketch-gif:$sketch_gif_version'
 ```
 
-请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link] `(不要"v")`
+请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link]
 
 `Android Studio 会自动合并 AAR 中所包含的权限和混淆配置`
 
