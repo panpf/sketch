@@ -18,25 +18,35 @@ package me.panpf.sketch.http;
 
 import androidx.annotation.NonNull;
 
+import me.panpf.sketch.SketchException;
+import me.panpf.sketch.request.DownloadRequest;
 import me.panpf.sketch.request.ErrorCause;
 
-@SuppressWarnings("WeakerAccess")
-public class DownloadException extends Exception {
+public class DownloadException extends SketchException {
+    @NonNull
+    private DownloadRequest request;
     @NonNull
     private ErrorCause errorCause;
 
-    public DownloadException(@NonNull String message, @NonNull ErrorCause errorCause) {
-        super(message);
+    public DownloadException(@NonNull Throwable cause, @NonNull DownloadRequest request, @NonNull String message, @NonNull ErrorCause errorCause) {
+        super(message, cause);
+        this.request = request;
         this.errorCause = errorCause;
     }
 
-    public DownloadException(@NonNull String message, @NonNull Throwable cause, @NonNull ErrorCause errorCause) {
-        super(message, cause);
+    public DownloadException(@NonNull DownloadRequest request, @NonNull String message, @NonNull ErrorCause errorCause) {
+        super(message);
+        this.request = request;
         this.errorCause = errorCause;
     }
 
     @NonNull
     public ErrorCause getErrorCause() {
         return errorCause;
+    }
+
+    @NonNull
+    public DownloadRequest getRequest() {
+        return request;
     }
 }

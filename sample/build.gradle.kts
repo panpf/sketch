@@ -100,6 +100,7 @@ dependencies {
     implementation("me.panpf:androidx-kt-arch:${property("PANPF_ANDROIDX")}")
 
     implementation(project(":sketch"))
+    implementation(project(":sketch-zoom"))
     add("normalImplementation", project(":sketch-gif"))
     add("lollipopImplementation", project(":sketch-gif"))
 

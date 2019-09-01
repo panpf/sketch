@@ -17,11 +17,12 @@
 package me.panpf.sketch;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
+import android.util.Log;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -115,6 +116,8 @@ public class SLog {
             SLog.proxy = proxy != null ? proxy : new ProxyImpl();
         }
     }
+
+    // todo 重构
 
     /**
      * 判断指定类型或级别的日志是否可用

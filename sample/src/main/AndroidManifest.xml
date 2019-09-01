@@ -14,7 +14,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".SampleApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -39,7 +39,7 @@
             android:process=":notification" />
 
         <meta-data
-            android:name="me.panpf.sketch.sample.SampleSketchInitializer"
+            android:name="me.panpf.sketch.sample.MySketchInitializer"
             android:value="SKETCH_INITIALIZER" />
 
         <meta-data

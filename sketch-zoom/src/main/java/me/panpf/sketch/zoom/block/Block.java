@@ -22,6 +22,8 @@ import android.graphics.Rect;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.util.KeyCounter;
@@ -107,6 +109,32 @@ public class Block {
         builder.append(",");
         builder.append("hashCode:").append(Integer.toHexString(hashCode()));
         builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * 将一个碎片列表转换成字符串
+     */
+    @Nullable
+    public static String blockListToString(@Nullable List<Block> blockList) {
+        if (blockList == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (Block block : blockList) {
+            if (builder.length() > 1) {
+                builder.append(",");
+            }
+            builder.append("\"");
+            builder.append(block.drawRect.left).append(",");
+            builder.append(block.drawRect.top).append(",");
+            builder.append(block.drawRect.right).append(",");
+            builder.append(block.drawRect.bottom);
+            builder.append("\"");
+        }
+        builder.append("]");
         return builder.toString();
     }
 }

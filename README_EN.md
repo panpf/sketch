@@ -67,7 +67,7 @@ Please refer to the details [URI type and usage guide][uri]
 Add dependencies to the dependencies node of the app's build.gradle file
 
 ```groovy
-compile 'me.panpf:sketch:$sketch_version'
+implementation 'me.panpf:sketch:$sketch_version'
 ```
 
 Replace `$sketch_version` with the latest version [![sketch_version_image]][sketch_version_link]
@@ -75,10 +75,18 @@ Replace `$sketch_version` with the latest version [![sketch_version_image]][sket
 If you need to play GIF add sketch-gif dependencies
 
 ```groovy
-compile 'me.panpf:sketch-gif:$sketch_gif_version'
+implementation 'me.panpf:sketch-gif:$sketch_gif_version'
 ```
 
 Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_image]][sketch_gif_version_link]
+
+If you need gesture zoom function add sketch-zoom dependencies
+
+```groovy
+implementation 'me.panpf:sketch-zoom:$sketch_zoom_version'
+```
+
+Replace `$sketch_zoom_version` with the latest version [![sketch_zoom_version_image]][sketch_zoom_version_link]
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 
@@ -131,7 +139,7 @@ More:
 * [Cache the original file on the disk, to avoid duplication of the download][disk_cache]
 * [Send HTTP request][http_stack]
 * [Cancel request][cancel_request]
-* [Monitor Sketch's exception][error_tracker]
+* [Process Sketch's exception][callback]
 * [Log][log]
 * [Delay and configure Sketch][initializer]
 * [Config proguard][proguard_config]
@@ -176,6 +184,8 @@ Please view the [CHANGELOG.md] file
 [sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
 [sketch_gif_version_image]: https://api.bintray.com/packages/panpf/maven/sketch-gif/images/download.svg
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
+[sketch_zoom_version_image]: https://api.bintray.com/packages/panpf/maven/sketch-zoom/images/download.svg
+[sketch_zoom_version_link]: https://bintray.com/panpf/maven/sketch-zoom/_latestVersion#files
 [min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
 [min_api_link]: https://android-arsenal.com/api?level=16
 [qq_group_image]: https://img.shields.io/badge/QQ%20Gruop-529630740-red.svg
@@ -220,7 +230,7 @@ Please view the [CHANGELOG.md] file
 [http_stack]: docs/wiki/http_stack.md
 [listener]: docs/wiki/listener.md
 [cancel_request]: docs/wiki/cancel_request.md
-[error_tracker]: docs/wiki/error_tracker.md
+[callback]: docs/wiki/callback.md
 [log]: docs/wiki/log.md
 [initializer]: docs/wiki/initializer.md
 [proguard_config]: docs/wiki/proguard_config.md

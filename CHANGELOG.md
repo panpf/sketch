@@ -1,3 +1,10 @@
+# v2.8.0 alpha01
+* remove: Remove ErrorTracker
+* new: Add [SketchCallback]
+* refactor: Zoom related function is now a separate module
+
+[SketchCallback]: sketch/src/main/java/me/panpf/sketch/SketchCallback.java
+
 # v2.7.1 beta4
 * behavior: Restore SketchImageView.displayImage(String) method displays errorImage when passing in null
 
@@ -155,16 +162,16 @@ HugeImageViewer 重构：
 * 全局搜索 `me.xiaopan.sketch.drawable.ImageAttrs` 并替换为 `me.xiaopan.sketch.decode.ImageAttrs`
 * 全局搜索 `me.xiaopan.sketch` 替换为 `me.panpf.sketch`
 
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
-[BlockDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/BlockDisplayer.java
-[Block]: ../../sketch/src/main/java/me/panpf/sketch/zoom/block/Block.java
-[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
-[WrappedImageProcessor]: ../../sketch/sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
-[ErrorTracker]: ../../sketch/sketch/src/main/java/me/panpf/sketch/ErrorTracker.java
-[UriModelManager]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModelManager.java
-[OptionsFilterManager]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilterManager.java
-[HttpStack]: ../../sketch/src/main/java/me/panpf/sketch/http/HttpStack.java
-[ImageAttrs]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageAttrs.java
+[ImageZoomer]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
+[BlockDisplayer]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/BlockDisplayer.java
+[Block]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/block/Block.java
+[SketchImageView]: sketch/src/main/java/me/panpf/sketch/SketchImageView.java
+[WrappedImageProcessor]: sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
+[ErrorTracker]: sketch/src/main/java/me/panpf/sketch/ErrorTracker.java
+[UriModelManager]: sketch/src/main/java/me/panpf/sketch/uri/UriModelManager.java
+[OptionsFilterManager]: sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilterManager.java
+[HttpStack]: sketch/src/main/java/me/panpf/sketch/http/HttpStack.java
+[ImageAttrs]: sketch/src/main/java/me/panpf/sketch/decode/ImageAttrs.java
 
 # v2.6.0 P1
 
@@ -226,16 +233,16 @@ HugeImageViewer 重构：
 * 全局搜索 `me.xiaopan.sketch.drawable.ImageAttrs` 并替换为 `me.xiaopan.sketch.decode.ImageAttrs`
 * 全局搜索 `me.xiaopan.sketch` 替换为 `me.panpf.sketch`
 
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
-[BlockDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/BlockDisplayer.java
-[Block]: ../../sketch/src/main/java/me/panpf/sketch/zoom/block/Block.java
-[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
-[WrappedImageProcessor]: ../../sketch/sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
-[ErrorTracker]: ../../sketch/sketch/src/main/java/me/panpf/sketch/ErrorTracker.java
-[UriModelManager]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModelManager.java
-[OptionsFilterManager]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilterManager.java
-[HttpStack]: ../../sketch/src/main/java/me/panpf/sketch/http/HttpStack.java
-[ImageAttrs]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageAttrs.java
+[ImageZoomer]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
+[BlockDisplayer]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/BlockDisplayer.java
+[Block]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/block/Block.java
+[SketchImageView]: sketch/src/main/java/me/panpf/sketch/SketchImageView.java
+[WrappedImageProcessor]: /src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
+[ErrorTracker]: /src/main/java/me/panpf/sketch/ErrorTracker.java
+[UriModelManager]: sketch/src/main/java/me/panpf/sketch/uri/UriModelManager.java
+[OptionsFilterManager]: sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilterManager.java
+[HttpStack]: sketch/src/main/java/me/panpf/sketch/http/HttpStack.java
+[ImageAttrs]: sketch/src/main/java/me/panpf/sketch/decode/ImageAttrs.java
 
 
 # v2.5.0
@@ -342,29 +349,29 @@ sample app：
 * :lipstick: 重构图片详情页的长按菜单
 * :lipstick: 兼容 MIX 2 的全屏显示
 
-[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
-[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
-[SketchUtils]: ../../sketch/src/main/java/me/panpf/sketch/util/SketchUtils.java
-[ImageShaper]: ../../sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
-[CancelCause]: ../../sketch/src/main/java/me/panpf/sketch/request/CancelCause.java
-[DownloadListener]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadListener.java
-[LoadListener]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadListener.java
-[DisplayListener]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayListener.java
-[Resize]: ../../sketch/src/main/java/me/panpf/sketch/request/Resize.java
-[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
-[DownloadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadHelper.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[OptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
-[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
-[Initializer]: ../../sketch/src/main/java/me/panpf/sketch/Initializer.java
-[UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
-[AppIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
-[SLog]: ../../sketch/src/main/java/me/panpf/sketch/SLog.java
-[ImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
-[WrappedImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
+[Sketch]: sketch/src/main/java/me/panpf/sketch/Sketch.java
+[SketchImageView]: sketch/src/main/java/me/panpf/sketch/SketchImageView.java
+[SketchUtils]: sketch/src/main/java/me/panpf/sketch/util/SketchUtils.java
+[ImageShaper]: sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
+[CancelCause]: sketch/src/main/java/me/panpf/sketch/request/CancelCause.java
+[DownloadListener]: sketch/src/main/java/me/panpf/sketch/request/DownloadListener.java
+[LoadListener]: sketch/src/main/java/me/panpf/sketch/request/LoadListener.java
+[DisplayListener]: sketch/src/main/java/me/panpf/sketch/request/DisplayListener.java
+[Resize]: sketch/src/main/java/me/panpf/sketch/request/Resize.java
+[LoadOptions]: sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
+[DownloadHelper]: sketch/src/main/java/me/panpf/sketch/request/DownloadHelper.java
+[LoadHelper]: sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
+[LoadHelper]: sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
+[OptionsFilter]: sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
+[Configuration]: sketch/src/main/java/me/panpf/sketch/Configuration.java
+[ImageZoomer]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
+[Initializer]: sketch/src/main/java/me/panpf/sketch/Initializer.java
+[UriModel]: sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
+[AppIconUriModel]: sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
+[SLog]: sketch/src/main/java/me/panpf/sketch/SLog.java
+[ImageProcessor]: sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
+[WrappedImageProcessor]: sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
 
 [log]: ../wiki/log.md
 [resize]: ../wiki/resize.md
@@ -378,7 +385,7 @@ sample app：
 
 [#43]: https://github.com/panpf/sketch/issues/43
 
-[sample-video-thumbnail]: ../../sample-video-thumbnail/
+[sample-video-thumbnail]: sample-video-thumbnail/
 
 
 # v2.5.0 Beta2
@@ -496,29 +503,29 @@ sample app：
 * 默认关闭 长按显示图片详情的功能，交由 "Long Clock Show Image Info" 开关控制
 * 现在视频缩略图模块 从 sample app 中抽离出去成为一个单独的 module [sample-video-thumbnail]
 
-[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
-[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
-[SketchUtils]: ../../sketch/src/main/java/me/panpf/sketch/util/SketchUtils.java
-[ImageShaper]: ../../sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
-[CancelCause]: ../../sketch/src/main/java/me/panpf/sketch/request/CancelCause.java
-[DownloadListener]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadListener.java
-[LoadListener]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadListener.java
-[DisplayListener]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayListener.java
-[Resize]: ../../sketch/src/main/java/me/panpf/sketch/request/Resize.java
-[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
-[DownloadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DownloadHelper.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[OptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
-[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
-[ImageZoomer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
-[Initializer]: ../../sketch/src/main/java/me/panpf/sketch/Initializer.java
-[UriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
-[AppIconUriModel]: ../../sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
-[SLog]: ../../sketch/src/main/java/me/panpf/sketch/SLog.java
-[ImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
-[WrappedImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
+[Sketch]: sketch/src/main/java/me/panpf/sketch/Sketch.java
+[SketchImageView]: sketch/src/main/java/me/panpf/sketch/SketchImageView.java
+[SketchUtils]: sketch/src/main/java/me/panpf/sketch/util/SketchUtils.java
+[ImageShaper]: sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
+[CancelCause]: sketch/src/main/java/me/panpf/sketch/request/CancelCause.java
+[DownloadListener]: sketch/src/main/java/me/panpf/sketch/request/DownloadListener.java
+[LoadListener]: sketch/src/main/java/me/panpf/sketch/request/LoadListener.java
+[DisplayListener]: sketch/src/main/java/me/panpf/sketch/request/DisplayListener.java
+[Resize]: sketch/src/main/java/me/panpf/sketch/request/Resize.java
+[LoadOptions]: sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
+[DownloadHelper]: sketch/src/main/java/me/panpf/sketch/request/DownloadHelper.java
+[LoadHelper]: sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
+[LoadHelper]: sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
+[OptionsFilter]: sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
+[Configuration]: sketch/src/main/java/me/panpf/sketch/Configuration.java
+[ImageZoomer]: sketch-zoom/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
+[Initializer]: sketch/src/main/java/me/panpf/sketch/Initializer.java
+[UriModel]: sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
+[AppIconUriModel]: sketch/src/main/java/me/panpf/sketch/uri/AppIconUriModel.java
+[SLog]: sketch/src/main/java/me/panpf/sketch/SLog.java
+[ImageProcessor]: sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
+[WrappedImageProcessor]: sketch/src/main/java/me/panpf/sketch/process/WrappedImageProcessor.java
 
 [log]: ../wiki/log.md
 [resize]: ../wiki/resize.md
@@ -532,7 +539,7 @@ sample app：
 
 [#43]: https://github.com/panpf/sketch/issues/43
 
-[sample-video-thumbnail]: ../../sample-video-thumbnail/
+[sample-video-thumbnail]: sample-video-thumbnail/
 
 
 # v2.4.1
@@ -548,7 +555,7 @@ Sample APP
 * :bug: 修复release版本混淆后找不到FFmpegMediaMetadataRetriever类的bug
 * :bug: 修复由于VideoThumbnailPreprocessor在遇到异常后没有释放缓存编辑锁，导致阻塞了所有的本地解码线程的bug
 
-如果你使用了demo中的 [VideoThumbnailPreprocessor.java](../../sample/src/main/java/me/panpf/sketchsample/util/VideoThumbnailPreprocessor.java)  那么强烈建议你更新一下 VideoThumbnailPreprocessor 的源码
+如果你使用了demo中的 [VideoThumbnailPreprocessor.java](sample/src/main/java/me/panpf/sketchsample/util/VideoThumbnailPreprocessor.java)  那么强烈建议你更新一下 VideoThumbnailPreprocessor 的源码
 
 
 # v2.4.0 Stable
@@ -911,7 +918,7 @@ bugs：
 
 #### GIF
 * :arrow_up: 升级android-gif-drawable版本到1.2.6
-* :hammer: 拆分gif模块，现在作为一个单独的library对外提供，依赖方式请参考[README](../../README.md)
+* :hammer: 拆分gif模块，现在作为一个单独的library对外提供，依赖方式请参考[README](README.md)
 * :sparkles: SketchGifDrawable新增followPageVisible(boolean, boolean)方法用于方便的实现页面不可见时停止播放gif功能，[点击查看具体用法](../wiki/play_gif_image.md)
 
 #### Other
@@ -1014,8 +1021,8 @@ ScaleType:
 >* :sparkles: 新增`onInBitmapException(String, int, int imageHeight, int, Bitmap)`用来监控在BitmapFactory中使用inBitmap时发生的异常
 
 ##### Log
->* :hammer: `Log` 日志分不同的类型分别提供开关控制，详见[SLogType.java](../../sketch/src/main/java/me/panpf/sketch/SLogType.java)
->* :sparkles: `SLogTracker` 新增SLogTracker用于收集Sketch的日志，详情可参看示例APP中的[SampleLogTracker.java](../../sample/src/main/java/me/panpf/sketchsample/SampleLogTracker.java)
+>* :hammer: `Log` 日志分不同的类型分别提供开关控制，详见[SLogType.java](sketch/src/main/java/me/panpf/sketch/SLogType.java)
+>* :sparkles: `SLogTracker` 新增SLogTracker用于收集Sketch的日志，详情可参看示例APP中的[SampleLogTracker.java](sample/src/main/java/me/panpf/sketchsample/SampleLogTracker.java)
 
 ##### 其它
 >* :arrow_up: `minSdkVersion` 最低支持版本升到9
@@ -1078,7 +1085,7 @@ ImageShaper：
 其它：
 >* :arrow_up: `minSdkVersion` 最低支持版本升到9
 >* :art: `ExceptionMonitor` ExceptionMonitor改名为SketchMonitor并挪到顶级目录
->* :zap: `Log` 日志分不同的类型分别提供开关控制，详见[SLogType.java](../../sketch/src/main/java/me/panpf/sketch/SLogType.java)
+>* :zap: `Log` 日志分不同的类型分别提供开关控制，详见[SLogType.java](sketch/src/main/java/me/panpf/sketch/SLogType.java)
 
 
 # v2.3.0 Beta8

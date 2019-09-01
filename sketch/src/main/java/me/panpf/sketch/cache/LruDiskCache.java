@@ -17,6 +17,7 @@
 package me.panpf.sketch.cache;
 
 import android.content.Context;
+import android.os.Environment;
 import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
@@ -115,7 +116,9 @@ public class LruDiskCache implements DiskCache {
             cacheDir = SketchUtils.buildCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
         } catch (NoSpaceException | UnableCreateDirException | UnableCreateFileException e) {
             e.printStackTrace();
-            configuration.getErrorTracker().onInstallDiskCacheError(e, cacheDir);
+            SLog.e(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+                    e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
+            configuration.getCallback().onError(new InstallDiskCacheException(e, cacheDir));
             return;
         }
 
@@ -127,7 +130,9 @@ public class LruDiskCache implements DiskCache {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
         } catch (IOException e) {
             e.printStackTrace();
-            configuration.getErrorTracker().onInstallDiskCacheError(e, cacheDir);
+            SLog.e(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+                    e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
+            configuration.getCallback().onError(new InstallDiskCacheException(e, cacheDir));
         }
     }
 

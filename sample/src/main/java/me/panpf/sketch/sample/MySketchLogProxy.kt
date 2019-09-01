@@ -16,7 +16,7 @@ import java.io.PrintWriter
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SampleLogProxy(context: Context) : SLog.Proxy {
+class MySketchLogProxy(context: Context) : SLog.Proxy {
     private val outLog2SDCard: OutLog2SDCard
 
     init {

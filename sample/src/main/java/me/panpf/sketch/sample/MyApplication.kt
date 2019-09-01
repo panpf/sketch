@@ -20,7 +20,7 @@ import android.app.Application
 import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
 
-class SampleApplication : Application() {
+class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

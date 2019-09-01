@@ -1,5 +1,6 @@
 package me.panpf.sketch.sample
 
+import android.app.Application
 import android.content.Context
 import me.panpf.sketch.Configuration
 import me.panpf.sketch.Initializer
@@ -9,7 +10,7 @@ import me.panpf.sketch.sample.util.XpkIconUriModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class SampleSketchInitializer : Initializer {
+class MySketchInitializer : Initializer {
 
     private var context: Context? = null
     private var configuration: Configuration? = null
@@ -39,7 +40,7 @@ class SampleSketchInitializer : Initializer {
         onEvent(AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL))
         onEvent(AppConfigChangedEvent(AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY))
 
-        configuration!!.errorTracker = SampleErrorTracker(context!!)
+        configuration!!.callback = MySketchCallback(context!!.applicationContext as Application)
 
         configuration!!.uriModelManager.add(XpkIconUriModel())
     }
@@ -48,7 +49,7 @@ class SampleSketchInitializer : Initializer {
     fun onEvent(event: AppConfigChangedEvent) {
         when {
             AppConfig.Key.OUT_LOG_2_SDCARD == event.key -> {
-                val proxy = if (AppConfig.getBoolean(context!!, AppConfig.Key.OUT_LOG_2_SDCARD)) SampleLogProxy(context!!) else null
+                val proxy = if (AppConfig.getBoolean(context!!, AppConfig.Key.OUT_LOG_2_SDCARD)) MySketchLogProxy(context!!) else null
                 SLog.setProxy(proxy)
             }
             AppConfig.Key.LOG_LEVEL == event.key -> {

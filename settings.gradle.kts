@@ -1,1 +1,1 @@
-include(":sample", ":sketch", ":sketch-gif", ":sample-video-thumbnail")
+include(":sample", ":sketch", ":sketch-zoom", ":sketch-gif", ":sample-video-thumbnail")

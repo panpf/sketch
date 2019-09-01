@@ -99,10 +99,7 @@ class ImageFragment : BaseFragment() {
     @Suppress("unused")
     @Subscribe
     fun onEvent(event: AppConfigChangedEvent) {
-        if (AppConfig.Key.SUPPORT_ZOOM == event.key) {
-            zoomHelper.onConfigChanged()
-            mappingHelper.onViewCreated()
-        } else if (AppConfig.Key.READ_MODE == event.key) {
+        if (AppConfig.Key.READ_MODE == event.key) {
             zoomHelper.onReadModeConfigChanged()
         }
     }
@@ -125,7 +122,6 @@ class ImageFragment : BaseFragment() {
 
         private fun initOptions() {
             val activity = activity ?: return
-            image_imageFragment_image.page = SampleImageView.Page.DETAIL
 
             val options = image_imageFragment_image.options
 
@@ -215,11 +211,10 @@ class ImageFragment : BaseFragment() {
 
     private inner class ZoomHelper {
         fun onViewCreated() {
-            image_imageFragment_image.isZoomEnabled = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.SUPPORT_ZOOM)
             if (AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE)) {
-                image_imageFragment_image.zoomer?.setZoomScales(FixedThreeLevelScales())
+                image_imageFragment_image.zoomer.setZoomScales(FixedThreeLevelScales())
             } else {
-                image_imageFragment_image.zoomer?.setZoomScales(AdaptiveTwoLevelScales())
+                image_imageFragment_image.zoomer.setZoomScales(AdaptiveTwoLevelScales())
             }
 
             onReadModeConfigChanged()   // 初始化阅读模式
@@ -232,7 +227,7 @@ class ImageFragment : BaseFragment() {
 
         fun onUserVisibleChanged() {
             val activity = activity ?: return
-            image_imageFragment_image.zoomer?.let {
+            image_imageFragment_image.zoomer.let {
                 if (AppConfig.getBoolean(activity, AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE)) {
                     it.blockDisplayer.setPause(!isVisibleToUser)  // 不可见的时候暂停超大图查看器，节省内存
                 } else if (isVisibleToUser && it.blockDisplayer.isPaused) {
@@ -243,9 +238,7 @@ class ImageFragment : BaseFragment() {
 
         fun onReadModeConfigChanged() {
             val activity = activity ?: return
-            image_imageFragment_image.zoomer?.let {
-                it.isReadMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
-            }
+            image_imageFragment_image.zoomer.isReadMode = AppConfig.getBoolean(activity, AppConfig.Key.READ_MODE)
         }
     }
 
@@ -258,40 +251,35 @@ class ImageFragment : BaseFragment() {
                 return
             }
 
-            if (image_imageFragment_image.zoomer != null) {
-                // MappingView 跟随 Matrix 变化刷新显示区域
-                image_imageFragment_image.zoomer?.addOnMatrixChangeListener(zoomMatrixChangedListener)
+            // MappingView 跟随 Matrix 变化刷新显示区域
+            image_imageFragment_image.zoomer.addOnMatrixChangeListener(zoomMatrixChangedListener)
 
-                // MappingView 跟随碎片变化刷新碎片区域
-                image_imageFragment_image.zoomer?.blockDisplayer?.setOnBlockChangedListener { mapping_imageFragment.blockChanged(it) }
+            // MappingView 跟随碎片变化刷新碎片区域
+            image_imageFragment_image.zoomer.blockDisplayer.setOnBlockChangedListener { mapping_imageFragment.blockChanged(it) }
 
-                // 点击 MappingView 定位到指定位置
-                mapping_imageFragment.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
-                    override fun onSingleClick(x: Float, y: Float): Boolean {
-                        val drawable = image_imageFragment_image.drawable ?: return false
+            // 点击 MappingView 定位到指定位置
+            mapping_imageFragment.setOnSingleClickListener(object : MappingView.OnSingleClickListener {
+                override fun onSingleClick(x: Float, y: Float): Boolean {
+                    val drawable = image_imageFragment_image.drawable ?: return false
 
-                        if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
-                            return false
-                        }
-
-                        if (mapping_imageFragment.width == 0 || mapping_imageFragment.height == 0) {
-                            return false
-                        }
-
-                        val widthScale = drawable.intrinsicWidth.toFloat() / mapping_imageFragment.width
-                        val heightScale = drawable.intrinsicHeight.toFloat() / mapping_imageFragment.height
-                        val realX = x * widthScale
-                        val realY = y * heightScale
-
-                        val showLocationAnimation = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.LOCATION_ANIMATE)
-                        location(realX, realY, showLocationAnimation)
-                        return true
+                    if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
+                        return false
                     }
-                })
-            } else {
-                mapping_imageFragment.setOnSingleClickListener(null)
-                mapping_imageFragment.update(Size(0, 0), Rect())
-            }
+
+                    if (mapping_imageFragment.width == 0 || mapping_imageFragment.height == 0) {
+                        return false
+                    }
+
+                    val widthScale = drawable.intrinsicWidth.toFloat() / mapping_imageFragment.width
+                    val heightScale = drawable.intrinsicHeight.toFloat() / mapping_imageFragment.height
+                    val realX = x * widthScale
+                    val realY = y * heightScale
+
+                    val showLocationAnimation = AppConfig.getBoolean(image_imageFragment_image.context, AppConfig.Key.LOCATION_ANIMATE)
+                    location(realX, realY, showLocationAnimation)
+                    return true
+                }
+            })
 
             mapping_imageFragment.options.displayer = FadeInImageDisplayer()
             mapping_imageFragment.options.setMaxSize(600, 600)
@@ -299,7 +287,7 @@ class ImageFragment : BaseFragment() {
         }
 
         fun location(x: Float, y: Float, animate: Boolean): Boolean {
-            image_imageFragment_image.zoomer?.location(x, y, animate)
+            image_imageFragment_image.zoomer.location(x, y, animate)
             return true
         }
 
@@ -356,7 +344,7 @@ class ImageFragment : BaseFragment() {
         fun onViewCreated() {
             // 将单击事件传递给上层 Activity
             val zoomer = image_imageFragment_image.zoomer
-            zoomer?.setOnViewTapListener { view, x, y ->
+            zoomer.setOnViewTapListener { view, x, y ->
                 val parentFragment = parentFragment
                 if (parentFragment != null && parentFragment is ImageZoomer.OnViewTapListener) {
                     (parentFragment as ImageZoomer.OnViewTapListener).onViewTap(view, x, y)
@@ -384,7 +372,7 @@ class ImageFragment : BaseFragment() {
                         DialogInterface.OnClickListener { _, _ -> showZoomMenu() }
                 ))
                 menuItemList.add(MenuItem(
-                        String.format("Toggle ScaleType (%s)", image_imageFragment_image.zoomer?.scaleType
+                        String.format("Toggle ScaleType (%s)", image_imageFragment_image.zoomer.scaleType
                                 ?: image_imageFragment_image.scaleType),
                         DialogInterface.OnClickListener { _, _ -> showScaleTypeMenu() }
                 ))
@@ -430,84 +418,63 @@ class ImageFragment : BaseFragment() {
 
             // 缩放信息
             val zoomer = image_imageFragment_image.zoomer
-            if (zoomer != null) {
-                val zoomInfoBuilder = StringBuilder()
-                val zoomScale = SketchUtils.formatFloat(zoomer.zoomScale, 2)
-                val visibleRect = Rect()
-                zoomer.getVisibleRect(visibleRect)
-                val visibleRectString = visibleRect.toShortString()
-                zoomInfoBuilder.append("Zoom: ").append(zoomScale).append(" / ").append(visibleRectString)
-                menuItemList.add(MenuItem(zoomInfoBuilder.toString(), null))
-                menuItemList.add(MenuItem("canScrollHorizontally: ${zoomer.canScrollHorizontally().toString()}", null))
-                menuItemList.add(MenuItem("canScrollVertically: ${zoomer.canScrollVertically().toString()}", null))
-            } else {
-                menuItemList.add(MenuItem("Zoom (Disabled)", null))
-            }
+            val zoomInfoBuilder = StringBuilder()
+            val zoomScale = SketchUtils.formatFloat(zoomer.zoomScale, 2)
+            val visibleRect = Rect()
+            zoomer.getVisibleRect(visibleRect)
+            val visibleRectString = visibleRect.toShortString()
+            zoomInfoBuilder.append("Zoom: ").append(zoomScale).append(" / ").append(visibleRectString)
+            menuItemList.add(MenuItem(zoomInfoBuilder.toString(), null))
+            menuItemList.add(MenuItem("canScrollHorizontally: ${zoomer.canScrollHorizontally().toString()}", null))
+            menuItemList.add(MenuItem("canScrollVertically: ${zoomer.canScrollVertically().toString()}", null))
 
             // 分块显示信息
-            if (zoomer != null) {
-                val blockDisplayer = zoomer.blockDisplayer
-                val blockInfoBuilder = StringBuilder()
-                when {
-                    blockDisplayer.isReady -> {
-                        blockInfoBuilder.append("Blocks：")
-                                .append(blockDisplayer.blockBaseNumber)
-                                .append("/")
-                                .append(blockDisplayer.blockSize)
-                                .append("/")
-                                .append(Formatter.formatFileSize(context, blockDisplayer.allocationByteCount))
+            val blockDisplayer = zoomer.blockDisplayer
+            val blockInfoBuilder = StringBuilder()
+            when {
+                blockDisplayer.isReady -> {
+                    blockInfoBuilder.append("Blocks：")
+                            .append(blockDisplayer.blockBaseNumber)
+                            .append("/")
+                            .append(blockDisplayer.blockSize)
+                            .append("/")
+                            .append(Formatter.formatFileSize(context, blockDisplayer.allocationByteCount))
 
-                        blockInfoBuilder.append("\n")
-                        blockInfoBuilder.append("Blocks Area：").append(blockDisplayer.decodeRect.toShortString())
+                    blockInfoBuilder.append("\n")
+                    blockInfoBuilder.append("Blocks Area：").append(blockDisplayer.decodeRect.toShortString())
 
-                        blockInfoBuilder.append("\n")
-                        blockInfoBuilder.append("Blocks Area (SRC)：").append(blockDisplayer.decodeSrcRect.toShortString())
-                    }
-                    blockDisplayer.isInitializing -> {
-                        blockInfoBuilder.append("\n")
-                        blockInfoBuilder.append("Blocks initializing...")
-                    }
-                    else -> blockInfoBuilder.append("Blocks (No need)")
+                    blockInfoBuilder.append("\n")
+                    blockInfoBuilder.append("Blocks Area (SRC)：").append(blockDisplayer.decodeSrcRect.toShortString())
                 }
-                menuItemList.add(MenuItem(blockInfoBuilder.toString(), null))
-            } else {
-                menuItemList.add(MenuItem("Blocks (Disabled)", null))
+                blockDisplayer.isInitializing -> {
+                    blockInfoBuilder.append("\n")
+                    blockInfoBuilder.append("Blocks initializing...")
+                }
+                else -> blockInfoBuilder.append("Blocks (No need)")
             }
+            menuItemList.add(MenuItem(blockInfoBuilder.toString(), null))
 
             // 分块边界开关
-            if (zoomer != null) {
-                val blockDisplayer = zoomer.blockDisplayer
-                if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
-                    menuItemList.add(MenuItem(if (blockDisplayer.isShowBlockBounds) "Hide block bounds" else "Show block bounds",
-                            DialogInterface.OnClickListener { _, _ -> image_imageFragment_image.zoomer?.blockDisplayer?.let { it.isShowBlockBounds = !it.isShowBlockBounds } }))
-                } else {
-                    menuItemList.add(MenuItem("Block bounds (No need)", null))
-                }
+            if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
+                menuItemList.add(MenuItem(if (blockDisplayer.isShowBlockBounds) "Hide block bounds" else "Show block bounds",
+                        DialogInterface.OnClickListener { _, _ -> image_imageFragment_image.zoomer.blockDisplayer.let { it.isShowBlockBounds = !it.isShowBlockBounds } }))
             } else {
-                menuItemList.add(MenuItem("Block bounds (Disabled)", null))
+                menuItemList.add(MenuItem("Block bounds (No need)", null))
             }
 
             // 阅读模式开关
-            if (zoomer != null) {
-                menuItemList.add(MenuItem(if (zoomer.isReadMode) "Close read mode" else "Open read mode",
-                        DialogInterface.OnClickListener { _, _ -> image_imageFragment_image.zoomer?.let { it.isReadMode = !it.isReadMode } }))
-            } else {
-                menuItemList.add(MenuItem("Read mode (Zoom disabled)", null))
-            }
+            menuItemList.add(MenuItem(if (zoomer.isReadMode) "Close read mode" else "Open read mode",
+                    DialogInterface.OnClickListener { _, _ -> image_imageFragment_image.zoomer.let { it.isReadMode = !it.isReadMode } }))
 
             // 旋转菜单
-            if (zoomer != null) {
-                menuItemList.add(MenuItem(String.format("Clockwise rotation 90°（%d）", zoomer.rotateDegrees),
-                        DialogInterface.OnClickListener { _, _ ->
-                            image_imageFragment_image.zoomer?.let {
-                                if (!it.rotateBy(90)) {
-                                    Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
-                                }
+            menuItemList.add(MenuItem(String.format("Clockwise rotation 90°（%d）", zoomer.rotateDegrees),
+                    DialogInterface.OnClickListener { _, _ ->
+                        image_imageFragment_image.zoomer.let {
+                            if (!it.rotateBy(90)) {
+                                Toast.makeText(context, "The rotation angle must be a multiple of 90", Toast.LENGTH_LONG).show()
                             }
-                        }))
-            } else {
-                menuItemList.add(MenuItem("Clockwise rotation 90° (Zoom disabled)", null))
-            }
+                        }
+                    }))
 
             val items = arrayOfNulls<String>(menuItemList.size)
             var w = 0

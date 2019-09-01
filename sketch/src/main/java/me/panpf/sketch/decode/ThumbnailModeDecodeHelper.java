@@ -16,16 +16,19 @@
 
 package me.panpf.sketch.decode;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
-
-import java.util.Locale;
+import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import me.panpf.sketch.ErrorTracker;
+
+import java.util.Locale;
+
 import me.panpf.sketch.SLog;
+import me.panpf.sketch.SketchCallback;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.datasource.DataSource;
@@ -103,26 +106,46 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         try {
             bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, mapping.srcRect, decodeOptions);
         } catch (Throwable tr) {
-            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
+            Context application = request.getConfiguration().getContext();
+            SketchCallback callback = request.getConfiguration().getCallback();
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             if (ImageDecodeUtils.isInBitmapDecodeError(tr, decodeOptions, true)) {
-                ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool, request.getUri(),
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(callback, bitmapPool, request.getUri(),
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, tr, decodeOptions, true);
 
                 try {
                     bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, mapping.srcRect, decodeOptions);
                 } catch (Throwable throwable1) {
-                    errorTracker.onDecodeNormalImageError(throwable1, request, boundOptions.outWidth,
-                            boundOptions.outHeight, boundOptions.outMimeType);
+                    SLog.e(NAME, "onDecodeNormalImageError. " +
+                                    "outWidth=%d, outHeight=%d, outMimeType=%s. " +
+                                    "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
+                            boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
+                            Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
+                            Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
+                            Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()),
+                            request.getKey());
+                    callback.onError(new DecodeImageException(throwable1, request, boundOptions.outWidth,
+                            boundOptions.outHeight, boundOptions.outMimeType));
                     throw new DecodeException("InBitmap retry", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
                 }
             } else if (ImageDecodeUtils.isSrcRectDecodeError(tr, boundOptions.outWidth, boundOptions.outHeight, mapping.srcRect)) {
-                errorTracker.onDecodeRegionError(request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
-                        boundOptions.outMimeType, tr, mapping.srcRect, decodeOptions.inSampleSize);
+                SLog.e(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
+                        request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
+                        boundOptions.outMimeType, mapping.srcRect.toString(), decodeOptions.inSampleSize);
+                callback.onError(new DecodeRegionException(tr, request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
+                        boundOptions.outMimeType, mapping.srcRect, decodeOptions.inSampleSize));
                 throw new DecodeException("Because srcRect", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
             } else {
-                errorTracker.onDecodeNormalImageError(tr, request, boundOptions.outWidth,
-                        boundOptions.outHeight, boundOptions.outMimeType);
+                SLog.e(NAME, "onDecodeNormalImageError. " +
+                                "outWidth=%d, outHeight=%d, outMimeType=%s. " +
+                                "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
+                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
+                        Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
+                        Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
+                        Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()),
+                        request.getKey());
+                callback.onError(new DecodeImageException(tr, request, boundOptions.outWidth,
+                        boundOptions.outHeight, boundOptions.outMimeType));
                 throw new DecodeException(tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
             }
         }

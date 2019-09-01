@@ -23,7 +23,6 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;
@@ -254,8 +253,9 @@ public class DisplayRequest extends LoadRequest {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap().isRecycled()) {
                 // 这里应该不会再出问题了
-                ErrorTracker errorTracker = getConfiguration().getErrorTracker();
-                errorTracker.onBitmapRecycledOnDisplay(this, (SketchDrawable) drawable);
+                SLog.e(getLogName(), "Bitmap recycled on display. imageUri=%s, drawable=%s",
+                        getUri(), ((SketchDrawable) drawable).getInfo());
+                getConfiguration().getCallback().onError(new BitmapRecycledOnDisplayException(this, (SketchDrawable) drawable));
 
                 // 图片不可用
                 if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {

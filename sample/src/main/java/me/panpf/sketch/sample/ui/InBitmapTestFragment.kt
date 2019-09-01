@@ -192,10 +192,10 @@ class InBitmapTestFragment : BaseFragment() {
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
 
-                val errorTracker = Sketch.with(context).configuration.errorTracker
+                val callback = Sketch.with(context).configuration.callback
                 val bitmapPool = Sketch.with(context).configuration.bitmapPool
                 if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, false)) {
-                    ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool,
+                    ImageDecodeUtils.recycleInBitmapOnDecodeError(callback, bitmapPool,
                             imageUri, options.outWidth, options.outHeight, options.outMimeType, throwable, options, false)
                 }
             }

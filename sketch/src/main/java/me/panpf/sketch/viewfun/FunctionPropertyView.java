@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 
 import me.panpf.sketch.request.ImageFrom;
 import me.panpf.sketch.shaper.ImageShaper;
-import me.panpf.sketch.zoom.ImageZoomer;
 
 /**
  * 这个类负责提供各种 function 开关和属性设置
@@ -353,43 +352,5 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
     @SuppressLint("ResourceType")
     public void setShowGifFlagEnabled(@DrawableRes int gifFlagDrawableResId) {
         setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
-    }
-
-    /**
-     * 是否开启了手势缩放功能
-     */
-    @Override
-    public boolean isZoomEnabled() {
-        return getFunctions().zoomFunction != null;
-    }
-
-    /**
-     * 开启手势缩放功能
-     */
-    public void setZoomEnabled(boolean enabled) {
-        if (enabled == isZoomEnabled()) {
-            return;
-        }
-
-        if (enabled) {
-            ImageZoomFunction zoomFunction = new ImageZoomFunction(this);
-            zoomFunction.onDrawableChanged("setZoomEnabled", null, getDrawable());
-
-            getFunctions().zoomFunction = zoomFunction;
-        } else {
-            getFunctions().zoomFunction.recycle("setZoomEnabled");
-
-            getFunctions().zoomFunction = null;
-        }
-    }
-
-    /**
-     * 获取缩放功能控制对象
-     *
-     * @return null：没有开启缩放功能，请先执行 {@link #setZoomEnabled(boolean)} 开启
-     */
-    @Nullable
-    public ImageZoomer getZoomer() {
-        return getFunctions().zoomFunction != null ? getFunctions().zoomFunction.getZoomer() : null;
     }
 }

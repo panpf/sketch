@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package me.panpf.sketch.viewfun;
+package me.panpf.sketch.zoom;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import me.panpf.sketch.zoom.ImageZoomer;
+import me.panpf.sketch.viewfun.ViewFunction;
 
-/**
- * {@link ImageView} 缩放功能
- */
-@SuppressWarnings("WeakerAccess")
 public class ImageZoomFunction extends ViewFunction {
 
     @NonNull
     private ImageZoomer zoomer;
 
-    public ImageZoomFunction(@NonNull FunctionPropertyView view) {
-        this.zoomer = new ImageZoomer(view);
+    ImageZoomFunction(@NonNull ImageZoomer zoomer) {
+        this.zoomer = zoomer;
     }
 
     @Override
@@ -68,25 +63,7 @@ public class ImageZoomFunction extends ViewFunction {
 
     @Override
     public boolean onDetachedFromWindow() {
-        recycle("onDetachedFromWindow");
+        zoomer.recycle("onDetachedFromWindow");
         return false;
-    }
-
-    void recycle(@NonNull String why) {
-        zoomer.recycle(why);
-    }
-
-    @NonNull
-    public ImageView.ScaleType getScaleType() {
-        return zoomer.getScaleType();
-    }
-
-    public void setScaleType(@NonNull ImageView.ScaleType scaleType) {
-        zoomer.setScaleType(scaleType);
-    }
-
-    @NonNull
-    public ImageZoomer getZoomer() {
-        return zoomer;
     }
 }

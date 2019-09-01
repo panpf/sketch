@@ -23,6 +23,12 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import me.panpf.sketch.decode.ImageAttrs;
 import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.ErrorCause;
@@ -32,9 +38,6 @@ import me.panpf.sketch.uri.UriModel;
 class ViewFunctions {
     @NonNull
     RequestFunction requestFunction;
-    @NonNull
-    RecyclerCompatFunction recyclerCompatFunction;
-
     @Nullable
     ShowImageFromFunction showImageFromFunction;
     @Nullable
@@ -46,19 +49,38 @@ class ViewFunctions {
     @Nullable
     ClickRetryFunction clickRetryFunction;
     @Nullable
-    ImageZoomFunction zoomFunction;
-    @Nullable
     ClickPlayGifFunction clickPlayGifFunction;
+    @NonNull
+    private RecyclerCompatFunction recyclerCompatFunction;
+    private List<ViewFunctionItem> viewFunctions = new LinkedList<>();
 
     ViewFunctions(FunctionCallbackView view) {
         requestFunction = new RequestFunction(view);
         recyclerCompatFunction = new RecyclerCompatFunction(view);
     }
 
-    void onAttachedToWindow() {
-        if (requestFunction != null) {
-            requestFunction.onAttachedToWindow();
+    public void addViewFunction(@NonNull ViewFunction viewFunction, int priority) {
+        viewFunctions.add(new ViewFunctionItem(priority, viewFunction));
+        Collections.sort(viewFunctions, new Comparator<ViewFunctionItem>() {
+            @Override
+            public int compare(ViewFunctionItem o1, ViewFunctionItem o2) {
+                return -1 * (o1.priority - o2.priority);
+            }
+        });
+    }
+
+    public void removeViewFunction(@NonNull ViewFunction viewFunction) {
+        Iterator<ViewFunctionItem> iterator = viewFunctions.iterator();
+        while (iterator.hasNext()) {
+            ViewFunctionItem functionItem = iterator.next();
+            if (functionItem.function.equals(viewFunction)) {
+                iterator.remove();
+            }
         }
+    }
+
+    void onAttachedToWindow() {
+        requestFunction.onAttachedToWindow();
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onAttachedToWindow();
         }
@@ -77,11 +99,11 @@ class ViewFunctions {
         if (clickRetryFunction != null) {
             clickRetryFunction.onAttachedToWindow();
         }
-        if (zoomFunction != null) {
-            zoomFunction.onAttachedToWindow();
-        }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onAttachedToWindow();
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            viewFunctionItem.function.onAttachedToWindow();
         }
     }
 
@@ -107,11 +129,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onLayout(changed, left, top, right, bottom);
         }
-        if (zoomFunction != null) {
-            zoomFunction.onLayout(changed, left, top, right, bottom);
-        }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onLayout(changed, left, top, right, bottom);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            viewFunctionItem.function.onLayout(changed, left, top, right, bottom);
         }
     }
 
@@ -137,18 +159,15 @@ class ViewFunctions {
         if (clickRetryFunction != null) {
             clickRetryFunction.onSizeChanged(w, h, oldw, oldh);
         }
-        if (zoomFunction != null) {
-            zoomFunction.onSizeChanged(w, h, oldw, oldh);
-        }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onSizeChanged(w, h, oldw, oldh);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            viewFunctionItem.function.onSizeChanged(w, h, oldw, oldh);
         }
     }
 
     void onDraw(Canvas canvas) {
-        if (zoomFunction != null) {
-            zoomFunction.onDraw(canvas);
-        }
         if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);
         }
@@ -172,6 +191,9 @@ class ViewFunctions {
         }
         if (clickPlayGifFunction != null) {
             clickPlayGifFunction.onDraw(canvas);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            viewFunctionItem.function.onDraw(canvas);
         }
     }
 
@@ -203,9 +225,10 @@ class ViewFunctions {
         if (clickPlayGifFunction != null && clickPlayGifFunction.onTouchEvent(event)) {
             return true;
         }
-        //noinspection RedundantIfStatement
-        if (zoomFunction != null && zoomFunction.onTouchEvent(event)) {
-            return true;
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            if (viewFunctionItem.function.onTouchEvent(event)) {
+                return true;
+            }
         }
         return false;
     }
@@ -238,11 +261,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onDrawableChanged(callPosition, oldDrawable, newDrawable);
         }
 
         return needInvokeInvalidate;
@@ -276,11 +299,11 @@ class ViewFunctions {
         if (clickRetryFunction != null) {
             needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
         }
-        if (zoomFunction != null) {
-            needSetImageNull |= zoomFunction.onDetachedFromWindow();
-        }
         if (clickPlayGifFunction != null) {
             needSetImageNull |= clickPlayGifFunction.onDetachedFromWindow();
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needSetImageNull |= viewFunctionItem.function.onDetachedFromWindow();
         }
 
         return needSetImageNull;
@@ -314,11 +337,11 @@ class ViewFunctions {
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uriModel);
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onReadyDisplay(uriModel);
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uriModel);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onReadyDisplay(uriModel);
         }
 
         return needInvokeInvalidate;
@@ -352,11 +375,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplayStarted();
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayStarted();
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onDisplayStarted();
         }
 
         return needInvokeInvalidate;
@@ -390,11 +413,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onDisplayCompleted(drawable, imageFrom, imageAttrs);
         }
 
         return needInvokeInvalidate;
@@ -428,11 +451,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDisplayError(errorCause);
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplayError(errorCause);
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayError(errorCause);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onDisplayError(errorCause);
         }
 
         return needInvokeInvalidate;
@@ -466,11 +489,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDisplayCanceled(cancelCause);
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplayCanceled(cancelCause);
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onDisplayCanceled(cancelCause);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onDisplayCanceled(cancelCause);
         }
 
         return needInvokeInvalidate;
@@ -504,11 +527,11 @@ class ViewFunctions {
         if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
         }
-        if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
         if (clickPlayGifFunction != null) {
             needInvokeInvalidate |= clickPlayGifFunction.onUpdateDownloadProgress(totalLength, completedLength);
+        }
+        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+            needInvokeInvalidate |= viewFunctionItem.function.onUpdateDownloadProgress(totalLength, completedLength);
         }
 
         return needInvokeInvalidate;

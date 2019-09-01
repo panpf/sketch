@@ -16,6 +16,7 @@
 
 package me.panpf.sketch;
 
+import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -102,20 +103,20 @@ public final class Configuration {
     @NonNull
     private RequestFactory requestFactory;
     @NonNull
-    private ErrorTracker errorTracker;
+    private SketchCallback callback;
 
     Configuration(@NonNull Context context) {
-        context = context.getApplicationContext();
+        Application application = (Application) context.getApplicationContext();
         this.context = context;
 
         this.uriModelManager = new UriModelManager();
         this.optionsFilterManager = new OptionsFilterManager();
 
         // 由于默认的缓存文件名称从 URLEncoder 加密变成了 MD5 所以这里要升级一下版本号，好清除旧的缓存
-        this.diskCache = new LruDiskCache(context, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
-        MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
-        this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
-        this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
+        this.diskCache = new LruDiskCache(application, this, 2, DiskCache.DISK_CACHE_MAX_SIZE);
+        MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(application);
+        this.bitmapPool = new LruBitmapPool(application, memorySizeCalculator.getBitmapPoolSize());
+        this.memoryCache = new LruMemoryCache(application, memorySizeCalculator.getMemoryCacheSize());
 
         this.decoder = new ImageDecoder();
         this.executor = new RequestExecutor();
@@ -131,9 +132,9 @@ public final class Configuration {
 
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
-        this.errorTracker = new ErrorTracker(context);
+        this.callback = new DefaultSketchCallback();
 
-        context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(context));
+        application.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(application));
     }
 
     /**
@@ -593,29 +594,16 @@ public final class Configuration {
         return this;
     }
 
-    /**
-     * 获取错误跟踪器
-     *
-     * @return {@link ErrorTracker}. 错误跟踪器
-     */
     @NonNull
-    public ErrorTracker getErrorTracker() {
-        return errorTracker;
+    public SketchCallback getCallback() {
+        return callback;
     }
 
-    /**
-     * 设置错误跟踪器
-     *
-     * @param errorTracker {@link ErrorTracker}. 错误跟踪器
-     * @return {@link Configuration}. 为了支持链式调用
-     */
     @NonNull
-    public Configuration setErrorTracker(@NonNull ErrorTracker errorTracker) {
+    public Configuration setCallback(@NonNull SketchCallback callback) {
         //noinspection ConstantConditions
-        if (errorTracker != null) {
-            this.errorTracker = errorTracker;
-            SLog.w(NAME, "errorTracker=%s", errorTracker.toString());
-        }
+        this.callback = callback != null ? callback : new DefaultSketchCallback();
+        SLog.w(NAME, "callback=%s", callback.toString());
         return this;
     }
 
@@ -757,7 +745,7 @@ public final class Configuration {
                 "\n" + "executor：" + executor.toString() +
                 "\n" + "helperFactory：" + helperFactory.toString() +
                 "\n" + "requestFactory：" + requestFactory.toString() +
-                "\n" + "errorTracker：" + errorTracker.toString() +
+                "\n" + "callback：" + callback.toString() +
 
                 "\n" + "pauseDownload：" + optionsFilterManager.isPauseDownloadEnabled() +
                 "\n" + "pauseLoad：" + optionsFilterManager.isPauseLoadEnabled() +
@@ -787,6 +775,20 @@ public final class Configuration {
         @Override
         public void onLowMemory() {
             Sketch.with(context).onLowMemory();
+        }
+    }
+
+    private static class DefaultSketchCallback implements SketchCallback {
+
+        @Override
+        public void onError(@NonNull SketchException e) {
+
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "DefaultSketchCallback";
         }
     }
 }

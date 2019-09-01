@@ -30,11 +30,12 @@ import androidx.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
 import me.panpf.sketch.Configuration;
-import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
+import me.panpf.sketch.SketchCallback;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
+import me.panpf.sketch.decode.DecodeRegionException;
 import me.panpf.sketch.decode.ImageDecodeUtils;
 import me.panpf.sketch.decode.ImageOrientationCorrector;
 import me.panpf.sketch.decode.ImageType;
@@ -54,7 +55,7 @@ public class DecodeHandler extends Handler {
     @NonNull
     private BitmapPool bitmapPool;
     @NonNull
-    private ErrorTracker errorTracker;
+    private SketchCallback callback;
     @NonNull
     private ImageOrientationCorrector orientationCorrector;
 
@@ -64,7 +65,7 @@ public class DecodeHandler extends Handler {
 
         Configuration configuration = Sketch.with(executor.callback.getContext()).getConfiguration();
         this.bitmapPool = configuration.getBitmapPool();
-        this.errorTracker = configuration.getErrorTracker();
+        this.callback = configuration.getCallback();
         this.orientationCorrector = configuration.getOrientationCorrector();
     }
 
@@ -141,7 +142,7 @@ public class DecodeHandler extends Handler {
             if (ImageDecodeUtils.isInBitmapDecodeError(throwable, options, true)) {
                 disableInBitmap = true;
 
-                ImageDecodeUtils.recycleInBitmapOnDecodeError(errorTracker, bitmapPool, regionDecoder.getImageUri(),
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(callback, bitmapPool, regionDecoder.getImageUri(),
                         regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, regionDecoder.getImageType().getMimeType(), throwable, options, true);
 
                 try {
@@ -150,8 +151,11 @@ public class DecodeHandler extends Handler {
                     throwable1.printStackTrace();
                 }
             } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
-                errorTracker.onDecodeRegionError(regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
-                        regionDecoder.getImageType().getMimeType(), throwable, srcRect, options.inSampleSize);
+                SLog.e(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
+                        regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
+                        regionDecoder.getImageType().getMimeType(), srcRect.toString(), options.inSampleSize);
+                callback.onError(new DecodeRegionException(throwable, regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
+                        regionDecoder.getImageType().getMimeType(), srcRect, options.inSampleSize));
             }
         }
 

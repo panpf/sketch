@@ -477,7 +477,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
 
         // 旋转定位点
         PointF pointF = new PointF(x, y);
-        SketchUtils.rotatePoint(pointF, imageZoomer.getRotateDegrees(), drawableSize);
+        Size.rotatePoint(pointF, imageZoomer.getRotateDegrees(), drawableSize);
         x = pointF.x;
         y = pointF.y;
 
@@ -652,7 +652,7 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         rect.set(Math.round(left), Math.round(top), Math.round(right), Math.round(bottom));
 
         // 将可见区域转回原始角度
-        SketchUtils.reverseRotateRect(rect, imageZoomer.getRotateDegrees(), drawableSize);
+        Size.reverseRotateRect(rect, imageZoomer.getRotateDegrees(), drawableSize);
     }
 
     /**

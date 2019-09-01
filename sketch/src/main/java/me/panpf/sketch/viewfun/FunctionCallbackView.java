@@ -89,6 +89,14 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         return functions;
     }
 
+    public void addViewFunction(@NonNull ViewFunction viewFunction, int priority) {
+        getFunctions().addViewFunction(viewFunction, priority);
+    }
+
+    public void removeViewFunction(@NonNull ViewFunction viewFunction) {
+        getFunctions().removeViewFunction(viewFunction);
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -125,16 +133,6 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
         super.onDetachedFromWindow();
         if (getFunctions().onDetachedFromWindow()) {
             super.setImageDrawable(null);
-        }
-    }
-
-    @Override
-    public void setScaleType(ScaleType scaleType) {
-        ImageZoomFunction zoomFunction = getFunctions().zoomFunction;
-        if (zoomFunction != null && zoomFunction.getZoomer().isWorking() && scaleType != ScaleType.MATRIX) {
-            zoomFunction.setScaleType(scaleType);
-        } else {
-            super.setScaleType(scaleType);
         }
     }
 
@@ -261,6 +259,6 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
 
     @Override
     public boolean isUseSmallerThumbnails() {
-        return isZoomEnabled();
+        return false;
     }
 }

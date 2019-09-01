@@ -21,17 +21,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.format.Formatter;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import me.panpf.sketch.Configuration;
-import me.panpf.sketch.ErrorTracker;
+import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.cache.MemoryCache;
 import me.panpf.sketch.decode.ImageAttrs;
+import me.panpf.sketch.decode.ProcessImageException;
 import me.panpf.sketch.drawable.SketchBitmapDrawable;
 import me.panpf.sketch.drawable.SketchRefBitmap;
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable;
@@ -133,8 +136,14 @@ public class MakerStateImage implements StateImage {
             newBitmap = processor.process(sketch, bitmap, resize, tempLowQualityImage);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
-            ErrorTracker errorTracker = sketch.getConfiguration().getErrorTracker();
-            errorTracker.onProcessImageError(e, DrawableUriModel.makeUri(resId), processor);
+            Context application = sketch.getConfiguration().getContext();
+            SLog.e("MakerStateImage", "onProcessImageError. imageUri: %s. processor: %s. " +
+                            "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                    DrawableUriModel.makeUri(resId), processor.toString(),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()));
+            sketch.getConfiguration().getCallback().onError(new ProcessImageException(e, DrawableUriModel.makeUri(resId), processor));
             if (allowRecycle) {
                 BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             }

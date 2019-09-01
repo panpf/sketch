@@ -1,5 +1,5 @@
 import com.novoda.gradle.release.PublishExtension
-import java.util.Properties
+import java.util.*
 
 plugins {
     id("com.android.library")
@@ -28,13 +28,7 @@ android {
 }
 
 dependencies {
-    compileOnly(project(":sketch-gif"))
-    api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
-
-    testImplementation("junit:junit:${property("JUNIT_VERSION")}")
-    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
-    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
-    androidTestImplementation("androidx.test.espresso:espresso-core:${property("ANDROIDX_TEST_ESPRESSO")}")
+    api(project(":sketch"))
 }
 
 Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }?.let { localProperties ->
@@ -42,9 +36,9 @@ Properties().apply { project.file("local.properties").takeIf { it.exists() }?.in
 
     configure<PublishExtension> {
         groupId = "me.panpf"
-        artifactId = "sketch"
+        artifactId = "sketch-zoom"
         publishVersion = property("VERSION_NAME").toString()
-        desc = "Android, Image, Load, GIF"
+        desc = "Android, Image, Zoom"
         website = "https://github.com/panpf/sketch"
         userOrg = localProperties.getProperty("bintray.userOrg")
         bintrayUser = localProperties.getProperty("bintray.user")

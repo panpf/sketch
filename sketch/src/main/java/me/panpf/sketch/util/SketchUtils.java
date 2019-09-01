@@ -85,8 +85,6 @@ import me.panpf.sketch.drawable.SketchDrawable;
 import me.panpf.sketch.drawable.SketchLoadingDrawable;
 import me.panpf.sketch.request.DisplayRequest;
 import me.panpf.sketch.uri.UriModel;
-import me.panpf.sketch.zoom.Size;
-import me.panpf.sketch.zoom.block.Block;
 
 @SuppressWarnings("WeakerAccess")
 public class SketchUtils {
@@ -895,83 +893,6 @@ public class SketchUtils {
     }
 
     /**
-     * 将一个旋转了一定度数的矩形转回来（只能是 90 度的倍数）
-     */
-    public static void reverseRotateRect(@NonNull Rect rect, int rotateDegrees, @NonNull Size drawableSize) {
-        if (rotateDegrees % 90 != 0) {
-            return;
-        }
-
-        if (rotateDegrees == 90) {
-            int cache = rect.bottom;
-            //noinspection SuspiciousNameCombination
-            rect.bottom = rect.left;
-            //noinspection SuspiciousNameCombination
-            rect.left = rect.top;
-            //noinspection SuspiciousNameCombination
-            rect.top = rect.right;
-            rect.right = cache;
-
-            rect.top = drawableSize.getHeight() - rect.top;
-            rect.bottom = drawableSize.getHeight() - rect.bottom;
-        } else if (rotateDegrees == 180) {
-            int cache = rect.right;
-            rect.right = rect.left;
-            rect.left = cache;
-
-            cache = rect.bottom;
-            rect.bottom = rect.top;
-            rect.top = cache;
-
-            rect.top = drawableSize.getHeight() - rect.top;
-            rect.bottom = drawableSize.getHeight() - rect.bottom;
-
-            rect.left = drawableSize.getWidth() - rect.left;
-            rect.right = drawableSize.getWidth() - rect.right;
-        } else if (rotateDegrees == 270) {
-            int cache = rect.bottom;
-            //noinspection SuspiciousNameCombination
-            rect.bottom = rect.right;
-            //noinspection SuspiciousNameCombination
-            rect.right = rect.top;
-            //noinspection SuspiciousNameCombination
-            rect.top = rect.left;
-            rect.left = cache;
-
-            rect.left = drawableSize.getWidth() - rect.left;
-            rect.right = drawableSize.getWidth() - rect.right;
-        }
-    }
-
-    /**
-     * 旋转一个点（只能是 90 的倍数）
-     */
-    public static void rotatePoint(@NonNull PointF point, int rotateDegrees, @NonNull Size drawableSize) {
-        if (rotateDegrees % 90 != 0) {
-            return;
-        }
-
-        if (rotateDegrees == 90) {
-            float newX = drawableSize.getHeight() - point.y;
-            //noinspection SuspiciousNameCombination
-            float newY = point.x;
-            point.x = newX;
-            point.y = newY;
-        } else if (rotateDegrees == 180) {
-            float newX = drawableSize.getWidth() - point.x;
-            float newY = drawableSize.getHeight() - point.y;
-            point.x = newX;
-            point.y = newY;
-        } else if (rotateDegrees == 270) {
-            //noinspection SuspiciousNameCombination
-            float newX = point.y;
-            float newY = drawableSize.getWidth() - point.x;
-            point.x = newX;
-            point.y = newY;
-        }
-    }
-
-    /**
      * 生成请求 key
      *
      * @param imageUri   图片地址
@@ -997,32 +918,6 @@ public class SketchUtils {
         builder.append("options");
         builder.append("=");
         builder.append(optionsKey);
-        return builder.toString();
-    }
-
-    /**
-     * 将一个碎片列表转换成字符串
-     */
-    @Nullable
-    public static String blockListToString(@Nullable List<Block> blockList) {
-        if (blockList == null) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (Block block : blockList) {
-            if (builder.length() > 1) {
-                builder.append(",");
-            }
-            builder.append("\"");
-            builder.append(block.drawRect.left).append(",");
-            builder.append(block.drawRect.top).append(",");
-            builder.append(block.drawRect.right).append(",");
-            builder.append(block.drawRect.bottom);
-            builder.append("\"");
-        }
-        builder.append("]");
         return builder.toString();
     }
 

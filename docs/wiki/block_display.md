@@ -106,5 +106,5 @@ sketchImageView.getZoomer().getBlockDisplayer().setOnBlockChangedListener(BlockD
 [WorldMap]: https://github.com/johnnylambada/WorldMap
 [Subsampling Scale Image View]: https://github.com/davemorrissey/subsampling-scale-image-view
 [LargeImage]: https://github.com/LuckyJayce/LargeImage
-[BlockDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/zoom/BlockDisplayer.java
+[BlockDisplayer]: ../../sketch-zoom/src/main/java/me/panpf/sketch/zoom/BlockDisplayer.java
 [zoom]: zoom.md

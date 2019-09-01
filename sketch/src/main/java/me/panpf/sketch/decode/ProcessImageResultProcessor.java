@@ -16,11 +16,13 @@
 
 package me.panpf.sketch.decode;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
 
-import me.panpf.sketch.ErrorTracker;
+import me.panpf.sketch.SLog;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.process.ImageProcessor;
 import me.panpf.sketch.request.BaseRequest;
@@ -58,8 +60,14 @@ public class ProcessImageResultProcessor implements ResultProcessor {
             newBitmap = imageProcessor.process(request.getSketch(), bitmap, loadOptions.getResize(), loadOptions.isLowQualityImage());
         } catch (Throwable e) {
             e.printStackTrace();
-            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
-            errorTracker.onProcessImageError(e, request.getKey(), imageProcessor);
+            Context application = request.getConfiguration().getContext();
+            SLog.e("ProcessImageResultProcessor", "onProcessImageError. imageUri: %s. processor: %s. " +
+                            "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                    request.getKey(), imageProcessor.toString(),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()));
+            request.getConfiguration().getCallback().onError(new ProcessImageException(e, request.getKey(), imageProcessor));
         }
 
         if (newBitmap != null && !newBitmap.isRecycled()) {

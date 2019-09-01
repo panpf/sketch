@@ -17,13 +17,14 @@
 package me.panpf.sketch.decode;
 
 import android.graphics.BitmapFactory;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.datasource.DataSource;
@@ -64,11 +65,25 @@ public class GifDecodeHelper extends DecodeHelper {
         } catch (NotFoundGifLibraryException e) {
             throw new DecodeException(e, ErrorCause.DECODE_NOT_FOUND_GIF_LIBRARY);
         } catch (UnsatisfiedLinkError | ExceptionInInitializerError e) {
-            request.getConfiguration().getErrorTracker().onNotFoundGifSoError(e);
+            SLog.e("GifDecodeHelper", "Didn't find “libpl_droidsonroids_gif.so” file, unable decode the GIF images. " +
+                    "Please go to “https://github.com/panpf/sketch” find how to import the sketch-gif library");
+            String abis;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                abis = Arrays.toString(Build.SUPPORTED_ABIS);
+            } else {
+                abis = Arrays.toString(new String[]{Build.CPU_ABI, Build.CPU_ABI2});
+            }
+            SLog.e("GifDecodeHelper", "abis=%s", abis);
+            if (e instanceof UnsatisfiedLinkError) {
+                request.getConfiguration().getCallback().onError(new NotFoundGifSoException((UnsatisfiedLinkError) e));
+            } else {
+                request.getConfiguration().getCallback().onError(new NotFoundGifSoException((ExceptionInInitializerError) e));
+            }
             throw new DecodeException(e, ErrorCause.DECODE_NO_MATCHING_GIF_SO);
         } catch (Throwable e) {
-            ErrorTracker errorTracker = request.getConfiguration().getErrorTracker();
-            errorTracker.onDecodeGifImageError(e, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+            SLog.e("GifDecodeHelper", "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
+                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, request.getKey());
+            request.getConfiguration().getCallback().onError(new DecodeGifException(e, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType));
             throw new DecodeException(e, ErrorCause.DECODE_UNABLE_CREATE_GIF_DRAWABLE);
         }
     }

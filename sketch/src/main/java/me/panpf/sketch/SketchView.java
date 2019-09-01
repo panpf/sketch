@@ -148,11 +148,6 @@ public interface SketchView {
     void setDisplayCache(@NonNull DisplayCache displayCache);
 
     /**
-     * 是否开启了手势缩放功能
-     */
-    boolean isZoomEnabled();
-
-    /**
      * 重新显示
      *
      * @param listener 在重新显示之前你可以通过这个 listener，修改缓存的 options

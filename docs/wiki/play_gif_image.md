@@ -4,7 +4,13 @@ Sketch 集成了 [android-gif-drawable]，可以无障碍的播放 gif 图片
 
 ### 配置依赖
 
-参考 [README] 配置依赖
+添加 sketch-gif 的依赖
+
+```groovy
+implementation 'me.panpf:sketch-gif:$sketch_gif_version'
+```
+
+请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link]
 
 ### 配置播放 GIF 图
 
@@ -157,6 +163,8 @@ public void onPause() {
 ```
 
 [README]: ../../README.md
+[sketch_gif_version_image]: https://api.bintray.com/packages/panpf/maven/sketch-gif/images/download.svg
+[sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [android-gif-drawable]: https://github.com/koral--/android-gif-drawable
 [GifDrawable]: ../../sketch-gif/src/main/java/pl/droidsonroids/gif/GifDrawable.java
 [MaxSize]: ../../sketch/src/main/java/me/panpf/sketch/request/MaxSize.java

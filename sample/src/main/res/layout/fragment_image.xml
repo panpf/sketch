@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="8dp">
+    android:layout_height="match_parent">
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <me.panpf.sketch.sample.widget.SampleZoomImageView
         android:id="@+id/image_imageFragment_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -47,7 +47,7 @@ public class ImageZoomer {
     public static final String NAME = "ImageZoomer";
 
     @NonNull
-    private ImageView imageView;
+    private SketchZoomImageView imageView;
     @Nullable
     private ScaleType scaleType;    // ImageView 原本的 ScaleType
 
@@ -84,7 +84,7 @@ public class ImageZoomer {
     @NonNull
     private BlockDisplayer blockDisplayer;
 
-    public ImageZoomer(@NonNull ImageView imageView) {
+    public ImageZoomer(@NonNull SketchZoomImageView imageView) {
         Context appContext = imageView.getContext().getApplicationContext();
 
         this.imageView = imageView;

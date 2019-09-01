@@ -29,8 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.panpf.sketch.Configuration;
-import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
@@ -458,10 +456,8 @@ public class BlockManager {
             /*
              * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，这里的处理办法是暂时改用旧版的排序算法再次排序
              */
-
-            Configuration configuration = Sketch.with(context).getConfiguration();
-            ErrorTracker errorTracker = configuration.getErrorTracker();
-            errorTracker.onBlockSortError(e, blockList, false);
+            SLog.e(NAME, "onBlockSortError. %s", Block.blockListToString(blockList));
+            Sketch.with(context).getConfiguration().getCallback().onError(new BlockSortException(e, blockList, false));
 
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             try {
@@ -469,7 +465,8 @@ public class BlockManager {
             } catch (IllegalArgumentException e2) {
                 e2.printStackTrace();
 
-                errorTracker.onBlockSortError(e, blockList, true);
+                SLog.e(NAME, "onBlockSortError. useLegacyMergeSort. %s", Block.blockListToString(blockList));
+                Sketch.with(context).getConfiguration().getCallback().onError(new BlockSortException(e, blockList, false));
             }
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "false");
         }

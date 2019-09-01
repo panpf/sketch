@@ -29,8 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.panpf.sketch.ErrorTracker;
 import me.panpf.sketch.SLog;
+import me.panpf.sketch.SketchCallback;
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
 import me.panpf.sketch.cache.DiskCache;
@@ -144,14 +144,18 @@ public class ImageDecodeUtils {
     /**
      * 反馈 inBitmap 解码失败，并回收 inBitmap
      */
-    public static void recycleInBitmapOnDecodeError(@NonNull ErrorTracker errorTracker, @NonNull BitmapPool bitmapPool,
+    public static void recycleInBitmapOnDecodeError(@NonNull SketchCallback callback, @NonNull BitmapPool bitmapPool,
                                                     @NonNull String imageUri, int imageWidth, int imageHeight, @NonNull String imageMimeType,
                                                     @NonNull Throwable throwable, @NonNull BitmapFactory.Options decodeOptions, boolean fromBitmapRegionDecoder) {
         if (fromBitmapRegionDecoder && !BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
             return;
         }
 
-        errorTracker.onInBitmapDecodeError(imageUri, imageWidth, imageHeight, imageMimeType, throwable, decodeOptions.inSampleSize, decodeOptions.inBitmap);
+        SLog.e("onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
+                        "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+                imageUri, imageWidth, imageHeight, imageMimeType, decodeOptions.inSampleSize,
+                decodeOptions.inBitmap.getWidth(), decodeOptions.inBitmap.getHeight(), SketchUtils.getByteCount(decodeOptions.inBitmap));
+        callback.onError(new InBitmapDecodeException(throwable, imageUri, imageWidth, imageHeight, imageMimeType, decodeOptions.inSampleSize, decodeOptions.inBitmap));
 
         BitmapPoolUtils.freeBitmapToPool(decodeOptions.inBitmap, bitmapPool);
         decodeOptions.inBitmap = null;
