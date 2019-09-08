@@ -27,6 +27,7 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * {@link Sketch} 明确支持的图片格式
  */
+// 转成一个 support Types 列表，支持根据 mimeType get
 public enum ImageType {
     JPEG("image/jpeg", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
     PNG("image/png", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),

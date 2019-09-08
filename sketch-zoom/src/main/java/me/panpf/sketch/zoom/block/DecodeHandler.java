@@ -125,6 +125,7 @@ public class DecodeHandler extends Handler {
         options.inSampleSize = inSampleSize;
         ImageType imageType = regionDecoder.getImageType();
         if (imageType != null) {
+            // todo 使用 DisplayOptions 中的参数
             options.inPreferredConfig = imageType.getConfig(false);
         }
 
