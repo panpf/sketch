@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import me.panpf.sketch.SketchView;
 
 /**
- * 默认的图片显示器，没有任何动画效果
+ * The default image display, without any animation effects
  */
 public class DefaultImageDisplayer implements ImageDisplayer {
     private static final String KEY = "DefaultImageDisplayer";

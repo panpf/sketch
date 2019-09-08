@@ -20,32 +20,26 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.DiskCache;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.util.SketchUtils;
 
-/**
- * 下载 Helper，负责组织、收集、初始化下载参数，最后执行 commit() 提交请求
- */
 public class DownloadHelper {
+
     private static final String NAME = "DownloadHelper";
 
+    @NonNull
+    private final DownloadOptions downloadOptions;
     @NonNull
     private Sketch sketch;
     @NonNull
     private String uri;
     @Nullable
     private DownloadListener downloadListener;
-
     private boolean sync;
-    @Nullable
-    private UriModel uriModel;
-    @Nullable
-    private String key;
-    @NonNull
-    private DownloadOptions downloadOptions = new DownloadOptions();
     @Nullable
     private DownloadProgressListener downloadProgressListener;
 
@@ -53,14 +47,13 @@ public class DownloadHelper {
         this.sketch = sketch;
         this.uri = uri;
         this.downloadListener = downloadListener;
-        this.uriModel = UriModel.match(sketch, uri);
+        this.downloadOptions = new DisplayOptions();
     }
 
+    // todo 补充测试 options
+
     /**
-     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
-     *
-     * @param requestLevel {@link RequestLevel}
-     * @return {@link DownloadHelper}. 为了支持链式调用
+     * Limit request processing depth
      */
     @NonNull
     public DownloadHelper requestLevel(@Nullable RequestLevel requestLevel) {
@@ -70,11 +63,6 @@ public class DownloadHelper {
         return this;
     }
 
-    /**
-     * 禁用磁盘缓存
-     *
-     * @return {@link DownloadHelper}. 为了支持链式调用
-     */
     @NonNull
     public DownloadHelper disableCacheInDisk() {
         downloadOptions.setCacheInDiskDisabled(true);
@@ -82,10 +70,7 @@ public class DownloadHelper {
     }
 
     /**
-     * 批量设置下载参数（完全覆盖）
-     *
-     * @param newOptions {@link DownloadOptions}
-     * @return {@link DownloadHelper}. 为了支持链式调用
+     * Batch setting download parameters, all reset
      */
     @NonNull
     public DownloadHelper options(@Nullable DownloadOptions newOptions) {
@@ -93,11 +78,6 @@ public class DownloadHelper {
         return this;
     }
 
-    /**
-     * 设置下载进度监听器
-     *
-     * @return {@link DownloadHelper}. 为了支持链式调用
-     */
     @NonNull
     public DownloadHelper downloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
@@ -105,9 +85,7 @@ public class DownloadHelper {
     }
 
     /**
-     * 同步执行
-     *
-     * @return {@link DownloadHelper}. 为了支持链式调用
+     * Synchronous execution
      */
     @NonNull
     public DownloadHelper sync() {
@@ -115,56 +93,50 @@ public class DownloadHelper {
         return this;
     }
 
-    /**
-     * 提交
-     *
-     * @return {@link DownloadRequest}. 为了支持链式调用
-     */
     @Nullable
     public DownloadRequest commit() {
+        // Cannot run on UI threads
         if (sync && SketchUtils.isMainThread()) {
             throw new IllegalStateException("Cannot sync perform the download in the UI thread ");
         }
 
-        if (!checkParams()) {
-            return null;
-        }
-
-        if (!checkDiskCache()) {
-            return null;
-        }
-
-        return submitRequest();
-    }
-
-    private boolean checkParams() {
-        sketch.getConfiguration().getOptionsFilterManager().filter(downloadOptions);
-
+        // Uri cannot is empty
         if (TextUtils.isEmpty(uri)) {
             SLog.e(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_INVALID, sync);
-            return false;
+            return null;
         }
 
+        // Uri type must be supported
+        final UriModel uriModel = UriModel.match(sketch, uri);
         if (uriModel == null) {
-            SLog.e(NAME, "Not support uri. %s", uri);
+            SLog.e(NAME, "Unsupported uri type. %s", uri);
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
+            return null;
         }
 
+        // Only support http ot https
         if (!uriModel.isFromNet()) {
             SLog.e(NAME, "Only support http ot https. %s", uri);
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
+            return null;
         }
 
-        // 根据 URI 和下载选项生成请求 key
-        key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions.makeKey());
+        processOptions();
 
-        return true;
+        final String key = SketchUtils.makeRequestKey(uri, uriModel, downloadOptions.makeKey());
+        if (!checkDiskCache(key, uriModel)) {
+            return null;
+        }
+
+        return submitRequest(key, uriModel);
     }
 
-    private boolean checkDiskCache() {
+    private void processOptions() {
+        sketch.getConfiguration().getOptionsFilterManager().filter(downloadOptions);
+    }
+
+    private boolean checkDiskCache(@NonNull String key, @NonNull UriModel uriModel) {
         if (!downloadOptions.isCacheInDiskDisabled()) {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(uriModel.getDiskCacheKey(uri));
@@ -183,7 +155,8 @@ public class DownloadHelper {
         return true;
     }
 
-    private DownloadRequest submitRequest() {
+    @NonNull
+    private DownloadRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
         CallbackHandler.postCallbackStarted(downloadListener, sync);
 
         DownloadRequest request = new FreeRideDownloadRequest(sketch, uri, uriModel, key,

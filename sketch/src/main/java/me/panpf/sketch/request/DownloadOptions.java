@@ -19,92 +19,57 @@ package me.panpf.sketch.request;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.state.StateImage;
 import me.panpf.sketch.uri.UriModel;
 
-/**
- * 下载选项，适用于 {@link Sketch#download(String, DownloadListener)} 方法
- */
-@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class DownloadOptions {
+
     /**
-     * 禁用磁盘缓存
+     * Disabled disk caching
      */
     private boolean cacheInDiskDisabled;
 
     /**
-     * 请求 level，限制请求处理深度，参考 {@link RequestLevel}
+     * Limit request processing depth
      */
     @Nullable
     private RequestLevel requestLevel;
 
     public DownloadOptions() {
-        reset();
     }
 
-    /**
-     * 从指定的 {@link DownloadOptions} 中拷贝所有属性来创建新的 {@link DownloadOptions}
-     *
-     * @param from 从这个 {@link DownloadOptions} 里拷贝属性
-     */
     public DownloadOptions(@NonNull DownloadOptions from) {
         copy(from);
     }
 
-    /**
-     * 获取请求 level
-     *
-     * @return {@link RequestLevel}
-     */
-    @Nullable
-    public RequestLevel getRequestLevel() {
-        return requestLevel;
-    }
-
-    /**
-     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
-     *
-     * @param requestLevel {@link RequestLevel}
-     * @return {@link DownloadOptions}. 为了支持链式调用
-     */
-    @NonNull
-    public DownloadOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
-        this.requestLevel = requestLevel;
-        return this;
-    }
-
-    /**
-     * 是否禁用磁盘缓存
-     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isCacheInDiskDisabled() {
         return cacheInDiskDisabled;
     }
 
-    /**
-     * 设置是否禁用磁盘缓存
-     *
-     * @param cacheInDiskDisabled 禁用磁盘缓存
-     * @return {@link DownloadOptions}. 为了支持链式调用
-     */
     @NonNull
     public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
         this.cacheInDiskDisabled = cacheInDiskDisabled;
         return this;
     }
 
-    /**
-     * 重置所有属性
-     */
+    @Nullable
+    public RequestLevel getRequestLevel() {
+        return requestLevel;
+    }
+
+    @NonNull
+    public DownloadOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
+        this.requestLevel = requestLevel;
+        return this;
+    }
+
     public void reset() {
         cacheInDiskDisabled = false;
         requestLevel = null;
     }
 
-    /**
-     * 从指定的 {@link DownloadOptions} 中拷贝属性，绝对的覆盖
-     */
     public void copy(@Nullable DownloadOptions options) {
         if (options == null) {
             return;
@@ -115,7 +80,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 生成选项 key，用于组装请求或内存缓存 key
+     * Generate option key for assembling the request key
      *
      * @see SketchImageView#getOptionsKey()
      * @see me.panpf.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
@@ -126,7 +91,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 生成 {@link StateImage} 用的选项 key，用于组装 {@link StateImage} 的内存缓存 key
+     * Generate option key for {@link StateImage} to assemble the memory cache for {@link StateImage}
      *
      * @see me.panpf.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
      */

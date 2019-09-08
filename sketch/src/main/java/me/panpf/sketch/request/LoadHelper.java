@@ -27,49 +27,39 @@ import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.BitmapPool;
-import me.panpf.sketch.decode.ImageType;
 import me.panpf.sketch.decode.ProcessedResultCacheProcessor;
 import me.panpf.sketch.decode.ThumbnailModeDecodeHelper;
 import me.panpf.sketch.process.ImageProcessor;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.util.SketchUtils;
 
-/**
- * 加载 Helper，负责组织、收集、初始化加载参数，最后执行 commit() 提交请求
- */
 @SuppressWarnings("WeakerAccess")
 public class LoadHelper {
+
     private static final String NAME = "LoadHelper";
 
     @NonNull
     private Sketch sketch;
     @NonNull
-    private String uri;
+    private final String uri;
     @Nullable
     private LoadListener loadListener;
 
     private boolean sync;
-    @Nullable
-    private UriModel uriModel;
-    @Nullable
-    private String key;
     @NonNull
-    private LoadOptions loadOptions = new LoadOptions();
+    private final LoadOptions loadOptions;
     @Nullable
     private DownloadProgressListener downloadProgressListener;
 
     public LoadHelper(@NonNull Sketch sketch, @NonNull String uri, @Nullable LoadListener loadListener) {
         this.sketch = sketch;
         this.uri = uri;
-        this.uriModel = UriModel.match(sketch, uri);
         this.loadListener = loadListener;
+        this.loadOptions = new DisplayOptions();
     }
 
     /**
-     * 设置请求 level，限制请求处理深度，参考 {@link RequestLevel}
-     *
-     * @param requestLevel {@link RequestLevel}
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Limit request processing depth
      */
     @NonNull
     public LoadHelper requestLevel(@Nullable RequestLevel requestLevel) {
@@ -79,11 +69,6 @@ public class LoadHelper {
         return this;
     }
 
-    /**
-     * 禁用磁盘缓存
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
-     */
     @NonNull
     public LoadHelper disableCacheInDisk() {
         loadOptions.setCacheInDiskDisabled(true);
@@ -91,9 +76,7 @@ public class LoadHelper {
     }
 
     /**
-     * 禁止从 {@link BitmapPool} 中寻找可复用的 {@link Bitmap}
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Disabled get reusable {@link Bitmap} from {@link BitmapPool}
      */
     @NonNull
     public LoadHelper disableBitmapPool() {
@@ -102,9 +85,7 @@ public class LoadHelper {
     }
 
     /**
-     * 解码 gif 图片并自动循环播放
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Support gif images
      */
     @NonNull
     public LoadHelper decodeGifImage() {
@@ -113,10 +94,7 @@ public class LoadHelper {
     }
 
     /**
-     * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
-     *
-     * @param maxSize 最大尺寸
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Limit the maximum size of the bitmap, default value is 'new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)'
      */
     @NonNull
     public LoadHelper maxSize(@Nullable MaxSize maxSize) {
@@ -125,11 +103,7 @@ public class LoadHelper {
     }
 
     /**
-     * 设置最大尺寸，用于计算 inSimpleSize 缩小图片
-     *
-     * @param maxWidth  最大宽
-     * @param maxHeight 最大高
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Limit the maximum size of the bitmap, default value is 'new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)'
      */
     @NonNull
     public LoadHelper maxSize(int maxWidth, int maxHeight) {
@@ -138,10 +112,7 @@ public class LoadHelper {
     }
 
     /**
-     * 调整图片的尺寸
-     *
-     * @param resize 新的尺寸
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * The size of the desired bitmap
      */
     @NonNull
     public LoadHelper resize(@Nullable Resize resize) {
@@ -150,11 +121,7 @@ public class LoadHelper {
     }
 
     /**
-     * 调调整图片的尺寸
-     *
-     * @param reWidth  新的宽
-     * @param reHeight 新的高
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * The size of the desired bitmap
      */
     @NonNull
     public LoadHelper resize(int reWidth, int reHeight) {
@@ -163,12 +130,7 @@ public class LoadHelper {
     }
 
     /**
-     * 调整图片的尺寸
-     *
-     * @param reWidth   新的宽
-     * @param reHeight  新的高
-     * @param scaleType 指定如何生成新图片
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * The size of the desired bitmap
      */
     @NonNull
     public LoadHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
@@ -177,9 +139,7 @@ public class LoadHelper {
     }
 
     /**
-     * 在解码或创建 {@link Bitmap} 的时候尽量使用低质量的 {@link Bitmap.Config}，优先级低于 {@link #bitmapConfig(Bitmap.Config)}，参考 {@link ImageType#getConfig(boolean)}
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Prioritize low quality {@link Bitmap.Config} when creating bitmaps, the priority is lower than the {@link #bitmapConfig(Bitmap.Config)} method
      */
     @NonNull
     public LoadHelper lowQualityImage() {
@@ -188,10 +148,7 @@ public class LoadHelper {
     }
 
     /**
-     * 设置图片处理器，在图片读取到内存后对图片进行修改
-     *
-     * @param processor {@link ImageProcessor}
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Modify Bitmap after decoding the image
      */
     @NonNull
     public LoadHelper processor(@Nullable ImageProcessor processor) {
@@ -200,10 +157,10 @@ public class LoadHelper {
     }
 
     /**
-     * 设置解码时使用的 {@link Bitmap.Config}，KITKAT 以上 {@link Bitmap.Config#ARGB_4444} 会被强制替换为 {@link Bitmap.Config#ARGB_8888}，优先级高于 {@link #lowQualityImage()}，对应 {@link android.graphics.BitmapFactory.Options#inPreferredConfig} 属性
-     *
-     * @param bitmapConfig {@link Bitmap.Config}
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Specify {@link Bitmap.Config} to use when creating the bitmap.
+     * KITKAT and above {@link Bitmap.Config#ARGB_4444} will be forced to be replaced with {@link Bitmap.Config#ARGB_8888}.
+     * With priority higher than {@link #lowQualityImage()} method.
+     * Applied to {@link android.graphics.BitmapFactory.Options#inPreferredConfig}
      */
     @NonNull
     public LoadHelper bitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
@@ -212,10 +169,7 @@ public class LoadHelper {
     }
 
     /**
-     * 设置解码时优先考虑速度还是质量，对应 {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed} 属性
-     *
-     * @param inPreferQualityOverSpeed true：质量优先；false：速度优先
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Priority is given to speed or quality when decoding. Applied to the {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed}
      */
     @NonNull
     public LoadHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
@@ -224,9 +178,7 @@ public class LoadHelper {
     }
 
     /**
-     * 开启缩略图模式，配合 resize 可以得到更清晰的缩略图，参考 {@link ThumbnailModeDecodeHelper}
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Thumbnail mode, together with the {@link #resize(Resize)} method, gives a sharper thumbnail, see {@link ThumbnailModeDecodeHelper}
      */
     @NonNull
     public LoadHelper thumbnailMode() {
@@ -235,9 +187,8 @@ public class LoadHelper {
     }
 
     /**
-     * 为了加快速度，将经过 {@link #processor(ImageProcessor)}、{@link #resize(Resize)} 或 {@link #thumbnailMode()} 处理过的图片保存到磁盘缓存中，下次就直接读取，参考 {@link ProcessedResultCacheProcessor}
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * In order to speed up, save the image processed by {@link #processor(ImageProcessor)}, {@link #resize(Resize)} or {@link #thumbnailMode()} to the disk cache,
+     * read it directly next time, refer to {@link ProcessedResultCacheProcessor}
      */
     @NonNull
     public LoadHelper cacheProcessedImageInDisk() {
@@ -246,9 +197,7 @@ public class LoadHelper {
     }
 
     /**
-     * 禁止纠正图片方向
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Disabled correcting picture orientation
      */
     @NonNull
     public LoadHelper disableCorrectImageOrientation() {
@@ -257,10 +206,7 @@ public class LoadHelper {
     }
 
     /**
-     * 批量设置加载参数（完全覆盖）
-     *
-     * @param newOptions {@link LoadOptions}
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Batch setting load parameters, all reset
      */
     @NonNull
     public LoadHelper options(@Nullable LoadOptions newOptions) {
@@ -268,11 +214,6 @@ public class LoadHelper {
         return this;
     }
 
-    /**
-     * 设置下载进度监听器
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
-     */
     @NonNull
     public LoadHelper downloadProgressListener(@Nullable DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
@@ -280,9 +221,7 @@ public class LoadHelper {
     }
 
     /**
-     * 同步执行
-     *
-     * @return {@link LoadHelper}. 为了支持链式调用
+     * Synchronous execution
      */
     @NonNull
     public LoadHelper sync() {
@@ -290,89 +229,76 @@ public class LoadHelper {
         return this;
     }
 
-    /**
-     * 提交
-     *
-     * @return {@link LoadRequest}
-     */
     @Nullable
     public LoadRequest commit() {
+        // Cannot run on UI threads
         if (sync && SketchUtils.isMainThread()) {
             throw new IllegalStateException("Cannot sync perform the load in the UI thread ");
         }
 
-        if (!checkParams()) {
+        // Uri cannot is empty
+        if (TextUtils.isEmpty(uri)) {
+            SLog.e(NAME, "Uri is empty");
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_INVALID, sync);
             return null;
         }
 
-        if (!checkRequestLevel()) {
+        // Uri type must be supported
+        final UriModel uriModel = UriModel.match(sketch, uri);
+        if (uriModel == null) {
+            SLog.e(NAME, "Unsupported uri type. %s", uri);
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return null;
         }
 
-        return submitRequest();
+        processOptions();
+
+        final String key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions.makeKey());
+        if (!checkRequestLevel(key, uriModel)) {
+            return null;
+        }
+
+        return submitRequest(key, uriModel);
     }
 
-    private boolean checkParams() {
+    private void processOptions() {
         Configuration configuration = sketch.getConfiguration();
 
-        // load 请求不能使用 Resize.ByViewFixedSizeResize
+        // LoadRequest can not be used Resize.ByViewFixedSizeResize
         Resize resize = loadOptions.getResize();
         if (resize instanceof Resize.ByViewFixedSizeResize) {
             resize = null;
             loadOptions.setResize(null);
         }
 
-        // Resize 的宽高都必须大于 0
+        // The width and height of the Resize must be greater than 0
         if (resize != null && (resize.getWidth() <= 0 || resize.getHeight() <= 0)) {
             throw new IllegalArgumentException("Resize width and height must be > 0");
         }
 
 
-        // 没有设置 MaxSize 的话，就用默认的 MaxSize
+        // If MaxSize is not set, the default MaxSize is used.
         MaxSize maxSize = loadOptions.getMaxSize();
         if (maxSize == null) {
             maxSize = configuration.getSizeCalculator().getDefaultImageMaxSize(configuration.getContext());
             loadOptions.setMaxSize(maxSize);
         }
 
-        // MaxSize 的宽或高大于 0 即可
-        if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
+        // The width or height of MaxSize is greater than 0.
+        if (maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
 
-        // 没有 ImageProcessor 但有 Resize 的话就需要设置一个默认的图片裁剪处理器
+        // There is no ImageProcessor but there is a Resize, you need to set a default image cropping processor
         if (loadOptions.getProcessor() == null && resize != null) {
             loadOptions.setProcessor(configuration.getResizeProcessor());
         }
 
         configuration.getOptionsFilterManager().filter(loadOptions);
-
-        // LoadRequest 没有内存缓存，加载结果必须通过 Listener 回调才有意义
-        if (loadListener == null) {
-            SLog.e(NAME, "Load request must have LoadListener. %s", uri);
-        }
-
-        if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty");
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_INVALID, sync);
-            return false;
-        }
-
-        if (uriModel == null) {
-            SLog.e(NAME, "Not support uri. %s", uri);
-            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
-            return false;
-        }
-
-        // 根据 URI 和加载选项生成请求 ID
-        key = SketchUtils.makeRequestKey(uri, uriModel, loadOptions.makeKey());
-
-        return true;
     }
 
-    private boolean checkRequestLevel() {
-        // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
+    private boolean checkRequestLevel(@NonNull String key, @NonNull UriModel uriModel) {
         if (loadOptions.getRequestLevel() == RequestLevel.LOCAL && uriModel.isFromNet()
                 && !sketch.getConfiguration().getDiskCache().exist(uriModel.getDiskCacheKey(uri))) {
 
@@ -387,7 +313,8 @@ public class LoadHelper {
         return true;
     }
 
-    private LoadRequest submitRequest() {
+    @NonNull
+    private LoadRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
         CallbackHandler.postCallbackStarted(loadListener, sync);
 
         LoadRequest request = new LoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
