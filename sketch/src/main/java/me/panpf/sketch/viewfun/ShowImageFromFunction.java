@@ -64,7 +64,7 @@ public class ShowImageFromFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+    public boolean onReadyDisplay(@NonNull String uri) {
         imageFrom = null;
         return true;
     }

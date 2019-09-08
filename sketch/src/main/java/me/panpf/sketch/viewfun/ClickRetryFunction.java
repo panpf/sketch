@@ -19,14 +19,12 @@ package me.panpf.sketch.viewfun;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.DisplayOptions;
 import me.panpf.sketch.request.ErrorCause;
 import me.panpf.sketch.request.RedisplayListener;
 import me.panpf.sketch.request.RequestLevel;
-import me.panpf.sketch.uri.UriModel;
 
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击 {@link android.widget.ImageView} 重新或强制显示图片
@@ -48,7 +46,7 @@ public class ClickRetryFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+    public boolean onReadyDisplay(@NonNull String uri) {
         // 重新走了一遍显示流程，这些要重置
         displayError = false;
         pauseDownload = false;

@@ -33,7 +33,6 @@ import me.panpf.sketch.request.DisplayCache;
 import me.panpf.sketch.request.DisplayListener;
 import me.panpf.sketch.request.DisplayOptions;
 import me.panpf.sketch.request.DownloadProgressListener;
-import me.panpf.sketch.uri.UriModel;
 
 /**
  * 这个类负责给 function 回调各种状态
@@ -199,8 +198,8 @@ public abstract class FunctionCallbackView extends ImageView implements SketchVi
     }
 
     @Override
-    public void onReadyDisplay(UriModel uriModel) {
-        if (getFunctions().onReadyDisplay(uriModel)) {
+    public void onReadyDisplay(@NonNull String uri) {
+        if (getFunctions().onReadyDisplay(uri)) {
             invalidate();
         }
     }

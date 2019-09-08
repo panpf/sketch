@@ -57,33 +57,24 @@ import me.panpf.sketch.util.Stopwatch;
 public class DisplayHelper {
     private static final String NAME = "DisplayHelper";
 
-    @Nullable
+    @NonNull
     private Sketch sketch;
-
-    @Nullable
+    @NonNull
     private String uri;
-    @Nullable
-    private UriModel uriModel;
-
-    @Nullable
-    private String key;
     @NonNull
-    private DisplayOptions displayOptions = new DisplayOptions();
-    @Nullable
-    private DisplayListener displayListener;
-    @Nullable
-    private DownloadProgressListener downloadProgressListener;
-
-    @NonNull
-    private ViewInfo viewInfo = new ViewInfo();
-    @Nullable
     private SketchView sketchView;
 
+
     @NonNull
-    public DisplayHelper init(@NonNull Sketch sketch, @Nullable String uri, @NonNull SketchView sketchView) {
+    private final DisplayOptions displayOptions;
+    @Nullable
+    private final DisplayListener displayListener;
+    @Nullable
+    private final DownloadProgressListener downloadProgressListener;
+
+    public DisplayHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
         this.sketch = sketch;
         this.uri = uri;
-        this.uriModel = uri != null ? UriModel.match(sketch, uri) : null;
         this.sketchView = sketchView;
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
@@ -91,37 +82,18 @@ public class DisplayHelper {
         }
 
         // onDisplay 一定要在最前面执行，因为 在onDisplay 中会设置一些属性，这些属性会影响到后续一些 get 方法返回的结果
-        this.sketchView.onReadyDisplay(uriModel);
+        this.sketchView.onReadyDisplay(uri);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("onReadyDisplay");
         }
 
-        viewInfo.reset(sketchView, sketch);
-        displayOptions.copy(sketchView.getOptions());
+        this.displayOptions = new DisplayOptions(sketchView.getOptions());
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("init");
         }
 
         displayListener = sketchView.getDisplayListener();
         downloadProgressListener = sketchView.getDownloadProgressListener();
-
-        return this;
-    }
-
-    /**
-     * 重置所有属性
-     */
-    public void reset() {
-        sketch = null;
-
-        uri = null;
-        uriModel = null;
-        key = null;
-        displayOptions.reset();
-        displayListener = null;
-        downloadProgressListener = null;
-        viewInfo.reset(null, null);
-        sketchView = null;
     }
 
     /**
@@ -474,6 +446,19 @@ public class DisplayHelper {
         return this;
     }
 
+    @Nullable
+    private Drawable getErrorDrawable() {
+        Drawable drawable = null;
+        if (displayOptions.getErrorImage() != null) {
+            Context context = sketch.getConfiguration().getContext();
+            drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
+        } else if (displayOptions.getLoadingImage() != null) {
+            Context context = sketch.getConfiguration().getContext();
+            drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+        }
+        return drawable;
+    }
+
     /**
      * 提交请求
      *
@@ -481,27 +466,36 @@ public class DisplayHelper {
      */
     @Nullable
     public DisplayRequest commit() {
-        // 把 url null 和 uriModel 的检测提前，单独个方法叫 check param 其它的 processOptions
+        // Cannot run on non-UI threads
         if (!SketchUtils.isMainThread()) {
-            SLog.w(NAME, "Please perform a commit in the UI thread. view(%s). %s",
+            SLog.e(NAME, "Please perform a commit in the UI thread. view(%s). %s",
                     Integer.toHexString(sketchView.hashCode()), uri);
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(uri);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
-        boolean checkResult = checkParams();
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-            Stopwatch.with().record("checkParams");
-        }
-        if (!checkResult) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-                Stopwatch.with().print(uri);
-            }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+        // Uri cannot is empty
+        if (TextUtils.isEmpty(uri)) {
+            SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
+            sketchView.setImageDrawable(getErrorDrawable());
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
             return null;
+        }
+
+        // Uri type must be supported
+        final UriModel uriModel = UriModel.match(sketch, uri);
+        if (uriModel == null) {
+            SLog.e(NAME, "Unsupported uri type. %s. view(%s)", uri, Integer.toHexString(sketchView.hashCode()));
+            sketchView.setImageDrawable(getErrorDrawable());
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
+            return null;
+        }
+
+        processOptions();
+        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
+            Stopwatch.with().record("processOptions");
         }
 
         saveParams();
@@ -509,7 +503,9 @@ public class DisplayHelper {
             Stopwatch.with().record("saveParams");
         }
 
-        checkResult = checkMemoryCache();
+        // 根据 URI 和显示选项生成请求 key
+        final String key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey());
+        boolean checkResult = checkMemoryCache(key);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkMemoryCache");
         }
@@ -517,11 +513,10 @@ public class DisplayHelper {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(key);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
-        checkResult = checkRequestLevel();
+        checkResult = checkRequestLevel(key, uriModel);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkRequestLevel");
         }
@@ -529,11 +524,10 @@ public class DisplayHelper {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(key);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
-        DisplayRequest potentialRequest = checkRepeatRequest();
+        DisplayRequest potentialRequest = checkRepeatRequest(key);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("checkRepeatRequest");
         }
@@ -541,29 +535,27 @@ public class DisplayHelper {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
                 Stopwatch.with().print(key);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return potentialRequest;
         }
 
-        DisplayRequest request = submitRequest();
+        DisplayRequest request = submitRequest(key, uriModel);
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().print(key);
         }
-        sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
         return request;
     }
 
-    private boolean checkParams() {
+    private void processOptions() {
         Configuration configuration = sketch.getConfiguration();
-        ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
-        FixedSize fixedSize = viewInfo.getFixedSize();
+        final FixedSize fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
+        final ScaleType scaleType = sketchView.getScaleType();
 
         // 用 ImageVie 的固定宽高作为 ShapeSize
         ShapeSize shapeSize = displayOptions.getShapeSize();
         if (shapeSize instanceof ShapeSize.ByViewFixedSizeShapeSize) {
             if (fixedSize != null) {
-                shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
+                shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), scaleType);
                 displayOptions.setShapeSize(shapeSize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
@@ -572,8 +564,8 @@ public class DisplayHelper {
         }
 
         // 检查 ShapeSize 的 ScaleType
-        if (shapeSize != null && shapeSize.getScaleType() == null && sketchView != null) {
-            shapeSize.setScaleType(viewInfo.getScaleType());
+        if (shapeSize != null && shapeSize.getScaleType() == null) {
+            shapeSize.setScaleType(scaleType);
         }
 
         // 检查 ShapeSize 的宽高都必须大于 0
@@ -586,7 +578,7 @@ public class DisplayHelper {
         Resize resize = displayOptions.getResize();
         if (resize instanceof Resize.ByViewFixedSizeResize) {
             if (fixedSize != null) {
-                resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType(), resize.getMode());
+                resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), scaleType, resize.getMode());
                 displayOptions.setResize(resize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
@@ -595,8 +587,8 @@ public class DisplayHelper {
         }
 
         // 检查 Resize 的 ScaleType
-        if (resize != null && resize.getScaleType() == null && sketchView != null) {
-            resize.setScaleType(viewInfo.getScaleType());
+        if (resize != null && resize.getScaleType() == null) {
+            resize.setScaleType(scaleType);
         }
 
         // 检查 Resize 的宽高都必须大于 0
@@ -608,6 +600,7 @@ public class DisplayHelper {
         // 没有设置 MaxSize 的话，如果 ImageView 的宽高是的固定的就根据 ImageView 的宽高来作为 MaxSize，否则就用默认的 MaxSize
         MaxSize maxSize = displayOptions.getMaxSize();
         if (maxSize == null) {
+            ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
             maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView);
             if (maxSize == null) {
                 maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.getContext());
@@ -616,7 +609,7 @@ public class DisplayHelper {
         }
 
         // MaxSize 的宽或高大于 0 即可
-        if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
+        if (maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
@@ -651,46 +644,6 @@ public class DisplayHelper {
         }
 
         configuration.getOptionsFilterManager().filter(displayOptions);
-
-        if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            }
-            sketchView.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
-            return false;
-        }
-
-        if (uriModel == null) {
-            SLog.e(NAME, "Not support uri. %s. view(%s)", uri, Integer.toHexString(sketchView.hashCode()));
-
-            Drawable drawable = null;
-            if (displayOptions.getErrorImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
-            }
-            sketchView.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
-            return false;
-        }
-
-
-        // 根据 URI 和显示选项生成请求 key
-        key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey());
-
-        return true;
     }
 
     /**
@@ -707,19 +660,18 @@ public class DisplayHelper {
         displayCache.options.copy(displayOptions);
     }
 
-    private boolean checkMemoryCache() {
+    private boolean checkMemoryCache(@NonNull String key) {
         if (displayOptions.isCacheInMemoryDisabled()) {
             return true;
         }
 
-        String memoryCacheKey = key;
-        SketchRefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(memoryCacheKey);
+        SketchRefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(key);
         if (cachedRefBitmap == null) {
             return true;
         }
 
         if (cachedRefBitmap.isRecycled()) {
-            sketch.getConfiguration().getMemoryCache().remove(memoryCacheKey);
+            sketch.getConfiguration().getMemoryCache().remove(key);
             String viewCode = Integer.toHexString(sketchView.hashCode());
             SLog.w(NAME, "Memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
             return true;
@@ -763,7 +715,7 @@ public class DisplayHelper {
         return false;
     }
 
-    private boolean checkRequestLevel() {
+    private boolean checkRequestLevel(@NonNull String key, @NonNull UriModel uriModel) {
         // 如果已经暂停加载的话就不再从本地或网络加载了
         if (displayOptions.getRequestLevel() == RequestLevel.MEMORY) {
             if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
@@ -814,7 +766,8 @@ public class DisplayHelper {
      *
      * @return {@link DisplayRequest} null：已经取消或没有已存在的请求
      */
-    private DisplayRequest checkRepeatRequest() {
+    @Nullable
+    private DisplayRequest checkRepeatRequest(@NonNull String key) {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (key.equals(potentialRequest.getKey())) {
@@ -834,15 +787,15 @@ public class DisplayHelper {
         return null;
     }
 
-    private DisplayRequest submitRequest() {
+    @NonNull
+    private DisplayRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
         CallbackHandler.postCallbackStarted(displayListener, false);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("callbackStarted");
         }
 
-        RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
-        DisplayRequest request = requestFactory.newDisplayRequest(sketch, uri, uriModel, key, displayOptions, viewInfo,
+        DisplayRequest request = new FreeRideDisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
             Stopwatch.with().record("createRequest");

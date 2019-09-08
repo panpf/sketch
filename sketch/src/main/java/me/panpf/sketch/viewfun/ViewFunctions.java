@@ -33,7 +33,6 @@ import me.panpf.sketch.decode.ImageAttrs;
 import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.ErrorCause;
 import me.panpf.sketch.request.ImageFrom;
-import me.panpf.sketch.uri.UriModel;
 
 class ViewFunctions {
     @NonNull
@@ -312,36 +311,36 @@ class ViewFunctions {
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onReadyDisplay(@Nullable UriModel uriModel) {
+    boolean onReadyDisplay(@NonNull String uri) {
         boolean needInvokeInvalidate = false;
 
         if (requestFunction != null) {
             //noinspection ConstantConditions
-            needInvokeInvalidate |= requestFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= requestFunction.onReadyDisplay(uri);
         }
         if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= recyclerCompatFunction.onReadyDisplay(uri);
         }
         if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uri);
         }
         if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= showDownloadProgressFunction.onReadyDisplay(uri);
         }
         if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uri);
         }
         if (showImageFromFunction != null) {
-            needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uri);
         }
         if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uri);
         }
         if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uri);
         }
         for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onReadyDisplay(uriModel);
+            needInvokeInvalidate |= viewFunctionItem.function.onReadyDisplay(uri);
         }
 
         return needInvokeInvalidate;

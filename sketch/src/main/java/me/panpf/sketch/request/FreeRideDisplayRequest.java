@@ -41,10 +41,12 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
     @Nullable
     private Set<FreeRideManager.DisplayFreeRide> displayFreeRideSet;
 
-    public FreeRideDisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DisplayOptions displayOptions,
-                                  @NonNull ViewInfo viewInfo, @NonNull RequestAndViewBinder requestAndViewBinder,
-                                  @Nullable DisplayListener displayListener, @Nullable DownloadProgressListener downloadProgressListener) {
-        super(sketch, uri, uriModel, key, displayOptions, viewInfo, requestAndViewBinder, displayListener, downloadProgressListener);
+    public FreeRideDisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel,
+                                  @NonNull String key, @NonNull DisplayOptions displayOptions,
+                                  boolean useSmallerThumbnails, @NonNull RequestAndViewBinder requestAndViewBinder,
+                                  @Nullable DisplayListener displayListener,
+                                  @Nullable DownloadProgressListener downloadProgressListener) {
+        super(sketch, uri, uriModel, key, displayOptions, useSmallerThumbnails, requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
     @NonNull

@@ -2,6 +2,7 @@
 * remove: Remove ErrorTracker
 * new: Add [SketchCallback]
 * refactor: Zoom related function is now a separate module
+* remove: Remove HelperFactory and RequestFactory
 
 [SketchCallback]: sketch/src/main/java/me/panpf/sketch/SketchCallback.java
 

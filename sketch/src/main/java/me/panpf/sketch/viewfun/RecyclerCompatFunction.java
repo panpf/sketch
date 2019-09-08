@@ -23,7 +23,6 @@ import me.panpf.sketch.SLog;
 import me.panpf.sketch.SketchView;
 import me.panpf.sketch.request.DisplayOptions;
 import me.panpf.sketch.request.RedisplayListener;
-import me.panpf.sketch.uri.UriModel;
 
 /**
  * 由于 RecyclerView 在往回滚动的时候遇到可以直接使用的 Item（位置没有变）会不走 onBindViewHolder 而直接走 onAttachedToWindow 然后显示，
@@ -59,7 +58,7 @@ public class RecyclerCompatFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+    public boolean onReadyDisplay(@NonNull String uri) {
         isSetImage = true;
         return false;
     }

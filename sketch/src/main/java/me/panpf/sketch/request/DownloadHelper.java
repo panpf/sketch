@@ -29,24 +29,23 @@ import me.panpf.sketch.util.SketchUtils;
 /**
  * 下载 Helper，负责组织、收集、初始化下载参数，最后执行 commit() 提交请求
  */
-@SuppressWarnings("WeakerAccess")
 public class DownloadHelper {
     private static final String NAME = "DownloadHelper";
 
     @NonNull
     private Sketch sketch;
-    private boolean sync;
-
     @NonNull
     private String uri;
+    @Nullable
+    private DownloadListener downloadListener;
+
+    private boolean sync;
     @Nullable
     private UriModel uriModel;
     @Nullable
     private String key;
     @NonNull
     private DownloadOptions downloadOptions = new DownloadOptions();
-    @Nullable
-    private DownloadListener downloadListener;
     @Nullable
     private DownloadProgressListener downloadProgressListener;
 
@@ -187,8 +186,7 @@ public class DownloadHelper {
     private DownloadRequest submitRequest() {
         CallbackHandler.postCallbackStarted(downloadListener, sync);
 
-        RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DownloadRequest request = requestFactory.newDownloadRequest(sketch, uri, uriModel, key,
+        DownloadRequest request = new FreeRideDownloadRequest(sketch, uri, uriModel, key,
                 downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
 

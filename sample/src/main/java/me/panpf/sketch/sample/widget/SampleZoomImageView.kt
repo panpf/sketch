@@ -8,7 +8,6 @@ import android.text.format.Formatter
 import android.util.AttributeSet
 import android.view.View
 import me.panpf.javaxkt.util.requireNotNull
-import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageOrientationCorrector
 import me.panpf.sketch.drawable.SketchDrawable
@@ -45,8 +44,8 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    override fun onReadyDisplay(uriModel: UriModel?) {
-        super.onReadyDisplay(uriModel)
+    override fun onReadyDisplay(uri: String) {
+        super.onReadyDisplay(uri)
 
         disabledRedisplay = true
         onEvent(AppConfigChangedEvent(AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION))

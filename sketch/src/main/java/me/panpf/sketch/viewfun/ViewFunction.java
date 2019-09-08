@@ -18,16 +18,16 @@ package me.panpf.sketch.viewfun;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import me.panpf.sketch.decode.ImageAttrs;
 import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.ErrorCause;
 import me.panpf.sketch.request.ImageFrom;
-import me.panpf.sketch.uri.UriModel;
 
 public abstract class ViewFunction {
     /**
@@ -94,10 +94,9 @@ public abstract class ViewFunction {
     /**
      * 准备显示图片
      *
-     * @param uriModel {@link UriModel}
      * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
      */
-    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+    public boolean onReadyDisplay(@NonNull String uri) {
         return false;
     }
 

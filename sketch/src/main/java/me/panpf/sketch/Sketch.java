@@ -49,6 +49,7 @@ import me.panpf.sketch.util.SketchUtils;
  * <li>{@link #download(String, DownloadListener)}：下载图片到磁盘上</li>
  * </ul>
  */
+@SuppressWarnings("WeakerAccess")
 public class Sketch {
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
 
@@ -121,7 +122,7 @@ public class Sketch {
      */
     @NonNull
     public DownloadHelper download(@NonNull String uri, @Nullable DownloadListener listener) {
-        return configuration.getHelperFactory().getDownloadHelper(this, uri, listener);
+        return new DownloadHelper(this, uri, listener);
     }
 
     /**
@@ -133,7 +134,7 @@ public class Sketch {
      */
     @NonNull
     public LoadHelper load(@NonNull String uri, @Nullable LoadListener listener) {
-        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
+        return new LoadHelper(this, uri, listener);
     }
 
     /**
@@ -146,7 +147,7 @@ public class Sketch {
     @NonNull
     public LoadHelper loadFromAsset(@NonNull String assetFileName, @Nullable LoadListener listener) {
         String uri = AssetUriModel.makeUri(assetFileName);
-        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
+        return new LoadHelper(this, uri, listener);
     }
 
     /**
@@ -159,7 +160,7 @@ public class Sketch {
     @NonNull
     public LoadHelper loadFromResource(@DrawableRes int drawableResId, @Nullable LoadListener listener) {
         String uri = DrawableUriModel.makeUri(drawableResId);
-        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
+        return new LoadHelper(this, uri, listener);
     }
 
     /**
@@ -171,7 +172,7 @@ public class Sketch {
      */
     @NonNull
     public LoadHelper loadFromContent(@NonNull String uri, @Nullable LoadListener listener) {
-        return configuration.getHelperFactory().getLoadHelper(this, uri, listener);
+        return new LoadHelper(this, uri, listener);
     }
 
     /**
@@ -182,8 +183,9 @@ public class Sketch {
      * @return {@link DisplayHelper} 你可以继续通过 {@link DisplayHelper} 设置参数，最后调用其 {@link DisplayHelper#commit()} 方法提交
      */
     @NonNull
-    public DisplayHelper display(@Nullable String uri, @NonNull SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
+    // todo 支持异步和同步两种方式
+    public DisplayHelper display(@NonNull String uri, @NonNull SketchView sketchView) {
+        return new DisplayHelper(this, uri, sketchView);
     }
 
     /**
@@ -196,7 +198,7 @@ public class Sketch {
     @NonNull
     public DisplayHelper displayFromAsset(@NonNull String assetFileName, @NonNull SketchView sketchView) {
         String uri = AssetUriModel.makeUri(assetFileName);
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
+        return new DisplayHelper(this, uri, sketchView);
     }
 
     /**
@@ -209,7 +211,7 @@ public class Sketch {
     @NonNull
     public DisplayHelper displayFromResource(@DrawableRes int drawableResId, @NonNull SketchView sketchView) {
         String uri = DrawableUriModel.makeUri(drawableResId);
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
+        return new DisplayHelper(this, uri, sketchView);
     }
 
     /**
@@ -221,7 +223,7 @@ public class Sketch {
      */
     @NonNull
     public DisplayHelper displayFromContent(@NonNull String uri, @NonNull SketchView sketchView) {
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchView);
+        return new DisplayHelper(this, uri, sketchView);
     }
 
     /**

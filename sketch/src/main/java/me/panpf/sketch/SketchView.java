@@ -35,7 +35,6 @@ import me.panpf.sketch.request.DisplayOptions;
 import me.panpf.sketch.request.DisplayRequest;
 import me.panpf.sketch.request.DownloadProgressListener;
 import me.panpf.sketch.request.RedisplayListener;
-import me.panpf.sketch.uri.UriModel;
 
 public interface SketchView {
 
@@ -44,7 +43,7 @@ public interface SketchView {
 
     void setImageDrawable(@Nullable Drawable drawable);
 
-    @Nullable
+    @NonNull
     ImageView.ScaleType getScaleType();
 
     void clearAnimation();
@@ -101,7 +100,7 @@ public interface SketchView {
     /**
      * 准备显示图片
      */
-    void onReadyDisplay(@Nullable UriModel uriModel);
+    void onReadyDisplay(@NonNull String uri);
 
     /**
      * 获取显示参数

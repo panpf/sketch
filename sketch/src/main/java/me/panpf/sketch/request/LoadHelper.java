@@ -22,6 +22,7 @@ import android.widget.ImageView.ScaleType;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
@@ -42,18 +43,18 @@ public class LoadHelper {
 
     @NonNull
     private Sketch sketch;
-    private boolean sync;
-
     @NonNull
     private String uri;
+    @Nullable
+    private LoadListener loadListener;
+
+    private boolean sync;
     @Nullable
     private UriModel uriModel;
     @Nullable
     private String key;
     @NonNull
     private LoadOptions loadOptions = new LoadOptions();
-    @Nullable
-    private LoadListener loadListener;
     @Nullable
     private DownloadProgressListener downloadProgressListener;
 
@@ -389,8 +390,7 @@ public class LoadHelper {
     private LoadRequest submitRequest() {
         CallbackHandler.postCallbackStarted(loadListener, sync);
 
-        RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        LoadRequest request = requestFactory.newLoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
+        LoadRequest request = new LoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
 
         if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {

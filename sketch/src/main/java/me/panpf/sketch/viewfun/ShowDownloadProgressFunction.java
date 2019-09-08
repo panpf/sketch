@@ -63,7 +63,8 @@ public class ShowDownloadProgressFunction extends ViewFunction {
     }
 
     @Override
-    public boolean onReadyDisplay(@Nullable UriModel uriModel) {
+    public boolean onReadyDisplay(@NonNull String uri) {
+        UriModel uriModel = UriModel.match(view.getContext(), uri);
         long newProgress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
         boolean needRefresh = progress != newProgress;
         progress = newProgress;

@@ -288,7 +288,7 @@ public class ImageSizeCalculator {
      */
     public boolean canUseSmallerThumbnails(@NonNull LoadRequest loadRequest, @NonNull ImageType imageType) {
         return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).getViewInfo().isUseSmallerThumbnails() &&
+                ((DisplayRequest) loadRequest).isUseSmallerThumbnails() &&
                 SketchUtils.formatSupportBitmapRegionDecoder(imageType);
     }
 

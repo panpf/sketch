@@ -48,17 +48,18 @@ public class DisplayRequest extends LoadRequest {
     protected DisplayResult displayResult;
     @Nullable
     private DisplayListener displayListener;
-    @NonNull
-    private ViewInfo viewInfo;
+    private boolean useSmallerThumbnails;
     @NonNull
     private RequestAndViewBinder requestAndViewBinder;
 
-    public DisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DisplayOptions displayOptions,
-                          @NonNull ViewInfo viewInfo, @NonNull RequestAndViewBinder requestAndViewBinder, @Nullable DisplayListener displayListener,
+    public DisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel,
+                          @NonNull String key, @NonNull DisplayOptions displayOptions,
+                          boolean useSmallerThumbnails, @NonNull RequestAndViewBinder requestAndViewBinder,
+                          @Nullable DisplayListener displayListener,
                           @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener);
 
-        this.viewInfo = viewInfo;
+        this.useSmallerThumbnails = useSmallerThumbnails;
         this.requestAndViewBinder = requestAndViewBinder;
         this.displayListener = displayListener;
 
@@ -83,12 +84,8 @@ public class DisplayRequest extends LoadRequest {
         return getKey();
     }
 
-    /**
-     * 获取 View 信息
-     */
-    @NonNull
-    public ViewInfo getViewInfo() {
-        return viewInfo;
+    public boolean isUseSmallerThumbnails() {
+        return useSmallerThumbnails;
     }
 
     @Override

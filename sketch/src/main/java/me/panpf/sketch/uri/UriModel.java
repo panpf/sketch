@@ -17,9 +17,10 @@
 package me.panpf.sketch.uri;
 
 import android.content.Context;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.datasource.DataSource;
@@ -38,6 +39,7 @@ public abstract class UriModel {
      * @return {@link UriModel}. 能够解析这种 uri 的 {@link UriModel}
      */
     @Nullable
+    // todo 放到 Configuration 中
     public static UriModel match(@NonNull Sketch sketch, @NonNull String uri) {
         return !TextUtils.isEmpty(uri) ? sketch.getConfiguration().getUriModelManager().match(uri) : null;
     }
@@ -50,6 +52,7 @@ public abstract class UriModel {
      * @return {@link UriModel}. 能够解析这种 uri 的 {@link UriModel}
      */
     @Nullable
+    // todo 放到 Configuration 中
     public static UriModel match(@NonNull Context context, @NonNull String uri) {
         return match(Sketch.with(context), uri);
     }

@@ -47,8 +47,8 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    override fun onReadyDisplay(uriModel: UriModel?) {
-        super.onReadyDisplay(uriModel)
+    override fun onReadyDisplay(uri: String) {
+        super.onReadyDisplay(uri)
 
         disabledRedisplay = true
         onEvent(AppConfigChangedEvent(AppConfig.Key.SHOW_GIF_FLAG))

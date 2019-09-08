@@ -20,6 +20,7 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 
 import me.panpf.sketch.cache.BitmapPool;
@@ -44,10 +45,8 @@ import me.panpf.sketch.optionsfilter.OptionsFilterManager;
 import me.panpf.sketch.process.ImageProcessor;
 import me.panpf.sketch.process.ResizeImageProcessor;
 import me.panpf.sketch.request.FreeRideManager;
-import me.panpf.sketch.request.HelperFactory;
 import me.panpf.sketch.request.LoadListener;
 import me.panpf.sketch.request.RequestExecutor;
-import me.panpf.sketch.request.RequestFactory;
 import me.panpf.sketch.request.Resize;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.uri.UriModelManager;
@@ -55,7 +54,7 @@ import me.panpf.sketch.uri.UriModelManager;
 /**
  * {@link Sketch} 唯一配置类
  */
-@SuppressWarnings({"unused", "WeakerAccess", "UnusedReturnValue"})
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 public final class Configuration {
     private static final String NAME = "Configuration";
 
@@ -99,10 +98,6 @@ public final class Configuration {
     @NonNull
     private FreeRideManager freeRideManager;
     @NonNull
-    private HelperFactory helperFactory;
-    @NonNull
-    private RequestFactory requestFactory;
-    @NonNull
     private SketchCallback callback;
 
     Configuration(@NonNull Context context) {
@@ -130,8 +125,6 @@ public final class Configuration {
         this.processedImageCache = new ProcessedImageCache();
         this.orientationCorrector = new ImageOrientationCorrector();
 
-        this.helperFactory = new HelperFactory();
-        this.requestFactory = new RequestFactory();
         this.callback = new DefaultSketchCallback();
 
         application.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(application));
@@ -542,58 +535,6 @@ public final class Configuration {
         return this;
     }
 
-    /**
-     * 获取协助器创建工厂
-     *
-     * @return {@link HelperFactory}. 协助器创建工厂
-     */
-    @NonNull
-    public HelperFactory getHelperFactory() {
-        return helperFactory;
-    }
-
-    /**
-     * 设置协助器创建工厂
-     *
-     * @param helperFactory {@link HelperFactory}. 协助器创建工厂
-     * @return {@link Configuration}. 为了支持链式调用
-     */
-    @NonNull
-    public Configuration setHelperFactory(@NonNull HelperFactory helperFactory) {
-        //noinspection ConstantConditions
-        if (helperFactory != null) {
-            this.helperFactory = helperFactory;
-            SLog.w(NAME, "helperFactory=%s", helperFactory.toString());
-        }
-        return this;
-    }
-
-    /**
-     * 获取请求创建工厂
-     *
-     * @return {@link RequestFactory}. 请求创建工厂
-     */
-    @NonNull
-    public RequestFactory getRequestFactory() {
-        return requestFactory;
-    }
-
-    /**
-     * 设置请求创建工厂
-     *
-     * @param requestFactory {@link RequestFactory}. 请求创建工厂
-     * @return {@link Configuration}. 为了支持链式调用
-     */
-    @NonNull
-    public Configuration setRequestFactory(@NonNull RequestFactory requestFactory) {
-        //noinspection ConstantConditions
-        if (requestFactory != null) {
-            this.requestFactory = requestFactory;
-            SLog.w(NAME, "requestFactory=%s", requestFactory.toString());
-        }
-        return this;
-    }
-
     @NonNull
     public SketchCallback getCallback() {
         return callback;
@@ -743,8 +684,6 @@ public final class Configuration {
 
                 "\n" + "freeRideManager：" + freeRideManager.toString() +
                 "\n" + "executor：" + executor.toString() +
-                "\n" + "helperFactory：" + helperFactory.toString() +
-                "\n" + "requestFactory：" + requestFactory.toString() +
                 "\n" + "callback：" + callback.toString() +
 
                 "\n" + "pauseDownload：" + optionsFilterManager.isPauseDownloadEnabled() +
