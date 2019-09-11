@@ -62,7 +62,7 @@ public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
             versionCode = Integer.valueOf(path);
         } catch (NumberFormatException e) {
             String cause = String.format("Conversion app versionCode failed. %s", uri);
-            SLog.e(NAME, e, cause);
+            SLog.emt(NAME, e, cause);
             throw new GetDataSourceException(cause, e);
         }
 
@@ -71,13 +71,13 @@ public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
             packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             String cause = String.format("Not found PackageInfo by \"%s\". %s", packageName, uri);
-            SLog.e(NAME, e, cause);
+            SLog.emt(NAME, e, cause);
             throw new GetDataSourceException(cause, e);
         }
 
         if (packageInfo.versionCode != versionCode) {
             String cause = String.format(Locale.US, "App versionCode mismatch, %d != %d. %s", packageInfo.versionCode, versionCode, uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }
 
@@ -87,7 +87,7 @@ public class AppIconUriModel extends AbsBitmapDiskCacheUriModel {
 
         if (iconBitmap == null || iconBitmap.isRecycled()) {
             String cause = String.format("App icon bitmap invalid. %s", uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }
 

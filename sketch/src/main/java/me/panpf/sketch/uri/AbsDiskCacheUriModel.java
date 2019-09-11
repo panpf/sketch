@@ -84,7 +84,7 @@ public abstract class AbsDiskCacheUriModel<Content> extends UriModel {
                 closeContent(content, context);
 
                 String cause = String.format("Open output stream exception. %s", uri);
-                SLog.e(NAME, e, cause);
+                SLog.emt(NAME, e, cause);
                 throw new GetDataSourceException(cause, e);
             }
         } else {
@@ -98,7 +98,7 @@ public abstract class AbsDiskCacheUriModel<Content> extends UriModel {
                 diskCacheEditor.abort();
             }
             String cause = String.format("Output data exception. %s", uri);
-            SLog.e(NAME, tr, cause);
+            SLog.emt(NAME, tr, cause);
             throw new GetDataSourceException(cause, tr);
         } finally {
             SketchUtils.close(outputStream);
@@ -111,7 +111,7 @@ public abstract class AbsDiskCacheUriModel<Content> extends UriModel {
             } catch (IOException | DiskLruCache.EditorChangedException | DiskLruCache.ClosedException | DiskLruCache.FileNotExistException e) {
                 diskCacheEditor.abort();
                 String cause = String.format("Commit disk cache exception. %s", uri);
-                SLog.e(NAME, e, cause);
+                SLog.emt(NAME, e, cause);
                 throw new GetDataSourceException(cause, e);
             }
         }
@@ -124,7 +124,7 @@ public abstract class AbsDiskCacheUriModel<Content> extends UriModel {
                 return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
             } else {
                 String cause = String.format("Not found disk cache after save. %s", uri);
-                SLog.e(NAME, cause);
+                SLog.em(NAME, cause);
                 throw new GetDataSourceException(cause);
             }
         }

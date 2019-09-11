@@ -48,7 +48,7 @@ class ZoomRunner implements Runnable {
     @Override
     public void run() {
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. zoom run");
+            SLog.wm(ImageZoomer.MODULE, "not working. zoom run");
             return;
         }
 
@@ -64,8 +64,8 @@ class ZoomRunner implements Runnable {
         if (continueZoom) {
             SketchUtils.postOnAnimation(imageZoomer.getImageView(), this);
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(ImageZoomer.NAME, "finished. zoom run");
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vm(ImageZoomer.MODULE, "finished. zoom run");
             }
         }
     }

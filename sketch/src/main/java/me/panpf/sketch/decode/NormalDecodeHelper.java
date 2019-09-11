@@ -82,7 +82,7 @@ public class NormalDecodeHelper extends DecodeHelper {
                 try {
                     bitmap = ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions);
                 } catch (Throwable throwable1) {
-                    SLog.e(NAME, "onDecodeNormalImageError. " +
+                    SLog.emf(NAME, "onDecodeNormalImageError. " +
                                     "outWidth=%d, outHeight=%d, outMimeType=%s. " +
                                     "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
                             boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
@@ -95,7 +95,7 @@ public class NormalDecodeHelper extends DecodeHelper {
                     throw new DecodeException("InBitmap retry", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
                 }
             } else {
-                SLog.e(NAME, "onDecodeNormalImageError. " +
+                SLog.emf(NAME, "onDecodeNormalImageError. " +
                                 "outWidth=%d, outHeight=%d, outMimeType=%s. " +
                                 "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,

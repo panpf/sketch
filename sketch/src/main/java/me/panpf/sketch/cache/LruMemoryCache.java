@@ -30,7 +30,7 @@ import me.panpf.sketch.util.SketchUtils;
  * 根据最少使用规则释放缓存的内存缓存管理器
  */
 public class LruMemoryCache implements MemoryCache {
-    private static final String NAME = "LruMemoryCache";
+    private static final String MODULE = "LruMemoryCache";
 
     @NonNull
     private final LruCache<String, SketchRefBitmap> cache;
@@ -58,26 +58,26 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable put, key=%s", key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(MODULE, "Disabled. Unable put, key=%s", key);
             }
             return;
         }
 
         if (cache.get(key) != null) {
-            SLog.w(NAME, String.format("Exist. key=%s", key));
+            SLog.wm(MODULE, String.format("Exist. key=%s", key));
             return;
         }
 
         int oldCacheSize = 0;
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+        if (SLog.isLoggable(SLog.DEBUG)) {
             oldCacheSize = cache.size();
         }
 
         cache.put(key, refBitmap);
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-            SLog.d(NAME, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(MODULE, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
                     Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
                     Formatter.formatFileSize(context, cache.size()));
         }
@@ -90,8 +90,8 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable get, key=%s", key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(MODULE, "Disabled. Unable get, key=%s", key);
             }
             return null;
         }
@@ -106,15 +106,15 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable remove, key=%s", key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(MODULE, "Disabled. Unable remove, key=%s", key);
             }
             return null;
         }
 
         SketchRefBitmap refBitmap = cache.remove(key);
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-            SLog.d(NAME, "remove. memoryCacheSize: %s",
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(MODULE, "remove. memoryCacheSize: %s",
                     Formatter.formatFileSize(context, cache.size()));
         }
         return refBitmap;
@@ -149,7 +149,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         long releasedSize = memoryCacheSize - getSize();
-        SLog.w(NAME, "trimMemory. level=%s, released: %s",
+        SLog.wmf(MODULE, "trimMemory. level=%s, released: %s",
                 SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
     }
 
@@ -163,9 +163,9 @@ public class LruMemoryCache implements MemoryCache {
         if (this.disabled != disabled) {
             this.disabled = disabled;
             if (disabled) {
-                SLog.w(NAME, "setDisabled. %s", true);
+                SLog.wmf(MODULE, "setDisabled. %s", true);
             } else {
-                SLog.w(NAME, "setDisabled. %s", false);
+                SLog.wmf(MODULE, "setDisabled. %s", false);
             }
         }
     }
@@ -176,7 +176,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        SLog.w(NAME, "clear. before size: %s", Formatter.formatFileSize(context, cache.size()));
+        SLog.wmf(MODULE, "clear. before size: %s", Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }
 
@@ -198,7 +198,7 @@ public class LruMemoryCache implements MemoryCache {
     @NonNull
     @Override
     public String toString() {
-        return String.format("%s(maxSize=%s)", NAME, Formatter.formatFileSize(context, getMaxSize()));
+        return String.format("%s(maxSize=%s)", MODULE, Formatter.formatFileSize(context, getMaxSize()));
     }
 
     private static class RefBitmapLruCache extends LruCache<String, SketchRefBitmap> {
@@ -209,7 +209,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         public SketchRefBitmap put(String key, SketchRefBitmap refBitmap) {
-            refBitmap.setIsCached(NAME + ":put", true);
+            refBitmap.setIsCached(MODULE + ":put", true);
             return super.put(key, refBitmap);
         }
 
@@ -221,7 +221,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         protected void entryRemoved(boolean evicted, String key, SketchRefBitmap oldRefBitmap, SketchRefBitmap newRefBitmap) {
-            oldRefBitmap.setIsCached(NAME + ":entryRemoved", false);
+            oldRefBitmap.setIsCached(MODULE + ":entryRemoved", false);
         }
     }
 }

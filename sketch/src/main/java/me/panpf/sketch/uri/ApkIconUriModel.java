@@ -67,7 +67,7 @@ public class ApkIconUriModel extends AbsBitmapDiskCacheUriModel {
 
         if (iconBitmap == null || iconBitmap.isRecycled()) {
             String cause = String.format("Apk icon bitmap invalid. %s", uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }
         return iconBitmap;

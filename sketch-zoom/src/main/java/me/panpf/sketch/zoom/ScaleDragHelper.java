@@ -34,7 +34,7 @@ import me.panpf.sketch.Sketch;
 import me.panpf.sketch.decode.ImageSizeCalculator;
 import me.panpf.sketch.util.SketchUtils;
 
-import static me.panpf.sketch.zoom.ImageZoomer.NAME;
+import static me.panpf.sketch.zoom.ImageZoomer.MODULE;
 
 /**
  * 缩放和拖拽处理，控制 Matrix 变化，更新 Matrix
@@ -116,8 +116,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
     boolean onTouchEvent(@NonNull MotionEvent event) {// 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner.isRunning()) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                    SLog.d(NAME, "disallow parent intercept touch event. location running");
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vm(MODULE, "disallow parent intercept touch event. location running");
                 }
                 requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true);
                 return true;
@@ -145,8 +145,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         tempLastScaleFocusY = 0;
 
         // 上来就禁止父View拦截事件
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(NAME, "disallow parent intercept touch event. action down");
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vm(MODULE, "disallow parent intercept touch event. action down");
         }
         requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true);
 
@@ -166,16 +166,16 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
             return;
         }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(NAME, "drag. dx: %s, dy: %s", dx, dy);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(MODULE, "drag. dx: %s, dy: %s", dx, dy);
         }
 
         supportMatrix.postTranslate(dx, dy);
         checkAndApplyMatrix();
 
         if (!imageZoomer.isAllowParentInterceptOnEdge() || scaleDragGestureDetector.isScaling() || disallowParentInterceptTouchEvent) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(NAME, "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s",
                         imageZoomer.isAllowParentInterceptOnEdge(), scaleDragGestureDetector.isScaling(), disallowParentInterceptTouchEvent);
             }
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true);
@@ -186,14 +186,14 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
 //        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
 //                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)) {
         if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), false);
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
                         getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true);
@@ -213,8 +213,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
 
     @Override
     public void onScale(float scaleFactor, float focusX, float focusY) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(NAME, "scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(MODULE, "scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY);
         }
 
         tempLastScaleFocusX = focusX;
@@ -256,8 +256,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
 
     @Override
     public boolean onScaleBegin() {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(NAME, "scale begin");
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vm(MODULE, "scale begin");
         }
 
         zooming = true;
@@ -266,8 +266,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
 
     @Override
     public void onScaleEnd() {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(NAME, "scale end");
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vm(MODULE, "scale end");
         }
 
         float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
@@ -521,8 +521,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
         //noinspection UnnecessaryLocalVariable
         final int endY = trimCenterLocationY;
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(NAME, "location. start=%dx%d, end=%dx%d", startX, startY, endX, endY);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(MODULE, "location. start=%dx%d, end=%dx%d", startX, startY, endX, endY);
         }
 
         if (animate) {
@@ -576,8 +576,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
      */
     void getDrawRect(RectF rectF) {
         if (!imageZoomer.isWorking()) {
-            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
-                SLog.v(NAME, "not working. getDrawRect");
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vm(MODULE, "not working. getDrawRect");
             }
             rectF.setEmpty();
             return;
@@ -594,8 +594,8 @@ class ScaleDragHelper implements ScaleDragGestureDetector.OnScaleDragGestureList
      */
     void getVisibleRect(Rect rect) {
         if (!imageZoomer.isWorking()) {
-            if (SLog.isLoggable(SLog.LEVEL_VERBOSE | SLog.TYPE_ZOOM)) {
-                SLog.v(NAME, "not working. getVisibleRect");
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vm(MODULE, "not working. getVisibleRect");
             }
             rect.setEmpty();
             return;

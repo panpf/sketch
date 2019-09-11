@@ -124,13 +124,13 @@ public class BlockDisplayer {
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageType.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "Use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(NAME, "Use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "Don't need to use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(NAME, "Don't need to use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }
@@ -215,14 +215,14 @@ public class BlockDisplayer {
 
     public void onMatrixChanged() {
         if (!isReady() && !isInitializing()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "BlockDisplayer not available. onMatrixChanged. %s", imageUri);
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(NAME, "BlockDisplayer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
-            SLog.w(NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
+            SLog.wmf(NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             return;
         }
 
@@ -245,23 +245,23 @@ public class BlockDisplayer {
 
         // 没有准备好就不往下走了
         if (!isReady()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "not ready. %s", imageUri);
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(NAME, "not ready. %s", imageUri);
             }
             return;
         }
 
         // 暂停中也不走了
         if (paused) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "paused. %s", imageUri);
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(NAME, "paused. %s", imageUri);
             }
             return;
         }
 
         // 传进来的参数不能用就什么也不显示
         if (newVisibleRect.isEmpty() || drawableSize.isEmpty() || viewSize.isEmpty()) {
-            SLog.w(NAME, "update params is empty. update. newVisibleRect=%s, drawableSize=%s, viewSize=%s. %s",
+            SLog.wmf(NAME, "update params is empty. update. newVisibleRect=%s, drawableSize=%s, viewSize=%s. %s",
                     newVisibleRect.toShortString(), drawableSize.toString(), viewSize.toString(), imageUri);
             clean("update param is empty");
             return;
@@ -269,8 +269,8 @@ public class BlockDisplayer {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == drawableSize.getWidth() && newVisibleRect.height() == drawableSize.getHeight()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "full display. update. newVisibleRect=%s. %s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(NAME, "full display. update. newVisibleRect=%s. %s",
                         newVisibleRect.toShortString(), imageUri);
             }
             clean("full display");
@@ -315,16 +315,16 @@ public class BlockDisplayer {
         paused = pause;
 
         if (paused) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "pause. %s", imageUri);
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(NAME, "pause. %s", imageUri);
             }
 
             if (running) {
                 clean("pause");
             }
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "resume. %s", imageUri);
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(NAME, "resume. %s", imageUri);
             }
 
             if (running) {
@@ -515,7 +515,7 @@ public class BlockDisplayer {
         @Override
         public void onInitCompleted(@NonNull String imageUri, @NonNull ImageRegionDecoder decoder) {
             if (!running) {
-                SLog.w(NAME, "stop running. initCompleted. %s", imageUri);
+                SLog.wmf(NAME, "stop running. initCompleted. %s", imageUri);
                 return;
             }
 
@@ -527,7 +527,7 @@ public class BlockDisplayer {
         @Override
         public void onInitError(@NonNull String imageUri, @NonNull Exception e) {
             if (!running) {
-                SLog.w(NAME, "stop running. initError. %s", imageUri);
+                SLog.wmf(NAME, "stop running. initError. %s", imageUri);
                 return;
             }
 
@@ -537,7 +537,7 @@ public class BlockDisplayer {
         @Override
         public void onDecodeCompleted(@NonNull Block block, @NonNull Bitmap bitmap, int useTime) {
             if (!running) {
-                SLog.w(NAME, "stop running. decodeCompleted. block=%s", block.getInfo());
+                SLog.wmf(NAME, "stop running. decodeCompleted. block=%s", block.getInfo());
                 BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
                 return;
             }
@@ -548,7 +548,7 @@ public class BlockDisplayer {
         @Override
         public void onDecodeError(@NonNull Block block, @NonNull DecodeHandler.DecodeErrorException exception) {
             if (!running) {
-                SLog.w(NAME, "stop running. decodeError. block=%s", block.getInfo());
+                SLog.wmf(NAME, "stop running. decodeError. block=%s", block.getInfo());
                 return;
             }
 

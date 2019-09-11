@@ -63,8 +63,8 @@ public class FreeRideManager {
 
             displayFreeRideProviderMap.put(provider.getDisplayFreeRideKey(), provider);
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "display. register free ride provider. %s",
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "display. register free ride provider. %s",
                         provider.getDisplayFreeRideLog());
             }
         }
@@ -84,8 +84,8 @@ public class FreeRideManager {
             if (displayFreeRideProviderMap != null) {
                 freeRideProvider = displayFreeRideProviderMap.remove(provider.getDisplayFreeRideKey());
                 if (freeRideProvider != null) {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                        SLog.d(NAME, "display. unregister free ride provider. %s",
+                    if (SLog.isLoggable(SLog.DEBUG)) {
+                        SLog.dmf(NAME, "display. unregister free ride provider. %s",
                                 freeRideProvider.getDisplayFreeRideLog());
                     }
                 }
@@ -104,12 +104,12 @@ public class FreeRideManager {
                 if (!childFreeRide.isCanceled()) {
                     boolean success = childFreeRide.processDisplayFreeRide();
 
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                        SLog.d(NAME, "display. callback free ride. %s. %s  <-  %s",
+                    if (SLog.isLoggable(SLog.DEBUG)) {
+                        SLog.dmf(NAME, "display. callback free ride. %s. %s  <-  %s",
                                 success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
                     }
                 } else {
-                    SLog.w(NAME, "display. callback free ride. %s. %s  <-  %s",
+                    SLog.wmf(NAME, "display. callback free ride. %s. %s  <-  %s",
                             "canceled", childFreeRide.getDisplayFreeRideLog(), providerId);
                 }
             }
@@ -139,8 +139,8 @@ public class FreeRideManager {
 
             freeRideProvider.byDisplayFreeRide(childFreeRide);
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "display. by free ride. %s -> %s",
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "display. by free ride. %s -> %s",
                         childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog());
             }
             return true;
@@ -166,8 +166,8 @@ public class FreeRideManager {
 
             downloadFreeRideProviderMap.put(provider.getDownloadFreeRideKey(), provider);
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "download. register free ride provider. %s",
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "download. register free ride provider. %s",
                         provider.getDownloadFreeRideLog());
             }
         }
@@ -187,8 +187,8 @@ public class FreeRideManager {
             if (downloadFreeRideProviderMap != null) {
                 freeRideProvider = downloadFreeRideProviderMap.remove(provider.getDownloadFreeRideKey());
                 if (freeRideProvider != null) {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                        SLog.d(NAME, "download. unregister free ride provider. %s",
+                    if (SLog.isLoggable(SLog.DEBUG)) {
+                        SLog.dmf(NAME, "download. unregister free ride provider. %s",
                                 freeRideProvider.getDownloadFreeRideLog());
                     }
                 }
@@ -207,12 +207,12 @@ public class FreeRideManager {
                 if (!childFreeRide.isCanceled()) {
                     boolean success = childFreeRide.processDownloadFreeRide();
 
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                        SLog.d(NAME, "download. callback free ride. %s. %s  <-  %s",
+                    if (SLog.isLoggable(SLog.DEBUG)) {
+                        SLog.dmf(NAME, "download. callback free ride. %s. %s  <-  %s",
                                 success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
                     }
                 } else {
-                    SLog.w(NAME, "download. callback free ride. %s. %s  <-  %s",
+                    SLog.wmf(NAME, "download. callback free ride. %s. %s  <-  %s",
                             "canceled", childFreeRide.getDownloadFreeRideLog(), providerId);
                 }
             }
@@ -242,8 +242,8 @@ public class FreeRideManager {
 
             freeRideProvider.byDownloadFreeRide(childFreeRide);
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "download. by free ride. %s -> %s",
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "download. by free ride. %s -> %s",
                         childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog());
             }
             return true;

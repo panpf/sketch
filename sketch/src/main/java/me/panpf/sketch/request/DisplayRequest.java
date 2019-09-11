@@ -96,8 +96,8 @@ public class DisplayRequest extends LoadRequest {
 
         // 绑定关系已经断了就直接取消请求
         if (requestAndViewBinder.isBroken()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG)) {
-                SLog.d(getLogName(), "The request and the connection to the view are interrupted. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "The request and the connection to the view are interrupted. %s. %s", getThreadName(), getKey());
             }
             doCancel(CancelCause.BIND_DISCONNECT);
             return true;
@@ -140,8 +140,8 @@ public class DisplayRequest extends LoadRequest {
     @Override
     protected void runLoad() {
         if (isCanceled()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before decode. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before decode. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -156,8 +156,8 @@ public class DisplayRequest extends LoadRequest {
                 // 当 isDecodeGifImage 为 true 时是要播放 gif 的，而内存缓存里的 gif 图都是第一帧静态图片，所以不能用
                 if (!(getOptions().isDecodeGifImage() && "image/gif".equalsIgnoreCase(cachedRefBitmap.getAttrs().getMimeType()))) {
                     if (!cachedRefBitmap.isRecycled()) {
-                        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                            SLog.d(getLogName(), "From memory get drawable. bitmap=%s. %s. %s",
+                        if (SLog.isLoggable(SLog.DEBUG)) {
+                            SLog.dmf(getLogName(), "From memory get drawable. bitmap=%s. %s. %s",
                                     cachedRefBitmap.getInfo(), getThreadName(), getKey());
                         }
 
@@ -170,7 +170,7 @@ public class DisplayRequest extends LoadRequest {
                         return;
                     } else {
                         memoryCache.remove(getMemoryCacheKey());
-                        SLog.e(getLogName(), "Memory cache drawable recycled. bitmap=%s. %s. %s", cachedRefBitmap.getInfo(), getThreadName(), getKey());
+                        SLog.emf(getLogName(), "Memory cache drawable recycled. bitmap=%s. %s. %s", cachedRefBitmap.getInfo(), getThreadName(), getKey());
                     }
                 }
             }
@@ -209,7 +209,7 @@ public class DisplayRequest extends LoadRequest {
             displayResult = new DisplayResult((Drawable) gifDrawable, loadResult.getImageFrom(), loadResult.getImageAttrs());
             displayCompleted();
         } else {
-            SLog.e(getLogName(), "Not found data after load completed. %s. %s", getThreadName(), getKey());
+            SLog.emf(getLogName(), "Not found data after load completed. %s. %s", getThreadName(), getKey());
             doError(ErrorCause.DATA_LOST_AFTER_LOAD_COMPLETED);
         }
     }
@@ -222,8 +222,8 @@ public class DisplayRequest extends LoadRequest {
     protected void runCompletedInMainThread() {
         Drawable drawable = displayResult.getDrawable();
         if (drawable == null) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Drawable is null before call completed. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Drawable is null before call completed. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -239,8 +239,8 @@ public class DisplayRequest extends LoadRequest {
     private void displayImage(Drawable drawable) {
         SketchView sketchView = requestAndViewBinder.getView();
         if (isCanceled() || sketchView == null) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -250,13 +250,13 @@ public class DisplayRequest extends LoadRequest {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap().isRecycled()) {
                 // 这里应该不会再出问题了
-                SLog.e(getLogName(), "Bitmap recycled on display. imageUri=%s, drawable=%s",
+                SLog.emf(getLogName(), "Bitmap recycled on display. imageUri=%s, drawable=%s",
                         getUri(), ((SketchDrawable) drawable).getInfo());
                 getConfiguration().getCallback().onError(new BitmapRecycledOnDisplayException(this, (SketchDrawable) drawable));
 
                 // 图片不可用
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(getLogName(), "Display image exception. bitmap recycled. %s. %s. %s. %s",
+                if (SLog.isLoggable(SLog.DEBUG)) {
+                    SLog.dmf(getLogName(), "Display image exception. bitmap recycled. %s. %s. %s. %s",
                             ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom(), getThreadName(), getKey());
                 }
 
@@ -272,12 +272,12 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getShapeSize(), displayOptions.getShaper());
         }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+        if (SLog.isLoggable(SLog.DEBUG)) {
             String drawableInfo = "unknown";
             if (drawable instanceof SketchRefDrawable) {
                 drawableInfo = ((SketchRefDrawable) drawable).getInfo();
             }
-            SLog.d(getLogName(), "Display image completed. %s. %s. view(%s). %s. %s",
+            SLog.dmf(getLogName(), "Display image completed. %s. %s. view(%s). %s. %s",
                     displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(sketchView.hashCode()), getThreadName(), getKey());
         }
 
@@ -295,8 +295,8 @@ public class DisplayRequest extends LoadRequest {
     protected void runErrorInMainThread() {
         SketchView sketchView = requestAndViewBinder.getView();
         if (isCanceled() || sketchView == null) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
             }
             return;
         }

@@ -73,8 +73,8 @@ public class RecyclerCompatFunction extends ViewFunction {
 
         @Override
         public void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "restore image on attached to window. %s", cacheUri);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "restore image on attached to window. %s", cacheUri);
             }
         }
     }

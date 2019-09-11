@@ -61,7 +61,7 @@ public class ProcessImageResultProcessor implements ResultProcessor {
         } catch (Throwable e) {
             e.printStackTrace();
             Context application = request.getConfiguration().getContext();
-            SLog.e("ProcessImageResultProcessor", "onProcessImageError. imageUri: %s. processor: %s. " +
+            SLog.emf("ProcessImageResultProcessor", "onProcessImageError. imageUri: %s. processor: %s. " +
                             "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
                     request.getKey(), imageProcessor.toString(),
                     Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),

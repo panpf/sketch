@@ -137,7 +137,7 @@ public class MakerStateImage implements StateImage {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             Context application = sketch.getConfiguration().getContext();
-            SLog.e("MakerStateImage", "onProcessImageError. imageUri: %s. processor: %s. " +
+            SLog.emf("MakerStateImage", "onProcessImageError. imageUri: %s. processor: %s. " +
                             "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
                     DrawableUriModel.makeUri(resId), processor.toString(),
                     Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),

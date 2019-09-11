@@ -55,14 +55,14 @@ public class XpkIconUriModel extends AbsStreamDiskCacheUriModel {
             zipFile = new ZipFile(new File(getUriContent(uri)));
         } catch (IOException e) {
             String cause = String.format("Unable open xpk file. %s", uri);
-            SLog.e(NAME, e, cause);
+            SLog.emt(NAME, e, cause);
             throw new GetDataSourceException(cause, e);
         }
 
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             String cause = String.format("Not found icon.png in xpk file. %s", uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }
 
@@ -70,7 +70,7 @@ public class XpkIconUriModel extends AbsStreamDiskCacheUriModel {
             return zipFile.getInputStream(zipEntry);
         } catch (IOException e) {
             String cause = String.format("Open \"icon.png\" input stream exception. %s", uri);
-            SLog.e(NAME, e, cause);
+            SLog.emt(NAME, e, cause);
             throw new GetDataSourceException(cause, e);
         }
     }

@@ -43,7 +43,7 @@ import me.panpf.sketch.zoom.Size;
  */
 // TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
 public class BlockManager {
-    private static final String NAME = "BlockManager";
+    private static final String MODULE = "BlockManager";
 
     public int blockBaseNumber = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
     @NonNull
@@ -90,8 +90,8 @@ public class BlockManager {
 
     public void update(Rect newVisibleRect, Size drawableSize, Size viewSize, Point imageSize, boolean zooming) {
         if (zooming) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(NAME, "zooming. newVisibleRect=%s, blocks=%d",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.dmf(MODULE, "zooming. newVisibleRect=%s, blocks=%d",
                         newVisibleRect.toShortString(), blockList.size());
             }
             return;
@@ -99,8 +99,8 @@ public class BlockManager {
 
         // 过滤掉重复的刷新
         if (visibleRect.equals(newVisibleRect)) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
                         newVisibleRect.toShortString(), visibleRect.toShortString());
             }
             return;
@@ -127,7 +127,7 @@ public class BlockManager {
         newDrawRect.bottom = Math.min(drawableSize.getHeight(), newVisibleRect.bottom + drawHeightAdd);
 
         if (newDrawRect.isEmpty()) {
-            SLog.e(NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
+            SLog.emf(MODULE, "newDrawRect is empty. %s", newDrawRect.toShortString());
             return;
         }
 
@@ -137,7 +137,7 @@ public class BlockManager {
         final int blockHeight = newDrawRect.height() / finalBlocks;
 
         if (blockWidth <= 0 || blockHeight <= 0) {
-            SLog.e(NAME, "blockWidth or blockHeight exception. %dx%d", blockWidth, blockHeight);
+            SLog.emf(MODULE, "blockWidth or blockHeight exception. %dx%d", blockWidth, blockHeight);
             return;
         }
 
@@ -157,8 +157,8 @@ public class BlockManager {
         calculateSrcRect(newDrawSrcRect, newDrawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
         int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewSize.getWidth(), viewSize.getHeight());
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, blocks=%d",
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(MODULE, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, blocks=%d",
                     newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
                     inSampleSize, blockDisplayer.getZoomScale(), blockDisplayer.getLastZoomScale(), blockList.size());
         }
@@ -185,8 +185,8 @@ public class BlockManager {
                     loadBlocks(emptyRectList, blockWidth, blockHeight, imageWidth, imageHeight,
                             originWidthScale, originHeightScale, inSampleSize, newDecodeRect);
                 } else {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "not found empty rect");
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vm(MODULE, "not found empty rect");
                     }
                 }
 
@@ -195,18 +195,18 @@ public class BlockManager {
                     onBlockChangedListener.onBlockChanged(blockDisplayer);
                 }
 
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "update finished, newDecodeRect=%s, blocks=%d",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "update finished, newDecodeRect=%s, blocks=%d",
                             newDecodeRect.toShortString(), blockList.size());
                 }
             } else {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "update finished draw rect no change");
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vm(MODULE, "update finished draw rect no change");
                 }
             }
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "update finished. final draw rect is empty. newDecodeRect=%s",
                         newDecodeRect.toShortString());
             }
         }
@@ -279,16 +279,16 @@ public class BlockManager {
             if (newDrawRect.left == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.left = 0;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect left to 0, newDecodeRect=%s", newDecodeRect.toShortString());
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect left to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
             } else if (leftSpace > leftAndRightEdge || newDecodeRect.left - drawBlockWidth <= 0) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.left > newDrawRect.left) {
                     newDecodeRect.left = Math.max(0, newDecodeRect.left - drawBlockWidth);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "decode rect left expand %d, newDecodeRect=%s",
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "decode rect left expand %d, newDecodeRect=%s",
                                 drawBlockWidth, newDecodeRect.toShortString());
                     }
                 }
@@ -300,16 +300,16 @@ public class BlockManager {
             if (newDrawRect.top == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.top = 0;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect top to 0, newDecodeRect=%s", newDecodeRect.toShortString());
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect top to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
             } else if (topSpace > topAndBottomEdge || newDecodeRect.top - drawBlockHeight <= 0) {
                 // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.top > newDrawRect.top) {
                     newDecodeRect.top = Math.max(0, newDecodeRect.top - drawBlockHeight);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "decode rect top expand %d, newDecodeRect=%s",
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "decode rect top expand %d, newDecodeRect=%s",
                                 drawBlockHeight, newDecodeRect.toShortString());
                     }
                 }
@@ -322,8 +322,8 @@ public class BlockManager {
             if (newDrawRect.right == maxDrawWidth) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.right = maxDrawWidth;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect right to %d, newDecodeRect=%s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect right to %d, newDecodeRect=%s",
                             maxDrawWidth, newDecodeRect.toShortString());
                 }
             } else if (rightSpace > leftAndRightEdge || newDecodeRect.right + drawBlockWidth >= maxDrawWidth) {
@@ -331,8 +331,8 @@ public class BlockManager {
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.right < newDrawRect.right) {
                     newDecodeRect.right = Math.min(maxDrawWidth, newDecodeRect.right + drawBlockWidth);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "decode rect right expand %d, newDecodeRect=%s",
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "decode rect right expand %d, newDecodeRect=%s",
                                 drawBlockWidth, newDecodeRect.toShortString());
                     }
                 }
@@ -344,8 +344,8 @@ public class BlockManager {
             if (newDrawRect.bottom > maxDrawHeight) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.bottom = maxDrawHeight;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect bottom to %d, newDecodeRect=%s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect bottom to %d, newDecodeRect=%s",
                             maxDrawHeight, newDecodeRect.toShortString());
                 }
             } else if (bottomSpace > topAndBottomEdge || newDecodeRect.bottom + drawBlockHeight >= maxDrawHeight) {
@@ -353,8 +353,8 @@ public class BlockManager {
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.bottom < newDrawRect.bottom) {
                     newDecodeRect.bottom = Math.min(maxDrawHeight, newDecodeRect.bottom + drawBlockHeight);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "decode rect bottom expand %d, newDecodeRect=%s",
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "decode rect bottom expand %d, newDecodeRect=%s",
                                 drawBlockHeight, newDecodeRect.toShortString());
                     }
                 }
@@ -368,29 +368,29 @@ public class BlockManager {
                 newDecodeRect.bottom - drawBlockHeight > newDrawRect.bottom) {
             if (newDecodeRect.left + drawBlockWidth < newDrawRect.left) {
                 newDecodeRect.left += drawBlockWidth;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect left reduced %d, newDecodeRect=%s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect left reduced %d, newDecodeRect=%s",
                             drawBlockWidth, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.top + drawBlockHeight < newDrawRect.top) {
                 newDecodeRect.top += drawBlockHeight;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect top reduced %d, newDecodeRect=%s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect top reduced %d, newDecodeRect=%s",
                             drawBlockHeight, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.right - drawBlockWidth > newDrawRect.right) {
                 newDecodeRect.right -= drawBlockWidth;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect right reduced %d, newDecodeRect=%s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect right reduced %d, newDecodeRect=%s",
                             drawBlockWidth, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.bottom - drawBlockHeight > newDrawRect.bottom) {
                 newDecodeRect.bottom -= drawBlockHeight;
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "decode rect bottom reduced %d, newDecodeRect=%s",
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(MODULE, "decode rect bottom reduced %d, newDecodeRect=%s",
                             drawBlockHeight, newDecodeRect.toShortString());
                 }
             }
@@ -456,7 +456,7 @@ public class BlockManager {
             /*
              * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，这里的处理办法是暂时改用旧版的排序算法再次排序
              */
-            SLog.e(NAME, "onBlockSortError. %s", Block.blockListToString(blockList));
+            SLog.emf(MODULE, "onBlockSortError. %s", Block.blockListToString(blockList));
             Sketch.with(context).getConfiguration().getCallback().onError(new BlockSortException(e, blockList, false));
 
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
@@ -465,7 +465,7 @@ public class BlockManager {
             } catch (IllegalArgumentException e2) {
                 e2.printStackTrace();
 
-                SLog.e(NAME, "onBlockSortError. useLegacyMergeSort. %s", Block.blockListToString(blockList));
+                SLog.emf(MODULE, "onBlockSortError. useLegacyMergeSort. %s", Block.blockListToString(blockList));
                 Sketch.with(context).getConfiguration().getCallback().onError(new BlockSortException(e, blockList, false));
             }
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "false");
@@ -583,15 +583,15 @@ public class BlockManager {
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
             if (blockDisplayer.getZoomScale() != block.scale || !SketchUtils.isCross(block.drawRect, drawRect)) {
                 if (!block.isEmpty()) {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "recycle block. block=%s", block.getInfo());
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "recycle block. block=%s", block.getInfo());
                     }
                     blockIterator.remove();
                     block.clean(bitmapPool);
                     blockPool.put(block);
                 } else {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "recycle loading block and refresh key. block=%s", block.getInfo());
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "recycle loading block and refresh key. block=%s", block.getInfo());
                     }
                     block.refreshKey();
                     blockIterator.remove();
@@ -604,8 +604,8 @@ public class BlockManager {
                             int imageWidth, int imageHeight, float originWidthScale, float originHeightScale,
                             int inSampleSize, Rect newDecodeRect) {
         for (Rect emptyRect : emptyRectList) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "load emptyRect=%s", emptyRect.toShortString());
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "load emptyRect=%s", emptyRect.toShortString());
             }
 
             int blockLeft = emptyRect.left, blockTop = emptyRect.top, blockRight = 0, blockBottom = 0;
@@ -622,16 +622,16 @@ public class BlockManager {
                     calculateSrcRect(loadBlock.srcRect, loadBlock.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
 
                     blockList.add(loadBlock);
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "submit and refresh key. newDecodeRect=%s, block=%s",
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "submit and refresh key. newDecodeRect=%s, block=%s",
                                 newDecodeRect.toShortString(), loadBlock.getInfo());
                     }
 
                     loadBlock.refreshKey();
                     blockDisplayer.getBlockDecoder().decodeBlock(loadBlock);
                 } else {
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "repeated block. blockDrawRect=%d, %d, %d, %d",
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(MODULE, "repeated block. blockDrawRect=%d, %d, %d, %d",
                                 Math.round(blockLeft), Math.round(blockTop), Math.round(blockRight), Math.round(blockBottom));
                     }
                 }
@@ -650,9 +650,9 @@ public class BlockManager {
     }
 
     public void decodeCompleted(Block block, Bitmap bitmap, int useTime) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
+        if (SLog.isLoggable(SLog.VERBOSE)) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            SLog.d(NAME, "decode completed. useTime=%dms, block=%s, bitmap=%dx%d(%s), blocks=%d",
+            SLog.vmf(MODULE, "decode completed. useTime=%dms, block=%s, bitmap=%dx%d(%s), blocks=%d",
                     useTime, block.getInfo(), bitmap.getWidth(), bitmap.getHeight(), bitmapConfig, blockList.size());
         }
 
@@ -669,7 +669,7 @@ public class BlockManager {
     }
 
     public void decodeError(Block block, DecodeHandler.DecodeErrorException exception) {
-        SLog.w(NAME, "decode failed. %s. block=%s, blocks=%d",
+        SLog.wmf(MODULE, "decode failed. %s. block=%s, blocks=%d",
                 exception.getCauseMessage(), block.getInfo(), blockList.size());
 
         blockList.remove(block);
@@ -683,8 +683,8 @@ public class BlockManager {
             block.refreshKey();
             block.clean(bitmapPool);
             blockPool.put(block);
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                SLog.d(NAME, "clean block and refresh key. %s. block=%s", why, block.getInfo());
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(MODULE, "clean block and refresh key. %s. block=%s", why, block.getInfo());
             }
         }
         blockList.clear();

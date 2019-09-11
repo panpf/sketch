@@ -118,8 +118,8 @@ public abstract class BaseRequest {
     protected void setErrorCause(@NonNull ErrorCause cause) {
         if (!isFinished()) {
             this.errorCause = cause;
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request error. %s. %s. %s", cause.name(), getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request error. %s. %s. %s", cause.name(), getThreadName(), getKey());
             }
         }
     }
@@ -132,8 +132,8 @@ public abstract class BaseRequest {
     protected void setCancelCause(@NonNull CancelCause cause) {
         if (!isFinished()) {
             this.cancelCause = cause;
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request cancel. %s. %s. %s", cause.name(), getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request cancel. %s. %s. %s", cause.name(), getThreadName(), getKey());
             }
         }
     }

@@ -183,7 +183,7 @@ public final class Configuration {
             DiskCache oldDiskCache = diskCache;
             diskCache = newDiskCache;
             oldDiskCache.close();
-            SLog.w(NAME, "diskCache=%s", diskCache.toString());
+            SLog.wmf(NAME, "diskCache=%s", diskCache.toString());
         }
         return this;
     }
@@ -211,7 +211,7 @@ public final class Configuration {
             BitmapPool oldBitmapPool = this.bitmapPool;
             this.bitmapPool = newBitmapPool;
             oldBitmapPool.close();
-            SLog.w(NAME, "bitmapPool=%s", bitmapPool.toString());
+            SLog.wmf(NAME, "bitmapPool=%s", bitmapPool.toString());
         }
         return this;
     }
@@ -239,7 +239,7 @@ public final class Configuration {
             MemoryCache oldMemoryCache = this.memoryCache;
             this.memoryCache = memoryCache;
             oldMemoryCache.close();
-            SLog.w(NAME, "memoryCache=", memoryCache.toString());
+            SLog.wmf(NAME, "memoryCache=", memoryCache.toString());
         }
         return this;
     }
@@ -265,7 +265,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (processedImageCache != null) {
             this.processedImageCache = processedImageCache;
-            SLog.w(NAME, "processedCache=", processedImageCache.toString());
+            SLog.wmf(NAME, "processedCache=", processedImageCache.toString());
         }
         return this;
     }
@@ -292,7 +292,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (httpStack != null) {
             this.httpStack = httpStack;
-            SLog.w(NAME, "httpStack=", httpStack.toString());
+            SLog.wmf(NAME, "httpStack=", httpStack.toString());
         }
         return this;
     }
@@ -318,7 +318,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (decoder != null) {
             this.decoder = decoder;
-            SLog.w(NAME, "decoder=%s", decoder.toString());
+            SLog.wmf(NAME, "decoder=%s", decoder.toString());
         }
         return this;
     }
@@ -344,7 +344,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (downloader != null) {
             this.downloader = downloader;
-            SLog.w(NAME, "downloader=%s", downloader.toString());
+            SLog.wmf(NAME, "downloader=%s", downloader.toString());
         }
         return this;
     }
@@ -370,7 +370,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (orientationCorrector != null) {
             this.orientationCorrector = orientationCorrector;
-            SLog.w(NAME, "orientationCorrector=%s", orientationCorrector.toString());
+            SLog.wmf(NAME, "orientationCorrector=%s", orientationCorrector.toString());
         }
         return this;
     }
@@ -397,7 +397,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (defaultDisplayer != null) {
             this.defaultDisplayer = defaultDisplayer;
-            SLog.w(NAME, "defaultDisplayer=%s", defaultDisplayer.toString());
+            SLog.wmf(NAME, "defaultDisplayer=%s", defaultDisplayer.toString());
         }
         return this;
     }
@@ -423,7 +423,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (resizeProcessor != null) {
             this.resizeProcessor = resizeProcessor;
-            SLog.w(NAME, "resizeProcessor=%s", resizeProcessor.toString());
+            SLog.wmf(NAME, "resizeProcessor=%s", resizeProcessor.toString());
         }
         return this;
     }
@@ -449,7 +449,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
-            SLog.w(NAME, "resizeCalculator=%s", resizeCalculator.toString());
+            SLog.wmf(NAME, "resizeCalculator=%s", resizeCalculator.toString());
         }
         return this;
     }
@@ -475,7 +475,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (sizeCalculator != null) {
             this.sizeCalculator = sizeCalculator;
-            SLog.w(NAME, "sizeCalculator=%s", sizeCalculator.toString());
+            SLog.wmf(NAME, "sizeCalculator=%s", sizeCalculator.toString());
         }
         return this;
     }
@@ -502,7 +502,7 @@ public final class Configuration {
         //noinspection ConstantConditions
         if (freeRideManager != null) {
             this.freeRideManager = freeRideManager;
-            SLog.w(NAME, "freeRideManager=%s", freeRideManager.toString());
+            SLog.wmf(NAME, "freeRideManager=%s", freeRideManager.toString());
         }
         return this;
     }
@@ -530,7 +530,7 @@ public final class Configuration {
             RequestExecutor oldRequestExecutor = executor;
             executor = newRequestExecutor;
             oldRequestExecutor.shutdown();
-            SLog.w(NAME, "executor=%s", executor.toString());
+            SLog.wmf(NAME, "executor=%s", executor.toString());
         }
         return this;
     }
@@ -544,7 +544,7 @@ public final class Configuration {
     public Configuration setCallback(@NonNull SketchCallback callback) {
         //noinspection ConstantConditions
         this.callback = callback != null ? callback : new DefaultSketchCallback();
-        SLog.w(NAME, "callback=%s", callback.toString());
+        SLog.wmf(NAME, "callback=%s", callback.toString());
         return this;
     }
 
@@ -566,7 +566,7 @@ public final class Configuration {
     public Configuration setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
         if (optionsFilterManager.isPauseDownloadEnabled() != pauseDownloadEnabled) {
             optionsFilterManager.setPauseDownloadEnabled(pauseDownloadEnabled);
-            SLog.w(NAME, "pauseDownload=%s", pauseDownloadEnabled);
+            SLog.wmf(NAME, "pauseDownload=%s", pauseDownloadEnabled);
         }
         return this;
     }
@@ -588,7 +588,7 @@ public final class Configuration {
     public Configuration setPauseLoadEnabled(boolean pauseLoadEnabled) {
         if (optionsFilterManager.isPauseLoadEnabled() != pauseLoadEnabled) {
             optionsFilterManager.setPauseLoadEnabled(pauseLoadEnabled);
-            SLog.w(NAME, "pauseLoad=%s", pauseLoadEnabled);
+            SLog.wmf(NAME, "pauseLoad=%s", pauseLoadEnabled);
         }
         return this;
     }
@@ -610,7 +610,7 @@ public final class Configuration {
     public Configuration setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
         if (optionsFilterManager.isLowQualityImageEnabled() != lowQualityImageEnabled) {
             optionsFilterManager.setLowQualityImageEnabled(lowQualityImageEnabled);
-            SLog.w(NAME, "lowQualityImage=%s", lowQualityImageEnabled);
+            SLog.wmf(NAME, "lowQualityImage=%s", lowQualityImageEnabled);
         }
         return this;
     }
@@ -634,7 +634,7 @@ public final class Configuration {
     public Configuration setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
         if (optionsFilterManager.isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
             optionsFilterManager.setInPreferQualityOverSpeedEnabled(inPreferQualityOverSpeedEnabled);
-            SLog.w(NAME, "inPreferQualityOverSpeed=%s", inPreferQualityOverSpeedEnabled);
+            SLog.wmf(NAME, "inPreferQualityOverSpeed=%s", inPreferQualityOverSpeedEnabled);
         }
         return this;
     }
@@ -656,7 +656,7 @@ public final class Configuration {
     public Configuration setMobileDataPauseDownloadEnabled(boolean mobileDataPauseDownloadEnabled) {
         if (isMobileDataPauseDownloadEnabled() != mobileDataPauseDownloadEnabled) {
             optionsFilterManager.setMobileDataPauseDownloadEnabled(this, mobileDataPauseDownloadEnabled);
-            SLog.w(NAME, "mobileDataPauseDownload=%s", isMobileDataPauseDownloadEnabled());
+            SLog.wmf(NAME, "mobileDataPauseDownload=%s", isMobileDataPauseDownloadEnabled());
         }
         return this;
     }

@@ -160,7 +160,7 @@ class MappingView : SketchImageView {
 
     fun update(newDrawableSize: Size, newVisibleRect: Rect) {
         if (newDrawableSize.width == 0 || newDrawableSize.height == 0 || newVisibleRect.isEmpty) {
-            SLog.w("MappingView", "update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
+            SLog.wmf("MappingView", "update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
                     imageUri, newDrawableSize.toString(), newVisibleRect.toShortString())
 
             drawableSize.set(0, 0)
@@ -177,8 +177,8 @@ class MappingView : SketchImageView {
         visibleRect.set(newVisibleRect)
 
         if (!isUsableDrawable || width == 0 || height == 0) {
-            if (SLog.isLoggable(SLog.LEVEL_VERBOSE)) {
-                SLog.v("MappingView", "update. view size is 0 or getDrawable() is null. %s", imageUri!!)
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf("MappingView", "update. view size is 0 or getDrawable() is null. %s", imageUri!!)
             }
 
             if (!visibleMappingRect!!.isEmpty) {

@@ -48,8 +48,8 @@ public class MemorySizeCalculator {
             bitmapPoolSize = part * BITMAP_POOL_TARGET_SCREENS;
         }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-            SLog.d(NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(context, memoryCacheSize), toMb(context, bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(context, maxSize),
                     activityManager != null ? activityManager.getMemoryClass() : -1, isLowMemoryDevice(activityManager));
         }

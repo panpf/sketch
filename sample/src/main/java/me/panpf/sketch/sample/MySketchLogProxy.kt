@@ -28,7 +28,7 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
         return Log.v(tag, msg)
     }
 
-    override fun v(tag: String, msg: String, tr: Throwable): Int {
+    override fun v(tag: String, msg: String, tr: Throwable?): Int {
         outLog2SDCard.out("V", tag, msg, tr)
         return Log.v(tag, msg, tr)
     }
@@ -38,7 +38,7 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
         return Log.d(tag, msg)
     }
 
-    override fun d(tag: String, msg: String, tr: Throwable): Int {
+    override fun d(tag: String, msg: String, tr: Throwable?): Int {
         outLog2SDCard.out("D", tag, msg, tr)
         return Log.d(tag, msg, tr)
     }
@@ -48,7 +48,7 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
         return Log.i(tag, msg)
     }
 
-    override fun i(tag: String, msg: String, tr: Throwable): Int {
+    override fun i(tag: String, msg: String, tr: Throwable?): Int {
         outLog2SDCard.out("I", tag, msg, tr)
         return Log.i(tag, msg, tr)
     }
@@ -58,14 +58,9 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
         return Log.w(tag, msg)
     }
 
-    override fun w(tag: String, msg: String, tr: Throwable): Int {
+    override fun w(tag: String, msg: String, tr: Throwable?): Int {
         outLog2SDCard.out("W", tag, msg, tr)
         return Log.w(tag, msg, tr)
-    }
-
-    override fun w(tag: String, tr: Throwable): Int {
-        outLog2SDCard.out("W", tag, null, tr)
-        return Log.w(tag, tr)
     }
 
     override fun e(tag: String, msg: String): Int {
@@ -73,7 +68,7 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
         return Log.e(tag, msg)
     }
 
-    override fun e(tag: String, msg: String, tr: Throwable): Int {
+    override fun e(tag: String, msg: String, tr: Throwable?): Int {
         outLog2SDCard.out("E", tag, msg, tr)
         return Log.e(tag, msg, tr)
     }
@@ -103,7 +98,7 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
             logTimeDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.US)
         }
 
-        fun out(level: String, tag: String, msg: String?, tr: Throwable?) {
+        fun out(level: String, tag: String, msg: String?, tr: Throwable??) {
             if (closed) {
                 return
             }

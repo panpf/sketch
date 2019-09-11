@@ -58,7 +58,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
 
         Resize resize = loadOptions.getResize();
         if (resize == null) {
-            SLog.e(NAME, "thumbnailMode need resize ");
+            SLog.em(NAME, "thumbnailMode need resize ");
             return false;
         }
 
@@ -116,7 +116,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
                 try {
                     bitmap = ImageDecodeUtils.decodeRegionBitmap(dataSource, mapping.srcRect, decodeOptions);
                 } catch (Throwable throwable1) {
-                    SLog.e(NAME, "onDecodeNormalImageError. " +
+                    SLog.emf(NAME, "onDecodeNormalImageError. " +
                                     "outWidth=%d, outHeight=%d, outMimeType=%s. " +
                                     "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
                             boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
@@ -129,14 +129,14 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
                     throw new DecodeException("InBitmap retry", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
                 }
             } else if (ImageDecodeUtils.isSrcRectDecodeError(tr, boundOptions.outWidth, boundOptions.outHeight, mapping.srcRect)) {
-                SLog.e(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
+                SLog.emf(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
                         request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
                         boundOptions.outMimeType, mapping.srcRect.toString(), decodeOptions.inSampleSize);
                 callback.onError(new DecodeRegionException(tr, request.getUri(), boundOptions.outWidth, boundOptions.outHeight,
                         boundOptions.outMimeType, mapping.srcRect, decodeOptions.inSampleSize));
                 throw new DecodeException("Because srcRect", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
             } else {
-                SLog.e(NAME, "onDecodeNormalImageError. " +
+                SLog.emf(NAME, "onDecodeNormalImageError. " +
                                 "outWidth=%d, outHeight=%d, outMimeType=%s. " +
                                 "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,

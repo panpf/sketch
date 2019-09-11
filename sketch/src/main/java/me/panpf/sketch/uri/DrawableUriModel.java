@@ -63,7 +63,7 @@ public class DrawableUriModel extends UriModel {
             resId = Integer.valueOf(getUriContent(uri));
         } catch (NumberFormatException e) {
             String cause = String.format("Conversion resId failed. %s", uri);
-            SLog.e(NAME, e, cause);
+            SLog.emt(NAME, e, cause);
             throw new GetDataSourceException(cause, e);
         }
         return new DrawableDataSource(context, resId);

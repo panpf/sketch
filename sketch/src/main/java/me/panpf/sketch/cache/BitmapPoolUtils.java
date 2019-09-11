@@ -49,12 +49,12 @@ public class BitmapPoolUtils {
      */
     public static boolean setInBitmapFromPool(BitmapFactory.Options options, int outWidth, int outHeight, String outMimeType, BitmapPool bitmapPool) {
         if (outWidth == 0 || outHeight == 0) {
-            SLog.e(NAME, "outWidth or ourHeight is 0");
+            SLog.em(NAME, "outWidth or ourHeight is 0");
             return false;
         }
 
         if (TextUtils.isEmpty(outMimeType)) {
-            SLog.e(NAME, "outMimeType is empty");
+            SLog.em(NAME, "outMimeType is empty");
             return false;
         }
 
@@ -88,9 +88,9 @@ public class BitmapPoolUtils {
             inBitmap = bitmapPool.get(outWidth, outHeight, options.inPreferredConfig);
         }
 
-        if (inBitmap != null && SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+        if (inBitmap != null && SLog.isLoggable(SLog.DEBUG)) {
             int sizeInBytes = SketchUtils.computeByteCount(outWidth, outHeight, options.inPreferredConfig);
-            SLog.d(NAME, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+            SLog.dmf(NAME, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     outWidth, outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
                     Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
         }
@@ -115,18 +115,18 @@ public class BitmapPoolUtils {
 
         boolean success = bitmapPool.put(bitmap);
         if (success) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            if (SLog.isLoggable(SLog.DEBUG)) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(NAME, "Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.dmf(NAME, "Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            if (SLog.isLoggable(SLog.DEBUG)) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(NAME, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.dmf(NAME, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
@@ -170,9 +170,9 @@ public class BitmapPoolUtils {
         Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
 
         if (inBitmap != null) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            if (SLog.isLoggable(SLog.DEBUG)) {
                 int sizeInBytes = SketchUtils.computeByteCount(finalWidth, finalHeight, config);
-                SLog.d(NAME, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                SLog.dmf(NAME, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                         finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
                         Integer.toHexString(inBitmap.hashCode()), SketchUtils.getByteCount(inBitmap));
             }
@@ -200,19 +200,19 @@ public class BitmapPoolUtils {
 
         boolean success = sdkSupportInBitmapForRegionDecoder() && bitmapPool.put(bitmap);
         if (!success) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            if (SLog.isLoggable(SLog.DEBUG)) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(NAME, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.dmf(NAME, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }
             bitmap.recycle();
         } else {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
+            if (SLog.isLoggable(SLog.DEBUG)) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(NAME, "Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.dmf(NAME, "Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber());
             }

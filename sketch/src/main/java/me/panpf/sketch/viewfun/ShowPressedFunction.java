@@ -96,7 +96,7 @@ public class ShowPressedFunction extends ViewFunction {
                 Path maskPath = shaper.getPath(bounds);
                 canvas.clipPath(maskPath);
             } catch (UnsupportedOperationException e) {
-                SLog.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                SLog.em(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                 view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 e.printStackTrace();
             }

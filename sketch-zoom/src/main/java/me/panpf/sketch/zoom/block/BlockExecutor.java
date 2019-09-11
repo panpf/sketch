@@ -70,8 +70,8 @@ public class BlockExecutor {
                     handlerThread = new HandlerThread("ImageRegionDecodeThread" + THREAD_NUMBER.addAndGet(1));
                     handlerThread.start();
 
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                        SLog.d(NAME, "image region decode thread %s started", handlerThread.getName());
+                    if (SLog.isLoggable(SLog.VERBOSE)) {
+                        SLog.vmf(NAME, "image region decode thread %s started", handlerThread.getName());
                     }
 
                     decodeHandler = new DecodeHandler(handlerThread.getLooper(), this);
@@ -144,8 +144,8 @@ public class BlockExecutor {
                     handlerThread.quit();
                 }
 
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-                    SLog.d(NAME, "image region decode thread %s quit", handlerThread.getName());
+                if (SLog.isLoggable(SLog.VERBOSE)) {
+                    SLog.vmf(NAME, "image region decode thread %s quit", handlerThread.getName());
                 }
 
                 handlerThread = null;

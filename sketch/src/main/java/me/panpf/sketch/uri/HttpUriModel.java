@@ -61,7 +61,7 @@ public class HttpUriModel extends UriModel {
             }
 
             String cause = String.format("Not found data from download result. %s", uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         } else {
             DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
@@ -71,7 +71,7 @@ public class HttpUriModel extends UriModel {
             }
 
             String cause = String.format("Not found disk cache. %s", uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }
     }

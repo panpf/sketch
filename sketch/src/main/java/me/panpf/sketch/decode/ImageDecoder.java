@@ -81,11 +81,11 @@ public class ImageDecoder {
         DecodeResult result = null;
         try {
             long startTime = 0;
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
+            if (SLog.isLoggable(SLog.VERBOSE)) {
                 startTime = timeAnalyze.decodeStart();
             }
             result = doDecode(request);
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
+            if (SLog.isLoggable(SLog.VERBOSE)) {
                 timeAnalyze.decodeEnd(startTime, NAME, request.getKey());
             }
 

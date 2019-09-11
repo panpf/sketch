@@ -238,7 +238,7 @@ public class LoadHelper {
 
         // Uri cannot is empty
         if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty");
+            SLog.em(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_INVALID, sync);
             return null;
         }
@@ -246,7 +246,7 @@ public class LoadHelper {
         // Uri type must be supported
         final UriModel uriModel = UriModel.match(sketch, uri);
         if (uriModel == null) {
-            SLog.e(NAME, "Unsupported uri type. %s", uri);
+            SLog.emf(NAME, "Unsupported uri type. %s", uri);
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return null;
         }
@@ -302,8 +302,8 @@ public class LoadHelper {
         if (loadOptions.getRequestLevel() == RequestLevel.LOCAL && uriModel.isFromNet()
                 && !sketch.getConfiguration().getDiskCache().exist(uriModel.getDiskCacheKey(uri))) {
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "Request cancel. %s. %s", CancelCause.PAUSE_DOWNLOAD, key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Request cancel. %s. %s", CancelCause.PAUSE_DOWNLOAD, key);
             }
 
             CallbackHandler.postCallbackCanceled(loadListener, CancelCause.PAUSE_DOWNLOAD, sync);
@@ -320,8 +320,8 @@ public class LoadHelper {
         LoadRequest request = new LoadRequest(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            SLog.d(NAME, "Run dispatch submitted. %s", key);
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(NAME, "Run dispatch submitted. %s", key);
         }
         request.submit();
 

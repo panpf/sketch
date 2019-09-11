@@ -164,7 +164,7 @@ public class ScaleDragGestureDetector {
                     if (null != mVelocityTracker) {
                         mVelocityTracker.addMovement(ev);
                     } else {
-                        SLog.w(NAME, "Velocity tracker is null");
+                        SLog.wm(NAME, "Velocity tracker is null");
                     }
 
                     mLastTouchX = getActiveX(ev);

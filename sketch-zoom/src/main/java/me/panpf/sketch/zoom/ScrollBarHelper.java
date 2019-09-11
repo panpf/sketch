@@ -74,8 +74,8 @@ class ScrollBarHelper {
         final RectF drawRectF = tempDisplayRectF;
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(ImageZoomer.MODULE, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
             }
             return;
         }
@@ -87,8 +87,8 @@ class ScrollBarHelper {
         final float displayHeight = drawRectF.height();
 
         if (viewWidth <= 0 || viewHeight <= 0 || displayWidth == 0 || displayHeight == 0) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(ImageZoomer.NAME, "size is 0. drawScrollBar. viewSize=%dx%d, displaySize=%sx%s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(ImageZoomer.MODULE, "size is 0. drawScrollBar. viewSize=%dx%d, displaySize=%sx%s",
                         viewWidth, viewHeight, displayWidth, displayHeight);
             }
             return;

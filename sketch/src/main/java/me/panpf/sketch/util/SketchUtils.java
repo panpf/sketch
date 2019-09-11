@@ -106,7 +106,7 @@ public class SketchUtils {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
-            SLog.w(logName, "get packageInfo is null. %s", apkFilePath);
+            SLog.wmf(logName, "get packageInfo is null. %s", apkFilePath);
             return null;
         }
 
@@ -120,7 +120,7 @@ public class SketchUtils {
             e.printStackTrace();
         }
         if (drawable == null) {
-            SLog.w(logName, "app icon is null. %s", apkFilePath);
+            SLog.wmf(logName, "app icon is null. %s", apkFilePath);
             return null;
         }
 
@@ -393,7 +393,7 @@ public class SketchUtils {
         try {
             getVolumePathsMethod = StorageManager.class.getMethod("getVolumePaths");
         } catch (NoSuchMethodException e) {
-            SLog.e("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
+            SLog.em("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 return new String[]{Environment.getExternalStorageDirectory().getPath()};
             } else {
@@ -1099,7 +1099,7 @@ public class SketchUtils {
             return null;
         }
         if (!Initializer.class.isAssignableFrom(initializerClass)) {
-            SLog.e("findInitializer", initializerClassName + " must be implements Initializer");
+            SLog.em("findInitializer", initializerClassName + " must be implements Initializer");
             return null;
         }
         //noinspection TryWithIdenticalCatches

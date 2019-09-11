@@ -45,7 +45,7 @@ class FlingRunner implements Runnable {
 
     void fling(int velocityX, int velocityY) {
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. fling");
+            SLog.wm(ImageZoomer.MODULE, "not working. fling");
             return;
         }
 
@@ -76,8 +76,8 @@ class FlingRunner implements Runnable {
             minY = maxY = startY;
         }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(ImageZoomer.MODULE, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
                     startX, startY, minX, minY, maxX, maxY);
         }
 
@@ -98,20 +98,20 @@ class FlingRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (scroller.isFinished()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(ImageZoomer.NAME, "finished. fling run");
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vm(ImageZoomer.MODULE, "finished. fling run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            SLog.w(ImageZoomer.NAME, "not working. fling run");
+            SLog.wm(ImageZoomer.MODULE, "not working. fling run");
             return;
         }
 
         if (!scroller.computeScrollOffset()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-                SLog.d(ImageZoomer.NAME, "scroll finished. fling run");
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vm(ImageZoomer.MODULE, "scroll finished. fling run");
             }
             return;
         }
@@ -127,8 +127,8 @@ class FlingRunner implements Runnable {
     }
 
     public void cancelFling() {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM)) {
-            SLog.d(ImageZoomer.NAME, "cancel fling");
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vm(ImageZoomer.MODULE, "cancel fling");
         }
 
         scroller.forceFinished(true);

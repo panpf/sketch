@@ -112,8 +112,8 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
 
         if (diskCacheEntry != null) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "from diskCache. processDownloadFreeRide. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "from diskCache. processDownloadFreeRide. %s. %s", getThreadName(), getKey());
             }
             downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
             downloadCompleted();

@@ -137,14 +137,14 @@ class CallbackHandler extends Handler {
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
         BlockExecutor executor = executorReference.get();
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
+            SLog.wmf(NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
             decoder.recycle();
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            SLog.w(NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
+            SLog.wmf(NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
             decoder.recycle();
             return;
         }
@@ -155,13 +155,13 @@ class CallbackHandler extends Handler {
     private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
         BlockExecutor executor = executorReference.get();
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
+            SLog.wmf(NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            SLog.w(NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
+            SLog.wmf(NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
             return;
         }
 
@@ -171,7 +171,7 @@ class CallbackHandler extends Handler {
     private void decodeCompleted(int key, Block block, Bitmap bitmap, int useTime) {
         BlockExecutor executor = executorReference.get();
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. decodeCompleted. key: %d, block=%s", key, block.getInfo());
+            SLog.wmf(NAME, "weak reference break. decodeCompleted. key: %d, block=%s", key, block.getInfo());
             BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
         }
@@ -188,7 +188,7 @@ class CallbackHandler extends Handler {
     private void decodeError(int key, Block block, DecodeHandler.DecodeErrorException exception) {
         BlockExecutor executor = executorReference.get();
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. decodeError. key: %d, block=%s", key, block.getInfo());
+            SLog.wmf(NAME, "weak reference break. decodeError. key: %d, block=%s", key, block.getInfo());
             return;
         }
 

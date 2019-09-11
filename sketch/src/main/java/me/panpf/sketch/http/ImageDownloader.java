@@ -69,8 +69,8 @@ public class ImageDownloader {
 
         try {
             if (request.isCanceled()) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "Download canceled after get disk cache edit lock. %s. %s", request.getThreadName(), request.getKey());
+                if (SLog.isLoggable(SLog.DEBUG)) {
+                    SLog.dmf(NAME, "Download canceled after get disk cache edit lock. %s. %s", request.getThreadName(), request.getKey());
                 }
                 throw new CanceledException();
             }
@@ -116,8 +116,8 @@ public class ImageDownloader {
             } catch (Throwable tr) {
                 if (request.isCanceled()) {
                     String message = String.format("Download exception, but canceled. %s. %s", request.getThreadName(), request.getKey());
-                    if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                        SLog.d(NAME, tr, message);
+                    if (SLog.isLoggable(SLog.DEBUG)) {
+                        SLog.emt(NAME, tr, message);
                     }
                     DownloadException exception = new DownloadException(tr, request, message, ErrorCause.DOWNLOAD_EXCEPTION_AND_CANCELED);
                     request.getConfiguration().getCallback().onError(exception);
@@ -125,7 +125,7 @@ public class ImageDownloader {
                 } else if (httpStack.canRetry(tr) && retryCount < maxRetryCount) {
                     tr.printStackTrace();
                     retryCount++;
-                    SLog.w(NAME, tr, String.format("Download exception but can retry. %s. %s", request.getThreadName(), request.getKey()));
+                    SLog.wmt(NAME, tr, String.format("Download exception but can retry. %s. %s", request.getThreadName(), request.getKey()));
                 } else if (tr instanceof CanceledException) {
                     throw (CanceledException) tr;
                 } else if (tr instanceof DownloadException) {
@@ -134,7 +134,7 @@ public class ImageDownloader {
                     throw exception;
                 } else {
                     String message = String.format("Download failed. %s. %s", request.getThreadName(), request.getKey());
-                    SLog.w(NAME, tr, message);
+                    SLog.wmt(NAME, tr, message);
                     DownloadException exception = new DownloadException(tr, request, message, ErrorCause.DOWNLOAD_UNKNOWN_EXCEPTION);
                     request.getConfiguration().getCallback().onError(exception);
                     throw exception;
@@ -174,8 +174,8 @@ public class ImageDownloader {
         // Check canceled
         if (request.isCanceled()) {
             response.releaseConnection();
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "Download canceled after opening the connection. %s. %s", request.getThreadName(), request.getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Download canceled after opening the connection. %s. %s", request.getThreadName(), request.getKey());
             }
             throw new CanceledException();
         }
@@ -188,7 +188,7 @@ public class ImageDownloader {
             response.releaseConnection();
             String message = String.format("Get response code exception. responseHeaders: %s. %s. %s",
                     response.getHeadersString(), request.getThreadName(), request.getKey());
-            SLog.w(NAME, e, message);
+            SLog.wmt(NAME, e, message);
             throw new DownloadException(e, request, message, ErrorCause.DOWNLOAD_GET_RESPONSE_CODE_EXCEPTION);
         }
         if (responseCode != 200) {
@@ -200,21 +200,21 @@ public class ImageDownloader {
                 if (!TextUtils.isEmpty(newUri)) {
                     // To prevent infinite redirection
                     if (uri.equals(request.getUri())) {
-                        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                            SLog.d(NAME, "Uri redirects. originUri: %s, newUri: %s. %s", request.getUri(), newUri, request.getKey());
+                        if (SLog.isLoggable(SLog.DEBUG)) {
+                            SLog.dmf(NAME, "Uri redirects. originUri: %s, newUri: %s. %s", request.getUri(), newUri, request.getKey());
                         }
                         throw new RedirectsException(newUri);
                     } else {
-                        SLog.e(NAME, "Disable unlimited redirects, originUri: %s, redirectsUri=%s, newUri=%s. %s", request.getUri(), uri, newUri, request.getKey());
+                        SLog.emf(NAME, "Disable unlimited redirects, originUri: %s, redirectsUri=%s, newUri=%s. %s", request.getUri(), uri, newUri, request.getKey());
                     }
                 } else {
-                    SLog.w(NAME, "Uri redirects failed. newUri is empty, originUri: %s. %s", request.getUri(), request.getKey());
+                    SLog.wmf(NAME, "Uri redirects failed. newUri is empty, originUri: %s. %s", request.getUri(), request.getKey());
                 }
             }
 
             String message = String.format("Response code exception. responseHeaders: %s. %s. %s",
                     response.getHeadersString(), request.getThreadName(), request.getKey());
-            SLog.e(NAME, message);
+            SLog.em(NAME, message);
             throw new DownloadException(request, message, ErrorCause.DOWNLOAD_RESPONSE_CODE_EXCEPTION);
         }
 
@@ -230,8 +230,8 @@ public class ImageDownloader {
         // Check canceled
         if (request.isCanceled()) {
             SketchUtils.close(inputStream);
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "Download canceled after get content. %s. %s", request.getThreadName(), request.getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Download canceled after get content. %s. %s", request.getThreadName(), request.getKey());
             }
             throw new CanceledException();
         }
@@ -249,7 +249,7 @@ public class ImageDownloader {
                 SketchUtils.close(inputStream);
                 diskCacheEditor.abort();
                 String message = String.format("Open disk cache exception. %s. %s", request.getThreadName(), request.getKey());
-                SLog.e(NAME, e, message);
+                SLog.emt(NAME, e, message);
                 throw new DownloadException(e, request, message, ErrorCause.DOWNLOAD_OPEN_DISK_CACHE_EXCEPTION);
             }
         } else {
@@ -268,7 +268,7 @@ public class ImageDownloader {
                 diskCacheEditor.abort();
             }
             String message = String.format("Read data exception. %s. %s", request.getThreadName(), request.getKey());
-            SLog.e(NAME, e, message);
+            SLog.emt(NAME, e, message);
             throw new DownloadException(e, request, message, ErrorCause.DOWNLOAD_READ_DATA_EXCEPTION);
         } catch (CanceledException e) {
             if (diskCacheEditor != null) {
@@ -287,7 +287,7 @@ public class ImageDownloader {
                     diskCacheEditor.commit();
                 } catch (IOException | DiskLruCache.EditorChangedException | DiskLruCache.ClosedException | DiskLruCache.FileNotExistException e) {
                     String message = String.format("Disk cache commit exception. %s. %s", request.getThreadName(), request.getKey());
-                    SLog.e(NAME, e, message);
+                    SLog.emt(NAME, e, message);
                     throw new DownloadException(e, request, message, ErrorCause.DOWNLOAD_DISK_CACHE_COMMIT_EXCEPTION);
                 }
             }
@@ -297,28 +297,28 @@ public class ImageDownloader {
             }
             String message = String.format(Locale.US, "The data is not fully read. contentLength:%d, completedLength:%d. %s. %s",
                     contentLength, completedLength, request.getThreadName(), request.getKey());
-            SLog.e(NAME, message);
+            SLog.em(NAME, message);
             throw new DownloadException(request, message, ErrorCause.DOWNLOAD_DATA_NOT_FULLY_READ);
         }
 
         // Return DownloadResult
         if (diskCacheEditor == null) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(NAME, "Download success. Data is saved to disk cache. fileLength: %d/%d. %s. %s",
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Download success. Data is saved to disk cache. fileLength: %d/%d. %s. %s",
                         completedLength, contentLength, request.getThreadName(), request.getKey());
             }
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
         } else {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "Download success. data is saved to memory. fileLength: %d/%d. %s. %s",
+                if (SLog.isLoggable(SLog.DEBUG)) {
+                    SLog.dmf(NAME, "Download success. data is saved to memory. fileLength: %d/%d. %s. %s",
                             completedLength, contentLength, request.getThreadName(), request.getKey());
                 }
                 return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
                 String message = String.format("Not found disk cache after download success. %s. %s", request.getThreadName(), request.getKey());
-                SLog.e(NAME, message);
+                SLog.em(NAME, message);
                 throw new DownloadException(request, message, ErrorCause.DOWNLOAD_NOT_FOUND_DISK_CACHE_AFTER_SUCCESS);
             }
         }
@@ -343,10 +343,10 @@ public class ImageDownloader {
         byte[] buffer = new byte[8 * 1024];
         while (true) {
             if (request.isCanceled()) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+                if (SLog.isLoggable(SLog.DEBUG)) {
                     boolean readFully = contentLength <= 0 || completedLength == contentLength;
                     String readStatus = readFully ? "read fully" : "not read fully";
-                    SLog.d(NAME, "Download canceled in read data. %s. %s. %s", readStatus, request.getThreadName(), request.getKey());
+                    SLog.dmf(NAME, "Download canceled in read data. %s. %s. %s", readStatus, request.getThreadName(), request.getKey());
                 }
                 throw new CanceledException();
             }

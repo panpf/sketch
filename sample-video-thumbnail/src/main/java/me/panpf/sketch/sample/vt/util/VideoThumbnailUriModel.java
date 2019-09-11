@@ -92,7 +92,7 @@ public class VideoThumbnailUriModel extends AbsBitmapDiskCacheUriModel {
 
         if (frameBitmap == null || frameBitmap.isRecycled()) {
             String cause = String.format("Video thumbnail bitmap invalid. %s", uri);
-            SLog.e(NAME, cause);
+            SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }
         return frameBitmap;

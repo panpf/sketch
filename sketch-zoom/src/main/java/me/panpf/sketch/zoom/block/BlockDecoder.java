@@ -70,7 +70,7 @@ public class BlockDecoder {
      */
     void decodeBlock(@NonNull Block block) {
         if (!isReady()) {
-            SLog.w(NAME, "not ready. decodeBlock. %s", block.getInfo());
+            SLog.wmf(NAME, "not ready. decodeBlock. %s", block.getInfo());
             return;
         }
 
@@ -79,16 +79,16 @@ public class BlockDecoder {
     }
 
     void clean(@NonNull String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "clean. %s", why);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(NAME, "clean. %s", why);
         }
 
         initKeyCounter.refresh();
     }
 
     public void recycle(@NonNull String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "recycle. %s", why);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(NAME, "recycle. %s", why);
         }
 
         if (decoder != null) {
@@ -97,8 +97,8 @@ public class BlockDecoder {
     }
 
     public void initCompleted(@NonNull String imageUri, @NonNull ImageRegionDecoder decoder) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "init completed. %s", imageUri);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(NAME, "init completed. %s", imageUri);
         }
 
         initializing = false;
@@ -106,8 +106,8 @@ public class BlockDecoder {
     }
 
     public void initError(@NonNull String imageUri, @NonNull Exception e) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.vmf(NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 
         initializing = false;

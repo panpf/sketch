@@ -50,10 +50,7 @@ memoryCache.setDisabled(false);
 
 ```java
 // 开启 CACHE 类型日志
-SLog.setLoggable(SLog.TYPE_CACHE);
-
-// 关闭 CACHE 类型日志
-SLog.removeLoggable(SLog.TYPE_CACHE);
+SLog.setLoggable(SLog.DEBUG);
 ```
 
 ### 其它方法

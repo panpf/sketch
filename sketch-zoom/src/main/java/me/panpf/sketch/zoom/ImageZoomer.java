@@ -44,7 +44,7 @@ import me.panpf.sketch.zoom.block.Block;
 // TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
 @SuppressWarnings("WeakerAccess")
 public class ImageZoomer {
-    public static final String NAME = "ImageZoomer";
+    public static final String MODULE = "ImageZoomer";
 
     @NonNull
     private SketchZoomImageView imageView;
@@ -212,7 +212,7 @@ public class ImageZoomer {
     @SuppressWarnings("unused")
     public boolean location(float x, float y, boolean animate) {
         if (!isWorking()) {
-            SLog.w(NAME, "not working. location");
+            SLog.wm(MODULE, "not working. location");
             return false;
         }
 
@@ -243,12 +243,12 @@ public class ImageZoomer {
      */
     public boolean zoom(float scale, float focalX, float focalY, boolean animate) {
         if (!isWorking()) {
-            SLog.w(NAME, "not working. zoom(float, float, float, boolean)");
+            SLog.wm(MODULE, "not working. zoom(float, float, float, boolean)");
             return false;
         }
 
         if (scale < zoomScales.getMinZoomScale() || scale > zoomScales.getMaxZoomScale()) {
-            SLog.w(NAME, "Scale must be within the range of %s(minScale) and %s(maxScale). %s",
+            SLog.wmf(MODULE, "Scale must be within the range of %s(minScale) and %s(maxScale). %s",
                     zoomScales.getMinZoomScale(), zoomScales.getMaxZoomScale(), scale);
             return false;
         }
@@ -266,7 +266,7 @@ public class ImageZoomer {
      */
     public boolean zoom(float scale, boolean animate) {
         if (!isWorking()) {
-            SLog.w(NAME, "not working. zoom(float, boolean)");
+            SLog.wm(MODULE, "not working. zoom(float, boolean)");
             return false;
         }
 
@@ -304,7 +304,7 @@ public class ImageZoomer {
     // TODO: 16/10/19 研究任意角度旋转和旋转时不清空位移以及缩放信息
     public boolean rotateTo(int degrees) {
         if (!isWorking()) {
-            SLog.w(NAME, "not working. rotateTo");
+            SLog.wm(MODULE, "not working. rotateTo");
             return false;
         }
 
@@ -313,7 +313,7 @@ public class ImageZoomer {
         }
 
         if (degrees % 90 != 0) {
-            SLog.w(NAME, "rotate degrees must be in multiples of 90");
+            SLog.wm(MODULE, "rotate degrees must be in multiples of 90");
             return false;
         }
 

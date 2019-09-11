@@ -84,40 +84,40 @@ public class ImageDecodeUtils {
     }
 
     static void decodeSuccess(@NonNull Bitmap bitmap, int outWidth, int outHeight, int inSampleSize, @NonNull LoadRequest loadRequest, @NonNull String logName) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
+        if (SLog.isLoggable(SLog.DEBUG)) {
             if (loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getConfiguration().getSizeCalculator();
-                SLog.d(logName,
+                SLog.dmf(logName,
                         "Decode bitmap. originalSize=%dx%d, targetSize=%dx%d, targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(), sizeCalculator.getTargetSizeScale(),
                         inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
-                SLog.d(logName, "Decode bitmap. bitmapSize=%dx%d. %s", bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
+                SLog.dmf(logName, "Decode bitmap. bitmapSize=%dx%d. %s", bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             }
         }
     }
 
     static void decodeError(@NonNull LoadRequest request, @Nullable DataSource dataSource, @NonNull String logName, @NonNull String cause, @Nullable Throwable tr) {
         if (tr != null) {
-            SLog.e(logName, Log.getStackTraceString(tr));
+            SLog.em(logName, Log.getStackTraceString(tr));
         }
 
         if (dataSource instanceof DiskCacheDataSource) {
             DiskCache.Entry diskCacheEntry = ((DiskCacheDataSource) dataSource).getDiskCacheEntry();
             File cacheFile = diskCacheEntry.getFile();
             if (diskCacheEntry.delete()) {
-                SLog.e(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), request.getKey(), tr);
+                SLog.emf(logName, "Decode failed. %s. Disk cache deleted. fileLength=%d. %s", cause, cacheFile.length(), request.getKey(), tr);
             } else {
-                SLog.e(logName, "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s", cause, cacheFile.length(), request.getKey());
+                SLog.emf(logName, "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s", cause, cacheFile.length(), request.getKey());
             }
         } else if (dataSource instanceof FileDataSource) {
             File file = ((FileDataSource) dataSource).getFile(null, null);
             //noinspection ConstantConditions
-            SLog.e(logName, "Decode failed. %s. filePath=%s, fileLength=%d. %s",
+            SLog.emf(logName, "Decode failed. %s. filePath=%s, fileLength=%d. %s",
                     cause, file.getPath(), file.exists() ? file.length() : -1, request.getKey());
         } else {
-            SLog.e(logName, "Decode failed. %s. %s", cause, request.getUri());
+            SLog.emf(logName, "Decode failed. %s. %s", cause, request.getUri());
         }
     }
 
@@ -151,7 +151,7 @@ public class ImageDecodeUtils {
             return;
         }
 
-        SLog.e("onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
+        SLog.emf("onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
                         "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
                 imageUri, imageWidth, imageHeight, imageMimeType, decodeOptions.inSampleSize,
                 decodeOptions.inBitmap.getWidth(), decodeOptions.inBitmap.getHeight(), SketchUtils.getByteCount(decodeOptions.inBitmap));

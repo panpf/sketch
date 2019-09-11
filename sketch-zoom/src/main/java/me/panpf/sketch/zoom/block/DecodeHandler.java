@@ -94,7 +94,7 @@ public class DecodeHandler extends Handler {
 
     private void decode(@Nullable BlockExecutor executor, int key, @NonNull Block block) {
         if (executor == null) {
-            SLog.w(NAME, "weak reference break. key: %d, block=%s", key, block.getInfo());
+            SLog.wmf(NAME, "weak reference break. key: %d, block=%s", key, block.getInfo());
             return;
         }
 
@@ -152,7 +152,7 @@ public class DecodeHandler extends Handler {
                     throwable1.printStackTrace();
                 }
             } else if (ImageDecodeUtils.isSrcRectDecodeError(throwable, regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
-                SLog.e(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
+                SLog.emf(NAME, "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
                         regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
                         regionDecoder.getImageType().getMimeType(), srcRect.toString(), options.inSampleSize);
                 callback.onError(new DecodeRegionException(throwable, regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y,
@@ -194,8 +194,8 @@ public class DecodeHandler extends Handler {
     }
 
     public void clean(@NonNull String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "clean. %s", why);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(NAME, "clean. %s", why);
         }
 
         removeMessages(WHAT_DECODE);

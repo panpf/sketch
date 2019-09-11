@@ -125,7 +125,7 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
             SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
             if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
                 memoryCache.remove(getMemoryCacheKey());
-                SLog.e(getLogName(), "memory cache drawable recycled. processFreeRideRequests. bitmap=%s. %s. %s",
+                SLog.emf(getLogName(), "memory cache drawable recycled. processFreeRideRequests. bitmap=%s. %s. %s",
                         cachedRefBitmap.getInfo(), getThreadName(), getKey());
                 cachedRefBitmap = null;
             }

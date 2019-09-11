@@ -71,13 +71,13 @@ class InitHandler extends Handler {
 
     private void init(@Nullable BlockExecutor decodeExecutor, @NonNull String imageUri, boolean correctImageOrientationDisabled, int key, @NonNull KeyCounter keyCounter) {
         if (decodeExecutor == null) {
-            SLog.w(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
+            SLog.wmf(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            SLog.w(NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            SLog.wmf(NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             return;
         }
 
@@ -97,7 +97,7 @@ class InitHandler extends Handler {
 
         newKey = keyCounter.getKey();
         if (key != newKey) {
-            SLog.w(NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            SLog.wmf(NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             decoder.recycle();
             return;
         }
@@ -106,8 +106,8 @@ class InitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_ZOOM_BLOCK_DISPLAY)) {
-            SLog.d(NAME, "clean. %s", why);
+        if (SLog.isLoggable(SLog.VERBOSE)) {
+            SLog.vmf(NAME, "clean. %s", why);
         }
 
         removeMessages(WHAT_INIT);

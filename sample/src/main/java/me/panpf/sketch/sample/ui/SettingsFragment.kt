@@ -85,12 +85,12 @@ class SettingsFragment : BaseFragment() {
         menuList.add(object : InfoMenu("Log Level") {
             override fun getInfo(): String {
                 return when (SLog.getLevel()) {
-                    SLog.LEVEL_VERBOSE -> "VERBOSE"
-                    SLog.LEVEL_DEBUG -> "DEBUG"
-                    SLog.LEVEL_INFO -> "INFO"
-                    SLog.LEVEL_WARNING -> "WARNING"
-                    SLog.LEVEL_ERROR -> "ERROR"
-                    SLog.LEVEL_NONE -> "NONE"
+                    SLog.VERBOSE -> "VERBOSE"
+                    SLog.DEBUG -> "DEBUG"
+                    SLog.INFO -> "INFO"
+                    SLog.WARNING -> "WARNING"
+                    SLog.ERROR -> "ERROR"
+                    SLog.NONE -> "NONE"
                     else -> "Unknown"
                 }
             }
@@ -98,7 +98,7 @@ class SettingsFragment : BaseFragment() {
             override fun onClick(adapter: AssemblyAdapter?) {
                 AlertDialog.Builder(requireActivity()).apply {
                     setTitle("Switch Log Level")
-                    val items = arrayOf("VERBOSE" + if (SLog.getLevel() == SLog.LEVEL_VERBOSE) " (*)" else "", "DEBUG" + if (SLog.getLevel() == SLog.LEVEL_DEBUG) " (*)" else "", "INFO" + if (SLog.getLevel() == SLog.LEVEL_INFO) " (*)" else "", "WARNING" + if (SLog.getLevel() == SLog.LEVEL_WARNING) " (*)" else "", "ERROR" + if (SLog.getLevel() == SLog.LEVEL_ERROR) " (*)" else "", "NONE" + if (SLog.getLevel() == SLog.LEVEL_NONE) " (*)" else "")
+                    val items = arrayOf("VERBOSE" + if (SLog.getLevel() == SLog.VERBOSE) " (*)" else "", "DEBUG" + if (SLog.getLevel() == SLog.DEBUG) " (*)" else "", "INFO" + if (SLog.getLevel() == SLog.INFO) " (*)" else "", "WARNING" + if (SLog.getLevel() == SLog.WARNING) " (*)" else "", "ERROR" + if (SLog.getLevel() == SLog.ERROR) " (*)" else "", "NONE" + if (SLog.getLevel() == SLog.NONE) " (*)" else "")
                     setItems(items) { _, which ->
                         when (which) {
                             0 -> AppConfig.putString(appContext, AppConfig.Key.LOG_LEVEL, "VERBOSE")
@@ -114,11 +114,6 @@ class SettingsFragment : BaseFragment() {
                 }.show()
             }
         })
-        menuList.add(CheckMenu(appContext, "Output Flow Log", AppConfig.Key.LOG_REQUEST, null))
-        menuList.add(CheckMenu(appContext, "Output Cache Log", AppConfig.Key.LOG_CACHE, null))
-        menuList.add(CheckMenu(appContext, "Output Zoom Log", AppConfig.Key.LOG_ZOOM, null))
-        menuList.add(CheckMenu(appContext, "Output Zoom Block Display Log", AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY, null))
-        menuList.add(CheckMenu(appContext, "Output Used Time Log", AppConfig.Key.LOG_TIME, null))
         menuList.add(CheckMenu(appContext, "Sync Output Log To Disk (cache/sketch_log)", AppConfig.Key.OUT_LOG_2_SDCARD, null))
 
         return menuList

@@ -75,7 +75,7 @@ public class Sketch {
             if (oldInstance != null) return oldInstance;
 
             Sketch newInstance = new Sketch(context);
-            SLog.i(null, "Version %s %s(%d) -> %s",
+            SLog.iff("Version %s %s(%d) -> %s",
                     BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, newInstance.configuration.toString());
 
             Initializer initializer = SketchUtils.findInitializer(context);
@@ -233,7 +233,7 @@ public class Sketch {
      */
     @Keep
     public void onTrimMemory(int level) {
-        SLog.w(null, "Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
+        SLog.wf("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
 
         configuration.getMemoryCache().trimMemory(level);
         configuration.getBitmapPool().trimMemory(level);
@@ -244,7 +244,7 @@ public class Sketch {
      */
     @Keep
     public void onLowMemory() {
-        SLog.w(null, "Memory is very low, clean memory cache and bitmap pool");
+        SLog.w("Memory is very low, clean memory cache and bitmap pool");
 
         configuration.getMemoryCache().clear();
         configuration.getBitmapPool().clear();

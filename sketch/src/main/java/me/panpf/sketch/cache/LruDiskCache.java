@@ -116,21 +116,21 @@ public class LruDiskCache implements DiskCache {
             cacheDir = SketchUtils.buildCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
         } catch (NoSpaceException | UnableCreateDirException | UnableCreateFileException e) {
             e.printStackTrace();
-            SLog.e(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+            SLog.emf(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
                     e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
             configuration.getCallback().onError(new InstallDiskCacheException(e, cacheDir));
             return;
         }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-            SLog.d(NAME, "diskCacheDir: %s", cacheDir.getPath());
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(NAME, "diskCacheDir: %s", cacheDir.getPath());
         }
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
         } catch (IOException e) {
             e.printStackTrace();
-            SLog.e(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+            SLog.emf(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
                     e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
             configuration.getCallback().onError(new InstallDiskCacheException(e, cacheDir));
         }
@@ -144,8 +144,8 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable judge exist, key=%s", key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Disabled. Unable judge exist, key=%s", key);
             }
             return false;
         }
@@ -176,8 +176,8 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable get, key=%s", key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Disabled. Unable get, key=%s", key);
             }
             return null;
         }
@@ -205,8 +205,8 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_CACHE)) {
-                SLog.d(NAME, "Disabled. Unable edit, key=%s", key);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(NAME, "Disabled. Unable edit, key=%s", key);
             }
             return null;
         }
@@ -297,9 +297,9 @@ public class LruDiskCache implements DiskCache {
         if (this.disabled != disabled) {
             this.disabled = disabled;
             if (disabled) {
-                SLog.w(NAME, "setDisabled. %s", true);
+                SLog.wmf(NAME, "setDisabled. %s", true);
             } else {
-                SLog.w(NAME, "setDisabled. %s", false);
+                SLog.wmf(NAME, "setDisabled. %s", false);
             }
         }
     }

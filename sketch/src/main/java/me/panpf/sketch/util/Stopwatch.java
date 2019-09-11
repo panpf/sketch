@@ -85,8 +85,8 @@ public class Stopwatch {
             decodeCount++;
             useTimeCount += totalTime;
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_TIME)) {
-                SLog.d(logName, "%s, average=%sms. %s",
+            if (SLog.isLoggable(SLog.VERBOSE)) {
+                SLog.vmf(logName, "%s, average=%sms. %s",
                         builder.toString(), decimalFormat.format((double) useTimeCount / decodeCount), requestId);
             }
             builder = null;

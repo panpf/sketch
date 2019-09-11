@@ -102,7 +102,7 @@ public class DownloadHelper {
 
         // Uri cannot is empty
         if (TextUtils.isEmpty(uri)) {
-            SLog.e(NAME, "Uri is empty");
+            SLog.em(NAME, "Uri is empty");
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_INVALID, sync);
             return null;
         }
@@ -110,14 +110,14 @@ public class DownloadHelper {
         // Uri type must be supported
         final UriModel uriModel = UriModel.match(sketch, uri);
         if (uriModel == null) {
-            SLog.e(NAME, "Unsupported uri type. %s", uri);
+            SLog.emf(NAME, "Unsupported uri type. %s", uri);
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return null;
         }
 
         // Only support http ot https
         if (!uriModel.isFromNet()) {
-            SLog.e(NAME, "Only support http ot https. %s", uri);
+            SLog.emf(NAME, "Only support http ot https. %s", uri);
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return null;
         }
@@ -141,8 +141,8 @@ public class DownloadHelper {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(uriModel.getDiskCacheKey(uri));
             if (diskCacheEntry != null) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(NAME, "Download image completed. %s", key);
+                if (SLog.isLoggable(SLog.DEBUG)) {
+                    SLog.dmf(NAME, "Download image completed. %s", key);
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
@@ -163,8 +163,8 @@ public class DownloadHelper {
                 downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            SLog.d(NAME, "Run dispatch submitted. %s", key);
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(NAME, "Run dispatch submitted. %s", key);
         }
         request.submit();
 

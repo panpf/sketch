@@ -106,8 +106,8 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runDispatch() {
         if (isCanceled()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before dispatch. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before dispatch. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -119,8 +119,8 @@ public class DownloadRequest extends AsyncRequest {
             DiskCache diskCache = getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
             if (diskCacheEntry != null) {
-                if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                    SLog.d(getLogName(), "Dispatch. Disk cache. %s. %s", getThreadName(), getKey());
+                if (SLog.isLoggable(SLog.DEBUG)) {
+                    SLog.dmf(getLogName(), "Dispatch. Disk cache. %s. %s", getThreadName(), getKey());
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
                 downloadCompleted();
@@ -132,14 +132,14 @@ public class DownloadRequest extends AsyncRequest {
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
             doCancel(CancelCause.PAUSE_DOWNLOAD);
 
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG)) {
-                SLog.d(getLogName(), "Request end because %s. %s. %s", CancelCause.PAUSE_DOWNLOAD, getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end because %s. %s. %s", CancelCause.PAUSE_DOWNLOAD, getThreadName(), getKey());
             }
             return;
         }
 
-        if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-            SLog.d(getLogName(), "Dispatch. Download. %s. %s", getThreadName(), getKey());
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(getLogName(), "Dispatch. Download. %s. %s", getThreadName(), getKey());
         }
         submitRunDownload();
     }
@@ -147,8 +147,8 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runDownload() {
         if (isCanceled()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before download. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before download. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -187,7 +187,7 @@ public class DownloadRequest extends AsyncRequest {
         if (downloadResult != null && downloadResult.hasData()) {
             postRunCompleted();
         } else {
-            SLog.e(getLogName(), "Not found data after download completed. %s. %s", getThreadName(), getKey());
+            SLog.emf(getLogName(), "Not found data after download completed. %s. %s", getThreadName(), getKey());
             doError(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
         }
     }
@@ -202,8 +202,8 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
             }
             return;
         }
@@ -218,8 +218,8 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runErrorInMainThread() {
         if (isCanceled()) {
-            if (SLog.isLoggable(SLog.LEVEL_DEBUG | SLog.TYPE_FLOW)) {
-                SLog.d(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
             }
             return;
         }

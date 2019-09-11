@@ -27,11 +27,6 @@ class MySketchInitializer : Initializer {
     private fun initConfig() {
         onEvent(AppConfigChangedEvent(AppConfig.Key.OUT_LOG_2_SDCARD))
         onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_LEVEL))
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_TIME))
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_REQUEST))
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_CACHE))
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_ZOOM))
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY))
 
         onEvent(AppConfigChangedEvent(AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD))
         onEvent(AppConfigChangedEvent(AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE))
@@ -58,38 +53,13 @@ class MySketchInitializer : Initializer {
                     levelValue = ""
                 }
                 when (levelValue) {
-                    "VERBOSE" -> SLog.setLevel(SLog.LEVEL_VERBOSE)
-                    "DEBUG" -> SLog.setLevel(SLog.LEVEL_DEBUG)
-                    "INFO" -> SLog.setLevel(SLog.LEVEL_INFO)
-                    "ERROR" -> SLog.setLevel(SLog.LEVEL_ERROR)
-                    "WARNING" -> SLog.setLevel(SLog.LEVEL_WARNING)
-                    "NONE" -> SLog.setLevel(SLog.LEVEL_NONE)
+                    "VERBOSE" -> SLog.setLevel(SLog.VERBOSE)
+                    "DEBUG" -> SLog.setLevel(SLog.DEBUG)
+                    "INFO" -> SLog.setLevel(SLog.INFO)
+                    "ERROR" -> SLog.setLevel(SLog.ERROR)
+                    "WARNING" -> SLog.setLevel(SLog.WARNING)
+                    "NONE" -> SLog.setLevel(SLog.NONE)
                 }
-            }
-            AppConfig.Key.LOG_TIME == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_TIME)) {
-                SLog.openType(SLog.TYPE_TIME)
-            } else {
-                SLog.closeType(SLog.TYPE_TIME)
-            }
-            AppConfig.Key.LOG_REQUEST == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_REQUEST)) {
-                SLog.openType(SLog.TYPE_FLOW)
-            } else {
-                SLog.closeType(SLog.TYPE_FLOW)
-            }
-            AppConfig.Key.LOG_CACHE == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_CACHE)) {
-                SLog.openType(SLog.TYPE_CACHE)
-            } else {
-                SLog.closeType(SLog.TYPE_CACHE)
-            }
-            AppConfig.Key.LOG_ZOOM == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_ZOOM)) {
-                SLog.openType(SLog.TYPE_ZOOM)
-            } else {
-                SLog.closeType(SLog.TYPE_ZOOM)
-            }
-            AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY == event.key -> if (AppConfig.getBoolean(context!!, AppConfig.Key.LOG_ZOOM_BLOCK_DISPLAY)) {
-                SLog.openType(SLog.TYPE_ZOOM_BLOCK_DISPLAY)
-            } else {
-                SLog.closeType(SLog.TYPE_ZOOM_BLOCK_DISPLAY)
             }
             AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD == event.key -> configuration!!.isMobileDataPauseDownloadEnabled = AppConfig.getBoolean(context!!, AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD)
             AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE == event.key -> configuration!!.isLowQualityImageEnabled = AppConfig.getBoolean(context!!, AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE)
