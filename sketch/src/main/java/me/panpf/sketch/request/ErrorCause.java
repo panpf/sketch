@@ -19,6 +19,7 @@ package me.panpf.sketch.request;
 /**
  * 错误原因
  */
+// todo download、load、display 是不一样的
 public enum ErrorCause {
     URI_INVALID,
 

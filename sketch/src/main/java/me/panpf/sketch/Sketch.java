@@ -16,39 +16,32 @@
 
 package me.panpf.sketch;
 
-import android.app.Application;
-import android.content.ComponentCallbacks2;
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import me.panpf.sketch.request.CancelCause;
 import me.panpf.sketch.request.DisplayHelper;
-import me.panpf.sketch.request.DisplayRequest;
 import me.panpf.sketch.request.DownloadHelper;
 import me.panpf.sketch.request.DownloadListener;
 import me.panpf.sketch.request.LoadHelper;
 import me.panpf.sketch.request.LoadListener;
+import me.panpf.sketch.uri.AndroidResUriModel;
+import me.panpf.sketch.uri.ApkIconUriModel;
+import me.panpf.sketch.uri.AppIconUriModel;
 import me.panpf.sketch.uri.AssetUriModel;
+import me.panpf.sketch.uri.Base64UriModel;
+import me.panpf.sketch.uri.Base64VariantUriModel;
+import me.panpf.sketch.uri.ContentUriModel;
 import me.panpf.sketch.uri.DrawableUriModel;
+import me.panpf.sketch.uri.FileUriModel;
+import me.panpf.sketch.uri.FileVariantUriModel;
+import me.panpf.sketch.uri.HttpUriModel;
+import me.panpf.sketch.uri.HttpsUriModel;
 import me.panpf.sketch.util.SketchUtils;
 
-/**
- * {@link Sketch} 是一个功能强大且全面的图片加载器，可以从网络或者本地加载图片，支持 gif、手势缩放以及分块显示超大图
- * <ul>
- * <li>{@link #display(String, SketchView)}：显示图片到 {@link SketchImageView} 上</li>
- * <li>{@link #load(String, LoadListener)}：加载图片到内存中</li>
- * <li>{@link #download(String, DownloadListener)}：下载图片到磁盘上</li>
- * </ul>
- */
 @SuppressWarnings("WeakerAccess")
 public class Sketch {
     public static final String META_DATA_KEY_INITIALIZER = "SKETCH_INITIALIZER";
@@ -66,6 +59,7 @@ public class Sketch {
      * Get a unique instance
      */
     @NonNull
+    // todo 取消默认提供的单例，改成 builder 方式创建
     public static Sketch with(@NonNull Context context) {
         Sketch oldInstance = instance;
         if (oldInstance != null) return oldInstance;
@@ -87,62 +81,47 @@ public class Sketch {
         }
     }
 
-    /**
-     * 取消请求
-     *
-     * @param sketchView 会通过 {@link SketchView} 的 {@link Drawable} 找到正在执行的请求，然后取消它
-     * @return true：当前 {@link SketchView} 有正在执行的任务并且取消成功；false：当前 {@link SketchView} 没有正在执行的任务
-     */
-    public static boolean cancel(@NonNull SketchView sketchView) {
-        final DisplayRequest displayRequest = SketchUtils.findDisplayRequest(sketchView);
-        if (displayRequest != null && !displayRequest.isFinished()) {
-            displayRequest.cancel(CancelCause.BE_CANCELLED);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 获取配置对象
-     *
-     * @return {@link Configuration}
-     */
     @NonNull
     public Configuration getConfiguration() {
         return configuration;
     }
 
+
     /**
-     * 根据指定的 uri 下载图片
-     *
-     * @param uri      图片 uri，只支持 http:// 和 https://
-     * @param listener 监听下载过程
-     * @return {@link DownloadHelper} 你可以继续通过 {@link DownloadHelper} 设置参数，最后调用其 {@link DownloadHelper#commit()} 方法提交
+     * Download image by uri, only supports http and https. Finally, the {@link DownloadHelper#commit()} method is called to submit
      */
     @NonNull
     public DownloadHelper download(@NonNull String uri, @Nullable DownloadListener listener) {
         return new DownloadHelper(this, uri, listener);
     }
 
+
     /**
-     * 根据指定的 uri 加载图片到内存中
+     * Load image into memory by uri. Finally, the {@link LoadHelper#commit()} method is called to submit
      *
-     * @param uri      图片 uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
-     * @param listener 监听下载过程
-     * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
+     * @see AndroidResUriModel
+     * @see ApkIconUriModel
+     * @see AppIconUriModel
+     * @see AssetUriModel
+     * @see Base64UriModel
+     * @see Base64VariantUriModel
+     * @see ContentUriModel
+     * @see DrawableUriModel
+     * @see FileUriModel
+     * @see FileVariantUriModel
+     * @see HttpUriModel
+     * @see HttpsUriModel
      */
+    // todo 支持异步和同步两种方式
     @NonNull
     public LoadHelper load(@NonNull String uri, @Nullable LoadListener listener) {
         return new LoadHelper(this, uri, listener);
     }
 
     /**
-     * 加载 assets 资源图片
+     * Load image into memory from asset resource. Finally, need the {@link LoadHelper#commit()} method is called to submit
      *
-     * @param assetFileName assets 文件夹下的图片文件的名称
-     * @param listener      监听加载过程
-     * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
+     * @see AssetUriModel
      */
     @NonNull
     public LoadHelper loadFromAsset(@NonNull String assetFileName, @Nullable LoadListener listener) {
@@ -151,11 +130,9 @@ public class Sketch {
     }
 
     /**
-     * 加载 drawable 资源图片
+     * Load image into memory from drawable resource. Finally, need the {@link LoadHelper#commit()} method is called to submit
      *
-     * @param drawableResId drawable 资源 id
-     * @param listener      监听加载过程
-     * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
+     * @see DrawableUriModel
      */
     @NonNull
     public LoadHelper loadFromResource(@DrawableRes int drawableResId, @Nullable LoadListener listener) {
@@ -164,36 +141,41 @@ public class Sketch {
     }
 
     /**
-     * 加载来自 {@link ContentProvider} 的图片
+     * Load image into memory from {@link ContentProvider}. Finally, need the {@link LoadHelper#commit()} method is called to submit
      *
-     * @param uri      来自 {@link ContentProvider} 的图片 uri，例如：content://、file://，使用 {@link ContentResolver#openInputStream(Uri)} api 读取图片
-     * @param listener 监听加载过程
-     * @return {@link LoadHelper} 你可以继续通过 {@link LoadHelper} 设置参数，最后调用其 {@link LoadHelper#commit()} 方法提交
+     * @see ContentUriModel
      */
     @NonNull
     public LoadHelper loadFromContent(@NonNull String uri, @Nullable LoadListener listener) {
         return new LoadHelper(this, uri, listener);
     }
 
+
     /**
-     * 根据指定的 uri 显示图片
+     * Display image to {@link SketchView} by uri. Finally, need the {@link DisplayHelper#commit()} method is called to submit
      *
-     * @param uri        图片 uri，支持全部的 uri 类型，请参考 <a href="https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md">https://github.com/panpf/sketch/blob/master/docs/wiki/uri.md</a>
-     * @param sketchView {@link Sketch} 对 {@link ImageView} 的规范接口，默认实现是 {@link SketchImageView}
-     * @return {@link DisplayHelper} 你可以继续通过 {@link DisplayHelper} 设置参数，最后调用其 {@link DisplayHelper#commit()} 方法提交
+     * @see AndroidResUriModel
+     * @see ApkIconUriModel
+     * @see AppIconUriModel
+     * @see AssetUriModel
+     * @see Base64UriModel
+     * @see Base64VariantUriModel
+     * @see ContentUriModel
+     * @see DrawableUriModel
+     * @see FileUriModel
+     * @see FileVariantUriModel
+     * @see HttpUriModel
+     * @see HttpsUriModel
      */
     @NonNull
-    // todo 支持异步和同步两种方式
     public DisplayHelper display(@NonNull String uri, @NonNull SketchView sketchView) {
         return new DisplayHelper(this, uri, sketchView);
     }
 
     /**
-     * 显示 assets 资源图片
+     * Display image to {@link SketchView} from asset resource. Finally, need the {@link DisplayHelper#commit()} method is called to submit
      *
-     * @param assetFileName assets 文件夹下的图片文件的名称
-     * @param sketchView    {@link Sketch} 对 {@link ImageView} 的规范接口，默认实现是 {@link SketchImageView}
-     * @return {@link DisplayHelper} 你可以继续通过 {@link DisplayHelper} 设置参数，最后调用其 {@link DisplayHelper#commit()} 方法提交
+     * @see AssetUriModel
      */
     @NonNull
     public DisplayHelper displayFromAsset(@NonNull String assetFileName, @NonNull SketchView sketchView) {
@@ -202,11 +184,9 @@ public class Sketch {
     }
 
     /**
-     * 显示 drawable 资源图片
+     * Display image to {@link SketchView} from drawable resource. Finally, need the {@link DisplayHelper#commit()} method is called to submit
      *
-     * @param drawableResId drawable 资源 id
-     * @param sketchView    {@link Sketch} 对 {@link ImageView} 的规范接口，默认实现是 {@link SketchImageView}
-     * @return {@link DisplayHelper} 你可以继续通过 {@link DisplayHelper} 设置参数，最后调用其 {@link DisplayHelper#commit()} 方法提交
+     * @see DrawableUriModel
      */
     @NonNull
     public DisplayHelper displayFromResource(@DrawableRes int drawableResId, @NonNull SketchView sketchView) {
@@ -215,23 +195,17 @@ public class Sketch {
     }
 
     /**
-     * 显示来自 {@link ContentProvider} 的图片
+     * Display image to {@link SketchView} from asset {@link ContentProvider}. Finally, need the {@link DisplayHelper#commit()} method is called to submit
      *
-     * @param uri        来自 {@link ContentProvider} 的图片 uri，例如：content://、file://，使用 {@link ContentResolver#openInputStream(Uri)} api 读取图片
-     * @param sketchView {@link Sketch} 对 {@link ImageView} 的规范接口，默认实现是 {@link SketchImageView}
-     * @return {@link DisplayHelper} 你可以继续通过 {@link DisplayHelper} 设置参数，最后调用其 {@link DisplayHelper#commit()} 方法提交
+     * @see ContentUriModel
      */
     @NonNull
     public DisplayHelper displayFromContent(@NonNull String uri, @NonNull SketchView sketchView) {
         return new DisplayHelper(this, uri, sketchView);
     }
 
-    /**
-     * 修整内存缓存，4.0 以下你需要重写 {@link Application#onTrimMemory(int)} 方法，然后调用这个方法
-     *
-     * @param level 修剪级别，对应 APP 的不同状态，对应 {@link ComponentCallbacks2} 里的常量
-     */
-    @Keep
+
+    @Deprecated
     public void onTrimMemory(int level) {
         SLog.wf("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
 
@@ -239,10 +213,7 @@ public class Sketch {
         configuration.getBitmapPool().trimMemory(level);
     }
 
-    /**
-     * 当内存低时直接清空全部内存缓存，4.0 以下你需要重写 {@link Application#onLowMemory} 方法，然后调用这个方法
-     */
-    @Keep
+    @Deprecated
     public void onLowMemory() {
         SLog.w("Memory is very low, clean memory cache and bitmap pool");
 

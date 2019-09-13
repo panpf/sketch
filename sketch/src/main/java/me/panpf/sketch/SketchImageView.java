@@ -29,9 +29,6 @@ import me.panpf.sketch.request.RedisplayListener;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.viewfun.FunctionPropertyView;
 
-/**
- * 用来替代 ImageView，支持手势缩放和分块显示超大图，详细文档请参考 docs/wiki/sketch_image_view.md
- */
 public class SketchImageView extends FunctionPropertyView {
 
     public SketchImageView(@NonNull Context context) {

@@ -86,14 +86,21 @@ public class DownloadHelper {
 
     /**
      * Synchronous execution
+     *
+     * @deprecated Use the {@link #execute()} method instead
      */
     @NonNull
+//    @Deprecated
     public DownloadHelper sync() {
         this.sync = true;
         return this;
     }
 
+    /**
+     * @deprecated Use the {@link #execute()} or {@link #enqueue(DownloadListener)} method instead
+     */
     @Nullable
+//    @Deprecated
     public DownloadRequest commit() {
         // Cannot run on UI threads
         if (sync && SketchUtils.isMainThread()) {
@@ -170,4 +177,40 @@ public class DownloadHelper {
 
         return request;
     }
+
+//    // todo 优化流程
+//    public void enqueue(@NonNull DownloadListener listener) {
+//        this.downloadListener = listener;
+//        this.sync = false;
+//        commit();
+//    }
+//
+//    @NonNull
+//    public DownloadResponse execute() {
+//        this.sync = true;
+//        final DownloadResponse[] response = new DownloadResponse[1];
+//        this.downloadListener = new DownloadListener() {
+//            @Override
+//            public void onStarted() {
+//
+//            }
+//
+//            @Override
+//            public void onCompleted(@NonNull DownloadResult result) {
+//                response[0] = new DownloadSuccessResponse(result);
+//            }
+//
+//            @Override
+//            public void onError(@NonNull ErrorCause cause) {
+//                response[0] = new DownloadErrorResponse(cause);
+//            }
+//
+//            @Override
+//            public void onCanceled(@NonNull CancelCause cause) {
+//                response[0] = new DownloadCancelResponse(cause);
+//            }
+//        };
+//        commit();
+//        return response[0];
+//    }
 }

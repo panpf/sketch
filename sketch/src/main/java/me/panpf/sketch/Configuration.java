@@ -50,10 +50,8 @@ import me.panpf.sketch.request.RequestExecutor;
 import me.panpf.sketch.request.Resize;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.uri.UriModelManager;
+import me.panpf.sketch.util.SketchUtils;
 
-/**
- * {@link Sketch} 唯一配置类
- */
 @SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 public final class Configuration {
     private static final String NAME = "Configuration";
@@ -127,7 +125,7 @@ public final class Configuration {
 
         this.callback = new DefaultSketchCallback();
 
-        application.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(application));
+        application.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(this));
     }
 
     /**
@@ -695,15 +693,18 @@ public final class Configuration {
 
     private static class MemoryChangedListener implements ComponentCallbacks2 {
         @NonNull
-        private Context context;
+        private Configuration configuration;
 
-        private MemoryChangedListener(@NonNull Context context) {
-            this.context = context.getApplicationContext();
+        private MemoryChangedListener(@NonNull Configuration configuration) {
+            this.configuration = configuration;
         }
 
         @Override
         public void onTrimMemory(int level) {
-            Sketch.with(context).onTrimMemory(level);
+            SLog.wf("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
+
+            configuration.getMemoryCache().trimMemory(level);
+            configuration.getBitmapPool().trimMemory(level);
         }
 
         @Override
@@ -713,7 +714,10 @@ public final class Configuration {
 
         @Override
         public void onLowMemory() {
-            Sketch.with(context).onLowMemory();
+            SLog.w("Memory is very low, clean memory cache and bitmap pool");
+
+            configuration.getMemoryCache().clear();
+            configuration.getBitmapPool().clear();
         }
     }
 
