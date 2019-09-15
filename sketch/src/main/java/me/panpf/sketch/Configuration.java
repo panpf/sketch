@@ -44,7 +44,6 @@ import me.panpf.sketch.optionsfilter.OptionsFilter;
 import me.panpf.sketch.optionsfilter.OptionsFilterManager;
 import me.panpf.sketch.process.ImageProcessor;
 import me.panpf.sketch.process.ResizeImageProcessor;
-import me.panpf.sketch.request.FreeRideManager;
 import me.panpf.sketch.request.LoadListener;
 import me.panpf.sketch.request.RequestExecutor;
 import me.panpf.sketch.request.Resize;
@@ -94,8 +93,6 @@ public final class Configuration {
     @NonNull
     private RequestExecutor executor;
     @NonNull
-    private FreeRideManager freeRideManager;
-    @NonNull
     private SketchCallback callback;
 
     Configuration(@NonNull Context context) {
@@ -116,7 +113,6 @@ public final class Configuration {
         this.httpStack = new HurlStack();
         this.downloader = new ImageDownloader();
         this.sizeCalculator = new ImageSizeCalculator();
-        this.freeRideManager = new FreeRideManager();
         this.resizeProcessor = new ResizeImageProcessor();
         this.resizeCalculator = new ResizeCalculator();
         this.defaultDisplayer = new DefaultImageDisplayer();
@@ -480,32 +476,6 @@ public final class Configuration {
 
 
     /**
-     * 获取顺风车管理器
-     *
-     * @return {@link FreeRideManager}. 顺风车管理器
-     */
-    @NonNull
-    public FreeRideManager getFreeRideManager() {
-        return freeRideManager;
-    }
-
-    /**
-     * 设置顺风车管理器
-     *
-     * @param freeRideManager {@link FreeRideManager}. 顺风车管理器
-     * @return {@link Configuration}. 为了支持链式调用
-     */
-    @NonNull
-    public Configuration setFreeRideManager(@NonNull FreeRideManager freeRideManager) {
-        //noinspection ConstantConditions
-        if (freeRideManager != null) {
-            this.freeRideManager = freeRideManager;
-            SLog.wmf(NAME, "freeRideManager=%s", freeRideManager.toString());
-        }
-        return this;
-    }
-
-    /**
      * 获取请求执行器
      *
      * @return {@link RequestExecutor}. 请求执行器
@@ -680,7 +650,6 @@ public final class Configuration {
                 "\n" + "resizeCalculator：" + resizeCalculator.toString() +
                 "\n" + "sizeCalculator：" + sizeCalculator.toString() +
 
-                "\n" + "freeRideManager：" + freeRideManager.toString() +
                 "\n" + "executor：" + executor.toString() +
                 "\n" + "callback：" + callback.toString() +
 

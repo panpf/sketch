@@ -683,7 +683,7 @@ public class DisplayHelper {
         }
 
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
-        DisplayRequest request = new FreeRideDisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
+        DisplayRequest request = new ResultShareDisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (SLog.isLoggable(SLog.VERBOSE)) {
             Stopwatch.with().record("createRequest");

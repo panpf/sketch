@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 请求执行器
  */
+// todo 结果分享跟执行器应该结合在一起，
 @SuppressWarnings("WeakerAccess")
 public class RequestExecutor {
     public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
@@ -48,6 +49,8 @@ public class RequestExecutor {
     private Handler dispatchHandler;
     @Nullable
     private DispatchThread dispatchThread;
+    @NonNull
+    private ResultShareManager resultShareManager;
     private boolean shutdown;
     private int localThreadPoolSize;
     private int netThreadPoolSize;
@@ -55,6 +58,7 @@ public class RequestExecutor {
     public RequestExecutor(int localThreadPoolSize, int netThreadPoolSize) {
         this.localThreadPoolSize = localThreadPoolSize;
         this.netThreadPoolSize = netThreadPoolSize;
+        this.resultShareManager = new ResultShareManager();
     }
 
     public RequestExecutor() {
@@ -174,6 +178,11 @@ public class RequestExecutor {
 
     public boolean isShutdown() {
         return shutdown;
+    }
+
+    @NonNull
+    public ResultShareManager getResultShareManager() {
+        return resultShareManager;
     }
 
     private static final class DispatchThread extends HandlerThread {

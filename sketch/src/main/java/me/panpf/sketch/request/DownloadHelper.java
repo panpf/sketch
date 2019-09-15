@@ -166,7 +166,7 @@ public class DownloadHelper {
     private DownloadRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
         CallbackHandler.postCallbackStarted(downloadListener, sync);
 
-        DownloadRequest request = new FreeRideDownloadRequest(sketch, uri, uriModel, key,
+        DownloadRequest request = new ResultShareDownloadRequest(sketch, uri, uriModel, key,
                 downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
 

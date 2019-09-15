@@ -39,7 +39,7 @@ import me.panpf.sketch.util.SketchUtils;
  * 加载请求
  */
 @SuppressWarnings("WeakerAccess")
-public class LoadRequest extends FreeRideDownloadRequest {
+public class LoadRequest extends ResultShareDownloadRequest {
     @Nullable
     private LoadListener loadListener;
 

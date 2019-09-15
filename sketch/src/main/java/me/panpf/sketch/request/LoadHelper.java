@@ -230,6 +230,7 @@ public class LoadHelper {
     }
 
     @Nullable
+    // todo 支持协程 spend
     public LoadRequest commit() {
         // Cannot run on UI threads
         if (sync && SketchUtils.isMainThread()) {

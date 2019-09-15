@@ -32,29 +32,29 @@ import me.panpf.sketch.util.SketchUtils;
  * 支持顺风车功能的下载请求
  */
 @SuppressWarnings("WeakerAccess")
-public class FreeRideDownloadRequest extends DownloadRequest implements FreeRideManager.DownloadFreeRide {
+public class ResultShareDownloadRequest extends DownloadRequest implements ResultShareDownload {
     @Nullable
-    private Set<FreeRideManager.DownloadFreeRide> downloadFreeRideSet;
+    private Set<ResultShareDownload> downloadResultShareSet;
 
-    public FreeRideDownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
-                                   @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener) {
+    public ResultShareDownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
+                                      @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener) {
         super(sketch, uri, uriModel, key, options, downloadListener, downloadProgressListener);
     }
 
     @NonNull
     @Override
-    public String getDownloadFreeRideKey() {
+    public String getDownloadResultShareKey() {
         return getUri();
     }
 
     @NonNull
     @Override
-    public String getDownloadFreeRideLog() {
+    public String getDownloadResultShareLog() {
         return String.format("%s@%s", SketchUtils.toHexString(this), getKey());
     }
 
     @Override
-    public boolean canByDownloadFreeRide() {
+    public boolean canUseResultShare() {
         DiskCache diskCache = getConfiguration().getDiskCache();
         return !diskCache.isClosed() && !diskCache.isDisabled()
                 && !getOptions().isCacheInDiskDisabled()
@@ -64,12 +64,12 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
     @Override
     protected void submitRunDownload() {
         // 可以坐顺风车的话，就先尝试坐别人的，坐不上就自己成为顺风车主让别人坐
-        if (canByDownloadFreeRide()) {
-            FreeRideManager freeRideManager = getConfiguration().getFreeRideManager();
-            if (freeRideManager.byDownloadFreeRide(this)) {
+        if (canUseResultShare()) {
+            ResultShareManager resultShareManager = getConfiguration().getExecutor().getResultShareManager();
+            if (resultShareManager.byDownloadResultShare(this)) {
                 return;
             } else {
-                freeRideManager.registerDownloadFreeRideProvider(this);
+                resultShareManager.registerDownloadResultShareProvider(this);
             }
         }
 
@@ -81,39 +81,39 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         super.runDownload();
 
         // 由于在submitRunDownload中会将自己注册成为顺风车主，因此一定要保证在这里取消注册
-        if (canByDownloadFreeRide()) {
-            FreeRideManager freeRideManager = getConfiguration().getFreeRideManager();
-            freeRideManager.unregisterDownloadFreeRideProvider(this);
+        if (canUseResultShare()) {
+            ResultShareManager resultShareManager = getConfiguration().getExecutor().getResultShareManager();
+            resultShareManager.unregisterDownloadResultShareProvider(this);
         }
     }
 
     @Override
-    public synchronized void byDownloadFreeRide(FreeRideManager.DownloadFreeRide request) {
-        if (downloadFreeRideSet == null) {
+    public synchronized void byDownloadResultShare(ResultShareDownload request) {
+        if (downloadResultShareSet == null) {
             synchronized (this) {
-                if (downloadFreeRideSet == null) {
-                    downloadFreeRideSet = new HashSet<>();
+                if (downloadResultShareSet == null) {
+                    downloadResultShareSet = new HashSet<>();
                 }
             }
         }
 
-        downloadFreeRideSet.add(request);
+        downloadResultShareSet.add(request);
     }
 
     @Nullable
     @Override
-    public Set<FreeRideManager.DownloadFreeRide> getDownloadFreeRideSet() {
-        return downloadFreeRideSet;
+    public Set<ResultShareDownload> getDownloadResultShareSet() {
+        return downloadResultShareSet;
     }
 
     @Override
-    public synchronized boolean processDownloadFreeRide() {
+    public synchronized boolean processDownloadResultShare() {
         DiskCache diskCache = getConfiguration().getDiskCache();
         DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
 
         if (diskCacheEntry != null) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "from diskCache. processDownloadFreeRide. %s. %s", getThreadName(), getKey());
+                SLog.dmf(getLogName(), "from diskCache. processDownloadResultShare. %s. %s", getThreadName(), getKey());
             }
             downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
             downloadCompleted();
@@ -128,10 +128,10 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
     public void updateProgress(int totalLength, int completedLength) {
         super.updateProgress(totalLength, completedLength);
 
-        if (downloadFreeRideSet != null && !downloadFreeRideSet.isEmpty()) {
-            for (FreeRideManager.DownloadFreeRide freeRide : downloadFreeRideSet) {
-                if (freeRide instanceof DownloadRequest) {
-                    ((DownloadRequest) freeRide).updateProgress(totalLength, completedLength);
+        if (downloadResultShareSet != null && !downloadResultShareSet.isEmpty()) {
+            for (ResultShareDownload resultShareDownload : downloadResultShareSet) {
+                if (resultShareDownload instanceof DownloadRequest) {
+                    ((DownloadRequest) resultShareDownload).updateProgress(totalLength, completedLength);
                 }
             }
         }
