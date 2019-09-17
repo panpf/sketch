@@ -50,7 +50,7 @@ class SettingsFragment : BaseFragment() {
         menuList.add(CheckMenu(appContext, "Disable Bitmap Pool", AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL, null))
         menuList.add(CheckMenu(appContext, "Disable Disk Cache", AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK, null))
 
-        menuList.add("Gesture Zoom")
+        menuList.add("Zoom")
         menuList.add(CheckMenu(appContext, "Enabled Read Mode In Detail Page", AppConfig.Key.READ_MODE, null))
         menuList.add(CheckMenu(appContext, "Enabled Location Animation In Detail Page", AppConfig.Key.LOCATION_ANIMATE, null))
         menuList.add(CheckMenu(appContext, "Pause Block Display When Page Not Visible In Detail Page", AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE, null))

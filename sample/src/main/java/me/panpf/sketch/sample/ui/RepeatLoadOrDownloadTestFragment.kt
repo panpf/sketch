@@ -3,9 +3,9 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_repeat_load_or_download_test.*
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.uri.ApkIconUriModel
 
 @BindContentView(R.layout.fragment_repeat_load_or_download_test)
@@ -34,7 +34,7 @@ class RepeatLoadOrDownloadTestFragment : BaseFragment() {
                 , image_repeatLoadOrDownloadTest_14
                 , image_repeatLoadOrDownloadTest_15
                 , image_repeatLoadOrDownloadTest_16
-        ).forEach { it.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg") }
+        ).forEach { it.displayImage("http://e.hiphotos.baidu.com/image/pic/item/4610b912c8fcc3cef70d70409845d688d53f20f7.jpg") }
 
         arrayOf(image_repeatLoadOrDownloadTest_31
                 , image_repeatLoadOrDownloadTest_32

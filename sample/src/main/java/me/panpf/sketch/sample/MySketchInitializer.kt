@@ -50,7 +50,7 @@ class MySketchInitializer : Initializer {
             AppConfig.Key.LOG_LEVEL == event.key -> {
                 var levelValue: String? = AppConfig.getString(context!!, AppConfig.Key.LOG_LEVEL)
                 if (levelValue == null) {
-                    levelValue = ""
+                    levelValue = if (BuildConfig.DEBUG) "DEBUG" else "INFO"
                 }
                 when (levelValue) {
                     "VERBOSE" -> SLog.setLevel(SLog.VERBOSE)
