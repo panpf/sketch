@@ -18,8 +18,25 @@ package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
 
-public interface DownloadResult {
+public class BytesDownloadResult implements DownloadResult{
+    @NonNull
+    private byte[] imageData;
+    @NonNull
+    private ImageFrom imageFrom;
+
+    public BytesDownloadResult(@NonNull byte[] imageData, @NonNull ImageFrom imageFrom) {
+        this.imageData = imageData;
+        this.imageFrom = imageFrom;
+    }
 
     @NonNull
-    ImageFrom getImageFrom();
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    @NonNull
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
 }

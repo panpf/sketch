@@ -65,6 +65,7 @@ public class SketchMD5Utils {
         }
     }
 
+    @NonNull
     public static String md5(String txt) {
         MessageDigest digest = digestObjectPool.get();
 

@@ -60,7 +60,7 @@ public class ImageDecoder {
         decodeHelperList = new LinkedList<>();
         resultProcessorList = new LinkedList<>();
 
-        decodeHelperList.add(new ProcessedCacheDecodeHelper());
+        decodeHelperList.add(new TransformCacheDecodeHelper());
         decodeHelperList.add(new GifDecodeHelper());
         decodeHelperList.add(new ThumbnailModeDecodeHelper());
         decodeHelperList.add(new NormalDecodeHelper());
@@ -121,7 +121,7 @@ public class ImageDecoder {
     private DecodeResult doDecode(@NonNull LoadRequest request) throws DecodeException {
         DataSource dataSource;
         try {
-            dataSource = request.getDataSourceWithPressedCache();
+            dataSource = request.getDataSource(false);
         } catch (GetDataSourceException e) {
             ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e);
             throw new DecodeException("Unable create DataSource", e, ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
@@ -177,7 +177,6 @@ public class ImageDecoder {
         }
 
         if (decodeResult != null) {
-            decodeResult.setImageFrom(dataSource.getImageFrom());
             return decodeResult;
         } else {
             ImageDecodeUtils.decodeError(request, null, NAME, "No matching DecodeHelper", null);

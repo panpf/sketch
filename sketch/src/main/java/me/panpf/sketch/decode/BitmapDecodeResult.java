@@ -19,7 +19,6 @@ package me.panpf.sketch.decode;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.cache.BitmapPoolUtils;
@@ -31,15 +30,16 @@ public class BitmapDecodeResult implements DecodeResult {
     private Bitmap bitmap;
     @NonNull
     private ImageAttrs imageAttrs;
-    @Nullable
+    @NonNull
     private ImageFrom imageFrom;
 
     private boolean banProcess;
     private boolean processed;
 
-    BitmapDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull Bitmap bitmap) {
+    BitmapDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull Bitmap bitmap, @NonNull ImageFrom imageFrom) {
         this.imageAttrs = imageAttrs;
         this.bitmap = bitmap;
+        this.imageFrom = imageFrom;
     }
 
     @NonNull
@@ -48,15 +48,10 @@ public class BitmapDecodeResult implements DecodeResult {
         return imageAttrs;
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
-    }
-
-    @Override
-    public void setImageFrom(@NonNull ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
     }
 
     @Override

@@ -23,16 +23,20 @@ import me.panpf.sketch.drawable.SketchGifDrawable;
 import me.panpf.sketch.request.ImageFrom;
 
 public class GifDecodeResult implements DecodeResult {
+    @NonNull
     private SketchGifDrawable gifDrawable;
+    @NonNull
     private ImageAttrs imageAttrs;
+    @NonNull
     private ImageFrom imageFrom;
 
     private boolean banProcess;
     private boolean processed;
 
-    public GifDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull SketchGifDrawable gifDrawable) {
-        this.imageAttrs = imageAttrs;
+    public GifDecodeResult(@NonNull SketchGifDrawable gifDrawable, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
         this.gifDrawable = gifDrawable;
+        this.imageAttrs = imageAttrs;
+        this.imageFrom = imageFrom;
     }
 
     @NonNull
@@ -41,14 +45,10 @@ public class GifDecodeResult implements DecodeResult {
         return imageAttrs;
     }
 
+    @NonNull
     @Override
     public ImageFrom getImageFrom() {
         return imageFrom;
-    }
-
-    @Override
-    public void setImageFrom(@NonNull ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
     }
 
     @Override
@@ -75,15 +75,13 @@ public class GifDecodeResult implements DecodeResult {
         return this;
     }
 
-    @Override
-    public void recycle(@NonNull BitmapPool bitmapPool) {
-        if (gifDrawable != null) {
-            gifDrawable.recycle();
-        }
-    }
-
     @NonNull
     public SketchGifDrawable getGifDrawable() {
         return gifDrawable;
+    }
+
+    @Override
+    public void recycle(@NonNull BitmapPool bitmapPool) {
+        gifDrawable.recycle();
     }
 }

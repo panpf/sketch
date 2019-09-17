@@ -166,7 +166,7 @@ public class ThumbnailModeDecodeHelper extends DecodeHelper {
         }
 
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
-        BitmapDecodeResult result = new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(true);
+        BitmapDecodeResult result = new BitmapDecodeResult(imageAttrs, bitmap, dataSource.getImageFrom()).setProcessed(true);
 
         try {
             correctOrientation(orientationCorrector, result, exifOrientation, request);

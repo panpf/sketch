@@ -19,12 +19,36 @@ package me.panpf.sketch.request;
 import androidx.annotation.NonNull;
 
 import me.panpf.sketch.decode.ImageAttrs;
+import me.panpf.sketch.drawable.SketchRefBitmap;
 
-public interface LoadResult {
+public class CacheBitmapLoadResult implements LoadResult{
+    @NonNull
+    private SketchRefBitmap refBitmap;
+    @NonNull
+    private ImageFrom imageFrom;
+    @NonNull
+    private ImageAttrs imageAttrs;
+
+    public CacheBitmapLoadResult(@NonNull SketchRefBitmap refBitmap, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
+        this.refBitmap = refBitmap;
+        this.imageAttrs = imageAttrs;
+        this.imageFrom = imageFrom;
+    }
 
     @NonNull
-    ImageFrom getImageFrom();
+    public SketchRefBitmap getRefBitmap() {
+        return refBitmap;
+    }
 
     @NonNull
-    ImageAttrs getImageAttrs();
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
+    @NonNull
+    @Override
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
+    }
 }

@@ -35,8 +35,8 @@ public class ProcessedResultCacheProcessor implements ResultProcessor {
             return;
         }
 
-        ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
-        if (!processedImageCache.canUse(request.getOptions())) {
+        TransformCacheManager transformCacheManager = request.getConfiguration().getTransformCacheManager();
+        if (!transformCacheManager.canUse(request.getOptions())) {
             return;
         }
 
@@ -45,6 +45,6 @@ public class ProcessedResultCacheProcessor implements ResultProcessor {
         }
 
         BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
-        processedImageCache.saveToDiskCache(request, bitmapDecodeResult.getBitmap());
+        transformCacheManager.saveToDiskCache(request, bitmapDecodeResult.getBitmap());
     }
 }

@@ -34,13 +34,10 @@ import me.panpf.sketch.util.DiskLruCache;
 import me.panpf.sketch.util.SketchUtils;
 
 /**
- * 对读到内存后又再次处理过的图片进行缓存，下次就不用再处理了，可加快加载速度
+ * Cache transform results, no need to transform again next time, can speed up the loading speed
  */
-public class ProcessedImageCache {
+public class TransformCacheManager {
 
-    /**
-     * 判断是否可以使用此功能
-     */
     public boolean canUse(@NonNull LoadOptions loadOptions) {
         if (!loadOptions.isCacheProcessedImageInDisk()) {
             return false;
@@ -66,16 +63,13 @@ public class ProcessedImageCache {
         return false;
     }
 
-    /**
-     * 此缩放比例是否可以使用缓存到本地磁盘功能
-     */
-    public boolean canUseCacheProcessedImageInDisk(int inSampleSize) {
+    public boolean canUseByInSampleSize(int inSampleSize) {
         return inSampleSize >= 8;
     }
 
     public boolean checkDiskCache(@NonNull LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+        String processedImageDiskCacheKey = request.getTransformCacheKey();
         String diskCacheKey = request.getDiskCacheKey();
         if (diskCacheKey.equals(processedImageDiskCacheKey)) {
             return false;
@@ -91,13 +85,10 @@ public class ProcessedImageCache {
         }
     }
 
-    /**
-     * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
-     */
     @Nullable
     public DiskCacheDataSource getDiskCache(@NonNull LoadRequest request) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+        String processedImageDiskCacheKey = request.getTransformCacheKey();
         String diskCacheKey = request.getDiskCacheKey();
         if (diskCacheKey.equals(processedImageDiskCacheKey)) {
             return null;
@@ -120,12 +111,9 @@ public class ProcessedImageCache {
         return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE).setFromProcessedCache(true);
     }
 
-    /**
-     * 保存 {@link Bitmap} 到磁盘缓存
-     */
     public void saveToDiskCache(@NonNull LoadRequest request, @NonNull Bitmap bitmap) {
         DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String processedImageDiskCacheKey = request.getProcessedDiskCacheKey();
+        String processedImageDiskCacheKey = request.getTransformCacheKey();
         String diskCacheKey = request.getDiskCacheKey();
         if (diskCacheKey.equals(processedImageDiskCacheKey)) {
             return;
@@ -144,7 +132,6 @@ public class ProcessedImageCache {
             DiskCache.Editor diskCacheEditor = diskCache.edit(processedImageDiskCacheKey);
             if (diskCacheEditor != null) {
                 BufferedOutputStream outputStream = null;
-                //noinspection TryWithIdenticalCatches
                 try {
                     outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
                     bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.getConfig()), 100, outputStream);
@@ -173,6 +160,6 @@ public class ProcessedImageCache {
     @NonNull
     @Override
     public String toString() {
-        return "ProcessedImageCache";
+        return "TransformCache";
     }
 }

@@ -41,7 +41,7 @@ import me.panpf.sketch.util.ExifInterface;
 /**
  * 解码经过处理的缓存图片时只需原封不动读取，然后读取原图的类型、宽高信息即可
  */
-public class ProcessedCacheDecodeHelper extends DecodeHelper {
+public class TransformCacheDecodeHelper extends DecodeHelper {
     private static final String NAME = "ProcessedCacheDecodeHelper";
 
     @Override
@@ -119,7 +119,7 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         // 由于是读取的经过处理的缓存图片，因此要重新读取原图的类型、宽高信息
         DataSource originFileDataSource;
         try {
-            originFileDataSource = request.getDataSource();
+            originFileDataSource = request.getDataSource(true);
         } catch (GetDataSourceException e) {
             ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e);
             throw new DecodeException(e, ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
@@ -151,6 +151,6 @@ public class ProcessedCacheDecodeHelper extends DecodeHelper {
         orientationCorrector.rotateSize(imageAttrs, imageAttrs.getExifOrientation());
 
         ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, NAME);
-        return new BitmapDecodeResult(imageAttrs, bitmap).setBanProcess(true);
+        return new BitmapDecodeResult(imageAttrs, bitmap, dataSource.getImageFrom()).setBanProcess(true);
     }
 }

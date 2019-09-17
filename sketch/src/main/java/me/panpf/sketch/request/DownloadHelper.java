@@ -152,8 +152,7 @@ public class DownloadHelper {
                     SLog.dmf(NAME, "Download image completed. %s", key);
                 }
                 if (downloadListener != null) {
-                    DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
-                    downloadListener.onCompleted(result);
+                    downloadListener.onCompleted(new CacheDownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE));
                 }
                 return false;
             }
@@ -166,14 +165,14 @@ public class DownloadHelper {
     private DownloadRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
         CallbackHandler.postCallbackStarted(downloadListener, sync);
 
-        DownloadRequest request = new ResultShareDownloadRequest(sketch, uri, uriModel, key,
+        DownloadRequest request = new DownloadRequest(sketch, uri, uriModel, key,
                 downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
 
         if (SLog.isLoggable(SLog.DEBUG)) {
             SLog.dmf(NAME, "Run dispatch submitted. %s", key);
         }
-        request.submit();
+        request.submitDispatch();
 
         return request;
     }

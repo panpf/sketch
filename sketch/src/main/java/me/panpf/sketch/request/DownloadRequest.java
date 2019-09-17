@@ -19,19 +19,16 @@ package me.panpf.sketch.request;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.cache.DiskCache;
 import me.panpf.sketch.http.DownloadException;
 import me.panpf.sketch.uri.UriModel;
 
-/**
- * 下载请求
- */
 @SuppressWarnings("WeakerAccess")
-public class DownloadRequest extends AsyncRequest {
-    @Nullable
-    protected DownloadResult downloadResult;
+public class DownloadRequest extends BaseRequest {
 
     @NonNull
     private DownloadOptions options;
@@ -40,31 +37,28 @@ public class DownloadRequest extends AsyncRequest {
     @Nullable
     private DownloadProgressListener downloadProgressListener;
 
-    public DownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
-                           @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener) {
-        super(sketch, uri, uriModel, key);
+    @Nullable
+    private DownloadResult downloadResult;
+    @Nullable
+    private List<DownloadRequest> waitingDownloadShareRequests;
+
+    DownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
+                    @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener, @NonNull String logModule) {
+        super(sketch, uri, uriModel, key, logModule);
 
         this.options = options;
         this.downloadListener = downloadListener;
         this.downloadProgressListener = downloadProgressListener;
-
-        setLogName("DownloadRequest");
     }
 
-    /**
-     * 获取下载选项
-     */
+    DownloadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull DownloadOptions options,
+                    @Nullable DownloadListener downloadListener, @Nullable DownloadProgressListener downloadProgressListener) {
+        this(sketch, uri, uriModel, key, options, downloadListener, downloadProgressListener, "DownloadRequest");
+    }
+
     @NonNull
     public DownloadOptions getOptions() {
         return options;
-    }
-
-    /**
-     * 获取下载结果
-     */
-    @Nullable
-    public DownloadResult getDownloadResult() {
-        return downloadResult;
     }
 
     @Override
@@ -72,7 +66,7 @@ public class DownloadRequest extends AsyncRequest {
         super.doError(errorCause);
 
         if (downloadListener != null) {
-            postRunError();
+            postToMainRunError();
         }
     }
 
@@ -81,35 +75,18 @@ public class DownloadRequest extends AsyncRequest {
         super.doCancel(cancelCause);
 
         if (downloadListener != null) {
-            postRunCanceled();
+            postToMainRunCanceled();
         }
     }
 
+    @Nullable
     @Override
-    protected void submitRunDispatch() {
-        setStatus(Status.WAIT_DISPATCH);
-        super.submitRunDispatch();
-    }
-
-    @Override
-    protected void submitRunDownload() {
-        setStatus(Status.WAIT_DOWNLOAD);
-        super.submitRunDownload();
-    }
-
-    @Override
-    protected void submitRunLoad() {
-        setStatus(Status.WAIT_LOAD);
-        super.submitRunLoad();
-    }
-
-    @Override
-    protected void runDispatch() {
+    protected DispatchResult runDispatch() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before dispatch. %s. %s", getThreadName(), getKey());
             }
-            return;
+            return null;
         }
 
         // 从磁盘中找缓存文件
@@ -122,9 +99,7 @@ public class DownloadRequest extends AsyncRequest {
                 if (SLog.isLoggable(SLog.DEBUG)) {
                     SLog.dmf(getLogName(), "Dispatch. Disk cache. %s. %s", getThreadName(), getKey());
                 }
-                downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
-                downloadCompleted();
-                return;
+                return new DownloadSuccessResult(new CacheDownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE));
             }
         }
 
@@ -135,72 +110,71 @@ public class DownloadRequest extends AsyncRequest {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end because %s. %s. %s", CancelCause.PAUSE_DOWNLOAD, getThreadName(), getKey());
             }
-            return;
+            return null;
         }
 
         if (SLog.isLoggable(SLog.DEBUG)) {
             SLog.dmf(getLogName(), "Dispatch. Download. %s. %s", getThreadName(), getKey());
         }
-        submitRunDownload();
+        return new RunDownoadResult();
     }
 
+    @Nullable
     @Override
-    protected void runDownload() {
+    protected DownloadResult runDownload() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before download. %s. %s", getThreadName(), getKey());
             }
-            return;
+            return null;
         }
 
         try {
-            downloadResult = getConfiguration().getDownloader().download(this);
+            return getConfiguration().getDownloader().download(this);
         } catch (CanceledException e) {
-            return;
+            return null;
         } catch (DownloadException e) {
             e.printStackTrace();
             doError(e.getErrorCause());
-            return;
+            return null;
         }
+    }
 
-        downloadCompleted();
+    @Nullable
+    @Override
+    LoadResult runLoad() {
+        return null;
     }
 
     @Override
-    protected void runLoad() {
+    void onRunLoadFinished(@Nullable LoadResult result) {
 
     }
 
-    /**
-     * 更新进度
-     */
-    public void updateProgress(int totalLength, int completedLength) {
+    @Override
+    public void onUpdateProgress(int totalLength, int completedLength) {
         if (downloadProgressListener != null && totalLength > 0) {
-            postRunUpdateProgress(totalLength, completedLength);
-        }
-    }
-
-    /**
-     * 下载完成后续处理
-     */
-    protected void downloadCompleted() {
-        if (downloadResult != null && downloadResult.hasData()) {
-            postRunCompleted();
-        } else {
-            SLog.emf(getLogName(), "Not found data after download completed. %s. %s", getThreadName(), getKey());
-            doError(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
+            postToMainRunUpdateProgress(totalLength, completedLength);
         }
     }
 
     @Override
-    protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
+    void onRunDownloadFinished(@Nullable DownloadResult result) {
+        this.downloadResult = result;
+        if (result != null) {
+            postRunCompleted();
+        }
+    }
+
+    @Override
+    protected void runUpdateProgressInMain(int totalLength, int completedLength) {
         if (!isFinished() && downloadProgressListener != null) {
             downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 
     @Override
-    protected void runCompletedInMainThread() {
+    protected void runCompletedInMain() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
@@ -210,13 +184,13 @@ public class DownloadRequest extends AsyncRequest {
 
         setStatus(Status.COMPLETED);
 
-        if (downloadListener != null && downloadResult != null && downloadResult.hasData()) {
+        if (downloadListener != null && downloadResult != null) {
             downloadListener.onCompleted(downloadResult);
         }
     }
 
     @Override
-    protected void runErrorInMainThread() {
+    protected void runErrorInMain() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
@@ -230,9 +204,28 @@ public class DownloadRequest extends AsyncRequest {
     }
 
     @Override
-    protected void runCanceledInMainThread() {
+    protected void runCanceledInMain() {
         if (downloadListener != null && getCancelCause() != null) {
             downloadListener.onCanceled(getCancelCause());
         }
+    }
+
+
+    /* ************************************** Download Share ************************************ */
+
+    public boolean canUseDownloadShare() {
+        DiskCache diskCache = getConfiguration().getDiskCache();
+        return !diskCache.isClosed() && !diskCache.isDisabled()
+                && !getOptions().isCacheInDiskDisabled()
+                && !isSync() && !getConfiguration().getExecutor().isShutdown();
+    }
+
+    @Nullable
+    public List<DownloadRequest> getWaitingDownloadShareRequests() {
+        return waitingDownloadShareRequests;
+    }
+
+    public void setWaitingDownloadShareRequests(@Nullable List<DownloadRequest> waitingDownloadShareRequests) {
+        this.waitingDownloadShareRequests = waitingDownloadShareRequests;
     }
 }

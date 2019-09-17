@@ -33,7 +33,7 @@ import me.panpf.sketch.cache.MemorySizeCalculator;
 import me.panpf.sketch.decode.ImageDecoder;
 import me.panpf.sketch.decode.ImageOrientationCorrector;
 import me.panpf.sketch.decode.ImageSizeCalculator;
-import me.panpf.sketch.decode.ProcessedImageCache;
+import me.panpf.sketch.decode.TransformCacheManager;
 import me.panpf.sketch.decode.ResizeCalculator;
 import me.panpf.sketch.display.DefaultImageDisplayer;
 import me.panpf.sketch.display.ImageDisplayer;
@@ -47,6 +47,7 @@ import me.panpf.sketch.process.ResizeImageProcessor;
 import me.panpf.sketch.request.LoadListener;
 import me.panpf.sketch.request.RequestExecutor;
 import me.panpf.sketch.request.Resize;
+import me.panpf.sketch.request.ResultShareManager;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.uri.UriModelManager;
 import me.panpf.sketch.util.SketchUtils;
@@ -70,7 +71,7 @@ public final class Configuration {
     @NonNull
     private MemoryCache memoryCache;
     @NonNull
-    private ProcessedImageCache processedImageCache;
+    private TransformCacheManager transformCacheManager;
 
     @NonNull
     private HttpStack httpStack;
@@ -94,6 +95,8 @@ public final class Configuration {
     private RequestExecutor executor;
     @NonNull
     private SketchCallback callback;
+    @NonNull
+    private ResultShareManager resultShareManager;
 
     Configuration(@NonNull Context context) {
         Application application = (Application) context.getApplicationContext();
@@ -116,10 +119,11 @@ public final class Configuration {
         this.resizeProcessor = new ResizeImageProcessor();
         this.resizeCalculator = new ResizeCalculator();
         this.defaultDisplayer = new DefaultImageDisplayer();
-        this.processedImageCache = new ProcessedImageCache();
+        this.transformCacheManager = new TransformCacheManager();
         this.orientationCorrector = new ImageOrientationCorrector();
 
         this.callback = new DefaultSketchCallback();
+        this.resultShareManager = new ResultShareManager();
 
         application.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(this));
     }
@@ -241,27 +245,11 @@ public final class Configuration {
     /**
      * 获取已处理图片缓存器
      *
-     * @return {@link ProcessedImageCache}. 已处理图片缓存器
+     * @return {@link TransformCacheManager}. 已处理图片缓存器
      */
     @NonNull
-    public ProcessedImageCache getProcessedImageCache() {
-        return processedImageCache;
-    }
-
-    /**
-     * 设置已处理图片缓存器
-     *
-     * @param processedImageCache {@link ProcessedImageCache}. 已处理图片缓存器
-     * @return {@link Configuration}. 为了支持链式调用
-     */
-    @NonNull
-    public Configuration setProcessedImageCache(@NonNull ProcessedImageCache processedImageCache) {
-        //noinspection ConstantConditions
-        if (processedImageCache != null) {
-            this.processedImageCache = processedImageCache;
-            SLog.wmf(NAME, "processedCache=", processedImageCache.toString());
-        }
-        return this;
+    public TransformCacheManager getTransformCacheManager() {
+        return transformCacheManager;
     }
 
 
@@ -516,6 +504,10 @@ public final class Configuration {
         return this;
     }
 
+    @NonNull
+    public ResultShareManager getResultShareManager() {
+        return resultShareManager;
+    }
 
     /**
      * 全局暂停下载新图片？
@@ -638,7 +630,7 @@ public final class Configuration {
                 "\n" + "diskCache：" + diskCache.toString() +
                 "\n" + "bitmapPool：" + bitmapPool.toString() +
                 "\n" + "memoryCache：" + memoryCache.toString() +
-                "\n" + "processedImageCache：" + processedImageCache.toString() +
+                "\n" + "processedImageCache：" + transformCacheManager.toString() +
 
                 "\n" + "httpStack：" + httpStack.toString() +
                 "\n" + "decoder：" + decoder.toString() +

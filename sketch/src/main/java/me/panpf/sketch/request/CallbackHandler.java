@@ -46,16 +46,16 @@ public class CallbackHandler {
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case WHAT_RUN_COMPLETED:
-                        ((AsyncRequest) msg.obj).runCompletedInMainThread();
+                        ((BaseRequest) msg.obj).runCompletedInMain();
                         break;
                     case WHAT_RUN_CANCELED:
-                        ((AsyncRequest) msg.obj).runCanceledInMainThread();
+                        ((BaseRequest) msg.obj).runCanceledInMain();
                         break;
                     case WHAT_RUN_UPDATE_PROGRESS:
-                        ((AsyncRequest) msg.obj).runUpdateProgressInMainThread(msg.arg1, msg.arg2);
+                        ((BaseRequest) msg.obj).runUpdateProgressInMain(msg.arg1, msg.arg2);
                         break;
                     case WHAT_RUN_FAILED:
-                        ((AsyncRequest) msg.obj).runErrorInMainThread();
+                        ((BaseRequest) msg.obj).runErrorInMain();
                         break;
 
                     case WHAT_CALLBACK_STARTED:
@@ -80,9 +80,9 @@ public class CallbackHandler {
     /**
      * 推到主线程处理完成
      */
-    static void postRunCompleted(@NonNull AsyncRequest request) {
+    static void postRunCompleted(@NonNull BaseRequest request) {
         if (request.isSync()) {
-            request.runCompletedInMainThread();
+            request.runCompletedInMain();
         } else {
             handler.obtainMessage(WHAT_RUN_COMPLETED, request).sendToTarget();
         }
@@ -91,9 +91,9 @@ public class CallbackHandler {
     /**
      * 推到主线程处理取消
      */
-    static void postRunCanceled(@NonNull AsyncRequest request) {
+    static void postRunCanceled(@NonNull BaseRequest request) {
         if (request.isSync()) {
-            request.runCanceledInMainThread();
+            request.runCanceledInMain();
         } else {
             handler.obtainMessage(WHAT_RUN_CANCELED, request).sendToTarget();
         }
@@ -102,9 +102,9 @@ public class CallbackHandler {
     /**
      * 推到主线程处理失败
      */
-    static void postRunError(@NonNull AsyncRequest request) {
+    static void postRunError(@NonNull BaseRequest request) {
         if (request.isSync()) {
-            request.runErrorInMainThread();
+            request.runErrorInMain();
         } else {
             handler.obtainMessage(WHAT_RUN_FAILED, request).sendToTarget();
         }
@@ -113,9 +113,9 @@ public class CallbackHandler {
     /**
      * 推到主线程处理进度
      */
-    static void postRunUpdateProgress(@NonNull AsyncRequest request, int totalLength, int completedLength) {
+    static void postRunUpdateProgress(@NonNull BaseRequest request, int totalLength, int completedLength) {
         if (request.isSync()) {
-            request.runUpdateProgressInMainThread(totalLength, completedLength);
+            request.runUpdateProgressInMain(totalLength, completedLength);
         } else {
             handler.obtainMessage(WHAT_RUN_UPDATE_PROGRESS, totalLength, completedLength, request).sendToTarget();
         }

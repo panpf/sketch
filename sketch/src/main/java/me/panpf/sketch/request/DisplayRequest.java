@@ -23,6 +23,8 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchView;
@@ -38,47 +40,38 @@ import me.panpf.sketch.drawable.SketchShapeBitmapDrawable;
 import me.panpf.sketch.state.StateImage;
 import me.panpf.sketch.uri.UriModel;
 
-/**
- * 显示请求
- */
 @SuppressWarnings("WeakerAccess")
 public class DisplayRequest extends LoadRequest {
 
     @Nullable
-    protected DisplayResult displayResult;
-    @Nullable
     private DisplayListener displayListener;
     private boolean useSmallerThumbnails;
+
     @NonNull
     private RequestAndViewBinder requestAndViewBinder;
+    @Nullable
+    private DisplayResult displayResult;
+    @Nullable
+    private List<DisplayRequest> waitingDisplayShareRequests;
 
     public DisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel,
                           @NonNull String key, @NonNull DisplayOptions displayOptions,
                           boolean useSmallerThumbnails, @NonNull RequestAndViewBinder requestAndViewBinder,
                           @Nullable DisplayListener displayListener,
                           @Nullable DownloadProgressListener downloadProgressListener) {
-        super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener);
-
+        super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener, "DisplayRequest");
         this.useSmallerThumbnails = useSmallerThumbnails;
         this.requestAndViewBinder = requestAndViewBinder;
         this.displayListener = displayListener;
-
         this.requestAndViewBinder.setDisplayRequest(this);
-        setLogName("DisplayRequest");
     }
 
-    /**
-     * 获取显示选项
-     */
     @NonNull
     @Override
     public DisplayOptions getOptions() {
         return (DisplayOptions) super.getOptions();
     }
 
-    /**
-     * 获取内存缓存 key
-     */
     @NonNull
     public String getMemoryCacheKey() {
         return getKey();
@@ -94,7 +87,6 @@ public class DisplayRequest extends LoadRequest {
             return true;
         }
 
-        // 绑定关系已经断了就直接取消请求
         if (requestAndViewBinder.isBroken()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "The request and the connection to the view are interrupted. %s. %s", getThreadName(), getKey());
@@ -110,7 +102,7 @@ public class DisplayRequest extends LoadRequest {
     protected void doError(@NonNull ErrorCause errorCause) {
         if (displayListener != null || getOptions().getErrorImage() != null) {
             setErrorCause(errorCause);
-            postRunError();
+            postToMainRunError();
         } else {
             super.doError(errorCause);
         }
@@ -121,14 +113,14 @@ public class DisplayRequest extends LoadRequest {
         super.doCancel(cancelCause);
 
         if (displayListener != null) {
-            postRunCanceled();
+            postToMainRunCanceled();
         }
     }
 
     @Override
-    protected void postRunError() {
+    protected void postToMainRunError() {
         setStatus(Status.WAIT_DISPLAY);
-        super.postRunError();
+        super.postToMainRunError();
     }
 
     @Override
@@ -137,13 +129,14 @@ public class DisplayRequest extends LoadRequest {
         super.postRunCompleted();
     }
 
+    @Nullable
     @Override
-    protected void runLoad() {
+    LoadResult runLoad() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before decode. %s. %s", getThreadName(), getKey());
             }
-            return;
+            return null;
         }
 
         // Check memory cache
@@ -160,14 +153,8 @@ public class DisplayRequest extends LoadRequest {
                             SLog.dmf(getLogName(), "From memory get drawable. bitmap=%s. %s. %s",
                                     cachedRefBitmap.getInfo(), getThreadName(), getKey());
                         }
-
-                        // 立马标记等待使用，防止被回收
-                        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true);
-
-                        Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
-                        displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
-                        displayCompleted();
-                        return;
+                        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true); // 立马标记等待使用，防止被回收
+                        return new CacheBitmapLoadResult(cachedRefBitmap, cachedRefBitmap.getAttrs(), ImageFrom.MEMORY_CACHE);
                     } else {
                         memoryCache.remove(getMemoryCacheKey());
                         SLog.emf(getLogName(), "Memory cache drawable recycled. bitmap=%s. %s. %s", cachedRefBitmap.getInfo(), getThreadName(), getKey());
@@ -176,51 +163,48 @@ public class DisplayRequest extends LoadRequest {
             }
         }
 
-        super.runLoad();
+        return super.runLoad();
     }
 
     @Override
-    protected void loadCompleted() {
-        LoadResult loadResult = getLoadResult();
-        DisplayOptions displayOptions = getOptions();
-        if (loadResult != null && loadResult.getBitmap() != null) {
-            Bitmap bitmap = loadResult.getBitmap();
-
+    void onRunLoadFinished(@Nullable LoadResult result) {
+        if (result instanceof BitmapLoadResult) {
             BitmapPool bitmapPool = getConfiguration().getBitmapPool();
-            SketchRefBitmap refBitmap = new SketchRefBitmap(bitmap, getKey(), getUri(), loadResult.getImageAttrs(), bitmapPool);
-
-            // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
-            refBitmap.setIsWaitingUse(String.format("%s:waitingUse:new", getLogName()), true);
-
-            // 放入内存缓存中
-            if (!displayOptions.isCacheInMemoryDisabled() && getMemoryCacheKey() != null) {
+            Bitmap bitmap = ((BitmapLoadResult) result).getBitmap();
+            SketchRefBitmap refBitmap = new SketchRefBitmap(bitmap, getKey(), getUri(), result.getImageAttrs(), bitmapPool);
+            refBitmap.setIsWaitingUse(String.format("%s:waitingUse:new", getLogName()), true);  // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
+            DisplayOptions displayOptions = getOptions();
+            if (!displayOptions.isCacheInMemoryDisabled()) {
                 getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
             }
 
-            Drawable drawable = new SketchBitmapDrawable(refBitmap, loadResult.getImageFrom());
-            displayResult = new DisplayResult(drawable, loadResult.getImageFrom(), loadResult.getImageAttrs());
-            displayCompleted();
-        } else if (loadResult != null && loadResult.getGifDrawable() != null) {
-            SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
-
-            // GifDrawable不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
+            Drawable drawable = new SketchBitmapDrawable(refBitmap, result.getImageFrom());
+            onDisplayFinished(new DisplayResult(drawable, result.getImageFrom(), result.getImageAttrs()));
+        } else if (result instanceof GifLoadResult) {
+            // GifDrawable 不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
             // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
-
-            displayResult = new DisplayResult((Drawable) gifDrawable, loadResult.getImageFrom(), loadResult.getImageAttrs());
-            displayCompleted();
+            SketchGifDrawable gifDrawable = ((GifLoadResult) result).getGifDrawable();
+            onDisplayFinished(new DisplayResult((Drawable) gifDrawable, result.getImageFrom(), result.getImageAttrs()));
+        } else if (result instanceof CacheBitmapLoadResult) {
+            Drawable drawable = new SketchBitmapDrawable(((CacheBitmapLoadResult) result).getRefBitmap(), result.getImageFrom());
+            onDisplayFinished(new DisplayResult(drawable, result.getImageFrom(), result.getImageAttrs()));
         } else {
             SLog.emf(getLogName(), "Not found data after load completed. %s. %s", getThreadName(), getKey());
             doError(ErrorCause.DATA_LOST_AFTER_LOAD_COMPLETED);
+            onDisplayFinished(null);
         }
     }
 
-    protected void displayCompleted() {
-        postRunCompleted();
+    protected void onDisplayFinished(@Nullable DisplayResult result) {
+        this.displayResult = result;
+        if (result != null) {
+            postRunCompleted();
+        }
     }
 
     @Override
-    protected void runCompletedInMainThread() {
-        Drawable drawable = displayResult.getDrawable();
+    protected void runCompletedInMain() {
+        Drawable drawable = displayResult != null ? displayResult.getDrawable() : null;
         if (drawable == null) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Drawable is null before call completed. %s. %s", getThreadName(), getKey());
@@ -228,7 +212,7 @@ public class DisplayRequest extends LoadRequest {
             return;
         }
 
-        displayImage(drawable);
+        displayImage(displayResult, drawable);
 
         // 使用完毕更新等待使用的引用计数
         if (drawable instanceof SketchRefDrawable) {
@@ -236,7 +220,7 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
-    private void displayImage(Drawable drawable) {
+    private void displayImage(@NonNull DisplayResult displayResult, @NonNull Drawable drawable) {
         SketchView sketchView = requestAndViewBinder.getView();
         if (isCanceled() || sketchView == null) {
             if (SLog.isLoggable(SLog.DEBUG)) {
@@ -260,7 +244,7 @@ public class DisplayRequest extends LoadRequest {
                             ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom(), getThreadName(), getKey());
                 }
 
-                runErrorInMainThread();
+                runErrorInMain();
                 return;
             }
         }
@@ -284,7 +268,11 @@ public class DisplayRequest extends LoadRequest {
         // 一定要在 ImageDisplayer().display 之前执行
         setStatus(Status.COMPLETED);
 
-        displayOptions.getDisplayer().display(sketchView, drawable);
+        ImageDisplayer imageDisplayer = displayOptions.getDisplayer();
+        if (imageDisplayer == null) {
+            imageDisplayer = getConfiguration().getDefaultDisplayer();
+        }
+        imageDisplayer.display(sketchView, drawable);
 
         if (displayListener != null) {
             displayListener.onCompleted(displayResult.getDrawable(), displayResult.getImageFrom(), displayResult.getImageAttrs());
@@ -292,7 +280,7 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void runErrorInMainThread() {
+    protected void runErrorInMain() {
         SketchView sketchView = requestAndViewBinder.getView();
         if (isCanceled() || sketchView == null) {
             if (SLog.isLoggable(SLog.DEBUG)) {
@@ -319,9 +307,29 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void runCanceledInMainThread() {
+    protected void runCanceledInMain() {
         if (displayListener != null && getCancelCause() != null) {
             displayListener.onCanceled(getCancelCause());
         }
+    }
+
+
+    /* ************************************** Display Share ************************************ */
+
+    public boolean canUseDisplayShare() {
+        MemoryCache memoryCache = getConfiguration().getMemoryCache();
+        return !memoryCache.isClosed() && !memoryCache.isDisabled()
+                && !getOptions().isCacheInMemoryDisabled()
+                && !getOptions().isDecodeGifImage()
+                && !isSync() && !getConfiguration().getExecutor().isShutdown();
+    }
+
+    @Nullable
+    public List<DisplayRequest> getWaitingDisplayShareRequests() {
+        return waitingDisplayShareRequests;
+    }
+
+    public void setWaitingDisplayShareRequests(@Nullable List<DisplayRequest> waitingDisplayShareRequests) {
+        this.waitingDisplayShareRequests = waitingDisplayShareRequests;
     }
 }

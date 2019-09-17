@@ -59,7 +59,7 @@ public class GifDecodeHelper extends DecodeHelper {
             BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
             SketchGifDrawable gifDrawable = dataSource.makeGifDrawable(request.getKey(), request.getUri(), imageAttrs, bitmapPool);
 
-            return new GifDecodeResult(imageAttrs, gifDrawable).setBanProcess(true);
+            return new GifDecodeResult(gifDrawable, imageAttrs, dataSource.getImageFrom()).setBanProcess(true);
         } catch (IOException e) {
             throw new DecodeException(e, ErrorCause.DECODE_FILE_IO_EXCEPTION);
         } catch (NotFoundGifLibraryException e) {

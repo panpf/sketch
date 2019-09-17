@@ -28,6 +28,8 @@ import me.panpf.sketch.cache.DiskCache;
 import me.panpf.sketch.datasource.ByteArrayDataSource;
 import me.panpf.sketch.datasource.DataSource;
 import me.panpf.sketch.datasource.DiskCacheDataSource;
+import me.panpf.sketch.request.BytesDownloadResult;
+import me.panpf.sketch.request.CacheDownloadResult;
 import me.panpf.sketch.request.DownloadResult;
 import me.panpf.sketch.request.ImageFrom;
 
@@ -49,28 +51,22 @@ public class HttpUriModel extends UriModel {
     @NonNull
     @Override
     public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) throws GetDataSourceException {
-        if (downloadResult != null) {
-            DiskCache.Entry diskCacheEntry = downloadResult.getDiskCacheEntry();
-            if (diskCacheEntry != null) {
-                return new DiskCacheDataSource(diskCacheEntry, downloadResult.getImageFrom());
-            }
-
-            byte[] imageDataArray = downloadResult.getImageData();
-            if (imageDataArray != null && imageDataArray.length > 0) {
-                return new ByteArrayDataSource(imageDataArray, downloadResult.getImageFrom());
-            }
-
-            String cause = String.format("Not found data from download result. %s", uri);
-            SLog.em(NAME, cause);
-            throw new GetDataSourceException(cause);
-        } else {
+        if (downloadResult instanceof BytesDownloadResult) {
+            return new ByteArrayDataSource(((BytesDownloadResult) downloadResult).getImageData(), downloadResult.getImageFrom());
+        } else if (downloadResult instanceof CacheDownloadResult) {
+            return new DiskCacheDataSource(((CacheDownloadResult) downloadResult).getDiskCacheEntry(), downloadResult.getImageFrom());
+        } else if (downloadResult == null) {
             DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey(uri));
             if (diskCacheEntry != null) {
                 return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
+            } else {
+                String cause = String.format("Not found disk cache. %s", uri);
+                SLog.em(NAME, cause);
+                throw new GetDataSourceException(cause);
             }
-
-            String cause = String.format("Not found disk cache. %s", uri);
+        } else {
+            String cause = String.format("Not found data from download result. %s", uri);
             SLog.em(NAME, cause);
             throw new GetDataSourceException(cause);
         }

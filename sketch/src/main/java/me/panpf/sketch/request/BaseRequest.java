@@ -18,8 +18,11 @@ package me.panpf.sketch.request;
 
 import android.content.Context;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 
 import me.panpf.sketch.Configuration;
 import me.panpf.sketch.SLog;
@@ -27,7 +30,7 @@ import me.panpf.sketch.Sketch;
 import me.panpf.sketch.uri.UriModel;
 
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseRequest {
+public abstract class BaseRequest implements Runnable {
     @NonNull
     private Sketch sketch;
     @NonNull
@@ -36,23 +39,30 @@ public abstract class BaseRequest {
     private UriModel uriModel;
     @NonNull
     private String key;
+    @NonNull
+    private ResultShareManager resultShareManager;
+    @NonNull
+    private String logName;
 
     @Nullable
     private String diskCacheKey;
-    @NonNull
-    private String logName = "Request";
     @Nullable
     private Status status;
     @Nullable
     private ErrorCause errorCause;
     @Nullable
     private CancelCause cancelCause;
+    @Nullable
+    private RunStatus runStatus;
+    private boolean sync;
 
-    BaseRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key) {
+    BaseRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull String logName) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriModel = uriModel;
         this.key = key;
+        this.logName = logName;
+        this.resultShareManager = sketch.getConfiguration().getResultShareManager();
     }
 
     @NonNull
@@ -83,11 +93,14 @@ public abstract class BaseRequest {
         return key;
     }
 
+    @NonNull
     public String getDiskCacheKey() {
-        if (diskCacheKey == null) {
-            diskCacheKey = uriModel.getDiskCacheKey(uri);
-        }
-        return diskCacheKey;
+        final String diskCacheKey = this.diskCacheKey;
+        if (diskCacheKey != null) return diskCacheKey;
+
+        String newDiskCacheKey = uriModel.getDiskCacheKey(uri);
+        this.diskCacheKey = newDiskCacheKey;
+        return newDiskCacheKey;
     }
 
     @NonNull
@@ -95,19 +108,13 @@ public abstract class BaseRequest {
         return logName;
     }
 
-    void setLogName(@NonNull String logName) {
-        this.logName = logName;
-    }
-
     @Nullable
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
-        if (!isFinished()) {
-            this.status = status;
-        }
+    public void setStatus(@NonNull Status status) {
+        this.status = status;
     }
 
     @Nullable
@@ -116,11 +123,9 @@ public abstract class BaseRequest {
     }
 
     protected void setErrorCause(@NonNull ErrorCause cause) {
-        if (!isFinished()) {
-            this.errorCause = cause;
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "Request error. %s. %s. %s", cause.name(), getThreadName(), getKey());
-            }
+        this.errorCause = cause;
+        if (SLog.isLoggable(SLog.DEBUG)) {
+            SLog.dmf(getLogName(), "Request error. %s. %s. %s", cause.name(), getThreadName(), getKey());
         }
     }
 
@@ -146,11 +151,13 @@ public abstract class BaseRequest {
         return status == Status.CANCELED;
     }
 
+    // todo 作为结果的一种传入 finished 方法处理
     protected void doError(@NonNull ErrorCause errorCause) {
         setErrorCause(errorCause);
         setStatus(Status.FAILED);
     }
 
+    // todo 作为结果的一种传入 finished 方法处理
     protected void doCancel(@NonNull CancelCause cancelCause) {
         setCancelCause(cancelCause);
         setStatus(Status.CANCELED);
@@ -173,6 +180,162 @@ public abstract class BaseRequest {
     @NonNull
     public String getThreadName() {
         return Thread.currentThread().getName();
+    }
+
+    @Override
+    public final void run() {
+        final RunStatus runStatus = this.runStatus;
+        if (runStatus == RunStatus.DISPATCH) {
+            setStatus(Status.START_DISPATCH);
+            DispatchResult dispatchResult = runDispatch();
+            if (dispatchResult instanceof DownloadSuccessResult) {
+                DownloadResult downloadResult = ((DownloadSuccessResult) dispatchResult).result;
+                onRunDownloadFinished(downloadResult);
+                if (this instanceof DownloadRequest) {
+                    resultShareManager.unregisterDownloadShareProvider((DownloadRequest) this);
+                }
+            } else if (dispatchResult instanceof RunDownoadResult) {
+                submitDownload();
+            } else if (dispatchResult instanceof RunLoadResult) {
+                submitLoad();
+            }
+        } else if (runStatus == RunStatus.DOWNLOAD) {
+            setStatus(Status.START_DOWNLOAD);
+            DownloadResult downloadResult = runDownload();
+            onRunDownloadFinished(downloadResult);
+            if (this instanceof DownloadRequest) {
+                resultShareManager.unregisterDownloadShareProvider((DownloadRequest) this);
+            }
+        } else if (runStatus == RunStatus.LOAD) {
+            setStatus(Status.START_LOAD);
+            onRunLoadFinished(runLoad());
+            if (this instanceof DisplayRequest) {
+                resultShareManager.unregisterDisplayResultShareProvider((DisplayRequest) this);
+            }
+        } else {
+            SLog.emf(getLogName(), "Unknown runStatus: %s", (runStatus != null ? runStatus.name() : null));
+        }
+    }
+
+    boolean isSync() {
+        return sync;
+    }
+
+    void setSync(boolean sync) {
+        this.sync = sync;
+    }
+
+    void submitDispatch() {
+        this.runStatus = RunStatus.DISPATCH;
+        if (sync) {
+            run();
+        } else {
+            setStatus(Status.WAIT_DISPATCH);
+            getConfiguration().getExecutor().submitDispatch(this);
+        }
+    }
+
+    void submitDownload() {
+        this.runStatus = RunStatus.DOWNLOAD;
+        if (sync) {
+            run();
+        } else {
+            if (this instanceof DownloadRequest && ((DownloadRequest) this).canUseDownloadShare()) {
+                DownloadRequest downloadRequest = (DownloadRequest) this;
+                if (!resultShareManager.requestAttachDownloadShare(downloadRequest)) {
+                    resultShareManager.registerDownloadShareProvider(downloadRequest);
+                    setStatus(Status.WAIT_DOWNLOAD);
+                    getConfiguration().getExecutor().submitDownload(this);
+                }
+            } else {
+                setStatus(Status.WAIT_DOWNLOAD);
+                getConfiguration().getExecutor().submitDownload(this);
+            }
+        }
+    }
+
+    void submitLoad() {
+        this.runStatus = RunStatus.LOAD;
+        if (sync) {
+            run();
+        } else {
+            if (this instanceof DisplayRequest && ((DisplayRequest) this).canUseDisplayShare()) {
+                DisplayRequest displayRequest = (DisplayRequest) this;
+                if (!resultShareManager.requestAttachDisplayShare(displayRequest)) {
+                    resultShareManager.registerDisplayResultShareProvider(displayRequest);
+                    setStatus(Status.WAIT_LOAD);
+                    getConfiguration().getExecutor().submitLoad(this);
+                }
+            } else {
+                setStatus(Status.WAIT_LOAD);
+                getConfiguration().getExecutor().submitLoad(this);
+            }
+        }
+    }
+
+
+    @Nullable
+    @WorkerThread
+    abstract DispatchResult runDispatch();
+
+    @Nullable
+    @WorkerThread
+    abstract DownloadResult runDownload();
+
+    @WorkerThread
+    abstract void onRunDownloadFinished(@Nullable DownloadResult result);
+
+    @Nullable
+    @WorkerThread
+    abstract LoadResult runLoad();
+
+    @WorkerThread
+    abstract void onRunLoadFinished(@Nullable LoadResult result);
+
+    void postToMainRunUpdateProgress(int totalLength, int completedLength) {
+        CallbackHandler.postRunUpdateProgress(this, totalLength, completedLength);
+    }
+
+    @UiThread
+    abstract void runUpdateProgressInMain(int totalLength, int completedLength);
+
+    @AnyThread
+    protected void postRunCompleted() {
+        CallbackHandler.postRunCompleted(this);
+    }
+
+    @UiThread
+    abstract void runCompletedInMain();
+
+    @AnyThread
+    protected void postToMainRunError() {
+        CallbackHandler.postRunError(this);
+    }
+
+    @UiThread
+    abstract void runErrorInMain();
+
+    @AnyThread
+    void postToMainRunCanceled() {
+        CallbackHandler.postRunCanceled(this);
+    }
+
+    @UiThread
+    abstract void runCanceledInMain();
+
+    public final void updateProgress(int totalLength, int completedLength) {
+        onUpdateProgress(totalLength, completedLength);
+
+        if (this instanceof DownloadRequest) {
+            resultShareManager.updateDownloadProgress((DownloadRequest) this, totalLength, completedLength);
+        }
+    }
+
+    abstract void onUpdateProgress(int totalLength, int completedLength);
+
+
+    private enum RunStatus {
+        DISPATCH, LOAD, DOWNLOAD,
     }
 
     public enum Status {

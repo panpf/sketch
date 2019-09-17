@@ -31,6 +31,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.panpf.sketch.SLog;
 import me.panpf.sketch.cache.DiskCache;
 import me.panpf.sketch.request.BaseRequest;
+import me.panpf.sketch.request.BytesDownloadResult;
+import me.panpf.sketch.request.CacheDownloadResult;
 import me.panpf.sketch.request.CanceledException;
 import me.panpf.sketch.request.DownloadRequest;
 import me.panpf.sketch.request.DownloadResult;
@@ -79,7 +81,7 @@ public class ImageDownloader {
                 request.setStatus(BaseRequest.Status.CHECK_DISK_CACHE);
                 DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
                 if (diskCacheEntry != null) {
-                    return new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
+                    return new CacheDownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
                 }
             }
 
@@ -307,7 +309,7 @@ public class ImageDownloader {
                 SLog.dmf(NAME, "Download success. Data is saved to disk cache. fileLength: %d/%d. %s. %s",
                         completedLength, contentLength, request.getThreadName(), request.getKey());
             }
-            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
+            return new BytesDownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
         } else {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
@@ -315,7 +317,7 @@ public class ImageDownloader {
                     SLog.dmf(NAME, "Download success. data is saved to memory. fileLength: %d/%d. %s. %s",
                             completedLength, contentLength, request.getThreadName(), request.getKey());
                 }
-                return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
+                return new CacheDownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
                 String message = String.format("Not found disk cache after download success. %s. %s", request.getThreadName(), request.getKey());
                 SLog.em(NAME, message);

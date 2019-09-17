@@ -16,14 +16,20 @@
 
 package me.panpf.sketch.request;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
 
 import me.panpf.sketch.SLog;
+import me.panpf.sketch.cache.DiskCache;
+import me.panpf.sketch.cache.MemoryCache;
+import me.panpf.sketch.drawable.SketchBitmapDrawable;
+import me.panpf.sketch.drawable.SketchRefBitmap;
 
 /**
  * 下载或加载结果分享管理器，用于解决重复下载、重复加载
@@ -33,198 +39,232 @@ import me.panpf.sketch.SLog;
  */
 @SuppressWarnings("WeakerAccess")
 public class ResultShareManager {
-    private static final String NAME = "ResultShareManager";
+    private static final String MODULE = "ResultShareManager";
 
     @NonNull
-    private final Object displayResultShareProviderMapLock = new Object();
+    private final Object displayShareProviderMapLock = new Object();
     @NonNull
-    private final Object downloadResultShareProviderMapLock = new Object();
-    @Nullable
-    private Map<String, ResultShareDisplay> displayResultShareProviderMap;
-    @Nullable
-    private Map<String, ResultShareDownload> downloadResultShareProviderMap;
+    private final Object downloadShareProviderMapLock = new Object();
+    @NonNull
+    private final Map<String, DisplayRequest> displayShareProviderMap = new HashMap<>();
+    @NonNull
+    private final Map<String, DownloadRequest> downloadShareProviderMap = new HashMap<>();
 
-    public void registerDisplayResultShareProvider(@NonNull ResultShareDisplay provider) {
-        if (!provider.canByDisplayResultShare()) {
-            return;
-        }
-
-        synchronized (displayResultShareProviderMapLock) {
-            if (displayResultShareProviderMap == null) {
-                synchronized (this) {
-                    if (displayResultShareProviderMap == null) {
-                        displayResultShareProviderMap = new WeakHashMap<>();
-                    }
-                }
-            }
-
-            displayResultShareProviderMap.put(provider.getDisplayResultShareKey(), provider);
-
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "display. register result sharer provider. %s",
-                        provider.getDisplayResultShareLog());
-            }
-        }
-    }
-
-    public void unregisterDisplayResultShareProvider(@NonNull ResultShareDisplay provider) {
-        if (!provider.canByDisplayResultShare()) {
-            return;
-        }
-
-        ResultShareDisplay resultShareDisplay = null;
-        synchronized (displayResultShareProviderMapLock) {
-            if (displayResultShareProviderMap != null) {
-                resultShareDisplay = displayResultShareProviderMap.remove(provider.getDisplayResultShareKey());
-                if (resultShareDisplay != null) {
-                    if (SLog.isLoggable(SLog.DEBUG)) {
-                        SLog.dmf(NAME, "display. unregister result sharer provider. %s",
-                                resultShareDisplay.getDisplayResultShareLog());
-                    }
-                }
-            }
-        }
-
-        if (resultShareDisplay != null) {
-            Set<ResultShareDisplay> displayResultShareSet = resultShareDisplay.getDisplayResultShareSet();
-            if (displayResultShareSet == null || displayResultShareSet.size() == 0) {
-                return;
-            }
-
-            String providerId = resultShareDisplay.getDisplayResultShareLog();
-            for (ResultShareDisplay resultShareDisplay1 : displayResultShareSet) {
-                if (!resultShareDisplay1.isCanceled()) {
-                    boolean success = resultShareDisplay1.processDisplayResultShare();
-
-                    if (SLog.isLoggable(SLog.DEBUG)) {
-                        SLog.dmf(NAME, "display. callback result sharer. %s. %s  <-  %s",
-                                success ? "success" : "failed", resultShareDisplay1.getDisplayResultShareLog(), providerId);
-                    }
-                } else {
-                    SLog.wmf(NAME, "display. callback result sharer. %s. %s  <-  %s",
-                            "canceled", resultShareDisplay1.getDisplayResultShareLog(), providerId);
-                }
-            }
-            displayResultShareSet.clear();
-        }
-    }
-
-    public boolean byDisplayResultShare(@NonNull ResultShareDisplay resultShareDisplay1) {
-        if (!resultShareDisplay1.canByDisplayResultShare()) {
+    public boolean requestAttachDownloadShare(@NonNull DownloadRequest request) {
+        if (!request.canUseDownloadShare()) {
             return false;
         }
 
-        synchronized (displayResultShareProviderMapLock) {
-            ResultShareDisplay resultShareDisplay = null;
-            if (displayResultShareProviderMap != null) {
-                resultShareDisplay = displayResultShareProviderMap.get(resultShareDisplay1.getDisplayResultShareKey());
-            }
-            if (resultShareDisplay == null) {
+        synchronized (downloadShareProviderMapLock) {
+            DownloadRequest providerRequest = downloadShareProviderMap.get(request.getKey());
+            if (providerRequest == null) {
                 return false;
             }
 
-            resultShareDisplay.byDisplayResultShare(resultShareDisplay1);
+            List<DownloadRequest> waitingShareRequests = providerRequest.getWaitingDownloadShareRequests();
+            if (waitingShareRequests != null) {
+                waitingShareRequests.add(request);
+            } else {
+                List<DownloadRequest> newWaitingShareRequests = new LinkedList<>();
+                newWaitingShareRequests.add(request);
+                providerRequest.setWaitingDownloadShareRequests(newWaitingShareRequests);
+            }
 
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "display. by result sharer. %s -> %s",
-                        resultShareDisplay1.getDisplayResultShareLog(), resultShareDisplay.getDisplayResultShareLog());
+                SLog.dmf(MODULE, "download. waiting result share. %s", request.getKey());
             }
             return true;
         }
     }
 
-    public void registerDownloadResultShareProvider(@NonNull ResultShareDownload provider) {
-        if (!provider.canUseResultShare()) {
+    public void registerDownloadShareProvider(@NonNull DownloadRequest request) {
+        if (!request.canUseDownloadShare()) {
             return;
         }
 
-        synchronized (downloadResultShareProviderMapLock) {
-            if (downloadResultShareProviderMap == null) {
-                synchronized (this) {
-                    if (downloadResultShareProviderMap == null) {
-                        downloadResultShareProviderMap = new WeakHashMap<>();
-                    }
-                }
+        synchronized (downloadShareProviderMapLock) {
+            String downloadShareKey = request.getKey();
+            if (downloadShareProviderMap.containsKey(downloadShareKey)) {
+                throw new IllegalStateException("Repeat registration download share provider");
             }
 
-            downloadResultShareProviderMap.put(provider.getDownloadResultShareKey(), provider);
-
+            downloadShareProviderMap.put(downloadShareKey, request);
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "download. register result sharer provider. %s",
-                        provider.getDownloadResultShareLog());
+                SLog.dmf(MODULE, "download. register result share provider. %s",
+                        request.getKey());
             }
         }
     }
 
-    public void unregisterDownloadResultShareProvider(@NonNull ResultShareDownload provider) {
-        if (!provider.canUseResultShare()) {
+    public void unregisterDownloadShareProvider(@NonNull DownloadRequest request) {
+        if (!request.canUseDownloadShare()) {
             return;
         }
 
-        ResultShareDownload resultShareDownload = null;
-        synchronized (downloadResultShareProviderMapLock) {
-            if (downloadResultShareProviderMap != null) {
-                resultShareDownload = downloadResultShareProviderMap.remove(provider.getDownloadResultShareKey());
-                if (resultShareDownload != null) {
-                    if (SLog.isLoggable(SLog.DEBUG)) {
-                        SLog.dmf(NAME, "download. unregister result sharer provider. %s",
-                                resultShareDownload.getDownloadResultShareLog());
-                    }
-                }
-            }
-        }
-
-        if (resultShareDownload != null) {
-            Set<ResultShareDownload> downloadResultShareSet = resultShareDownload.getDownloadResultShareSet();
-            if (downloadResultShareSet == null || downloadResultShareSet.size() == 0) {
+        synchronized (downloadShareProviderMapLock) {
+            String downloadShareKey = request.getKey();
+            DownloadRequest downloadRequest = downloadShareProviderMap.get(downloadShareKey);
+            if (downloadRequest == request) {
+                downloadShareProviderMap.remove(downloadShareKey);
+            } else {
                 return;
             }
 
-            String providerId = resultShareDownload.getDownloadResultShareLog();
-            for (ResultShareDownload resultShareDownload1 : downloadResultShareSet) {
-                if (!resultShareDownload1.isCanceled()) {
-                    boolean success = resultShareDownload1.processDownloadResultShare();
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(MODULE, "download. unregister result share provider. %s", request.getKey());
+            }
+        }
 
-                    if (SLog.isLoggable(SLog.DEBUG)) {
-                        SLog.dmf(NAME, "download. callback result sharer. %s. %s  <-  %s",
-                                success ? "success" : "failed", resultShareDownload1.getDownloadResultShareLog(), providerId);
+        // 切记这部分代码不能在 synchronized (downloadShareProviderMapLock) 代码块中，因为可能会陷入锁循环
+        List<DownloadRequest> waitingShareRequests = request.getWaitingDownloadShareRequests();
+        if (waitingShareRequests != null) {
+            for (DownloadRequest waitingShareRequest : waitingShareRequests) {
+                if (!waitingShareRequest.isCanceled()) {
+                    DiskCache diskCache = waitingShareRequest.getConfiguration().getDiskCache();
+                    DiskCache.Entry diskCacheEntry = diskCache.get(waitingShareRequest.getDiskCacheKey());
+                    if (diskCacheEntry != null) {
+                        if (SLog.isLoggable(SLog.DEBUG)) {
+                            SLog.dmf(MODULE, "download. callback result share. %s. %s  <- %s",
+                                    "success", waitingShareRequest.getKey(), request.getKey());
+                        }
+                        waitingShareRequest.onRunDownloadFinished(new CacheDownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE));
+                    } else {
+                        if (SLog.isLoggable(SLog.DEBUG)) {
+                            SLog.dmf(MODULE, "download. callback result share. %s. %s  <- %s",
+                                    "failed", waitingShareRequest.getKey(), request.getKey());
+                        }
+                        waitingShareRequest.submitDownload();
                     }
                 } else {
-                    SLog.wmf(NAME, "download. callback result sharer. %s. %s  <-  %s",
-                            "canceled", resultShareDownload1.getDownloadResultShareLog(), providerId);
+                    SLog.wmf(MODULE, "download. callback result share. %s. %s  <-  %s",
+                            "canceled", waitingShareRequest.getKey(), request.getKey());
                 }
             }
-            downloadResultShareSet.clear();
+            request.setWaitingDownloadShareRequests(null);
         }
     }
 
-    public boolean byDownloadResultShare(@NonNull ResultShareDownload resultShareDownload) {
-        if (!resultShareDownload.canUseResultShare()) {
+    public void updateDownloadProgress(@NonNull DownloadRequest request, int totalLength, int completedLength) {
+        if (!request.canUseDownloadShare()) {
+            return;
+        }
+
+        synchronized (downloadShareProviderMapLock) {
+            List<DownloadRequest> downloadRequests = request.getWaitingDownloadShareRequests();
+            if (downloadRequests != null) {
+                for (DownloadRequest waitingShareRequest : downloadRequests) {
+                    waitingShareRequest.onUpdateProgress(totalLength, completedLength);
+                }
+            }
+        }
+    }
+
+
+    public boolean requestAttachDisplayShare(@NonNull DisplayRequest request) {
+        if (!request.canUseDisplayShare()) {
             return false;
         }
 
-        synchronized (downloadResultShareProviderMapLock) {
-            ResultShareDownload resultShareDownload1 = null;
-            if (downloadResultShareProviderMap != null) {
-                resultShareDownload1 = downloadResultShareProviderMap.get(resultShareDownload.getDownloadResultShareKey());
-            }
-            if (resultShareDownload1 == null) {
+        synchronized (displayShareProviderMapLock) {
+            DisplayRequest providerRequest = displayShareProviderMap.get(request.getKey());
+            if (providerRequest == null) {
                 return false;
             }
 
-            resultShareDownload1.byDownloadResultShare(resultShareDownload);
+            List<DisplayRequest> waitingDisplayShareRequests = providerRequest.getWaitingDisplayShareRequests();
+            if (waitingDisplayShareRequests != null) {
+                waitingDisplayShareRequests.add(request);
+            } else {
+                List<DisplayRequest> newWaitingDisplayShareRequests = new LinkedList<>();
+                newWaitingDisplayShareRequests.add(request);
+                providerRequest.setWaitingDisplayShareRequests(newWaitingDisplayShareRequests);
+            }
 
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "download. by result sharer. %s -> %s",
-                        resultShareDownload.getDownloadResultShareLog(), resultShareDownload1.getDownloadResultShareLog());
+                SLog.dmf(MODULE, "display. waiting result share. %s", request.getKey());
             }
             return true;
+        }
+    }
+
+    public void registerDisplayResultShareProvider(@NonNull DisplayRequest request) {
+        if (!request.canUseDisplayShare()) {
+            return;
+        }
+
+        synchronized (displayShareProviderMapLock) {
+            String displayShareKey = request.getKey();
+            if (displayShareProviderMap.containsKey(displayShareKey)) {
+                throw new IllegalStateException("Repeat registration display share provider");
+            }
+
+            displayShareProviderMap.put(displayShareKey, request);
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(MODULE, "display. register result share provider. %s", request.getKey());
+            }
+        }
+    }
+
+    public void unregisterDisplayResultShareProvider(@NonNull DisplayRequest request) {
+        if (!request.canUseDisplayShare()) {
+            return;
+        }
+
+        synchronized (displayShareProviderMapLock) {
+            DisplayRequest displayRequest = displayShareProviderMap.get(request.getKey());
+            if (displayRequest == request) {
+                displayShareProviderMap.remove(request.getKey());
+            } else {
+                return;
+            }
+            if (SLog.isLoggable(SLog.DEBUG)) {
+                SLog.dmf(MODULE, "display. unregister result share provider. %s",
+                        request.getKey());
+            }
+        }
+
+        // 切记这部分代码不能在 synchronized (downloadShareProviderMapLock) 代码块中，因为可能会陷入锁循环
+        List<DisplayRequest> waitingDisplayShareRequests = request.getWaitingDisplayShareRequests();
+        if (waitingDisplayShareRequests != null) {
+            for (DisplayRequest waitingRequest : waitingDisplayShareRequests) {
+                if (!waitingRequest.isCanceled()) {
+                    MemoryCache memoryCache = waitingRequest.getConfiguration().getMemoryCache();
+                    SketchRefBitmap cachedRefBitmap = memoryCache.get(waitingRequest.getMemoryCacheKey());
+                    if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
+                        memoryCache.remove(waitingRequest.getMemoryCacheKey());
+                        SLog.emf(MODULE, "memory cache drawable recycled. processResultShareRequests. bitmap=%s. %s. %s",
+                                cachedRefBitmap.getInfo(), waitingRequest.getThreadName(), waitingRequest.getKey());
+                        cachedRefBitmap = null;
+                    }
+                    if (cachedRefBitmap != null) {
+                        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", waitingRequest.getLogName()), true);  // 立马标记等待使用，防止被回收
+
+                        Drawable drawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
+                        waitingRequest.onDisplayFinished(new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs()));
+
+                        if (SLog.isLoggable(SLog.DEBUG)) {
+                            SLog.dmf(MODULE, "display. callback result share. %s. %s  <-  %s",
+                                    "success", waitingRequest.getKey(), request.getKey());
+                        }
+                    } else {
+                        if (SLog.isLoggable(SLog.DEBUG)) {
+                            SLog.dmf(MODULE, "display. callback result share. %s. %s  <-  %s",
+                                    "failed", waitingRequest.getKey(), request.getKey());
+                        }
+                        waitingRequest.submitLoad();
+                    }
+                } else {
+                    SLog.wmf(MODULE, "display. callback result share. %s. %s  <-  %s",
+                            "canceled", waitingRequest.getKey(), request.getKey());
+                }
+            }
+            request.setWaitingDisplayShareRequests(null);
         }
     }
 
     @NonNull
     @Override
     public String toString() {
-        return NAME;
+        return MODULE;
     }
 }

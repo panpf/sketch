@@ -3,8 +3,16 @@
 * new: Add [SketchCallback]
 * refactor: Zoom related function is now a separate module
 * remove: Remove HelperFactory and RequestFactory
+* refactor: [DownloadResult] split into [CacheDownloadResult] and [BytesDownloadResult]
+* refactor: [LoadResult] split into [BitmapLoadResult] and [GifLoadResult]
 
 [SketchCallback]: sketch/src/main/java/me/panpf/sketch/SketchCallback.java
+[DownloadResult]: sketch/src/main/java/me/panpf/sketch/request/DownloadResult.java
+[CacheDownloadResult]: sketch/src/main/java/me/panpf/sketch/request/CacheDownloadResult.java
+[BytesDownloadResult]: sketch/src/main/java/me/panpf/sketch/request/BytesDownloadResult.java
+[LoadResult]: sketch/src/main/java/me/panpf/sketch/request/LoadResult.java
+[BitmapLoadResult]: sketch/src/main/java/me/panpf/sketch/request/BitmapLoadResult.java
+[GifLoadResult]: sketch/src/main/java/me/panpf/sketch/request/GifLoadResult.java
 
 # v2.7.1 beta4
 * behavior: Restore SketchImageView.displayImage(String) method displays errorImage when passing in null

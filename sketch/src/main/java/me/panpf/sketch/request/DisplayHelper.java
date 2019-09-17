@@ -54,11 +54,11 @@ public class DisplayHelper {
     private static final String NAME = "DisplayHelper";
 
     @NonNull
-    private Sketch sketch;
+    private final Sketch sketch;
     @NonNull
     private final String uri;
     @NonNull
-    private SketchView sketchView;
+    private final SketchView sketchView;
 
     @NonNull
     private final DisplayOptions displayOptions;
@@ -515,11 +515,6 @@ public class DisplayHelper {
         }
 
 
-        // ImageDisplayer must have
-        if (displayOptions.getDisplayer() == null) {
-            displayOptions.setDisplayer(configuration.getDefaultDisplayer());
-        }
-
         // When using TransitionImageDisplayer, if you use a loadingImage , you must have a ShapeSize
         if (displayOptions.getDisplayer() instanceof TransitionImageDisplayer
                 && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
@@ -683,7 +678,7 @@ public class DisplayHelper {
         }
 
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
-        DisplayRequest request = new ResultShareDisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
+        DisplayRequest request = new DisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (SLog.isLoggable(SLog.VERBOSE)) {
             Stopwatch.with().record("createRequest");
@@ -711,7 +706,7 @@ public class DisplayHelper {
             SLog.dmf(NAME, "Run dispatch submitted. view(%s). %s", Integer.toHexString(sketchView.hashCode()), key);
         }
 
-        request.submit();
+        request.submitDispatch();
         if (SLog.isLoggable(SLog.VERBOSE)) {
             Stopwatch.with().record("submitRequest");
         }

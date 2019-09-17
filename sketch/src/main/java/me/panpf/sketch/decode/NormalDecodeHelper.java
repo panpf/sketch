@@ -124,11 +124,11 @@ public class NormalDecodeHelper extends DecodeHelper {
             throw new DecodeException(cause, ErrorCause.DECODE_RESULT_BITMAP_SIZE_INVALID);
         }
 
-        ProcessedImageCache processedImageCache = request.getConfiguration().getProcessedImageCache();
-        boolean processed = processedImageCache.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
+        TransformCacheManager transformCacheManager = request.getConfiguration().getTransformCacheManager();
+        boolean processed = transformCacheManager.canUseByInSampleSize(decodeOptions.inSampleSize);
 
         ImageAttrs imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
-        BitmapDecodeResult result = new BitmapDecodeResult(imageAttrs, bitmap).setProcessed(processed);
+        BitmapDecodeResult result = new BitmapDecodeResult(imageAttrs, bitmap, dataSource.getImageFrom()).setProcessed(processed);
 
         try {
             correctOrientation(orientationCorrector, result, exifOrientation, request);

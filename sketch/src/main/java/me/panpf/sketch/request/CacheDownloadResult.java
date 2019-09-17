@@ -18,8 +18,27 @@ package me.panpf.sketch.request;
 
 import androidx.annotation.NonNull;
 
-public interface DownloadResult {
+import me.panpf.sketch.cache.DiskCache;
+
+public class CacheDownloadResult implements DownloadResult {
+    @NonNull
+    private DiskCache.Entry diskCacheEntry;
+    @NonNull
+    private ImageFrom imageFrom;
+
+    public CacheDownloadResult(@NonNull DiskCache.Entry diskCacheEntry, @NonNull ImageFrom imageFrom) {
+        this.diskCacheEntry = diskCacheEntry;
+        this.imageFrom = imageFrom;
+    }
 
     @NonNull
-    ImageFrom getImageFrom();
+    public DiskCache.Entry getDiskCacheEntry() {
+        return diskCacheEntry;
+    }
+
+    @NonNull
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
 }

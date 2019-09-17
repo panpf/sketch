@@ -324,7 +324,7 @@ public class LoadHelper {
         if (SLog.isLoggable(SLog.DEBUG)) {
             SLog.dmf(NAME, "Run dispatch submitted. %s", key);
         }
-        request.submit();
+        request.submitDispatch();
 
         return request;
     }

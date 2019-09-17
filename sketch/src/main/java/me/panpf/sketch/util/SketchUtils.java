@@ -1047,7 +1047,7 @@ public class SketchUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
-    @Nullable
+    @NonNull
     public static String generatorTempFileName(@NonNull DataSource dataSource, @NonNull String uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

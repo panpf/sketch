@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package me.panpf.sketch.request;
 
 import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -28,81 +29,58 @@ import me.panpf.sketch.decode.BitmapDecodeResult;
 import me.panpf.sketch.decode.DecodeException;
 import me.panpf.sketch.decode.DecodeResult;
 import me.panpf.sketch.decode.GifDecodeResult;
-import me.panpf.sketch.decode.ProcessedImageCache;
 import me.panpf.sketch.decode.ImageAttrs;
+import me.panpf.sketch.decode.TransformCacheManager;
 import me.panpf.sketch.drawable.SketchGifDrawable;
 import me.panpf.sketch.uri.GetDataSourceException;
 import me.panpf.sketch.uri.UriModel;
 import me.panpf.sketch.util.SketchUtils;
 
-/**
- * 加载请求
- */
-@SuppressWarnings("WeakerAccess")
-public class LoadRequest extends ResultShareDownloadRequest {
+public class LoadRequest extends DownloadRequest {
     @Nullable
     private LoadListener loadListener;
 
     @Nullable
+    private DownloadResult downloadResult;
+    @Nullable
     private LoadResult loadResult;
 
     public LoadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull LoadOptions loadOptions,
-                       @Nullable LoadListener loadListener, @Nullable DownloadProgressListener downloadProgressListener) {
-        super(sketch, uri, uriModel, key, loadOptions, null, downloadProgressListener);
-
+                       @Nullable LoadListener loadListener, @Nullable DownloadProgressListener downloadProgressListener, @NonNull String logModule) {
+        super(sketch, uri, uriModel, key, loadOptions, null, downloadProgressListener, logModule);
         this.loadListener = loadListener;
-
-        setLogName("LoadRequest");
     }
 
-    /**
-     * 获取加载选项
-     */
+    public LoadRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull LoadOptions loadOptions,
+                       @Nullable LoadListener loadListener, @Nullable DownloadProgressListener downloadProgressListener) {
+        this(sketch, uri, uriModel, key, loadOptions, loadListener, downloadProgressListener, "LoadRequest");
+    }
+
     @NonNull
     @Override
     public LoadOptions getOptions() {
         return (LoadOptions) super.getOptions();
     }
 
-    /**
-     * 获取已处理功能使用的磁盘缓存 key
-     */
     @NonNull
-    public String getProcessedDiskCacheKey() {
+    public String getTransformCacheKey() {
         return getKey();
     }
 
-    /**
-     * 获取数据源
-     */
     @NonNull
-    public DataSource getDataSource() throws GetDataSourceException {
-        DownloadResult downloadResult = getUriModel().isFromNet() ? getDownloadResult() : null;
-        return getUriModel().getDataSource(getContext(), getUri(), downloadResult);
-    }
-
-    /**
-     * 获取数据源，优先考虑已处理缓存
-     */
-    @NonNull
-    public DataSource getDataSourceWithPressedCache() throws GetDataSourceException {
-        ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
-        if (processedImageCache.canUse(getOptions())) {
-            DataSource dataSource = processedImageCache.getDiskCache(this);
-            if (dataSource != null) {
-                return dataSource;
+    public DataSource getDataSource(boolean disableTransformCache) throws GetDataSourceException {
+        if (!disableTransformCache) {
+            TransformCacheManager transformCacheManager = getConfiguration().getTransformCacheManager();
+            if (transformCacheManager.canUse(getOptions())) {
+                DataSource dataSource = transformCacheManager.getDiskCache(this);
+                if (dataSource != null) {
+                    return dataSource;
+                }
             }
         }
 
-        return getDataSource();
-    }
-
-    /**
-     * 获取加载结果
-     */
-    @Nullable
-    public LoadResult getLoadResult() {
-        return loadResult;
+        DownloadResult downloadResult = getUriModel().isFromNet() ? this.downloadResult : null;
+        return getUriModel().getDataSource(getContext(), getUri(), downloadResult);
     }
 
     @Override
@@ -110,7 +88,7 @@ public class LoadRequest extends ResultShareDownloadRequest {
         super.doError(errorCause);
 
         if (loadListener != null) {
-            postRunError();
+            postToMainRunError();
         }
     }
 
@@ -119,59 +97,51 @@ public class LoadRequest extends ResultShareDownloadRequest {
         super.doCancel(cancelCause);
 
         if (loadListener != null) {
-            postRunCanceled();
+            postToMainRunCanceled();
         }
     }
 
+    @Nullable
     @Override
-    protected void runDispatch() {
+    protected DispatchResult runDispatch() {
         if (isCanceled()) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
+            if (SLog.isLoggable(SLog.DEBUG))
                 SLog.dmf(getLogName(), "Request end before dispatch. %s. %s", getThreadName(), getKey());
-            }
-            return;
+            return null;
         }
 
         setStatus(Status.INTERCEPT_LOCAL_TASK);
 
-        if (getUriModel().isFromNet()) {
-            // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
-            ProcessedImageCache processedImageCache = getConfiguration().getProcessedImageCache();
-            if (processedImageCache.canUse(getOptions()) && processedImageCache.checkDiskCache(this)) {
-                if (SLog.isLoggable(SLog.DEBUG)) {
-                    SLog.dmf(getLogName(), "Dispatch. Processed disk cache. %s. %s", getThreadName(), getKey());
-                }
-                submitRunLoad();
-            } else {
-                super.runDispatch();
-            }
-        } else {
-            // 本地请求直接执行加载
-            if (SLog.isLoggable(SLog.DEBUG)) {
+        TransformCacheManager transformCacheManager = getConfiguration().getTransformCacheManager();
+        if (!getUriModel().isFromNet()) {
+            if (SLog.isLoggable(SLog.DEBUG))
                 SLog.dmf(getLogName(), "Dispatch. Local image. %s. %s", getThreadName(), getKey());
-            }
-            submitRunLoad();
-        }
-    }
-
-    @Override
-    protected void downloadCompleted() {
-        DownloadResult downloadResult = getDownloadResult();
-        if (downloadResult != null && downloadResult.hasData()) {
-            submitRunLoad();
+            return new RunLoadResult();
+        } else if (transformCacheManager.canUse(getOptions()) && transformCacheManager.checkDiskCache(this)) {
+            // 网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
+            if (SLog.isLoggable(SLog.DEBUG))
+                SLog.dmf(getLogName(), "Dispatch. Processed disk cache. %s. %s", getThreadName(), getKey());
+            return new RunLoadResult();
         } else {
-            SLog.emf(getLogName(), "Not found data after download completed. %s. %s", getThreadName(), getKey());
-            doError(ErrorCause.DATA_LOST_AFTER_DOWNLOAD_COMPLETED);
+            return super.runDispatch();
         }
     }
 
     @Override
-    protected void runLoad() {
+    public void onRunDownloadFinished(@Nullable DownloadResult result) {
+        this.downloadResult = result;
+        if (result != null) {
+            submitLoad();
+        }
+    }
+
+    @Override
+    LoadResult runLoad() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before decode. %s. %s", getThreadName(), getKey());
             }
-            return;
+            return null;
         }
 
         setStatus(Status.DECODING);
@@ -181,7 +151,7 @@ public class LoadRequest extends ResultShareDownloadRequest {
         } catch (DecodeException e) {
             e.printStackTrace();
             doError(e.getErrorCause());
-            return;
+            return null;
         }
 
         if (decodeResult instanceof BitmapDecodeResult) {
@@ -194,7 +164,7 @@ public class LoadRequest extends ResultShareDownloadRequest {
                         imageAttrs.getExifOrientation(), bitmap, SketchUtils.getByteCount(bitmap), null);
                 SLog.emf(getLogName(), "Decode failed because bitmap recycled. bitmapInfo: %s. %s. %s", imageInfo, getThreadName(), getKey());
                 doError(ErrorCause.BITMAP_RECYCLED);
-                return;
+                return null;
             }
 
             if (SLog.isLoggable(SLog.DEBUG)) {
@@ -211,11 +181,10 @@ public class LoadRequest extends ResultShareDownloadRequest {
                 if (SLog.isLoggable(SLog.DEBUG)) {
                     SLog.dmf(getLogName(), "Request end after decode. %s. %s", getThreadName(), getKey());
                 }
-                return;
+                return null;
             }
 
-            loadResult = new LoadResult(bitmap, decodeResult);
-            loadCompleted();
+            return new BitmapLoadResult(bitmap, decodeResult.getImageAttrs(), decodeResult.getImageFrom());
         } else if (decodeResult instanceof GifDecodeResult) {
             SketchGifDrawable gifDrawable = ((GifDecodeResult) decodeResult).getGifDrawable();
 
@@ -223,7 +192,7 @@ public class LoadRequest extends ResultShareDownloadRequest {
                 SLog.emf(getLogName(), "Decode failed because gif drawable recycled. gifInfo: %s. %s. %s",
                         gifDrawable.getInfo(), getThreadName(), getKey());
                 doError(ErrorCause.GIF_DRAWABLE_RECYCLED);
-                return;
+                return null;
             }
 
             if (SLog.isLoggable(SLog.DEBUG)) {
@@ -236,28 +205,32 @@ public class LoadRequest extends ResultShareDownloadRequest {
                 if (SLog.isLoggable(SLog.DEBUG)) {
                     SLog.dmf(getLogName(), "Request end after decode. %s. %s", getThreadName(), getKey());
                 }
-                return;
+                return null;
             }
 
-            loadResult = new LoadResult(gifDrawable, decodeResult);
-            loadCompleted();
+            return new GifLoadResult(gifDrawable, decodeResult.getImageAttrs(), decodeResult.getImageFrom());
         } else {
             SLog.emf(getLogName(), "Unknown DecodeResult type. %S. %s. %s", decodeResult.getClass().getName(), getThreadName(), getKey());
             doError(ErrorCause.DECODE_UNKNOWN_RESULT_TYPE);
+            return null;
         }
     }
 
-    protected void loadCompleted() {
-        postRunCompleted();
+    @Override
+    void onRunLoadFinished(@Nullable LoadResult result) {
+        this.loadResult = result;
+        if (result != null) {
+            postRunCompleted();
+        }
     }
 
     @Override
-    protected void runCompletedInMainThread() {
+    protected void runCompletedInMain() {
         if (isCanceled()) {
-            if (loadResult != null && loadResult.getBitmap() != null) {
-                BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getConfiguration().getBitmapPool());
-            } else if (loadResult != null && loadResult.getGifDrawable() != null) {
-                loadResult.getGifDrawable().recycle();
+            if (loadResult instanceof BitmapLoadResult) {
+                BitmapPoolUtils.freeBitmapToPool(((BitmapLoadResult) loadResult).getBitmap(), getConfiguration().getBitmapPool());
+            } else if (loadResult instanceof GifLoadResult) {
+                ((GifLoadResult) loadResult).getGifDrawable().recycle();
             }
 
             if (SLog.isLoggable(SLog.DEBUG)) {
@@ -274,7 +247,7 @@ public class LoadRequest extends ResultShareDownloadRequest {
     }
 
     @Override
-    protected void runErrorInMainThread() {
+    protected void runErrorInMain() {
         if (isCanceled()) {
             if (SLog.isLoggable(SLog.DEBUG)) {
                 SLog.dmf(getLogName(), "Request end before call err. %s. %s", getThreadName(), getKey());
@@ -288,7 +261,7 @@ public class LoadRequest extends ResultShareDownloadRequest {
     }
 
     @Override
-    protected void runCanceledInMainThread() {
+    protected void runCanceledInMain() {
         if (loadListener != null && getCancelCause() != null) {
             loadListener.onCanceled(getCancelCause());
         }

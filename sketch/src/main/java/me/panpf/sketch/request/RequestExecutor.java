@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -33,7 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 请求执行器
  */
-// todo 结果分享跟执行器应该结合在一起，
 @SuppressWarnings("WeakerAccess")
 public class RequestExecutor {
     public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
@@ -49,8 +49,6 @@ public class RequestExecutor {
     private Handler dispatchHandler;
     @Nullable
     private DispatchThread dispatchThread;
-    @NonNull
-    private ResultShareManager resultShareManager;
     private boolean shutdown;
     private int localThreadPoolSize;
     private int netThreadPoolSize;
@@ -58,7 +56,6 @@ public class RequestExecutor {
     public RequestExecutor(int localThreadPoolSize, int netThreadPoolSize) {
         this.localThreadPoolSize = localThreadPoolSize;
         this.netThreadPoolSize = netThreadPoolSize;
-        this.resultShareManager = new ResultShareManager();
     }
 
     public RequestExecutor() {
@@ -178,11 +175,6 @@ public class RequestExecutor {
 
     public boolean isShutdown() {
         return shutdown;
-    }
-
-    @NonNull
-    public ResultShareManager getResultShareManager() {
-        return resultShareManager;
     }
 
     private static final class DispatchThread extends HandlerThread {

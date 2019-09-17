@@ -16,15 +16,40 @@
 
 package me.panpf.sketch.request;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 
 import me.panpf.sketch.decode.ImageAttrs;
 
-public interface LoadResult {
+public class BitmapLoadResult implements LoadResult{
+    @NonNull
+    private Bitmap bitmap;
+    @NonNull
+    private ImageFrom imageFrom;
+    @NonNull
+    private ImageAttrs imageAttrs;
+
+    public BitmapLoadResult(@NonNull Bitmap bitmap, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
+        this.bitmap = bitmap;
+        this.imageAttrs = imageAttrs;
+        this.imageFrom = imageFrom;
+    }
 
     @NonNull
-    ImageFrom getImageFrom();
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
 
     @NonNull
-    ImageAttrs getImageAttrs();
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
+    @NonNull
+    @Override
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
+    }
 }

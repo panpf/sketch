@@ -17,7 +17,6 @@
 package me.panpf.sketch.decode;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import me.panpf.sketch.cache.BitmapPool;
 import me.panpf.sketch.request.ImageFrom;
@@ -40,15 +39,8 @@ public interface DecodeResult {
      *
      * @return {@link ImageFrom}
      */
-    @Nullable
+    @NonNull
     ImageFrom getImageFrom();
-
-    /**
-     * 设置图片的来源
-     *
-     * @param imageFrom {@link ImageFrom}
-     */
-    void setImageFrom(@NonNull ImageFrom imageFrom);
 
     /**
      * 是否禁止对图片进行后期处理
