@@ -1,6 +1,35 @@
 # v2.7.1
 
+#### Sketch
+
+Fix the following bug:
+* Fix: ProcessedCacheDecodeHelper is not used when processedImageDiskCacheKey is the same as uri
+* Fix: Fix SketchImageView setting setImageDrawable(null) will still display the old image when scrolling in the list
+* Fix: [#119](https://github.com/panpf/sketch/issues/119) Fix BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder() method throws a 'java.lang.IllegalArgumentException: width and height must be > 0' exception bug
+* Fix: Fixed a bug where the Resize(Resize) constructor did not copy the mode field
+* Fix: Content-Type is no longer required to be 'image/\*' because not all servers adhere to this standard
+
+The following behavior has changed:
+* Behavior: Support for downloading images without Content-Length and Transfer-Encoding not chunked
+* Behavior: When the decodeGifImage is true, the 'gif' identifier is no longer added to the memoryCacheKey
+
+New Feature:
+* Feature: Add a new checkpoint when downloading, Content-Type must be image/*
+* Feature: TransitionImageDisplayer support setup disable crossFade
+* Feature: ImageZoomer add canScrollVertically,canScrollHorizontally,getVerScrollEdge,getHorScrollEdge method
+* Feature: Improve @NonNull and @Nullable annotations
+
+Upgrade:
 * upgrade: Upgrade android-gif-drawable 1.2.19
+
+
+#### Sample App
+
+* Fix: Fix FragmentLifecycleCallbacks.onFragmentViewDestroyed method does not execute a bug that caused memory overflow
+* Test: The oversized image for testing is built into the app
+
+#### Build:
+* :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
 
 # v2.7.1 beta4
 * behavior: Restore SketchImageView.displayImage(String) method displays errorImage when passing in null
@@ -9,14 +38,14 @@
 
 * behavior: Now the SketchImageView.displayImage(String) method supports passing in null to clear the ImageView image, which is equivalent to setImageDrawable(null)
 * bug: Fix SketchImageView setting setImageDrawable(null) will still display the old image when scrolling in the list
-* bug: [#119](https://github.com/panpf/sketch/issues/119) Fix BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder() method throws a 'java.lang.IllegalArgumentException: width and height must be > 0' exception bug 
+* bug: [#119](https://github.com/panpf/sketch/issues/119) Fix BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder() method throws a 'java.lang.IllegalArgumentException: width and height must be > 0' exception bug
 
 
 # v2.7.1 beta2
 
 * fix: Fixed a bug where the Resize(Resize) constructor did not copy the mode field
 * feature: Improve @NonNull and @Nullable annotations
-* fix: Content-Type is no longer required to be 'image/*' because not all servers adhere to this standard
+* fix: Content-Type is no longer required to be 'image/\*' because not all servers adhere to this standard
 
 # v2.7.1 beta1
 
@@ -31,7 +60,7 @@ The following behavior has changed:
 
 New Feature:
 * Feature: Add a new checkpoint when downloading, Content-Type must be image/*
-* Feature: TransitionImageDisplayer support setup disable crossFade 
+* Feature: TransitionImageDisplayer support setup disable crossFade
 * Feature: ImageZoomer add canScrollVertically,canScrollHorizontally,getVerScrollEdge,getHorScrollEdge method
 
 #### Sample App
@@ -40,7 +69,7 @@ New Feature:
 * Test: The oversized image for testing is built into the app
 
 
-#### Build: 
+#### Build:
 * :arrow_up: Upgrade android build plugin 3.4.0, kotlin 1.3.31, gardle 5.1.1
 
 
@@ -1582,4 +1611,3 @@ WIKI更新：
 # v1.0.0
 
 Spear 脱胎换骨，全新出发
-
