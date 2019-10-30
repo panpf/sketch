@@ -19,10 +19,6 @@ android {
         targetSdkVersion(property("TARGET_SDK_VERSION").toString().toInt())
         versionCode = property("VERSION_CODE").toString().toInt()
         versionName = "${property("VERSION_NAME")}.${getGitVersion()}"
-
-        ndk {
-            abiFilters("armeabi", "x86")
-        }
     }
 
     signingConfigs {
@@ -37,6 +33,7 @@ android {
     buildTypes {
         getByName("debug") {
             signingConfig = if (jksFile != null && jksFile.exists()) signingConfigs.getByName("release") else signingConfig
+            multiDexEnabled = true
         }
 
         getByName("release") {
@@ -87,6 +84,7 @@ androidExtensions {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN_VERSION")}")
 //    implementation("org.jetbrains.kotlin:kotlin-android-extensions:${property("KOTLIN_VERSION")}")
+    implementation("androidx.multidex:multidex:${property("MULTIDEX")}")
 
     implementation("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
     implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")

@@ -21,10 +21,6 @@ android {
         targetSdkVersion(property("TARGET_SDK_VERSION").toString().toInt())
         versionCode = property("VERSION_CODE").toString().toInt()
         versionName = property("VERSION_NAME").toString()
-
-        ndk {
-            abiFilters("armeabi", "x86")
-        }
     }
 
     signingConfigs {

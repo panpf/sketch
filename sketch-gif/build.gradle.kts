@@ -1,5 +1,5 @@
 import com.novoda.gradle.release.PublishExtension
-import java.util.Properties
+import java.util.*
 
 plugins { id("com.android.library") }
 
@@ -25,6 +25,7 @@ android {
 
 dependencies {
     implementation("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
+    implementation("pl.droidsonroids:relinker:${property("RELINKER")}")
 }
 
 Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }?.let { localProperties ->

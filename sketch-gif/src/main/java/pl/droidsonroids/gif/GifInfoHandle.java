@@ -4,8 +4,14 @@ import android.content.ContentResolver;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
+import androidx.annotation.RequiresApi;
+
+import android.system.ErrnoException;
+import android.system.Os;
 import android.view.Surface;
 
 import java.io.FileDescriptor;
@@ -18,7 +24,7 @@ import java.nio.ByteBuffer;
  */
 final class GifInfoHandle {
 	static {
-		LibraryLoader.loadLibrary(null);
+		LibraryLoader.loadLibrary();
 	}
 
 	/**
@@ -30,8 +36,8 @@ final class GifInfoHandle {
 	GifInfoHandle() {
 	}
 
-	GifInfoHandle(FileDescriptor fd) throws GifIOException {
-		gifInfoPtr = openFd(fd, 0);
+	GifInfoHandle(FileDescriptor fileDescriptor) throws GifIOException {
+		gifInfoPtr = openFileDescriptor(fileDescriptor, 0, true);
 	}
 
 	GifInfoHandle(byte[] bytes) throws GifIOException {
@@ -55,7 +61,7 @@ final class GifInfoHandle {
 
 	GifInfoHandle(AssetFileDescriptor afd) throws IOException {
 		try {
-			gifInfoPtr = openFd(afd.getFileDescriptor(), afd.getStartOffset());
+			gifInfoPtr = openFileDescriptor(afd.getFileDescriptor(), afd.getStartOffset(), false);
 		} finally {
 			try {
 				afd.close();
@@ -65,14 +71,49 @@ final class GifInfoHandle {
 		}
 	}
 
+	private static long openFileDescriptor(FileDescriptor fileDescriptor, long offset, boolean closeOriginalDescriptor) throws GifIOException {
+		final int nativeFileDescriptor;
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+			try {
+				nativeFileDescriptor = getNativeFileDescriptor(fileDescriptor, closeOriginalDescriptor);
+			} catch (Exception e) { //cannot catch ErrnoException due to VerifyError on API <= 19
+				throw new GifIOException(GifError.OPEN_FAILED.errorCode, e.getMessage());
+			}
+		} else {
+			nativeFileDescriptor = extractNativeFileDescriptor(fileDescriptor, closeOriginalDescriptor);
+		}
+		return openNativeFileDescriptor(nativeFileDescriptor, offset);
+	}
+
+	@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+	private static int getNativeFileDescriptor(FileDescriptor fileDescriptor, boolean closeOriginalDescriptor) throws GifIOException, ErrnoException {
+		try {
+			final int nativeFileDescriptor = createTempNativeFileDescriptor();
+			Os.dup2(fileDescriptor, nativeFileDescriptor);
+			return nativeFileDescriptor;
+		} finally {
+			if (closeOriginalDescriptor) {
+				Os.close(fileDescriptor);
+			}
+		}
+	}
+
 	static GifInfoHandle openUri(ContentResolver resolver, Uri uri) throws IOException {
 		if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) { //workaround for #128
 			return new GifInfoHandle(uri.getPath());
 		}
-		return new GifInfoHandle(resolver.openAssetFileDescriptor(uri, "r"));
+		final AssetFileDescriptor assetFileDescriptor = resolver.openAssetFileDescriptor(uri, "r");
+		if (assetFileDescriptor == null) {
+			throw new IOException("Could not open AssetFileDescriptor for " + uri);
+		}
+		return new GifInfoHandle(assetFileDescriptor);
 	}
 
-	static native long openFd(FileDescriptor fd, long offset) throws GifIOException;
+	static native long openNativeFileDescriptor(int fd, long offset) throws GifIOException;
+
+	static native int extractNativeFileDescriptor(FileDescriptor fileDescriptor, boolean closeOriginalDescriptor) throws GifIOException;
+
+	static native int createTempNativeFileDescriptor() throws GifIOException;
 
 	static native long openByteArray(byte[] bytes) throws GifIOException;
 
@@ -236,7 +277,8 @@ final class GifInfoHandle {
 		seekToTime(gifInfoPtr, position, buffer);
 	}
 
-	synchronized void seekToFrame(@IntRange(from = 0, to = Integer.MAX_VALUE) final int frameIndex, final Bitmap buffer) {
+	synchronized void seekToFrame(@IntRange(from = 0, to = Integer.MAX_VALUE) final int frameIndex,
+			final Bitmap buffer) {
 		seekToFrame(gifInfoPtr, frameIndex, buffer);
 	}
 
@@ -253,7 +295,6 @@ final class GifInfoHandle {
 	}
 
 	@Override
-	@SuppressWarnings("ThrowFromFinallyBlock")
 	protected void finalize() throws Throwable {
 		try {
 			recycle();
@@ -329,7 +370,7 @@ final class GifInfoHandle {
 	}
 
 	private void throwIfFrameIndexOutOfBounds(@IntRange(from = 0) final int index) {
-		final float numberOfFrames = getNumberOfFrames(gifInfoPtr);
+		final int numberOfFrames = getNumberOfFrames(gifInfoPtr);
 		if (index < 0 || index >= numberOfFrames) {
 			throw new IndexOutOfBoundsException("Frame index is not in range <0;" + numberOfFrames + '>');
 		}
