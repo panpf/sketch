@@ -22,13 +22,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.widget.MediaController.MediaPlayerControl;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
-import android.widget.MediaController.MediaPlayerControl;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -293,6 +294,12 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	}
 
 	@Override
+	public void invalidateSelf() {
+		super.invalidateSelf();
+		scheduleNextRender();
+	}
+
+	@Override
 	public int getIntrinsicHeight() {
 		return mScaledHeight;
 	}
@@ -430,6 +437,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	 * @return basic description of the GIF including size and number of frames
 	 */
 	@Override
+	@NonNull
 	public String toString() {
 		return String.format(Locale.ENGLISH, "GIF: size: %dx%d, frames: %d, error: %d",
 				mNativeInfoHandle.getWidth(), mNativeInfoHandle.getHeight(), mNativeInfoHandle.getNumberOfFrames(), mNativeInfoHandle.getNativeErrorCode());
@@ -538,6 +546,23 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 				mGifDrawable.mInvalidationHandler.sendEmptyMessageAtTime(MSG_TYPE_INVALIDATION, 0);
 			}
 		});
+	}
+
+	/**
+	 * Like {@link #seekTo(int)} but performs operation synchronously on current thread
+	 *
+	 * @param position position to seek to in milliseconds
+	 * @throws IllegalArgumentException if <code>position</code>&lt;0
+	 */
+	public void seekToBlocking(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
+		if (position < 0) {
+			throw new IllegalArgumentException("Position is not positive");
+		}
+
+		synchronized (mNativeInfoHandle) {
+			mNativeInfoHandle.seekToTime(position, mBuffer);
+		}
+		mInvalidationHandler.sendEmptyMessageAtTime(MSG_TYPE_INVALIDATION, 0);
 	}
 
 	/**
@@ -776,6 +801,9 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 			mPaint.setColorFilter(null);
 		}
 
+	}
+
+	private void scheduleNextRender() {
 		if (mIsRenderingTriggeredOnDraw && mIsRunning && mNextFrameRenderTime != Long.MIN_VALUE) {
 			final long renderDelay = Math.max(0, mNextFrameRenderTime - SystemClock.uptimeMillis());
 			mNextFrameRenderTime = Long.MIN_VALUE;
@@ -864,7 +892,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	}
 
 	@Override
-	public void setTintMode(@NonNull PorterDuff.Mode tintMode) {
+	public void setTintMode(@Nullable PorterDuff.Mode tintMode) {
 		mTintMode = tintMode;
 		mTintFilter = updateTintFilter(mTint, tintMode);
 		invalidateSelf();

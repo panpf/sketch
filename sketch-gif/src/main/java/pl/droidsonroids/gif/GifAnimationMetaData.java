@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -221,7 +222,7 @@ public class GifAnimationMetaData implements Serializable, Parcelable {
 
 	/**
 	 * Like {@link GifDrawable#getAllocationByteCount()} but does not include memory needed for backing {@link android.graphics.Bitmap}.
-	 * {@code Bitmap} in {@code GifDrawable} may be allocated at the time of creation or existing one may be reused if {@link GifDrawableBuilder#with(GifDrawable)}
+	 * {@code Bitmap} in {@code GifDrawable} may be allocated at the time of creation or existing one may be reused if {@link GifDrawableInit#with(GifDrawable)}
 	 * is used.
 	 * This method assumes no subsampling (sample size = 1).<br>
 	 * To calculate allocation byte count of {@link GifDrawable} created from the same input source {@link #getDrawableAllocationByteCount(GifDrawable, int)}
@@ -271,6 +272,7 @@ public class GifAnimationMetaData implements Serializable, Parcelable {
 	}
 
 	@Override
+	@NonNull
 	public String toString() {
 		final String loopCount = mLoopCount == 0 ? "Infinity" : Integer.toString(mLoopCount);
 		final String suffix = String.format(Locale.ENGLISH, "GIF: size: %dx%d, frames: %d, loops: %s, duration: %d", mWidth, mHeight, mImageCount, loopCount, mDuration);

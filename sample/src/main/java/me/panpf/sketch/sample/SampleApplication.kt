@@ -16,11 +16,11 @@
 
 package me.panpf.sketch.sample
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
 
-class SampleApplication : Application() {
+class SampleApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

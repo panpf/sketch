@@ -1,3 +1,7 @@
+# v2.7.1
+
+* upgrade: Upgrade android-gif-drawable 1.2.19
+
 # v2.7.1 beta4
 * behavior: Restore SketchImageView.displayImage(String) method displays errorImage when passing in null
 

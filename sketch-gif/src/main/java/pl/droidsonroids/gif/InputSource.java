@@ -5,10 +5,6 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.net.Uri;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RawRes;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -16,6 +12,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 
 /**
  * Abstract class for all input sources, to be used with {@link GifTextureView}
@@ -26,8 +27,8 @@ public abstract class InputSource {
 
 	abstract GifInfoHandle open() throws IOException;
 
-	final GifDrawable build(final GifDrawable oldDrawable, final ScheduledThreadPoolExecutor executor,
-	                        final boolean isRenderingAlwaysEnabled, final GifOptions options) throws IOException {
+	final GifDrawable createGifDrawable(final GifDrawable oldDrawable, final ScheduledThreadPoolExecutor executor,
+										final boolean isRenderingAlwaysEnabled, final GifOptions options) throws IOException {
 
 		return new GifDrawable(createHandleWith(options), oldDrawable, executor, isRenderingAlwaysEnabled);
 	}
