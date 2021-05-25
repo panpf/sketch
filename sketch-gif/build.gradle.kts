@@ -1,6 +1,3 @@
-import com.novoda.gradle.release.PublishExtension
-import java.util.*
-
 plugins { id("com.android.library") }
 
 android {
@@ -28,17 +25,20 @@ dependencies {
     implementation("pl.droidsonroids:relinker:${property("RELINKER")}")
 }
 
-Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }?.let { localProperties ->
-    apply { plugin("com.novoda.bintray-release") }
+/**
+ * publish config
+ */
+if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("GROUP")    // configured in the rootProject/gradle.properties file
+    && hasProperty("POM_ARTIFACT_ID")    // configured in the project/gradle.properties file
+) {
+    apply { plugin("com.vanniktech.maven.publish") }
 
-    configure<PublishExtension> {
-        groupId = "me.panpf"
-        artifactId = "sketch-gif"
-        publishVersion = property("VERSION_NAME").toString()
-        desc = "Android, Image, Load, GIF"
-        website = "https://github.com/panpf/sketch"
-        userOrg = localProperties.getProperty("bintray.userOrg")
-        bintrayUser = localProperties.getProperty("bintray.user")
-        bintrayKey = localProperties.getProperty("bintray.apikey")
+    configure<com.vanniktech.maven.publish.MavenPublishPluginExtension> {
+        sonatypeHost = com.vanniktech.maven.publish.SonatypeHost.S01
     }
 }
