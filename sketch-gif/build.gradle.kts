@@ -1,15 +1,15 @@
 plugins { id("com.android.library") }
 
 android {
-    compileSdkVersion(property("COMPILE_SDK_VERSION").toString().toInt())
+    compileSdk = property("COMPILE_SDK_VERSION").toString().toInt()
 
     defaultConfig {
-        minSdkVersion(property("MIN_SDK_VERSION").toString().toInt())
-        targetSdkVersion(property("TARGET_SDK_VERSION").toString().toInt())
-        versionCode = property("VERSION_CODE").toString().toInt()
-        versionName = property("VERSION_NAME").toString()
+        minSdk = property("MIN_SDK_VERSION").toString().toInt()
+        targetSdk = property("TARGET_SDK_VERSION").toString().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -36,9 +36,10 @@ if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.proper
     && hasProperty("GROUP")    // configured in the rootProject/gradle.properties file
     && hasProperty("POM_ARTIFACT_ID")    // configured in the project/gradle.properties file
 ) {
-    apply { plugin("com.vanniktech.maven.publish") }
+    apply { plugin("com.github.panpf.maven.publish") }
 
-    configure<com.vanniktech.maven.publish.MavenPublishPluginExtension> {
-        sonatypeHost = com.vanniktech.maven.publish.SonatypeHost.S01
+    configure<com.github.panpf.maven.publish.MavenPublishPluginExtension> {
+        sonatypeHost = com.github.panpf.maven.publish.SonatypeHost.S01
+        disableAndroidJavaDocsAddReferencesLinks = true
     }
 }

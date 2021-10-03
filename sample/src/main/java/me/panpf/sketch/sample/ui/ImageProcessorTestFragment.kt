@@ -1,21 +1,28 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_pager_tab.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 
-@BindContentView(R.layout.fragment_pager_tab)
-class ImageProcessorTestFragment : BaseFragment() {
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+class ImageProcessorTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
+
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+
+    override fun onInitData(
+        binding: FragmentPagerTabBinding,
+        savedInstanceState: Bundle?
+    ) {
         val activity = activity ?: return
 
-        pager_pagerTabFragment_content.adapter = FragmentArrayPagerAdapter(childFragmentManager, arrayOf<androidx.fragment.app.Fragment>(
+        binding.pagerPagerTabFragmentContent.adapter = FragmentArrayPagerAdapter(
+            childFragmentManager, arrayOf(
                 ReflectionImageProcessorTestFragment(),
                 GaussianBlurImageProcessorTestFragment(),
                 RotateImageProcessorTestFragment(),
@@ -23,17 +30,24 @@ class ImageProcessorTestFragment : BaseFragment() {
                 CircleImageProcessorTestFragment(),
                 ResizeImageProcessorTestFragment(),
                 MaskImageProcessorTestFragment(),
-                WrappedImageProcessorTestFragment()))
+                WrappedImageProcessorTestFragment()
+            )
+        )
 
-        tab_pagerTabFragment_tabs.setTabViewFactory(TitleTabFactory(arrayOf(
-                "REFLECTION",
-                "GAUSSIAN_BLUR",
-                "ROTATE",
-                "ROUND_RECT",
-                "CIRCLE",
-                "RESIZE",
-                "MASK",
-                "WRAPPED"), activity))
-        tab_pagerTabFragment_tabs.setViewPager(pager_pagerTabFragment_content)
+        binding.tabPagerTabFragmentTabs.setTabViewFactory(
+            TitleTabFactory(
+                arrayOf(
+                    "REFLECTION",
+                    "GAUSSIAN_BLUR",
+                    "ROTATE",
+                    "ROUND_RECT",
+                    "CIRCLE",
+                    "RESIZE",
+                    "MASK",
+                    "WRAPPED"
+                ), activity
+            )
+        )
+        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
     }
 }

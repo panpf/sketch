@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.util.AttributeSet
 import android.view.View
-import me.panpf.javaxkt.util.requireNotNull
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageOrientationCorrector
 import me.panpf.sketch.drawable.SketchDrawable
@@ -122,11 +121,11 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
 
             messageBuilder.append(sketchDrawable.key)
 
-            val uriModel = UriModel.match(context, sketchDrawable.uri.requireNotNull())
+            val uriModel = UriModel.match(context, sketchDrawable.uri!!)
             var dataSource: DataSource? = null
             if (uriModel != null) {
                 try {
-                    dataSource = uriModel.getDataSource(context, sketchDrawable.uri.requireNotNull(), null)
+                    dataSource = uriModel.getDataSource(context, sketchDrawable.uri!!, null)
                 } catch (e: GetDataSourceException) {
                     e.printStackTrace()
                 }

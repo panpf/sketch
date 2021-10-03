@@ -1,40 +1,46 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
-import kotlinx.android.synthetic.main.fragment_resize.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.request.Resize
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentResizeBinding
 
-@BindContentView(R.layout.fragment_resize)
-class ResizeImageProcessorTestFragment : BaseFragment() {
+class ResizeImageProcessorTestFragment : BaseBindingFragment<FragmentResizeBinding>() {
 
     private var widthProgress = 50
     private var heightProgress = 50
     private var scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
     private var currentCheckedButton: View? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentResizeBinding.inflate(inflater, parent, false)
 
-        image_resizeFragment.options.displayer = TransitionImageDisplayer()
+    override fun onInitData(
+        binding: FragmentResizeBinding,
+        savedInstanceState: Bundle?
+    ) {
+        binding.imageResizeFragment.options.displayer = TransitionImageDisplayer()
 
-        seekBar_resizeFragment_width.max = 100
-        seekBar_resizeFragment_width.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seekBarResizeFragmentWidth.max = 100
+        binding.seekBarResizeFragmentWidth.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (progress < 20) {
-                    seekBar_resizeFragment_width.progress = 20
+                    binding.seekBarResizeFragmentWidth.progress = 20
                     return
                 }
 
-                val width = (seekBar_resizeFragment_width.progress / 100f * 1000).toInt()
-                text_resizeFragment_width.text = String.format("%d/%d", width, 1000)
+                val width = (binding.seekBarResizeFragmentWidth.progress / 100f * 1000).toInt()
+                binding.textResizeFragmentWidth.text = String.format("%d/%d", width, 1000)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -42,21 +48,22 @@ class ResizeImageProcessorTestFragment : BaseFragment() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                widthProgress = seekBar_resizeFragment_width.progress
+                widthProgress = binding.seekBarResizeFragmentWidth.progress
                 apply(currentCheckedButton)
             }
         })
-        seekBar_resizeFragment_width.progress = widthProgress
+        binding.seekBarResizeFragmentWidth.progress = widthProgress
 
-        seekBar_resizeFragment_height.max = 100
-        seekBar_resizeFragment_height.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seekBarResizeFragmentHeight.max = 100
+        binding.seekBarResizeFragmentHeight.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (progress < 20) {
-                    seekBar_resizeFragment_height.progress = 20
+                    binding.seekBarResizeFragmentHeight.progress = 20
                     return
                 }
-                val height = (seekBar_resizeFragment_height.progress / 100f * 1000).toInt()
-                text_resizeFragment_height.text = String.format("%d/%d", height, 1000)
+                val height = (binding.seekBarResizeFragmentHeight.progress / 100f * 1000).toInt()
+                binding.textResizeFragmentHeight.text = String.format("%d/%d", height, 1000)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -64,36 +71,36 @@ class ResizeImageProcessorTestFragment : BaseFragment() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                heightProgress = seekBar_resizeFragment_height.progress
+                heightProgress = binding.seekBarResizeFragmentHeight.progress
                 apply(currentCheckedButton)
             }
         })
-        seekBar_resizeFragment_height.progress = heightProgress
+        binding.seekBarResizeFragmentHeight.progress = heightProgress
 
-        button_resizeFragment_fixStart.tag = ImageView.ScaleType.FIT_START
-        button_resizeFragment_fixCenter.tag = ImageView.ScaleType.FIT_CENTER
-        button_resizeFragment_fixEnd.tag = ImageView.ScaleType.FIT_END
-        button_resizeFragment_fixXY.tag = ImageView.ScaleType.FIT_XY
-        button_resizeFragment_center.tag = ImageView.ScaleType.CENTER
-        button_resizeFragment_centerCrop.tag = ImageView.ScaleType.CENTER_CROP
-        button_resizeFragment_centerInside.tag = ImageView.ScaleType.CENTER_INSIDE
-        button_resizeFragment_matrix.tag = ImageView.ScaleType.MATRIX
+        binding.buttonResizeFragmentFixStart.tag = ImageView.ScaleType.FIT_START
+        binding.buttonResizeFragmentFixCenter.tag = ImageView.ScaleType.FIT_CENTER
+        binding.buttonResizeFragmentFixEnd.tag = ImageView.ScaleType.FIT_END
+        binding.buttonResizeFragmentFixXY.tag = ImageView.ScaleType.FIT_XY
+        binding.buttonResizeFragmentCenter.tag = ImageView.ScaleType.CENTER
+        binding.buttonResizeFragmentCenterCrop.tag = ImageView.ScaleType.CENTER_CROP
+        binding.buttonResizeFragmentCenterInside.tag = ImageView.ScaleType.CENTER_INSIDE
+        binding.buttonResizeFragmentMatrix.tag = ImageView.ScaleType.MATRIX
 
         val buttonOnClickListener = View.OnClickListener { v ->
             scaleType = v.tag as ImageView.ScaleType
             apply(v)
         }
-        button_resizeFragment_fixStart.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_fixCenter.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_fixEnd.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_fixXY.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_center.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_centerCrop.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_centerInside.setOnClickListener(buttonOnClickListener)
-        button_resizeFragment_matrix.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentFixStart.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentFixCenter.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentFixEnd.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentFixXY.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentCenter.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentCenterCrop.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentCenterInside.setOnClickListener(buttonOnClickListener)
+        binding.buttonResizeFragmentMatrix.setOnClickListener(buttonOnClickListener)
 
         if (currentCheckedButton == null) {
-            currentCheckedButton = button_resizeFragment_fixCenter
+            currentCheckedButton = binding.buttonResizeFragmentFixCenter
         }
         apply(currentCheckedButton)
     }
@@ -106,8 +113,8 @@ class ResizeImageProcessorTestFragment : BaseFragment() {
         val width = (widthProgress / 100f * 1000).toInt()
         val height = (heightProgress / 100f * 1000).toInt()
 
-        image_resizeFragment.options.resize = Resize(width, height, scaleType)
-        image_resizeFragment.displayImage(AssetImage.MEI_NV)
+        binding?.imageResizeFragment?.options?.resize = Resize(width, height, scaleType)
+        binding?.imageResizeFragment?.displayImage(AssetImage.MEI_NV)
 
         currentCheckedButton?.isEnabled = true
         button.isEnabled = false

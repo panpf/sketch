@@ -1,1 +1,5 @@
-include(":sample", ":sketch", ":sketch-zoom", ":sketch-gif", ":sample-video-thumbnail")
+include(":sketch")
+include(":sketch-zoom")
+include(":sketch-gif")
+include(":sample")
+//include(":sample-video-thumbnail")

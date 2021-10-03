@@ -1,21 +1,26 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_pager_tab.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 
-@BindContentView(R.layout.fragment_pager_tab)
-class ImageOrientationTestHomeFragment : BaseFragment() {
+class ImageOrientationTestHomeFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
     private var fragmentAdapter: FragmentArrayPagerAdapter? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+
+    override fun onInitData(
+        binding: FragmentPagerTabBinding,
+        savedInstanceState: Bundle?
+    ) {
         val context = context ?: return
         val activity = activity ?: return
 
@@ -27,10 +32,21 @@ class ImageOrientationTestHomeFragment : BaseFragment() {
             }
             fragmentAdapter = FragmentArrayPagerAdapter(childFragmentManager, fragments)
         }
-        pager_pagerTabFragment_content.adapter = fragmentAdapter
+        binding.pagerPagerTabFragmentContent.adapter = fragmentAdapter
 
-        tab_pagerTabFragment_tabs.setTabViewFactory(TitleTabFactory(
-                arrayOf("ROTATE_90", "ROTATE_180", "ROTATE_270", "FLIP_HORIZONTAL", "TRANSPOSE", "FLIP_VERTICAL", "TRANSVERSE"), activity))
-        tab_pagerTabFragment_tabs.setViewPager(pager_pagerTabFragment_content)
+        binding.tabPagerTabFragmentTabs.setTabViewFactory(
+            TitleTabFactory(
+                arrayOf(
+                    "ROTATE_90",
+                    "ROTATE_180",
+                    "ROTATE_270",
+                    "FLIP_HORIZONTAL",
+                    "TRANSPOSE",
+                    "FLIP_VERTICAL",
+                    "TRANSVERSE"
+                ), activity
+            )
+        )
+        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
     }
 }

@@ -6,8 +6,8 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.adapter.ktx.bindView
-import me.panpf.androidxkt.view.isOrientationPortrait
-import me.panpf.javaxkt.lang.divide
+import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
+import com.github.panpf.tools4j.math.ktx.divide
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.BaiduImage

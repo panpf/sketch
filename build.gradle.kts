@@ -1,16 +1,14 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     repositories {
         maven { setUrl("https://mirrors.huaweicloud.com/repository/maven/") }
         mavenCentral()
         google()
-        jcenter()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:${property("ANDROID_BUILD_VERSION")}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${property("KOTLIN_VERSION")}")
-        classpath("com.vanniktech:gradle-maven-publish-plugin:0.15.1")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${property("ANDROIDX_NAVIGATION")}")
+        classpath("io.github.panpf.maven-publish:maven-publish-gradle-plugin:${property("MAVEN_PUBLISH")}")
     }
 }
 
@@ -19,7 +17,6 @@ allprojects {
         maven { setUrl("https://mirrors.huaweicloud.com/repository/maven/") }
         mavenCentral()
         google()
-        jcenter()
     }
 }
 

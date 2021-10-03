@@ -1,18 +1,13 @@
-import com.novoda.gradle.release.PublishExtension
-import java.util.*
-
 plugins {
     id("com.android.library")
 }
 
 android {
-    compileSdkVersion(property("COMPILE_SDK_VERSION").toString().toInt())
+    compileSdk = property("COMPILE_SDK_VERSION").toString().toInt()
 
     defaultConfig {
-        minSdkVersion(property("MIN_SDK_VERSION").toString().toInt())
-        targetSdkVersion(property("TARGET_SDK_VERSION").toString().toInt())
-        versionCode = property("VERSION_CODE").toString().toInt()
-        versionName = property("VERSION_NAME").toString()
+        minSdk = property("MIN_SDK_VERSION").toString().toInt()
+        targetSdk = property("TARGET_SDK_VERSION").toString().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
 
@@ -31,17 +26,21 @@ dependencies {
     api(project(":sketch"))
 }
 
-Properties().apply { project.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) } }.takeIf { !it.isEmpty }?.let { localProperties ->
-    apply { plugin("com.novoda.bintray-release") }
+/**
+ * publish config
+ */
+if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
+    && hasProperty("GROUP")    // configured in the rootProject/gradle.properties file
+    && hasProperty("POM_ARTIFACT_ID")    // configured in the project/gradle.properties file
+) {
+    apply { plugin("com.github.panpf.maven.publish") }
 
-    configure<PublishExtension> {
-        groupId = "me.panpf"
-        artifactId = "sketch-zoom"
-        publishVersion = property("VERSION_NAME").toString()
-        desc = "Android, Image, Zoom"
-        website = "https://github.com/panpf/sketch"
-        userOrg = localProperties.getProperty("bintray.userOrg")
-        bintrayUser = localProperties.getProperty("bintray.user")
-        bintrayKey = localProperties.getProperty("bintray.apikey")
+    configure<com.github.panpf.maven.publish.MavenPublishPluginExtension> {
+        sonatypeHost = com.github.panpf.maven.publish.SonatypeHost.S01
+        disableAndroidJavaDocsAddReferencesLinks = true
     }
 }

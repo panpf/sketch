@@ -13,8 +13,8 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.view_hint.view.*
 import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.databinding.ViewHintBinding
 import org.apache.http.conn.ConnectTimeoutException
 import java.io.FileNotFoundException
 import java.net.SocketTimeoutException
@@ -24,54 +24,45 @@ import java.net.UnknownHostException
  * 提示视图
  */
 class HintView : LinearLayout {
+
+    private val binding = ViewHintBinding.inflate(LayoutInflater.from(context), this)
+
     private var mode: Mode? = null
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    private fun init() {
-        try {
-            LayoutInflater.from(context).inflate(R.layout.view_hint, this)
-            visibility = View.GONE
-        } catch (throwable: Throwable) {
-
-        }
-    }
+    constructor(context: Context) : super(context)
 
     /**
      * 显示加载中，将使用type格式化“正在加载%s，请稍后…”字符串
      */
     fun loading(message: String?) {
-        text_hint_loadingHint.text = message
-        text_hint_loadingHint.visibility = if (TextUtils.isEmpty(message)) View.GONE else View.VISIBLE
+        binding.textHintLoadingHint.text = message
+        binding.textHintLoadingHint.visibility =
+            if (TextUtils.isEmpty(message)) View.GONE else View.VISIBLE
         setProgress(0, 0)
 
         if (mode != Mode.LOADING) {
             if (mode == Mode.HINT) {
-                viewSwitcher_hint.setInAnimation(context, R.anim.slide_to_bottom_in)
-                viewSwitcher_hint.setOutAnimation(context, R.anim.slide_to_bottom_out)
+                binding.viewSwitcherHint.setInAnimation(context, R.anim.slide_to_bottom_in)
+                binding.viewSwitcherHint.setOutAnimation(context, R.anim.slide_to_bottom_out)
             } else {
-                viewSwitcher_hint.inAnimation = null
-                viewSwitcher_hint.outAnimation = null
+                binding.viewSwitcherHint.inAnimation = null
+                binding.viewSwitcherHint.outAnimation = null
             }
             mode = Mode.LOADING
-            button_hint_action.visibility = View.INVISIBLE
-            viewSwitcher_hint.displayedChild = mode!!.index
+            binding.buttonHintAction.visibility = View.INVISIBLE
+            binding.viewSwitcherHint.displayedChild = mode!!.index
             visibility = View.VISIBLE
         }
     }
 
     fun setProgress(totalLength: Int, completedLength: Int) {
         if (completedLength <= 0) {
-            text_hint_progress.text = null
+            binding.textHintProgress.text = null
         } else {
             val ratio = (completedLength.toFloat() / totalLength * 100).toInt()
-            text_hint_progress.text = String.format("%d%%", ratio)
+            binding.textHintProgress.text = String.format("%d%%", ratio)
         }
     }
 
@@ -89,43 +80,59 @@ class HintView : LinearLayout {
      * @param transparent         是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    fun hint(icon: Int = -1, hint: String, button: String? = null, click: View.OnClickListener? = null, transparent: Boolean = false) {
+    fun hint(
+        icon: Int = -1,
+        hint: String,
+        button: String? = null,
+        click: OnClickListener? = null,
+        transparent: Boolean = false
+    ) {
         if (icon > 0) {
-            val drawables = text_hint_hint.compoundDrawables
-            text_hint_hint.setCompoundDrawablesWithIntrinsicBounds(drawables[0], resources.getDrawable(icon), drawables[2], drawables[3])
+            val drawables = binding.textHintHint.compoundDrawables
+            binding.textHintHint.setCompoundDrawablesWithIntrinsicBounds(
+                drawables[0],
+                resources.getDrawable(icon),
+                drawables[2],
+                drawables[3]
+            )
         } else {
-            val drawables = text_hint_hint.compoundDrawables
-            text_hint_hint.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, drawables[2], drawables[3])
+            val drawables = binding.textHintHint.compoundDrawables
+            binding.textHintHint.setCompoundDrawablesWithIntrinsicBounds(
+                drawables[0],
+                null,
+                drawables[2],
+                drawables[3]
+            )
         }
 
         if (isNotEmpty(hint)) {
-            text_hint_hint.text = hint
+            binding.textHintHint.text = hint
         } else {
-            text_hint_hint.text = null
+            binding.textHintHint.text = null
         }
 
-        if (HintView.isNotEmpty(button) && click != null) {
-            button_hint_action.text = button
-            button_hint_action.setOnClickListener(click)
-            visibleViewByAlpha(button_hint_action, true)
+        if (isNotEmpty(button) && click != null) {
+            binding.buttonHintAction.text = button
+            binding.buttonHintAction.setOnClickListener(click)
+            visibleViewByAlpha(binding.buttonHintAction, true)
         } else {
-            button_hint_action.text = null
-            button_hint_action.setOnClickListener(null)
-            button_hint_action.visibility = View.INVISIBLE
+            binding.buttonHintAction.text = null
+            binding.buttonHintAction.setOnClickListener(null)
+            binding.buttonHintAction.visibility = View.INVISIBLE
         }
 
         isClickable = !transparent
 
         if (mode != Mode.HINT) {
             if (mode != null) {
-                viewSwitcher_hint.setInAnimation(context, R.anim.slide_to_top_in)
-                viewSwitcher_hint.setOutAnimation(context, R.anim.slide_to_top_out)
+                binding.viewSwitcherHint.setInAnimation(context, R.anim.slide_to_top_in)
+                binding.viewSwitcherHint.setOutAnimation(context, R.anim.slide_to_top_out)
             } else {
-                viewSwitcher_hint.inAnimation = null
-                viewSwitcher_hint.outAnimation = null
+                binding.viewSwitcherHint.inAnimation = null
+                binding.viewSwitcherHint.outAnimation = null
             }
             mode = Mode.HINT
-            viewSwitcher_hint.displayedChild = 1
+            binding.viewSwitcherHint.displayedChild = 1
             visibility = View.VISIBLE
         }
     }
@@ -138,7 +145,12 @@ class HintView : LinearLayout {
      * @param buttonName          按钮的名称
      * @param buttonClickListener 按钮的按下事件
      */
-    fun hint(iconId: Int, hintText: String, buttonName: String, buttonClickListener: View.OnClickListener) {
+    fun hint(
+        iconId: Int,
+        hintText: String,
+        buttonName: String,
+        buttonClickListener: OnClickListener
+    ) {
         hint(iconId, hintText, buttonName, buttonClickListener, false)
     }
 
@@ -164,7 +176,12 @@ class HintView : LinearLayout {
      * *
      * @param transparent         是否需要让提示视图变成透明的，透明的提示视图将不再拦截事件
      */
-    fun hint(hintText: String, buttonName: String, buttonClickListener: View.OnClickListener, transparent: Boolean) {
+    fun hint(
+        hintText: String,
+        buttonName: String,
+        buttonClickListener: OnClickListener,
+        transparent: Boolean
+    ) {
         hint(-1, hintText, buttonName, buttonClickListener, transparent)
     }
 
@@ -177,7 +194,7 @@ class HintView : LinearLayout {
      * *
      * @param buttonClickListener 按钮的按下事件
      */
-    fun hint(hintText: String, buttonName: String, buttonClickListener: View.OnClickListener) {
+    fun hint(hintText: String, buttonName: String, buttonClickListener: OnClickListener) {
         hint(-1, hintText, buttonName, buttonClickListener, false)
     }
 
@@ -208,8 +225,14 @@ class HintView : LinearLayout {
      * *
      * @param reloadButtonClickListener 重新加载按钮点击监听器
      */
-    fun failed(exception: Throwable, reloadButtonClickListener: View.OnClickListener) {
-        hint(R.drawable.ic_error, getCauseByException(context, exception), "重试", reloadButtonClickListener, false)
+    fun failed(exception: Throwable, reloadButtonClickListener: OnClickListener) {
+        hint(
+            R.drawable.ic_error,
+            getCauseByException(context, exception),
+            "重试",
+            reloadButtonClickListener,
+            false
+        )
     }
 
     /**
@@ -225,7 +248,7 @@ class HintView : LinearLayout {
      * 隐藏
      */
     fun hidden() {
-        when (viewSwitcher_hint.displayedChild) {
+        when (binding.viewSwitcherHint.displayedChild) {
             0 -> goneViewByAlpha(this, true)
             1 -> visibility = View.GONE
         }
@@ -258,7 +281,12 @@ class HintView : LinearLayout {
          * *
          * @param animationListener 动画监听器
          */
-        fun goneViewByAlpha(view: View, durationMillis: Long, isBanClick: Boolean, animationListener: AnimationListener?) {
+        fun goneViewByAlpha(
+            view: View,
+            durationMillis: Long,
+            isBanClick: Boolean,
+            animationListener: AnimationListener?
+        ) {
             if (view.visibility != View.GONE) {
                 view.visibility = View.GONE
                 val hiddenAlphaAnimation = getHiddenAlphaAnimation(durationMillis)
@@ -294,7 +322,11 @@ class HintView : LinearLayout {
          * *
          * @return 一个由完全显示变为不可见的透明度渐变动画
          */
-        @JvmOverloads fun getHiddenAlphaAnimation(durationMillis: Long, animationListener: AnimationListener? = null): AlphaAnimation {
+        @JvmOverloads
+        fun getHiddenAlphaAnimation(
+            durationMillis: Long,
+            animationListener: AnimationListener? = null
+        ): AlphaAnimation {
             return getAlphaAnimation(1.0f, 0.0f, durationMillis, animationListener)
         }
 
@@ -311,7 +343,12 @@ class HintView : LinearLayout {
          * *
          * @return 一个透明度渐变动画
          */
-        fun getAlphaAnimation(fromAlpha: Float, toAlpha: Float, durationMillis: Long, animationListener: AnimationListener?): AlphaAnimation {
+        fun getAlphaAnimation(
+            fromAlpha: Float,
+            toAlpha: Float,
+            durationMillis: Long,
+            animationListener: AnimationListener?
+        ): AlphaAnimation {
             val alphaAnimation = AlphaAnimation(fromAlpha, toAlpha)
             alphaAnimation.duration = durationMillis
             if (animationListener != null) {
@@ -353,7 +390,12 @@ class HintView : LinearLayout {
          * *
          * @param animationListener 动画监听器
          */
-        fun visibleViewByAlpha(view: View, durationMillis: Long, isBanClick: Boolean, animationListener: AnimationListener?) {
+        fun visibleViewByAlpha(
+            view: View,
+            durationMillis: Long,
+            isBanClick: Boolean,
+            animationListener: AnimationListener?
+        ) {
             if (view.visibility != View.VISIBLE) {
                 view.visibility = View.VISIBLE
                 val showAlphaAnimation = getShowAlphaAnimation(durationMillis)
@@ -392,7 +434,8 @@ class HintView : LinearLayout {
         }
 
         fun isConnectedByState(context: Context): Boolean {
-            val networkInfo = (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
+            val networkInfo =
+                (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
             return networkInfo != null && networkInfo.state == NetworkInfo.State.CONNECTED
         }
 

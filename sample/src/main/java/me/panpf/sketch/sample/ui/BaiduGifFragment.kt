@@ -1,23 +1,21 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
-import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.SketchImageView
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bean.BaiduImageSearchResult
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.BaiduStaggeredImageItem
 import me.panpf.sketch.sample.item.LoadMoreItem
 import me.panpf.sketch.sample.net.NetServices
@@ -28,40 +26,44 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
 
-@BindContentView(R.layout.fragment_recycler)
-class BaiduGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
+class BaiduGifFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+    SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var pageIndex = 1
     private var adapter: AssemblyRecyclerAdapter? = null
 
-    override fun onViewCreated(@NonNull view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-        refresh_recyclerFragment.setOnRefreshListener(this)
+    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+        binding.refreshRecyclerFragment.setOnRefreshListener(this)
 
-        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
-
-        recycler_recyclerFragment_content.layoutManager = FlexboxLayoutManager(context)
-        recycler_recyclerFragment_content.addItemDecoration(FlexboxItemDecoration(context))
+        binding.recyclerRecyclerFragmentContent.apply {
+            addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
+            layoutManager = FlexboxLayoutManager(context)
+            addItemDecoration(FlexboxItemDecoration(context))
+        }
 
         if (adapter == null) {
-            refresh_recyclerFragment.post { onRefresh() }
+            binding.refreshRecyclerFragment.post { onRefresh() }
         } else {
-            setAdapter(adapter)
+            setAdapter(binding, adapter)
         }
     }
 
-    private fun setAdapter(adapter: AssemblyRecyclerAdapter?) {
-        recycler_recyclerFragment_content.adapter = adapter
-        recycler_recyclerFragment_content.scheduleLayoutAnimation()
+    private fun setAdapter(binding: FragmentRecyclerBinding, adapter: AssemblyRecyclerAdapter?) {
+        binding.recyclerRecyclerFragmentContent.adapter = adapter
+        binding.recyclerRecyclerFragmentContent.scheduleLayoutAnimation()
         this.adapter = adapter
     }
 
     override fun onRefresh() {
         adapter?.loadMoreFinished(false)
 
-        if (!refresh_recyclerFragment.isRefreshing) {
-            refresh_recyclerFragment.isRefreshing = true
+        if (binding?.refreshRecyclerFragment?.isRefreshing != true) {
+            binding?.refreshRecyclerFragment?.isRefreshing = true
         }
 
         loadData(1)
@@ -70,20 +72,22 @@ class BaiduGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
     private fun loadData(pageIndex: Int) {
         this.pageIndex = pageIndex
         val pageStart = (pageIndex - 1) * PAGE_SIZE
-        NetServices.baiduImage().searchPhoto("GIF", "GIF", pageStart, PAGE_SIZE).enqueue(LoadDataCallback(this, pageIndex))
+        NetServices.baiduImage().searchPhoto("GIF", "GIF", pageStart, PAGE_SIZE)
+            .enqueue(LoadDataCallback(this, pageIndex))
     }
 
     override fun onLoadMore(adapter1: AssemblyAdapter) {
         loadData(pageIndex + 1)
     }
 
-    private class LoadDataCallback internal constructor(fragment: BaiduGifFragment, private val pageIndex: Int) : Callback<BaiduImageSearchResult> {
+    private class LoadDataCallback(fragment: BaiduGifFragment, private val pageIndex: Int) :
+        Callback<BaiduImageSearchResult> {
 
         private val reference: WeakReference<BaiduGifFragment> = WeakReference(fragment)
 
         init {
             if (pageIndex == 1) {
-                fragment.hint_recyclerFragment.hidden()
+                fragment.binding?.hintRecyclerFragment?.hidden()
             }
         }
 
@@ -101,7 +105,10 @@ class BaiduGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
             response.body()!!.imageList = mutableImageList
         }
 
-        override fun onResponse(call: Call<BaiduImageSearchResult>, response: Response<BaiduImageSearchResult>) {
+        override fun onResponse(
+            call: Call<BaiduImageSearchResult>,
+            response: Response<BaiduImageSearchResult>
+        ) {
             val fragment = reference.get() ?: return
             if (!fragment.isViewCreated) {
                 return
@@ -115,7 +122,7 @@ class BaiduGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
                 loadMore(fragment, response)
             }
 
-            fragment.refresh_recyclerFragment.isRefreshing = false
+            fragment.binding?.refreshRecyclerFragment?.isRefreshing = false
         }
 
         override fun onFailure(call: Call<BaiduImageSearchResult>, t: Throwable) {
@@ -126,13 +133,17 @@ class BaiduGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
             }
 
             if (pageIndex == 1) {
-                fragment.hint_recyclerFragment.failed(t, View.OnClickListener {
+                fragment.binding?.hintRecyclerFragment?.failed(t) {
                     fragment.onRefresh()
-                })
-                fragment.refresh_recyclerFragment.isRefreshing = false
+                }
+                fragment.binding?.refreshRecyclerFragment?.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
-                Toast.makeText(fragment.activity, HintView.getCauseByException(activity, t), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    fragment.activity,
+                    HintView.getCauseByException(activity, t),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -140,26 +151,40 @@ class BaiduGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
 
             val images = response.body()?.imageList
             if (images == null || images.isEmpty()) {
-                fragment.hint_recyclerFragment.empty("No photos")
+                fragment.binding?.hintRecyclerFragment?.empty("No photos")
                 return
             }
 
             val adapter = AssemblyRecyclerAdapter(images)
-            adapter.addItemFactory(BaiduStaggeredImageItem.Factory().setOnItemClickListener { _, view, position, _, _ ->
-                val activity = fragment.activity ?: return@setOnItemClickListener
-                @Suppress("UNCHECKED_CAST")
-                val imageList = adapter.dataList as List<BaiduImage>
-                val urlList = imageList.map { Image(it.url.orEmpty(), it.url.orEmpty()) }
-                val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
-                ImageDetailActivity.launch(activity, fragment.dataTransferHelper.put("urlList", urlList), loadingImageOptionsInfo, position - adapter.headerItemCount)
-            })
-            adapter.setMoreItem(LoadMoreItem.Factory(fragment).fullSpan(fragment.recycler_recyclerFragment_content))
+            adapter.addItemFactory(
+                BaiduStaggeredImageItem.Factory()
+                    .setOnItemClickListener { _, view, position, _, _ ->
+                        val activity = fragment.activity ?: return@setOnItemClickListener
 
-            fragment.recycler_recyclerFragment_content.adapter = adapter
+                        @Suppress("UNCHECKED_CAST")
+                        val imageList = adapter.dataList as List<BaiduImage>
+                        val urlList = imageList.map { Image(it.url.orEmpty(), it.url.orEmpty()) }
+                        val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
+                        ImageDetailActivity.launch(
+                            activity,
+                            fragment.dataTransferHelper.put("urlList", urlList),
+                            loadingImageOptionsInfo,
+                            position - adapter.headerCount
+                        )
+                    })
+            adapter.setMoreItem(
+                LoadMoreItem.Factory(fragment)
+                    .fullSpan(fragment.binding!!.recyclerRecyclerFragmentContent)
+            )
+
+            fragment.binding?.recyclerRecyclerFragmentContent?.adapter = adapter
             fragment.adapter = adapter
         }
 
-        private fun loadMore(fragment: BaiduGifFragment, response: Response<BaiduImageSearchResult>) {
+        private fun loadMore(
+            fragment: BaiduGifFragment,
+            response: Response<BaiduImageSearchResult>
+        ) {
             val images = response.body()?.imageList
             if (images == null || images.isEmpty()) {
                 fragment.adapter!!.loadMoreFinished(true)

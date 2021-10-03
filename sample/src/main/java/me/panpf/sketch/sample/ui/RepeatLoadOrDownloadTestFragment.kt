@@ -1,49 +1,58 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_repeat_load_or_download_test.*
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentRepeatLoadOrDownloadTestBinding
 import me.panpf.sketch.uri.ApkIconUriModel
 
-@BindContentView(R.layout.fragment_repeat_load_or_download_test)
-class RepeatLoadOrDownloadTestFragment : BaseFragment() {
+class RepeatLoadOrDownloadTestFragment :
+    BaseBindingFragment<FragmentRepeatLoadOrDownloadTestBinding>() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentRepeatLoadOrDownloadTestBinding.inflate(inflater, parent, false)
+
+    override fun onInitData(
+        binding: FragmentRepeatLoadOrDownloadTestBinding,
+        savedInstanceState: Bundle?
+    ) {
         val context = context ?: return
 
         val selfApkFile = context.applicationInfo.publicSourceDir
-        arrayOf(image_repeatLoadOrDownloadTest_1
-                , image_repeatLoadOrDownloadTest_2
-                , image_repeatLoadOrDownloadTest_3
-                , image_repeatLoadOrDownloadTest_4
-                , image_repeatLoadOrDownloadTest_5
-                , image_repeatLoadOrDownloadTest_6
-                , image_repeatLoadOrDownloadTest_7
-                , image_repeatLoadOrDownloadTest_8
+        arrayOf(
+            binding.imageRepeatLoadOrDownloadTest1,
+            binding.imageRepeatLoadOrDownloadTest2,
+            binding.imageRepeatLoadOrDownloadTest3,
+            binding.imageRepeatLoadOrDownloadTest4,
+            binding.imageRepeatLoadOrDownloadTest5,
+            binding.imageRepeatLoadOrDownloadTest6,
+            binding.imageRepeatLoadOrDownloadTest7,
+            binding.imageRepeatLoadOrDownloadTest8
         ).forEach { it.displayImage(ApkIconUriModel.makeUri(selfApkFile)) }
 
-        arrayOf(image_repeatLoadOrDownloadTest_9
-                , image_repeatLoadOrDownloadTest_10
-                , image_repeatLoadOrDownloadTest_11
-                , image_repeatLoadOrDownloadTest_12
-                , image_repeatLoadOrDownloadTest_13
-                , image_repeatLoadOrDownloadTest_14
-                , image_repeatLoadOrDownloadTest_15
-                , image_repeatLoadOrDownloadTest_16
+        arrayOf(
+            binding.imageRepeatLoadOrDownloadTest9,
+            binding.imageRepeatLoadOrDownloadTest10,
+            binding.imageRepeatLoadOrDownloadTest11,
+            binding.imageRepeatLoadOrDownloadTest12,
+            binding.imageRepeatLoadOrDownloadTest13,
+            binding.imageRepeatLoadOrDownloadTest14,
+            binding.imageRepeatLoadOrDownloadTest15,
+            binding.imageRepeatLoadOrDownloadTest16
         ).forEach { it.displayImage("http://e.hiphotos.baidu.com/image/pic/item/4610b912c8fcc3cef70d70409845d688d53f20f7.jpg") }
 
-        arrayOf(image_repeatLoadOrDownloadTest_31
-                , image_repeatLoadOrDownloadTest_32
-                , image_repeatLoadOrDownloadTest_33
-                , image_repeatLoadOrDownloadTest_34
-                , image_repeatLoadOrDownloadTest_35
-                , image_repeatLoadOrDownloadTest_36
-                , image_repeatLoadOrDownloadTest_37
-                , image_repeatLoadOrDownloadTest_38
+        arrayOf(
+            binding.imageRepeatLoadOrDownloadTest31,
+            binding.imageRepeatLoadOrDownloadTest32,
+            binding.imageRepeatLoadOrDownloadTest33,
+            binding.imageRepeatLoadOrDownloadTest34,
+            binding.imageRepeatLoadOrDownloadTest35,
+            binding.imageRepeatLoadOrDownloadTest36,
+            binding.imageRepeatLoadOrDownloadTest37,
+            binding.imageRepeatLoadOrDownloadTest38
         ).forEach { it.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg") }
     }
 }

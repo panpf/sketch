@@ -1,20 +1,26 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_other_test.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import me.panpf.sketch.request.ShapeSize
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentOtherTestBinding
 
-@BindContentView(R.layout.fragment_other_test)
-class OtherTestFragment : BaseFragment(){
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+class OtherTestFragment : BaseBindingFragment<FragmentOtherTestBinding>() {
 
-        otherTestF_emptyImage.options.setErrorImage(R.drawable.image_loading)
-        otherTestF_emptyImage.options.setShapeSize(ShapeSize.byViewFixedSize())
-        otherTestF_emptyImage.displayImage("")
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentOtherTestBinding.inflate(inflater, parent, false)
+
+    override fun onInitData(
+        binding: FragmentOtherTestBinding,
+        savedInstanceState: Bundle?
+    ) {
+        binding.otherTestFEmptyImage.options.setErrorImage(R.drawable.image_loading)
+        binding.otherTestFEmptyImage.options.shapeSize = ShapeSize.byViewFixedSize()
+        binding.otherTestFEmptyImage.displayImage("")
     }
 }

@@ -5,9 +5,8 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.text.format.Formatter
+import com.github.panpf.tools4a.device.Devicex
 import com.tencent.bugly.crashreport.CrashReport
-import me.panpf.androidx.hardware.Hardwarex
-import me.panpf.javaxkt.util.requireNotNull
 import me.panpf.sketch.SketchCallback
 import me.panpf.sketch.SketchException
 import me.panpf.sketch.cache.InstallDiskCacheException
@@ -40,7 +39,7 @@ internal class MySketchCallback(context: Application) : SketchCallback {
             is NotFoundGifSoException ->
                 if (!uploadNotFoundGidSoError) {// 每次运行只上报一次
                     uploadNotFoundGidSoError = true
-                    val message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", Hardwarex.getSupportedAbis())
+                    val message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", Devicex.getSupportedAbis())
                     CrashReport.postCatchedException(Exception(message, e))
                 }
             is InstallDiskCacheException -> {   // 每半小时上传一次
@@ -90,13 +89,13 @@ internal class MySketchCallback(context: Application) : SketchCallback {
                 val builder = StringBuilder().apply {
                     append("Sketch")
                     append(" - ").append("DecodeGifImageFailed")
-                    append(" - ").append(e.cause.requireNotNull().javaClass.simpleName)
+                    append(" - ").append(e.cause!!.javaClass.simpleName)
                     append(" - ").append(decodeUri(appContext, e.request.uri))
 
                     append("\n")
-                    append("exceptionMessage: ").append(e.cause.requireNotNull().message)
+                    append("exceptionMessage: ").append(e.cause!!.message)
 
-                    if (e.cause.requireNotNull() is OutOfMemoryError) {
+                    if (e.cause!! is OutOfMemoryError) {
                         append("\n")
                         append("memoryInfo: ")
                         append("maxMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().maxMemory()))
@@ -111,7 +110,7 @@ internal class MySketchCallback(context: Application) : SketchCallback {
                     append(", outMimeType=").append(e.outMimeType)
                 }
 
-                CrashReport.postCatchedException(Exception(builder.toString(), e.cause.requireNotNull()))
+                CrashReport.postCatchedException(Exception(builder.toString(), e.cause!!))
             }
             is DecodeImageException -> {
                 // 每半小时上报一次
@@ -130,7 +129,7 @@ internal class MySketchCallback(context: Application) : SketchCallback {
 
                 builder.append("\n").append("exceptionMessage: ").append(e.cause.message)
 
-                if (e.cause.requireNotNull() is OutOfMemoryError) {
+                if (e.cause!! is OutOfMemoryError) {
                     val maxMemory = Runtime.getRuntime().maxMemory()
                     val freeMemory = Runtime.getRuntime().freeMemory()
                     val totalMemory = Runtime.getRuntime().totalMemory()

@@ -1,27 +1,34 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_reflection.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.ReflectionImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentReflectionBinding
 
-@BindContentView(R.layout.fragment_reflection)
-class ReflectionImageProcessorTestFragment : BaseFragment() {
+class ReflectionImageProcessorTestFragment : BaseBindingFragment<FragmentReflectionBinding>() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentReflectionBinding.inflate(inflater, parent, false)
 
+    override fun onInitData(
+        binding: FragmentReflectionBinding,
+        savedInstanceState: Bundle?
+    ) {
         // 缩小图片，处理速度更快，更少的内存消耗
         val metrics = resources.displayMetrics
-        image_reflectionFragment.options.setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+        binding.imageReflectionFragment.options.setMaxSize(
+            metrics.widthPixels / 2,
+            metrics.heightPixels / 2
+        )
 
-        image_reflectionFragment.options.processor = ReflectionImageProcessor()
-        image_reflectionFragment.options.displayer = TransitionImageDisplayer()
-        image_reflectionFragment.displayImage(AssetImage.MEI_NV)
+        binding.imageReflectionFragment.options.processor = ReflectionImageProcessor()
+        binding.imageReflectionFragment.options.displayer = TransitionImageDisplayer()
+        binding.imageReflectionFragment.displayImage(AssetImage.MEI_NV)
     }
 }

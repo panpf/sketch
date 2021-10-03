@@ -2,33 +2,46 @@ package me.panpf.sketch.sample.ui
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.SeekBar
-import kotlinx.android.synthetic.main.fragment_mask.*
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentMaskBinding
 
-@BindContentView(R.layout.fragment_mask)
-class MaskImageProcessorTestFragment : BaseFragment() {
+class MaskImageProcessorTestFragment : BaseBindingFragment<FragmentMaskBinding>() {
 
     private var progress = 15
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentMaskBinding.inflate(inflater, parent, false)
 
+    override fun onInitData(
+        binding: FragmentMaskBinding,
+        savedInstanceState: Bundle?
+    ) {
         // 缩小图片，处理速度更快，更少的内存消耗
         val metrics = resources.displayMetrics
-        image_maskFragment.options.setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+        binding.imageMaskFragment.options.setMaxSize(
+            metrics.widthPixels / 2,
+            metrics.heightPixels / 2
+        )
 
-        image_maskFragment.options.displayer = TransitionImageDisplayer()
+        binding.imageMaskFragment.options.displayer = TransitionImageDisplayer()
 
-        seekBar_maskFragment.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar_maskFragment: SeekBar, progress: Int, fromUser: Boolean) {
-                text_maskFragment.text = String.format("%d/%d", seekBar_maskFragment.progress, seekBar_maskFragment.max)
+        binding.seekBarMaskFragment.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar_maskFragment: SeekBar,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                binding.textMaskFragment.text =
+                    String.format("%d/%d", seekBar_maskFragment.progress, seekBar_maskFragment.max)
             }
 
             override fun onStartTrackingTouch(seekBar_maskFragment: SeekBar) {
@@ -41,8 +54,8 @@ class MaskImageProcessorTestFragment : BaseFragment() {
             }
         })
 
-        seekBar_maskFragment.max = 100
-        seekBar_maskFragment.progress = progress
+        binding.seekBarMaskFragment.max = 100
+        binding.seekBarMaskFragment.progress = progress
 
         apply()
     }
@@ -50,7 +63,7 @@ class MaskImageProcessorTestFragment : BaseFragment() {
     private fun apply() {
         val alpha = (progress.toFloat() / 100 * 255).toInt()
         val maskColor = Color.argb(alpha, 0, 0, 0)
-        image_maskFragment.options.processor = MaskImageProcessor(maskColor)
-        image_maskFragment.displayImage(AssetImage.MASK)
+        binding?.imageMaskFragment?.options?.processor = MaskImageProcessor(maskColor)
+        binding?.imageMaskFragment?.displayImage(AssetImage.MASK)
     }
 }

@@ -20,28 +20,41 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.core.view.updatePadding
-import kotlinx.android.synthetic.main.at_image_detail.*
-import me.panpf.androidxkt.view.isOrientationPortrait
+import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseActivity
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.databinding.AtImageDetailBinding
 import me.panpf.sketch.sample.util.DeviceUtils
 
-@BindContentView(R.layout.at_image_detail)
 class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
+
+    private val binding by lazy {
+        AtImageDetailBinding.inflate(
+            LayoutInflater.from(this),
+            null,
+            false
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setContentView(binding.root)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            imageDetailAt_contentFrame.updatePadding(top = imageDetailAt_contentFrame.paddingTop + DeviceUtils.getStatusBarHeight(resources))
+            binding.imageDetailAtContentFrame.updatePadding(
+                top = binding.imageDetailAtContentFrame.paddingTop + DeviceUtils.getStatusBarHeight(
+                    resources
+                )
+            )
         }
 
         //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
-        imageDetailAt_bgImage.layoutParams?.let {
+        binding.imageDetailAtBgImage.layoutParams?.let {
             it.width = resources.displayMetrics.widthPixels
             it.height = resources.displayMetrics.heightPixels
             if (isOrientationPortrait()) {
@@ -49,18 +62,18 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
             } else {
                 it.width += DeviceUtils.getWindowHeightSupplement(this)
             }
-            imageDetailAt_bgImage.layoutParams = it
+            binding.imageDetailAtBgImage.layoutParams = it
         }
 
-        imageDetailAt_bgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
+        binding.imageDetailAtBgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
 
         val imageDetailFragment = ImageDetailFragment()
         imageDetailFragment.arguments = intent.extras
 
         supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.imageDetailAt_contentFrame, imageDetailFragment)
-                .commit()
+            .beginTransaction()
+            .replace(R.id.imageDetailAt_contentFrame, imageDetailFragment)
+            .commit()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -80,16 +93,30 @@ class ImageDetailActivity : BaseActivity(), PageBackgApplyCallback {
     }
 
     override fun onApplyBackground(imageUri: String?) {
-        imageUri?.let { imageDetailAt_bgImage.displayImage(it) }
+        imageUri?.let { binding.imageDetailAtBgImage.displayImage(it) }
     }
 
     companion object {
 
-        fun launch(activity: Activity, dataTransferKey: String, loadingImageOptionsInfo: String?, defaultPosition: Int) {
+        fun launch(
+            activity: Activity,
+            dataTransferKey: String,
+            loadingImageOptionsInfo: String?,
+            defaultPosition: Int
+        ) {
             val intent = Intent(activity, ImageDetailActivity::class.java)
-            intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY, dataTransferKey)
-            intent.putExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY, loadingImageOptionsInfo)
-            intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition)
+            intent.putExtra(
+                ImageDetailFragment.PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY,
+                dataTransferKey
+            )
+            intent.putExtra(
+                ImageDetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY,
+                loadingImageOptionsInfo
+            )
+            intent.putExtra(
+                ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION,
+                defaultPosition
+            )
             activity.startActivity(intent)
             activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit)
         }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.panpf.sketch.sample.ui
+package me.panpf.sketch.sample
 
 import android.Manifest
 import android.content.Intent
@@ -22,9 +22,9 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.core.app.ActivityCompat
-import me.panpf.androidxkt.widget.showShortToast
-import me.panpf.sketch.sample.NotificationService
+import com.github.panpf.tools4a.toast.ktx.showShortToast
 import me.panpf.sketch.sample.base.BaseActivity
+import me.panpf.sketch.sample.ui.MainFragment
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 
 class MainActivity : BaseActivity() {

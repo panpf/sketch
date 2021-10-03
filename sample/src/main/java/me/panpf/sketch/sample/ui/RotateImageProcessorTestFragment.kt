@@ -1,30 +1,37 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_rotate.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.databinding.FragmentRotateBinding
 
-@BindContentView(R.layout.fragment_rotate)
-class RotateImageProcessorTestFragment : BaseFragment() {
+class RotateImageProcessorTestFragment : BaseBindingFragment<FragmentRotateBinding>() {
 
     private var degrees = 45
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentRotateBinding.inflate(inflater, parent, false)
 
+    override fun onInitData(
+        binding: FragmentRotateBinding,
+        savedInstanceState: Bundle?
+    ) {
         // 缩小图片，处理速度更快，更少的内存消耗
         val metrics = resources.displayMetrics
-        image_rotateFragment.options.setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+        binding.imageRotateFragment.options.setMaxSize(
+            metrics.widthPixels / 2,
+            metrics.heightPixels / 2
+        )
 
-        image_rotateFragment.options.displayer = TransitionImageDisplayer()
+        binding.imageRotateFragment.options.displayer = TransitionImageDisplayer()
 
-        button_rotateFragment.setOnClickListener {
+        binding.buttonRotateFragment.setOnClickListener {
             degrees += 45
             apply()
         }
@@ -33,7 +40,7 @@ class RotateImageProcessorTestFragment : BaseFragment() {
     }
 
     private fun apply() {
-        image_rotateFragment.options.processor = RotateImageProcessor(degrees)
-        image_rotateFragment.displayImage(AssetImage.MEI_NV)
+        binding?.imageRotateFragment?.options?.processor = RotateImageProcessor(degrees)
+        binding?.imageRotateFragment?.displayImage(AssetImage.MEI_NV)
     }
 }

@@ -3,17 +3,16 @@ package me.panpf.sketch.sample.ui
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.format.Formatter
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_recycler.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.github.promeg.pinyinhelper.Pinyin
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
-import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.bean.AppInfo
+import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.AppItemFactory
 import me.panpf.sketch.sample.item.AppListHeaderItemFactory
-import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
-import net.sourceforge.pinyin4j.PinyinHelper
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
@@ -21,23 +20,29 @@ import java.util.*
 /**
  * 已安装APP列表
  */
-@BindContentView(R.layout.fragment_recycler)
-class AppsFragment : BaseFragment(), AppItemFactory.AppItemListener {
+class AppsFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+    AppItemFactory.AppItemListener {
 
     private val adapter: AssemblyRecyclerAdapter? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-        recycler_recyclerFragment_content.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(view.context)
-        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
+    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+        binding.recyclerRecyclerFragmentContent.apply {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+            addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
+            if (this@AppsFragment.adapter != null) {
+                adapter = this@AppsFragment.adapter
+                scheduleLayoutAnimation()
+            }
+        }
 
-        refresh_recyclerFragment.isEnabled = false
+        binding.refreshRecyclerFragment.isEnabled = false
 
-        if (adapter != null) {
-            recycler_recyclerFragment_content.adapter = adapter
-            recycler_recyclerFragment_content.scheduleLayoutAnimation()
-        } else {
+        if (adapter == null) {
             loadAppList()
         }
     }
@@ -56,12 +61,13 @@ class AppsFragment : BaseFragment(), AppItemFactory.AppItemListener {
         }
     }
 
-    class LoadAppsTask(private val fragmentWeakReference: WeakReference<AppsFragment>) : AsyncTask<Int, Int, List<AppInfo>?>() {
+    class LoadAppsTask(private val fragmentWeakReference: WeakReference<AppsFragment>) :
+        AsyncTask<Int, Int, List<AppInfo>?>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
 
-            fragmentWeakReference.get()?.hint_recyclerFragment?.loading(null)
+            fragmentWeakReference.get()?.binding?.hintRecyclerFragment?.loading(null)
         }
 
         override fun doInBackground(vararg params: Int?): List<AppInfo>? {
@@ -79,33 +85,27 @@ class AppsFragment : BaseFragment(), AppItemFactory.AppItemListener {
                 appInfo.id = packageInfo.packageName
                 appInfo.versionName = packageInfo.versionName
                 appInfo.apkFilePath = packageInfo.applicationInfo.publicSourceDir
-                appInfo.formattedAppSize = Formatter.formatFileSize(fragment.context, File(appInfo.apkFilePath).length())
+                appInfo.formattedAppSize =
+                    Formatter.formatFileSize(fragment.context, File(appInfo.apkFilePath).length())
                 appInfo.versionCode = packageInfo.versionCode
                 appInfoList.add(appInfo)
             }
 
-            appInfoList.sortWith(Comparator { lhs, rhs -> (lhs.sortName ?: "").compareTo((rhs.sortName ?: ""))})
+            appInfoList.sortWith { lhs, rhs ->
+                (lhs.sortName ?: "").compareTo((rhs.sortName ?: ""))
+            }
 
             return appInfoList
         }
 
         private fun toPinYin(text: String): String {
-            val stringBuilder = StringBuilder()
-            for (c in text.toCharArray()) {
-                val a = PinyinHelper.toHanyuPinyinStringArray(c)
-                if (a != null) {
-                    stringBuilder.append(a[0])
-                } else {
-                    stringBuilder.append(c)
-                }
-            }
-            return stringBuilder.toString()
+            return Pinyin.toPinyin(text, "")
         }
 
         override fun onPostExecute(appInfoList: List<AppInfo>?) {
             val fragment = fragmentWeakReference.get() ?: return
 
-            fragment.hint_recyclerFragment.hidden()
+            fragment.binding?.hintRecyclerFragment?.hidden()
 
             val dataList = ArrayList<Any>((appInfoList?.size ?: 0) + 1)
             dataList.add(String.format("您的设备上共安装了%d款应用", appInfoList?.size ?: 0))
@@ -115,8 +115,8 @@ class AppsFragment : BaseFragment(), AppItemFactory.AppItemListener {
             val adapter = AssemblyRecyclerAdapter(dataList)
             adapter.addItemFactory(AppItemFactory(fragment))
             adapter.addItemFactory(AppListHeaderItemFactory())
-            fragment.recycler_recyclerFragment_content.adapter = adapter
-            fragment.recycler_recyclerFragment_content.scheduleLayoutAnimation()
+            fragment.binding?.recyclerRecyclerFragmentContent?.adapter = adapter
+            fragment.binding?.recyclerRecyclerFragmentContent?.scheduleLayoutAnimation()
         }
     }
 }

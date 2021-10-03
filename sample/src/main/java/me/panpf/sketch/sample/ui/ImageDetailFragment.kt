@@ -18,14 +18,14 @@ package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import kotlinx.android.synthetic.main.fragment_detail.*
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.databinding.FragmentDetailBinding
 import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.util.PageNumberSetter
@@ -35,8 +35,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 @RegisterEvent
-@BindContentView(R.layout.fragment_detail)
-class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
+class ImageDetailFragment : BaseBindingFragment<FragmentDetailBinding>(),
+    ImageZoomer.OnViewTapListener {
 
     private var imageList: List<Image>? = null
     private var loadingImageOptionsKey: String? = null
@@ -65,21 +65,27 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentDetailBinding.inflate(inflater, parent, false)
 
+    override fun onInitData(
+        binding: FragmentDetailBinding,
+        savedInstanceState: Bundle?
+    ) {
         val context = context ?: return
 
-        viewPagerPlayer = ViewPagerPlayer(pager_detail_content)
-        PageNumberSetter(text_detail_currentItem, pager_detail_content)
+        viewPagerPlayer = ViewPagerPlayer(binding.pagerDetailContent)
+        PageNumberSetter(binding.textDetailCurrentItem, binding.pagerDetailContent)
 
         if (imageList != null) {
             val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList!!)
             pagerAdapter.addItemFactory(ImageFragmentItemFactory(context, loadingImageOptionsKey))
-            pager_detail_content.adapter = pagerAdapter
-            pager_detail_content.currentItem = position
-            text_detail_currentItem.text = String.format("%d", position + 1)
-            text_detail_countItem.text = imageList!!.size.toString()
+            binding.pagerDetailContent.adapter = pagerAdapter
+            binding.pagerDetailContent.currentItem = position
+            binding.textDetailCurrentItem.text = String.format("%d", position + 1)
+            binding.textDetailCountItem.text = imageList!!.size.toString()
         }
 
         EventBus.getDefault().register(this)
@@ -133,7 +139,8 @@ class ImageDetailFragment : BaseFragment(), ImageZoomer.OnViewTapListener {
 
     companion object {
         val PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY = "PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY"
-        val PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY"
+        val PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY =
+            "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY"
         val PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION"
     }
 }

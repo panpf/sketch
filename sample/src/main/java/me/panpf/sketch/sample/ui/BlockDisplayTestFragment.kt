@@ -1,26 +1,28 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.fragment_pager_tab.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 
 /**
  * 大图页面，用来展示Sketch显示大图的能力
  */
-@BindContentView(R.layout.fragment_pager_tab)
-class BlockDisplayTestFragment : BaseFragment() {
+class BlockDisplayTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
 
     private var fragmentAdapter: FragmentArrayPagerAdapter? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+
+    override fun onInitData(binding: FragmentPagerTabBinding, savedInstanceState: Bundle?) {
         val activity = activity ?: return
 
         if (fragmentAdapter == null) {
@@ -32,9 +34,14 @@ class BlockDisplayTestFragment : BaseFragment() {
             }
             fragmentAdapter = FragmentArrayPagerAdapter(childFragmentManager, fragments)
         }
-        pager_pagerTabFragment_content.adapter = fragmentAdapter
+        binding.pagerPagerTabFragmentContent.adapter = fragmentAdapter
 
-        tab_pagerTabFragment_tabs.setTabViewFactory(TitleTabFactory(arrayOf("WORLD", "QMSHT", "CWB", "CARD"), activity))
-        tab_pagerTabFragment_tabs.setViewPager(pager_pagerTabFragment_content)
+        binding.tabPagerTabFragmentTabs.setTabViewFactory(
+            TitleTabFactory(
+                arrayOf("WORLD", "QMSHT", "CWB", "CARD"),
+                activity
+            )
+        )
+        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
     }
 }

@@ -3,7 +3,9 @@ package me.panpf.sketch.sample.vt.bean
 import android.content.Context
 import android.text.format.Formatter
 import androidx.recyclerview.widget.DiffUtil
-import me.panpf.javaxkt.util.formatYMDHM
+import com.github.panpf.tools4j.date.Datex
+import com.github.panpf.tools4j.date.ktx.format
+import com.github.panpf.tools4j.date.ktx.toDate
 
 class VideoInfo {
     var title: String? = null
@@ -35,7 +37,7 @@ class VideoInfo {
         builder.toString()
     }
 
-    val tempFormattedDate: String by lazy { date.formatYMDHM() }
+    val tempFormattedDate: String by lazy { date.toDate().format(Datex.yMdHm) }
 
     fun getTempFormattedSize(context: Context): String {
         if (tempFormattedSize == null) {

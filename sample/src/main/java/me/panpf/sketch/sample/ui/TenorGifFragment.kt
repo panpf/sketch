@@ -1,23 +1,22 @@
 package me.panpf.sketch.sample.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
-import kotlinx.android.synthetic.main.fragment_recycler.*
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.SketchImageView
-import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseFragment
-import me.panpf.sketch.sample.base.BindContentView
+import me.panpf.sketch.sample.base.BaseBindingFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.TenorData
 import me.panpf.sketch.sample.bean.TenorSearchResponse
+import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.LoadMoreItem
 import me.panpf.sketch.sample.item.StaggeredImageItem
 import me.panpf.sketch.sample.net.NetServices
@@ -28,40 +27,50 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
 
-@BindContentView(R.layout.fragment_recycler)
-class TenorGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
+class TenorGifFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+    SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var pageIndex = 1
     private var adapter: AssemblyRecyclerAdapter? = null
 
-    override fun onViewCreated(@NonNull view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-        refresh_recyclerFragment.setOnRefreshListener(this)
+    override fun onInitData(
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        binding.refreshRecyclerFragment.setOnRefreshListener(this)
 
-        recycler_recyclerFragment_content.addOnScrollListener(ScrollingPauseLoadManager(view.context))
+        binding.recyclerRecyclerFragmentContent.addOnScrollListener(
+            ScrollingPauseLoadManager(
+                requireContext()
+            )
+        )
 
-        recycler_recyclerFragment_content.layoutManager = FlexboxLayoutManager(context)
-        recycler_recyclerFragment_content.addItemDecoration(FlexboxItemDecoration(context))
+        binding.recyclerRecyclerFragmentContent.layoutManager = FlexboxLayoutManager(context)
+        binding.recyclerRecyclerFragmentContent.addItemDecoration(FlexboxItemDecoration(context))
 
         if (adapter == null) {
-            refresh_recyclerFragment.post { onRefresh() }
+            binding.refreshRecyclerFragment.post { onRefresh() }
         } else {
             setAdapter(adapter)
         }
     }
 
     private fun setAdapter(adapter: AssemblyRecyclerAdapter?) {
-        recycler_recyclerFragment_content.adapter = adapter
-        recycler_recyclerFragment_content.scheduleLayoutAnimation()
+        binding?.recyclerRecyclerFragmentContent?.adapter = adapter
+        binding?.recyclerRecyclerFragmentContent?.scheduleLayoutAnimation()
         this.adapter = adapter
     }
 
     override fun onRefresh() {
         adapter?.loadMoreFinished(false)
 
-        if (!refresh_recyclerFragment.isRefreshing) {
-            refresh_recyclerFragment.isRefreshing = true
+        if (binding?.refreshRecyclerFragment?.isRefreshing != true) {
+            binding?.refreshRecyclerFragment?.isRefreshing = true
         }
 
         loadData(1)
@@ -70,24 +79,31 @@ class TenorGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
     private fun loadData(pageIndex: Int) {
         this.pageIndex = pageIndex
         val pageStart = (pageIndex - 1) * PAGE_SIZE
-        NetServices.tenor().search("young girl", pageStart, PAGE_SIZE).enqueue(LoadDataCallback(this, pageIndex))
+        NetServices.tenor().search("young girl", pageStart, PAGE_SIZE)
+            .enqueue(LoadDataCallback(this, pageIndex))
     }
 
     override fun onLoadMore(adapter1: AssemblyAdapter) {
         loadData(pageIndex + 1)
     }
 
-    private class LoadDataCallback internal constructor(fragment: TenorGifFragment, private val pageIndex: Int) : Callback<TenorSearchResponse> {
+    private class LoadDataCallback internal constructor(
+        fragment: TenorGifFragment,
+        private val pageIndex: Int
+    ) : Callback<TenorSearchResponse> {
 
         private val reference: WeakReference<TenorGifFragment> = WeakReference(fragment)
 
         init {
             if (pageIndex == 1) {
-                fragment.hint_recyclerFragment.hidden()
+                fragment.binding?.hintRecyclerFragment?.hidden()
             }
         }
 
-        override fun onResponse(call: Call<TenorSearchResponse>, response: Response<TenorSearchResponse>) {
+        override fun onResponse(
+            call: Call<TenorSearchResponse>,
+            response: Response<TenorSearchResponse>
+        ) {
             val fragment = reference.get() ?: return
             if (!fragment.isViewCreated) {
                 return
@@ -99,7 +115,7 @@ class TenorGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
                 loadMore(fragment, response)
             }
 
-            fragment.refresh_recyclerFragment.isRefreshing = false
+            fragment.binding?.refreshRecyclerFragment?.isRefreshing = false
         }
 
         override fun onFailure(call: Call<TenorSearchResponse>, t: Throwable) {
@@ -110,13 +126,17 @@ class TenorGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
             }
 
             if (pageIndex == 1) {
-                fragment.hint_recyclerFragment.failed(t, View.OnClickListener {
+                fragment.binding?.hintRecyclerFragment?.failed(t, View.OnClickListener {
                     fragment.onRefresh()
                 })
-                fragment.refresh_recyclerFragment.isRefreshing = false
+                fragment.binding?.refreshRecyclerFragment?.isRefreshing = false
             } else {
                 fragment.adapter!!.loadMoreFailed()
-                Toast.makeText(fragment.activity, HintView.getCauseByException(activity, t), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    fragment.activity,
+                    HintView.getCauseByException(activity, t),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -124,22 +144,37 @@ class TenorGifFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, O
 
             val images = response.body()?.dataList
             if (images == null || images.isEmpty()) {
-                fragment.hint_recyclerFragment.empty("No photos")
+                fragment.binding?.hintRecyclerFragment?.empty("No photos")
                 return
             }
 
             val adapter = AssemblyRecyclerAdapter(images)
-            adapter.addItemFactory(StaggeredImageItem.Factory().setOnItemClickListener { _, view, position, _, _ ->
-                val activity = fragment.activity ?: return@setOnItemClickListener
-                @Suppress("UNCHECKED_CAST")
-                val imageList = adapter.dataList as List<TenorData>
-                val urlList = imageList.map { Image(it.gifMedia?.url.orEmpty(), it.gifMedia?.url.orEmpty()) }
-                val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
-                ImageDetailActivity.launch(activity, fragment.dataTransferHelper.put("urlList", urlList), loadingImageOptionsInfo, position - adapter.headerItemCount)
-            })
-            adapter.setMoreItem(LoadMoreItem.Factory(fragment).fullSpan(fragment.recycler_recyclerFragment_content))
+            adapter.addItemFactory(
+                StaggeredImageItem.Factory().setOnItemClickListener { _, view, position, _, _ ->
+                    val activity = fragment.activity ?: return@setOnItemClickListener
 
-            fragment.recycler_recyclerFragment_content.adapter = adapter
+                    @Suppress("UNCHECKED_CAST")
+                    val imageList = adapter.dataList as List<TenorData>
+                    val urlList = imageList.map {
+                        Image(
+                            it.gifMedia?.url.orEmpty(),
+                            it.gifMedia?.url.orEmpty()
+                        )
+                    }
+                    val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
+                    ImageDetailActivity.launch(
+                        activity,
+                        fragment.dataTransferHelper.put("urlList", urlList),
+                        loadingImageOptionsInfo,
+                        position - adapter.headerCount
+                    )
+                })
+            adapter.setMoreItem(
+                LoadMoreItem.Factory(fragment)
+                    .fullSpan(fragment.binding!!.recyclerRecyclerFragmentContent)
+            )
+
+            fragment.binding!!.recyclerRecyclerFragmentContent.adapter = adapter
             fragment.adapter = adapter
         }
 

@@ -37,8 +37,7 @@ import me.panpf.sketch.sample.vt.item.VideoInfoItemFactory
 import me.panpf.sketch.sample.vt.vm.VideoListViewModel
 import java.io.File
 
-@BindContentView(R.layout.fragment_recycler)
-class VideoListFragment : BaseFragment() {
+class VideoListFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     private val videoListViewModel: VideoListViewModel by bindViewModel(VideoListViewModel::class)
 

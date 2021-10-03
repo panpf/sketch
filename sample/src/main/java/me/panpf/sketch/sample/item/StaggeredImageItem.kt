@@ -2,12 +2,12 @@ package me.panpf.sketch.sample.item
 
 import android.content.Context
 import android.view.ViewGroup
+import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
+import com.github.panpf.tools4j.math.ktx.divide
 import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.adapter.AssemblyItem
 import me.panpf.adapter.AssemblyItemFactory
 import me.panpf.adapter.ktx.bindView
-import me.panpf.androidxkt.view.isOrientationPortrait
-import me.panpf.javaxkt.lang.divide
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.TenorData
