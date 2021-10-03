@@ -73,7 +73,7 @@ android {
     }
 
     aaptOptions {
-        setNoCompress("bmp")
+        noCompress("bmp")
     }
 }
 

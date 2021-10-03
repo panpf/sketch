@@ -4,6 +4,7 @@
 [![Android Arsenal][android_arsenal_image]][android_arsenal_link]
 [![License][license_image]][license_link]
 [![API][min_api_image]][min_api_link]
+[![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
 [English version of the README.md](README_EN.md)
@@ -62,33 +63,16 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 
 ## 开始使用
 
-### 导入 Sketch
+### 从 mavenCentral 导入 Sketch
 
 在 app 的 build.gradle 文件的 dependencies 节点中加入依赖
 
-```groovy
-implementation 'me.panpf:sketch:$sketch_version'
+```kotlin
+implementation("io.github.panpf.sketch:sketch:${LAST_VERSION}")
+implementation("io.github.panpf.sketch:sketch-gif:${LAST_VERSION}") // 不是必须的. 如果需要支持 gif 就添加
 ```
 
-请自行替换 `$sketch_version` 为最新的版本 [![sketch_version_image]][sketch_version_link]
-
-如果需要播放 GIF 就添加 sketch-gif 的依赖
-
-```groovy
-implementation 'me.panpf:sketch-gif:$sketch_gif_version'
-```
-
-请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link]
-
-如果需要手势缩放功能就添加 sketch-zoom 的依赖
-
-```groovy
-implementation 'me.panpf:sketch-zoom:$sketch_zoom_version'
-```
-
-请自行替换 `$sketch_zoom_version` 为最新的版本 [![sketch_zoom_version_image]][sketch_zoom_version_link]
-
-`Android Studio 会自动合并 AAR 中所包含的权限和混淆配置`
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
 ### 使用 SketchImageView 显示图片
 
@@ -139,7 +123,7 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 * [在磁盘上缓存图片原文件，避免重复下载][disk_cache]
 * [发送 HTTP 请求][http_stack]
 * [取消请求][cancel_request]
-* [处理 Sketch 的异常][callback]
+* [监控 Sketch 的异常][error_tracker]
 * [日志][log]
 * [延迟并统一配置 Sketch][initializer]
 * [配置混淆（Proguard）][proguard_config]
@@ -180,12 +164,8 @@ Please view the [CHANGELOG.md] file
 [android_arsenal_link]: https://android-arsenal.com/details/1/4165
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
-[sketch_version_image]: https://api.bintray.com/packages/panpf/maven/sketch/images/download.svg
-[sketch_version_link]: https://bintray.com/panpf/maven/sketch/_latestVersion#files
-[sketch_gif_version_image]: https://api.bintray.com/packages/panpf/maven/sketch-gif/images/download.svg
-[sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
-[sketch_zoom_version_image]: https://api.bintray.com/packages/panpf/maven/sketch-zoom/images/download.svg
-[sketch_zoom_version_link]: https://bintray.com/panpf/maven/sketch-zoom/_latestVersion#files
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch/sketch
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch/
 [min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
 [min_api_link]: https://android-arsenal.com/api?level=16
 [qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
@@ -230,7 +210,7 @@ Please view the [CHANGELOG.md] file
 [http_stack]: docs/wiki/http_stack.md
 [listener]: docs/wiki/listener.md
 [cancel_request]: docs/wiki/cancel_request.md
-[callback]: docs/wiki/callback.md
+[error_tracker]: docs/wiki/error_tracker.md
 [log]: docs/wiki/log.md
 [initializer]: docs/wiki/initializer.md
 [proguard_config]: docs/wiki/proguard_config.md
