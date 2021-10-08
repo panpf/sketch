@@ -44,6 +44,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 Page.UNSPLASH,
                 Page.BAIDU_GIF,
                 Page.TENOR_GIF,
+                Page.VIDEO,
                 Page.APPS,
                 Page.APKS,
                 Page.SETTINGS,
@@ -107,6 +108,7 @@ enum class Page(val showName: String, val fragmentClass: Class<out Fragment>) {
     APKS("Apks", ApksFragment::class.java),
     SETTINGS("Settings", SettingsFragment::class.java),
     ABOUT("About", AboutFragment::class.java),
+    VIDEO("Video", VideoListFragment::class.java),
 
     BLOCK_DISPLAY_TEST("Huge Image Test", BlockDisplayTestFragment::class.java),
     IMAGE_PROCESSOR_TEST("Image Processor Test", ImageProcessorTestFragment::class.java),

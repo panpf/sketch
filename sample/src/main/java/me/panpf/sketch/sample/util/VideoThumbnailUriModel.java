@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample.vt.util;
+package me.panpf.sketch.sample.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;

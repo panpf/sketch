@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">SK Videos</string>
-    <string name="hint_loading">Loading…</string>
-    <string name="hint_loadFailed">Load failed: %s</string>
-    <string name="hint_empty_list">No %s</string>
-    <string name="hint_next_page_loading">Next page loading…</string>
-    <string name="hint_all_loaded">All loaded</string>
-</resources>
