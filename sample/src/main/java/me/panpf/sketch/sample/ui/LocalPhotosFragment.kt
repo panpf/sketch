@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import me.panpf.adapter.AssemblyRecyclerAdapter
@@ -28,7 +29,7 @@ import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
@@ -42,7 +43,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 @RegisterEvent
-class PhotosFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     SwipeRefreshLayout.OnRefreshListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
@@ -53,9 +54,12 @@ class PhotosFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = "Local Photos"
+
         binding.refreshRecyclerFragment.setOnRefreshListener(this)
         binding.recyclerRecyclerFragmentContent.addOnScrollListener(
             ScrollingPauseLoadManager(
@@ -103,7 +107,7 @@ class PhotosFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         super.onDestroyView()
     }
 
-    private class LoadPhotoListTask constructor(private val fragmentWeakReference: WeakReference<PhotosFragment>) :
+    private class LoadPhotoListTask constructor(private val fragmentWeakReference: WeakReference<LocalPhotosFragment>) :
         AsyncTask<Void, Int, List<String>>() {
 
         override fun onPreExecute() {

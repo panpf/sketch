@@ -7,11 +7,11 @@ import android.widget.SeekBar
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentRoundRectImageProcessorBinding
 
 class RoundRectImageProcessorTestFragment :
-    BaseBindingFragment<FragmentRoundRectImageProcessorBinding>() {
+    BaseFragment<FragmentRoundRectImageProcessorBinding>() {
 
     private var progress = 30
 

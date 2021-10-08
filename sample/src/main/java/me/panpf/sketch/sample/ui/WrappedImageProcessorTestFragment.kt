@@ -10,10 +10,10 @@ import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentWrappedBinding
 
-class WrappedImageProcessorTestFragment : BaseBindingFragment<FragmentWrappedBinding>() {
+class WrappedImageProcessorTestFragment : BaseFragment<FragmentWrappedBinding>() {
 
     private var roundRectRadiusProgress = 30
     private var maskAlphaProgress = 45

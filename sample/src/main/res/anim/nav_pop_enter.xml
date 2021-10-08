@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:interpolator="@android:anim/linear_interpolator"
+        android:duration="@integer/nav_anim_duration"
+        android:fromXDelta="-20%p"
+        android:toXDelta="0%p"/>
+</set>

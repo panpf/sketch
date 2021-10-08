@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -12,7 +13,7 @@ import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.SketchImageView
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.TenorData
 import me.panpf.sketch.sample.bean.TenorSearchResponse
@@ -27,7 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
 
-class TenorGifFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var pageIndex = 1
@@ -39,9 +40,12 @@ class TenorGifFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = "Tenor GIF"
+
         binding.refreshRecyclerFragment.setOnRefreshListener(this)
 
         binding.recyclerRecyclerFragmentContent.addOnScrollListener(

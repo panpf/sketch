@@ -3,12 +3,13 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 
-class ImageShaperTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
+class ImageShaperTestFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -16,12 +17,15 @@ class ImageShaperTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
     ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentPagerTabBinding,
         savedInstanceState: Bundle?
     ) {
-        val activity = activity ?: return
+        toolbar.title = "Image Shaper Test"
+
         binding.pagerPagerTabFragmentContent.adapter = FragmentArrayPagerAdapter(
-            childFragmentManager, arrayOf(
+            childFragmentManager,
+            arrayOf(
                 RoundRectImageShaperTestFragment(),
                 CircleImageShaperTestFragment(),
                 ShapeSizeImageShaperTestFragment()
@@ -34,7 +38,8 @@ class ImageShaperTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
                     "ROUND_RECT",
                     "CIRCLE",
                     "SHAPE_SIZE"
-                ), activity
+                ),
+                requireActivity()
             )
         )
         binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)

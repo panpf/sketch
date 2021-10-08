@@ -3,12 +3,13 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import androidx.appcompat.widget.Toolbar
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentRepeatLoadOrDownloadTestBinding
 import me.panpf.sketch.uri.ApkIconUriModel
 
 class RepeatLoadOrDownloadTestFragment :
-    BaseBindingFragment<FragmentRepeatLoadOrDownloadTestBinding>() {
+    BaseToolbarFragment<FragmentRepeatLoadOrDownloadTestBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -16,12 +17,13 @@ class RepeatLoadOrDownloadTestFragment :
     ) = FragmentRepeatLoadOrDownloadTestBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentRepeatLoadOrDownloadTestBinding,
         savedInstanceState: Bundle?
     ) {
-        val context = context ?: return
+        toolbar.title = "Repeat Load Or Download Test"
 
-        val selfApkFile = context.applicationInfo.publicSourceDir
+        val selfApkFile = requireContext().applicationInfo.publicSourceDir
         arrayOf(
             binding.imageRepeatLoadOrDownloadTest1,
             binding.imageRepeatLoadOrDownloadTest2,

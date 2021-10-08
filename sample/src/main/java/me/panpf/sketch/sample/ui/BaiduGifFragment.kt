@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -11,7 +12,7 @@ import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.SketchImageView
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.BaiduImage
 import me.panpf.sketch.sample.bean.BaiduImageSearchResult
 import me.panpf.sketch.sample.bean.Image
@@ -26,7 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
 
-class BaiduGifFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+class BaiduGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var pageIndex = 1
@@ -37,7 +38,13 @@ class BaiduGifFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        toolbar.title = "Baidu GIF"
+
         binding.refreshRecyclerFragment.setOnRefreshListener(this)
 
         binding.recyclerRecyclerFragmentContent.apply {

@@ -23,7 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentDetailBinding
 import me.panpf.sketch.sample.event.RegisterEvent
@@ -35,7 +35,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 @RegisterEvent
-class ImageDetailFragment : BaseBindingFragment<FragmentDetailBinding>(),
+class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
     ImageZoomer.OnViewTapListener {
 
     private var imageList: List<Image>? = null

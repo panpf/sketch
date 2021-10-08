@@ -8,10 +8,10 @@ import android.widget.SeekBar
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentMaskBinding
 
-class MaskImageProcessorTestFragment : BaseBindingFragment<FragmentMaskBinding>() {
+class MaskImageProcessorTestFragment : BaseFragment<FragmentMaskBinding>() {
 
     private var progress = 15
 

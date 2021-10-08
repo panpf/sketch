@@ -5,18 +5,25 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentBase64TestBinding
 
-class Base64ImageTestFragment : BaseBindingFragment<FragmentBase64TestBinding>() {
+class Base64ImageFragment : BaseToolbarFragment<FragmentBase64TestBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
     ) = FragmentBase64TestBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentBase64TestBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        toolbar: Toolbar,
+        binding: FragmentBase64TestBinding,
+        savedInstanceState: Bundle?
+    ) {
+        toolbar.title = "Base64 Image"
+
         binding.editBase64TestFragment.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 

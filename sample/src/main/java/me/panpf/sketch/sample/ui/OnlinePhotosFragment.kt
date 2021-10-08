@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.more.OnLoadMoreListener
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
@@ -24,7 +25,7 @@ import retrofit2.Response
 import java.lang.ref.WeakReference
 import java.util.*
 
-class UnsplashFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     UnsplashPhotosItemFactory.UnsplashPhotosItemEventListener, OnLoadMoreListener,
     androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener {
 
@@ -37,9 +38,13 @@ class UnsplashFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = "Online Photos"
+        toolbar.subtitle = "Unsplash"
+
         binding.recyclerRecyclerFragmentContent.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(context)
         binding.recyclerRecyclerFragmentContent.addOnScrollListener(
@@ -115,10 +120,10 @@ class UnsplashFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
     }
 
     private class LoadDataCallback(
-        fragment: UnsplashFragment,
+        fragment: OnlinePhotosFragment,
         private val pageIndex: Int
     ) : Callback<List<UnsplashImage>> {
-        private val reference: WeakReference<UnsplashFragment> = WeakReference(fragment)
+        private val reference: WeakReference<OnlinePhotosFragment> = WeakReference(fragment)
 
         init {
             if (pageIndex == 1) {
@@ -166,7 +171,7 @@ class UnsplashFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
             }
         }
 
-        private fun create(fragment: UnsplashFragment, response: Response<List<UnsplashImage>>) {
+        private fun create(fragment: OnlinePhotosFragment, response: Response<List<UnsplashImage>>) {
             val activity = fragment.activity ?: return
             val images = response.body()
             if (images == null || images.isEmpty()) {
@@ -182,7 +187,7 @@ class UnsplashFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
             fragment.adapter = adapter
         }
 
-        private fun loadMore(fragment: UnsplashFragment, response: Response<List<UnsplashImage>>) {
+        private fun loadMore(fragment: OnlinePhotosFragment, response: Response<List<UnsplashImage>>) {
             val images = response.body()
             if (images == null || images.isEmpty()) {
                 fragment.adapter!!.loadMoreFinished(true)

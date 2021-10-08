@@ -21,54 +21,55 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import com.github.panpf.tools4a.toast.ktx.showShortToast
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.panpf.sketch.sample.base.BaseActivity
-import me.panpf.sketch.sample.ui.MainFragment
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 
 class MainActivity : BaseActivity() {
 
-    private var lastClickBackTime: Long = 0
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted) {
+                finish()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        ImageOrientationCorrectTestFileGenerator.getInstance(baseContext).onAppStart()
-        startService(Intent(baseContext, NotificationService::class.java))
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            showContent()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1101)
-        }
+        setContentView(R.layout.activity_main)
+        startMultiProcess()
+        initImageAsserts()
+        requestPermission()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1101) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                showContent()
-            } else {
-                finish()
+    private fun initImageAsserts() {
+        lifecycleScope.launch {
+            val appContext = applicationContext
+            delay(1000)
+            withContext(Dispatchers.IO) {
+                ImageOrientationCorrectTestFileGenerator.getInstance(appContext).onAppStart()
             }
         }
     }
 
-    private fun showContent() {
-        supportFragmentManager.beginTransaction()
-                .replace(android.R.id.content, MainFragment())
-                .commit()
+    private fun startMultiProcess() {
+        startService(Intent(this, NotificationService::class.java))
     }
 
-    override fun onBackPressed() {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastClickBackTime > 2000) {
-            lastClickBackTime = currentTime
-            showShortToast("Click again to exit")
-            return
+    private fun requestPermission() {
+        val permissionResult = ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        if (permissionResult != PackageManager.PERMISSION_GRANTED) {
+            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-
-        super.onBackPressed()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

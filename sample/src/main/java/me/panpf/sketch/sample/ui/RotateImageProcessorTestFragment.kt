@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentRotateBinding
 
-class RotateImageProcessorTestFragment : BaseBindingFragment<FragmentRotateBinding>() {
+class RotateImageProcessorTestFragment : BaseFragment<FragmentRotateBinding>() {
 
     private var degrees = 45
 

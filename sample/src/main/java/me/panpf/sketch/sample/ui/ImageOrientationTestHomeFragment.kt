@@ -3,13 +3,14 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 
-class ImageOrientationTestHomeFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
+class ImageOrientationTestHomeFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
     private var fragmentAdapter: FragmentArrayPagerAdapter? = null
 
     override fun createViewBinding(
@@ -18,14 +19,14 @@ class ImageOrientationTestHomeFragment : BaseBindingFragment<FragmentPagerTabBin
     ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentPagerTabBinding,
         savedInstanceState: Bundle?
     ) {
-        val context = context ?: return
-        val activity = activity ?: return
+        toolbar.title = "Image Orientation Test"
 
         if (fragmentAdapter == null) {
-            val filePaths = ImageOrientationCorrectTestFileGenerator.getInstance(context).filePaths
+            val filePaths = ImageOrientationCorrectTestFileGenerator.getInstance(requireContext()).filePaths
             val fragments = arrayOfNulls<androidx.fragment.app.Fragment>(filePaths.size)
             for (w in filePaths.indices) {
                 fragments[w] = ImageOrientationTestFragment.build(filePaths[w])
@@ -44,7 +45,8 @@ class ImageOrientationTestHomeFragment : BaseBindingFragment<FragmentPagerTabBin
                     "TRANSPOSE",
                     "FLIP_VERTICAL",
                     "TRANSVERSE"
-                ), activity
+                ),
+                requireActivity()
             )
         )
         binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)

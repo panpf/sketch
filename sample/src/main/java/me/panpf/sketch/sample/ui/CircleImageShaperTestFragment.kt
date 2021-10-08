@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentCircleImageShaperBinding
 import me.panpf.sketch.shaper.CircleImageShaper
 
-class CircleImageShaperTestFragment : BaseBindingFragment<FragmentCircleImageShaperBinding>() {
+class CircleImageShaperTestFragment : BaseFragment<FragmentCircleImageShaperBinding>() {
 
     private var strokeProgress = 5
 

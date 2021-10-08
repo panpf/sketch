@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import com.github.promeg.pinyinhelper.Pinyin
 import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.AppItemFactory
@@ -17,10 +18,7 @@ import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
-/**
- * 已安装APP列表
- */
-class AppsFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+class AppIconFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     AppItemFactory.AppItemListener {
 
     private val adapter: AssemblyRecyclerAdapter? = null
@@ -30,12 +28,18 @@ class AppsFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        toolbar.title = "App Icon"
+
         binding.recyclerRecyclerFragmentContent.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
             addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
-            if (this@AppsFragment.adapter != null) {
-                adapter = this@AppsFragment.adapter
+            if (this@AppIconFragment.adapter != null) {
+                adapter = this@AppIconFragment.adapter
                 scheduleLayoutAnimation()
             }
         }
@@ -61,7 +65,7 @@ class AppsFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         }
     }
 
-    class LoadAppsTask(private val fragmentWeakReference: WeakReference<AppsFragment>) :
+    class LoadAppsTask(private val fragmentWeakReference: WeakReference<AppIconFragment>) :
         AsyncTask<Int, Int, List<AppInfo>?>() {
 
         override fun onPreExecute() {

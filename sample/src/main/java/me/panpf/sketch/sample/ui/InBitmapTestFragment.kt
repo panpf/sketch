@@ -10,19 +10,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.sketch.Sketch
 import me.panpf.sketch.cache.BitmapPoolUtils
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageDecodeUtils
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentInBitmapTestBinding
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
 import java.io.IOException
 
-class InBitmapTestFragment : BaseBindingFragment<FragmentInBitmapTestBinding>() {
+class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() {
 
     private var index = 0
 
@@ -57,9 +58,12 @@ class InBitmapTestFragment : BaseBindingFragment<FragmentInBitmapTestBinding>() 
     ) = FragmentInBitmapTestBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentInBitmapTestBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = "inBitmap Test"
+
         binding.viewInBitmapTestFragmentLast.setOnClickListener {
             --index
             if (index < 0) {

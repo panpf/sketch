@@ -7,17 +7,20 @@ import com.github.panpf.tools4a.dimen.ktx.dp2px
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.CircleImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentReflectionBinding
 
-class CircleImageProcessorTestFragment : BaseBindingFragment<FragmentReflectionBinding>() {
+class CircleImageProcessorTestFragment : BaseFragment<FragmentReflectionBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
     ) = FragmentReflectionBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentReflectionBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        binding: FragmentReflectionBinding,
+        savedInstanceState: Bundle?
+    ) {
         // 缩小图片，处理速度更快，更少的内存消耗
         val metrics = resources.displayMetrics
         binding.imageReflectionFragment.options.setMaxSize(

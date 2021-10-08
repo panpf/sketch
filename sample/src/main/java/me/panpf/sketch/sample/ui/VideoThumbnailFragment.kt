@@ -21,6 +21,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -30,14 +31,14 @@ import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.VideoInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.VideoInfoItemFactory
 import me.panpf.sketch.sample.vm.VideoListViewModel
 import java.io.File
 
-class VideoListFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class VideoThumbnailFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
 
     private val videoListViewModel by viewModels<VideoListViewModel>()
 
@@ -46,7 +47,13 @@ class VideoListFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        toolbar.title = "Video Thumbnail"
+
         val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(listOf(
             VideoInfoItemFactory().setOnItemClickListener { _, _, _, _, data ->
                 try {

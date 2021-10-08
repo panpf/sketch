@@ -3,12 +3,13 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 
-class ImageProcessorTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
+class ImageProcessorTestFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -16,10 +17,11 @@ class ImageProcessorTestFragment : BaseBindingFragment<FragmentPagerTabBinding>(
     ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentPagerTabBinding,
         savedInstanceState: Bundle?
     ) {
-        val activity = activity ?: return
+        toolbar.title = "Image Processor Test"
 
         binding.pagerPagerTabFragmentContent.adapter = FragmentArrayPagerAdapter(
             childFragmentManager, arrayOf(
@@ -45,7 +47,8 @@ class ImageProcessorTestFragment : BaseBindingFragment<FragmentPagerTabBinding>(
                     "RESIZE",
                     "MASK",
                     "WRAPPED"
-                ), activity
+                ),
+                requireActivity()
             )
         )
         binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)

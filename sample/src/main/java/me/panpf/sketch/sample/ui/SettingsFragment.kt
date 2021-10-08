@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.sketch.SLog
 import me.panpf.sketch.sample.AppConfig
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.CacheInfoMenu
 import me.panpf.sketch.sample.bean.CheckMenu
 import me.panpf.sketch.sample.bean.InfoMenu
@@ -18,7 +19,7 @@ import me.panpf.sketch.sample.item.CheckMenuItem
 import me.panpf.sketch.sample.item.InfoMenuItem
 import me.panpf.sketch.sample.item.MenuTitleItem
 
-class SettingsFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class SettingsFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -26,9 +27,12 @@ class SettingsFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
+        toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.title = "Settings"
+
         binding.refreshRecyclerFragment.isEnabled = false
         binding.recyclerRecyclerFragmentContent.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
@@ -40,6 +44,8 @@ class SettingsFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
             updateLayoutParams { width = (resources.displayMetrics.widthPixels * 0.7).toInt() }
         }
+
+        binding.hintRecyclerFragment.hidden()
     }
 
     private fun makeMenuList(): List<Any> {

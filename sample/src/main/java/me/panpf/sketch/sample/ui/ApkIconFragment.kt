@@ -9,9 +9,10 @@ import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.adapter.AssemblyRecyclerAdapter
 import me.panpf.adapter.FixedItem
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.bean.AppScanning
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
@@ -27,7 +28,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 import java.util.zip.ZipFile
 
-class ApksFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
+class ApkIconFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     AppItemFactory.AppItemListener {
 
     private var adapter: AssemblyRecyclerAdapter? = null
@@ -39,15 +40,21 @@ class ApksFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentRecyclerBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        toolbar.title = "Apk Icon"
+
         binding.refreshRecyclerFragment.isEnabled = false
 
         binding.recyclerRecyclerFragmentContent.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
             addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
 
-            if (this@ApksFragment.adapter != null) {
-                adapter = this@ApksFragment.adapter
+            if (this@ApkIconFragment.adapter != null) {
+                adapter = this@ApkIconFragment.adapter
                 scheduleLayoutAnimation()
             }
         }
@@ -89,7 +96,7 @@ class ApksFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
 
     }
 
-    private class LoadAppsTask(var fragmentWeakReference: WeakReference<ApksFragment>) :
+    private class LoadAppsTask(var fragmentWeakReference: WeakReference<ApkIconFragment>) :
         AsyncTask<String, Int, Array<String>>() {
 
         override fun onPreExecute() {
@@ -120,6 +127,7 @@ class ApksFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         override fun onPostExecute(files: Array<String>?) {
             val fragment = fragmentWeakReference.get()
             if (fragment != null) {
+                fragment.binding?.hintRecyclerFragment?.hidden()
                 if (files == null || files.isEmpty()) {
                     MyScanListener(fragmentWeakReference).onCompleted()
                 } else {
@@ -129,7 +137,7 @@ class ApksFragment : BaseBindingFragment<FragmentRecyclerBinding>(),
         }
     }
 
-    private class MyScanListener(var fragmentWeakReference: WeakReference<ApksFragment>) :
+    private class MyScanListener(var fragmentWeakReference: WeakReference<ApkIconFragment>) :
         FileScanner.ScanListener {
         private val startTime = System.currentTimeMillis()
 

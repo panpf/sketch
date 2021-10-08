@@ -28,7 +28,7 @@ import me.panpf.sketch.drawable.SketchRefBitmap
 import me.panpf.sketch.request.*
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.event.AppConfigChangedEvent
@@ -51,7 +51,7 @@ import java.io.IOException
 import java.util.*
 
 @RegisterEvent
-class ImageFragment : BaseBindingFragment<FragmentImageBinding>() {
+class ImageFragment : BaseFragment<FragmentImageBinding>() {
 
     private val image by bindParcelableArgOrThrow<Image>(PARAM_REQUIRED_STRING_IMAGE_URI)
     private val loadingImageOptionsKey: String? by bindStringArgOrNull(

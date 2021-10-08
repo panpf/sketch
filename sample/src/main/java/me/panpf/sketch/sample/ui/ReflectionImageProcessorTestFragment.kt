@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.ReflectionImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentReflectionBinding
 
-class ReflectionImageProcessorTestFragment : BaseBindingFragment<FragmentReflectionBinding>() {
+class ReflectionImageProcessorTestFragment : BaseFragment<FragmentReflectionBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,

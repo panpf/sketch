@@ -9,10 +9,10 @@ import android.widget.SeekBar
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.request.Resize
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentResizeBinding
 
-class ResizeImageProcessorTestFragment : BaseBindingFragment<FragmentResizeBinding>() {
+class ResizeImageProcessorTestFragment : BaseFragment<FragmentResizeBinding>() {
 
     private var widthProgress = 50
     private var heightProgress = 50

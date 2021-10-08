@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentRoundRectImageShaperBinding
 import me.panpf.sketch.shaper.RoundRectImageShaper
 
 class RoundRectImageShaperTestFragment :
-    BaseBindingFragment<FragmentRoundRectImageShaperBinding>() {
+    BaseFragment<FragmentRoundRectImageShaperBinding>() {
 
     private var radiusProgress = 20
     private var strokeProgress = 5

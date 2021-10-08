@@ -7,10 +7,10 @@ import android.widget.SeekBar
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.GaussianBlurImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentGaussianBlurBinding
 
-class GaussianBlurImageProcessorTestFragment : BaseBindingFragment<FragmentGaussianBlurBinding>() {
+class GaussianBlurImageProcessorTestFragment : BaseFragment<FragmentGaussianBlurBinding>() {
 
     private var progress = 15
 

@@ -3,17 +3,15 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import me.panpf.adapter.pager.FragmentArrayPagerAdapter
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseBindingFragment
+import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
 import me.panpf.sketch.sample.item.TitleTabFactory
 
-/**
- * 大图页面，用来展示Sketch显示大图的能力
- */
-class BlockDisplayTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() {
+class HugeImageFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
 
     private var fragmentAdapter: FragmentArrayPagerAdapter? = null
 
@@ -22,8 +20,12 @@ class BlockDisplayTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() 
         parent: ViewGroup?
     ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
 
-    override fun onInitData(binding: FragmentPagerTabBinding, savedInstanceState: Bundle?) {
-        val activity = activity ?: return
+    override fun onInitData(
+        toolbar: Toolbar,
+        binding: FragmentPagerTabBinding,
+        savedInstanceState: Bundle?
+    ) {
+        toolbar.title = "Huge Image"
 
         if (fragmentAdapter == null) {
             val hugeAssetImageNames = AssetImage.HUGE_IMAGES
@@ -39,7 +41,7 @@ class BlockDisplayTestFragment : BaseBindingFragment<FragmentPagerTabBinding>() 
         binding.tabPagerTabFragmentTabs.setTabViewFactory(
             TitleTabFactory(
                 arrayOf("WORLD", "QMSHT", "CWB", "CARD"),
-                activity
+                requireActivity()
             )
         )
         binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
