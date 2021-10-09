@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    compileSdk = property("COMPILE_SDK_VERSION").toString().toInt()
+    compileSdk = property("COMPILE_SDK").toString().toInt()
 
     defaultConfig {
-        minSdk = property("MIN_SDK_VERSION").toString().toInt()
-        targetSdk = property("TARGET_SDK_VERSION").toString().toInt()
+        minSdk = property("MIN_SDK").toString().toInt()
+        targetSdk = property("TARGET_SDK").toString().toInt()
 
         consumerProguardFiles("proguard-rules.pro")
 
@@ -29,7 +29,7 @@ dependencies {
     compileOnly(project(":sketch-gif"))
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
 
-    testImplementation("junit:junit:${property("JUNIT_VERSION")}")
+    testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
     androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
 }

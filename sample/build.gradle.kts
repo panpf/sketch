@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    compileSdk = property("COMPILE_SDK_VERSION").toString().toInt()
+    compileSdk = property("COMPILE_SDK").toString().toInt()
 
     defaultConfig {
         applicationId = "me.panpf.sketch.sample"
 
-        minSdk = property("MIN_SDK_VERSION").toString().toInt()
-        targetSdk = property("TARGET_SDK_VERSION").toString().toInt()
+        minSdk = property("MIN_SDK").toString().toInt()
+        targetSdk = property("TARGET_SDK").toString().toInt()
         versionCode = property("VERSION_CODE").toString().toInt()
         versionName = "${property("VERSION_NAME")}.${getGitVersion()}"
     }
@@ -90,14 +90,14 @@ dependencies {
     add("normalImplementation", project(":sketch-gif"))
     add("lollipopImplementation", project(":sketch-gif"))
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN_VERSION")}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     implementation("androidx.multidex:multidex:${property("MULTIDEX")}")
 
     implementation("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
     implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     implementation("androidx.constraintlayout:constraintlayout:${property("ANDROIDX_CONSTRAINTLAYOUT")}")
-    implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE_KTX")}")
+    implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.paging:paging-common:${property("ANDROIDX_PAGING")}")
@@ -108,8 +108,8 @@ dependencies {
     implementation("com.google.android:flexbox:${property("FLEXBOX")}")
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
     implementation("io.github.panpf.pagerindicator:pagerindicator:${property("PAGER_INDICATOR")}")
-    implementation("io.github.panpf.assemblyadapter:assemblyadapter:${property("ASSEMBLY_ADAPTER_VERSION")}")
-    implementation("io.github.panpf.assemblyadapter:assemblyadapter-ktx:${property("ASSEMBLY_ADAPTER_VERSION")}")
+    implementation("io.github.panpf.assemblyadapter:assemblyadapter:${property("ASSEMBLY_ADAPTER")}")
+    implementation("io.github.panpf.assemblyadapter:assemblyadapter-ktx:${property("ASSEMBLY_ADAPTER")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_4")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging:${property("ASSEMBLY_ADAPTER_4")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-pager2:${property("ASSEMBLY_ADAPTER_4")}")
@@ -122,17 +122,14 @@ dependencies {
     implementation("io.github.panpf.tools4j:tools4j-date-ktx:${property("TOOLS4J")}")
     implementation("com.github.promeg:tinypinyin:${property("TINYPINYIN")}")
     implementation("io.github.panpf.liveevent:liveevent:${property("LIVEEVENT")}")
-    implementation("org.greenrobot:eventbus:${property("EVENT_BUS_VERSION")}")
-    implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT_VERSION")}")
-    implementation("com.squareup.retrofit2:converter-gson:${property("RETROFIT_VERSION")}")
-    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever:${property("FFMPEG_MEDIA_METADATA_RETRIEVER_VERSION")}")
+    implementation("org.greenrobot:eventbus:${property("EVENT_BUS")}")
+    implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT")}")
+    implementation("com.squareup.retrofit2:converter-gson:${property("RETROFIT")}")
+    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever:${property("FFMPEG_MEDIA_METADATA_RETRIEVER")}")
 
     implementation(files("libs/bugly_1.2.3.8__release.jar"))
 
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:${property("LEAK_CANARY_ANDROID_VERSION")}")
-    debugImplementation("com.squareup.leakcanary:leakcanary-support-fragment:${property("LEAK_CANARY_ANDROID_VERSION")}")
-    releaseImplementation("com.squareup.leakcanary:leakcanary-android-no-op:${property("LEAK_CANARY_ANDROID_VERSION")}")
-    testImplementation("com.squareup.leakcanary:leakcanary-android-no-op:${property("LEAK_CANARY_ANDROID_VERSION")}")
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:${property("LEAK_CANARY")}")
 }
 
 fun getGitVersion(): String =

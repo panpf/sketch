@@ -17,20 +17,12 @@
 package me.panpf.sketch.sample
 
 import androidx.multidex.MultiDexApplication
-import com.squareup.leakcanary.LeakCanary
 import com.tencent.bugly.crashreport.CrashReport
 
 class MyApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
-
-//        registerActivityLifecycleCallbacks(ActivityEventRegistrar())
-
         CrashReport.initCrashReport(baseContext, "900007777", BuildConfig.DEBUG)
-
-        if (!LeakCanary.isInAnalyzerProcess(this)) {
-            LeakCanary.install(this)
-        }
     }
 }
