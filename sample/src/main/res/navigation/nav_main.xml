@@ -21,10 +21,6 @@
         android:name="me.panpf.sketch.sample.ui.AppIconFragment"
         android:label="AppIconFragment" />
     <fragment
-        android:id="@+id/baiduGifFragment"
-        android:name="me.panpf.sketch.sample.ui.BaiduGifFragment"
-        android:label="BaiduGifFragment" />
-    <fragment
         android:id="@+id/base64ImageFragment"
         android:name="me.panpf.sketch.sample.ui.Base64ImageFragment"
         android:label="Base64ImageTestFragment" />
@@ -121,9 +117,9 @@
         android:name="me.panpf.sketch.sample.ui.SettingsFragment"
         android:label="SettingsFragment" />
     <fragment
-        android:id="@+id/tenorGifFragment"
-        android:name="me.panpf.sketch.sample.ui.TenorGifFragment"
-        android:label="TenorGifFragment" />
+        android:id="@+id/onlineGifFragment"
+        android:name="me.panpf.sketch.sample.ui.OnlineGifFragment"
+        android:label="OnlineGifFragment" />
     <fragment
         android:id="@+id/onlinePhotosFragment"
         android:name="me.panpf.sketch.sample.ui.OnlinePhotosFragment"
@@ -150,13 +146,6 @@
     <action
         android:id="@+id/action_global_appIconFragment"
         app:destination="@id/appIconFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_baiduGifFragment"
-        app:destination="@id/baiduGifFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -302,8 +291,8 @@
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
     <action
-        android:id="@+id/action_global_tenorGifFragment"
-        app:destination="@id/tenorGifFragment"
+        android:id="@+id/action_global_onlineGifFragment"
+        app:destination="@id/onlineGifFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

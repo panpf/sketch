@@ -15,8 +15,8 @@ import me.panpf.adapter.more.OnLoadMoreListener
 import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
-import me.panpf.sketch.sample.bean.TenorData
-import me.panpf.sketch.sample.bean.TenorSearchResponse
+import me.panpf.sketch.sample.bean.GiphyData
+import me.panpf.sketch.sample.bean.GiphySearchResponse
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.LoadMoreItem
 import me.panpf.sketch.sample.item.StaggeredImageItem
@@ -28,7 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
 
-class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
+class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     SwipeRefreshLayout.OnRefreshListener, OnLoadMoreListener {
 
     private var pageIndex = 1
@@ -44,7 +44,8 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Tenor GIF"
+        toolbar.title = "Online GIF"
+        toolbar.subtitle = "From Giphy"
 
         binding.refreshRecyclerFragment.setOnRefreshListener(this)
 
@@ -83,7 +84,7 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     private fun loadData(pageIndex: Int) {
         this.pageIndex = pageIndex
         val pageStart = (pageIndex - 1) * PAGE_SIZE
-        NetServices.tenor().search("young girl", pageStart, PAGE_SIZE)
+        NetServices.giphy().search("young girl", pageStart, PAGE_SIZE)
             .enqueue(LoadDataCallback(this, pageIndex))
     }
 
@@ -92,11 +93,11 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     }
 
     private class LoadDataCallback internal constructor(
-        fragment: TenorGifFragment,
+        fragment: OnlineGifFragment,
         private val pageIndex: Int
-    ) : Callback<TenorSearchResponse> {
+    ) : Callback<GiphySearchResponse> {
 
-        private val reference: WeakReference<TenorGifFragment> = WeakReference(fragment)
+        private val reference: WeakReference<OnlineGifFragment> = WeakReference(fragment)
 
         init {
             if (pageIndex == 1) {
@@ -105,8 +106,8 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
         }
 
         override fun onResponse(
-            call: Call<TenorSearchResponse>,
-            response: Response<TenorSearchResponse>
+            call: Call<GiphySearchResponse>,
+            response: Response<GiphySearchResponse>
         ) {
             val fragment = reference.get() ?: return
             if (!fragment.isViewCreated) {
@@ -122,7 +123,7 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
             fragment.binding?.refreshRecyclerFragment?.isRefreshing = false
         }
 
-        override fun onFailure(call: Call<TenorSearchResponse>, t: Throwable) {
+        override fun onFailure(call: Call<GiphySearchResponse>, t: Throwable) {
             val fragment = reference.get() ?: return
             val activity = fragment.activity ?: return
             if (!fragment.isViewCreated) {
@@ -144,7 +145,7 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
             }
         }
 
-        private fun create(fragment: TenorGifFragment, response: Response<TenorSearchResponse>) {
+        private fun create(fragment: OnlineGifFragment, response: Response<GiphySearchResponse>) {
 
             val images = response.body()?.dataList
             if (images == null || images.isEmpty()) {
@@ -158,11 +159,11 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
                     val activity = fragment.activity ?: return@setOnItemClickListener
 
                     @Suppress("UNCHECKED_CAST")
-                    val imageList = adapter.dataList as List<TenorData>
+                    val imageList = adapter.dataList as List<GiphyData>
                     val urlList = imageList.map {
                         Image(
-                            it.gifMedia?.url.orEmpty(),
-                            it.gifMedia?.url.orEmpty()
+                            it.media?.original?.getDownloadUrl().orEmpty(),
+                            it.media?.original?.getDownloadUrl().orEmpty(),
                         )
                     }
                     val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
@@ -182,7 +183,7 @@ class TenorGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
             fragment.adapter = adapter
         }
 
-        private fun loadMore(fragment: TenorGifFragment, response: Response<TenorSearchResponse>) {
+        private fun loadMore(fragment: OnlineGifFragment, response: Response<GiphySearchResponse>) {
             val images = response.body()?.dataList
             if (images == null || images.isEmpty()) {
                 fragment.adapter!!.loadMoreFinished(true)

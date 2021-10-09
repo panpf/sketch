@@ -43,7 +43,7 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Online Photos"
-        toolbar.subtitle = "Unsplash"
+        toolbar.subtitle = "From Unsplash"
 
         binding.recyclerRecyclerFragmentContent.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(context)

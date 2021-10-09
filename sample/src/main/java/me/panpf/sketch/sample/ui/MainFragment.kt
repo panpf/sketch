@@ -34,8 +34,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
                     ListSeparator("Samples"),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
                     Link("Online Photos", NavMainDirections.actionGlobalOnlinePhotosFragment()),
-                    Link("Baidu GIF", NavMainDirections.actionGlobalBaiduGifFragment()),
-                    Link("Tenor GIF", NavMainDirections.actionGlobalTenorGifFragment()),
+                    Link("Online GIF", NavMainDirections.actionGlobalOnlineGifFragment()),
                     Link(
                         "Huge Image",
                         NavMainDirections.actionGlobalHugeImageFragment()
