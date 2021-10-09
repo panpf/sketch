@@ -27,12 +27,11 @@ import me.panpf.sketch.drawable.SketchGifDrawable
 import me.panpf.sketch.drawable.SketchRefBitmap
 import me.panpf.sketch.request.*
 import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
-import me.panpf.sketch.sample.event.AppConfigChangedEvent
-import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.FixedThreeLevelScales
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
@@ -44,13 +43,10 @@ import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.zoom.AdaptiveTwoLevelScales
 import me.panpf.sketch.zoom.ImageZoomer
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.io.IOException
 import java.util.*
 
-@RegisterEvent
 class ImageFragment : BaseFragment<FragmentImageBinding>() {
 
     private val image by bindParcelableArgOrThrow<Image>(PARAM_REQUIRED_STRING_IMAGE_URI)
@@ -95,7 +91,11 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
         clickHelper.onViewCreated()
         showHelper.onViewCreated()
 
-        EventBus.getDefault().register(this)
+        AppEvents.appConfigChangedEvent.listen(viewLifecycleOwner) {
+            if (AppConfig.Key.READ_MODE == it) {
+                zoomHelper.onReadModeConfigChanged()
+            }
+        }
     }
 
     override fun onUserVisibleChanged(isVisibleToUser: Boolean) {
@@ -103,21 +103,6 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
         setWindowBackgroundHelper.onUserVisibleChanged()
         gifPlayFollowPageVisibleHelper.onUserVisibleChanged()
     }
-
-    @Suppress("unused")
-    @Subscribe
-    fun onEvent(event: AppConfigChangedEvent) {
-        if (AppConfig.Key.READ_MODE == event.key) {
-            zoomHelper.onReadModeConfigChanged()
-        }
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroyView()
-    }
-
-    class PlayImageEvent
 
     private inner class ShowHelper {
         fun onViewCreated() {
@@ -717,7 +702,7 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
         }
 
         fun play() {
-            EventBus.getDefault().post(PlayImageEvent())
+            AppEvents.playImageEvent.postValue(1)
         }
 
         fun save() {

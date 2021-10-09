@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.util.AttributeSet
 import android.view.View
+import com.github.panpf.liveevent.Listener
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageOrientationCorrector
 import me.panpf.sketch.drawable.SketchDrawable
@@ -14,40 +15,40 @@ import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.request.RedisplayListener
 import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.ImageOptions
-import me.panpf.sketch.sample.event.AppConfigChangedEvent
-import me.panpf.sketch.sample.event.CacheCleanEvent
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.zoom.SketchZoomImageView
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.EventBusException
-import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
 
-class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SketchZoomImageView(context, attrs) {
+class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    SketchZoomImageView(context, attrs) {
+
     private var disabledRedisplay: Boolean = false
-    private val longClickShowDrawableInfoListener: LongClickShowDrawableInfoListener = LongClickShowDrawableInfoListener()
+    private val longClickShowDrawableInfoListener: LongClickShowDrawableInfoListener =
+        LongClickShowDrawableInfoListener()
+
+    private val appConfigChangeListener =
+        Listener<AppConfig.Key> { key -> key?.let { onConfigChange(it) } }
+    private val cacheCleanListener = Listener<Int> { key -> key?.let { onCacheClean() } }
 
     init {
-        onEvent(AppConfigChangedEvent(AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO))
+        onConfigChange(AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        try {
-            EventBus.getDefault().register(this)
-        } catch (e: EventBusException) {
-            e.printStackTrace()
-        }
+        AppEvents.appConfigChangedEvent.listenForever(appConfigChangeListener)
+        AppEvents.cacheCleanEvent.listenForever(cacheCleanListener)
     }
 
     override fun onReadyDisplay(uri: String) {
         super.onReadyDisplay(uri)
 
         disabledRedisplay = true
-        onEvent(AppConfigChangedEvent(AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION))
+        onConfigChange(AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION)
         disabledRedisplay = false
     }
 
@@ -59,28 +60,28 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
         return !disabledRedisplay && super.redisplay(listener)
     }
 
-    @Subscribe
-    fun onEvent(event: AppConfigChangedEvent) {
-        when (event.key) {
+    private fun onConfigChange(key: AppConfig.Key) {
+        when (key) {
             AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION -> {
-                val correctImageOrientationDisabled = AppConfig.getBoolean(context, event.key)
+                val correctImageOrientationDisabled = AppConfig.getBoolean(context, key)
                 options.isCorrectImageOrientationDisabled = correctImageOrientationDisabled
 
-                redisplay { _, cacheOptions -> cacheOptions.isCorrectImageOrientationDisabled = correctImageOrientationDisabled }
+                redisplay { _, cacheOptions ->
+                    cacheOptions.isCorrectImageOrientationDisabled = correctImageOrientationDisabled
+                }
             }
             else -> {
             }
         }
     }
 
-    @Suppress("unused")
-    @Subscribe
-    fun onEvent(@Suppress("UNUSED_PARAMETER") event: CacheCleanEvent) {
+    private fun onCacheClean() {
         redisplay(null)
     }
 
     override fun onDetachedFromWindow() {
-        EventBus.getDefault().unregister(this)
+        AppEvents.appConfigChangedEvent.removeListener(appConfigChangeListener)
+        AppEvents.cacheCleanEvent.removeListener(cacheCleanListener)
         super.onDetachedFromWindow()
     }
 
@@ -88,7 +89,7 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
         longClickShowDrawableInfoListener.showInfo(activity)
     }
 
-    private inner class LongClickShowDrawableInfoListener : View.OnLongClickListener {
+    private inner class LongClickShowDrawableInfoListener : OnLongClickListener {
         override fun onLongClick(v: View): Boolean {
             if (v.context is Activity) {
                 showInfo(v.context as Activity)
@@ -138,7 +139,8 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
                 e.printStackTrace()
             }
 
-            val needDiskSpace = if (imageLength > 0) Formatter.formatFileSize(context, imageLength) else "Unknown"
+            val needDiskSpace =
+                if (imageLength > 0) Formatter.formatFileSize(context, imageLength) else "Unknown"
 
             val previewDrawableByteCount = sketchDrawable.byteCount
             val pixelByteCount: Int
@@ -146,29 +148,33 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
                 val bitmap = drawable.bitmapDrawable.bitmap
                 pixelByteCount = previewDrawableByteCount / bitmap.width / bitmap.height
             } else {
-                pixelByteCount = previewDrawableByteCount / drawable.intrinsicWidth / drawable.intrinsicHeight
+                pixelByteCount =
+                    previewDrawableByteCount / drawable.intrinsicWidth / drawable.intrinsicHeight
             }
-            val originImageByteCount = sketchDrawable.originWidth * sketchDrawable.originHeight * pixelByteCount
+            val originImageByteCount =
+                sketchDrawable.originWidth * sketchDrawable.originHeight * pixelByteCount
             val needMemory = Formatter.formatFileSize(context, originImageByteCount.toLong())
             val mimeType = sketchDrawable.mimeType
 
             messageBuilder.append("\n")
             messageBuilder.append("\n")
             messageBuilder.append("Original: ")
-                    .append(sketchDrawable.originWidth).append("x").append(sketchDrawable.originHeight)
-                    .append("/").append(if (mimeType != null && mimeType.startsWith("image/")) mimeType.substring(6) else "Unknown")
-                    .append("/").append(needDiskSpace)
+                .append(sketchDrawable.originWidth).append("x").append(sketchDrawable.originHeight)
+                .append("/")
+                .append(if (mimeType != null && mimeType.startsWith("image/")) mimeType.substring(6) else "Unknown")
+                .append("/").append(needDiskSpace)
 
             messageBuilder.append("\n                ")
             messageBuilder.append(ImageOrientationCorrector.toName(sketchDrawable.exifOrientation))
-                    .append("/").append(needMemory)
+                .append("/").append(needMemory)
 
             messageBuilder.append("\n")
             messageBuilder.append("\n")
             messageBuilder.append("Preview: ")
-                    .append(drawable.intrinsicWidth).append("x").append(drawable.intrinsicHeight)
-                    .append("/").append(sketchDrawable.bitmapConfig)
-                    .append("/").append(Formatter.formatFileSize(context, previewDrawableByteCount.toLong()))
+                .append(drawable.intrinsicWidth).append("x").append(drawable.intrinsicHeight)
+                .append("/").append(sketchDrawable.bitmapConfig)
+                .append("/")
+                .append(Formatter.formatFileSize(context, previewDrawableByteCount.toLong()))
 
             return messageBuilder.toString()
         }

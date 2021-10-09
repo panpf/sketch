@@ -6,7 +6,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import me.panpf.sketch.sample.bean.VideoInfo
 
-class VideoListPagingSource(private val context: Context) :
+class LocalVideoListPagingSource(private val context: Context) :
     PagingSource<Int, VideoInfo>() {
 
     override fun getRefreshKey(state: PagingState<Int, VideoInfo>): Int = 0

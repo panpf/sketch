@@ -5,8 +5,7 @@ import android.os.AsyncTask
 import android.text.format.Formatter
 import me.panpf.adapter.AssemblyAdapter
 import me.panpf.sketch.Sketch
-import me.panpf.sketch.sample.event.CacheCleanEvent
-import org.greenrobot.eventbus.EventBus
+import me.panpf.sketch.sample.AppEvents
 import java.lang.ref.WeakReference
 
 class CacheInfoMenu(val context: Context, val type: String, title: String) : InfoMenu(title) {
@@ -40,7 +39,7 @@ class CacheInfoMenu(val context: Context, val type: String, title: String) : Inf
                 Sketch.with(context).configuration.memoryCache.clear()
                 adapter?.notifyDataSetChanged()
 
-                EventBus.getDefault().post(CacheCleanEvent())
+                AppEvents.cacheCleanEvent.postValue(1)
             }
             "Disk" -> {
                 CleanCacheTask(WeakReference(context), adapter).execute(0)
@@ -49,7 +48,7 @@ class CacheInfoMenu(val context: Context, val type: String, title: String) : Inf
                 Sketch.with(context).configuration.bitmapPool.clear()
                 adapter?.notifyDataSetChanged()
 
-                EventBus.getDefault().post(CacheCleanEvent())
+                AppEvents.cacheCleanEvent.postValue(1)
             }
         }
     }
@@ -67,7 +66,7 @@ class CacheInfoMenu(val context: Context, val type: String, title: String) : Inf
 
             reference.get()?.let {
                 adapter?.notifyDataSetChanged()
-                EventBus.getDefault().post(CacheCleanEvent())
+                AppEvents.cacheCleanEvent.postValue(1)
             }
         }
     }

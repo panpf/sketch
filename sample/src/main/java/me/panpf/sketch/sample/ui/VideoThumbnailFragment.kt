@@ -34,13 +34,13 @@ import kotlinx.coroutines.launch
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.VideoInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
-import me.panpf.sketch.sample.item.VideoInfoItemFactory
-import me.panpf.sketch.sample.vm.VideoListViewModel
+import me.panpf.sketch.sample.item.LocalVideoItemFactory
+import me.panpf.sketch.sample.vm.LocalVideoListViewModel
 import java.io.File
 
 class VideoThumbnailFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
 
-    private val videoListViewModel by viewModels<VideoListViewModel>()
+    private val videoListViewModel by viewModels<LocalVideoListViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -55,7 +55,7 @@ class VideoThumbnailFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         toolbar.title = "Video Thumbnail"
 
         val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(listOf(
-            VideoInfoItemFactory().setOnItemClickListener { _, _, _, _, data ->
+            LocalVideoItemFactory().setOnItemClickListener { _, _, _, _, data ->
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW).apply {
                         setDataAndType(Uri.fromFile(File(data.path)), data.mimeType)
@@ -68,8 +68,6 @@ class VideoThumbnailFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         ))
 
         binding.recyclerRecyclerFragmentContent.apply {
-            setPadding(2.dp2px, 2.dp2px, 2.dp2px, 2.dp2px)
-            clipToPadding = false
             layoutManager = LinearLayoutManager(activity)
             adapter = pagingAdapter
         }

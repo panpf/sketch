@@ -6,19 +6,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import me.panpf.sketch.sample.ds.VideoListPagingSource
+import me.panpf.sketch.sample.ds.LocalPhotoListPagingSource
 
-class VideoListViewModel(application: Application) : AndroidViewModel(application) {
+class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
         config = PagingConfig(
-            pageSize = 20,
-            prefetchDistance = 10,
+            pageSize = 40,
+            prefetchDistance = 20,
             enablePlaceholders = false,
-            initialLoadSize = 40
+            initialLoadSize = 80
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            VideoListPagingSource(application)
+            LocalPhotoListPagingSource(application)
         }
     ).flow.cachedIn(viewModelScope)
 }

@@ -2,8 +2,6 @@ package me.panpf.sketch.sample
 
 import android.content.Context
 import android.preference.PreferenceManager
-import me.panpf.sketch.sample.event.AppConfigChangedEvent
-import org.greenrobot.eventbus.EventBus
 
 object AppConfig {
 
@@ -13,7 +11,7 @@ object AppConfig {
 
     fun putBoolean(context: Context, key: Key, newValue: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(key.keyName, newValue).apply()
-        EventBus.getDefault().post(AppConfigChangedEvent(key))
+        AppEvents.appConfigChangedEvent.postValue(key)
     }
 
     fun getString(context: Context, key: Key): String? {
@@ -22,7 +20,7 @@ object AppConfig {
 
     fun putString(context: Context, key: Key, newValue: String) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString(key.keyName, newValue).apply()
-        EventBus.getDefault().post(AppConfigChangedEvent(key))
+        AppEvents.appConfigChangedEvent.postValue(key)
     }
 
     enum class Key constructor(val keyName: String, val isDefaultValue: Boolean) {

@@ -10,7 +10,7 @@ import me.panpf.sketch.sample.bean.VideoInfo
 import me.panpf.sketch.sample.databinding.ListItemMyVideoBinding
 import me.panpf.sketch.sample.util.VideoThumbnailUriModel
 
-class VideoInfoItemFactory :
+class LocalVideoItemFactory :
     BindingItemFactory<VideoInfo, ListItemMyVideoBinding>(VideoInfo::class) {
 
     override fun createItemViewBinding(

@@ -16,43 +16,42 @@
 
 package me.panpf.sketch.sample.ui
 
-import android.os.AsyncTask
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.github.panpf.tools4a.dimen.ktx.dp2px
-import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.sketch.SketchImageView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
+import com.github.panpf.tools4k.lang.asOrThrow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import me.panpf.sketch.sample.AppConfig
-import me.panpf.sketch.sample.AssetImage
+import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
+import me.panpf.sketch.sample.bean.ImageInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
-import me.panpf.sketch.sample.event.AppConfigChangedEvent
-import me.panpf.sketch.sample.event.RegisterEvent
-import me.panpf.sketch.sample.item.MyPhotoItem
-import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
+import me.panpf.sketch.sample.item.LocalPhotoItemFactory
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import java.lang.ref.WeakReference
-import java.util.*
+import me.panpf.sketch.sample.vm.LocalPhotoListViewModel
+import me.panpf.sketch.sample.widget.SampleImageView
 
-@RegisterEvent
-class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
-    SwipeRefreshLayout.OnRefreshListener {
+class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
 
-    private var adapter: AssemblyRecyclerAdapter? = null
+    private val photoListViewModel by viewModels<LocalPhotoListViewModel>()
 
     override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
+        inflater: LayoutInflater, parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onInitData(
         toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
@@ -60,140 +59,85 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     ) {
         toolbar.title = "Local Photos"
 
-        binding.refreshRecyclerFragment.setOnRefreshListener(this)
-        binding.recyclerRecyclerFragmentContent.addOnScrollListener(
-            ScrollingPauseLoadManager(
-                requireContext()
-            )
-        )
-
-        binding.recyclerRecyclerFragmentContent.layoutManager =
-            androidx.recyclerview.widget.GridLayoutManager(activity, 3)
-        val padding = 2.dp2px
-        binding.recyclerRecyclerFragmentContent.setPadding(padding, padding, padding, padding)
-        binding.recyclerRecyclerFragmentContent.clipToPadding = false
-
-        if (adapter != null) {
-            binding.recyclerRecyclerFragmentContent.adapter = adapter
-            binding.recyclerRecyclerFragmentContent.scheduleLayoutAnimation()
-        } else {
-            binding.refreshRecyclerFragment.post {
-                binding.refreshRecyclerFragment.isRefreshing = true
-                onRefresh()
+        val pagingAdapter = AssemblyPagingDataAdapter<ImageInfo>(listOf(
+            LocalPhotoItemFactory { view, position, _ ->
+                startImageDetail(view, binding, position)
             }
+        ))
+
+        binding.refreshRecyclerFragment.setOnRefreshListener {
+            pagingAdapter.refresh()
         }
 
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onRefresh() {
-        if (activity != null) {
-            LoadPhotoListTask(WeakReference(this)).execute()
-        }
-    }
-
-    @Suppress("unused")
-    @Subscribe
-    fun onEvent(event: AppConfigChangedEvent) {
-        if (AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST == event.key) {
-            if (adapter != null) {
-                adapter!!.notifyDataSetChanged()
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroyView()
-    }
-
-    private class LoadPhotoListTask constructor(private val fragmentWeakReference: WeakReference<LocalPhotosFragment>) :
-        AsyncTask<Void, Int, List<String>>() {
-
-        override fun onPreExecute() {
-            super.onPreExecute()
-
-            val fragment = fragmentWeakReference.get() ?: return
-
-            fragment.binding?.hintRecyclerFragment?.hidden()
-        }
-
-        override fun doInBackground(params: Array<Void>): List<String>? {
-            val fragment = fragmentWeakReference.get() ?: return null
-            val context = fragment.context ?: return null
-
-            val cursor = context.contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN),
-                null,
-                null,
-                MediaStore.Images.Media.DATE_TAKEN + " DESC"
+        binding.recyclerRecyclerFragmentContent.apply {
+            addOnScrollListener(
+                ScrollingPauseLoadManager(requireContext())
             )
+            layoutManager = GridLayoutManager(activity, 3)
+            addGridDividerItemDecoration {
+                val gridDivider =
+                    requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                divider(Divider.space(gridDivider))
+                useDividerAsHeaderAndFooterDivider()
+                sideDivider(Divider.space(gridDivider))
+                useSideDividerAsSideHeaderAndFooterDivider()
+            }
+            adapter = pagingAdapter
+        }
 
-            val generator = ImageOrientationCorrectTestFileGenerator.getInstance(context)
-            val testFilePaths = generator.filePaths
-
-            val allUris = AssetImage.getAll(context)
-            val imageListSize = cursor?.count ?: 0 + allUris.size + testFilePaths.size
-            val imagePathList = ArrayList<String>(imageListSize)
-
-            Collections.addAll(imagePathList, *allUris)
-            Collections.addAll(imagePathList, *testFilePaths)
-            cursor?.let {
-                while (cursor.moveToNext()) {
-                    imagePathList.add(
-                        String.format(
-                            "file://%s",
-                            cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-                        )
-                    )
+        pagingAdapter.addLoadStateListener {
+            when (it.refresh) {
+                is LoadState.Loading -> {
+                    binding.hintRecyclerFragment.hidden()
+                    binding.refreshRecyclerFragment.isRefreshing = true
                 }
-                cursor.close()
+                else -> {
+                    binding.refreshRecyclerFragment.isRefreshing = false
+                    if (pagingAdapter.itemCount <= 0) {
+                        binding.hintRecyclerFragment.empty("No photos")
+                    }
+                }
             }
-            return imagePathList
         }
 
-        override fun onPostExecute(imageUriList: List<String>?) {
-            val fragment = fragmentWeakReference.get() ?: return
-
-            fragment.binding?.refreshRecyclerFragment?.isRefreshing = false
-
-            if (imageUriList == null || imageUriList.isEmpty()) {
-                fragment.binding?.hintRecyclerFragment?.empty("No photos")
-                fragment.binding?.recyclerRecyclerFragmentContent?.adapter = null
-                return
+        lifecycleScope.launch {
+            photoListViewModel.pagingFlow.collect {
+                pagingAdapter.submitData(it)
             }
-
-            val adapter = AssemblyRecyclerAdapter(imageUriList)
-            adapter.addItemFactory(
-                MyPhotoItem.Factory()
-                    .setOnViewClickListener(R.id.image_myPhotoItem) { _, view, position, _, _ ->
-                        val activity = fragment.activity ?: return@setOnViewClickListener
-                        var finalOptionsKey: String? = (view as SketchImageView).optionsKey
-                        // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-                        if (finalOptionsKey!!.contains("Resize")
-                            || finalOptionsKey.contains("ImageProcessor")
-                            || finalOptionsKey.contains("thumbnailMode")
-                        ) {
-                            finalOptionsKey = null
-                        }
-
-                        val urlList = adapter.dataList
-                        val imageArrayList = ArrayList<Image>(urlList?.size ?: 0)
-                        urlList?.mapTo(imageArrayList) { Image(it as String, it) }
-
-                        ImageDetailActivity.launch(
-                            activity,
-                            fragment.dataTransferHelper.put("urlList", imageArrayList),
-                            finalOptionsKey,
-                            position
-                        )
-                    })
-
-            fragment.binding?.recyclerRecyclerFragmentContent?.adapter = adapter
-            fragment.binding?.recyclerRecyclerFragmentContent?.scheduleLayoutAnimation()
-
-            fragment.adapter = adapter
         }
+
+        AppEvents.appConfigChangedEvent.listen(viewLifecycleOwner) {
+            if (AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST == it) {
+                pagingAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun startImageDetail(
+        view: SampleImageView,
+        binding: FragmentRecyclerBinding,
+        position: Int
+    ) {
+        var finalOptionsKey: String? = view.optionsKey
+        // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
+        if (finalOptionsKey!!.contains("Resize")
+            || finalOptionsKey.contains("ImageProcessor")
+            || finalOptionsKey.contains("thumbnailMode")
+        ) {
+            finalOptionsKey = null
+        }
+
+        val imageInfoList = binding.recyclerRecyclerFragmentContent
+            .adapter!!.asOrThrow<AssemblyPagingDataAdapter<ImageInfo>>().currentList
+        val imageArrayList = imageInfoList.map {
+            Image(it!!.path, it.path)
+        }
+
+        ImageDetailActivity.launch(
+            requireActivity(),
+            dataTransferHelper.put("urlList", imageArrayList),
+            finalOptionsKey,
+            position
+        )
     }
 }

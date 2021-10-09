@@ -23,18 +23,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
+import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentDetailBinding
-import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
 import me.panpf.sketch.zoom.ImageZoomer
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
-@RegisterEvent
 class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
     ImageZoomer.OnViewTapListener {
 
@@ -88,7 +85,9 @@ class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
             binding.textDetailCountItem.text = imageList!!.size.toString()
         }
 
-        EventBus.getDefault().register(this)
+        AppEvents.playImageEvent.listen(viewLifecycleOwner) {
+            viewPagerPlayer.start()
+        }
     }
 
     override fun onResume() {
@@ -117,17 +116,6 @@ class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
         } else {
             activity?.finish()
         }
-    }
-
-    @Suppress("unused")
-    @Subscribe
-    fun onEvent(event: ImageFragment.PlayImageEvent) {
-        viewPagerPlayer.start()
-    }
-
-    override fun onDestroyView() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroyView()
     }
 
     private inner class StartPlay : Runnable {

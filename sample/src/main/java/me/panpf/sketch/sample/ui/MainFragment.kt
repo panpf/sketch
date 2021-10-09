@@ -11,11 +11,9 @@ import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Link
 import me.panpf.sketch.sample.databinding.FragmentMainBinding
-import me.panpf.sketch.sample.event.RegisterEvent
 import me.panpf.sketch.sample.item.LinkItemFactory
 import me.panpf.sketch.sample.item.ListSeparatorItemFactory
 
-@RegisterEvent
 class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
