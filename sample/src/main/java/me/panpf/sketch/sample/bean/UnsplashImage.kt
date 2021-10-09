@@ -1,10 +1,11 @@
 package me.panpf.sketch.sample.bean
 
 import android.text.TextUtils
+import com.github.panpf.assemblyadapter.recycler.DiffKey
 
 import com.google.gson.annotations.SerializedName
 
-class UnsplashImage {
+class UnsplashImage : DiffKey {
     @SerializedName("id")
     var id: String? = null
 
@@ -35,7 +36,11 @@ class UnsplashImage {
     @SerializedName("liked_by_user")
     var likedByUser: Boolean = false
 
-    @Transient private var formattedUpdateDate: String? = null
+    @Transient
+    private var formattedUpdateDate: String? = null
+
+    override val diffKey: Any
+        get() = "UnsplashImage-${urls?.raw ?: urls?.full ?: id ?: throw IllegalArgumentException("No diffKey")}"
 
     fun getFormattedUpdateDate(): String {
         if (formattedUpdateDate == null && !TextUtils.isEmpty(updatedAt) && updatedAt!!.length >= 10) {

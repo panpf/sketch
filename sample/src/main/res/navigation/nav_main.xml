@@ -125,9 +125,9 @@
         android:name="me.panpf.sketch.sample.ui.OnlinePhotosFragment"
         android:label="OnlinePhotosFragment" />
     <fragment
-        android:id="@+id/videoThumbnailFragment"
-        android:name="me.panpf.sketch.sample.ui.VideoThumbnailFragment"
-        android:label="VideoThumbnailFragment" />
+        android:id="@+id/localVideoFragment"
+        android:name="me.panpf.sketch.sample.ui.LocalVideoListFragment"
+        android:label="LocalVideoFragment" />
 
     <action
         android:id="@+id/action_global_aboutFragment"
@@ -305,8 +305,8 @@
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
     <action
-        android:id="@+id/action_global_videoThumbnailFragment"
-        app:destination="@id/videoThumbnailFragment"
+        android:id="@+id/action_global_localVideoFragment"
+        app:destination="@id/localVideoFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

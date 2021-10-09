@@ -24,5 +24,5 @@ import kotlinx.parcelize.Parcelize
 data class ListSeparator(val title: String, var clickCount: Int = 0) : DiffKey, Parcelable {
 
     @IgnoredOnParcel
-    override val diffKey: String = title
+    override val diffKey: String = "ListSeparator-$title"
 }

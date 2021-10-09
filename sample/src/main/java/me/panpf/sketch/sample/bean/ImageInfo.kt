@@ -15,7 +15,7 @@ class ImageInfo(
     val size: Long,
 ) : DiffKey {
 
-    override val diffKey = "VideoInfo-$path"
+    override val diffKey = "ImageInfo-$path"
 
     private var tempFormattedSize: String? = null
 

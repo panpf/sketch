@@ -34,5 +34,7 @@
         \n 4. https://giphy.com
         \n 5. https://unsplash.com
     </string>
-    <string name="text_loadMore">LOADING…</string>
+    <string name="text_loading">LOADING…</string>
+    <string name="text_load_end">THE END</string>
+    <string name="text_load_error">LOAD ERROR</string>
 </resources>

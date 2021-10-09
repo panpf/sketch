@@ -20,5 +20,5 @@ import com.github.panpf.assemblyadapter.recycler.DiffKey
 
 data class Link(val title: String, val navDirections: NavDirections) : DiffKey {
 
-    override val diffKey: String = title
+    override val diffKey: String = "Link-$title"
 }

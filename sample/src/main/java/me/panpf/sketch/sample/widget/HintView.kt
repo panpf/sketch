@@ -440,25 +440,14 @@ class HintView : LinearLayout {
         }
 
         fun getCauseByException(context: Context, exception: Throwable?): String {
-            val message: String
-            if (exception == null) {
-                message = "网络连接异常【909】"
-            } else if (exception is SecurityException) {
-                message = "网络连接异常【101】"
-            } else if (exception is UnknownHostException) {
-                if (isConnectedByState(context)) {
-                    message = "网络连接异常【202】"
-                } else {
-                    message = "没有网络连接"
-                }
-            } else if (exception is SocketTimeoutException || exception is ConnectTimeoutException) {
-                message = "网络连接超时"
-            } else if (exception is FileNotFoundException) {
-                message = "网络连接异常【404】"
-            } else {
-                message = "网络连接异常【909】"
+            return when (exception) {
+                null -> "未知异常"
+                is SecurityException -> "网络权限异常：${exception.message}"
+                is UnknownHostException -> if (isConnectedByState(context)) "URL Host 异常" else "没有网络连接"
+                is SocketTimeoutException, is ConnectTimeoutException -> "网络连接超时"
+                is FileNotFoundException -> "网络地址异常"
+                else -> "未知异常：$exception"
             }
-            return message
         }
     }
 }

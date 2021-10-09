@@ -113,6 +113,7 @@ dependencies {
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_4")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging:${property("ASSEMBLY_ADAPTER_4")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-pager2:${property("ASSEMBLY_ADAPTER_4")}")
+    implementation("io.github.panpf.tools4a:tools4a-activity-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4a:tools4a-display-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4a:tools4a-device-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4a:tools4a-toast-ktx:${property("TOOLS4A")}")

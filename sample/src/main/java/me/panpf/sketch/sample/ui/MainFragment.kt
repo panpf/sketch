@@ -31,13 +31,13 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
                 listOf(
                     ListSeparator("Samples"),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
-                    Link("Online Photos", NavMainDirections.actionGlobalOnlinePhotosFragment()),
-                    Link("Online GIF", NavMainDirections.actionGlobalOnlineGifFragment()),
+                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
+                    Link("Online Photos - Unsplash", NavMainDirections.actionGlobalOnlinePhotosFragment()),
+                    Link("Online GIF - Giphy", NavMainDirections.actionGlobalOnlineGifFragment()),
                     Link(
                         "Huge Image",
                         NavMainDirections.actionGlobalHugeImageFragment()
                     ),
-                    Link("Video Thumbnail", NavMainDirections.actionGlobalVideoThumbnailFragment()),
                     Link("App Icon", NavMainDirections.actionGlobalAppIconFragment()),
                     Link("Apk Icon", NavMainDirections.actionGlobalApkIconFragment()),
                     Link(

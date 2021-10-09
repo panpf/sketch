@@ -1,14 +1,17 @@
 package me.panpf.sketch.sample.bean
 
+import com.github.panpf.assemblyadapter.recycler.DiffKey
 import com.google.gson.annotations.SerializedName
 
 class GiphySearchResponse(
-    @SerializedName("data") val dataList: List<GiphyData>?
+    @SerializedName("data") val dataList: List<GiphyGif>?
 )
 
-class GiphyData(
-    @SerializedName("images") val media: GiphyImages?
-)
+class GiphyGif(
+    @SerializedName("images") val images: GiphyImages
+) : DiffKey {
+    override val diffKey: Any = "GiphyGif-${images.original.url}"
+}
 
 class GiphyImages(
     @SerializedName("original") val original: GiphyImage,
@@ -36,8 +39,9 @@ class GiphyImage(
     }
 
     fun getWebPDownloadUrl(): String {
-        return webpDownloadUrl ?: Regex("media[\\d].giphy.com").replace(webpUrl, "i.giphy.com").apply {
-            webpDownloadUrl = this
-        }
+        return webpDownloadUrl ?: Regex("media[\\d].giphy.com").replace(webpUrl, "i.giphy.com")
+            .apply {
+                webpDownloadUrl = this
+            }
     }
 }

@@ -24,7 +24,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
@@ -35,9 +36,11 @@ import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.ImageInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
+import me.panpf.sketch.sample.item.LoadStateItemFactory
 import me.panpf.sketch.sample.item.LocalPhotoItemFactory
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.vm.LocalPhotoListViewModel
@@ -70,10 +73,15 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         }
 
         binding.recyclerRecyclerFragmentContent.apply {
-            addOnScrollListener(
-                ScrollingPauseLoadManager(requireContext())
+            layoutManager = AssemblyGridLayoutManager(
+                requireActivity(),
+                3,
+                mapOf(LoadStateItemFactory::class to ItemSpan.fullSpan())
             )
-            layoutManager = GridLayoutManager(activity, 3)
+            adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
+                noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
+            })
+            addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
             addGridDividerItemDecoration {
                 val gridDivider =
                     requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
@@ -82,16 +90,21 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                 sideDivider(Divider.space(gridDivider))
                 useSideDividerAsSideHeaderAndFooterDivider()
             }
-            adapter = pagingAdapter
         }
 
         pagingAdapter.addLoadStateListener {
-            when (it.refresh) {
+            when (val refreshState = it.refresh) {
                 is LoadState.Loading -> {
                     binding.hintRecyclerFragment.hidden()
                     binding.refreshRecyclerFragment.isRefreshing = true
                 }
-                else -> {
+                is LoadState.Error -> {
+                    binding.refreshRecyclerFragment.isRefreshing = false
+                    binding.hintRecyclerFragment.failed(refreshState.error) {
+                        pagingAdapter.refresh()
+                    }
+                }
+                is LoadState.NotLoading -> {
                     binding.refreshRecyclerFragment.isRefreshing = false
                     if (pagingAdapter.itemCount <= 0) {
                         binding.hintRecyclerFragment.empty("No photos")
