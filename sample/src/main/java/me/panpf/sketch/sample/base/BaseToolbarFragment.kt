@@ -12,21 +12,18 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.util.DataTransferStation
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseToolbarFragment<VIEW_BINDING : ViewBinding> : Fragment() {
 
-    protected var binding: VIEW_BINDING? = null
     protected var toolbar: Toolbar? = null
+    protected var binding: VIEW_BINDING? = null
+
     val isViewCreated: Boolean
         get() = view != null
-    val dataTransferHelper = DataTransferStation.PageHelper(this)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        dataTransferHelper.onCreate(savedInstanceState)
-    }
+    val isVisibleToUser: Boolean
+        get() = isResumed && userVisibleHint
 
     final override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,16 +88,6 @@ abstract class BaseToolbarFragment<VIEW_BINDING : ViewBinding> : Fragment() {
         savedInstanceState: Bundle?
     )
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        dataTransferHelper.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        dataTransferHelper.onDestroy()
-    }
-
     override fun onPause() {
         super.onPause()
         if (userVisibleHint) {
@@ -125,7 +112,4 @@ abstract class BaseToolbarFragment<VIEW_BINDING : ViewBinding> : Fragment() {
     protected open fun onUserVisibleChanged(isVisibleToUser: Boolean) {
 
     }
-
-    val isVisibleToUser: Boolean
-        get() = isResumed && userVisibleHint
 }
