@@ -4,46 +4,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import me.panpf.adapter.pager.FragmentArrayPagerAdapter
+import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
-import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
-import me.panpf.sketch.sample.item.TitleTabFactory
+import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
+import me.panpf.sketch.sample.item.ImageFragmentItemFactory2
 
-class HugeImageFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
-
-    private var fragmentAdapter: FragmentArrayPagerAdapter? = null
+class HugeImageFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
         toolbar: Toolbar,
-        binding: FragmentPagerTabBinding,
+        binding: FragmentPager2TabBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Huge Image"
 
-        if (fragmentAdapter == null) {
-            val hugeAssetImageNames = AssetImage.HUGE_IMAGES
-            val fragments = arrayOfNulls<androidx.fragment.app.Fragment>(hugeAssetImageNames.size)
-            for (w in hugeAssetImageNames.indices) {
-                val url = hugeAssetImageNames[w]
-                fragments[w] = ImageFragment.build(Image(url, url), null, true)
-            }
-            fragmentAdapter = FragmentArrayPagerAdapter(childFragmentManager, fragments)
+        val images = AssetImage.HUGE_IMAGES.map {
+            Image(it, it)
         }
-        binding.pagerPagerTabFragmentContent.adapter = fragmentAdapter
+        val titles = arrayOf("WORLD", "QMSHT", "CWB", "CARD")
 
-        binding.tabPagerTabFragmentTabs.setTabViewFactory(
-            TitleTabFactory(
-                arrayOf("WORLD", "QMSHT", "CWB", "CARD"),
-                requireActivity()
-            )
+        binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
+            this,
+            listOf(ImageFragmentItemFactory2(requireContext(), null, true)),
+            images
         )
-        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
+
+        TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+            tab.text = titles[position]
+        }.attach()
     }
 }
