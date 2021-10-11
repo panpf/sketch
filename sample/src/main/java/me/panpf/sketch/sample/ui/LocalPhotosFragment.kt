@@ -23,17 +23,21 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
+import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
@@ -108,6 +112,8 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                     binding.refreshRecyclerFragment.isRefreshing = false
                     if (pagingAdapter.itemCount <= 0) {
                         binding.hintRecyclerFragment.empty("No photos")
+                    } else {
+                        binding.hintRecyclerFragment.hidden()
                     }
                 }
             }
@@ -140,17 +146,18 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             finalOptionsKey = null
         }
 
-        val imageInfoList = binding.recyclerRecyclerFragmentContent
-            .adapter!!.asOrThrow<AssemblyPagingDataAdapter<ImageInfo>>().currentList
-        val imageArrayList = imageInfoList.map {
-            Image(it!!.path, it.path)
-        }
-
-        ImageDetailActivity.launch(
-            requireActivity(),
-            dataTransferHelper.put("urlList", imageArrayList),
-            finalOptionsKey,
-            position
+        val imageList = binding.recyclerRecyclerFragmentContent
+            .adapter!!.asOrThrow<ConcatAdapter>()
+            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<ImageInfo>>()
+            .currentList.map {
+                Image(it!!.path, it.path)
+            }
+        findNavController().navigate(
+            NavMainDirections.actionGlobalImageDetailFragment(
+                Gson().toJson(imageList),
+                position,
+                finalOptionsKey
+            )
         )
     }
 }

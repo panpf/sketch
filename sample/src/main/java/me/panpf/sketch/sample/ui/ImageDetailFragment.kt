@@ -16,56 +16,79 @@
 
 package me.panpf.sketch.sample.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import me.panpf.adapter.pager.AssemblyFragmentStatePagerAdapter
 import me.panpf.sketch.sample.AppEvents
+import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentDetailBinding
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory
+import me.panpf.sketch.sample.util.DeviceUtils
 import me.panpf.sketch.sample.util.PageNumberSetter
 import me.panpf.sketch.sample.util.ViewPagerPlayer
+import me.panpf.sketch.sample.vm.ImageChangedViewModel
 import me.panpf.sketch.zoom.ImageZoomer
 
-class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
-    ImageZoomer.OnViewTapListener {
-
-    private var imageList: List<Image>? = null
-    private var loadingImageOptionsKey: String? = null
-    private var position: Int = 0
+class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(), ImageZoomer.OnViewTapListener {
 
     private var handler: Handler? = null
     lateinit var viewPagerPlayer: ViewPagerPlayer
     private var recoverPlay: Boolean = false
     private var startPlay: StartPlay? = null
 
+    private val imageChangedViewModel by viewModels<ImageChangedViewModel>()
+    private val args by navArgs<ImageDetailFragmentArgs>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handler = Handler()
         startPlay = StartPlay()
-
-        var dataTransferKey: String? = null
-        arguments?.let {
-            dataTransferKey = it.getString(PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY)
-            loadingImageOptionsKey = it.getString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
-            position = it.getInt(PARAM_OPTIONAL_INT_DEFAULT_POSITION)
-        }
-
-        imageList = dataTransferHelper.get(dataTransferKey) as List<Image>?
-        if (imageList == null) {
-            throw IllegalArgumentException("Not found image list by dataTransferKey: " + dataTransferKey!!)
-        }
     }
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
     ) = FragmentDetailBinding.inflate(inflater, parent, false)
+
+    override fun onInitViews(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
+        super.onInitViews(binding, savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            binding.root.updatePadding(
+                top = binding.root.paddingTop + DeviceUtils.getStatusBarHeight(
+                    resources
+                )
+            )
+        }
+
+        //  + DeviceUtils.getNavigationBarHeightByUiVisibility(this) 是为了兼容 MIX 2
+        binding.imageDetailAtBgImage.layoutParams?.let {
+            it.width = resources.displayMetrics.widthPixels
+            it.height = resources.displayMetrics.heightPixels
+            if (isOrientationPortrait()) {
+                it.height += DeviceUtils.getWindowHeightSupplement(requireActivity())
+            } else {
+                it.width += DeviceUtils.getWindowHeightSupplement(requireActivity())
+            }
+            binding.imageDetailAtBgImage.layoutParams = it
+        }
+
+        binding.imageDetailAtBgImage.setOptions(ImageOptions.WINDOW_BACKGROUND)
+    }
 
     override fun onInitData(
         binding: FragmentDetailBinding,
@@ -76,17 +99,21 @@ class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
         viewPagerPlayer = ViewPagerPlayer(binding.pagerDetailContent)
         PageNumberSetter(binding.textDetailCurrentItem, binding.pagerDetailContent)
 
-        if (imageList != null) {
-            val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList!!)
-            pagerAdapter.addItemFactory(ImageFragmentItemFactory(context, loadingImageOptionsKey))
-            binding.pagerDetailContent.adapter = pagerAdapter
-            binding.pagerDetailContent.currentItem = position
-            binding.textDetailCurrentItem.text = String.format("%d", position + 1)
-            binding.textDetailCountItem.text = imageList!!.size.toString()
-        }
+        val imageList: List<Image> =
+            Gson().fromJson(args.imageUrlJsonArray, object : TypeToken<List<Image>>() {}.type)
+        val pagerAdapter = AssemblyFragmentStatePagerAdapter(childFragmentManager, imageList)
+        pagerAdapter.addItemFactory(ImageFragmentItemFactory(context, args.loadingImageOptionsKey))
+        binding.pagerDetailContent.adapter = pagerAdapter
+        binding.pagerDetailContent.currentItem = args.defaultPosition
+        binding.textDetailCurrentItem.text = String.format("%d", args.defaultPosition + 1)
+        binding.textDetailCountItem.text = imageList.size.toString()
 
         AppEvents.playImageEvent.listen(viewLifecycleOwner) {
             viewPagerPlayer.start()
+        }
+
+        imageChangedViewModel.imageChangedData.observe(viewLifecycleOwner) {
+            it?.let { binding.imageDetailAtBgImage.displayImage(it) }
         }
     }
 
@@ -114,7 +141,7 @@ class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
 
             Toast.makeText(activity, "Stop auto play", Toast.LENGTH_SHORT).show()
         } else {
-            activity?.finish()
+            findNavController().popBackStack()
         }
     }
 
@@ -123,12 +150,5 @@ class ImageDetailFragment : BaseFragment<FragmentDetailBinding>(),
             viewPagerPlayer.start()
             recoverPlay = false
         }
-    }
-
-    companion object {
-        val PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY = "PARAM_REQUIRED_STRING_DATA_TRANSFER_KEY"
-        val PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY =
-            "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY"
-        val PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION"
     }
 }

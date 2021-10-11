@@ -6,14 +6,17 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.panpf.sketch.SketchImageView
+import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.GiphyGif
@@ -75,6 +78,8 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                     binding.refreshRecyclerFragment.isRefreshing = false
                     if (pagingAdapter.itemCount <= 0) {
                         binding.hintRecyclerFragment.empty("No gifs")
+                    } else {
+                        binding.hintRecyclerFragment.hidden()
                     }
                 }
             }
@@ -94,19 +99,20 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
     ) {
         @Suppress("UNCHECKED_CAST")
         val imageList = binding.recyclerRecyclerFragmentContent
-            .adapter!!.asOrThrow<AssemblyPagingDataAdapter<GiphyGif>>().currentList
-        val urlList = imageList.map {
-            Image(
-                it!!.images?.original?.getDownloadUrl().orEmpty(),
-                it.images?.original?.getDownloadUrl().orEmpty(),
+            .adapter!!.asOrThrow<ConcatAdapter>()
+            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<GiphyGif>>()
+            .currentList.map {
+                Image(
+                    it!!.images.original.getDownloadUrl(),
+                    it.images.original.getDownloadUrl(),
+                )
+            }
+        findNavController().navigate(
+            NavMainDirections.actionGlobalImageDetailFragment(
+                Gson().toJson(imageList),
+                position,
+                view.optionsKey
             )
-        }
-        val loadingImageOptionsInfo = (view as SketchImageView).optionsKey
-        ImageDetailActivity.launch(
-            requireActivity(),
-            dataTransferHelper.put("urlList", urlList),
-            loadingImageOptionsInfo,
-            position
         )
     }
 }

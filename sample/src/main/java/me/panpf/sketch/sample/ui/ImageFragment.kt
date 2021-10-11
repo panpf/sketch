@@ -30,11 +30,13 @@ import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.FixedThreeLevelScales
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
+import me.panpf.sketch.sample.vm.ImageChangedViewModel
 import me.panpf.sketch.sample.widget.MappingView
 import me.panpf.sketch.state.MemoryCacheStateImage
 import me.panpf.sketch.uri.FileUriModel
@@ -63,6 +65,8 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     private val clickHelper = ClickHelper()
     private val setWindowBackgroundHelper = SetWindowBackgroundHelper()
     private val gifPlayFollowPageVisibleHelper = GifPlayFollowPageVisibleHelper()
+
+    private val imageChangedViewModel by parentViewModels<ImageChangedViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -345,17 +349,13 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     }
 
     private inner class SetWindowBackgroundHelper {
-        private var pageBackgApplyCallback: PageBackgApplyCallback? = null
 
         fun onCreate(activity: Activity) {
-            if (activity is PageBackgApplyCallback) {
-                setWindowBackgroundHelper.pageBackgApplyCallback = activity
-            }
         }
 
         fun onUserVisibleChanged() {
-            if (pageBackgApplyCallback != null && isVisibleToUser) {
-                pageBackgApplyCallback!!.onApplyBackground(finalShowImageUrl)
+            if (isVisibleToUser) {
+                imageChangedViewModel.imageChangedData.postValue(finalShowImageUrl)
             }
         }
 

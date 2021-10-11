@@ -6,12 +6,16 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.Image
@@ -72,6 +76,8 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                     binding.refreshRecyclerFragment.isRefreshing = false
                     if (pagingAdapter.itemCount <= 0) {
                         binding.hintRecyclerFragment.empty("No photos")
+                    } else {
+                        binding.hintRecyclerFragment.hidden()
                     }
                 }
             }
@@ -98,17 +104,18 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             finalOptionsKey = null
         }
 
-        val imageInfoList = binding.recyclerRecyclerFragmentContent
-            .adapter!!.asOrThrow<AssemblyPagingDataAdapter<UnsplashImage>>().currentList
-        val imageArrayList = imageInfoList.map {
-            Image(it!!.urls!!.regular!!, it.urls!!.raw!!)
-        }
-
-        ImageDetailActivity.launch(
-            requireActivity(),
-            dataTransferHelper.put("urlList", imageArrayList),
-            finalOptionsKey,
-            position
+        val imageList = binding.recyclerRecyclerFragmentContent
+            .adapter!!.asOrThrow<ConcatAdapter>()
+            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<UnsplashImage>>()
+            .currentList.map {
+                Image(it!!.urls!!.regular!!, it.urls!!.raw!!)
+            }
+        findNavController().navigate(
+            NavMainDirections.actionGlobalImageDetailFragment(
+                Gson().toJson(imageList),
+                position,
+                finalOptionsKey
+            )
         )
     }
 }

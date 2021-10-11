@@ -96,6 +96,8 @@ class LocalVideoListFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                     binding.refreshRecyclerFragment.isRefreshing = false
                     if (pagingAdapter.itemCount <= 0) {
                         binding.hintRecyclerFragment.empty("No videos")
+                    } else {
+                        binding.hintRecyclerFragment.hidden()
                     }
                 }
             }

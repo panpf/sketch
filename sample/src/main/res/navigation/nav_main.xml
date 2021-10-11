@@ -87,7 +87,21 @@
     <fragment
         android:id="@+id/imageDetailFragment"
         android:name="me.panpf.sketch.sample.ui.ImageDetailFragment"
-        android:label="ImageDetailFragment" />
+        android:label="ImageDetailFragment">
+        <argument
+            android:name="imageUrlJsonArray"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="defaultPosition"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="loadingImageOptionsKey"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/roundRectImageShaperTestFragment"
         android:name="me.panpf.sketch.sample.ui.RoundRectImageShaperTestFragment"

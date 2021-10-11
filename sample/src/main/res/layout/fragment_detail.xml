@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <me.panpf.sketch.sample.widget.SampleImageView
+        android:id="@+id/imageDetailAt_bgImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager_detail_content"
         android:layout_width="match_parent"

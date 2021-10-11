@@ -1,7 +1,11 @@
 package me.panpf.sketch.sample.bean
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Image(val normalQualityUrl: String, val rawQualityUrl: String) : Parcelable
+class Image(
+    @SerializedName("normalQualityUrl") val normalQualityUrl: String,
+    @SerializedName("rawQualityUrl") val rawQualityUrl: String
+) : Parcelable

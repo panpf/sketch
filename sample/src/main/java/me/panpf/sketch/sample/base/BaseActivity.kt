@@ -19,26 +19,39 @@ package me.panpf.sketch.sample.base
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import me.panpf.sketch.sample.util.DataTransferStation
+import androidx.viewbinding.ViewBinding
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<VIEW_BINDING : ViewBinding> : AppCompatActivity() {
 
-    private val dataTransferHelper = DataTransferStation.PageHelper(this)
+    protected var binding: VIEW_BINDING? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setTransparentStatusBar()
-        dataTransferHelper.onCreate(savedInstanceState)
 
-        val bindContentView = javaClass.getAnnotation(BindContentView::class.java)
-        if (bindContentView != null && bindContentView.value > 0) {
-            setContentView(bindContentView.value)
-        }
+        val contentParent: ViewGroup = findViewById(android.R.id.content)
+        val binding = createViewBinding(LayoutInflater.from(this), contentParent)
+        setContentView(binding.root)
+        onInitViews(binding, savedInstanceState)
+        onInitData(binding, savedInstanceState)
     }
+
+    protected abstract fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): VIEW_BINDING
+
+    protected open fun onInitViews(binding: VIEW_BINDING, savedInstanceState: Bundle?) {
+
+    }
+
+    protected abstract fun onInitData(binding: VIEW_BINDING, savedInstanceState: Bundle?)
 
     private fun setTransparentStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -48,15 +61,5 @@ abstract class BaseActivity : AppCompatActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = Color.TRANSPARENT
         }
-    }
-
-    public override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        dataTransferHelper.onSaveInstanceState(outState)
-    }
-
-    public override fun onDestroy() {
-        super.onDestroy()
-        dataTransferHelper.onDestroy()
     }
 }

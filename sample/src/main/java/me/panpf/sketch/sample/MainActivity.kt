@@ -20,7 +20,9 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
@@ -29,9 +31,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.panpf.sketch.sample.base.BaseActivity
+import me.panpf.sketch.sample.databinding.ActivityMainBinding
 import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -40,9 +43,12 @@ class MainActivity : BaseActivity() {
             }
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ) = ActivityMainBinding.inflate(inflater, parent, false)
+
+    override fun onInitData(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
         startMultiProcess()
         initImageAsserts()
         requestPermission()
