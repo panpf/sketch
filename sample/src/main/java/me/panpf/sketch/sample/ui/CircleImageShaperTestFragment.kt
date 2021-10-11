@@ -53,6 +53,6 @@ class CircleImageShaperTestFragment : BaseFragment<FragmentCircleImageShaperBind
         val imageShaper = CircleImageShaper().setStroke(Color.WHITE, strokeProgress)
 
         binding.imageCircleImageShaperFragment.options.shaper = imageShaper
-        binding.imageCircleImageShaperFragment.displayImage(AssetImage.TYPE_TEST_JPG)
+        binding.imageCircleImageShaperFragment.displayImage(AssetImage.MEI_NV)
     }
 }

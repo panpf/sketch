@@ -19,7 +19,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
+import me.panpf.sketch.sample.bean.ListSeparator
 import me.panpf.sketch.sample.databinding.ItemListSeparatorBinding
 
 class ListSeparatorItemFactory :

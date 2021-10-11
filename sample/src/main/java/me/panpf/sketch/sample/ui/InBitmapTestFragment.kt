@@ -67,13 +67,13 @@ class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() 
         binding.viewInBitmapTestFragmentLast.setOnClickListener {
             --index
             if (index < 0) {
-                index = AssetImage.IN_BITMAP_SAMPLES.size - Math.abs(index)
+                index = AssetImage.IMAGES_FORMAT.size - Math.abs(index)
             }
             currentMode!!.performClick()
         }
 
         binding.viewInBitmapTestFragmentNext.setOnClickListener {
-            index = ++index % AssetImage.IN_BITMAP_SAMPLES.size
+            index = ++index % AssetImage.IMAGES_FORMAT.size
             currentMode!!.performClick()
         }
 
@@ -109,7 +109,7 @@ class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() 
         currentMode = newView
 
         binding?.viewInBitmapTestFragmentPageNumber?.text =
-            String.format("%d/%d", index + 1, AssetImage.IN_BITMAP_SAMPLES.size)
+            String.format("%d/%d", index + 1, AssetImage.IMAGES_FORMAT.size)
     }
 
     private fun testSizeSame() {
@@ -124,7 +124,7 @@ class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() 
                 options.inMutable = true
                 super.configOptions(options)
             }
-        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
+        }.execute(AssetImage.IMAGES_FORMAT[index % AssetImage.IMAGES_FORMAT.size])
     }
 
     private fun testLargeSize() {
@@ -139,7 +139,7 @@ class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() 
                 options.inMutable = true
                 super.configOptions(options)
             }
-        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
+        }.execute(AssetImage.IMAGES_FORMAT[index % AssetImage.IMAGES_FORMAT.size])
     }
 
     private fun testSizeNoSame() {
@@ -154,7 +154,7 @@ class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() 
                 options.inMutable = true
                 super.configOptions(options)
             }
-        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
+        }.execute(AssetImage.IMAGES_FORMAT[index % AssetImage.IMAGES_FORMAT.size])
     }
 
     private fun inSampleSize() {
@@ -171,7 +171,7 @@ class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() 
                 options.inMutable = true
                 super.configOptions(options)
             }
-        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.size])
+        }.execute(AssetImage.IMAGES_FORMAT[index % AssetImage.IMAGES_FORMAT.size])
     }
 
     private open inner class TestTask(context: Context) : AsyncTask<String, Int, Bitmap?>() {

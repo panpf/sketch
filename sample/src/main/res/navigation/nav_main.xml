@@ -13,21 +13,17 @@
         android:name="me.panpf.sketch.sample.ui.AboutFragment"
         android:label="AboutFragment" />
     <fragment
-        android:id="@+id/apkIconFragment"
-        android:name="me.panpf.sketch.sample.ui.ApkIconFragment"
-        android:label="ApkIconFragment" />
-    <fragment
-        android:id="@+id/appIconFragment"
-        android:name="me.panpf.sketch.sample.ui.AppIconFragment"
-        android:label="AppIconFragment" />
-    <fragment
-        android:id="@+id/base64ImageFragment"
-        android:name="me.panpf.sketch.sample.ui.Base64ImageFragment"
-        android:label="Base64ImageTestFragment" />
-    <fragment
         android:id="@+id/hugeImageFragment"
         android:name="me.panpf.sketch.sample.ui.HugeImageFragment"
         android:label="HugeImageFragment" />
+    <fragment
+        android:id="@+id/imageFormatFragment"
+        android:name="me.panpf.sketch.sample.ui.ImageFormatFragment"
+        android:label="ImageFormatFragment" />
+    <fragment
+        android:id="@+id/imageFromFragment"
+        android:name="me.panpf.sketch.sample.ui.ImageFromFragment"
+        android:label="ImageFromFragment" />
     <fragment
         android:id="@+id/circleImageProcessorTestFragment"
         android:name="me.panpf.sketch.sample.ui.CircleImageProcessorTestFragment"
@@ -146,27 +142,6 @@
     <action
         android:id="@+id/action_global_aboutFragment"
         app:destination="@id/aboutFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_apkIconFragment"
-        app:destination="@id/apkIconFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_appIconFragment"
-        app:destination="@id/appIconFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-    <action
-        android:id="@+id/action_global_base64ImageFragment"
-        app:destination="@id/base64ImageFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -328,6 +303,20 @@
     <action
         android:id="@+id/action_global_hugeImageFragment"
         app:destination="@id/hugeImageFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_imageFormatFragment"
+        app:destination="@id/imageFormatFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_imageFromFragment"
+        app:destination="@id/imageFromFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

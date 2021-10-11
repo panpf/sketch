@@ -12,7 +12,7 @@ import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory2
 
-class HugeImageFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
+class ImageFormatFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -24,16 +24,16 @@ class HugeImageFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
         binding: FragmentPager2TabBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Huge Image"
+        toolbar.title = "Image Format"
 
-        val images = AssetImage.IMAGES_HUGE.map {
+        val images = AssetImage.IMAGES_FORMAT.map {
             Image(it, it)
         }
-        val titles = arrayOf("WORLD", "QMSHT", "CWB", "CARD")
+        val titles = arrayOf("JPG", "PNG", "GIF", "WEBP", "BMP")
 
         binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
             this,
-            listOf(ImageFragmentItemFactory2(requireContext(), null, true)),
+            listOf(ImageFragmentItemFactory2(requireContext(), null, false)),
             images
         )
 

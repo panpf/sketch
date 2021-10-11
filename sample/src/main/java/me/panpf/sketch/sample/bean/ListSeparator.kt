@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.recycler.sticky.sample.bean
+package me.panpf.sketch.sample.bean
 
 import android.os.Parcelable
 import com.github.panpf.assemblyadapter.recycler.DiffKey

@@ -74,6 +74,6 @@ class RoundRectImageShaperTestFragment :
             RoundRectImageShaper(radiusProgress.toFloat()).setStroke(Color.WHITE, strokeProgress)
 
         binding?.imageRoundRectImageShaperFragment?.options?.shaper = imageShaper
-        binding?.imageRoundRectImageShaperFragment?.displayImage(AssetImage.TYPE_TEST_JPG)
+        binding?.imageRoundRectImageShaperFragment?.displayImage(AssetImage.MEI_NV)
     }
 }

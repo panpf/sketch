@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:tabTextColor="@color/text_normal"
+        app:tabMode="scrollable"
+        app:tabIndicatorAnimationMode="elastic"
         app:tabSelectedTextColor="@color/colorAccent"/>
 
     <androidx.viewpager2.widget.ViewPager2

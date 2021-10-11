@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
-import com.github.panpf.recycler.sticky.sample.bean.ListSeparator
+import me.panpf.sketch.sample.bean.ListSeparator
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Link
@@ -32,18 +32,14 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
                     ListSeparator("Samples"),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
                     Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
-                    Link("Online Photos - Unsplash", NavMainDirections.actionGlobalOnlinePhotosFragment()),
+                    Link(
+                        "Online Photos - Unsplash",
+                        NavMainDirections.actionGlobalOnlinePhotosFragment()
+                    ),
                     Link("Online GIF - Giphy", NavMainDirections.actionGlobalOnlineGifFragment()),
-                    Link(
-                        "Huge Image",
-                        NavMainDirections.actionGlobalHugeImageFragment()
-                    ),
-                    Link("App Icon", NavMainDirections.actionGlobalAppIconFragment()),
-                    Link("Apk Icon", NavMainDirections.actionGlobalApkIconFragment()),
-                    Link(
-                        "Base64 Image",
-                        NavMainDirections.actionGlobalBase64ImageFragment()
-                    ),
+                    Link("Image Format", NavMainDirections.actionGlobalImageFormatFragment()),
+                    Link("Image From", NavMainDirections.actionGlobalImageFromFragment()),
+                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),
 
                     ListSeparator("Test"),
                     Link(
