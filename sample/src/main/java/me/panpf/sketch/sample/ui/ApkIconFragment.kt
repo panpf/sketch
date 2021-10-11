@@ -1,39 +1,25 @@
 package me.panpf.sketch.sample.ui
 
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
-import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import me.panpf.adapter.AssemblyRecyclerAdapter
-import me.panpf.adapter.FixedItem
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.AssemblySingleDataRecyclerAdapter
 import me.panpf.sketch.sample.base.BaseToolbarFragment
-import me.panpf.sketch.sample.bean.AppInfo
-import me.panpf.sketch.sample.bean.AppScanning
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
-import me.panpf.sketch.sample.item.AppItemFactory
-import me.panpf.sketch.sample.item.AppScanningItemFactory
-import me.panpf.sketch.sample.util.FileScanner
-import me.panpf.sketch.sample.util.FileUtils
+import me.panpf.sketch.sample.item.ApkItemFactory
+import me.panpf.sketch.sample.item.AppsOverviewItemFactory
+import me.panpf.sketch.sample.item.ListSeparatorItemFactory
 import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
-import me.panpf.sketch.sample.util.XpkInfo
-import me.panpf.sketch.util.SketchUtils
-import java.io.File
-import java.lang.ref.WeakReference
-import java.util.*
-import java.util.zip.ZipFile
+import me.panpf.sketch.sample.vm.PinyinFlatAppsViewModel
 
-class ApkIconFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
-    AppItemFactory.AppItemListener {
+class ApkIconFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
 
-    private var adapter: AssemblyRecyclerAdapter? = null
-    private var fileScanner: FileScanner? = null
-    private var scanningItemInfo: FixedItem<AppScanning>? = null
+    private val viewModel by viewModels<PinyinFlatAppsViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -47,262 +33,33 @@ class ApkIconFragment : BaseToolbarFragment<FragmentRecyclerBinding>(),
     ) {
         toolbar.title = "Apk Icon"
 
-        binding.refreshRecyclerFragment.isEnabled = false
+        val appsOverviewAdapter =
+            AssemblySingleDataRecyclerAdapter(AppsOverviewItemFactory())
+        val listAdapter = AssemblyRecyclerAdapter<Any>(
+            listOf(ApkItemFactory(), ListSeparatorItemFactory())
+        )
 
         binding.recyclerRecyclerFragmentContent.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ConcatAdapter(appsOverviewAdapter, listAdapter)
             addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
-
-            if (this@ApkIconFragment.adapter != null) {
-                adapter = this@ApkIconFragment.adapter
-                scheduleLayoutAnimation()
-            }
         }
 
-        if (adapter == null) {
-            loadAppList()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        fileScanner?.let {
-            if (it.isRunning) {
-                it.cancel()
-            }
-        }
-    }
-
-    private fun loadAppList() {
-        context?.let {
-            LoadAppsTask(WeakReference(this)).execute("")
-        }
-    }
-
-    override fun onClickApp(position: Int, appInfo: AppInfo) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.addCategory(Intent.CATEGORY_DEFAULT)
-        intent.setDataAndType(
-            Uri.fromFile(File(appInfo.apkFilePath)),
-            "application/vnd.android.package-archive"
-        )
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-        try {
-            startActivity(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        binding.refreshRecyclerFragment.setOnRefreshListener {
+            viewModel.refresh()
         }
 
-    }
-
-    private class LoadAppsTask(var fragmentWeakReference: WeakReference<ApkIconFragment>) :
-        AsyncTask<String, Int, Array<String>>() {
-
-        override fun onPreExecute() {
-            val fragment = fragmentWeakReference.get() ?: return
-            val context = fragment.context?.applicationContext ?: return
-
-            fragment.fileScanner =
-                FileScanner(MyFileChecker(context), MyScanListener(fragmentWeakReference))
-            fragment.fileScanner!!.setDirFilter(MyDirFilter())
-
-            val adapter = AssemblyRecyclerAdapter(ArrayList<Any>())
-            adapter.addItemFactory(AppItemFactory(fragment))
-            fragment.scanningItemInfo =
-                adapter.addHeaderItem(AppScanningItemFactory(), AppScanning())
-
-            fragment.binding?.recyclerRecyclerFragmentContent?.adapter = adapter
-            fragment.adapter = adapter
+        viewModel.loadingData.observe(viewLifecycleOwner) {
+            binding.hintRecyclerFragment.hidden()
+            binding.refreshRecyclerFragment.isRefreshing = it == true
         }
 
-        override fun doInBackground(vararg params: String): Array<String>? {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                return SketchUtils.getAllAvailableSdcardPath(fragment.requireContext())
-            }
-            return null
+        viewModel.appsOverviewData.observe(viewLifecycleOwner) {
+            appsOverviewAdapter.data = it
         }
 
-        override fun onPostExecute(files: Array<String>?) {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                fragment.binding?.hintRecyclerFragment?.hidden()
-                if (files == null || files.isEmpty()) {
-                    MyScanListener(fragmentWeakReference).onCompleted()
-                } else {
-                    fragment.fileScanner!!.execute(files)
-                }
-            }
-        }
-    }
-
-    private class MyScanListener(var fragmentWeakReference: WeakReference<ApkIconFragment>) :
-        FileScanner.ScanListener {
-        private val startTime = System.currentTimeMillis()
-
-        override fun onStarted() {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                val appScanning = fragment.scanningItemInfo!!.data as AppScanning
-                appScanning.running = true
-
-                fragment.scanningItemInfo!!.data = appScanning
-            }
-        }
-
-        override fun onScanDir(dir: File) {
-
-        }
-
-        override fun onFindFile(fileItem: FileScanner.FileItem) {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                if (fileItem is AppInfo) {
-
-                    fragment.adapter!!.dataList?.add(fileItem)
-
-                    val appScanning = fragment.scanningItemInfo!!.data as AppScanning
-                    appScanning.count = fragment.adapter!!.dataCount
-
-                    fragment.scanningItemInfo!!.data = appScanning
-
-                    fragment.adapter!!.notifyDataSetChanged()
-                }
-            }
-        }
-
-        override fun onUpdateProgress(totalLength: Int, completedLength: Int) {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                val appScanning = fragment.scanningItemInfo!!.data as AppScanning
-
-                appScanning.totalLength = totalLength
-                appScanning.completedLength = completedLength
-
-                fragment.scanningItemInfo!!.data = appScanning
-            }
-        }
-
-        override fun onCompleted() {
-            val fragment = fragmentWeakReference.get()
-            if (fragment != null) {
-                val appScanning = fragment.scanningItemInfo!!.data as AppScanning
-                appScanning.running = false
-
-                appScanning.time = System.currentTimeMillis() - startTime
-
-                fragment.scanningItemInfo!!.data = appScanning
-            }
-        }
-
-        override fun onCanceled() {
-
-        }
-    }
-
-    private class MyDirFilter : FileScanner.DirFilter {
-
-        override fun accept(dir: File): Boolean {
-            val fileNameLowerCase = dir.name.lowercase(Locale.getDefault())
-
-            var keyword = ""
-            if (fileNameLowerCase.startsWith(keyword)) {
-                return false
-            }
-
-            keyword = "tuniuapp"
-            if (keyword.equals(fileNameLowerCase, ignoreCase = true)) {
-                return false
-            }
-
-            keyword = "cache"
-            if (keyword.equals(fileNameLowerCase, ignoreCase = true) || fileNameLowerCase.endsWith(
-                    keyword
-                )
-            ) {
-                return false
-            }
-
-            keyword = "log"
-            if (keyword.equals(fileNameLowerCase, ignoreCase = true) || fileNameLowerCase.endsWith(
-                    keyword
-                )
-            ) {
-                return false
-            }
-
-            keyword = "dump"
-
-            if (keyword.equals(fileNameLowerCase, ignoreCase = true) || fileNameLowerCase.endsWith(
-                    keyword
-                )
-            ) {
-                return false
-            }
-
-            return true
-        }
-    }
-
-    private class MyFileChecker(private val context: Context) : FileScanner.FileChecker {
-
-        override fun accept(pathname: File): FileScanner.FileItem? {
-            // 是文件的话根据后缀名判断是APK还是XPK
-            val fileNameLowerCase = pathname.name.lowercase(Locale.getDefault())
-            if (pathname.isFile) {
-                val suffix = FileUtils.subSuffix(fileNameLowerCase)
-                return when {
-                    ".apk".equals(suffix, ignoreCase = true) -> parseFromApk(context, pathname)
-                    ".xpk".equals(suffix, ignoreCase = true) -> parseFromXpk(pathname)
-                    else -> null
-                }
-            }
-
-            return null
-        }
-
-        override fun onFinished() {}
-
-        private fun parseFromApk(context: Context, file: File): AppInfo? {
-            val packageInfo = context.packageManager.getPackageArchiveInfo(
-                file.path,
-                PackageManager.GET_ACTIVITIES
-            )
-                ?: return null
-            packageInfo.applicationInfo.sourceDir = file.path
-            packageInfo.applicationInfo.publicSourceDir = file.path
-
-            val appInfo = AppInfo(false)
-            appInfo.name = packageInfo.applicationInfo.loadLabel(context.packageManager).toString()
-            appInfo.id = packageInfo.packageName
-            appInfo.versionName = packageInfo.versionName
-            appInfo.apkFilePath = file.path
-            appInfo.appSize = file.length()
-            appInfo.formattedAppSize = Formatter.formatFileSize(context, appInfo.appSize)
-
-            return appInfo
-        }
-
-        private fun parseFromXpk(file: File): AppInfo? {
-            try {
-                val appInfo = AppInfo(false)
-                val xpkInfo = XpkInfo.getXPKManifestDom(ZipFile(file)) ?: throw Exception()
-
-                appInfo.name = xpkInfo.appName
-                appInfo.id = xpkInfo.packageName
-                appInfo.versionName = xpkInfo.versionName
-                appInfo.apkFilePath = file.path
-                appInfo.appSize = file.length()
-                appInfo.formattedAppSize = Formatter.formatFileSize(context, appInfo.appSize)
-                appInfo.isTempXPK = true
-
-                return appInfo
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
-            }
-
+        viewModel.pinyinFlatAppListData.observe(viewLifecycleOwner) {
+            listAdapter.submitList(it)
         }
     }
 }

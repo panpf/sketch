@@ -6,7 +6,6 @@ import me.panpf.sketch.Configuration
 import me.panpf.sketch.Initializer
 import me.panpf.sketch.SLog
 import me.panpf.sketch.sample.util.VideoThumbnailUriModel
-import me.panpf.sketch.sample.util.XpkIconUriModel
 
 class MySketchInitializer : Initializer {
 
@@ -37,12 +36,10 @@ class MySketchInitializer : Initializer {
         onConfigChange(AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY)
 
         configuration!!.callback = MySketchCallback(context!!.applicationContext as Application)
-
-        configuration!!.uriModelManager.add(XpkIconUriModel())
     }
 
-    private fun onConfigChange(key: AppConfig.Key){
-        when(key) {
+    private fun onConfigChange(key: AppConfig.Key) {
+        when (key) {
             AppConfig.Key.OUT_LOG_2_SDCARD -> {
                 val proxy = if (AppConfig.getBoolean(
                         context!!,

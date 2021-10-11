@@ -37,4 +37,5 @@
     <string name="text_loading">LOADING…</string>
     <string name="text_load_end">THE END</string>
     <string name="text_load_error">LOAD ERROR</string>
+    <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
 </resources>

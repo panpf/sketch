@@ -4,14 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.tools4a.activity.ktx.safeStartActivity
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.bean.AppInfo
 import me.panpf.sketch.sample.databinding.ListItemAppBinding
 import me.panpf.sketch.sample.widget.SampleImageView
-import me.panpf.sketch.uri.AppIconUriModel
+import me.panpf.sketch.uri.ApkIconUriModel
 
-class AppItemFactory : BindingItemFactory<AppInfo, ListItemAppBinding>(AppInfo::class) {
+class ApkItemFactory : BindingItemFactory<AppInfo, ListItemAppBinding>(AppInfo::class) {
 
     override fun createItemViewBinding(
         context: Context,
@@ -28,14 +27,6 @@ class AppItemFactory : BindingItemFactory<AppInfo, ListItemAppBinding>(AppInfo::
             setOptions(ImageOptions.ROUND_RECT)
             page = SampleImageView.Page.APP_LIST
         }
-
-        binding.root.setOnClickListener {
-            val data = item.dataOrThrow
-            val intent = context.packageManager.getLaunchIntentForPackage(data.packageName!!)
-            if (intent != null) {
-                context.safeStartActivity(intent)
-            }
-        }
     }
 
     override fun bindItemData(
@@ -47,9 +38,10 @@ class AppItemFactory : BindingItemFactory<AppInfo, ListItemAppBinding>(AppInfo::
         data: AppInfo
     ) {
         binding.imageInstalledAppIcon.displayImage(
-            AppIconUriModel.makeUri(data.packageName, data.versionCode)
+            ApkIconUriModel.makeUri(data.apkFilePath)
         )
         binding.textInstalledAppName.text = data.name
-        binding.textInstalledAppInfo.text = data.versionName
+        binding.textInstalledAppInfo.text =
+            String.format("v%s  |  %s", data.versionName, data.formattedAppSize)
     }
 }
