@@ -43,11 +43,11 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 
                     ListSeparator("Test"),
                     Link(
-                        "Image Processor Test",
+                        "ImageProcessor Test",
                         NavMainDirections.actionGlobalImageProcessorTestFragment()
                     ),
                     Link(
-                        "Image Shaper Test",
+                        "ImageShaper Test",
                         NavMainDirections.actionGlobalImageShaperTestFragment()
                     ),
                     Link(

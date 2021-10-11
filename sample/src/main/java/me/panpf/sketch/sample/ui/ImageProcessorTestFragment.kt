@@ -4,53 +4,51 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import me.panpf.adapter.pager.FragmentArrayPagerAdapter
+import androidx.fragment.app.Fragment
+import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import me.panpf.sketch.sample.base.BaseToolbarFragment
-import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
-import me.panpf.sketch.sample.item.TitleTabFactory
+import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
 
-class ImageProcessorTestFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
+class ImageProcessorTestFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
         toolbar: Toolbar,
-        binding: FragmentPagerTabBinding,
+        binding: FragmentPager2TabBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Image Processor Test"
+        toolbar.title = "ImageProcessor Test"
 
-        binding.pagerPagerTabFragmentContent.adapter = FragmentArrayPagerAdapter(
-            childFragmentManager, arrayOf(
-                ReflectionImageProcessorTestFragment(),
-                GaussianBlurImageProcessorTestFragment(),
-                RotateImageProcessorTestFragment(),
-                RoundRectImageProcessorTestFragment(),
-                CircleImageProcessorTestFragment(),
-                ResizeImageProcessorTestFragment(),
-                MaskImageProcessorTestFragment(),
-                WrappedImageProcessorTestFragment()
-            )
+        val titles = arrayOf(
+            "REFLECTION",
+            "GAUSSIAN_BLUR",
+            "ROTATE",
+            "ROUND_RECT",
+            "CIRCLE",
+            "RESIZE",
+            "MASK",
+            "WRAPPED"
+        )
+        val fragments = arrayOf<Fragment>(
+            ReflectionImageProcessorTestFragment(),
+            GaussianBlurImageProcessorTestFragment(),
+            RotateImageProcessorTestFragment(),
+            RoundRectImageProcessorTestFragment(),
+            CircleImageProcessorTestFragment(),
+            ResizeImageProcessorTestFragment(),
+            MaskImageProcessorTestFragment(),
+            WrappedImageProcessorTestFragment()
         )
 
-        binding.tabPagerTabFragmentTabs.setTabViewFactory(
-            TitleTabFactory(
-                arrayOf(
-                    "REFLECTION",
-                    "GAUSSIAN_BLUR",
-                    "ROTATE",
-                    "ROUND_RECT",
-                    "CIRCLE",
-                    "RESIZE",
-                    "MASK",
-                    "WRAPPED"
-                ),
-                requireActivity()
-            )
-        )
-        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
+        binding.tabPagerPager.adapter = ArrayFragmentStateAdapter(this, fragments)
+
+        TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+            tab.text = titles[position]
+        }.attach()
     }
 }

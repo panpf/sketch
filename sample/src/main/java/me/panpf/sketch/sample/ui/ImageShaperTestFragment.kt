@@ -4,44 +4,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import me.panpf.adapter.pager.FragmentArrayPagerAdapter
+import androidx.fragment.app.Fragment
+import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import me.panpf.sketch.sample.base.BaseToolbarFragment
-import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
-import me.panpf.sketch.sample.item.TitleTabFactory
+import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
 
-class ImageShaperTestFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
+class ImageShaperTestFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
         toolbar: Toolbar,
-        binding: FragmentPagerTabBinding,
+        binding: FragmentPager2TabBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Image Shaper Test"
+        toolbar.title = "ImageShaper Test"
 
-        binding.pagerPagerTabFragmentContent.adapter = FragmentArrayPagerAdapter(
-            childFragmentManager,
-            arrayOf(
-                RoundRectImageShaperTestFragment(),
-                CircleImageShaperTestFragment(),
-                ShapeSizeImageShaperTestFragment()
-            )
+        val titles = arrayOf(
+            "ROUND_RECT",
+            "CIRCLE",
+            "SHAPE_SIZE"
+        )
+        val fragments = arrayOf<Fragment>(
+            RoundRectImageShaperTestFragment(),
+            CircleImageShaperTestFragment(),
+            ShapeSizeImageShaperTestFragment()
         )
 
-        binding.tabPagerTabFragmentTabs.setTabViewFactory(
-            TitleTabFactory(
-                arrayOf(
-                    "ROUND_RECT",
-                    "CIRCLE",
-                    "SHAPE_SIZE"
-                ),
-                requireActivity()
-            )
-        )
-        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
+        binding.tabPagerPager.adapter = ArrayFragmentStateAdapter(this, fragments)
+
+        TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+            tab.text = titles[position]
+        }.attach()
     }
 }
