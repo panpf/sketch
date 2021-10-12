@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,113 +8,107 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/image_inBitmapTestFragment"
+        android:id="@+id/inBitmapTestImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="100dp" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/inBitmapTestInfoLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="5" />
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/inBitmapTestInfoLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <View
-            android:id="@+id/view_inBitmapTestFragment_last"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <View
-            android:id="@+id/view_inBitmapTestFragment_next"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#88000000"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_arrow_left" />
-
-            <TextView
-                android:id="@+id/view_inBitmapTestFragment_pageNumber"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/text_normal"
-                android:text="2/5" />
-
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
+        android:layout_height="0dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toTopOf="@id/inBitmapTestOperation1Layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inBitmapTestImage"
+        app:layout_constraintVertical_weight="3">
 
         <TextView
-            android:id="@+id/text_inBitmapTestFragment"
+            android:id="@+id/inBitmapTestText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/text_normal"
-            android:paddingBottom="4dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/text_normal"
             tools:text="信息" />
+    </ScrollView>
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/inBitmapTestOperation1Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        app:layout_constraintBottom_toTopOf="@id/inBitmapTestOperation2Layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inBitmapTestInfoLayout">
+
+        <Button
+            android:id="@+id/inBitmapTestSmallSizeButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:padding="4dp">
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="尺寸较小" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/inBitmapTestSizeSameButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="尺寸刚好" />
 
-                <Button
-                    android:id="@+id/button_inBitmapTestFragment_sizeSame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="尺寸刚好" />
-
-                <Button
-                    android:id="@+id/button_inBitmapTestFragment_largeSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="尺寸较大" />
-
-                <Button
-                    android:id="@+id/button_inBitmapTestFragment_sizeNoSame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="宽高互换" />
-
-                <Button
-                    android:id="@+id/button_inBitmapTestFragment_inSampleSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="IN_SAMPLE_SIZE为2" />
-
-            </LinearLayout>
-        </HorizontalScrollView>
+        <Button
+            android:id="@+id/inBitmapTestLargeSizeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="尺寸较大" />
     </LinearLayout>
-</FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/inBitmapTestOperation2Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="4dp"
+        app:flexDirection="row"
+        app:flexWrap="wrap"
+        app:justifyContent="space_around"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inBitmapTestOperation1Layout">
+
+        <Button
+            android:id="@+id/inBitmapTestWidthAndHeightSwapButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="宽高互换" />
+
+        <Button
+            android:id="@+id/inBitmapTestFixedTwoButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="IN_SAMPLE_SIZE 为 2" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

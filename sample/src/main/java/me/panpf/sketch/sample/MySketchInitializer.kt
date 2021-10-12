@@ -2,10 +2,13 @@ package me.panpf.sketch.sample
 
 import android.app.Application
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import me.panpf.sketch.Configuration
 import me.panpf.sketch.Initializer
 import me.panpf.sketch.SLog
 import me.panpf.sketch.sample.util.VideoThumbnailUriModel
+import me.panpf.sketch.util.SketchUtils
 
 class MySketchInitializer : Initializer {
 
@@ -17,8 +20,16 @@ class MySketchInitializer : Initializer {
         this.configuration = configuration
         configuration.uriModelManager.add(VideoThumbnailUriModel())
 
-        AppEvents.appConfigChangedEvent.listenForever {
-            it?.let { it1 -> onConfigChange(it1) }
+        if (SketchUtils.isMainThread()) {
+            AppEvents.appConfigChangedEvent.listenForever {
+                it?.let { it1 -> onConfigChange(it1) }
+            }
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                AppEvents.appConfigChangedEvent.listenForever {
+                    it?.let { it1 -> onConfigChange(it1) }
+                }
+            }
         }
 
         initConfig()
