@@ -38,4 +38,24 @@
     <string name="text_load_end">THE END</string>
     <string name="text_load_error">LOAD ERROR</string>
     <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
+    <string name="text_radius">Radius</string>
+    <string name="text_width">Width</string>
+    <string name="text_height">Height</string>
+    <string name="button_center_crop">CENTER_CROP</string>
+    <string name="button_center_inside">CENTER_INSIDE</string>
+    <string name="button_matrix">MATRIX</string>
+    <string name="button_fix_start">FIX_START</string>
+    <string name="button_fix_center">FIX_CENTER</string>
+    <string name="button_fix_end">FIX_END</string>
+    <string name="button_fix_xy">FIX_XY</string>
+    <string name="button_center">CENTER</string>
+    <string name="button_small_size">SMALL SIZE</string>
+    <string name="button_same_size">SAME SIZE</string>
+    <string name="button_large_size">LARGE SIZE</string>
+    <string name="button_width_height_swap">WIDTH HEIGHT SWAP</string>
+    <string name="button_in_sample_size_is_2">IN_SAMPLE_SIZE IS 2</string>
+    <string name="text_transparency">Transparency</string>
+    <string name="text_rounded_radius">Rounded Radius</string>
+    <string name="text_mask_opacity">Mask Opacity</string>
+    <string name="button_rotate_45">Rotate 45°</string>
 </resources>

@@ -11,8 +11,6 @@ import me.panpf.sketch.sample.databinding.FragmentRotateBinding
 
 class RotateImageProcessorTestFragment : BaseFragment<FragmentRotateBinding>() {
 
-    private var degrees = 45
-
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
@@ -22,25 +20,28 @@ class RotateImageProcessorTestFragment : BaseFragment<FragmentRotateBinding>() {
         binding: FragmentRotateBinding,
         savedInstanceState: Bundle?
     ) {
-        // 缩小图片，处理速度更快，更少的内存消耗
-        val metrics = resources.displayMetrics
-        binding.imageRotateFragment.options.setMaxSize(
-            metrics.widthPixels / 2,
-            metrics.heightPixels / 2
-        )
-
-        binding.imageRotateFragment.options.displayer = TransitionImageDisplayer()
-
-        binding.buttonRotateFragment.setOnClickListener {
-            degrees += 45
-            apply()
+        binding.rotateImage.apply {
+            options.apply {
+                val metrics = resources.displayMetrics
+                setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+                displayer = TransitionImageDisplayer()
+            }
         }
 
-        apply()
+        var degrees = 45
+
+        binding.rotateActionButton.setOnClickListener {
+            degrees += 45
+            apply(binding, degrees)
+        }
+
+        apply(binding, degrees)
     }
 
-    private fun apply() {
-        binding?.imageRotateFragment?.options?.processor = RotateImageProcessor(degrees)
-        binding?.imageRotateFragment?.displayImage(AssetImage.MEI_NV)
+    private fun apply(binding: FragmentRotateBinding, degrees: Int) {
+        binding.rotateImage.apply {
+            options.processor = RotateImageProcessor(degrees)
+            displayImage(AssetImage.MEI_NV)
+        }
     }
 }

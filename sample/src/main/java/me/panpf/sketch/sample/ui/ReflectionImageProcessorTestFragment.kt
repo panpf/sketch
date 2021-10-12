@@ -20,15 +20,14 @@ class ReflectionImageProcessorTestFragment : BaseFragment<FragmentReflectionBind
         binding: FragmentReflectionBinding,
         savedInstanceState: Bundle?
     ) {
-        // 缩小图片，处理速度更快，更少的内存消耗
-        val metrics = resources.displayMetrics
-        binding.imageReflectionFragment.options.setMaxSize(
-            metrics.widthPixels / 2,
-            metrics.heightPixels / 2
-        )
-
-        binding.imageReflectionFragment.options.processor = ReflectionImageProcessor()
-        binding.imageReflectionFragment.options.displayer = TransitionImageDisplayer()
-        binding.imageReflectionFragment.displayImage(AssetImage.MEI_NV)
+        binding.reflectionImage.apply {
+            options.apply {
+                val metrics = resources.displayMetrics
+                setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+                processor = ReflectionImageProcessor()
+                displayer = TransitionImageDisplayer()
+            }
+            displayImage(AssetImage.MEI_NV)
+        }
     }
 }

@@ -13,8 +13,6 @@ import me.panpf.sketch.sample.databinding.FragmentRoundRectImageProcessorBinding
 class RoundRectImageProcessorTestFragment :
     BaseFragment<FragmentRoundRectImageProcessorBinding>() {
 
-    private var progress = 30
-
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
@@ -24,48 +22,42 @@ class RoundRectImageProcessorTestFragment :
         binding: FragmentRoundRectImageProcessorBinding,
         savedInstanceState: Bundle?
     ) {
-        // 缩小图片，处理速度更快，更少的内存消耗
-        val metrics = resources.displayMetrics
-        binding.imageRoundRectImageProcessor.options.setMaxSize(
-            metrics.widthPixels / 2,
-            metrics.heightPixels / 2
-        )
-
-        binding.imageRoundRectImageProcessor.options.displayer = TransitionImageDisplayer()
-
-        binding.seekBarRoundRectImageProcessor.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                seekBar_roundRectImageProcessor: SeekBar,
-                progress: Int,
-                fromUser: Boolean
-            ) {
-                binding.textRoundRectImageProcessor.text = String.format(
-                    "%d/%d",
-                    seekBar_roundRectImageProcessor.progress,
-                    seekBar_roundRectImageProcessor.max
-                )
+        binding.roundRectImage.apply {
+            options.apply {
+                val metrics = resources.displayMetrics
+                setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+                displayer = TransitionImageDisplayer()
             }
+        }
 
-            override fun onStartTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+        binding.roundRectSeekBar.apply {
+            max = 100
+            progress = 30
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+                }
 
-            }
+                override fun onStopTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
+                }
 
-            override fun onStopTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
-                progress = seekBar_roundRectImageProcessor.progress
-                apply()
-            }
-        })
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    apply(binding)
+                }
+            })
+        }
 
-        binding.seekBarRoundRectImageProcessor.max = 100
-        binding.seekBarRoundRectImageProcessor.progress = progress
-
-        apply()
+        apply(binding)
     }
 
-    private fun apply() {
-        binding?.imageRoundRectImageProcessor?.options?.processor =
-            RoundRectImageProcessor(progress.toFloat())
-        binding?.imageRoundRectImageProcessor?.displayImage(AssetImage.MEI_NV)
+    private fun apply(binding: FragmentRoundRectImageProcessorBinding) {
+        val progress = binding.roundRectSeekBar.progress
+
+        binding.roundRectImage.apply {
+            options.processor = RoundRectImageProcessor(progress.toFloat())
+            displayImage(AssetImage.MEI_NV)
+        }
+
+        binding.roundRectValueText.text =
+            "%d/%d".format(progress, binding.roundRectSeekBar.max)
     }
 }
