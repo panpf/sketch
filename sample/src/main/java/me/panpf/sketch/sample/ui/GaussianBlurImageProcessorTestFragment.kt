@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.GaussianBlurImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentGaussianBlurBinding
+import me.panpf.sketch.sample.vm.BlurProcessorTestViewModel
 
 class GaussianBlurImageProcessorTestFragment : BaseFragment<FragmentGaussianBlurBinding>() {
+
+    private val viewModel by viewModels<BlurProcessorTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -31,7 +35,7 @@ class GaussianBlurImageProcessorTestFragment : BaseFragment<FragmentGaussianBlur
 
         binding.gaussianBlurSeekBar.apply {
             max = 100
-            progress = 15
+            progress = viewModel.blurRadiusData.value!!
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -39,24 +43,24 @@ class GaussianBlurImageProcessorTestFragment : BaseFragment<FragmentGaussianBlur
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
                 }
 
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    apply(binding)
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeBlurRadius(progress)
                 }
             })
         }
 
-        apply(binding)
-    }
+        viewModel.blurRadiusData.observe(viewLifecycleOwner) {
+            val blurRadius = it ?: return@observe
 
-    private fun apply(binding: FragmentGaussianBlurBinding) {
-        val progress = binding.gaussianBlurSeekBar.progress
+            binding.gaussianBlurImage.apply {
+                options.processor = GaussianBlurImageProcessor.makeRadius(blurRadius)
+                displayImage(AssetImage.MEI_NV)
+            }
 
-        binding.gaussianBlurImage.apply {
-            options.processor = GaussianBlurImageProcessor.makeRadius(progress)
-            displayImage(AssetImage.MEI_NV)
+            binding.gaussianBlurValueText.text =
+                "%d/%d".format(blurRadius, binding.gaussianBlurSeekBar.max)
         }
-
-        binding.gaussianBlurValueText.text =
-            "%d/%d".format(progress, binding.gaussianBlurSeekBar.max)
     }
 }

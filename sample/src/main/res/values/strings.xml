@@ -38,7 +38,7 @@
     <string name="text_load_end">THE END</string>
     <string name="text_load_error">LOAD ERROR</string>
     <string name="apps_overview_item">Apps: %d (User: %d. Group: %d)</string>
-    <string name="text_radius">Radius</string>
+    <string name="text_blur_radius">Blur Radius</string>
     <string name="text_width">Width</string>
     <string name="text_height">Height</string>
     <string name="button_center_crop">CENTER_CROP</string>
@@ -58,4 +58,5 @@
     <string name="text_rounded_radius">Rounded Radius</string>
     <string name="text_mask_opacity">Mask Opacity</string>
     <string name="button_rotate_45">Rotate 45°</string>
+    <string name="text_stroke_width">Stroke Width</string>
 </resources>

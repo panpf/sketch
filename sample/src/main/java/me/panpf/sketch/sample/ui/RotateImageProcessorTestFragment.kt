@@ -3,13 +3,17 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentRotateBinding
+import me.panpf.sketch.sample.vm.RotateProcessorTestViewModel
 
 class RotateImageProcessorTestFragment : BaseFragment<FragmentRotateBinding>() {
+
+    private val viewModel by viewModels<RotateProcessorTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -28,20 +32,17 @@ class RotateImageProcessorTestFragment : BaseFragment<FragmentRotateBinding>() {
             }
         }
 
-        var degrees = 45
-
         binding.rotateActionButton.setOnClickListener {
-            degrees += 45
-            apply(binding, degrees)
+            viewModel.changeRotate(viewModel.rotateData.value!! + 45)
         }
 
-        apply(binding, degrees)
-    }
+        viewModel.rotateData.observe(viewLifecycleOwner) {
+            val degrees = it ?: return@observe
 
-    private fun apply(binding: FragmentRotateBinding, degrees: Int) {
-        binding.rotateImage.apply {
-            options.processor = RotateImageProcessor(degrees)
-            displayImage(AssetImage.MEI_NV)
+            binding.rotateImage.apply {
+                options.processor = RotateImageProcessor(degrees)
+                displayImage(AssetImage.MEI_NV)
+            }
         }
     }
 }

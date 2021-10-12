@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <me.panpf.sketch.SketchImageView
-        android:id="@+id/image_roundRectImageShaperFragment"
+        android:id="@+id/roundedShaperImage"
         android:layout_width="match_parent"
-        android:layout_margin="16dp"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
         android:layout_weight="1" />
 
     <SeekBar
-        android:id="@+id/seekBar_roundRectImageShaperFragment_radius"
+        android:id="@+id/roundedShaperRadiusSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp" />
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,46 +26,46 @@
         android:layout_marginRight="16dp">
 
         <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_rounded_radius"
+            android:textColor="@color/text_normal" />
+
+        <TextView
+            android:id="@+id/roundedShaperRadiusValueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_normal"
-            android:text="角度" />
-
-        <TextView
-            android:id="@+id/text_roundRectImageShaperFragment_radius"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_normal"
-            android:gravity="right" />
+            tools:text="65" />
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/seekBar_roundRectImageShaperFragment_stroke"
+        android:id="@+id/roundedShaperStrokeWidthSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp" />
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp">
 
         <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_stroke_width"
+            android:textColor="@color/text_normal" />
+
+        <TextView
+            android:id="@+id/roundedShaperStrokeWidthValueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_normal"
-            android:text="描边" />
-
-        <TextView
-            android:id="@+id/text_roundRectImageShaperFragment_stroke"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_normal"
-            android:gravity="right" />
+            tools:text="87" />
     </LinearLayout>
 </LinearLayout>

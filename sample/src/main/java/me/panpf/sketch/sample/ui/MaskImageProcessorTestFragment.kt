@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentMaskBinding
+import me.panpf.sketch.sample.vm.MaskProcessorTestViewModel
 
 class MaskImageProcessorTestFragment : BaseFragment<FragmentMaskBinding>() {
+
+    private val viewModel by viewModels<MaskProcessorTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -32,7 +36,7 @@ class MaskImageProcessorTestFragment : BaseFragment<FragmentMaskBinding>() {
 
         binding.maskSeekBar.apply {
             max = 100
-            progress = 15
+            progress = viewModel.maskOpacityData.value!!
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar_maskFragment: SeekBar) {
                 }
@@ -41,28 +45,24 @@ class MaskImageProcessorTestFragment : BaseFragment<FragmentMaskBinding>() {
                 }
 
                 override fun onProgressChanged(
-                    seekBar_maskFragment: SeekBar,
-                    progress: Int,
-                    fromUser: Boolean
+                    seekBar_maskFragment: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    apply(binding)
+                    viewModel.changeMaskOpacity(progress)
                 }
             })
         }
 
-        apply(binding)
-    }
+        viewModel.maskOpacityData.observe(viewLifecycleOwner) {
+            val maskOpacity = it ?: return@observe
 
-    private fun apply(binding: FragmentMaskBinding) {
-        val progress = binding.maskSeekBar.progress
+            val alpha = (maskOpacity.toFloat() / 100 * 255).toInt()
+            val maskColor = Color.argb(alpha, 0, 0, 0)
+            binding.maskImage.apply {
+                options.processor = MaskImageProcessor(maskColor)
+                displayImage(AssetImage.MASK)
+            }
 
-        val alpha = (progress.toFloat() / 100 * 255).toInt()
-        val maskColor = Color.argb(alpha, 0, 0, 0)
-        binding.maskImage.apply {
-            options.processor = MaskImageProcessor(maskColor)
-            displayImage(AssetImage.MASK)
+            binding.maskValueText.text = "%d/%d".format(maskOpacity, binding.maskSeekBar.max)
         }
-
-        binding.maskValueText.text = "%d/%d".format(progress, binding.maskSeekBar.max)
     }
 }

@@ -11,29 +11,23 @@
         android:id="@+id/inBitmapTestImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        tools:ignore="ContentDescription" />
 
-    <ScrollView
-        android:id="@+id/inBitmapTestInfoLayout"
+    <TextView
+        android:id="@+id/inBitmapTestText"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#000000">
-
-        <TextView
-            android:id="@+id/inBitmapTestText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="16dp"
-            android:textColor="@color/text_normal"
-            tools:text="INFO" />
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="16dp"
+        android:textColor="@color/text_normal"
+        tools:text="INFO" />
 
     <LinearLayout
         android:id="@+id/inBitmapTestOperation1Layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
         android:paddingLeft="4dp"
         android:paddingTop="4dp"
         android:paddingRight="4dp">
@@ -70,7 +64,6 @@
         android:id="@+id/inBitmapTestOperation2Layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:paddingBottom="4dp"

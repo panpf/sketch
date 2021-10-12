@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentRoundRectImageProcessorBinding
+import me.panpf.sketch.sample.vm.RoundedProcessorTestViewModel
 
 class RoundRectImageProcessorTestFragment :
     BaseFragment<FragmentRoundRectImageProcessorBinding>() {
+
+    private val viewModel by viewModels<RoundedProcessorTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -32,7 +36,7 @@ class RoundRectImageProcessorTestFragment :
 
         binding.roundRectSeekBar.apply {
             max = 100
-            progress = 30
+            progress = viewModel.roundedRadiusData.value!!
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
                 }
@@ -40,24 +44,24 @@ class RoundRectImageProcessorTestFragment :
                 override fun onStopTrackingTouch(seekBar_roundRectImageProcessor: SeekBar) {
                 }
 
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    apply(binding)
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeRounded(progress)
                 }
             })
         }
 
-        apply(binding)
-    }
+        viewModel.roundedRadiusData.observe(viewLifecycleOwner) {
+            val maskOpacity = it ?: return@observe
 
-    private fun apply(binding: FragmentRoundRectImageProcessorBinding) {
-        val progress = binding.roundRectSeekBar.progress
+            binding.roundRectImage.apply {
+                options.processor = RoundRectImageProcessor(maskOpacity.toFloat())
+                displayImage(AssetImage.MEI_NV)
+            }
 
-        binding.roundRectImage.apply {
-            options.processor = RoundRectImageProcessor(progress.toFloat())
-            displayImage(AssetImage.MEI_NV)
+            binding.roundRectValueText.text =
+                "%d/%d".format(maskOpacity, binding.roundRectSeekBar.max)
         }
-
-        binding.roundRectValueText.text =
-            "%d/%d".format(progress, binding.roundRectSeekBar.max)
     }
 }

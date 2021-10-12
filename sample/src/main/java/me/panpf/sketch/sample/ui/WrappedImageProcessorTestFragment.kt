@@ -13,11 +13,11 @@ import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentWrappedBinding
-import me.panpf.sketch.sample.vm.WrappedTestViewModel
+import me.panpf.sketch.sample.vm.WrappedProcessorTestViewModel
 
 class WrappedImageProcessorTestFragment : BaseFragment<FragmentWrappedBinding>() {
 
-    private val viewModel by viewModels<WrappedTestViewModel>()
+    private val viewModel by viewModels<WrappedProcessorTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,

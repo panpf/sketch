@@ -5,17 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentRoundRectImageShaperBinding
+import me.panpf.sketch.sample.vm.RoundedShaperTestViewModel
 import me.panpf.sketch.shaper.RoundRectImageShaper
 
 class RoundRectImageShaperTestFragment :
     BaseFragment<FragmentRoundRectImageShaperBinding>() {
 
-    private var radiusProgress = 20
-    private var strokeProgress = 5
+    private val viewModel by viewModels<RoundedShaperTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -26,54 +27,57 @@ class RoundRectImageShaperTestFragment :
         binding: FragmentRoundRectImageShaperBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.imageRoundRectImageShaperFragment.options.displayer = TransitionImageDisplayer()
+        binding.roundedShaperImage.options.displayer = TransitionImageDisplayer()
 
-        binding.seekBarRoundRectImageShaperFragmentRadius.max = 100
-        binding.seekBarRoundRectImageShaperFragmentRadius.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                binding.textRoundRectImageShaperFragmentRadius.text =
-                    String.format("%d/%d", progress, 100)
+        binding.roundedShaperRadiusSeekBar.apply {
+            max = 100
+            progress = viewModel.testData.value!!.roundedRadius
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeRoundedRadius(progress)
+                }
+            })
+        }
+
+        binding.roundedShaperStrokeWidthSeekBar.apply {
+            max = 100
+            progress = viewModel.testData.value!!.strokeWidth
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeStrokeWidth(progress)
+                }
+            })
+        }
+
+        viewModel.testData.observe(viewLifecycleOwner) { test ->
+            test ?: return@observe
+            val roundedRadius = test.roundedRadius
+            val strokeWidth = test.strokeWidth
+
+            binding.roundedShaperImage.apply {
+                options.shaper = RoundRectImageShaper(roundedRadius.toFloat())
+                    .setStroke(Color.WHITE, strokeWidth)
+                displayImage(AssetImage.MEI_NV)
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                radiusProgress = binding.seekBarRoundRectImageShaperFragmentRadius.progress
-                apply()
-            }
-        })
-        binding.seekBarRoundRectImageShaperFragmentRadius.progress = radiusProgress
-
-        binding.seekBarRoundRectImageShaperFragmentStroke.max = 100
-        binding.seekBarRoundRectImageShaperFragmentStroke.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                binding.textRoundRectImageShaperFragmentStroke.text =
-                    String.format("%d/%d", progress, 100)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                strokeProgress = binding.seekBarRoundRectImageShaperFragmentStroke.progress
-                apply()
-            }
-        })
-        binding.seekBarRoundRectImageShaperFragmentStroke.progress = strokeProgress
-
-        apply()
-    }
-
-    private fun apply() {
-        val imageShaper =
-            RoundRectImageShaper(radiusProgress.toFloat()).setStroke(Color.WHITE, strokeProgress)
-
-        binding?.imageRoundRectImageShaperFragment?.options?.shaper = imageShaper
-        binding?.imageRoundRectImageShaperFragment?.displayImage(AssetImage.MEI_NV)
+            binding.roundedShaperRadiusValueText.text = "%d/%d".format(roundedRadius, 100)
+            binding.roundedShaperStrokeWidthValueText.text = "%d/%d".format(strokeWidth, 100)
+        }
     }
 }

@@ -5,15 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentCircleImageShaperBinding
+import me.panpf.sketch.sample.vm.CircleShaperTestViewModel
 import me.panpf.sketch.shaper.CircleImageShaper
 
 class CircleImageShaperTestFragment : BaseFragment<FragmentCircleImageShaperBinding>() {
 
-    private var strokeProgress = 5
+    private val viewModel by viewModels<CircleShaperTestViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -24,35 +26,35 @@ class CircleImageShaperTestFragment : BaseFragment<FragmentCircleImageShaperBind
         binding: FragmentCircleImageShaperBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.imageCircleImageShaperFragment.options.displayer = TransitionImageDisplayer()
+        binding.circleShaperImage.options.displayer = TransitionImageDisplayer()
 
-        binding.seekBarCircleImageShaperFragmentStroke.apply {
+        binding.circleShaperStrokeWidthSeekBar.apply {
             max = 100
+            progress = viewModel.strokeWidthData.value!!
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    binding.textCircleImageShaperFragmentStroke.text =
-                        String.format("%d/%d", progress, 100)
-                }
-
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    strokeProgress = progress
-                    apply(binding)
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeStrokeWidth(progress)
                 }
             })
-            progress = strokeProgress
         }
 
-        apply(binding)
-    }
+        viewModel.strokeWidthData.observe(viewLifecycleOwner) {
+            val strokeWidth = it ?: return@observe
 
-    private fun apply(binding: FragmentCircleImageShaperBinding) {
-        val imageShaper = CircleImageShaper().setStroke(Color.WHITE, strokeProgress)
+            binding.circleShaperImage.apply {
+                options.shaper = CircleImageShaper().setStroke(Color.WHITE, strokeWidth)
+                displayImage(AssetImage.MEI_NV)
+            }
 
-        binding.imageCircleImageShaperFragment.options.shaper = imageShaper
-        binding.imageCircleImageShaperFragment.displayImage(AssetImage.MEI_NV)
+            binding.circleShaperStrokeWidthText.text = "%d/%d".format(strokeWidth, 100)
+        }
     }
 }

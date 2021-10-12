@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import me.panpf.sketch.sample.base.LifecycleAndroidViewModel
 
-class WrappedTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
+class WrappedProcessorTestViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
     val wrappedTestData = MutableLiveData(WrappedTest(30, 45, 45))
 
