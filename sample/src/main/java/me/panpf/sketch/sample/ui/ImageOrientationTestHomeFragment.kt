@@ -4,51 +4,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import me.panpf.adapter.pager.FragmentArrayPagerAdapter
+import androidx.fragment.app.viewModels
+import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import me.panpf.sketch.sample.base.BaseToolbarFragment
-import me.panpf.sketch.sample.databinding.FragmentPagerTabBinding
-import me.panpf.sketch.sample.item.TitleTabFactory
-import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
+import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
+import me.panpf.sketch.sample.vm.ImageOrientationTestHomeViewModel
 
-class ImageOrientationTestHomeFragment : BaseToolbarFragment<FragmentPagerTabBinding>() {
-    private var fragmentAdapter: FragmentArrayPagerAdapter? = null
+class ImageOrientationTestHomeFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
+
+    private val viewModel by viewModels<ImageOrientationTestHomeViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
-    ) = FragmentPagerTabBinding.inflate(inflater, parent, false)
+    ) = FragmentPager2TabBinding.inflate(inflater, parent, false)
 
     override fun onInitData(
         toolbar: Toolbar,
-        binding: FragmentPagerTabBinding,
+        binding: FragmentPager2TabBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "Image Orientation Test"
 
-        if (fragmentAdapter == null) {
-            val filePaths = ImageOrientationCorrectTestFileGenerator.getInstance(requireContext()).filePaths
-            val fragments = arrayOfNulls<androidx.fragment.app.Fragment>(filePaths.size)
-            for (w in filePaths.indices) {
-                fragments[w] = ImageOrientationTestFragment.build(filePaths[w])
-            }
-            fragmentAdapter = FragmentArrayPagerAdapter(childFragmentManager, fragments)
-        }
-        binding.pagerPagerTabFragmentContent.adapter = fragmentAdapter
+        viewModel.listData.observe(viewLifecycleOwner) { list ->
+            list ?: return@observe
+            val titles = list.map { it.title }
+            val fragments = list.map { ImageOrientationTestFragment.build(it.imageUri) }
+            binding.tabPagerPager.adapter = ArrayFragmentStateAdapter(this, fragments)
 
-        binding.tabPagerTabFragmentTabs.setTabViewFactory(
-            TitleTabFactory(
-                arrayOf(
-                    "ROTATE_90",
-                    "ROTATE_180",
-                    "ROTATE_270",
-                    "FLIP_HORIZONTAL",
-                    "TRANSPOSE",
-                    "FLIP_VERTICAL",
-                    "TRANSVERSE"
-                ),
-                requireActivity()
-            )
-        )
-        binding.tabPagerTabFragmentTabs.setViewPager(binding.pagerPagerTabFragmentContent)
+            TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->
+                tab.text = titles[position]
+            }.attach()
+        }
     }
 }

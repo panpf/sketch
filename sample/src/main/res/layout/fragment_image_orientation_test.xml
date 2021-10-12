@@ -8,10 +8,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:textColor="@color/text_normal"
-        android:text="纠正前：" />
+        android:text="纠正前："
+        android:textColor="@color/text_normal" />
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <me.panpf.sketch.SketchImageView
         android:id="@+id/image_imageOrientationTestFragment_before"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:textColor="@color/text_normal"
-        android:text="纠正后：" />
+        android:text="纠正后："
+        android:textColor="@color/text_normal" />
 
     <me.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_imageOrientationTestFragment_after"

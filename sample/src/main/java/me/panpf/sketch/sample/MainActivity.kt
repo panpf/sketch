@@ -25,14 +25,8 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.panpf.sketch.sample.base.BaseActivity
 import me.panpf.sketch.sample.databinding.ActivityMainBinding
-import me.panpf.sketch.sample.util.ImageOrientationCorrectTestFileGenerator
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
@@ -50,18 +44,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun onInitData(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
         startMultiProcess()
-        initImageAsserts()
         requestPermission()
-    }
-
-    private fun initImageAsserts() {
-        lifecycleScope.launch {
-            val appContext = applicationContext
-            delay(1000)
-            withContext(Dispatchers.IO) {
-                ImageOrientationCorrectTestFileGenerator.getInstance(appContext).onAppStart()
-            }
-        }
     }
 
     private fun startMultiProcess() {

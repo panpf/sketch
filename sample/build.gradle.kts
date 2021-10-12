@@ -107,7 +107,6 @@ dependencies {
 
     implementation("com.google.android:flexbox:${property("FLEXBOX")}")
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
-    implementation("io.github.panpf.pagerindicator:pagerindicator:${property("PAGER_INDICATOR")}")
     implementation("io.github.panpf.assemblyadapter:assemblyadapter:${property("ASSEMBLY_ADAPTER")}")
     implementation("io.github.panpf.assemblyadapter:assemblyadapter-ktx:${property("ASSEMBLY_ADAPTER")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_4")}")
