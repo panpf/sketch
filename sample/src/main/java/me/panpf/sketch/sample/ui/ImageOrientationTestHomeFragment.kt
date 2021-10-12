@@ -30,7 +30,11 @@ class ImageOrientationTestHomeFragment : BaseToolbarFragment<FragmentPager2TabBi
         viewModel.listData.observe(viewLifecycleOwner) { list ->
             list ?: return@observe
             val titles = list.map { it.title }
-            val fragments = list.map { ImageOrientationTestFragment.build(it.imageUri) }
+            val fragments = list.map {
+                ImageOrientationTestFragment().apply {
+                    arguments = ImageOrientationTestFragmentArgs(it.imageUri).toBundle()
+                }
+            }
             binding.tabPagerPager.adapter = ArrayFragmentStateAdapter(this, fragments)
 
             TabLayoutMediator(binding.tabPagerTabLayout, binding.tabPagerPager) { tab, position ->

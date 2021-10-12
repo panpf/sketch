@@ -3,18 +3,13 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.databinding.FragmentImageOrientationTestBinding
 
 class ImageOrientationTestFragment : BaseFragment<FragmentImageOrientationTestBinding>() {
 
-    private val filePath: String by lazy {
-        checkNotNull(
-            arguments?.getString(
-                PARAM_REQUIRED_STRING_FILE_PATH
-            )
-        )
-    }
+    private val args by navArgs<ImageOrientationTestFragmentArgs>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -27,18 +22,9 @@ class ImageOrientationTestFragment : BaseFragment<FragmentImageOrientationTestBi
     ) {
         binding.imageImageOrientationTestFragmentBefore.apply {
             options.isCorrectImageOrientationDisabled = true
-            displayImage(filePath)
+            displayImage(args.imagePath)
         }
 
-        binding.imageImageOrientationTestFragmentAfter.displayImage(filePath)
-    }
-
-    companion object {
-        private const val PARAM_REQUIRED_STRING_FILE_PATH = "PARAM_REQUIRED_STRING_FILE_PATH"
-
-        fun build(filePath: String): ImageOrientationTestFragment =
-            ImageOrientationTestFragment().apply {
-                arguments = Bundle().apply { putString(PARAM_REQUIRED_STRING_FILE_PATH, filePath) }
-            }
+        binding.imageImageOrientationTestFragmentAfter.displayImage(args.imagePath)
     }
 }

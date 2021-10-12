@@ -39,7 +39,12 @@
     <fragment
         android:id="@+id/imageOrientationTestFragment"
         android:name="me.panpf.sketch.sample.ui.ImageOrientationTestFragment"
-        android:label="ImageOrientationTestFragment" />
+        android:label="ImageOrientationTestFragment">
+        <argument
+            android:name="imagePath"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
     <fragment
         android:id="@+id/imageOrientationTestHomeFragment"
         android:name="me.panpf.sketch.sample.ui.ImageOrientationTestHomeFragment"
