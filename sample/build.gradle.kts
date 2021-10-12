@@ -92,18 +92,19 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
-    implementation("androidx.multidex:multidex:${property("MULTIDEX")}")
 
     implementation("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
-    implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     implementation("androidx.constraintlayout:constraintlayout:${property("ANDROIDX_CONSTRAINTLAYOUT")}")
     implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${property("ANDROIDX_LIFECYCLE")}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${property("ANDROIDX_LIFECYCLE")}")
-    implementation("androidx.paging:paging-common:${property("ANDROIDX_PAGING")}")
-    implementation("androidx.paging:paging-runtime:${property("ANDROIDX_PAGING")}")
+    implementation("androidx.multidex:multidex:${property("MULTIDEX")}")
     implementation("androidx.navigation:navigation-fragment-ktx:${property("ANDROIDX_NAVIGATION")}")
     implementation("androidx.navigation:navigation-ui-ktx:${property("ANDROIDX_NAVIGATION")}")
+    implementation("androidx.paging:paging-common:${property("ANDROIDX_PAGING")}")
+    implementation("androidx.paging:paging-runtime:${property("ANDROIDX_PAGING")}")
+    implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:${property("ANDROIDX_SWIPEREFRESHLAYOUT")}")
 
     implementation("com.google.android:flexbox:${property("FLEXBOX")}")
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")

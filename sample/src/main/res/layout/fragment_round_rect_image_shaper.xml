@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <me.panpf.sketch.SketchImageView
         android:id="@+id/image_roundRectImageShaperFragment"
         android:layout_width="match_parent"
         android:layout_margin="16dp"

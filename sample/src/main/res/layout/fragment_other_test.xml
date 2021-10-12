@@ -10,7 +10,7 @@
         android:layout_height="400dp"
         android:clipChildren="false" />
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <me.panpf.sketch.SketchImageView
         android:id="@+id/otherTestF_emptyImage"
         android:layout_width="80dp"
         android:layout_height="80dp"

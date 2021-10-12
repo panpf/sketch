@@ -24,7 +24,7 @@
         android:text="纠正后："
         android:textColor="@color/text_normal" />
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <me.panpf.sketch.SketchImageView
         android:id="@+id/image_imageOrientationTestFragment_after"
         android:layout_width="match_parent"
         android:layout_height="0dp"

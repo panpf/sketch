@@ -19,7 +19,7 @@
         android:layout_gravity="right"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/bkg_page_number"
+        android:background="@drawable/bg_page_number"
         android:paddingLeft="8dp"
         android:paddingTop="6dp"
         android:paddingRight="8dp"

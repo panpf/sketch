@@ -5,10 +5,9 @@
     <color name="colorAccent">#bf5660</color>
     <color name="windowBackground">#2E3440</color>
 
-    <color name="text_normal">#AEFFFFFF</color>
-    <color name="text_selected">#FFFFFF</color>
+    <color name="text_normal">#FFFFFF</color>
     <color name="text_title">#FFFFFF</color>
-    <color name="text_subtitle">#33FFFFFF</color>
+    <color name="text_subtitle">#AEFFFFFF</color>
 
     <color name="list_item_background_pressed">#33000000</color>
 </resources>
