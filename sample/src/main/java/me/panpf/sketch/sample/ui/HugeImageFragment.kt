@@ -33,7 +33,7 @@ class HugeImageFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
         binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
             this,
-            listOf(ImageFragmentItemFactory(requireContext(), null, true)),
+            listOf(ImageFragmentItemFactory(showSmallMap = true)),
             images
         )
 

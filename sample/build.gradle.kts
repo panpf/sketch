@@ -118,7 +118,6 @@ dependencies {
     implementation("io.github.panpf.tools4a:tools4a-device-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4a:tools4a-toast-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4a:tools4a-dimen-ktx:${property("TOOLS4A")}")
-    implementation("io.github.panpf.tools4a:tools4a-args-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4j:tools4j-math-ktx:${property("TOOLS4J")}")
     implementation("io.github.panpf.tools4j:tools4j-date-ktx:${property("TOOLS4J")}")
     implementation("io.github.panpf.tools4k:tools4k:${property("TOOLS4K")}")

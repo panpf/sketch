@@ -20,11 +20,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import java.util.*
 
 abstract class BaseFragment<VIEW_BINDING : ViewBinding> : Fragment() {
 
     protected var binding: VIEW_BINDING? = null
+    private val userVisibleChangedListenerList = LinkedList<UserVisibleChangedListener>()
 
     val isViewCreated: Boolean
         get() = view != null
@@ -67,25 +72,51 @@ abstract class BaseFragment<VIEW_BINDING : ViewBinding> : Fragment() {
     override fun onPause() {
         super.onPause()
         if (userVisibleHint) {
-            onUserVisibleChanged(false)
+            userVisibleChangedListenerList.forEach {
+                it.onUserVisibleChanged(false)
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         if (userVisibleHint) {
-            onUserVisibleChanged(true)
+            userVisibleChangedListenerList.forEach {
+                it.onUserVisibleChanged(true)
+            }
         }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isResumed) {
-            onUserVisibleChanged(isVisibleToUser)
+            userVisibleChangedListenerList.forEach {
+                it.onUserVisibleChanged(isVisibleToUser)
+            }
         }
     }
 
-    protected open fun onUserVisibleChanged(isVisibleToUser: Boolean) {
+    fun registerUserVisibleChangedListener(
+        owner: LifecycleOwner,
+        userVisibleChangedListener: UserVisibleChangedListener
+    ) {
+        userVisibleChangedListenerList.add(userVisibleChangedListener)
+        owner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
+            if (event.targetState == Lifecycle.State.DESTROYED) {
+                userVisibleChangedListenerList.remove(userVisibleChangedListener)
+            }
+        })
+    }
 
+    fun registerUserVisibleChangedListener(
+        userVisibleChangedListener: UserVisibleChangedListener
+    ) {
+        userVisibleChangedListenerList.add(userVisibleChangedListener)
+    }
+
+    fun unregisterUserVisibleChangedListener(
+        userVisibleChangedListener: UserVisibleChangedListener
+    ) {
+        userVisibleChangedListenerList.remove(userVisibleChangedListener)
     }
 }

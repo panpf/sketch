@@ -62,6 +62,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        // SketchZoomImageView gestures may trigger exceptions
         return try {
             super.dispatchTouchEvent(ev)
         } catch (e: RuntimeException) {

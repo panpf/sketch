@@ -1,16 +1,14 @@
 package me.panpf.sketch.sample.item
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
-import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.ui.ImageFragment
+import me.panpf.sketch.sample.ui.ImageFragmentArgs
 
 class ImageFragmentItemFactory(
-    private val context: Context,
-    private val loadingImageOptionsId: String?,
-    private val showTools: Boolean? = null
+    private val loadingOptionsId: String? = null,
+    private val showSmallMap: Boolean = false
 ) : FragmentItemFactory<Image>(Image::class) {
 
     override fun createFragment(
@@ -18,8 +16,13 @@ class ImageFragmentItemFactory(
         absoluteAdapterPosition: Int,
         data: Image
     ): Fragment {
-        val showTools =
-            showTools ?: AppConfig.getBoolean(context, AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL)
-        return ImageFragment.build(data, loadingImageOptionsId, showTools)
+        return ImageFragment().apply {
+            arguments = ImageFragmentArgs(
+                data.normalQualityUrl,
+                data.rawQualityUrl,
+                loadingOptionsId,
+                showSmallMap
+            ).toBundle()
+        }
     }
 }

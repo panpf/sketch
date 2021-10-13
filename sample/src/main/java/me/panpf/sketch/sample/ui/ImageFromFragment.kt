@@ -38,7 +38,7 @@ class ImageFromFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
             binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
                 this,
-                listOf(ImageFragmentItemFactory(requireContext(), null, false)),
+                listOf(ImageFragmentItemFactory()),
                 images
             )
 

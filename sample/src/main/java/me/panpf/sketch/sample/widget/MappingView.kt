@@ -274,7 +274,7 @@ class MappingView : SketchImageView {
                 Math.round(visibleRect.bottom * heightScale))
     }
 
-    interface OnSingleClickListener {
+    fun interface OnSingleClickListener {
         fun onSingleClick(x: Float, y: Float): Boolean
     }
 }

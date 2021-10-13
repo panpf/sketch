@@ -54,6 +54,7 @@ class ImageViewerFragment : BaseFragment<FragmentImageViewerBinding>() {
             updateLayoutParams<ViewGroup.LayoutParams> {
                 width = requireContext().getScreenWidth()
                 height = requireContext().getScreenHeight()
+                // + DeviceUtils.getWindowHeightSupplement(this) for MIX 2
                 if (isOrientationPortrait()) {
                     height += DeviceUtils.getWindowHeightSupplement(requireActivity())
                 } else {
@@ -91,7 +92,7 @@ class ImageViewerFragment : BaseFragment<FragmentImageViewerBinding>() {
         binding.imageViewerPager.apply {
             adapter = AssemblyFragmentStateAdapter(
                 this@ImageViewerFragment,
-                listOf(ImageFragmentItemFactory(requireContext(), args.loadingImageOptionsKey)),
+                listOf(ImageFragmentItemFactory(loadingOptionsId = args.loadingImageOptionsKey)),
                 imageList
             )
             post {

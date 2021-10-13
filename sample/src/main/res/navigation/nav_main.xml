@@ -84,7 +84,27 @@
     <fragment
         android:id="@+id/imageFragment"
         android:name="me.panpf.sketch.sample.ui.ImageFragment"
-        android:label="ImageFragment" />
+        android:label="ImageFragment">
+        <argument
+            android:name="normalQualityUrl"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="rawQualityUrl"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="loadingOptionsKey"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="showSmallMap"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
+    </fragment>
     <fragment
         android:id="@+id/imageViewerFragment"
         android:name="me.panpf.sketch.sample.ui.ImageViewerFragment"
