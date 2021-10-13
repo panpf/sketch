@@ -120,7 +120,50 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
             }
         }
 
-        initSmallMap(binding)
+        binding.imageFragmentMapping.apply {
+            if (!args.showSmallMap) {
+                isVisible = false
+            } else {
+                options.apply {
+                    displayer = FadeInImageDisplayer()
+                    setMaxSize(600, 600)
+                }
+                displayImage(finalShowImageUrl)
+
+                // Follow Matrix changes to refresh the display area
+                val visibleRect = Rect()
+                binding.imageFragmentZoomImage.zoomer.addOnMatrixChangeListener { imageZoomer ->
+                    imageZoomer.getVisibleRect(visibleRect)
+                    update(imageZoomer.drawableSize, visibleRect)
+                }
+
+                // Follow the fragments to refresh the block area
+                binding.imageFragmentZoomImage.zoomer.blockDisplayer.setOnBlockChangedListener {
+                    blockChanged(it)
+                }
+
+                // Click MappingView to locate to the specified location
+                setOnSingleClickListener { x: Float, y: Float ->
+                    if (width == 0 || height == 0) return@setOnSingleClickListener false
+                    val drawable = binding.imageFragmentZoomImage.drawable
+                        ?.takeIf { it.intrinsicWidth != 0 && it.intrinsicHeight != 0 }
+                        ?: return@setOnSingleClickListener false
+
+                    val widthScale = drawable.intrinsicWidth.toFloat() / width
+                    val heightScale = drawable.intrinsicHeight.toFloat() / height
+                    val realX = x * widthScale
+                    val realY = y * heightScale
+
+                    val showLocationAnimation = AppConfig.getBoolean(
+                        requireContext(), AppConfig.Key.LOCATION_ANIMATE
+                    )
+                    binding.imageFragmentZoomImage.zoomer.location(
+                        realX, realY, showLocationAnimation
+                    )
+                    return@setOnSingleClickListener true
+                }
+            }
+        }
     }
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
@@ -186,53 +229,6 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
             MemoryCacheStateImage(memoryCacheKey, null)
         } else {
             null
-        }
-    }
-
-    private fun initSmallMap(binding: FragmentImageBinding) {
-        if (!args.showSmallMap) {
-            binding.imageFragmentMapping.isVisible = false
-        } else {
-            binding.imageFragmentMapping.apply {
-                options.apply {
-                    displayer = FadeInImageDisplayer()
-                    setMaxSize(600, 600)
-                }
-                displayImage(finalShowImageUrl)
-
-                // Follow Matrix changes to refresh the display area
-                val visibleRect = Rect()
-                binding.imageFragmentZoomImage.zoomer.addOnMatrixChangeListener { imageZoomer ->
-                    imageZoomer.getVisibleRect(visibleRect)
-                    update(imageZoomer.drawableSize, visibleRect)
-                }
-
-                // Follow the fragments to refresh the block area
-                binding.imageFragmentZoomImage.zoomer.blockDisplayer.setOnBlockChangedListener {
-                    blockChanged(it)
-                }
-
-                // Click MappingView to locate to the specified location
-                setOnSingleClickListener { x: Float, y: Float ->
-                    if (width == 0 || height == 0) return@setOnSingleClickListener false
-                    val drawable = binding.imageFragmentZoomImage.drawable
-                        ?.takeIf { it.intrinsicWidth != 0 && it.intrinsicHeight != 0 }
-                        ?: return@setOnSingleClickListener false
-
-                    val widthScale = drawable.intrinsicWidth.toFloat() / width
-                    val heightScale = drawable.intrinsicHeight.toFloat() / height
-                    val realX = x * widthScale
-                    val realY = y * heightScale
-
-                    val showLocationAnimation = AppConfig.getBoolean(
-                        requireContext(), AppConfig.Key.LOCATION_ANIMATE
-                    )
-                    binding.imageFragmentZoomImage.zoomer.location(
-                        realX, realY, showLocationAnimation
-                    )
-                    return@setOnSingleClickListener true
-                }
-            }
         }
     }
 
