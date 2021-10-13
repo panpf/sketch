@@ -111,7 +111,7 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                 Image(it!!.urls!!.regular!!, it.urls!!.raw!!)
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageDetailFragment(
+            NavMainDirections.actionGlobalImageViewerFragment(
                 Gson().toJson(imageList),
                 position,
                 finalOptionsKey

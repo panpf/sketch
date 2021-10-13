@@ -10,7 +10,7 @@ import me.panpf.sketch.sample.AssetImage
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
-import me.panpf.sketch.sample.item.ImageFragmentItemFactory2
+import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 
 class HugeImageFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
@@ -33,7 +33,7 @@ class HugeImageFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
         binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
             this,
-            listOf(ImageFragmentItemFactory2(requireContext(), null, true)),
+            listOf(ImageFragmentItemFactory(requireContext(), null, true)),
             images
         )
 

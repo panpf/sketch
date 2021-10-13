@@ -153,7 +153,7 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                 Image(it!!.path, it.path)
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageDetailFragment(
+            NavMainDirections.actionGlobalImageViewerFragment(
                 Gson().toJson(imageList),
                 position,
                 finalOptionsKey

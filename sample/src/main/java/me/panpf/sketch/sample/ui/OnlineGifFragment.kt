@@ -108,7 +108,7 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                 )
             }
         findNavController().navigate(
-            NavMainDirections.actionGlobalImageDetailFragment(
+            NavMainDirections.actionGlobalImageViewerFragment(
                 Gson().toJson(imageList),
                 position,
                 view.optionsKey

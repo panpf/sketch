@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.github.panpf.tools4a.args.ktx.bindBooleanArgOr
 import com.github.panpf.tools4a.args.ktx.bindParcelableArgOrThrow
 import com.github.panpf.tools4a.args.ktx.bindStringArgOrNull
@@ -36,7 +37,7 @@ import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
 import me.panpf.sketch.sample.util.FixedThreeLevelScales
 import me.panpf.sketch.sample.util.SaveImageAsyncTask
-import me.panpf.sketch.sample.vm.ImageChangedViewModel
+import me.panpf.sketch.sample.vm.ShowingImageChangedViewModel
 import me.panpf.sketch.sample.widget.MappingView
 import me.panpf.sketch.state.MemoryCacheStateImage
 import me.panpf.sketch.uri.FileUriModel
@@ -66,7 +67,7 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     private val setWindowBackgroundHelper = SetWindowBackgroundHelper()
     private val gifPlayFollowPageVisibleHelper = GifPlayFollowPageVisibleHelper()
 
-    private val imageChangedViewModel by parentViewModels<ImageChangedViewModel>()
+    private val imageChangedViewModel by parentViewModels<ShowingImageChangedViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -389,8 +390,8 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
             val zoomer = binding!!.imageImageFragmentImage.zoomer
             zoomer.setOnViewTapListener { view, x, y ->
                 val parentFragment = parentFragment
-                if (parentFragment != null && parentFragment is ImageZoomer.OnViewTapListener) {
-                    (parentFragment as ImageZoomer.OnViewTapListener).onViewTap(view, x, y)
+                if (parentFragment is ImageViewerFragment) {
+                    findNavController().popBackStack()
                 } else {
                     val drawablePoint = zoomer.touchPointToDrawablePoint(x.toInt(), y.toInt())
                     val block = if (drawablePoint != null) zoomer.getBlockByDrawablePoint(
@@ -429,9 +430,6 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                             ?: binding!!.imageImageFragmentImage.scaleType
                     )
                 ) { _, _ -> showScaleTypeMenu() })
-                menuItemList.add(MenuItem(
-                    "Auto Play"
-                ) { _, _ -> play() })
                 menuItemList.add(MenuItem(
                     "Set as wallpaper"
                 ) { _, _ -> setWallpaper() })
@@ -699,10 +697,6 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
             }
 
             ApplyWallpaperAsyncTask(activity, imageFile).execute(0)
-        }
-
-        fun play() {
-            AppEvents.playImageEvent.postValue(1)
         }
 
         fun save() {

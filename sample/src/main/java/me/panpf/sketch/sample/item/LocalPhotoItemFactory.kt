@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.ImageOptions
@@ -86,7 +85,7 @@ class LocalPhotoItemFactory(
                 setOptions(ImageOptions.RECT)
             }
 
-            displayImage(data.path ?: "")
+            displayImage(data.path)
         }
     }
 }

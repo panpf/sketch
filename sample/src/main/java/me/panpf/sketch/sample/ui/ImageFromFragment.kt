@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
-import me.panpf.sketch.sample.item.ImageFragmentItemFactory2
+import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.vm.ImageFromViewModel
 
 class ImageFromFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
@@ -38,7 +38,7 @@ class ImageFromFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
 
             binding.tabPagerPager.adapter = AssemblyFragmentStateAdapter(
                 this,
-                listOf(ImageFragmentItemFactory2(requireContext(), null, false)),
+                listOf(ImageFragmentItemFactory(requireContext(), null, false)),
                 images
             )
 

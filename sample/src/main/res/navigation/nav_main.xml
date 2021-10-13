@@ -86,11 +86,11 @@
         android:name="me.panpf.sketch.sample.ui.ImageFragment"
         android:label="ImageFragment" />
     <fragment
-        android:id="@+id/imageDetailFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageDetailFragment"
-        android:label="ImageDetailFragment">
+        android:id="@+id/imageViewerFragment"
+        android:name="me.panpf.sketch.sample.ui.ImageViewerFragment"
+        android:label="ImageViewerFragment">
         <argument
-            android:name="imageUrlJsonArray"
+            android:name="imageJsonArray"
             app:argType="string"
             app:nullable="false" />
         <argument
@@ -236,8 +236,8 @@
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
     <action
-        android:id="@+id/action_global_imageDetailFragment"
-        app:destination="@id/imageDetailFragment"
+        android:id="@+id/action_global_imageViewerFragment"
+        app:destination="@id/imageViewerFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
