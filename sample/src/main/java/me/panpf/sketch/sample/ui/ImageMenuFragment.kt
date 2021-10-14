@@ -1,18 +1,24 @@
 package me.panpf.sketch.sample.ui
 
 import android.app.AlertDialog
+import android.app.WallpaperManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
+import android.os.Environment
 import android.text.format.Formatter
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
 import com.github.panpf.tools4a.toast.ktx.showLongToast
+import com.github.panpf.tools4k.lang.asOrNull
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageOrientationCorrector
 import me.panpf.sketch.drawable.SketchDrawable
@@ -20,16 +26,12 @@ import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
-import me.panpf.sketch.sample.util.ApplyWallpaperAsyncTask
-import me.panpf.sketch.sample.util.SaveImageAsyncTask
 import me.panpf.sketch.sample.util.safeRun
 import me.panpf.sketch.sample.vm.ShowImageMenuViewModel
 import me.panpf.sketch.uri.FileUriModel
-import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
-import java.io.File
-import java.io.IOException
+import java.io.*
 import java.util.*
 
 class ImageMenuFragment : Fragment() {
@@ -45,30 +47,31 @@ class ImageMenuFragment : Fragment() {
     }
 
     private fun showMenu(binding: FragmentImageBinding) {
+        val menuItemList = LinkedList<MenuItem>().apply {
+            add(MenuItem("Image Info") { _, _ ->
+                showImageInfo(binding)
+            })
+            add(MenuItem("Zoom/Rotate/Block Display") { _, _ ->
+                showZoomMenu(binding)
+            })
+            val imageView = binding.imageFragmentZoomImage
+            val scaleType = imageView.zoomer.scaleType ?: imageView.scaleType
+            add(MenuItem("Toggle ScaleType (%s)".format(scaleType)) { _, _ ->
+                showScaleTypeMenu(binding)
+            })
+            add(MenuItem("Set As Wallpaper") { _, _ ->
+                setWallpaper(binding)
+            })
+            add(MenuItem("Share Image") { _, _ ->
+                share(binding)
+            })
+            add(MenuItem("Save Image") { _, _ ->
+                save(binding)
+            })
+        }
+        val titles = menuItemList.map { it.title }.toTypedArray()
+
         AlertDialog.Builder(requireActivity()).apply {
-            val menuItemList = LinkedList<MenuItem>().apply {
-                add(MenuItem("Image Info") { _, _ ->
-                    showImageInfo(binding)
-                })
-                add(MenuItem("Zoom/Rotate/Block Display") { _, _ ->
-                    showZoomMenu(binding)
-                })
-                val imageView = binding.imageFragmentZoomImage
-                val scaleType = imageView.zoomer.scaleType ?: imageView.scaleType
-                add(MenuItem("Toggle ScaleType (%s)".format(scaleType)) { _, _ ->
-                    showScaleTypeMenu(binding)
-                })
-                add(MenuItem("Set as wallpaper") { _, _ ->
-                    setWallpaper(binding)
-                })
-                add(MenuItem("Share Image") { _, _ ->
-                    share(binding)
-                })
-                add(MenuItem("Save Image") { _, _ ->
-                    save(binding)
-                })
-            }
-            val titles = menuItemList.map { it.title }.toTypedArray()
             setItems(titles) { dialog, which ->
                 menuItemList[which].clickListener?.onClick(dialog, which)
             }
@@ -76,16 +79,17 @@ class ImageMenuFragment : Fragment() {
     }
 
     private fun showImageInfo(binding: FragmentImageBinding) {
-        AlertDialog.Builder(requireActivity()).apply {
-            @Suppress("MoveVariableDeclarationIntoWhen")
-            val drawable = SketchUtils.getLastDrawable(binding.imageFragmentZoomImage.drawable)
-            val imageInfo: String = when (drawable) {
-                is SketchLoadingDrawable -> "Image is loading, please wait later"
-                is SketchDrawable -> {
-                    assembleImageInfo(drawable, drawable as SketchDrawable)
-                }
-                else -> "Unknown source image"
+        @Suppress("MoveVariableDeclarationIntoWhen")
+        val drawable = SketchUtils.getLastDrawable(binding.imageFragmentZoomImage.drawable)
+        val imageInfo: String = when (drawable) {
+            is SketchLoadingDrawable -> "Image is loading, please wait later"
+            is SketchDrawable -> {
+                assembleImageInfo(drawable, drawable as SketchDrawable)
             }
+            else -> "Unknown source image"
+        }
+
+        AlertDialog.Builder(requireActivity()).apply {
             setMessage(imageInfo)
             setNegativeButton("Cancel", null)
         }.show()
@@ -143,36 +147,37 @@ class ImageMenuFragment : Fragment() {
         }.toString()
 
     private fun showZoomMenu(binding: FragmentImageBinding) {
-        AlertDialog.Builder(activity).apply {
-            val menuItemList = LinkedList<MenuItem>().apply {
-                val zoomer = binding.imageFragmentZoomImage.zoomer
+        val menuItemList = LinkedList<MenuItem>().apply {
+            val zoomer = binding.imageFragmentZoomImage.zoomer
 
-                add(MenuItem(assembleZoomInfo(binding), null))
-                add(MenuItem("canScrollHorizontally: ${zoomer.canScrollHorizontally()}", null))
-                add(MenuItem("canScrollVertically: ${zoomer.canScrollVertically()}", null))
-                add(MenuItem(assembleBlockInfo(binding), null))
+            add(MenuItem(assembleZoomInfo(binding), null))
+            add(MenuItem("canScrollHorizontally: ${zoomer.canScrollHorizontally()}", null))
+            add(MenuItem("canScrollVertically: ${zoomer.canScrollVertically()}", null))
+            add(MenuItem(assembleBlockInfo(binding), null))
 
-                val blockDisplayer = zoomer.blockDisplayer
-                if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
-                    val isShowBlockBounds = blockDisplayer.isShowBlockBounds
-                    add(MenuItem(if (isShowBlockBounds) "Hide block bounds" else "Show block bounds") { _, _ ->
-                        blockDisplayer.isShowBlockBounds = !blockDisplayer.isShowBlockBounds
-                    })
-                } else {
-                    add(MenuItem("Block bounds (No need)", null))
-                }
-
-                add(MenuItem(if (zoomer.isReadMode) "Close read mode" else "Open read mode") { _, _ ->
-                    zoomer.isReadMode = !zoomer.isReadMode
+            val blockDisplayer = zoomer.blockDisplayer
+            if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
+                val isShowBlockBounds = blockDisplayer.isShowBlockBounds
+                add(MenuItem(if (isShowBlockBounds) "Hide block bounds" else "Show block bounds") { _, _ ->
+                    blockDisplayer.isShowBlockBounds = !blockDisplayer.isShowBlockBounds
                 })
-
-                add(MenuItem("Clockwise rotation 90°（%d）".format(zoomer.rotateDegrees)) { _, _ ->
-                    if (!zoomer.rotateBy(90)) {
-                        showLongToast("The rotation angle must be a multiple of 90")
-                    }
-                })
+            } else {
+                add(MenuItem("Block bounds (No need)", null))
             }
-            val titles = menuItemList.map { it.title }.toTypedArray()
+
+            add(MenuItem(if (zoomer.isReadMode) "Close read mode" else "Open read mode") { _, _ ->
+                zoomer.isReadMode = !zoomer.isReadMode
+            })
+
+            add(MenuItem("Clockwise rotation 90°（%d）".format(zoomer.rotateDegrees)) { _, _ ->
+                if (!zoomer.rotateBy(90)) {
+                    showLongToast("The rotation angle must be a multiple of 90")
+                }
+            })
+        }
+        val titles = menuItemList.map { it.title }.toTypedArray()
+
+        AlertDialog.Builder(activity).apply {
             setItems(titles) { dialog, which ->
                 menuItemList[which].clickListener?.onClick(dialog, which)
             }
@@ -214,163 +219,155 @@ class ImageMenuFragment : Fragment() {
         }.toString()
 
     private fun showScaleTypeMenu(binding: FragmentImageBinding) {
-        val builder = AlertDialog.Builder(activity)
+        val items = listOf(
+            "CENTER" to ImageView.ScaleType.CENTER,
+            "CENTER_CROP" to ImageView.ScaleType.CENTER_CROP,
+            "CENTER_INSIDE" to ImageView.ScaleType.CENTER_INSIDE,
+            "FIT_START" to ImageView.ScaleType.FIT_START,
+            "FIT_CENTER" to ImageView.ScaleType.FIT_CENTER,
+            "FIT_END" to ImageView.ScaleType.FIT_END,
+            "FIT_XY" to ImageView.ScaleType.FIT_XY,
+        )
+        val titles = items.map { it.first }.toTypedArray()
 
-        builder.setTitle("Toggle ScaleType")
-
-        val items = arrayOfNulls<String>(7)
-        items[0] = "CENTER"
-        items[1] = "CENTER_CROP"
-        items[2] = "CENTER_INSIDE"
-        items[3] = "FIT_START"
-        items[4] = "FIT_CENTER"
-        items[5] = "FIT_END"
-        items[6] = "FIT_XY"
-
-        builder.setItems(items) { dialog, which ->
-            dialog.dismiss()
-
-            when (which) {
-                0 -> binding.imageFragmentZoomImage.scaleType = ImageView.ScaleType.CENTER
-                1 -> binding.imageFragmentZoomImage.scaleType =
-                    ImageView.ScaleType.CENTER_CROP
-                2 -> binding.imageFragmentZoomImage.scaleType =
-                    ImageView.ScaleType.CENTER_INSIDE
-                3 -> binding.imageFragmentZoomImage.scaleType = ImageView.ScaleType.FIT_START
-                4 -> binding.imageFragmentZoomImage.scaleType =
-                    ImageView.ScaleType.FIT_CENTER
-                5 -> binding.imageFragmentZoomImage.scaleType = ImageView.ScaleType.FIT_END
-                6 -> binding.imageFragmentZoomImage.scaleType = ImageView.ScaleType.FIT_XY
+        AlertDialog.Builder(activity).apply {
+            setTitle("Toggle ScaleType")
+            setItems(titles) { _, which ->
+                binding.imageFragmentZoomImage.scaleType = items[which].second
             }
-        }
-
-        builder.setNegativeButton("Cancel", null)
-        builder.show()
+            setNegativeButton("Cancel", null)
+        }.show()
     }
 
-    private fun getImageFile(imageUri: String?): File? {
-        val context = context ?: return null
-        imageUri?.takeIf { it.isNotEmpty() } ?: return null
-
-        val uriModel = UriModel.match(context, imageUri)
-        if (uriModel == null) {
-            Toast.makeText(activity, "Unknown format uri: $imageUri", Toast.LENGTH_LONG).show()
-            return null
+    private fun setWallpaper(binding: FragmentImageBinding) {
+        val drawable = binding.imageFragmentZoomImage.drawable
+        val imageUri = drawable.asOrNull<SketchDrawable>()?.uri
+            ?.takeIf { it.isNotEmpty() }
+        val imageFile = if (imageUri != null) getImageFile(imageUri) else null
+        if (imageFile == null) {
+            showLongToast("Please wait later")
+            return
         }
 
-        val dataSource: DataSource
-        try {
-            dataSource = uriModel.getDataSource(context, imageUri, null)
-        } catch (e: GetDataSourceException) {
-            e.printStackTrace()
-            Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
-            return null
-        }
-
-        return try {
-            dataSource.getFile(context.externalCacheDir, null)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
+        lifecycleScope.launch {
+            val context = requireActivity().applicationContext
+            val success = withContext(Dispatchers.IO) {
+                runCatching {
+                    FileInputStream(imageFile).use {
+                        WallpaperManager.getInstance(context).setStream(it)
+                    }
+                }.isSuccess
+            }
+            showLongToast(if (success) "Set wallpaper successfully" else "Set wallpaper failed")
         }
     }
 
     private fun share(binding: FragmentImageBinding) {
-        val activity = activity ?: return
         val drawable = binding.imageFragmentZoomImage.drawable
-        val imageUri =
-            if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
-        if (TextUtils.isEmpty(imageUri)) {
-            Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val imageFile = getImageFile(imageUri)
+        val imageUri = drawable.asOrNull<SketchDrawable>()?.uri
+            ?.takeIf { it.isNotEmpty() }
+        val imageFile = if (imageUri != null) getImageFile(imageUri) else null
         if (imageFile == null) {
-            Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
+            showLongToast("Please wait later")
             return
         }
 
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imageFile))
-        intent.type = "image/" + parseFileType(imageFile.name)
-
-        val infoList = activity.packageManager.queryIntentActivities(intent, 0)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_STREAM, requireContext().getShareFileUri(imageFile))
+            type = "image/" + parseFileType(imageFile.name)
+        }
+        val infoList = requireActivity().packageManager.queryIntentActivities(intent, 0)
         if (infoList == null || infoList.isEmpty()) {
-            Toast.makeText(
-                activity,
-                "There is no APP on your device to share the picture",
-                Toast.LENGTH_LONG
-            ).show()
+            showLongToast("There is no App on your device to share the picture")
             return
         }
-
         startActivity(intent)
     }
 
-    private fun setWallpaper(binding: FragmentImageBinding) {
-        val activity = activity ?: return
+    private fun save(binding: FragmentImageBinding) {
         val drawable = binding.imageFragmentZoomImage.drawable
-        val imageUri =
-            if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null
-        if (TextUtils.isEmpty(imageUri)) {
-            Toast.makeText(activity, "Please wait later", Toast.LENGTH_LONG).show()
+        val imageUri = drawable.asOrNull<SketchDrawable>()?.uri
+            ?.takeIf { it.isNotEmpty() }
+        if (imageUri == null) {
+            showLongToast("Please wait later")
+            return
+        }
+        val uriModel = UriModel.match(requireActivity(), imageUri) ?: return
+        if (uriModel is FileUriModel) {
+            showLongToast("This image is the local no need to save")
             return
         }
 
-        val imageFile = getImageFile(imageUri)
-        if (imageFile == null) {
-            Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
+        val dataSource = kotlin.runCatching {
+            uriModel.getDataSource(requireContext(), imageUri, null)
+        }.getOrNull()
+        if (dataSource == null) {
+            showLongToast("The Image is not ready yet")
             return
         }
 
-        ApplyWallpaperAsyncTask(activity, imageFile).execute(0)
+        lifecycleScope.launch {
+            val context = requireActivity().applicationContext
+            val outFile = withContext(Dispatchers.IO) {
+                val dir = File(Environment.getExternalStorageDirectory(), "download")
+                dir.mkdirs()
+                val imageFileName = SketchUtils.generatorTempFileName(dataSource, imageUri)
+                val outImageFile = File(dir, imageFileName)
+
+                kotlin.runCatching {
+                    outImageFile.createNewFile()
+                }.onFailure {
+                    return@withContext null
+                }
+
+                kotlin.runCatching {
+                    FileOutputStream(outImageFile).use { outputStream ->
+                        dataSource.inputStream.use { inputStream ->
+                            val data = ByteArray(1024)
+                            var length: Int
+                            while (inputStream.read(data).also { length = it } != -1) {
+                                outputStream.write(data, 0, length)
+                            }
+                        }
+                    }
+                }.onFailure {
+                    return@withContext null
+                }
+
+                val intent =
+                    Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outImageFile))
+                context.sendBroadcast(intent)
+                outImageFile
+            }
+            if (outFile != null) {
+                val dir = outFile.parentFile
+                showLongToast("Saved to the '${dir.path}' directory")
+            } else {
+                showLongToast("Failed to save picture")
+            }
+        }
     }
 
-    private fun save(binding: FragmentImageBinding) {
-        val context = context ?: return
-        val drawable = binding.imageFragmentZoomImage.drawable
-        val imageUri =
-            (if (drawable != null && drawable is SketchDrawable) (drawable as SketchDrawable).uri else null)?.takeIf { it.isNotEmpty() }
-                ?: return
+    private fun getImageFile(imageUri: String?): File? {
+        imageUri?.takeIf { it.isNotEmpty() } ?: return null
+        val uriModel = UriModel.match(requireContext(), imageUri) ?: return null
 
-        val uriModel = UriModel.match(context, imageUri)
-        if (uriModel == null) {
-            Toast.makeText(activity, "Unknown format uri: $imageUri", Toast.LENGTH_LONG).show()
-            return
+        val dataSource = kotlin.runCatching {
+            uriModel.getDataSource(requireContext(), imageUri, null)
+        }.getOrNull()
+        if (dataSource == null) {
+            showLongToast("The Image is not ready yet")
+            return null
         }
 
-        if (uriModel is FileUriModel) {
-            Toast.makeText(
-                activity,
-                "This image is the local no need to save",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-
-        val dataSource: DataSource
-        try {
-            dataSource = uriModel.getDataSource(context, imageUri, null)
-        } catch (e: GetDataSourceException) {
-            e.printStackTrace()
-            Toast.makeText(activity, "The Image is not ready yet", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        SaveImageAsyncTask(activity, dataSource, imageUri).execute("")
+        return kotlin.runCatching {
+            dataSource.getFile(requireContext().externalCacheDir, null)
+        }.getOrNull()
     }
 
     private fun parseFileType(fileName: String): String? {
-        val lastIndexOf = fileName.lastIndexOf("")
-        if (lastIndexOf < 0) {
-            return null
-        }
-        val fileType = fileName.substring(lastIndexOf + 1)
-        if ("" == fileType.trim { it <= ' ' }) {
-            return null
-        }
-        return fileType
+        val lastIndexOf = fileName.lastIndexOf("").takeIf { it >= 0 } ?: return null
+        return fileName.substring(lastIndexOf + 1).takeIf { "" != it.trim { it1 -> it1 <= ' ' } }
     }
 
     private class MenuItem(

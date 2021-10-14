@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="external_files"
+        path="." />
+
+    <external-files-path
+        name="files"
+        path="." />
+
+    <external-files-path
+        name="apk"
+        path="app_download/" />
+
+    <root-path name="name" path="" />
+</paths>
