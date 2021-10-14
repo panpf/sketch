@@ -6,15 +6,16 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_infoMenuItem_title"
+        android:id="@+id/infoMenuItemTitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/text_normal"
+        android:textColor="@color/text_title"
+        android:textSize="14sp"
         tools:text="清除磁盘缓存" />
 
     <TextView
-        android:id="@+id/text_infoMenuItem_info"
+        android:id="@+id/infoMenuItemInfoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_subtitle"
