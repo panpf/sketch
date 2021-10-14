@@ -99,6 +99,6 @@ class UnsplashImageItemFactory(
 
         binding.textUnsplashImageItemUserName.text = data.user?.name
 
-        binding.textUnsplashImageItemDate.text = data.getFormattedUpdateDate()
+        binding.textUnsplashImageItemDate.text = data.formattedUpdateDate
     }
 }

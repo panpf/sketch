@@ -13,9 +13,10 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
@@ -103,13 +104,13 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<GiphyGif>>()
             .currentList.map {
                 Image(
-                    it!!.images.original.getDownloadUrl(),
-                    it.images.original.getDownloadUrl(),
+                    it!!.images.original.downloadUrl,
+                    it.images.original.downloadUrl,
                 )
             }
         findNavController().navigate(
             NavMainDirections.actionGlobalImageViewerFragment(
-                Gson().toJson(imageList),
+                Json.encodeToString(imageList),
                 position,
                 view.optionsKey
             )

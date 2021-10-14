@@ -51,19 +51,19 @@ class GiphyGifFlexboxItemFactory(
         absoluteAdapterPosition: Int,
         data: GiphyGif
     ) {
-        val previewGif = data.images?.previewGif
+        val previewGif = data.images.previewGif
         binding.imageStaggeredImageItem.apply {
             updateLayoutParams<ViewGroup.LayoutParams> {
                 val screenHeight = context.resources.displayMetrics.heightPixels
                 val previewAspectRatio =
-                    previewGif?.height?.toFloat().divide(previewGif?.width?.toFloat())
+                    previewGif.height.toFloat().divide(previewGif.width.toFloat())
                 height = screenHeight / (if (context.isOrientationPortrait()) 5 else 2)
                 width = (height / previewAspectRatio).toInt()
             }
         }
 
         binding.imageStaggeredImageItem.displayImage(
-            previewGif?.getDownloadUrl().orEmpty()
+            previewGif.downloadUrl
         )
     }
 }

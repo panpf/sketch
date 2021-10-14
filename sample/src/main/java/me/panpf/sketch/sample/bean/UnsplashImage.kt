@@ -1,147 +1,75 @@
 package me.panpf.sketch.sample.bean
 
-import android.text.TextUtils
 import com.github.panpf.assemblyadapter.recycler.DiffKey
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
-import com.google.gson.annotations.SerializedName
+@Serializable
+class UnsplashImage(
+    @SerialName("id") val id: String? = null,
+    @SerialName("created_at") val createdAt: String? = null,
+    @SerialName("updated_at") val updatedAt: String? = null,
+    @SerialName("width") val width: Int = 0,
+    @SerialName("height") val height: Int = 0,
+    @SerialName("color") val color: String? = null,
+    @SerialName("user") val user: User? = null,
+    @SerialName("urls") val urls: Urls? = null,
+    @SerialName("likes") val likes: Int = 0,
+    @SerialName("liked_by_user") val likedByUser: Boolean = false,
+) : DiffKey {
 
-class UnsplashImage : DiffKey {
-    @SerializedName("id")
-    var id: String? = null
-
-    @SerializedName("created_at")
-    var createdAt: String? = null
-
-    @SerializedName("updated_at")
-    var updatedAt: String? = null
-
-    @SerializedName("width")
-    var width: Int = 0
-
-    @SerializedName("height")
-    var height: Int = 0
-
-    @SerializedName("color")
-    var color: String? = null
-
-    @SerializedName("user")
-    var user: User? = null
-
-    @SerializedName("urls")
-    var urls: Urls? = null
-
-    @SerializedName("likes")
-    var likes: Int = 0
-
-    @SerializedName("liked_by_user")
-    var likedByUser: Boolean = false
+    val formattedUpdateDate: String? by lazy {
+        updatedAt?.substring(0, 10)?.replace("-", ".")
+    }
 
     @Transient
-    private var formattedUpdateDate: String? = null
+    override val diffKey: String = "UnsplashImage-${urls?.raw ?: urls?.full ?: id ?: throw IllegalArgumentException("No diffKey")}"
 
-    override val diffKey: Any
-        get() = "UnsplashImage-${urls?.raw ?: urls?.full ?: id ?: throw IllegalArgumentException("No diffKey")}"
+    @Serializable
+    class User(
+        @SerialName("id") val id: String? = null,
+        @SerialName("updatedAt") val updated_at: String? = null,
+        @SerialName("username") val username: String? = null,
+        @SerialName("name") val name: String? = null,
+        @SerialName("first_name") val firstName: String? = null,
+        @SerialName("last_name") val lastName: String? = null,
+        @SerialName("portfolio_url") val portfolioUrl: String? = null,
+        @SerialName("bio") val bio: String? = null,
+        @SerialName("location") val location: String? = null,
+        @SerialName("total_likes") val totalLikes: Int = 0,
+        @SerialName("total_photos") val totalPhotos: Int = 0,
+        @SerialName("total_collections") val totalCollections: Int = 0,
+        @SerialName("profile_image") val profileImage: ProfileImage? = null,
+        @SerialName("links") val links: Links? = null,
+    ) {
 
-    fun getFormattedUpdateDate(): String {
-        if (formattedUpdateDate == null && !TextUtils.isEmpty(updatedAt) && updatedAt!!.length >= 10) {
-            formattedUpdateDate = updatedAt!!.substring(0, 10).replace("-", ".")
-        }
-        return formattedUpdateDate!!
+        @Serializable
+        class ProfileImage(
+            @SerialName("small") val small: String? = null,
+            @SerialName("medium") val medium: String? = null,
+            @SerialName("large") val large: String? = null,
+        )
+
+        @Serializable
+        class Links(
+            @SerialName("self") val self: String? = null,
+            @SerialName("html") val html: String? = null,
+            @SerialName("photos") val photos: String? = null,
+            @SerialName("likes") val likes: String? = null,
+            @SerialName("portfolio") val portfolio: String? = null,
+            @SerialName("following") val following: String? = null,
+            @SerialName("followers") val followers: String? = null,
+        )
     }
 
-    class User {
-        @SerializedName("id")
-        var id: String? = null
-
-        @SerializedName("updatedAt")
-        var updated_at: String? = null
-
-        @SerializedName("username")
-        var username: String? = null
-
-        @SerializedName("name")
-        var name: String? = null
-
-        @SerializedName("first_name")
-        var firstName: String? = null
-
-        @SerializedName("last_name")
-        var lastName: String? = null
-
-        @SerializedName("portfolio_url")
-        var portfolioUrl: String? = null
-
-        @SerializedName("bio")
-        var bio: String? = null
-
-        @SerializedName("location")
-        var location: String? = null
-
-        @SerializedName("total_likes")
-        var totalLikes: Int = 0
-
-        @SerializedName("total_photos")
-        var totalPhotos: Int = 0
-
-        @SerializedName("total_collections")
-        var totalCollections: Int = 0
-
-        @SerializedName("profile_image")
-        var profileImage: ProfileImage? = null
-
-        @SerializedName("links")
-        var links: Links? = null
-
-        class ProfileImage {
-            @SerializedName("small")
-            var small: String? = null
-
-            @SerializedName("medium")
-            var medium: String? = null
-
-            @SerializedName("large")
-            var large: String? = null
-        }
-
-        class Links {
-            @SerializedName("self")
-            var self: String? = null
-
-            @SerializedName("html")
-            var html: String? = null
-
-            @SerializedName("photos")
-            var photos: String? = null
-
-            @SerializedName("likes")
-            var likes: String? = null
-
-            @SerializedName("portfolio")
-            var portfolio: String? = null
-
-            @SerializedName("following")
-            var following: String? = null
-
-            @SerializedName("followers")
-            var followers: String? = null
-        }
-    }
-
-    class Urls {
-        @SerializedName("raw")
-        var raw: String? = null
-
-        @SerializedName("full")
-        var full: String? = null
-
-        @SerializedName("regular")
-        var regular: String? = null
-
-        @SerializedName("small")
-        var small: String? = null
-
-        @SerializedName("thumb")
-        var thumb: String? = null
-    }
+    @Serializable
+    class Urls(
+        @SerialName("raw") val raw: String? = null,
+        @SerialName("full") val full: String? = null,
+        @SerialName("regular") val regular: String? = null,
+        @SerialName("small") val small: String? = null,
+        @SerialName("thumb") val thumb: String? = null,
+    )
 }
 

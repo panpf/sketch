@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
@@ -112,7 +113,7 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             }
         findNavController().navigate(
             NavMainDirections.actionGlobalImageViewerFragment(
-                Gson().toJson(imageList),
+                Json.encodeToString(imageList),
                 position,
                 finalOptionsKey
             )

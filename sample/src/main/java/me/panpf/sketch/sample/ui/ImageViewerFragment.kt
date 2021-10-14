@@ -29,8 +29,8 @@ import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.ImageOptions
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
@@ -82,8 +82,7 @@ class ImageViewerFragment : BaseFragment<FragmentImageViewerBinding>() {
     }
 
     override fun onInitData(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
-        val imageList: List<Image> =
-            Gson().fromJson(args.imageJsonArray, object : TypeToken<List<Image>>() {}.type)
+        val imageList = Json.decodeFromString<List<Image>>(args.imageJsonArray)
 
         showingImageChangedViewModel.imageChangedData.observe(viewLifecycleOwner) {
             binding.imageViewerBgImage.displayImage(it)

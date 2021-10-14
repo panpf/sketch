@@ -32,9 +32,10 @@ import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.NavMainDirections
@@ -154,7 +155,7 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             }
         findNavController().navigate(
             NavMainDirections.actionGlobalImageViewerFragment(
-                Gson().toJson(imageList),
+                Json.encodeToString(imageList),
                 position,
                 finalOptionsKey
             )

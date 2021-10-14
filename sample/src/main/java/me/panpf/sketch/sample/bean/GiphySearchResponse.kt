@@ -1,47 +1,47 @@
 package me.panpf.sketch.sample.bean
 
 import com.github.panpf.assemblyadapter.recycler.DiffKey
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 class GiphySearchResponse(
-    @SerializedName("data") val dataList: List<GiphyGif>?
+    @SerialName("data") val dataList: List<GiphyGif>?
 )
 
+@Serializable
 class GiphyGif(
-    @SerializedName("images") val images: GiphyImages
+    @SerialName("images") val images: GiphyImages
 ) : DiffKey {
-    override val diffKey: Any = "GiphyGif-${images.original.url}"
+    @Transient
+    override val diffKey: String = "GiphyGif-${images.original.url}"
 }
 
+@Serializable
 class GiphyImages(
-    @SerializedName("original") val original: GiphyImage,
-    @SerializedName("preview_gif") val previewGif: GiphyImage,
-    @SerializedName("preview_webp") val previewWebp: GiphyImage,
+    @SerialName("original") val original: GiphyImage,
+    @SerialName("preview_gif") val previewGif: GiphyImage,
+    @SerialName("preview_webp") val previewWebp: GiphyImage,
 )
 
+@Serializable
 class GiphyImage(
-    @SerializedName("url") val url: String,
-    @SerializedName("preview") val preview: String,
-    @SerializedName("size") val size: Long,
-    @SerializedName("webp_size") val webpSize: Long,
-    @SerializedName("width") val width: Long,
-    @SerializedName("height") val height: Long,
-    @SerializedName("webp") private val webpUrl: String,
-    @SerializedName("frames") private val frames: Int,
+    @SerialName("url") val url: String,
+    @SerialName("preview") val preview: String? = null,
+    @SerialName("size") val size: Long,
+    @SerialName("webp_size") val webpSize: Long? = null,
+    @SerialName("width") val width: Long,
+    @SerialName("height") val height: Long,
+    @SerialName("webp") private val webpUrl: String? = null,
+    @SerialName("frames") private val frames: Int? = null,
 ) {
-    private var downloadUrl: String? = null
-    private var webpDownloadUrl: String? = null
 
-    fun getDownloadUrl(): String {
-        return downloadUrl ?: Regex("media[\\d].giphy.com").replace(url, "i.giphy.com").apply {
-            downloadUrl = this
-        }
+    val downloadUrl: String by lazy {
+        Regex("media[\\d].giphy.com").replace(url, "i.giphy.com")
     }
 
-    fun getWebPDownloadUrl(): String {
-        return webpDownloadUrl ?: Regex("media[\\d].giphy.com").replace(webpUrl, "i.giphy.com")
-            .apply {
-                webpDownloadUrl = this
-            }
+    val webpDownloadUrl: String? by lazy {
+        if (webpUrl != null) Regex("media[\\d].giphy.com").replace(webpUrl, "i.giphy.com") else null
     }
 }
