@@ -18,7 +18,7 @@ import me.panpf.sketch.request.RedisplayListener
 import me.panpf.sketch.request.Resize
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
-import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel

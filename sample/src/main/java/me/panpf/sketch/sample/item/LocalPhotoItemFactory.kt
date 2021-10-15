@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import me.panpf.sketch.sample.AppConfig
-import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.bean.ImageInfo
 import me.panpf.sketch.sample.databinding.ListItemMyPhotoBinding

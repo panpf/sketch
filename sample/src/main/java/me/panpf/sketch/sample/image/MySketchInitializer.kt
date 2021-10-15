@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.image
 
 import android.app.Application
 import android.content.Context
@@ -7,6 +7,9 @@ import android.os.Looper
 import me.panpf.sketch.Configuration
 import me.panpf.sketch.Initializer
 import me.panpf.sketch.SLog
+import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.sample.AppEvents
+import me.panpf.sketch.sample.BuildConfig
 import me.panpf.sketch.sample.util.VideoThumbnailUriModel
 import me.panpf.sketch.util.SketchUtils
 

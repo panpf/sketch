@@ -27,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import me.panpf.sketch.sample.base.BaseActivity
 import me.panpf.sketch.sample.databinding.ActivityMainBinding
+import me.panpf.sketch.sample.service.NotificationService
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 

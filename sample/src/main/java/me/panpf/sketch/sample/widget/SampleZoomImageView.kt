@@ -6,7 +6,7 @@ import com.github.panpf.liveevent.Listener
 import me.panpf.sketch.request.RedisplayListener
 import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
-import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.zoom.SketchZoomImageView
 
 class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :

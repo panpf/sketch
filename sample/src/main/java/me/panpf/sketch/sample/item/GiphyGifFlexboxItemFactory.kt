@@ -9,7 +9,7 @@ import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
 import com.github.panpf.tools4j.math.ktx.divide
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.google.android.flexbox.FlexboxLayoutManager
-import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.bean.GiphyGif
 import me.panpf.sketch.sample.databinding.ListItemImageStaggeredBinding
 import me.panpf.sketch.sample.widget.SampleImageView

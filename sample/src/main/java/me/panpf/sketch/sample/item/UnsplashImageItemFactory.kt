@@ -11,7 +11,7 @@ import androidx.core.view.updateLayoutParams
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.tools4a.activity.ktx.safeStartActivity
 import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
-import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.databinding.ListItemImageUnsplashBinding
 import me.panpf.sketch.sample.util.DeviceUtils

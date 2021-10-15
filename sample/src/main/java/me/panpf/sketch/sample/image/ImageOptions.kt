@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.image
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -27,10 +27,9 @@ import me.panpf.sketch.request.DisplayOptions
 import me.panpf.sketch.request.DownloadOptions
 import me.panpf.sketch.request.LoadOptions
 import me.panpf.sketch.request.ShapeSize
+import me.panpf.sketch.sample.R
 import me.panpf.sketch.shaper.CircleImageShaper
 import me.panpf.sketch.shaper.RoundRectImageShaper
-import me.panpf.sketch.state.DrawableStateImage
-import me.panpf.sketch.state.OldStateImage
 import me.panpf.sketch.util.SketchUtils
 
 object ImageOptions {
@@ -65,7 +64,7 @@ object ImageOptions {
     init {
         val transitionImageDisplayer = TransitionImageDisplayer()
 
-        OPTIONS_ARRAY.append(ImageOptions.RECT, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(RECT, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
@@ -76,7 +75,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_ARRAY.append(ImageOptions.CIRCULAR_STROKE, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(CIRCULAR_STROKE, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
@@ -88,7 +87,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_ARRAY.append(ImageOptions.WINDOW_BACKGROUND, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(WINDOW_BACKGROUND, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
@@ -101,7 +100,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_ARRAY.append(ImageOptions.ROUND_RECT, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(ROUND_RECT, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 return DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
@@ -113,7 +112,7 @@ object ImageOptions {
             }
         })
 
-        OPTIONS_ARRAY.append(ImageOptions.LIST_FULL, object : OptionsHolder() {
+        OPTIONS_ARRAY.append(LIST_FULL, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 val displayMetrics = context.resources.displayMetrics
                 return DisplayOptions()

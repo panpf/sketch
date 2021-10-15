@@ -1,4 +1,4 @@
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.image
 
 import android.app.Application
 import android.content.Context

@@ -31,7 +31,7 @@ import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import me.panpf.sketch.sample.ImageOptions
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentImageViewerBinding

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.panpf.sketch.sample
+package me.panpf.sketch.sample.service
 
 import android.app.Service
 import android.content.Intent

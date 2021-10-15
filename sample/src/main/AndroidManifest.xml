@@ -32,7 +32,7 @@
         </activity>
 
         <service
-            android:name=".NotificationService"
+            android:name=".service.NotificationService"
             android:process=":notification" />
 
         <provider
@@ -46,7 +46,7 @@
         </provider>
 
         <meta-data
-            android:name="me.panpf.sketch.sample.MySketchInitializer"
+            android:name="me.panpf.sketch.sample.image.MySketchInitializer"
             android:value="SKETCH_INITIALIZER" />
 
         <meta-data
