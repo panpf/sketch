@@ -1,18 +1,16 @@
 package me.panpf.sketch.sample.bean
 
-import android.content.Context
-import me.panpf.sketch.sample.AppConfig
+import androidx.lifecycle.MutableLiveData
 
 class CheckMenu(
-    private val context: Context,
     val title: String,
-    private val key: AppConfig.Key,
+    private val data: MutableLiveData<Boolean>,
 ) {
 
     val isChecked: Boolean
-        get() = AppConfig.getBoolean(context, key)
+        get() = data.value ?: false
 
     fun onClick() {
-        AppConfig.putBoolean(context, key, !isChecked)
+        data.postValue(!(data.value ?: false))
     }
 }

@@ -11,10 +11,12 @@ import androidx.core.view.updateLayoutParams
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.tools4a.activity.ktx.safeStartActivity
 import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.databinding.ListItemImageUnsplashBinding
 import me.panpf.sketch.sample.util.DeviceUtils
+import me.panpf.sketch.sample.util.observe
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class UnsplashImageItemFactory(
@@ -37,13 +39,20 @@ class UnsplashImageItemFactory(
     ) {
         binding.imageUnsplashImageItem.apply {
             setOptions(ImageOptions.LIST_FULL)
-            page = SampleImageView.Page.UNSPLASH_LIST
             onClickListener = View.OnClickListener {
                 onClickPhoto(
                     binding.imageUnsplashImageItem,
                     item.absoluteAdapterPosition,
                     item.dataOrThrow
                 )
+            }
+
+            appSettingsService.showPressedStatusInListEnabled.observe(this) {
+                isShowPressedStatusEnabled = it == true
+            }
+
+            appSettingsService.showImageDownloadProgressEnabled.observe(this) {
+                isShowDownloadProgressEnabled = it == true
             }
         }
 

@@ -36,8 +36,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import me.panpf.sketch.sample.AppConfig
-import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.base.BaseToolbarFragment
@@ -123,12 +121,6 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         lifecycleScope.launch {
             photoListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
-            }
-        }
-
-        AppEvents.appConfigChangedEvent.listen(viewLifecycleOwner) {
-            if (AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST == it) {
-                pagingAdapter.notifyDataSetChanged()
             }
         }
     }

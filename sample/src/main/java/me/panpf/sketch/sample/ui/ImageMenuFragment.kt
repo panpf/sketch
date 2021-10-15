@@ -24,6 +24,7 @@ import me.panpf.sketch.decode.ImageOrientationCorrector
 import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.util.safeRun
@@ -59,13 +60,14 @@ class ImageMenuFragment : Fragment() {
             add(MenuItem("Toggle ScaleType (%s)".format(scaleType)) { _, _ ->
                 showScaleTypeMenu(binding)
             })
+
             add(MenuItem("Set As Wallpaper") { _, _ ->
                 setWallpaper(binding)
             })
-            add(MenuItem("Share Image") { _, _ ->
+            add(MenuItem("Share") { _, _ ->
                 share(binding)
             })
-            add(MenuItem("Save Image") { _, _ ->
+            add(MenuItem("Save") { _, _ ->
                 save(binding)
             })
         }

@@ -1,14 +1,15 @@
 package me.panpf.sketch.sample.util;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import me.panpf.sketch.Sketch;
-import me.panpf.sketch.sample.AppConfig;
+import me.panpf.sketch.sample.MyServicesKt;
 
 /**
  * 滚动中暂停暂停加载新图片管理器支持RecyclerView和AbsListView
@@ -34,7 +35,7 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
 
-        if (AppConfig.INSTANCE.getBoolean(recyclerView.getContext(), AppConfig.Key.SCROLLING_PAUSE_LOAD) && recyclerView.getAdapter() != null) {
+        if (MyServicesKt.getAppSettingsService(recyclerView).getScrollingPauseLoadEnabled().getValue() && recyclerView.getAdapter() != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                 sketch.getConfiguration().setPauseLoadEnabled(true);
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -52,7 +53,7 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (AppConfig.INSTANCE.getBoolean(view.getContext(), AppConfig.Key.SCROLLING_PAUSE_LOAD) && view.getAdapter() != null) {
+        if (MyServicesKt.getAppSettingsService(view).getScrollingPauseLoadEnabled().getValue() && view.getAdapter() != null) {
             ListAdapter listAdapter = view.getAdapter();
             if (listAdapter instanceof WrapperListAdapter) {
                 listAdapter = ((WrapperListAdapter) listAdapter).getWrappedAdapter();

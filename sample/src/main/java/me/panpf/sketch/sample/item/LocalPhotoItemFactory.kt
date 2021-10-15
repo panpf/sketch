@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
-import me.panpf.sketch.sample.AppConfig
-import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.bean.ImageInfo
 import me.panpf.sketch.sample.databinding.ListItemMyPhotoBinding
+import me.panpf.sketch.sample.image.ImageOptions
+import me.panpf.sketch.sample.util.observe
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class LocalPhotoItemFactory(
@@ -58,8 +59,6 @@ class LocalPhotoItemFactory(
                 }
             }
 
-            page = SampleImageView.Page.PHOTO_LIST
-
             setOnClickListener {
                 onClickPhoto(
                     binding.imageMyPhotoItem,
@@ -67,25 +66,55 @@ class LocalPhotoItemFactory(
                     item.dataOrThrow
                 )
             }
+
+            appSettingsService.showRoundedInPhotoListEnabled.observe(binding.root) {
+                if (it == true) {
+                    setOptions(ImageOptions.ROUND_RECT)
+                } else {
+                    setOptions(ImageOptions.RECT)
+                }
+                val data = item.dataOrNull
+                if (data != null) {
+                    bindItemData(
+                        context, binding, item,
+                        item.bindingAdapterPosition, item.absoluteAdapterPosition, data
+                    )
+                }
+            }
+
+            appSettingsService.showPressedStatusInListEnabled.observe(this) {
+                isShowPressedStatusEnabled = it == true
+            }
+
+            appSettingsService.showImageDownloadProgressEnabled.observe(this) {
+                isShowDownloadProgressEnabled = it == true
+            }
+
+            appSettingsService.playGifInListEnabled.observe(binding.root) {
+                options.isDecodeGifImage = it == true
+                val data = item.dataOrNull
+                if (data != null) {
+                    bindItemData(
+                        context, binding, item,
+                        item.bindingAdapterPosition, item.absoluteAdapterPosition, data
+                    )
+                }
+            }
+
+            appSettingsService.clickPlayGifEnabled.observe(this) {
+                setClickPlayGifEnabled(if (it == true) R.drawable.ic_play else 0)
+            }
         }
     }
 
     override fun bindItemData(
         context: Context,
         binding: ListItemMyPhotoBinding,
-        item: BindingItem<ImageInfo, ListItemMyPhotoBinding>,
+        item: BindingItemFactory.BindingItem<ImageInfo, ListItemMyPhotoBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: ImageInfo
     ) {
-        binding.imageMyPhotoItem.apply {
-            if (AppConfig.getBoolean(context, AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST)) {
-                setOptions(ImageOptions.ROUND_RECT)
-            } else {
-                setOptions(ImageOptions.RECT)
-            }
-
-            displayImage(data.path)
-        }
+        binding.imageMyPhotoItem.displayImage(data.path)
     }
 }

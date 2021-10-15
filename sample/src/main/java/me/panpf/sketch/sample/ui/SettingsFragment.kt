@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import me.panpf.sketch.SLog
-import me.panpf.sketch.sample.AppConfig
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.CheckMenuItemFactory
@@ -57,7 +57,6 @@ class SettingsFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         }
 
         viewModel.showLogLevelDialogEvent.listen(viewLifecycleOwner) {
-            val appContext = requireContext()
             AlertDialog.Builder(requireActivity()).apply {
                 setTitle("Switch Log Level")
                 val items = arrayOf(
@@ -70,36 +69,12 @@ class SettingsFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
                 )
                 setItems(items) { _, which ->
                     when (which) {
-                        0 -> AppConfig.putString(
-                            appContext,
-                            AppConfig.Key.LOG_LEVEL,
-                            "VERBOSE"
-                        )
-                        1 -> AppConfig.putString(
-                            appContext,
-                            AppConfig.Key.LOG_LEVEL,
-                            "DEBUG"
-                        )
-                        2 -> AppConfig.putString(
-                            appContext,
-                            AppConfig.Key.LOG_LEVEL,
-                            "INFO"
-                        )
-                        3 -> AppConfig.putString(
-                            appContext,
-                            AppConfig.Key.LOG_LEVEL,
-                            "WARNING"
-                        )
-                        4 -> AppConfig.putString(
-                            appContext,
-                            AppConfig.Key.LOG_LEVEL,
-                            "ERROR"
-                        )
-                        5 -> AppConfig.putString(
-                            appContext,
-                            AppConfig.Key.LOG_LEVEL,
-                            "NONE"
-                        )
+                        0 -> appSettingsService.logLevel.postValue(SLog.VERBOSE)
+                        1 -> appSettingsService.logLevel.postValue(SLog.DEBUG)
+                        2 -> appSettingsService.logLevel.postValue(SLog.INFO)
+                        3 -> appSettingsService.logLevel.postValue(SLog.WARNING)
+                        4 -> appSettingsService.logLevel.postValue(SLog.ERROR)
+                        5 -> appSettingsService.logLevel.postValue(SLog.NONE)
                     }
                     viewModel.update()
                 }

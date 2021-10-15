@@ -14,9 +14,8 @@ import me.panpf.sketch.Sketch
 import me.panpf.sketch.display.FadeInImageDisplayer
 import me.panpf.sketch.drawable.SketchGifDrawable
 import me.panpf.sketch.request.*
-import me.panpf.sketch.sample.AppConfig
-import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
@@ -36,10 +35,10 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     private val showingImageChangedViewModel by parentViewModels<ShowingImageChangedViewModel>()
     private val showImageMenuViewModel by viewModels<ShowImageMenuViewModel>()
     private val finalShowImageUrl: String by lazy {
-        val showHighDefinitionImage =
-            AppConfig.getBoolean(requireContext(), AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE)
+        val showHighQualityImage =
+            appSettingsService.showHighQualityImageEnabled.value ?: false
         val rawQualityUrl = args.rawQualityUrl
-        if (showHighDefinitionImage && rawQualityUrl != null) rawQualityUrl else args.normalQualityUrl
+        if (showHighQualityImage && rawQualityUrl != null) rawQualityUrl else args.normalQualityUrl
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,16 +84,16 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
             }
 
             zoomer.apply {
-                val threeLevelZoom = AppConfig.getBoolean(
-                    requireContext(), AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE
-                )
-                setZoomScales(if (threeLevelZoom) FixedThreeLevelScales() else AdaptiveTwoLevelScales())
-
-                isReadMode = AppConfig.getBoolean(requireContext(), AppConfig.Key.READ_MODE)
-                AppEvents.appConfigChangedEvent.listen(viewLifecycleOwner) {
-                    if (AppConfig.Key.READ_MODE == it) {
-                        isReadMode = AppConfig.getBoolean(requireContext(), AppConfig.Key.READ_MODE)
+                appSettingsService.threeLevelZoomModeEnabled.observe(viewLifecycleOwner) {
+                    if (it == true) {
+                        setZoomScales(FixedThreeLevelScales())
+                    } else {
+                        setZoomScales(AdaptiveTwoLevelScales())
                     }
+                }
+
+                appSettingsService.readModeEnabled.observe(viewLifecycleOwner) {
+                    isReadMode = it == true
                 }
 
                 setOnViewTapListener { _, x, y ->
@@ -110,9 +109,8 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                 }
 
                 registerUserVisibleChangedListener(viewLifecycleOwner) {
-                    val pauseBlockDisplayer = AppConfig.getBoolean(
-                        requireContext(), AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE
-                    )
+                    val pauseBlockDisplayer =
+                        appSettingsService.pauseBlockDisplayWhenPageNoVisibleEnabled.value ?: false
                     if (pauseBlockDisplayer) {
                         blockDisplayer.setPause(!isVisibleToUser)
                     }
@@ -154,9 +152,8 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                     val realX = x * widthScale
                     val realY = y * heightScale
 
-                    val showLocationAnimation = AppConfig.getBoolean(
-                        requireContext(), AppConfig.Key.LOCATION_ANIMATE
-                    )
+                    val showLocationAnimation =
+                        appSettingsService.smallMapLocationAnimateEnabled.value ?: false
                     binding.imageFragmentZoomImage.zoomer.location(
                         realX, realY, showLocationAnimation
                     )

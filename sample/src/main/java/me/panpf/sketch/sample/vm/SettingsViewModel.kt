@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.github.panpf.liveevent.LiveEvent
 import me.panpf.sketch.SLog
 import me.panpf.sketch.Sketch
-import me.panpf.sketch.sample.AppConfig
 import me.panpf.sketch.sample.AppEvents
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import me.panpf.sketch.sample.bean.CheckMenu
 import me.panpf.sketch.sample.bean.InfoMenu
@@ -29,200 +29,116 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
 
     private fun makeMenuList(): List<Any> {
         val appContext = application1
+        val appSettingsService = application1.appSettingsService
 
         return ArrayList<Any>().apply {
             add(ListSeparator("Cache"))
             add(CacheInfoMenu(appContext, "Memory", "Memory Cache (Click Clean)"))
             add(CacheInfoMenu(appContext, "BitmapPool", "Bitmap Pool (Click Clean)"))
             add(CacheInfoMenu(appContext, "Disk", "Disk Cache (Click Clean)"))
-            add(
-                CheckMenu(
-                    appContext,
-                    "Disable Memory Cache",
-                    AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_MEMORY
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
-                    "Disable Bitmap Pool",
-                    AppConfig.Key.GLOBAL_DISABLE_BITMAP_POOL
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
-                    "Disable Disk Cache",
-                    AppConfig.Key.GLOBAL_DISABLE_CACHE_IN_DISK
-                )
-            )
+            add(CheckMenu("Disable Memory Cache", appSettingsService.memoryCacheDisabled))
+            add(CheckMenu("Disable Bitmap Pool", appSettingsService.bitmapPoolDisabled))
+            add(CheckMenu("Disable Disk Cache", appSettingsService.diskCacheDisabled))
 
             add(ListSeparator("Zoom"))
+            add(CheckMenu("Read Mode", appSettingsService.readModeEnabled))
             add(
                 CheckMenu(
-                    appContext,
-                    "Enabled Read Mode In Detail Page",
-                    AppConfig.Key.READ_MODE
+                    "Small Map Location Animation",
+                    appSettingsService.smallMapLocationAnimateEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
-                    "Enabled Location Animation In Detail Page",
-                    AppConfig.Key.LOCATION_ANIMATE
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
                     "Pause Block Display When Page Not Visible In Detail Page",
-                    AppConfig.Key.PAUSE_BLOCK_DISPLAY_WHEN_PAGE_NOT_VISIBLE
+                    appSettingsService.pauseBlockDisplayWhenPageNoVisibleEnabled
                 )
             )
-            add(
-                CheckMenu(
-                    appContext,
-                    "Fixed Three Level Zoom Mode",
-                    AppConfig.Key.FIXED_THREE_LEVEL_ZOOM_MODE
-                )
-            )
+            add(CheckMenu("Three Level Zoom Mode", appSettingsService.threeLevelZoomModeEnabled))
 
             add(ListSeparator("GIF"))
+            add(CheckMenu("Play GIF In List", appSettingsService.playGifInListEnabled))
+            add(CheckMenu("Click Play GIF In List", appSettingsService.clickPlayGifEnabled))
             add(
                 CheckMenu(
-                    appContext,
-                    "Auto Play GIF In List",
-                    AppConfig.Key.PLAY_GIF_ON_LIST
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
-                    "Click Play GIF In List",
-                    AppConfig.Key.CLICK_PLAY_GIF
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
                     "Show GIF Flag In List",
-                    AppConfig.Key.SHOW_GIF_FLAG
+                    appSettingsService.showGifFlagEnabled
                 )
             )
 
             add(ListSeparator("Decode"))
             add(
                 CheckMenu(
-                    appContext,
                     "In Prefer Quality Over Speed",
-                    AppConfig.Key.GLOBAL_IN_PREFER_QUALITY_OVER_SPEED
+                    appSettingsService.inPreferQualityOverSpeedEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Low Quality Bitmap",
-                    AppConfig.Key.GLOBAL_LOW_QUALITY_IMAGE
+                    appSettingsService.lowQualityImageEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Enabled Thumbnail Mode In List",
-                    AppConfig.Key.THUMBNAIL_MODE
+                    appSettingsService.thumbnailModeEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Cache Processed Image In Disk",
-                    AppConfig.Key.CACHE_PROCESSED_IMAGE
+                    appSettingsService.cacheProcessedImageEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Disabled Correct Image Orientation",
-                    AppConfig.Key.DISABLE_CORRECT_IMAGE_ORIENTATION
+                    appSettingsService.correctImageOrientationEnabled
                 )
             )
 
             add(ListSeparator("Other"))
             add(
                 CheckMenu(
-                    appContext,
                     "Show Round Rect In Photo List",
-                    AppConfig.Key.SHOW_ROUND_RECT_IN_PHOTO_LIST
+                    appSettingsService.showRoundedInPhotoListEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Show Unsplash Raw Image In Detail Page",
-                    AppConfig.Key.SHOW_UNSPLASH_RAW_IMAGE
+                    appSettingsService.showHighQualityImageEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
-                    "Show Mapping Thumbnail In Detail Page",
-                    AppConfig.Key.SHOW_TOOLS_IN_IMAGE_DETAIL
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
                     "Show Press Status In List",
-                    AppConfig.Key.CLICK_SHOW_PRESSED_STATUS
+                    appSettingsService.showPressedStatusInListEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Show Image From Corner Mark",
-                    AppConfig.Key.SHOW_IMAGE_FROM_FLAG
+                    appSettingsService.showImageFromFlagEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Show Download Progress In List",
-                    AppConfig.Key.SHOW_IMAGE_DOWNLOAD_PROGRESS
+                    appSettingsService.showImageDownloadProgressEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
-                    "Click Show Image On Pause Download In List",
-                    AppConfig.Key.CLICK_RETRY_ON_PAUSE_DOWNLOAD
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
-                    "Click Retry On Error In List",
-                    AppConfig.Key.CLICK_RETRY_ON_FAILED
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
                     "Scrolling Pause Load Image In List",
-                    AppConfig.Key.SCROLLING_PAUSE_LOAD
+                    appSettingsService.scrollingPauseLoadEnabled
                 )
             )
             add(
                 CheckMenu(
-                    appContext,
                     "Mobile Data Pause Download Image",
-                    AppConfig.Key.MOBILE_NETWORK_PAUSE_DOWNLOAD
-                )
-            )
-            add(
-                CheckMenu(
-                    appContext,
-                    "Long Clock Show Image Info",
-                    AppConfig.Key.LONG_CLICK_SHOW_IMAGE_INFO
+                    appSettingsService.mobileNetworkPauseDownloadEnabled
                 )
             )
 
@@ -230,9 +146,8 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             add(LogLevelMenu(appContext, showLogLevelDialogEvent))
             add(
                 CheckMenu(
-                    appContext,
                     "Sync Output Log To Disk (cache/sketch_log)",
-                    AppConfig.Key.OUT_LOG_2_SDCARD
+                    appSettingsService.outLog2SdcardLevel
                 )
             )
         }

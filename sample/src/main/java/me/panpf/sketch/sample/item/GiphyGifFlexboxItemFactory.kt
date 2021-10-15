@@ -9,9 +9,12 @@ import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
 import com.github.panpf.tools4j.math.ktx.divide
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.google.android.flexbox.FlexboxLayoutManager
+import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.bean.GiphyGif
 import me.panpf.sketch.sample.databinding.ListItemImageStaggeredBinding
+import me.panpf.sketch.sample.util.observe
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class GiphyGifFlexboxItemFactory(
@@ -31,7 +34,6 @@ class GiphyGifFlexboxItemFactory(
     ) {
         binding.imageStaggeredImageItem.apply {
             setOptions(ImageOptions.RECT)
-            page = SampleImageView.Page.SEARCH_LIST
             layoutParams!!.asOrThrow<FlexboxLayoutManager.LayoutParams>().flexGrow = 1.0f
             setOnClickListener {
                 onClickPhoto(
@@ -39,6 +41,29 @@ class GiphyGifFlexboxItemFactory(
                     item.absoluteAdapterPosition,
                     item.dataOrThrow
                 )
+            }
+
+            appSettingsService.showPressedStatusInListEnabled.observe(this) {
+                isShowPressedStatusEnabled = it == true
+            }
+
+            appSettingsService.showImageDownloadProgressEnabled.observe(this) {
+                isShowDownloadProgressEnabled = it == true
+            }
+
+            appSettingsService.playGifInListEnabled.observe(binding.root) {
+                options.isDecodeGifImage = it == true
+                val data = item.dataOrNull
+                if (data != null) {
+                    bindItemData(
+                        context, binding, item,
+                        item.bindingAdapterPosition, item.absoluteAdapterPosition, data
+                    )
+                }
+            }
+
+            appSettingsService.clickPlayGifEnabled.observe(this) {
+                setClickPlayGifEnabled(if (it == true) R.drawable.ic_play else 0)
             }
         }
     }
