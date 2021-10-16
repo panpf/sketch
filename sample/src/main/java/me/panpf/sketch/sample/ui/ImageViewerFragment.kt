@@ -95,7 +95,7 @@ class ImageViewerFragment : BaseFragment<FragmentImageViewerBinding>() {
                 imageList
             )
             post {
-                currentItem = args.defaultPosition
+                setCurrentItem(args.defaultPosition, false)
             }
         }
 
