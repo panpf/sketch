@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
+import me.panpf.sketch.request.Resize
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.bean.ImageInfo
@@ -59,6 +60,8 @@ class LocalPhotoItemFactory(
                 }
             }
 
+            setShowGifFlagEnabled(R.drawable.ic_gif)
+
             setOnClickListener {
                 onClickPhoto(
                     binding.imageMyPhotoItem,
@@ -86,10 +89,6 @@ class LocalPhotoItemFactory(
                 isShowPressedStatusEnabled = it == true
             }
 
-            appSettingsService.showImageDownloadProgressEnabled.observe(this) {
-                isShowDownloadProgressEnabled = it == true
-            }
-
             appSettingsService.playGifInListEnabled.observe(binding.root) {
                 options.isDecodeGifImage = it == true
                 val data = item.dataOrNull
@@ -104,13 +103,40 @@ class LocalPhotoItemFactory(
             appSettingsService.clickPlayGifEnabled.observe(this) {
                 setClickPlayGifEnabled(if (it == true) R.drawable.ic_play else 0)
             }
+
+            appSettingsService.thumbnailModeEnabled.observe(binding.root) {
+                val thumbnailMode = it == true
+                options.isThumbnailMode = thumbnailMode
+                if (thumbnailMode) {
+                    options.resize = Resize.byViewFixedSize()
+                } else {
+                    options.resize = null
+                }
+                if (isAttachedToWindow) {
+                    redisplay { _, cacheOptions ->
+                        cacheOptions.isThumbnailMode = thumbnailMode
+                        if (thumbnailMode) {
+                            cacheOptions.resize = Resize.byViewFixedSize()
+                        } else {
+                            cacheOptions.resize = null
+                        }
+                    }
+                }
+                val data = item.dataOrNull
+                if (data != null) {
+                    bindItemData(
+                        context, binding, item,
+                        item.bindingAdapterPosition, item.absoluteAdapterPosition, data
+                    )
+                }
+            }
         }
     }
 
     override fun bindItemData(
         context: Context,
         binding: ListItemMyPhotoBinding,
-        item: BindingItemFactory.BindingItem<ImageInfo, ListItemMyPhotoBinding>,
+        item: BindingItem<ImageInfo, ListItemMyPhotoBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: ImageInfo

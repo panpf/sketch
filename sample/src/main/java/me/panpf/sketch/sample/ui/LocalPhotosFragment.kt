@@ -38,6 +38,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.R
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.Image
@@ -63,6 +64,8 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        showMenu(toolbar)
+
         toolbar.title = "Local Photos"
 
         val pagingAdapter = AssemblyPagingDataAdapter<ImageInfo>(listOf(
@@ -122,6 +125,62 @@ class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             photoListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
             }
+        }
+    }
+
+    private fun showMenu(toolbar: Toolbar) {
+        val showRoundedInPhotoListEnabled = appSettingsService.showRoundedInPhotoListEnabled
+        toolbar.menu.add(
+            0, 0, 0, if (showRoundedInPhotoListEnabled.value == true) {
+                "Hidden rounded"
+            } else {
+                "Show rounded"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(showRoundedInPhotoListEnabled.value ?: false)
+            showRoundedInPhotoListEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Hidden rounded"
+            } else {
+                "Show rounded"
+            }
+            true
+        }
+
+        val showPressedStatusInListEnabled = appSettingsService.showPressedStatusInListEnabled
+        toolbar.menu.add(
+            0, 1, 1, if (showPressedStatusInListEnabled.value == true) {
+                "Hidden press status"
+            } else {
+                "Show press status"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(showPressedStatusInListEnabled.value ?: false)
+            showPressedStatusInListEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Hidden press status"
+            } else {
+                "Show press status"
+            }
+            true
+        }
+
+        val thumbnailModeEnabled = appSettingsService.thumbnailModeEnabled
+        toolbar.menu.add(
+            0, 2, 2, if (thumbnailModeEnabled.value == true) {
+                "Disable thumbnail mode"
+            } else {
+                "Enable thumbnail mode"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(thumbnailModeEnabled.value ?: false)
+            thumbnailModeEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Disable thumbnail mode"
+            } else {
+                "Enable thumbnail mode"
+            }
+            true
         }
     }
 

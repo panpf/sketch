@@ -33,6 +33,7 @@ class GiphyGifFlexboxItemFactory(
         item: BindingItem<GiphyGif, ListItemImageStaggeredBinding>
     ) {
         binding.imageStaggeredImageItem.apply {
+            setShowGifFlagEnabled(R.drawable.ic_gif)
             setOptions(ImageOptions.RECT)
             layoutParams!!.asOrThrow<FlexboxLayoutManager.LayoutParams>().flexGrow = 1.0f
             setOnClickListener {

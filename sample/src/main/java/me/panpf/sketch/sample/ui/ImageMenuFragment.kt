@@ -60,6 +60,17 @@ class ImageMenuFragment : Fragment() {
             add(MenuItem("ScaleType (%s)".format(scaleType)) { _, _ ->
                 showScaleTypeMenu(binding)
             })
+            val showRawImageInDetailEnabled = appSettingsService.showRawImageInDetailEnabled
+            add(MenuItem(
+                if (showRawImageInDetailEnabled.value == true) {
+                    "Show normal image"
+                } else {
+                    "Show raw image"
+                }
+            ) { _, _ ->
+                val newValue = !(showRawImageInDetailEnabled.value ?: false)
+                showRawImageInDetailEnabled.postValue(newValue)
+            })
 
             add(MenuItem("Set as wallpaper") { _, _ ->
                 setWallpaper(binding)
@@ -164,7 +175,14 @@ class ImageMenuFragment : Fragment() {
                 when {
                     blockDisplayer.isReady -> {
                         appendLine("blockBaseNumber：${blockDisplayer.blockBaseNumber}")
-                        appendLine("blockSize：${Formatter.formatFileSize(context, blockDisplayer.allocationByteCount)}")
+                        appendLine(
+                            "blockSize：${
+                                Formatter.formatFileSize(
+                                    context,
+                                    blockDisplayer.allocationByteCount
+                                )
+                            }"
+                        )
                         appendLine("blockAllocationByteCount：${blockDisplayer.blockSize}")
                         appendLine("blocksArea：${blockDisplayer.decodeRect.toShortString()}")
                         appendLine("blocksArea (SRC)：${blockDisplayer.decodeSrcRect.toShortString()}")

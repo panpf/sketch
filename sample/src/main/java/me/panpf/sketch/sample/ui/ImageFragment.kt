@@ -20,6 +20,7 @@ import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.util.*
+import me.panpf.sketch.sample.vm.ImageViewModel
 import me.panpf.sketch.sample.vm.ShowImageMenuViewModel
 import me.panpf.sketch.sample.vm.ShowingImageChangedViewModel
 import me.panpf.sketch.state.MemoryCacheStateImage
@@ -32,14 +33,11 @@ import java.util.*
 class ImageFragment : BaseFragment<FragmentImageBinding>() {
 
     val args by navArgs<ImageFragmentArgs>()
-    private val showingImageChangedViewModel by parentViewModels<ShowingImageChangedViewModel>()
-    private val showImageMenuViewModel by viewModels<ShowImageMenuViewModel>()
-    private val finalShowImageUrl: String by lazy {
-        val showHighQualityImage =
-            appSettingsService.showHighQualityImageEnabled.value ?: false
-        val rawQualityUrl = args.rawQualityUrl
-        if (showHighQualityImage && rawQualityUrl != null) rawQualityUrl else args.normalQualityUrl
+    private val viewModel by viewModels<ImageViewModel> {
+        ImageViewModel.Factory(requireActivity().application, args)
     }
+    private val showImageMenuViewModel by viewModels<ShowImageMenuViewModel>()
+    private val showingImageChangedViewModel by parentViewModels<ShowingImageChangedViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +53,7 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
         super.onInitViews(binding, savedInstanceState)
 
         binding.imageFragmentZoomImage.apply {
-            options.apply {
-                isDecodeGifImage = true
-                val loadingStateImage = getLoadingStateImage()
-                loadingImage = loadingStateImage
-                displayer = if (loadingStateImage == null) FadeInImageDisplayer() else null
-            }
+            options.isDecodeGifImage = true
 
             displayListener = CompactDisplayListener(
                 onStarted = {
@@ -126,7 +119,6 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                     displayer = FadeInImageDisplayer()
                     setMaxSize(600, 600)
                 }
-                displayImage(finalShowImageUrl)
 
                 // Follow Matrix changes to refresh the display area
                 val visibleRect = Rect()
@@ -169,12 +161,24 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
             notifyShowingImageChanged(it)
         }
 
-        binding.imageFragmentZoomImage.displayImage(finalShowImageUrl)
+        viewModel.imageUrl.observe(viewLifecycleOwner) { imageUri ->
+            imageUri!!
+            binding.imageFragmentZoomImage.apply {
+                options.apply {
+                    isDecodeGifImage = true
+                    val loadingStateImage = getLoadingStateImage(imageUri)
+                    loadingImage = loadingStateImage
+                    displayer = if (loadingStateImage == null) FadeInImageDisplayer() else null
+                }
+                displayImage(imageUri)
+            }
+            binding.imageFragmentMapping.displayImage(imageUri)
+        }
     }
 
     private fun showError(binding: FragmentImageBinding) {
         binding.imageFragmentHint.hint(R.drawable.ic_error, "Image display failed", "Again") {
-            binding.imageFragmentZoomImage.displayImage(finalShowImageUrl)
+            binding.imageFragmentZoomImage.displayImage(viewModel.imageUrl.value)
         }
     }
 
@@ -193,7 +197,7 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                 binding.imageFragmentZoomImage.apply {
                     val oldRequestLevel = options.requestLevel
                     options.requestLevel = RequestLevel.NET
-                    displayImage(finalShowImageUrl)
+                    displayImage(viewModel.imageUrl.value)
                     options.requestLevel = oldRequestLevel
                 }
             }
@@ -202,7 +206,7 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
 
     private fun notifyShowingImageChanged(isVisibleToUser: Boolean) {
         if (isVisibleToUser) {
-            showingImageChangedViewModel.imageChangedData.postValue(finalShowImageUrl)
+            showingImageChangedViewModel.imageChangedData.postValue(viewModel.imageUrl.value)
         }
     }
 
@@ -214,10 +218,10 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
         }
     }
 
-    private fun getLoadingStateImage(): StateImage? {
+    private fun getLoadingStateImage(imageUri: String): StateImage? {
         val loadingOptionsKey =
             args.loadingOptionsKey?.takeIf { it.isNotEmpty() } ?: return null
-        val uriModel = UriModel.match(requireContext(), finalShowImageUrl) ?: return null
+        val uriModel = UriModel.match(requireContext(), imageUri) ?: return null
         val memoryCacheKey = SketchUtils.makeRequestKey(
             args.normalQualityUrl, uriModel, loadingOptionsKey
         )

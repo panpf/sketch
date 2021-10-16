@@ -100,17 +100,17 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         val playGifInListEnabled = appSettingsService.playGifInListEnabled
         toolbar.menu.add(
             0, 0, 0, if (playGifInListEnabled.value == true) {
-                "Disable play gif in list"
+                "Disable auto play gif"
             } else {
-                "Enable play gif in list"
+                "Enable auto play gif"
             }
         ).setOnMenuItemClickListener {
             val newValue = !(playGifInListEnabled.value ?: false)
             playGifInListEnabled.postValue(newValue)
             it.title = if (newValue) {
-                "Disable play gif in list"
+                "Disable auto play gif"
             } else {
-                "Enable play gif in list"
+                "Enable auto play gif"
             }
             true
         }
@@ -118,17 +118,53 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         val clickPlayGifEnabled = appSettingsService.clickPlayGifEnabled
         toolbar.menu.add(
             0, 1, 1, if (clickPlayGifEnabled.value == true) {
-                "Disable click play gif in list"
+                "Disable click play gif"
             } else {
-                "Enable click play gif in list"
+                "Enable click play gif"
             }
         ).setOnMenuItemClickListener {
             val newValue = !(clickPlayGifEnabled.value ?: false)
             clickPlayGifEnabled.postValue(newValue)
             it.title = if (newValue) {
-                "Disable click play gif in list"
+                "Disable click play gif"
             } else {
-                "Enable click play gif in list"
+                "Enable click play gif"
+            }
+            true
+        }
+
+        val showImageDownloadProgressEnabled = appSettingsService.showImageDownloadProgressEnabled
+        toolbar.menu.add(
+            0, 2, 2, if (showImageDownloadProgressEnabled.value == true) {
+                "Hidden download progress"
+            } else {
+                "Show download progress"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(showImageDownloadProgressEnabled.value ?: false)
+            showImageDownloadProgressEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Hidden download progress"
+            } else {
+                "Show download progress"
+            }
+            true
+        }
+
+        val mobileNetworkPauseDownloadEnabled = appSettingsService.mobileNetworkPauseDownloadEnabled
+        toolbar.menu.add(
+            0, 3, 3, if (mobileNetworkPauseDownloadEnabled.value == true) {
+                "Disable mobile data pause download"
+            } else {
+                "Enable mobile data pause download"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(mobileNetworkPauseDownloadEnabled.value ?: false)
+            mobileNetworkPauseDownloadEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Disable mobile data pause download"
+            } else {
+                "Enable mobile data pause download"
             }
             true
         }
@@ -145,7 +181,7 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<GiphyGif>>()
             .currentList.map {
                 Image(
-                    it!!.images.original.downloadUrl,
+                    it!!.images.previewGif.downloadUrl,
                     it.images.original.downloadUrl,
                 )
             }

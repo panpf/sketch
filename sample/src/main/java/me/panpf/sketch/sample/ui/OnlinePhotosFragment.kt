@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.Image
@@ -41,6 +42,8 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        showMenu(toolbar)
+
         toolbar.title = "Online Photos - Unsplash"
 
         val pagingAdapter = AssemblyPagingDataAdapter<UnsplashImage>(listOf(
@@ -88,6 +91,44 @@ class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             unsplashImageListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
             }
+        }
+    }
+
+    private fun showMenu(toolbar: Toolbar) {
+        val showImageDownloadProgressEnabled = appSettingsService.showImageDownloadProgressEnabled
+        toolbar.menu.add(
+            0, 0, 0, if (showImageDownloadProgressEnabled.value == true) {
+                "Hidden download progress"
+            } else {
+                "Show download progress"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(showImageDownloadProgressEnabled.value ?: false)
+            showImageDownloadProgressEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Hidden download progress"
+            } else {
+                "Show download progress"
+            }
+            true
+        }
+
+        val mobileNetworkPauseDownloadEnabled = appSettingsService.mobileNetworkPauseDownloadEnabled
+        toolbar.menu.add(
+            0, 1, 1, if (mobileNetworkPauseDownloadEnabled.value == true) {
+                "Disable mobile data pause download"
+            } else {
+                "Enable mobile data pause download"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(mobileNetworkPauseDownloadEnabled.value ?: false)
+            mobileNetworkPauseDownloadEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Disable mobile data pause download"
+            } else {
+                "Enable mobile data pause download"
+            }
+            true
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import me.panpf.sketch.SLog
 
 class AppSettingsService(val context: Context) {
+
     val memoryCacheDisabled by lazy {
         BooleanPrefsData(context, "memoryCacheDisabled", false)
     }
@@ -15,6 +16,33 @@ class AppSettingsService(val context: Context) {
     }
     val diskCacheDisabled by lazy {
         BooleanPrefsData(context, "diskCacheDisabled", false)
+    }
+
+    val inPreferQualityOverSpeedEnabled by lazy {
+        BooleanPrefsData(context, "inPreferQualityOverSpeedEnabled", false)
+    }
+    val lowQualityImageEnabled by lazy {
+        BooleanPrefsData(context, "lowQualityImageEnabled", false)
+    }
+    val cacheProcessedImageEnabled by lazy {
+        BooleanPrefsData(context, "cacheProcessedImageEnabled", true)
+    }
+    val correctImageOrientationEnabled by lazy {
+        BooleanPrefsData(context, "correctImageOrientationEnabled", true)
+    }
+
+    val showImageFromFlagEnabled by lazy {
+        BooleanPrefsData(context, "showImageFromFlagEnabled", false)
+    }
+    val scrollingPauseLoadEnabled by lazy {
+        BooleanPrefsData(context, "scrollingPauseLoadEnabled", false)
+    }
+
+    val logLevel by lazy {
+        IntPrefsData(context, "logLevel", SLog.getLevel())
+    }
+    val outLog2SdcardLevel by lazy {
+        BooleanPrefsData(context, "outLog2SdcardLevel", false)
     }
 
     val readModeEnabled by lazy {
@@ -37,49 +65,23 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "clickPlayGifEnabled", false)
     }
 
-    val inPreferQualityOverSpeedEnabled by lazy {
-        BooleanPrefsData(context, "inPreferQualityOverSpeedEnabled", false)
-    }
-    val lowQualityImageEnabled by lazy {
-        BooleanPrefsData(context, "lowQualityImageEnabled", false)
-    }
-    val thumbnailModeEnabled by lazy {
-        BooleanPrefsData(context, "thumbnailModeEnabled", true)
-    }
-    val cacheProcessedImageEnabled by lazy {
-        BooleanPrefsData(context, "cacheProcessedImageEnabled", true)
-    }
-    val correctImageOrientationEnabled by lazy {
-        BooleanPrefsData(context, "correctImageOrientationEnabled", true)
-    }
-
     val showRoundedInPhotoListEnabled by lazy {
         BooleanPrefsData(context, "showRoundedInPhotoListEnabled", false)
     }
-    val showHighQualityImageEnabled by lazy {
-        BooleanPrefsData(context, "showHighQualityImageEnabled", false)
+    val showRawImageInDetailEnabled by lazy {
+        BooleanPrefsData(context, "showRawImageInDetailEnabled", false)
     }
     val showPressedStatusInListEnabled by lazy {
         BooleanPrefsData(context, "showPressedStatusInListEnabled", true)
     }
-    val showImageFromFlagEnabled by lazy {
-        BooleanPrefsData(context, "showImageFromFlagEnabled", false)
-    }
     val showImageDownloadProgressEnabled by lazy {
         BooleanPrefsData(context, "showImageDownloadProgressEnabled", false)
-    }
-    val scrollingPauseLoadEnabled by lazy {
-        BooleanPrefsData(context, "scrollingPauseLoadEnabled", false)
     }
     val mobileNetworkPauseDownloadEnabled by lazy {
         BooleanPrefsData(context, "mobileNetworkPauseDownloadEnabled", false)
     }
-
-    val logLevel by lazy {
-        IntPrefsData(context, "logLevel", SLog.getLevel())
-    }
-    val outLog2SdcardLevel by lazy {
-        BooleanPrefsData(context, "outLog2SdcardLevel", false)
+    val thumbnailModeEnabled by lazy {
+        BooleanPrefsData(context, "thumbnailModeEnabled", true)
     }
 }
 

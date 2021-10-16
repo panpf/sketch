@@ -54,42 +54,18 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             )
             add(
                 CheckMenu(
-                    "Enabled Thumbnail Mode In List",
-                    appSettingsService.thumbnailModeEnabled
-                )
-            )
-            add(
-                CheckMenu(
                     "Cache Processed Image In Disk",
                     appSettingsService.cacheProcessedImageEnabled
                 )
             )
             add(
                 CheckMenu(
-                    "Disabled Correct Image Orientation",
+                    "Correct Image Orientation",
                     appSettingsService.correctImageOrientationEnabled
                 )
             )
 
             add(ListSeparator("Other"))
-            add(
-                CheckMenu(
-                    "Show Round Rect In Photo List",
-                    appSettingsService.showRoundedInPhotoListEnabled
-                )
-            )
-            add(
-                CheckMenu(
-                    "Show Unsplash Raw Image In Detail Page",
-                    appSettingsService.showHighQualityImageEnabled
-                )
-            )
-            add(
-                CheckMenu(
-                    "Show Press Status In List",
-                    appSettingsService.showPressedStatusInListEnabled
-                )
-            )
             add(
                 CheckMenu(
                     "Show Image From Corner Mark",
@@ -98,20 +74,8 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             )
             add(
                 CheckMenu(
-                    "Show Download Progress In List",
-                    appSettingsService.showImageDownloadProgressEnabled
-                )
-            )
-            add(
-                CheckMenu(
                     "Scrolling Pause Load Image In List",
                     appSettingsService.scrollingPauseLoadEnabled
-                )
-            )
-            add(
-                CheckMenu(
-                    "Mobile Data Pause Download Image",
-                    appSettingsService.mobileNetworkPauseDownloadEnabled
                 )
             )
 

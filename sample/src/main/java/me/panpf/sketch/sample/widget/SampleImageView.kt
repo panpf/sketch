@@ -30,7 +30,6 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var disabledRedisplay: Boolean = false
 
     init {
-        setShowGifFlagEnabled(R.drawable.ic_gif)
         isClickRetryOnPauseDownloadEnabled = true
         isClickRetryOnDisplayErrorEnabled = true
         appSettingsService.showImageFromFlagEnabled.observe(this) {
@@ -41,25 +40,6 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
             if (isAttachedToWindow) {
                 redisplay { _, cacheOptions ->
                     cacheOptions.isCorrectImageOrientationDisabled = it == true
-                }
-            }
-        }
-        appSettingsService.thumbnailModeEnabled.observe(this) {
-            val thumbnailMode = it == true
-            options.isThumbnailMode = thumbnailMode
-            if (thumbnailMode) {
-                options.resize = Resize.byViewFixedSize()
-            } else {
-                options.resize = null
-            }
-            if (isAttachedToWindow) {
-                redisplay { _, cacheOptions ->
-                    cacheOptions.isThumbnailMode = thumbnailMode
-                    if (thumbnailMode) {
-                        cacheOptions.resize = Resize.byViewFixedSize()
-                    } else {
-                        cacheOptions.resize = null
-                    }
                 }
             }
         }
