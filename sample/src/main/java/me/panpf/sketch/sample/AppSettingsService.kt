@@ -20,14 +20,14 @@ class AppSettingsService(val context: Context) {
     val readModeEnabled by lazy {
         BooleanPrefsData(context, "readModeEnabled", true)
     }
-    val smallMapLocationAnimateEnabled by lazy {
-        BooleanPrefsData(context, "smallMapLocationAnimateEnabled", true)
-    }
     val pauseBlockDisplayWhenPageNoVisibleEnabled by lazy {
         BooleanPrefsData(context, "pauseBlockDisplayWhenPageNoVisibleEnabled", true)
     }
     val threeLevelZoomModeEnabled by lazy {
         BooleanPrefsData(context, "threeLevelZoomModeEnabled", false)
+    }
+    val smallMapLocationAnimateEnabled by lazy {
+        BooleanPrefsData(context, "smallMapLocationAnimateEnabled", true)
     }
 
     val playGifInListEnabled by lazy {

@@ -39,22 +39,6 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             add(CheckMenu("Disable Bitmap Pool", appSettingsService.bitmapPoolDisabled))
             add(CheckMenu("Disable Disk Cache", appSettingsService.diskCacheDisabled))
 
-            add(ListSeparator("Zoom"))
-            add(CheckMenu("Read Mode", appSettingsService.readModeEnabled))
-            add(
-                CheckMenu(
-                    "Small Map Location Animation",
-                    appSettingsService.smallMapLocationAnimateEnabled
-                )
-            )
-            add(
-                CheckMenu(
-                    "Pause Block Display When Page Not Visible In Detail Page",
-                    appSettingsService.pauseBlockDisplayWhenPageNoVisibleEnabled
-                )
-            )
-            add(CheckMenu("Three Level Zoom Mode", appSettingsService.threeLevelZoomModeEnabled))
-
             add(ListSeparator("GIF"))
             add(CheckMenu("Play GIF In List", appSettingsService.playGifInListEnabled))
             add(CheckMenu("Click Play GIF In List", appSettingsService.clickPlayGifEnabled))

@@ -31,7 +31,7 @@ import java.util.*
 
 class ImageFragment : BaseFragment<FragmentImageBinding>() {
 
-    private val args by navArgs<ImageFragmentArgs>()
+    val args by navArgs<ImageFragmentArgs>()
     private val showingImageChangedViewModel by parentViewModels<ShowingImageChangedViewModel>()
     private val showImageMenuViewModel by viewModels<ShowImageMenuViewModel>()
     private val finalShowImageUrl: String by lazy {

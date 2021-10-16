@@ -49,19 +49,19 @@ class ImageMenuFragment : Fragment() {
 
     private fun showMenu(binding: FragmentImageBinding) {
         val menuItemList = LinkedList<MenuItem>().apply {
-            add(MenuItem("Image Info") { _, _ ->
+            add(MenuItem("Image info") { _, _ ->
                 showImageInfo(binding)
             })
-            add(MenuItem("Zoom/Rotate/Block Display") { _, _ ->
+            add(MenuItem("Zoom info") { _, _ ->
                 showZoomMenu(binding)
             })
             val imageView = binding.imageFragmentZoomImage
             val scaleType = imageView.zoomer.scaleType ?: imageView.scaleType
-            add(MenuItem("Toggle ScaleType (%s)".format(scaleType)) { _, _ ->
+            add(MenuItem("ScaleType (%s)".format(scaleType)) { _, _ ->
                 showScaleTypeMenu(binding)
             })
 
-            add(MenuItem("Set As Wallpaper") { _, _ ->
+            add(MenuItem("Set as wallpaper") { _, _ ->
                 setWallpaper(binding)
             })
             add(MenuItem("Share") { _, _ ->
@@ -150,12 +150,30 @@ class ImageMenuFragment : Fragment() {
 
     private fun showZoomMenu(binding: FragmentImageBinding) {
         val menuItemList = LinkedList<MenuItem>().apply {
+            val appSettingsService = appSettingsService
             val zoomer = binding.imageFragmentZoomImage.zoomer
 
-            add(MenuItem(assembleZoomInfo(binding), null))
-            add(MenuItem("canScrollHorizontally: ${zoomer.canScrollHorizontally()}", null))
-            add(MenuItem("canScrollVertically: ${zoomer.canScrollVertically()}", null))
-            add(MenuItem(assembleBlockInfo(binding), null))
+            add(MenuItem(StringBuilder().apply {
+                val zoomScale = SketchUtils.formatFloat(zoomer.zoomScale, 2)
+                val visibleRectString = Rect().apply { zoomer.getVisibleRect(this) }.toShortString()
+                appendLine("zoomScale: $zoomScale")
+                appendLine("visibleRect: $visibleRectString")
+                appendLine("canScrollHorizontally: ${zoomer.canScrollHorizontally()}")
+                appendLine("canScrollVertically: ${zoomer.canScrollVertically()}")
+                val blockDisplayer = binding.imageFragmentZoomImage.zoomer.blockDisplayer
+                when {
+                    blockDisplayer.isReady -> {
+                        appendLine("blockBaseNumber：${blockDisplayer.blockBaseNumber}")
+                        appendLine("blockSize：${Formatter.formatFileSize(context, blockDisplayer.allocationByteCount)}")
+                        appendLine("blockAllocationByteCount：${blockDisplayer.blockSize}")
+                        appendLine("blocksArea：${blockDisplayer.decodeRect.toShortString()}")
+                        appendLine("blocksArea (SRC)：${blockDisplayer.decodeSrcRect.toShortString()}")
+                    }
+                    blockDisplayer.isInitializing -> {
+                        appendLine("blocksInitializing...")
+                    }
+                }
+            }.toString()))
 
             val blockDisplayer = zoomer.blockDisplayer
             if (blockDisplayer.isReady || blockDisplayer.isInitializing) {
@@ -163,19 +181,71 @@ class ImageMenuFragment : Fragment() {
                 add(MenuItem(if (isShowBlockBounds) "Hide block bounds" else "Show block bounds") { _, _ ->
                     blockDisplayer.isShowBlockBounds = !blockDisplayer.isShowBlockBounds
                 })
-            } else {
-                add(MenuItem("Block bounds (No need)", null))
             }
-
-            add(MenuItem(if (zoomer.isReadMode) "Close read mode" else "Open read mode") { _, _ ->
-                zoomer.isReadMode = !zoomer.isReadMode
-            })
 
             add(MenuItem("Clockwise rotation 90°（%d）".format(zoomer.rotateDegrees)) { _, _ ->
                 if (!zoomer.rotateBy(90)) {
                     showLongToast("The rotation angle must be a multiple of 90")
                 }
             })
+
+            val readModeEnabled = appSettingsService.readModeEnabled
+            add(MenuItem(
+                if (readModeEnabled.value == true) {
+                    "Disable read mode"
+                } else {
+                    "Enable read mode"
+                }
+            ) { _, _ ->
+                readModeEnabled.postValue(!(readModeEnabled.value ?: false))
+            })
+
+            val pauseBlockDisplayWhenPageNoVisibleEnabled =
+                appSettingsService.pauseBlockDisplayWhenPageNoVisibleEnabled
+            add(
+                MenuItem(
+                    if (pauseBlockDisplayWhenPageNoVisibleEnabled.value == true) {
+                        "Disable release block displayer memory when the page is paused"
+                    } else {
+                        "Enable release block displayer memory when the page is paused"
+                    }
+                ) { _, _ ->
+                    pauseBlockDisplayWhenPageNoVisibleEnabled.postValue(
+                        !(pauseBlockDisplayWhenPageNoVisibleEnabled.value ?: false)
+                    )
+                }
+            )
+            val threeLevelZoomModeEnabled = appSettingsService.threeLevelZoomModeEnabled
+            add(
+                MenuItem(
+                    if (threeLevelZoomModeEnabled.value == true) {
+                        "Adaptive Two-Level zoom mode"
+                    } else {
+                        "Fixed Three-Level zoom mode"
+                    }
+                ) { _, _ ->
+                    threeLevelZoomModeEnabled.postValue(!(threeLevelZoomModeEnabled.value ?: false))
+                }
+            )
+
+            val parentFragment = parentFragment
+            if (parentFragment is ImageFragment && parentFragment.args.showSmallMap) {
+                val smallMapLocationAnimateEnabled =
+                    appSettingsService.smallMapLocationAnimateEnabled
+                add(
+                    MenuItem(
+                        if (smallMapLocationAnimateEnabled.value == true) {
+                            "Disable small map location animation"
+                        } else {
+                            "Enable small map location animation"
+                        }
+                    ) { _, _ ->
+                        smallMapLocationAnimateEnabled.postValue(
+                            !(smallMapLocationAnimateEnabled.value ?: false)
+                        )
+                    }
+                )
+            }
         }
         val titles = menuItemList.map { it.title }.toTypedArray()
 
@@ -185,40 +255,6 @@ class ImageMenuFragment : Fragment() {
             }
         }.show()
     }
-
-    private fun assembleZoomInfo(binding: FragmentImageBinding): String {
-        val zoomer = binding.imageFragmentZoomImage.zoomer
-        val zoomScale = SketchUtils.formatFloat(zoomer.zoomScale, 2)
-        val visibleRectString = Rect().apply { zoomer.getVisibleRect(this) }.toShortString()
-        return "Zoom: %s/%s".format(zoomScale, visibleRectString)
-    }
-
-    private fun assembleBlockInfo(binding: FragmentImageBinding): String =
-        StringBuilder().apply {
-            val blockDisplayer = binding.imageFragmentZoomImage.zoomer.blockDisplayer
-            when {
-                blockDisplayer.isReady -> {
-                    append(
-                        "Blocks：%d/%d/%s".format(
-                            blockDisplayer.blockBaseNumber,
-                            blockDisplayer.blockSize,
-                            Formatter.formatFileSize(context, blockDisplayer.allocationByteCount)
-                        )
-                    )
-
-                    appendLine()
-                    append("Blocks Area：%s".format(blockDisplayer.decodeRect.toShortString()))
-
-                    appendLine()
-                    append("Blocks Area (SRC)：%s".format(blockDisplayer.decodeSrcRect.toShortString()))
-                }
-                blockDisplayer.isInitializing -> {
-                    appendLine()
-                    append("Blocks initializing...")
-                }
-                else -> append("Blocks (No need)")
-            }
-        }.toString()
 
     private fun showScaleTypeMenu(binding: FragmentImageBinding) {
         val items = listOf(
@@ -260,7 +296,7 @@ class ImageMenuFragment : Fragment() {
                     }
                 }.isSuccess
             }
-            showLongToast(if (success) "Set wallpaper successfully" else "Set wallpaper failed")
+            showLongToast(if (success) "Set as wallpaper successfully" else "Set as wallpaper failed")
         }
     }
 
@@ -374,6 +410,6 @@ class ImageMenuFragment : Fragment() {
 
     private class MenuItem(
         val title: String,
-        val clickListener: DialogInterface.OnClickListener?
+        val clickListener: DialogInterface.OnClickListener? = null
     )
 }
