@@ -33,9 +33,6 @@ class AppSettingsService(val context: Context) {
     val playGifInListEnabled by lazy {
         BooleanPrefsData(context, "playGifInListEnabled", true)
     }
-    val showGifFlagEnabled by lazy {
-        BooleanPrefsData(context, "playGifInListEnabled", true)
-    }
     val clickPlayGifEnabled by lazy {
         BooleanPrefsData(context, "clickPlayGifEnabled", false)
     }
@@ -137,7 +134,7 @@ class BooleanPrefsData(
     }
 
     init {
-        postValue(preference.getBoolean(key, defaultValue))
+        value = preference.getBoolean(key, defaultValue)
     }
 
     override fun postValue(value: Boolean?) {

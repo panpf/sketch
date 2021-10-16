@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
+import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.BaseToolbarFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.GiphyGif
@@ -42,6 +43,8 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        showMenu(toolbar)
+
         toolbar.title = "Online GIF - Giphy"
 
         val pagingAdapter = AssemblyPagingDataAdapter<GiphyGif>(listOf(
@@ -90,6 +93,44 @@ class OnlineGifFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
             giphyGifListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
             }
+        }
+    }
+
+    private fun showMenu(toolbar: Toolbar) {
+        val playGifInListEnabled = appSettingsService.playGifInListEnabled
+        toolbar.menu.add(
+            0, 0, 0, if (playGifInListEnabled.value == true) {
+                "Disable play gif in list"
+            } else {
+                "Enable play gif in list"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(playGifInListEnabled.value ?: false)
+            playGifInListEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Disable play gif in list"
+            } else {
+                "Enable play gif in list"
+            }
+            true
+        }
+
+        val clickPlayGifEnabled = appSettingsService.clickPlayGifEnabled
+        toolbar.menu.add(
+            0, 1, 1, if (clickPlayGifEnabled.value == true) {
+                "Disable click play gif in list"
+            } else {
+                "Enable click play gif in list"
+            }
+        ).setOnMenuItemClickListener {
+            val newValue = !(clickPlayGifEnabled.value ?: false)
+            clickPlayGifEnabled.postValue(newValue)
+            it.title = if (newValue) {
+                "Disable click play gif in list"
+            } else {
+                "Enable click play gif in list"
+            }
+            true
         }
     }
 

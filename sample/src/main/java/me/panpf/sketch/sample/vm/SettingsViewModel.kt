@@ -39,16 +39,6 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             add(CheckMenu("Disable Bitmap Pool", appSettingsService.bitmapPoolDisabled))
             add(CheckMenu("Disable Disk Cache", appSettingsService.diskCacheDisabled))
 
-            add(ListSeparator("GIF"))
-            add(CheckMenu("Play GIF In List", appSettingsService.playGifInListEnabled))
-            add(CheckMenu("Click Play GIF In List", appSettingsService.clickPlayGifEnabled))
-            add(
-                CheckMenu(
-                    "Show GIF Flag In List",
-                    appSettingsService.showGifFlagEnabled
-                )
-            )
-
             add(ListSeparator("Decode"))
             add(
                 CheckMenu(
