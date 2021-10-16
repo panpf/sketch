@@ -13,7 +13,6 @@
             android:id="@+id/recycler_recyclerFragment_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layoutAnimation="@anim/layout_animation"
             android:scrollbars="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
