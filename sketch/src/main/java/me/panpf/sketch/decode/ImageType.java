@@ -29,11 +29,11 @@ import me.panpf.sketch.util.SketchUtils;
  */
 // 转成一个 support Types 列表，支持根据 mimeType get
 public enum ImageType {
-    JPEG("image/jpeg", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
+    JPEG("image/jpeg", Bitmap.Config.ARGB_8888, Bitmap.Config.RGB_565),
     PNG("image/png", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
     WEBP("image/webp", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
     GIF("image/gif", Bitmap.Config.ARGB_8888, SketchUtils.isDisabledARGB4444() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444),
-    BMP("image/bmp", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
+    BMP("image/bmp", Bitmap.Config.ARGB_8888, Bitmap.Config.RGB_565),
     ;
 
     @NonNull
