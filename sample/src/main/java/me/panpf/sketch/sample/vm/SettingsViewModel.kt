@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.github.panpf.liveevent.LiveEvent
 import me.panpf.sketch.SLog
 import me.panpf.sketch.Sketch
-import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import me.panpf.sketch.sample.bean.CheckMenu
@@ -202,15 +201,12 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             when (type) {
                 "Memory" -> {
                     Sketch.with(context).configuration.memoryCache.clear()
-                    AppEvents.cacheCleanEvent.postValue(1)
                 }
                 "Disk" -> {
                     Sketch.with(context).configuration.diskCache.clear()
-                    AppEvents.cacheCleanEvent.postValue(1)
                 }
                 "BitmapPool" -> {
                     Sketch.with(context).configuration.bitmapPool.clear()
-                    AppEvents.cacheCleanEvent.postValue(1)
                 }
             }
         }

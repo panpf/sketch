@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.util.AttributeSet
 import android.view.View.OnLongClickListener
-import com.github.panpf.liveevent.Listener
 import me.panpf.sketch.SketchImageView
 import me.panpf.sketch.datasource.DataSource
 import me.panpf.sketch.decode.ImageOrientationCorrector
@@ -16,7 +15,6 @@ import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.request.RedisplayListener
 import me.panpf.sketch.request.Resize
-import me.panpf.sketch.sample.AppEvents
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.image.ImageOptions
@@ -30,7 +28,6 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     SketchImageView(context, attrs) {
 
     private var disabledRedisplay: Boolean = false
-    private val cacheCleanListener = Listener<Int> { key -> key?.let { onCacheClean() } }
 
     init {
         setShowGifFlagEnabled(R.drawable.ic_gif)
@@ -81,26 +78,12 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        AppEvents.cacheCleanEvent.listenForever(cacheCleanListener)
-    }
-
     fun setOptions(@ImageOptions.Type optionsId: Int) {
         setOptions(ImageOptions.getDisplayOptions(context, optionsId))
     }
 
     override fun redisplay(listener: RedisplayListener?): Boolean {
         return !disabledRedisplay && super.redisplay(listener)
-    }
-
-    private fun onCacheClean() {
-        redisplay(null)
-    }
-
-    override fun onDetachedFromWindow() {
-        AppEvents.cacheCleanEvent.removeListener(cacheCleanListener)
-        super.onDetachedFromWindow()
     }
 
     private fun showInfo(activity: Activity) {
