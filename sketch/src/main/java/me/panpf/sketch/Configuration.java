@@ -100,7 +100,7 @@ public final class Configuration {
 
     Configuration(@NonNull Context context) {
         Application application = (Application) context.getApplicationContext();
-        this.context = context;
+        this.context = application;
 
         this.uriModelManager = new UriModelManager();
         this.optionsFilterManager = new OptionsFilterManager();
