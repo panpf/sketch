@@ -18,8 +18,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
@@ -64,30 +64,32 @@ class OnlinePhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
             addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
         }
 
-        pagingAdapter.addLoadStateListener {
-            when (val refreshState = it.refresh) {
-                is LoadState.Loading -> {
-                    binding.hintRecyclerFragment.hidden()
-                    binding.refreshRecyclerFragment.isRefreshing = true
-                }
-                is LoadState.Error -> {
-                    binding.refreshRecyclerFragment.isRefreshing = false
-                    binding.hintRecyclerFragment.failed(refreshState.error) {
-                        pagingAdapter.refresh()
-                    }
-                }
-                is LoadState.NotLoading -> {
-                    binding.refreshRecyclerFragment.isRefreshing = false
-                    if (pagingAdapter.itemCount <= 0) {
-                        binding.hintRecyclerFragment.empty("No photos")
-                    } else {
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingAdapter.loadStateFlow.collect {
+                when (val refreshState = it.refresh) {
+                    is LoadState.Loading -> {
                         binding.hintRecyclerFragment.hidden()
+                        binding.refreshRecyclerFragment.isRefreshing = true
+                    }
+                    is LoadState.Error -> {
+                        binding.refreshRecyclerFragment.isRefreshing = false
+                        binding.hintRecyclerFragment.failed(refreshState.error) {
+                            pagingAdapter.refresh()
+                        }
+                    }
+                    is LoadState.NotLoading -> {
+                        binding.refreshRecyclerFragment.isRefreshing = false
+                        if (pagingAdapter.itemCount <= 0) {
+                            binding.hintRecyclerFragment.empty("No photos")
+                        } else {
+                            binding.hintRecyclerFragment.hidden()
+                        }
                     }
                 }
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             unsplashImageListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
             }

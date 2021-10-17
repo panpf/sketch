@@ -98,30 +98,32 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
             }
         }
 
-        pagingAdapter.addLoadStateListener {
-            when (val refreshState = it.refresh) {
-                is LoadState.Loading -> {
-                    binding.hintRecyclerFragment.hidden()
-                    binding.refreshRecyclerFragment.isRefreshing = true
-                }
-                is LoadState.Error -> {
-                    binding.refreshRecyclerFragment.isRefreshing = false
-                    binding.hintRecyclerFragment.failed(refreshState.error) {
-                        pagingAdapter.refresh()
-                    }
-                }
-                is LoadState.NotLoading -> {
-                    binding.refreshRecyclerFragment.isRefreshing = false
-                    if (pagingAdapter.itemCount <= 0) {
-                        binding.hintRecyclerFragment.empty("No photos")
-                    } else {
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingAdapter.loadStateFlow.collect {
+                when (val refreshState = it.refresh) {
+                    is LoadState.Loading -> {
                         binding.hintRecyclerFragment.hidden()
+                        binding.refreshRecyclerFragment.isRefreshing = true
+                    }
+                    is LoadState.Error -> {
+                        binding.refreshRecyclerFragment.isRefreshing = false
+                        binding.hintRecyclerFragment.failed(refreshState.error) {
+                            pagingAdapter.refresh()
+                        }
+                    }
+                    is LoadState.NotLoading -> {
+                        binding.refreshRecyclerFragment.isRefreshing = false
+                        if (pagingAdapter.itemCount <= 0) {
+                            binding.hintRecyclerFragment.empty("No photos")
+                        } else {
+                            binding.hintRecyclerFragment.hidden()
+                        }
                     }
                 }
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             photoListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
             }

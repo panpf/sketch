@@ -30,8 +30,8 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.bean.VideoInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.LocalVideoItemFactory
@@ -80,30 +80,32 @@ class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>()
             pagingAdapter.refresh()
         }
 
-        pagingAdapter.addLoadStateListener {
-            when (val refreshState = it.refresh) {
-                is LoadState.Loading -> {
-                    binding.hintRecyclerFragment.hidden()
-                    binding.refreshRecyclerFragment.isRefreshing = true
-                }
-                is LoadState.Error -> {
-                    binding.refreshRecyclerFragment.isRefreshing = false
-                    binding.hintRecyclerFragment.failed(refreshState.error) {
-                        pagingAdapter.refresh()
-                    }
-                }
-                is LoadState.NotLoading -> {
-                    binding.refreshRecyclerFragment.isRefreshing = false
-                    if (pagingAdapter.itemCount <= 0) {
-                        binding.hintRecyclerFragment.empty("No videos")
-                    } else {
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingAdapter.loadStateFlow.collect {
+                when (val refreshState = it.refresh) {
+                    is LoadState.Loading -> {
                         binding.hintRecyclerFragment.hidden()
+                        binding.refreshRecyclerFragment.isRefreshing = true
+                    }
+                    is LoadState.Error -> {
+                        binding.refreshRecyclerFragment.isRefreshing = false
+                        binding.hintRecyclerFragment.failed(refreshState.error) {
+                            pagingAdapter.refresh()
+                        }
+                    }
+                    is LoadState.NotLoading -> {
+                        binding.refreshRecyclerFragment.isRefreshing = false
+                        if (pagingAdapter.itemCount <= 0) {
+                            binding.hintRecyclerFragment.empty("No videos")
+                        } else {
+                            binding.hintRecyclerFragment.hidden()
+                        }
                     }
                 }
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             videoListViewModel.pagingFlow.collect {
                 pagingAdapter.submitData(it)
             }
