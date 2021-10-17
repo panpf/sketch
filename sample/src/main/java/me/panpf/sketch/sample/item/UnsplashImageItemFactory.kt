@@ -13,11 +13,11 @@ import com.github.panpf.tools4a.activity.ktx.safeStartActivity
 import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.bean.UnsplashImage
 import me.panpf.sketch.sample.databinding.ListItemImageUnsplashBinding
+import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.util.DeviceUtils
-import me.panpf.sketch.sample.util.observe
+import me.panpf.sketch.sample.util.observeFromViewAndInit
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class UnsplashImageItemFactory(
@@ -49,11 +49,11 @@ class UnsplashImageItemFactory(
                 )
             }
 
-            appSettingsService.showPressedStatusInListEnabled.observe(this) {
+            appSettingsService.showPressedStatusInListEnabled.observeFromViewAndInit(this) {
                 isShowPressedStatusEnabled = it == true
             }
 
-            appSettingsService.showImageDownloadProgressEnabled.observe(this) {
+            appSettingsService.showImageDownloadProgressEnabled.observeFromViewAndInit(this) {
                 isShowDownloadProgressEnabled = it == true
             }
         }

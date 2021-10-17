@@ -11,10 +11,10 @@ import com.github.panpf.tools4k.lang.asOrThrow
 import com.google.android.flexbox.FlexboxLayoutManager
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.image.ImageOptions
 import me.panpf.sketch.sample.bean.GiphyGif
 import me.panpf.sketch.sample.databinding.ListItemImageStaggeredBinding
-import me.panpf.sketch.sample.util.observe
+import me.panpf.sketch.sample.image.ImageOptions
+import me.panpf.sketch.sample.util.observeFromViewAndInit
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class GiphyGifFlexboxItemFactory(
@@ -44,15 +44,15 @@ class GiphyGifFlexboxItemFactory(
                 )
             }
 
-            appSettingsService.showPressedStatusInListEnabled.observe(this) {
+            appSettingsService.showPressedStatusInListEnabled.observeFromViewAndInit(this) {
                 isShowPressedStatusEnabled = it == true
             }
 
-            appSettingsService.showImageDownloadProgressEnabled.observe(this) {
+            appSettingsService.showImageDownloadProgressEnabled.observeFromViewAndInit(this) {
                 isShowDownloadProgressEnabled = it == true
             }
 
-            appSettingsService.playGifInListEnabled.observe(binding.root) {
+            appSettingsService.playGifInListEnabled.observeFromViewAndInit(this) {
                 options.isDecodeGifImage = it == true
                 val data = item.dataOrNull
                 if (data != null) {
@@ -63,7 +63,7 @@ class GiphyGifFlexboxItemFactory(
                 }
             }
 
-            appSettingsService.clickPlayGifEnabled.observe(this) {
+            appSettingsService.clickPlayGifEnabled.observeFromViewAndInit(this) {
                 setClickPlayGifEnabled(if (it == true) R.drawable.ic_play else 0)
             }
         }
@@ -86,10 +86,7 @@ class GiphyGifFlexboxItemFactory(
                 height = screenHeight / (if (context.isOrientationPortrait()) 5 else 2)
                 width = (height / previewAspectRatio).toInt()
             }
+            displayImage(previewGif.downloadUrl)
         }
-
-        binding.imageStaggeredImageItem.displayImage(
-            previewGif.downloadUrl
-        )
     }
 }

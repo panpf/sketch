@@ -15,7 +15,7 @@ import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.bean.ImageInfo
 import me.panpf.sketch.sample.databinding.ListItemMyPhotoBinding
 import me.panpf.sketch.sample.image.ImageOptions
-import me.panpf.sketch.sample.util.observe
+import me.panpf.sketch.sample.util.observeFromViewAndInit
 import me.panpf.sketch.sample.widget.SampleImageView
 
 class LocalPhotoItemFactory(
@@ -70,7 +70,7 @@ class LocalPhotoItemFactory(
                 )
             }
 
-            appSettingsService.showRoundedInPhotoListEnabled.observe(binding.root) {
+            appSettingsService.showRoundedInPhotoListEnabled.observeFromViewAndInit(this) {
                 if (it == true) {
                     setOptions(ImageOptions.ROUND_RECT)
                 } else {
@@ -85,11 +85,11 @@ class LocalPhotoItemFactory(
                 }
             }
 
-            appSettingsService.showPressedStatusInListEnabled.observe(this) {
+            appSettingsService.showPressedStatusInListEnabled.observeFromViewAndInit(this) {
                 isShowPressedStatusEnabled = it == true
             }
 
-            appSettingsService.playGifInListEnabled.observe(binding.root) {
+            appSettingsService.playGifInListEnabled.observeFromViewAndInit(this) {
                 options.isDecodeGifImage = it == true
                 val data = item.dataOrNull
                 if (data != null) {
@@ -100,11 +100,11 @@ class LocalPhotoItemFactory(
                 }
             }
 
-            appSettingsService.clickPlayGifEnabled.observe(this) {
+            appSettingsService.clickPlayGifEnabled.observeFromViewAndInit(this) {
                 setClickPlayGifEnabled(if (it == true) R.drawable.ic_play else 0)
             }
 
-            appSettingsService.thumbnailModeEnabled.observe(binding.root) {
+            appSettingsService.thumbnailModeEnabled.observeFromViewAndInit(this) {
                 val thumbnailMode = it == true
                 options.isThumbnailMode = thumbnailMode
                 if (thumbnailMode) {

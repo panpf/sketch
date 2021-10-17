@@ -14,11 +14,9 @@ import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.request.RedisplayListener
-import me.panpf.sketch.request.Resize
-import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
 import me.panpf.sketch.sample.image.ImageOptions
-import me.panpf.sketch.sample.util.observe
+import me.panpf.sketch.sample.util.observeFromViewAndInit
 import me.panpf.sketch.uri.GetDataSourceException
 import me.panpf.sketch.uri.UriModel
 import me.panpf.sketch.util.SketchUtils
@@ -32,10 +30,10 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     init {
         isClickRetryOnPauseDownloadEnabled = true
         isClickRetryOnDisplayErrorEnabled = true
-        appSettingsService.showImageFromFlagEnabled.observe(this) {
+        appSettingsService.showImageFromFlagEnabled.observeFromViewAndInit(this) {
             isShowImageFromEnabled = it == true
         }
-        appSettingsService.correctImageOrientationEnabled.observe(this) {
+        appSettingsService.correctImageOrientationEnabled.observeFromViewAndInit(this) {
             options.isCorrectImageOrientationDisabled = it == true
             if (isAttachedToWindow) {
                 redisplay { _, cacheOptions ->
@@ -43,7 +41,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
             }
         }
-        appSettingsService.cacheProcessedImageEnabled.observe(this) {
+        appSettingsService.cacheProcessedImageEnabled.observeFromViewAndInit(this) {
             val cacheProcessedImageInDisk = it == true
             options.isCacheProcessedImageInDisk = cacheProcessedImageInDisk
             redisplay { _, cacheOptions ->
