@@ -26,10 +26,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
+import com.fondesa.recyclerviewdivider.dividerBuilder
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
-import com.github.panpf.assemblyadapter.recycler.divider.Divider
-import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.flow.collect
@@ -39,8 +38,8 @@ import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.ImageInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
@@ -88,14 +87,22 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
             addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
-            addGridDividerItemDecoration {
-                val gridDivider =
-                    requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-                divider(Divider.space(gridDivider))
-                useDividerAsHeaderAndFooterDivider()
-                sideDivider(Divider.space(gridDivider))
-                useSideDividerAsSideHeaderAndFooterDivider()
-            }
+
+            val gridDivider = requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+//            addGridDividerItemDecoration {
+//                divider(Divider.space(gridDivider))
+//                sideDivider(Divider.space(gridDivider))
+//                useDividerAsHeaderAndFooterDivider()
+//                useSideDividerAsSideHeaderAndFooterDivider()
+//            }
+            context.dividerBuilder()
+                .asSpace()
+                .size(gridDivider)
+                .showSideDividers()
+                .showFirstDivider()
+                .showLastDivider()
+                .build()
+                .addTo(this)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

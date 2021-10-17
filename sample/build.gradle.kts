@@ -129,6 +129,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT")}")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${property("RETROFIT2_KOTLINX_SERIALIZATION_CONVERTER")}")
     implementation("com.github.wseemann:FFmpegMediaMetadataRetriever:${property("FFMPEG_MEDIA_METADATA_RETRIEVER")}")
+    implementation("com.github.fondesa:recycler-view-divider:3.5.0")
 
     implementation(files("libs/bugly_1.2.3.8__release.jar"))
 
