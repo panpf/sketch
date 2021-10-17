@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import me.panpf.sketch.sample.bean.ListSeparator
 import me.panpf.sketch.sample.NavMainDirections
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.bean.Link
 import me.panpf.sketch.sample.databinding.FragmentMainBinding
 import me.panpf.sketch.sample.item.LinkItemFactory
 import me.panpf.sketch.sample.item.ListSeparatorItemFactory
 
-class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
+class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
         FragmentMainBinding.inflate(inflater, parent, false)

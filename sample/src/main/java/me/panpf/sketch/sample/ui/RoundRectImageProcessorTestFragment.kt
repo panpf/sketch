@@ -8,12 +8,12 @@ import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentRoundRectImageProcessorBinding
 import me.panpf.sketch.sample.vm.RoundedProcessorTestViewModel
 
 class RoundRectImageProcessorTestFragment :
-    BaseFragment<FragmentRoundRectImageProcessorBinding>() {
+    BindingFragment<FragmentRoundRectImageProcessorBinding>() {
 
     private val viewModel by viewModels<RoundedProcessorTestViewModel>()
 

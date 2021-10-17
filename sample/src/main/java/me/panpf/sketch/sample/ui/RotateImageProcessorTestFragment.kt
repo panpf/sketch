@@ -7,11 +7,11 @@ import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentRotateBinding
 import me.panpf.sketch.sample.vm.RotateProcessorTestViewModel
 
-class RotateImageProcessorTestFragment : BaseFragment<FragmentRotateBinding>() {
+class RotateImageProcessorTestFragment : BindingFragment<FragmentRotateBinding>() {
 
     private val viewModel by viewModels<RotateProcessorTestViewModel>()
 

@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentImageOrientationTestBinding
 
-class ImageOrientationTestFragment : BaseFragment<FragmentImageOrientationTestBinding>() {
+class ImageOrientationTestFragment : BindingFragment<FragmentImageOrientationTestBinding>() {
 
     private val args by navArgs<ImageOrientationTestFragmentArgs>()
 

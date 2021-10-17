@@ -16,7 +16,7 @@ import me.panpf.sketch.drawable.SketchGifDrawable
 import me.panpf.sketch.request.*
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.util.*
@@ -30,7 +30,7 @@ import me.panpf.sketch.util.SketchUtils
 import me.panpf.sketch.zoom.AdaptiveTwoLevelScales
 import java.util.*
 
-class ImageFragment : BaseFragment<FragmentImageBinding>() {
+class ImageFragment : BindingFragment<FragmentImageBinding>() {
 
     val args by navArgs<ImageFragmentArgs>()
     private val viewModel by viewModels<ImageViewModel> {

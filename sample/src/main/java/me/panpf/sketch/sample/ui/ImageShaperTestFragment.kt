@@ -7,10 +7,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
 
-class ImageShaperTestFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
+class ImageShaperTestFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,

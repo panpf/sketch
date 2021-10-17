@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.databinding.FragmentInBitmapTestBinding
 import me.panpf.sketch.sample.vm.InBitmapTestViewModel
 
-class InBitmapTestFragment : BaseToolbarFragment<FragmentInBitmapTestBinding>() {
+class InBitmapTestFragment : ToolbarBindingFragment<FragmentInBitmapTestBinding>() {
 
     private val viewModel by viewModels<InBitmapTestViewModel>()
 

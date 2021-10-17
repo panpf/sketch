@@ -30,7 +30,7 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.VideoInfo
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
@@ -39,7 +39,7 @@ import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.vm.LocalVideoListViewModel
 import java.io.File
 
-class LocalVideoListFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
+class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
 

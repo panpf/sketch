@@ -18,7 +18,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.UnsplashImage
@@ -28,7 +28,7 @@ import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.vm.UnsplashImageListViewModel
 import me.panpf.sketch.sample.widget.SampleImageView
 
-class OnlinePhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
+class OnlinePhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val unsplashImageListViewModel by viewModels<UnsplashImageListViewModel>()
 

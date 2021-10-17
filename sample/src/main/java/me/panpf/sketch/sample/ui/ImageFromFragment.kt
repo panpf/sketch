@@ -7,13 +7,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
 import me.panpf.sketch.sample.item.ImageFragmentItemFactory
 import me.panpf.sketch.sample.vm.ImageFromViewModel
 
-class ImageFromFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
+class ImageFromFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
 
     private val viewModel by viewModels<ImageFromViewModel>()
 

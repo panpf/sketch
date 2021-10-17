@@ -39,7 +39,7 @@ import kotlinx.serialization.json.Json
 import me.panpf.sketch.sample.NavMainDirections
 import me.panpf.sketch.sample.R
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.base.MyLoadStateAdapter
 import me.panpf.sketch.sample.bean.Image
 import me.panpf.sketch.sample.bean.ImageInfo
@@ -50,7 +50,7 @@ import me.panpf.sketch.sample.util.ScrollingPauseLoadManager
 import me.panpf.sketch.sample.vm.LocalPhotoListViewModel
 import me.panpf.sketch.sample.widget.SampleImageView
 
-class LocalPhotosFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
+class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val photoListViewModel by viewModels<LocalPhotoListViewModel>()
 

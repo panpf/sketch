@@ -7,11 +7,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.databinding.FragmentPager2TabBinding
 import me.panpf.sketch.sample.vm.ImageOrientationTestHomeViewModel
 
-class ImageOrientationTestHomeFragment : BaseToolbarFragment<FragmentPager2TabBinding>() {
+class ImageOrientationTestHomeFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
 
     private val viewModel by viewModels<ImageOrientationTestHomeViewModel>()
 

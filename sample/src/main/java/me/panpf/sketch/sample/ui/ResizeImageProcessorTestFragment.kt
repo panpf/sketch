@@ -9,11 +9,11 @@ import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.request.Resize
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentResizeBinding
 import me.panpf.sketch.sample.vm.ResizeTestViewModel
 
-class ResizeImageProcessorTestFragment : BaseFragment<FragmentResizeBinding>() {
+class ResizeImageProcessorTestFragment : BindingFragment<FragmentResizeBinding>() {
 
     private val viewModel by viewModels<ResizeTestViewModel>()
 

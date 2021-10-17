@@ -3,15 +3,13 @@ package me.panpf.sketch.sample.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.updateLayoutParams
-import com.github.panpf.tools4a.dimen.ktx.dp2px
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.CircleImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentCircleBinding
 
-class CircleImageProcessorTestFragment : BaseFragment<FragmentCircleBinding>() {
+class CircleImageProcessorTestFragment : BindingFragment<FragmentCircleBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,

@@ -9,11 +9,11 @@ import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentMaskBinding
 import me.panpf.sketch.sample.vm.MaskProcessorTestViewModel
 
-class MaskImageProcessorTestFragment : BaseFragment<FragmentMaskBinding>() {
+class MaskImageProcessorTestFragment : BindingFragment<FragmentMaskBinding>() {
 
     private val viewModel by viewModels<MaskProcessorTestViewModel>()
 

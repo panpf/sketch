@@ -8,11 +8,11 @@ import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.process.GaussianBlurImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentGaussianBlurBinding
 import me.panpf.sketch.sample.vm.BlurProcessorTestViewModel
 
-class GaussianBlurImageProcessorTestFragment : BaseFragment<FragmentGaussianBlurBinding>() {
+class GaussianBlurImageProcessorTestFragment : BindingFragment<FragmentGaussianBlurBinding>() {
 
     private val viewModel by viewModels<BlurProcessorTestViewModel>()
 

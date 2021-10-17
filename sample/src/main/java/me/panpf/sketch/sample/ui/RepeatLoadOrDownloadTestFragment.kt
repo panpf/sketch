@@ -9,12 +9,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.panpf.sketch.Sketch
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.databinding.FragmentRepeatLoadOrDownloadTestBinding
 import me.panpf.sketch.uri.ApkIconUriModel
 
 class RepeatLoadOrDownloadTestFragment :
-    BaseToolbarFragment<FragmentRepeatLoadOrDownloadTestBinding>() {
+    ToolbarBindingFragment<FragmentRepeatLoadOrDownloadTestBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,

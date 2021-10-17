@@ -25,6 +25,7 @@ import me.panpf.sketch.drawable.SketchDrawable
 import me.panpf.sketch.drawable.SketchLoadingDrawable
 import me.panpf.sketch.drawable.SketchShapeBitmapDrawable
 import me.panpf.sketch.sample.appSettingsService
+import me.panpf.sketch.sample.base.BaseFragment
 import me.panpf.sketch.sample.base.parentViewModels
 import me.panpf.sketch.sample.databinding.FragmentImageBinding
 import me.panpf.sketch.sample.util.safeRun
@@ -35,7 +36,7 @@ import me.panpf.sketch.util.SketchUtils
 import java.io.*
 import java.util.*
 
-class ImageMenuFragment : Fragment() {
+class ImageMenuFragment : BaseFragment() {
 
     private val showImageMenuViewModel by parentViewModels<ShowImageMenuViewModel>()
 

@@ -11,11 +11,11 @@ import me.panpf.sketch.process.MaskImageProcessor
 import me.panpf.sketch.process.RotateImageProcessor
 import me.panpf.sketch.process.RoundRectImageProcessor
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentWrappedBinding
 import me.panpf.sketch.sample.vm.WrappedProcessorTestViewModel
 
-class WrappedImageProcessorTestFragment : BaseFragment<FragmentWrappedBinding>() {
+class WrappedImageProcessorTestFragment : BindingFragment<FragmentWrappedBinding>() {
 
     private val viewModel by viewModels<WrappedProcessorTestViewModel>()
 

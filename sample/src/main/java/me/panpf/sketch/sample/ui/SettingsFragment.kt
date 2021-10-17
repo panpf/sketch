@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import me.panpf.sketch.SLog
 import me.panpf.sketch.sample.appSettingsService
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import me.panpf.sketch.sample.item.CheckMenuItemFactory
 import me.panpf.sketch.sample.item.InfoMenuItemFactory
 import me.panpf.sketch.sample.item.ListSeparatorItemFactory
 import me.panpf.sketch.sample.vm.SettingsViewModel
 
-class SettingsFragment : BaseToolbarFragment<FragmentRecyclerBinding>() {
+class SettingsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val viewModel by viewModels<SettingsViewModel>()
 

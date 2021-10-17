@@ -8,12 +8,12 @@ import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentCircleImageShaperBinding
 import me.panpf.sketch.sample.vm.CircleShaperTestViewModel
 import me.panpf.sketch.shaper.CircleImageShaper
 
-class CircleImageShaperTestFragment : BaseFragment<FragmentCircleImageShaperBinding>() {
+class CircleImageShaperTestFragment : BindingFragment<FragmentCircleImageShaperBinding>() {
 
     private val viewModel by viewModels<CircleShaperTestViewModel>()
 

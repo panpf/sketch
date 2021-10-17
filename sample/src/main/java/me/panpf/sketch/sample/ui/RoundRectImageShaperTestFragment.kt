@@ -8,13 +8,13 @@ import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import me.panpf.sketch.display.TransitionImageDisplayer
 import me.panpf.sketch.sample.AssetImage
-import me.panpf.sketch.sample.base.BaseFragment
+import me.panpf.sketch.sample.base.BindingFragment
 import me.panpf.sketch.sample.databinding.FragmentRoundRectImageShaperBinding
 import me.panpf.sketch.sample.vm.RoundedShaperTestViewModel
 import me.panpf.sketch.shaper.RoundRectImageShaper
 
 class RoundRectImageShaperTestFragment :
-    BaseFragment<FragmentRoundRectImageShaperBinding>() {
+    BindingFragment<FragmentRoundRectImageShaperBinding>() {
 
     private val viewModel by viewModels<RoundedShaperTestViewModel>()
 

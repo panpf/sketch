@@ -15,10 +15,6 @@
  */
 package me.panpf.sketch.sample.base
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -26,9 +22,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import java.util.*
 
-abstract class BaseFragment<VIEW_BINDING : ViewBinding> : Fragment() {
+abstract class BaseFragment : Fragment() {
 
-    protected var binding: VIEW_BINDING? = null
     private val userVisibleChangedListenerList = LinkedList<UserVisibleChangedListener>()
 
     val isViewCreated: Boolean
@@ -36,38 +31,6 @@ abstract class BaseFragment<VIEW_BINDING : ViewBinding> : Fragment() {
 
     val isVisibleToUser: Boolean
         get() = isResumed && userVisibleHint
-
-    final override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createViewBinding(inflater, container).apply {
-        this@BaseFragment.binding = this
-    }.root
-
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val binding = this.binding!!
-        onInitViews(binding, savedInstanceState)
-        onInitData(binding, savedInstanceState)
-    }
-
-    override fun onDestroyView() {
-        this.binding = null
-        super.onDestroyView()
-    }
-
-    protected abstract fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup?
-    ): VIEW_BINDING
-
-    protected open fun onInitViews(binding: VIEW_BINDING, savedInstanceState: Bundle?) {
-
-    }
-
-    protected abstract fun onInitData(binding: VIEW_BINDING, savedInstanceState: Bundle?)
 
     override fun onPause() {
         super.onPause()

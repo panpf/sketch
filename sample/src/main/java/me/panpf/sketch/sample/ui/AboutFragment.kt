@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import me.panpf.sketch.sample.BuildConfig
 import me.panpf.sketch.sample.R
-import me.panpf.sketch.sample.base.BaseToolbarFragment
+import me.panpf.sketch.sample.base.ToolbarBindingFragment
 import me.panpf.sketch.sample.databinding.FragmentAboutBinding
 
-class AboutFragment : BaseToolbarFragment<FragmentAboutBinding>() {
+class AboutFragment : ToolbarBindingFragment<FragmentAboutBinding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
