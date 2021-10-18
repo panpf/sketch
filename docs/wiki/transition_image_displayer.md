@@ -89,8 +89,8 @@ sketchImageView.displayImage(R.drawable.sample);
 * 没有配置 loadingImage 时无需配置 [ShapeSize]
 * 如果配置了 loadingImage 却没有配置 [ShapeSize]， Sketch 就会尝试用 [ImageView] 的固定尺寸作为 [ShapeSize]，如果无法使用固定尺寸就只能抛异常了
 
-[TransitionImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/TransitionImageDisplayer.java
+[TransitionImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/TransitionImageDisplayer.java
 [TransitionDrawable]: https://developer.android.google.cn/reference/android/graphics/drawable/TransitionDrawable.html
 [ImageView]: https://developer.android.google.cn/reference/android/widget/ImageView.html
 [shape_size]: shape_size.md
-[ShapeSize]: ../../sketch/src/main/java/me/panpf/sketch/request/ShapeSize.java
+[ShapeSize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ShapeSize.java

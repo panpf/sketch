@@ -12,7 +12,7 @@ android {
     compileSdk = property("COMPILE_SDK").toString().toInt()
 
     defaultConfig {
-        applicationId = "me.panpf.sketch.sample"
+        applicationId = "com.github.panpf.sketch.sample"
 
         minSdk = property("MIN_SDK").toString().toInt()
         targetSdk = property("TARGET_SDK").toString().toInt()

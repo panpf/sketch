@@ -22,11 +22,11 @@ display 显示请求 [Sketch] 会在合适的时候自动取消，如下：
 
 在执行 [DownloadHelper].commit() 方法之后你会得到一个 [DownloadRequest]，通过其 cancel() 方法可以取消请求
 
-[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
-[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
-[DisplayHelper]:../../sketch/src/main/java/me/panpf/sketch/request/DisplayHelper.java
-[DisplayRequest]:../../sketch/src/main/java/me/panpf/sketch/request/DisplayRequest.java
-[LoadHelper]:../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[LoadRequest]:../../sketch/src/main/java/me/panpf/sketch/request/LoadRequest.java
-[DownloadHelper]:../../sketch/src/main/java/me/panpf/sketch/request/DownloadHelper.java
-[DownloadRequest]:../../sketch/src/main/java/me/panpf/sketch/request/DownloadRequest.java
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.java
+[SketchImageView]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchImageView.java
+[DisplayHelper]:../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayHelper.java
+[DisplayRequest]:../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayRequest.java
+[LoadHelper]:../../sketch/src/main/java/com/github/panpf/sketch/request/LoadHelper.java
+[LoadRequest]:../../sketch/src/main/java/com/github/panpf/sketch/request/LoadRequest.java
+[DownloadHelper]:../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadHelper.java
+[DownloadRequest]:../../sketch/src/main/java/com/github/panpf/sketch/request/DownloadRequest.java

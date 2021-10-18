@@ -8,10 +8,10 @@ GifDrawable：
 * recycle() 方法中回收 mBuffer 部分抽离出一个单独的 recycleBitmap 方法，可供子类继承修改
 
 GifTextureView：
-* R 的包名改为 me.panpf.sketch.gif.R
+* R 的包名改为 com.github.panpf.sketch.gif.R
 
 GifViewUtils：
-* R 的包名改为 me.panpf.sketch.gif.R
+* R 的包名改为 com.github.panpf.sketch.gif.R
 
 GifTextView：
 * 恢复去掉的对 API 16 以下的支持

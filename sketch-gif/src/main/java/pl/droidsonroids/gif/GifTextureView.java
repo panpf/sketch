@@ -22,7 +22,7 @@ import androidx.annotation.RequiresApi;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-import me.panpf.sketch.gif.R;
+import com.github.panpf.sketch.gif.R;
 
 /**
  * <p>{@link TextureView} which can display animated GIFs. GifTextureView can only be used in a

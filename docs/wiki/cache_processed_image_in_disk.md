@@ -24,5 +24,5 @@ displayOptions.setCacheProcessedImageInDisk(true);
 
 `此功能读取图片时已强制设置 inPreferQualityOverSpeed 为 true`
 
-[ImageProcessor]:../../sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
+[ImageProcessor]:../../sketch/src/main/java/com/github/panpf/sketch/process/ImageProcessor.java
 [reference_article]: http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html

@@ -36,7 +36,7 @@ SLog.isLoggable(SLog.DEBUG) == true
 // 获取当前日志级别
 SLog.getLevel();
 
-[SLog]: ../../sketch/src/main/java/me/panpf/sketch/SLog.java
-[SLog.Proxy]: ../../sketch/src/main/java/me/panpf/sketch/SLog.java
-[SampleLogProxy]: ../../sample/src/main/java/me/panpf/sketchsample/SampleLogProxy.kt
+[SLog]: ../../sketch/src/main/java/com/github/panpf/sketch/SLog.java
+[SLog.Proxy]: ../../sketch/src/main/java/com/github/panpf/sketch/SLog.java
+[SampleLogProxy]: ../../sample/src/main/java/com/github/panpf/sketchsample/SampleLogProxy.kt
 [android.util.Log]: https://developer.android.com/reference/android/util/Log.html

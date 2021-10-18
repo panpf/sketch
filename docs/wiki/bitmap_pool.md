@@ -96,6 +96,6 @@ bitmap 的释放是全自动的，使用者无需关心，总结一下会在如�
 * 设备可用内存较低触发了 Application 的 onLowMemory() 方法
 * 系统整理内存触发了 Application 的 onTrimMemory(int) 方法
 
-[BitmapPool]: ../../sketch/src/main/java/me/panpf/sketch/cache/BitmapPool.java
-[LruBitmapPool]: ../../sketch/src/main/java/me/panpf/sketch/cache/LruBitmapPool.java
-[BitmapPoolUtils]: ../../sketch/src/main/java/me/panpf/sketch/cache/BitmapPoolUtils.java
+[BitmapPool]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/BitmapPool.java
+[LruBitmapPool]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/LruBitmapPool.java
+[BitmapPoolUtils]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/BitmapPoolUtils.java

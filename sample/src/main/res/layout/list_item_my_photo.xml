@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <com.github.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_myPhotoItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

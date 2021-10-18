@@ -17,8 +17,8 @@
 #}
 
 # 只有 SketchGifDrawableImpl 类与 sketch-gif 有联系，因此当缺失 sketch-gif 时 SketchGifDrawableImpl 类在混淆时会发出警告
--dontwarn me.panpf.sketch.drawable.SketchGifDrawableImpl
--dontwarn me.panpf.sketch.drawable.SketchGifDrawableImpl$1
+-dontwarn com.github.panpf.sketch.drawable.SketchGifDrawableImpl
+-dontwarn com.github.panpf.sketch.drawable.SketchGifDrawableImpl$1
 
 # 实现了 Initializer 接口的类需要在 AndroidManifest 中配置，然后在运行时实例化，因此不能混淆
--keep public class * implements me.panpf.sketch.Initializer
+-keep public class * implements com.github.panpf.sketch.Initializer

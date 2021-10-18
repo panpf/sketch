@@ -6,39 +6,39 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="me.panpf.sketch.sample.ui.MainFragment"
+        android:name="com.github.panpf.sketch.sample.ui.MainFragment"
         android:label="MainFragment" />
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="me.panpf.sketch.sample.ui.AboutFragment"
+        android:name="com.github.panpf.sketch.sample.ui.AboutFragment"
         android:label="AboutFragment" />
     <fragment
         android:id="@+id/hugeImageFragment"
-        android:name="me.panpf.sketch.sample.ui.HugeImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.HugeImageFragment"
         android:label="HugeImageFragment" />
     <fragment
         android:id="@+id/imageFormatFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageFormatFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageFormatFragment"
         android:label="ImageFormatFragment" />
     <fragment
         android:id="@+id/imageFromFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageFromFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageFromFragment"
         android:label="ImageFromFragment" />
     <fragment
         android:id="@+id/circleImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.CircleImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.CircleImageProcessorTestFragment"
         android:label="CircleImageProcessorTestFragment" />
     <fragment
         android:id="@+id/circleImageShaperTestFragment"
-        android:name="me.panpf.sketch.sample.ui.CircleImageShaperTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.CircleImageShaperTestFragment"
         android:label="CircleImageShaperTestFragment" />
     <fragment
         android:id="@+id/gaussianBlurImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.GaussianBlurImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.GaussianBlurImageProcessorTestFragment"
         android:label="GaussianBlurImageProcessorTestFragment" />
     <fragment
         android:id="@+id/imageOrientationTestFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageOrientationTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageOrientationTestFragment"
         android:label="ImageOrientationTestFragment">
         <argument
             android:name="imagePath"
@@ -47,43 +47,43 @@
     </fragment>
     <fragment
         android:id="@+id/imageOrientationTestHomeFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageOrientationTestHomeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageOrientationTestHomeFragment"
         android:label="ImageOrientationTestHomeFragment" />
     <fragment
         android:id="@+id/imageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageProcessorTestFragment"
         android:label="ImageProcessorTestFragment" />
     <fragment
         android:id="@+id/imageShaperTestFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageShaperTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageShaperTestFragment"
         android:label="ImageShaperTestFragment" />
     <fragment
         android:id="@+id/inBitmapTestFragment"
-        android:name="me.panpf.sketch.sample.ui.InBitmapTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.InBitmapTestFragment"
         android:label="InBitmapTestFragment" />
     <fragment
         android:id="@+id/maskImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.MaskImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.MaskImageProcessorTestFragment"
         android:label="MaskImageProcessorTestFragment" />
     <fragment
         android:id="@+id/otherTestFragment"
-        android:name="me.panpf.sketch.sample.ui.OtherTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.OtherTestFragment"
         android:label="OtherTestFragment" />
     <fragment
         android:id="@+id/localPhotosFragment"
-        android:name="me.panpf.sketch.sample.ui.LocalPhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.LocalPhotosFragment"
         android:label="LocalPhotosFragment" />
     <fragment
         android:id="@+id/repeatLoadOrDownloadTestFragment"
-        android:name="me.panpf.sketch.sample.ui.RepeatLoadOrDownloadTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.RepeatLoadOrDownloadTestFragment"
         android:label="RepeatLoadOrDownloadTestFragment" />
     <fragment
         android:id="@+id/resizeImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.ResizeImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ResizeImageProcessorTestFragment"
         android:label="ResizeImageProcessorTestFragment" />
     <fragment
         android:id="@+id/imageFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageFragment"
         android:label="ImageFragment">
         <argument
             android:name="normalQualityUrl"
@@ -107,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/imageViewerFragment"
-        android:name="me.panpf.sketch.sample.ui.ImageViewerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
             android:name="imageJsonArray"
@@ -125,43 +125,43 @@
     </fragment>
     <fragment
         android:id="@+id/roundRectImageShaperTestFragment"
-        android:name="me.panpf.sketch.sample.ui.RoundRectImageShaperTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.RoundRectImageShaperTestFragment"
         android:label="RoundRectImageShaperTestFragment" />
     <fragment
         android:id="@+id/reflectionImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.ReflectionImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ReflectionImageProcessorTestFragment"
         android:label="ReflectionImageProcessorTestFragment" />
     <fragment
         android:id="@+id/rotateImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.RotateImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.RotateImageProcessorTestFragment"
         android:label="RotateImageProcessorTestFragment" />
     <fragment
         android:id="@+id/roundRectImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.RoundRectImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.RoundRectImageProcessorTestFragment"
         android:label="RoundRectImageProcessorTestFragment" />
     <fragment
         android:id="@+id/shapeSizeImageShaperTestFragment"
-        android:name="me.panpf.sketch.sample.ui.ShapeSizeImageShaperTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ShapeSizeImageShaperTestFragment"
         android:label="ShapeSizeImageShaperTestFragment" />
     <fragment
         android:id="@+id/wrappedImageProcessorTestFragment"
-        android:name="me.panpf.sketch.sample.ui.WrappedImageProcessorTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.WrappedImageProcessorTestFragment"
         android:label="WrappedImageProcessorTestFragment" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="me.panpf.sketch.sample.ui.SettingsFragment"
+        android:name="com.github.panpf.sketch.sample.ui.SettingsFragment"
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/onlineGifFragment"
-        android:name="me.panpf.sketch.sample.ui.OnlineGifFragment"
+        android:name="com.github.panpf.sketch.sample.ui.OnlineGifFragment"
         android:label="OnlineGifFragment" />
     <fragment
         android:id="@+id/onlinePhotosFragment"
-        android:name="me.panpf.sketch.sample.ui.OnlinePhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.OnlinePhotosFragment"
         android:label="OnlinePhotosFragment" />
     <fragment
         android:id="@+id/localVideoFragment"
-        android:name="me.panpf.sketch.sample.ui.LocalVideoListFragment"
+        android:name="com.github.panpf.sketch.sample.ui.LocalVideoListFragment"
         android:label="LocalVideoFragment" />
 
     <action

@@ -25,6 +25,6 @@ public class MySketchCallback extends SketchCallback {
 Sketch.with(context).getConfiguration().setCllback(new MySketchCallback());
 ```
 
-[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
-[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
-[SketchCallback]: ../../sketch/src/main/java/me/panpf/sketch/SketchCallback.java
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.java
+[Configuration]: ../../sketch/src/main/java/com/github/panpf/sketch/Configuration.java
+[SketchCallback]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchCallback.java

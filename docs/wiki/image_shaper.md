@@ -27,10 +27,10 @@ Sketch.with(context).display(uri, sketchImageView)
 
 如果需要在绘制时同时改变图片的尺寸就要用到 [ShapeSize] 了
 
-[ImageShaper]: ../../sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
+[ImageShaper]: ../../sketch/src/main/java/com/github/panpf/sketch/shaper/ImageShaper.java
 [ImageProcessor]: image_processor.md
-[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[DisplayHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayHelper.java
+[LoadOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
+[LoadHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadHelper.java
+[DisplayHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayHelper.java
 [ShapeSize]: shape_size.md

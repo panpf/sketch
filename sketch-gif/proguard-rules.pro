@@ -21,5 +21,5 @@
 -dontwarn androidx.annotation.**
 
 # sketch 就以这两个类是否存在判断是否可以使用 gif
--keep class me.panpf.sketch.gif.BuildConfig
+-keep class com.github.panpf.sketch.gif.BuildConfig
 -keep class pl.droidsonroids.gif.GifDrawable

@@ -25,15 +25,15 @@ Sketch 支持不同的状态显示不同的占位图片：
 
 通过 [DisplayOptions].setLoadingImage(StateImage) 方法 或 [DisplayHelper].loadingImage(StateImage) 方法使用即可
 
-[StateImage]: ../../sketch/src/main/java/me/panpf/sketch/state/StateImage.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
-[DisplayHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayHelper.java
-[ShapeSize]: ../../sketch/src/main/java/me/panpf/sketch/request/ShapeSize.java
-[ImageShaper]: ../../sketch/src/main/java/me/panpf/sketch/shaper/ImageShaper.java
+[StateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/StateImage.java
+[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
+[DisplayHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayHelper.java
+[ShapeSize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/ShapeSize.java
+[ImageShaper]: ../../sketch/src/main/java/com/github/panpf/sketch/shaper/ImageShaper.java
 [memory_cache_state_image]: memory_cache_state_image.md
 [ImageProcessor]: image_processor.md
 [Resize]: resize.md
-[DrawableStateImage]: ../../sketch/src/main/java/me/panpf/sketch/state/DrawableStateImage.java
-[MakerStateImage]: ../../sketch/src/main/java/me/panpf/sketch/state/MakerStateImage.java
-[OldStateImage]: ../../sketch/src/main/java/me/panpf/sketch/state/OldStateImage.java
-[MemoryCacheStateImage]: ../../sketch/src/main/java/me/panpf/sketch/state/MemoryCacheStateImage.java
+[DrawableStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/DrawableStateImage.java
+[MakerStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/MakerStateImage.java
+[OldStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/OldStateImage.java
+[MemoryCacheStateImage]: ../../sketch/src/main/java/com/github/panpf/sketch/state/MemoryCacheStateImage.java

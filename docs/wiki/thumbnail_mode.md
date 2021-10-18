@@ -38,4 +38,4 @@ sketchImageView.displayImage("http://t.cn/RShdS1f");
 映射区域计算规则根据 [Resize] 的 scaleType 属性而定，跟 ImageView.ScaleType 效果一样
 
 
-[Resize]: ../../sketch/src/main/java/me/panpf/sketch/request/Resize.java
+[Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Resize.java

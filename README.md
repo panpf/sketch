@@ -68,8 +68,9 @@ Sketch 是 Android 上一款强大且全面的图片加载器，除了图片加�
 在 app 的 build.gradle 文件的 dependencies 节点中加入依赖
 
 ```kotlin
-implementation("io.github.panpf.sketch:sketch:${LAST_VERSION}")
-implementation("io.github.panpf.sketch:sketch-gif:${LAST_VERSION}") // 不是必须的. 如果需要支持 gif 就添加
+implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
+implementation("io.github.panpf.sketch3:sketch-gif:${LAST_VERSION}") // 非必须。支持 gif 
+implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}") // 非必须。支持手势缩放
 ```
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
@@ -143,7 +144,7 @@ Please view the [CHANGELOG.md] file
 * ![QQ Group][qq_group_image]
 
 ## License
-    Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
+    Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -164,7 +165,7 @@ Please view the [CHANGELOG.md] file
 [android_arsenal_link]: https://android-arsenal.com/details/1/4165
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
-[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch/sketch
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch3/sketch
 [version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch/
 [min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
 [min_api_link]: https://android-arsenal.com/api?level=16
@@ -174,7 +175,7 @@ Please view the [CHANGELOG.md] file
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
 [sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
-[UriModel]: sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
+[UriModel]: sketch/src/main/java/com/github/panpf/sketch/uri/UriModel.java
 
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md

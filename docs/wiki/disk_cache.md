@@ -66,7 +66,7 @@ diskCache.setDisabled(false);
 * void clear()：清除缓存
 * ReentrantLock getEditorLock(String)：获取编辑同步锁
 
-[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
-[DiskCache]: ../../sketch/src/main/java/me/panpf/sketch/cache/DiskCache.java
-[LruDiskCache]: ../../sketch/src/main/java/me/panpf/sketch/cache/LruDiskCache.java
-[DiskLruCache]: ../../sketch/src/main/java/me/panpf/sketch/util/DiskLruCache.java
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.java
+[DiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/DiskCache.java
+[LruDiskCache]: ../../sketch/src/main/java/com/github/panpf/sketch/cache/LruDiskCache.java
+[DiskLruCache]: ../../sketch/src/main/java/com/github/panpf/sketch/util/DiskLruCache.java

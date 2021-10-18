@@ -14,7 +14,7 @@ Sketch is a powerful and comprehensive picture loader on Android, in addition to
 
 ![sample_app_download_qrcode]
 
-Scan qrcode to download, or [Click me download][sample_app_download_link]
+Scan qrcode to download, or [Click download][sample_app_download_link]
 
 ## Features
 
@@ -66,27 +66,13 @@ Please refer to the details [URI type and usage guide][uri]
 
 Add dependencies to the dependencies node of the app's build.gradle file
 
-```groovy
-implementation 'me.panpf:sketch:$sketch_version'
+```kotlin
+implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
+implementation("io.github.panpf.sketch3:sketch-gif:${LAST_VERSION}") // Not required. Support gif
+implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}") // Not required. Support gesture zoom
 ```
 
-Replace `$sketch_version` with the latest version [![sketch_version_image]][sketch_version_link]
-
-If you need to play GIF add sketch-gif dependencies
-
-```groovy
-implementation 'me.panpf:sketch-gif:$sketch_gif_version'
-```
-
-Replace `$sketch_gif_version` with the latest version [![sketch_gif_version_image]][sketch_gif_version_link]
-
-If you need gesture zoom function add sketch-zoom dependencies
-
-```groovy
-implementation 'me.panpf:sketch-zoom:$sketch_zoom_version'
-```
-
-Replace `$sketch_zoom_version` with the latest version [![sketch_zoom_version_image]][sketch_zoom_version_link]
+Replace `${LAST_VERSION}` with the latest version [![sketch_version_image]][sketch_version_link]
 
 `Android Studio automatically merges the permissions and proguard in the AAR`
 
@@ -159,7 +145,7 @@ Please view the [CHANGELOG.md] file
 * ![QQ Group][qq_group_image]
 
 ## License
-    Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
+    Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -194,7 +180,7 @@ Please view the [CHANGELOG.md] file
 
 [sample_app_download_qrcode]: docs/sketch-sample.png
 [sample_app_download_link]: https://github.com/panpf/sketch/raw/master/docs/sketch-sample.apk
-[UriModel]: sketch/src/main/java/me/panpf/sketch/uri/UriModel.java
+[UriModel]: sketch/src/main/java/com/github/panpf/sketch/uri/UriModel.java
 
 [uri]: docs/wiki/uri.md
 [sketch_image_view]: docs/wiki/sketch_image_view.md

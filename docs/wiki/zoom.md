@@ -21,10 +21,10 @@ Sketch 是目前唯一提供手势缩放支持的图片加载器，代码基于 
 导入依赖
 
 ```groovy
-implementation 'me.panpf:sketch-zoom:$sketch_zoom_version'
+implementation("io.github.panpf.sketch3:sketch-zoom:${SKETCH_ZOOM_VERSION}")
 ```
 
-请自行替换 `$sketch_zoom_version` 为最新的版本 [![sketch_zoom_version_image]][sketch_zoom_version_link]
+请自行替换 `${SKETCH_ZOOM_VERSION}` 为最新的版本 [![sketch_zoom_version_image]][sketch_zoom_version_link]
 
 使用 [SketchZoomImageView] 即可缩放图片
 ```java
@@ -236,9 +236,9 @@ public boolean dispatchTouchEvent(MotionEvent ev) {
 [Picasso]: https://github.com/square/picasso
 [gesture-imageview]: https://github.com/jasonpolites/gesture-imageview
 [PhotoView]: https://github.com/chrisbanes/PhotoView
-[ImageZoomer]: ../../sketch-zoom/src/main/java/me/panpf/sketch/zoom/ImageZoomer.java
-[ImageSizeCalculator]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageSizeCalculator.java
+[ImageZoomer]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ImageZoomer.java
+[ImageSizeCalculator]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/ImageSizeCalculator.java
 [block_display.md]: block_display.md
-[ZoomScales]: ../../sketch-zoom/src/main/java/me/panpf/sketch/zoom/ZoomScales.java
-[AdaptiveTwoLevelScales]: ../../sketch-zoom/src/main/java/me/panpf/sketch/zoom/AdaptiveTwoLevelScales.java
-[SketchZoomImageView]: ../../sketch-zoom/src/main/java/me/panpf/sketch/zoom/SketchZoomImageView.java
+[ZoomScales]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/ZoomScales.java
+[AdaptiveTwoLevelScales]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/AdaptiveTwoLevelScales.java
+[SketchZoomImageView]: ../../sketch-zoom/src/main/java/com/github/panpf/sketch/zoom/SketchZoomImageView.java

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="me.panpf.sketch.sample">
+    package="com.github.panpf.sketch.sample">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,7 +14,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".MyApplication"
+        android:name="com.github.panpf.sketch.sample.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +23,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.github.panpf.sketch.sample.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +32,7 @@
         </activity>
 
         <service
-            android:name=".service.NotificationService"
+            android:name="com.github.panpf.sketch.sample.service.NotificationService"
             android:process=":notification" />
 
         <provider
@@ -46,7 +46,7 @@
         </provider>
 
         <meta-data
-            android:name="me.panpf.sketch.sample.image.MySketchInitializer"
+            android:name="com.github.panpf.sketch.sample.image.MySketchInitializer"
             android:value="SKETCH_INITIALIZER" />
 
         <meta-data

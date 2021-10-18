@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <com.github.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_unsplashImageItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <me.panpf.sketch.sample.widget.SampleImageView
+    <com.github.panpf.sketch.sample.widget.SampleImageView
         android:id="@+id/image_unsplashImageItem_userProfile"
         android:layout_width="42dp"
         android:layout_height="42dp"

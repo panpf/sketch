@@ -44,15 +44,15 @@ Sketch.with(context).display(uri, sketchImageView)
 2. 调用 startAnimation() 执行动画之前要下调用 clearAnimation() 清理一下
 3. 尽量使用 [ImageDisplayer].DEFAULT_ANIMATION_DURATION 作为动画持续时间
 
-[ImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/ImageDisplayer.java
-[DefaultImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/DefaultImageDisplayer.java
-[TransitionImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/TransitionImageDisplayer.java
-[ZoomInImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/ZoomInImageDisplayer.java
-[ZoomOutImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/ZoomOutImageDisplayer.java
-[ColorTransitionImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/ColorTransitionImageDisplayer.java
-[FadeInImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/FadeInImageDisplayer.java
+[ImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/ImageDisplayer.java
+[DefaultImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/DefaultImageDisplayer.java
+[TransitionImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/TransitionImageDisplayer.java
+[ZoomInImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/ZoomInImageDisplayer.java
+[ZoomOutImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/ZoomOutImageDisplayer.java
+[ColorTransitionImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/ColorTransitionImageDisplayer.java
+[FadeInImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/FadeInImageDisplayer.java
 [transition_image_displayer]: transition_image_displayer.md
-[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[DisplayHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayHelper.java
+[LoadOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
+[LoadHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadHelper.java
+[DisplayHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayHelper.java

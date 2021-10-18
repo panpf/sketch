@@ -47,7 +47,7 @@ public class MyInitializer implements Initializer {
     <application>
         ...
         <meta-data
-            android:name="me.example.MyInitializer"
+            android:name="com.github.panpf.sketch.sample.MyInitializer"
             android:value="SKETCH_INITIALIZER" />
     </application>
 </manifest>
@@ -59,4 +59,4 @@ public class MyInitializer implements Initializer {
 * sketch 的 aar 中已经包含了对所有 [Initializer] 子类的混淆忽略配置
 
 
-[Initializer]: ../../sketch/src/main/java/me/panpf/sketch/Initializer.java
+[Initializer]: ../../sketch/src/main/java/com/github/panpf/sketch/Initializer.java

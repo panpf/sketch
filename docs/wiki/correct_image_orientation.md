@@ -75,5 +75,5 @@ int degrees = ImageOrientationCorrector.getExifOrientationDegrees(exifOrientatio
 int xScale = ImageOrientationCorrector.getExifOrientationTranslation(exifOrientation);
 ```
 
-[Sketch]: ../../sketch/src/main/java/me/panpf/sketch/Sketch.java
-[ImageOrientationCorrector]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageOrientationCorrector.java
+[Sketch]: ../../sketch/src/main/java/com/github/panpf/sketch/Sketch.java
+[ImageOrientationCorrector]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/ImageOrientationCorrector.java

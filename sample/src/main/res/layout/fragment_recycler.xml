@@ -16,7 +16,7 @@
             android:scrollbars="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <me.panpf.sketch.sample.widget.HintView
+    <com.github.panpf.sketch.sample.widget.HintView
         android:id="@+id/hint_recyclerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

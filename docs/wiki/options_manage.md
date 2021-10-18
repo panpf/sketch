@@ -136,5 +136,5 @@ MyImageView imageView = ...;
 imageView.setOptions(ImageOptions.ROUND_RECT);
 ```
 
-[ImageOptions.kt]: ../../sample/src/main/java/me/panpf/sketchsample/ImageOptions.kt
-[SampleImageView.kt]: ../../sample/src/main/java/me/panpf/sketchsample/widget/SampleImageView.kt
+[ImageOptions.kt]: ../../sample/src/main/java/com/github/panpf/sketchsample/ImageOptions.kt
+[SampleImageView.kt]: ../../sample/src/main/java/com/github/panpf/sketchsample/widget/SampleImageView.kt

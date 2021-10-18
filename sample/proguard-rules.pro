@@ -54,8 +54,8 @@
 
 # Application rules
 
-# Change here me.panpf.sketch.sample
--keepclassmembers @kotlinx.serialization.Serializable class me.panpf.sketch.sample.** {
+# Change here com.github.panpf.sketch.sample
+-keepclassmembers @kotlinx.serialization.Serializable class com.github.panpf.sketch.sample.** {
     # lookup for plugin generated serializable classes
     *** Companion;
     # lookup for serializable objects
@@ -63,13 +63,13 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 # lookup for plugin generated serializable classes
--if @kotlinx.serialization.Serializable class me.panpf.sketch.sample.**
--keepclassmembers class me.panpf.sketch.sample.<1>$Companion {
+-if @kotlinx.serialization.Serializable class com.github.panpf.sketch.sample.**
+-keepclassmembers class com.github.panpf.sketch.sample.<1>$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
 
 # Serialization supports named companions but for such classes it is necessary to add an additional rule.
 # This rule keeps serializer and serializable class from obfuscation. Therefore, it is recommended not to use wildcards in it, but to write rules for each such class.
--keep class me.panpf.sketch.sample.SerializableClassWithNamedCompanion$$serializer {
+-keep class com.github.panpf.sketch.sample.SerializableClassWithNamedCompanion$$serializer {
     *** INSTANCE;
 }

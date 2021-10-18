@@ -7,10 +7,10 @@ Sketch 集成了 [android-gif-drawable]，可以无障碍的播放 gif 图片
 添加 sketch-gif 的依赖
 
 ```groovy
-implementation 'me.panpf:sketch-gif:$sketch_gif_version'
+implementation("io.github.panpf.sketch3:sketch-gif:${SKETCH_GIF_VERSION}")
 ```
 
-请自行替换 `$sketch_gif_version` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link]
+请自行替换 `${SKETCH_GIF_VERSION}` 为最新的版本 [![sketch_gif_version_image]][sketch_gif_version_link]
 
 ### 配置播放 GIF 图
 
@@ -167,9 +167,9 @@ public void onPause() {
 [sketch_gif_version_link]: https://bintray.com/panpf/maven/sketch-gif/_latestVersion#files
 [android-gif-drawable]: https://github.com/koral--/android-gif-drawable
 [GifDrawable]: ../../sketch-gif/src/main/java/pl/droidsonroids/gif/GifDrawable.java
-[MaxSize]: ../../sketch/src/main/java/me/panpf/sketch/request/MaxSize.java
-[Resize]: ../../sketch/src/main/java/me/panpf/sketch/request/Resize.java
-[TransitionImageDisplayer]: ../../sketch/src/main/java/me/panpf/sketch/display/TransitionImageDisplayer.java
-[SketchImageView]: ../../sketch/src/main/java/me/panpf/sketch/SketchImageView.java
-[SketchGifDrawable]: ../../sketch/src/main/java/me/panpf/sketch/drawable/SketchGifDrawable.java
-[ImageFragment]: ../../sample/src/main/java/me/panpf/sketchsample/fragment/ImageFragment.kt
+[MaxSize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/MaxSize.java
+[Resize]: ../../sketch/src/main/java/com/github/panpf/sketch/request/Resize.java
+[TransitionImageDisplayer]: ../../sketch/src/main/java/com/github/panpf/sketch/display/TransitionImageDisplayer.java
+[SketchImageView]: ../../sketch/src/main/java/com/github/panpf/sketch/SketchImageView.java
+[SketchGifDrawable]: ../../sketch/src/main/java/com/github/panpf/sketch/drawable/SketchGifDrawable.java
+[ImageFragment]: ../../sample/src/main/java/com/github/panpf/sketchsample/fragment/ImageFragment.kt

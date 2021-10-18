@@ -46,16 +46,16 @@ Sketch.with(context).display(uri, sketchImageView)
 
 自定义的 [ImageProcessor] 写好后通过 [LoadOptions]/[DisplayOptions] 的 setProcessor(ImageProcessor) 方法或 [LoadHelper]/[DisplayHelper] 的 processor(ImageProcessor) 方法使用即可
 
-[ImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/ImageProcessor.java
-[ImageDecoder]: ../../sketch/src/main/java/me/panpf/sketch/decode/ImageDecoder.java
-[ResizeImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/ResizeImageProcessor.java
-[CircleImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/CircleImageProcessor.java
-[ReflectionImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/ReflectionImageProcessor.java
-[RoundRectImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/RoundRectImageProcessor.java
-[GaussianBlurImageProcessor]: ../../sketch/src/main/java/me/panpf/sketch/process/GaussianBlurImageProcessor.java
+[ImageProcessor]: ../../sketch/src/main/java/com/github/panpf/sketch/process/ImageProcessor.java
+[ImageDecoder]: ../../sketch/src/main/java/com/github/panpf/sketch/decode/ImageDecoder.java
+[ResizeImageProcessor]: ../../sketch/src/main/java/com/github/panpf/sketch/process/ResizeImageProcessor.java
+[CircleImageProcessor]: ../../sketch/src/main/java/com/github/panpf/sketch/process/CircleImageProcessor.java
+[ReflectionImageProcessor]: ../../sketch/src/main/java/com/github/panpf/sketch/process/ReflectionImageProcessor.java
+[RoundRectImageProcessor]: ../../sketch/src/main/java/com/github/panpf/sketch/process/RoundRectImageProcessor.java
+[GaussianBlurImageProcessor]: ../../sketch/src/main/java/com/github/panpf/sketch/process/GaussianBlurImageProcessor.java
 [resize]: resize.md
 [Resize]: resize.md
-[LoadOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadOptions.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
-[LoadHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/LoadHelper.java
-[DisplayHelper]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayHelper.java
+[LoadOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadOptions.java
+[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
+[LoadHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/LoadHelper.java
+[DisplayHelper]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayHelper.java

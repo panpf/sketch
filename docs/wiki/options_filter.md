@@ -35,15 +35,15 @@ Sketch 内置了四种 [OptionsFilter]，如下：
 
 上述四个 [OptionsFilter], [Configuration] 和 [OptionsFilterManager] 都提供了开关控制，详情请参考源码
 
-[OptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilter.java
-[OptionsFilterManager]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/OptionsFilterManager.java
-[LowQualityOptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/LowQualityOptionsFilter.java
-[InPreferQualityOverSpeedOptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/InPreferQualityOverSpeedOptionsFilter.java
-[PauseDownloadOptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/PauseDownloadOptionsFilter.java
-[PauseLoadOptionsFilter]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/PauseLoadOptionsFilter.java
-[MobileDataPauseDownloadController]: ../../sketch/src/main/java/me/panpf/sketch/optionsfilter/MobileDataPauseDownloadController.java
-[ScrollingPauseLoadManager]: ../../sample/src/main/java/me/panpf/sketchsample/util/ScrollingPauseLoadManager.java
+[OptionsFilter]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/OptionsFilter.java
+[OptionsFilterManager]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/OptionsFilterManager.java
+[LowQualityOptionsFilter]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/LowQualityOptionsFilter.java
+[InPreferQualityOverSpeedOptionsFilter]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/InPreferQualityOverSpeedOptionsFilter.java
+[PauseDownloadOptionsFilter]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/PauseDownloadOptionsFilter.java
+[PauseLoadOptionsFilter]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/PauseLoadOptionsFilter.java
+[MobileDataPauseDownloadController]: ../../sketch/src/main/java/com/github/panpf/sketch/optionsfilter/MobileDataPauseDownloadController.java
+[ScrollingPauseLoadManager]: ../../sample/src/main/java/com/github/panpf/sketchsample/util/ScrollingPauseLoadManager.java
 [pause_download]: pause_download.md
 [pause_load]: pause_load.md
-[Configuration]: ../../sketch/src/main/java/me/panpf/sketch/Configuration.java
-[DisplayOptions]: ../../sketch/src/main/java/me/panpf/sketch/request/DisplayOptions.java
+[Configuration]: ../../sketch/src/main/java/com/github/panpf/sketch/Configuration.java
+[DisplayOptions]: ../../sketch/src/main/java/com/github/panpf/sketch/request/DisplayOptions.java
