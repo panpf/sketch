@@ -26,9 +26,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
-import com.fondesa.recyclerviewdivider.dividerBuilder
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.flow.collect
@@ -89,20 +90,12 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
             addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
 
             val gridDivider = requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-//            addGridDividerItemDecoration {
-//                divider(Divider.space(gridDivider))
-//                sideDivider(Divider.space(gridDivider))
-//                useDividerAsHeaderAndFooterDivider()
-//                useSideDividerAsSideHeaderAndFooterDivider()
-//            }
-            context.dividerBuilder()
-                .asSpace()
-                .size(gridDivider)
-                .showSideDividers()
-                .showFirstDivider()
-                .showLastDivider()
-                .build()
-                .addTo(this)
+            addGridDividerItemDecoration {
+                divider(Divider.space(gridDivider))
+                sideDivider(Divider.space(gridDivider))
+                useDividerAsHeaderAndFooterDivider()
+                useSideDividerAsSideHeaderAndFooterDivider()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
