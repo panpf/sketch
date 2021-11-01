@@ -13,42 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.display
 
-package com.github.panpf.sketch.display;
-
-import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.SketchView;
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.SketchView
 
 /**
  * The default image display, without any animation effects
  */
-public class DefaultImageDisplayer implements ImageDisplayer {
-    private static final String KEY = "DefaultImageDisplayer";
-
-    public DefaultImageDisplayer() {
+class DefaultImageDisplayer : ImageDisplayer {
+    override fun display(sketchView: SketchView, newDrawable: Drawable) {
+        sketchView.clearAnimation()
+        sketchView.setImageDrawable(newDrawable)
     }
 
-    @Override
-    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        sketchView.clearAnimation();
-        sketchView.setImageDrawable(newDrawable);
-    }
+    override val duration: Int
+        get() = 0
 
-    @Override
-    public int getDuration() {
-        return 0;
-    }
+    override val isAlwaysUse: Boolean
+        get() = false
 
-    @Override
-    public boolean isAlwaysUse() {
-        return false;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return KEY;
-    }
+    override fun toString(): String = "DefaultImageDisplayer"
 }

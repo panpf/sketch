@@ -13,72 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.display
 
-package com.github.panpf.sketch.display;
-
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import androidx.annotation.NonNull;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.SketchView;
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
+import com.github.panpf.sketch.SketchView
+import java.util.*
 
 /**
  * 颜色渐入图片显示器
  */
-public class ColorTransitionImageDisplayer implements ImageDisplayer {
-    private static final String KEY = "ColorTransitionImageDisplayer";
+class ColorTransitionImageDisplayer @JvmOverloads constructor(
+    val color: Int,
+    override val duration: Int = ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+    override val isAlwaysUse: Boolean = false
+) : ImageDisplayer {
 
-    private int duration;
-    private int color;
-    private boolean alwaysUse;
+    constructor(color: Int, alwaysUse: Boolean)
+            : this(color, ImageDisplayer.DEFAULT_ANIMATION_DURATION, alwaysUse)
 
-    public ColorTransitionImageDisplayer(int color, int duration, boolean alwaysUse) {
-        this.color = color;
-        this.duration = duration;
-        this.alwaysUse = alwaysUse;
+    override fun display(sketchView: SketchView, newDrawable: Drawable) {
+        val transitionDrawable = TransitionDrawable(arrayOf(ColorDrawable(color), newDrawable))
+        sketchView.clearAnimation()
+        sketchView.setImageDrawable(transitionDrawable)
+        transitionDrawable.isCrossFadeEnabled = true
+        transitionDrawable.startTransition(duration)
     }
 
-    public ColorTransitionImageDisplayer(int color, int duration) {
-        this(color, duration, false);
-    }
-
-    public ColorTransitionImageDisplayer(int color, boolean alwaysUse) {
-        this(color, DEFAULT_ANIMATION_DURATION, alwaysUse);
-    }
-
-    public ColorTransitionImageDisplayer(int color) {
-        this(color, DEFAULT_ANIMATION_DURATION, false);
-    }
-
-    @Override
-    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(color), newDrawable});
-        sketchView.clearAnimation();
-        sketchView.setImageDrawable(transitionDrawable);
-        transitionDrawable.setCrossFadeEnabled(true);
-        transitionDrawable.startTransition(duration);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "%s(duration=%d,color=%d,alwaysUse=%s)", KEY, duration, color, alwaysUse);
-    }
-
-    @Override
-    public boolean isAlwaysUse() {
-        return alwaysUse;
-    }
-
-    @Override
-    public int getDuration() {
-        return duration;
-    }
-
-    public int getColor() {
-        return color;
-    }
+    override fun toString(): String = "%s(duration=%d,color=%d,alwaysUse=%s)"
+        .format(Locale.US, "ColorTransitionImageDisplayer", duration, color, isAlwaysUse)
 }

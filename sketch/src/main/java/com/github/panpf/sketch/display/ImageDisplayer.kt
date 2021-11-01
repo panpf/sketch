@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.display
 
-package com.github.panpf.sketch.display;
-
-import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.SketchView;
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.SketchView
 
 /**
  * 图片显示器，用来在加载完成后显示图片
  */
-public interface ImageDisplayer {
-    int DEFAULT_ANIMATION_DURATION = 400;
-
+interface ImageDisplayer {
     /**
      * 显示
      */
-    void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable);
+    fun display(sketchView: SketchView, newDrawable: Drawable)
 
     /**
      * 获取持续时间，单位毫秒
      */
-    int getDuration();
+    val duration: Int
 
     /**
-     * 只要涉及到显示图片就得使用 {@link ImageDisplayer}（显示从内存里取出的缓存图片时也不例外）
+     * 只要涉及到显示图片就得使用 [ImageDisplayer]（显示从内存里取出的缓存图片时也不例外）
      */
-    boolean isAlwaysUse();
+    val isAlwaysUse: Boolean
+
+    companion object {
+        const val DEFAULT_ANIMATION_DURATION = 400
+    }
 }

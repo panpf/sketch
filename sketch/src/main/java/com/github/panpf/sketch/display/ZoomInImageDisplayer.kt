@@ -13,125 +13,111 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.display
 
-package com.github.panpf.sketch.display;
-
-import android.graphics.drawable.Drawable;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.Interpolator;
-import android.view.animation.ScaleAnimation;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.SketchView;
+import android.graphics.drawable.Drawable
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.Interpolator
+import android.view.animation.ScaleAnimation
+import com.github.panpf.sketch.SketchView
+import java.util.*
 
 /**
  * 由小到大图片显示器
  */
-public class ZoomInImageDisplayer implements ImageDisplayer {
-    private static final String KEY = "ZoomInImageDisplayer";
-    private static final float DEFAULT_FROM = 0.5f;
+class ZoomInImageDisplayer @JvmOverloads constructor(
+    val fromX: Float = DEFAULT_FROM,
+    val fromY: Float = DEFAULT_FROM,
+    val interpolator: Interpolator? = AccelerateDecelerateInterpolator(),
+    override val duration: Int = ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+    override val isAlwaysUse: Boolean = false
+) : ImageDisplayer {
 
-    private int duration;
-    private float fromX;
-    private float fromY;
-    @Nullable
-    private Interpolator interpolator;
-    private boolean alwaysUse;
+    constructor(fromX: Float, fromY: Float, interpolator: Interpolator?, alwaysUse: Boolean) : this(
+        fromX,
+        fromY,
+        interpolator,
+        ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+        alwaysUse
+    )
 
-    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, int duration, boolean alwaysUse) {
-        this.duration = duration;
-        this.fromY = fromY;
-        this.fromX = fromX;
-        this.interpolator = interpolator;
-        this.alwaysUse = alwaysUse;
+    constructor(fromX: Float, fromY: Float, alwaysUse: Boolean) : this(
+        fromX,
+        fromY,
+        AccelerateDecelerateInterpolator(),
+        ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+        alwaysUse
+    )
+
+    constructor(interpolator: Interpolator?, alwaysUse: Boolean) : this(
+        DEFAULT_FROM,
+        DEFAULT_FROM,
+        interpolator,
+        ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+        alwaysUse
+    )
+
+    constructor(interpolator: Interpolator?) : this(
+        DEFAULT_FROM,
+        DEFAULT_FROM,
+        interpolator,
+        ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+        false
+    )
+
+    constructor(duration: Int, alwaysUse: Boolean) : this(
+        DEFAULT_FROM,
+        DEFAULT_FROM,
+        AccelerateDecelerateInterpolator(),
+        duration,
+        alwaysUse
+    )
+
+    constructor(duration: Int) : this(
+        DEFAULT_FROM,
+        DEFAULT_FROM,
+        AccelerateDecelerateInterpolator(),
+        duration,
+        false
+    )
+
+    constructor(alwaysUse: Boolean) : this(
+        DEFAULT_FROM,
+        DEFAULT_FROM,
+        AccelerateDecelerateInterpolator(),
+        ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+        alwaysUse
+    )
+
+    override fun display(sketchView: SketchView, newDrawable: Drawable) {
+        sketchView.apply {
+            clearAnimation()
+            setImageDrawable(newDrawable)
+            startAnimation(ScaleAnimation(
+                this@ZoomInImageDisplayer.fromX,
+                1.0f,
+                this@ZoomInImageDisplayer.fromY,
+                1.0f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f
+            ).apply {
+                interpolator = this@ZoomInImageDisplayer.interpolator
+                duration = this@ZoomInImageDisplayer.duration.toLong()
+            })
+        }
     }
 
-    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, int duration) {
-        this(fromX, fromY, interpolator, duration, false);
-    }
+    override fun toString(): String =
+        "%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)".format(
+            Locale.US,
+            "ZoomInImageDisplayer", duration, fromX, fromY,
+            interpolator?.javaClass?.simpleName, isAlwaysUse
+        )
 
-    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator, boolean alwaysUse) {
-        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
-    }
-
-    public ZoomInImageDisplayer(float fromX, float fromY, @Nullable Interpolator interpolator) {
-        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, false);
-    }
-
-    public ZoomInImageDisplayer(float fromX, float fromY, boolean alwaysUse) {
-        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, alwaysUse);
-    }
-
-    public ZoomInImageDisplayer(float fromX, float fromY) {
-        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
-    }
-
-    public ZoomInImageDisplayer(@Nullable Interpolator interpolator, boolean alwaysUse) {
-        this(DEFAULT_FROM, DEFAULT_FROM, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
-    }
-
-    public ZoomInImageDisplayer(@Nullable Interpolator interpolator) {
-        this(DEFAULT_FROM, DEFAULT_FROM, interpolator, DEFAULT_ANIMATION_DURATION, false);
-    }
-
-    public ZoomInImageDisplayer(int duration, boolean alwaysUse) {
-        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), duration, alwaysUse);
-    }
-
-    public ZoomInImageDisplayer(int duration) {
-        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), duration, false);
-    }
-
-    public ZoomInImageDisplayer(boolean alwaysUse) {
-        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, alwaysUse);
-    }
-
-    public ZoomInImageDisplayer() {
-        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
-    }
-
-    @Override
-    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        scaleAnimation.setInterpolator(interpolator);
-        scaleAnimation.setDuration(duration);
-        sketchView.clearAnimation();
-        sketchView.setImageDrawable(newDrawable);
-        sketchView.startAnimation(scaleAnimation);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "%s(duration=%d,fromX=%s,fromY=%s,interpolator=%s,alwaysUse=%s)",
-                KEY, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
-    }
-
-    @Override
-    public boolean isAlwaysUse() {
-        return alwaysUse;
-    }
-
-    @Override
-    public int getDuration() {
-        return duration;
-    }
-
-    public float getFromX() {
-        return fromX;
-    }
-
-    public float getFromY() {
-        return fromY;
-    }
-
-    @Nullable
-    public Interpolator getInterpolator() {
-        return interpolator;
+    companion object {
+        private const val DEFAULT_FROM = 0.5f
     }
 }

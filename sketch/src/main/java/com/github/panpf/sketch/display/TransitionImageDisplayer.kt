@@ -13,99 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.display
 
-package com.github.panpf.sketch.display;
-
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-
-import androidx.annotation.NonNull;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.drawable.SketchDrawable;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchLoadingDrawable;
-import com.github.panpf.sketch.drawable.SketchTransitionDrawable;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import com.github.panpf.sketch.drawable.SketchLoadingDrawable
+import com.github.panpf.sketch.drawable.SketchTransitionDrawable
+import com.github.panpf.sketch.util.SketchUtils
+import java.util.*
 
 /**
  * 过渡效果的图片显示器
  */
-public class TransitionImageDisplayer implements ImageDisplayer {
-    private static final String KEY = "TransitionImageDisplayer";
+class TransitionImageDisplayer @JvmOverloads constructor(
+    /**
+     * 获取持续时间，单位毫秒
+     */
+    override val duration: Int = ImageDisplayer.DEFAULT_ANIMATION_DURATION,
+    override val isAlwaysUse: Boolean = false
+) : ImageDisplayer {
+    private var disableCrossFade = false
 
-    private int duration;
-    private boolean alwaysUse;
-    private boolean disableCrossFade;
+    constructor(alwaysUse: Boolean) : this(ImageDisplayer.DEFAULT_ANIMATION_DURATION, alwaysUse)
 
-    public TransitionImageDisplayer(int duration, boolean alwaysUse) {
-        this.duration = duration;
-        this.alwaysUse = alwaysUse;
+    fun setDisableCrossFade(disableCrossFade: Boolean): TransitionImageDisplayer {
+        this.disableCrossFade = disableCrossFade
+        return this
     }
 
-    public TransitionImageDisplayer(int duration) {
-        this(duration, false);
-    }
-
-    public TransitionImageDisplayer(boolean alwaysUse) {
-        this(DEFAULT_ANIMATION_DURATION, alwaysUse);
-    }
-
-    public TransitionImageDisplayer() {
-        this(DEFAULT_ANIMATION_DURATION, false);
-    }
-
-    @NonNull
-    public TransitionImageDisplayer setDisableCrossFade(boolean disableCrossFade) {
-        this.disableCrossFade = disableCrossFade;
-        return this;
-    }
-
-    @Override
-    public void display(@NonNull SketchView sketchView, @NonNull Drawable newDrawable) {
-        if (newDrawable instanceof SketchGifDrawable) {
-            sketchView.clearAnimation();
-            sketchView.setImageDrawable(newDrawable);
-        } else {
-            Drawable oldDrawable = SketchUtils.getLastDrawable(sketchView.getDrawable());
-            if (oldDrawable == null) {
-                oldDrawable = new ColorDrawable(Color.TRANSPARENT);
+    override fun display(sketchView: SketchView, newDrawable: Drawable) {
+        if (newDrawable is SketchGifDrawable) {
+            sketchView.apply {
+                clearAnimation()
+                setImageDrawable(newDrawable)
             }
-
-            if (oldDrawable instanceof SketchDrawable
-                    && !(oldDrawable instanceof SketchLoadingDrawable)
-                    && newDrawable instanceof SketchDrawable
-                    && ((SketchDrawable) oldDrawable).getKey().equals(((SketchDrawable) newDrawable).getKey())) {
-                sketchView.setImageDrawable(newDrawable);
+        } else {
+            val oldDrawable = SketchUtils.getLastDrawable(sketchView.drawable)
+                ?: ColorDrawable(Color.TRANSPARENT)
+            if (oldDrawable is SketchDrawable
+                && oldDrawable !is SketchLoadingDrawable
+                && newDrawable is SketchDrawable
+                && oldDrawable.key == newDrawable.key
+            ) {
+                sketchView.setImageDrawable(newDrawable)
             } else {
-                TransitionDrawable transitionDrawable = new SketchTransitionDrawable(oldDrawable, newDrawable);
-                sketchView.clearAnimation();
-                sketchView.setImageDrawable(transitionDrawable);
-                transitionDrawable.setCrossFadeEnabled(!disableCrossFade);
-                transitionDrawable.startTransition(duration);
+                val transitionDrawable: TransitionDrawable =
+                    SketchTransitionDrawable(oldDrawable, newDrawable)
+                sketchView.clearAnimation()
+                sketchView.setImageDrawable(transitionDrawable)
+                transitionDrawable.isCrossFadeEnabled = !disableCrossFade
+                transitionDrawable.startTransition(duration)
             }
         }
     }
 
-    @Override
-    public boolean isAlwaysUse() {
-        return alwaysUse;
-    }
-
-    /**
-     * 获取持续时间，单位毫秒
-     */
-    public int getDuration() {
-        return duration;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "%s(duration=%d,alwaysUse=%s)", KEY, duration, alwaysUse);
-    }
+    override fun toString(): String = "%s(duration=%d,alwaysUse=%s)"
+        .format(Locale.US, "TransitionImageDisplayer", duration, isAlwaysUse)
 }

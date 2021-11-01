@@ -41,6 +41,7 @@ public class SketchGifFactory {
             synchronized (SketchGifFactory.class) {
                 if (existGifLibrary == 0) {
                     try {
+                        // todo gif 改为显示添加的方式
                         Class.forName("com.github.panpf.sketch.gif.BuildConfig");
                         Class.forName("pl.droidsonroids.gif.GifDrawable");
                         existGifLibrary = 1;
