@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.optionsfilter
 
-package com.github.panpf.sketch.optionsfilter;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.request.DownloadOptions;
+import com.github.panpf.sketch.request.DownloadOptions
 
 /**
  * 选项过滤器，用于统一修改 Options
  */
-public interface OptionsFilter {
+interface OptionsFilter {
     /**
      * 过滤 Options
      *
-     * @param options {@link DownloadOptions}
+     * @param options [DownloadOptions]
      */
-    void filter(@NonNull DownloadOptions options);
+    fun filter(options: DownloadOptions)
 }

@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.optionsfilter
 
-package com.github.panpf.sketch.optionsfilter;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.request.DownloadOptions;
-import com.github.panpf.sketch.request.LoadOptions;
+import com.github.panpf.sketch.request.DownloadOptions
+import com.github.panpf.sketch.request.LoadOptions
 
 /**
  * 低质量 Bitmap.Config
  */
-public class LowQualityOptionsFilter implements OptionsFilter {
-
-    @Override
-    public void filter(@NonNull DownloadOptions options) {
-        if (options instanceof LoadOptions) {
-            ((LoadOptions) options).setLowQualityImage(true);
+class LowQualityOptionsFilter : OptionsFilter {
+    override fun filter(options: DownloadOptions) {
+        if (options is LoadOptions) {
+            options.isLowQualityImage = true
         }
     }
 }

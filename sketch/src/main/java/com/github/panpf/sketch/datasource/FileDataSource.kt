@@ -13,68 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.datasource
 
-package com.github.panpf.sketch.datasource;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchGifFactory;
-import com.github.panpf.sketch.request.ImageFrom;
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.decode.NotFoundGifLibraryException
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import com.github.panpf.sketch.drawable.SketchGifFactory
+import com.github.panpf.sketch.request.ImageFrom
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * 用于读取来自本地的图片
  */
-public class FileDataSource implements DataSource {
+class FileDataSource(private val file: File) : DataSource {
 
-    @NonNull
-    private File file;
-    private long length = -1;
+    override val imageFrom: ImageFrom
+        get() = ImageFrom.LOCAL
 
-    public FileDataSource(@NonNull File file) {
-        this.file = file;
-    }
-
-    @NonNull
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return new FileInputStream(file);
-    }
-
-    @Override
-    public synchronized long getLength() throws IOException {
-        if (length >= 0) {
-            return length;
+    @get:Throws(IOException::class)
+    @get:Synchronized
+    override var length: Long = -1
+        get() {
+            if (field >= 0) {
+                return field
+            }
+            field = file.length()
+            return field
         }
+        private set
 
-        length = file.length();
-        return length;
+    @get:Throws(IOException::class)
+    override val inputStream: InputStream
+        get() = FileInputStream(file)
+
+    override fun getFile(outDir: File?, outName: String?): File? {
+        return file
     }
 
-    @Override
-    public File getFile(@Nullable File outDir, @Nullable String outName) {
-        return file;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return ImageFrom.LOCAL;
-    }
-
-    @NonNull
-    @Override
-    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
-                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, file);
+    @Throws(IOException::class, NotFoundGifLibraryException::class)
+    override fun makeGifDrawable(
+        key: String,
+        uri: String,
+        imageAttrs: ImageAttrs,
+        bitmapPool: BitmapPool
+    ): SketchGifDrawable {
+        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, imageFrom, bitmapPool, file)
     }
 }

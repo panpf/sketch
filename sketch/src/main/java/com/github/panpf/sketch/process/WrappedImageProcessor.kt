@@ -13,105 +13,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.process
 
-package com.github.panpf.sketch.process;
-
-import android.graphics.Bitmap;
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.cache.BitmapPoolUtils;
-import com.github.panpf.sketch.request.Resize;
+import android.graphics.Bitmap
+import android.text.TextUtils
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.BitmapPoolUtils
+import com.github.panpf.sketch.request.Resize
 
 /**
- * 用于组合两个 {@link ImageProcessor} 一起使用，可以无限嵌套
+ * 用于组合两个 [ImageProcessor] 一起使用，可以无限嵌套
  */
-@SuppressWarnings("WeakerAccess")
-public abstract class WrappedImageProcessor extends ResizeImageProcessor {
-    @Nullable
-    private WrappedImageProcessor wrappedProcessor;
+abstract class WrappedImageProcessor protected constructor(
+    val wrappedProcessor: WrappedImageProcessor?
+) : ResizeImageProcessor() {
 
-    protected WrappedImageProcessor(@Nullable WrappedImageProcessor wrappedProcessor) {
-        this.wrappedProcessor = wrappedProcessor;
-    }
+    override fun process(
+        sketch: Sketch,
+        bitmap: Bitmap,
+        resize: Resize?,
+        lowQualityImage: Boolean
+    ): Bitmap {
 
-    @NonNull
-    @Override
-    public final Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
-        //noinspection ConstantConditions
-        if (bitmap == null || bitmap.isRecycled()) {
-            return bitmap;
+        if (bitmap.isRecycled) {
+            return bitmap
         }
 
         // resize
-        Bitmap newBitmap = bitmap;
-        if (!isInterceptResize()) {
-            newBitmap = super.process(sketch, bitmap, resize, lowQualityImage);
+        var newBitmap = bitmap
+        if (!isInterceptResize) {
+            newBitmap = super.process(sketch, bitmap, resize, lowQualityImage)
         }
 
         // wrapped
         if (wrappedProcessor != null) {
-            Bitmap wrappedBitmap = wrappedProcessor.process(sketch, newBitmap, resize, lowQualityImage);
+            val wrappedBitmap = wrappedProcessor.process(sketch, newBitmap, resize, lowQualityImage)
             if (wrappedBitmap != newBitmap) {
                 if (newBitmap != bitmap) {
-                    BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-                    BitmapPoolUtils.freeBitmapToPool(newBitmap, bitmapPool);
+                    val bitmapPool = sketch.configuration.bitmapPool
+                    BitmapPoolUtils.freeBitmapToPool(newBitmap, bitmapPool)
                 }
-                newBitmap = wrappedBitmap;
+                newBitmap = wrappedBitmap
             }
         }
-        return onProcess(sketch, newBitmap, resize, lowQualityImage);
+        return onProcess(sketch, newBitmap, resize, lowQualityImage)
     }
 
-    @NonNull
-    public abstract Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage);
+    abstract fun onProcess(
+        sketch: Sketch,
+        bitmap: Bitmap,
+        resize: Resize?,
+        lowQualityImage: Boolean
+    ): Bitmap
 
-    @Nullable
-    public WrappedImageProcessor getWrappedProcessor() {
-        return wrappedProcessor;
-    }
+    protected open val isInterceptResize: Boolean
+        get() = false
 
-    @Nullable
-    @Override
-    public String getKey() {
-        String selfKey = onGetKey();
-        String wrappedKey = wrappedProcessor != null ? wrappedProcessor.getKey() : null;
-
+    override fun getKey(): String? {
+        val selfKey = onGetKey()
+        val wrappedKey = wrappedProcessor?.key
         if (!TextUtils.isEmpty(selfKey)) {
-            if (!TextUtils.isEmpty(wrappedKey)) {
-                return String.format("%s->%s", selfKey, wrappedKey);
+            return if (!TextUtils.isEmpty(wrappedKey)) {
+                String.format("%s->%s", selfKey, wrappedKey)
             } else {
-                return selfKey;
+                selfKey
             }
         } else if (!TextUtils.isEmpty(wrappedKey)) {
-            return wrappedKey;
+            return wrappedKey
         }
-        return null;
+        return null
     }
 
-    @Nullable
-    public abstract String onGetKey();
+    abstract fun onGetKey(): String?
 
-    @NonNull
-    @Override
-    public String toString() {
-        String selfToString = onToString();
-        String wrappedToString = wrappedProcessor != null ? wrappedProcessor.toString() : null;
-
-        if (TextUtils.isEmpty(wrappedToString)) {
-            return selfToString;
-        }
-        return String.format("%s->%s", selfToString, wrappedToString);
+    override fun toString(): String {
+        val selfToString = onToString()
+        val wrappedToString = wrappedProcessor?.toString()
+        return if (TextUtils.isEmpty(wrappedToString)) {
+            selfToString
+        } else String.format("%s->%s", selfToString, wrappedToString)
     }
 
-    @NonNull
-    public abstract String onToString();
-
-    protected boolean isInterceptResize() {
-        return false;
-    }
+    abstract fun onToString(): String
 }

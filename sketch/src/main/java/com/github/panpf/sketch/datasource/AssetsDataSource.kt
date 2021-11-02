@@ -13,121 +13,101 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.datasource
 
-package com.github.panpf.sketch.datasource;
-
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchGifFactory;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.content.Context
+import android.content.res.AssetFileDescriptor
+import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.decode.NotFoundGifLibraryException
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import android.text.TextUtils
+import com.github.panpf.sketch.drawable.SketchGifFactory
+import java.io.*
 
 /**
  * 用于读取来自 asset 的图片
  */
-public class AssetsDataSource implements DataSource {
+class AssetsDataSource(
+    private val context: Context, private val assetsFilePath: String
+) : DataSource {
 
-    @NonNull
-    private Context context;
-    @NonNull
-    private String assetsFilePath;
-    private long length = -1;
+    override val imageFrom: ImageFrom
+        get() = ImageFrom.LOCAL
 
-    public AssetsDataSource(@NonNull Context context, @NonNull String assetsFilePath) {
-        this.context = context;
-        this.assetsFilePath = assetsFilePath;
-    }
-
-    @NonNull
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return context.getAssets().open(assetsFilePath);
-    }
-
-    @Override
-    public synchronized long getLength() throws IOException {
-        if (length >= 0) {
-            return length;
+    @get:Throws(IOException::class)
+    @get:Synchronized
+    override var length: Long = -1
+        get() {
+            if (field >= 0) {
+                return field
+            }
+            var fileDescriptor: AssetFileDescriptor? = null
+            try {
+                fileDescriptor = context.assets.openFd(assetsFilePath)
+                field = fileDescriptor.length
+            } finally {
+                SketchUtils.close(fileDescriptor)
+            }
+            return field
         }
+        private set
 
-        AssetFileDescriptor fileDescriptor = null;
-        try {
-            fileDescriptor = context.getAssets().openFd(assetsFilePath);
-            length = fileDescriptor.getLength();
-        } finally {
-            SketchUtils.close(fileDescriptor);
-        }
-        return length;
-    }
+    @get:Throws(IOException::class)
+    override val inputStream: InputStream
+        get() = context.assets.open(assetsFilePath)
 
-    @Override
-    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
+    @Throws(IOException::class)
+    override fun getFile(outDir: File?, outName: String?): File? {
         if (outDir == null) {
-            return null;
+            return null
         }
-
-        if (!outDir.exists() && !outDir.getParentFile().mkdirs()) {
-            return null;
+        if (!outDir.exists() && !outDir.parentFile.mkdirs()) {
+            return null
         }
-
-        File outFile;
-        if (!TextUtils.isEmpty(outName)) {
-            outFile = new File(outDir, outName);
+        val outFile: File = if (!TextUtils.isEmpty(outName)) {
+            File(outDir, outName)
         } else {
-            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, assetsFilePath));
+            File(outDir, SketchUtils.generatorTempFileName(this, assetsFilePath))
         }
-
-        InputStream inputStream = getInputStream();
-
-        OutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(outFile);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
+        val inputStream = inputStream
+        val outputStream: OutputStream = try {
+            FileOutputStream(outFile)
+        } catch (e: IOException) {
+            SketchUtils.close(inputStream)
+            throw e
         }
-
-        byte[] data = new byte[1024];
-        int length;
+        val data = ByteArray(1024)
+        var length: Int
         try {
-            while ((length = inputStream.read(data)) != -1) {
-                outputStream.write(data, 0, length);
+            while (inputStream.read(data).also { length = it } != -1) {
+                outputStream.write(data, 0, length)
             }
         } finally {
-            SketchUtils.close(outputStream);
-            SketchUtils.close(inputStream);
+            SketchUtils.close(outputStream)
+            SketchUtils.close(inputStream)
         }
-
-        return outFile;
+        return outFile
     }
 
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return ImageFrom.LOCAL;
-    }
-
-    @NonNull
-    @Override
-    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
-                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
-        AssetManager assetManager = context.getAssets();
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, assetManager, assetsFilePath);
+    @Throws(IOException::class, NotFoundGifLibraryException::class)
+    override fun makeGifDrawable(
+        key: String,
+        uri: String,
+        imageAttrs: ImageAttrs,
+        bitmapPool: BitmapPool
+    ): SketchGifDrawable {
+        val assetManager = context.assets
+        return SketchGifFactory.createGifDrawable(
+            key,
+            uri,
+            imageAttrs,
+            imageFrom,
+            bitmapPool,
+            assetManager,
+            assetsFilePath
+        )
     }
 }

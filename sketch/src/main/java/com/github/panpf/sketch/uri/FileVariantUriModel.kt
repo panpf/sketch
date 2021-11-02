@@ -13,35 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.content.Context
+import android.text.TextUtils
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.FileDataSource
+import com.github.panpf.sketch.request.DownloadResult
+import java.io.File
 
-import android.content.Context;
-import android.text.TextUtils;
+class FileVariantUriModel : FileUriModel() {
 
-import androidx.annotation.NonNull;
+    companion object {
+        const val SCHEME = "file://"
 
-import java.io.File;
-
-import com.github.panpf.sketch.datasource.DataSource;
-import com.github.panpf.sketch.datasource.FileDataSource;
-import com.github.panpf.sketch.request.DownloadResult;
-
-public class FileVariantUriModel extends FileUriModel {
-
-    public static final String SCHEME = "file://";
-
-    @NonNull
-    public static String makeUri(@NonNull String filePath) {
-        if (TextUtils.isEmpty(filePath)) {
-            throw new IllegalArgumentException("Param filePath is null or empty");
+        @JvmStatic
+        fun makeUri(filePath: String): String {
+            require(!TextUtils.isEmpty(filePath)) { "Param filePath is null or empty" }
+            return if (!filePath.startsWith(SCHEME)) SCHEME + filePath else filePath
         }
-        return !filePath.startsWith(SCHEME) ? SCHEME + filePath : filePath;
     }
 
-    @Override
-    protected boolean match(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    override fun match(uri: String): Boolean {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME)
     }
 
     /**
@@ -50,21 +44,19 @@ public class FileVariantUriModel extends FileUriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "file:///sdcard/test.png"，就会返回 "/sdcard/test.png"
      */
-    @NonNull
-    @Override
-    public String getUriContent(@NonNull String uri) {
-        return match(uri) ? uri.substring(SCHEME.length()) : uri;
+    override fun getUriContent(uri: String): String {
+        return if (match(uri)) uri.substring(SCHEME.length) else uri
     }
 
-    @NonNull
-    @Override
-    public String getDiskCacheKey(@NonNull String uri) {
-        return getUriContent(uri);
+    override fun getDiskCacheKey(uri: String): String {
+        return getUriContent(uri)
     }
 
-    @NonNull
-    @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, DownloadResult downloadResult) {
-        return new FileDataSource(new File(getUriContent(uri)));
+    override fun getDataSource(
+        context: Context,
+        uri: String,
+        downloadResult: DownloadResult?
+    ): DataSource {
+        return FileDataSource(File(getUriContent(uri)))
     }
 }

@@ -13,33 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.content.Context
+import android.text.TextUtils
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.FileDataSource
+import com.github.panpf.sketch.request.DownloadResult
+import java.io.File
 
-import android.content.Context;
-import android.text.TextUtils;
+open class FileUriModel : UriModel() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-
-import com.github.panpf.sketch.datasource.DataSource;
-import com.github.panpf.sketch.datasource.FileDataSource;
-import com.github.panpf.sketch.request.DownloadResult;
-
-public class FileUriModel extends UriModel {
-
-    public static final String SCHEME = "/";
-
-    @Override
-    protected boolean match(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    companion object {
+        const val SCHEME = "/"
     }
 
-    @NonNull
-    @Override
-    public DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) {
-        return new FileDataSource(new File(uri));
+    override fun match(uri: String): Boolean {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME)
+    }
+
+    override fun getDataSource(
+        context: Context,
+        uri: String,
+        downloadResult: DownloadResult?
+    ): DataSource {
+        return FileDataSource(File(uri))
     }
 }

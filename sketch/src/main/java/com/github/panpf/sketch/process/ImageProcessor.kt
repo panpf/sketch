@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.process
 
-package com.github.panpf.sketch.process;
-
-import android.graphics.Bitmap;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.Key;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.request.Resize;
+import android.graphics.Bitmap
+import com.github.panpf.sketch.Key
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Resize
 
 /**
  * 用于在图片读取到内存后对图片进行修改
  */
-public interface ImageProcessor extends Key {
+interface ImageProcessor : Key {
     /**
      * 修改图片并返回修改后的图片，请不要回收原图片
      *
-     * @param sketch          {@link Sketch}
-     * @param bitmap          {@link Bitmap}. 原图片
-     * @param resize          {@link Resize}. resize 决定了新图片的尺寸
+     * @param sketch          [Sketch]
+     * @param bitmap          [Bitmap]. 原图片
+     * @param resize          [Resize]. resize 决定了新图片的尺寸
      * @param lowQualityImage 是否使用低质量的图片
-     * @return {@link Bitmap}. 修改后的图片，可以是一个新的 {@link Bitmap}，也可以在原 {@link Bitmap} 基础上修改
+     * @return [Bitmap]. 修改后的图片，可以是一个新的 [Bitmap]，也可以在原 [Bitmap] 基础上修改
      */
-    @NonNull
-    Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage);
+    fun process(sketch: Sketch, bitmap: Bitmap, resize: Resize?, lowQualityImage: Boolean): Bitmap
 }

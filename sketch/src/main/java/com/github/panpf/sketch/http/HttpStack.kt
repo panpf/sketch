@@ -13,118 +13,107 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.http
 
-package com.github.panpf.sketch.http;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * 负责发送 HTTP 请求，并返回响应
  */
-public interface HttpStack {
-    int DEFAULT_READ_TIMEOUT = 7 * 1000;   // 默认读取超时时间
-    int DEFAULT_CONNECT_TIMEOUT = 7 * 1000;    // 默认连接超时时间
-    int DEFAULT_MAX_RETRY_COUNT = 0;    // 默认最大重试次数
+interface HttpStack {
+
+    companion object {
+        const val DEFAULT_READ_TIMEOUT = 7 * 1000 // 默认读取超时时间
+        const val DEFAULT_CONNECT_TIMEOUT = 7 * 1000 // 默认连接超时时间
+        const val DEFAULT_MAX_RETRY_COUNT = 0 // 默认最大重试次数
+    }
 
     /**
-     * 获取最大重试次数，默认值是 {@link HttpStack#DEFAULT_MAX_RETRY_COUNT}
+     * 获取最大重试次数，默认值是 [HttpStack.DEFAULT_MAX_RETRY_COUNT]
      */
-    int getMaxRetryCount();
+    val maxRetryCount: Int
 
     /**
      * 设置最大重试次数
      *
      * @param maxRetryCount 最大重试次数
      */
-    @NonNull
-    HttpStack setMaxRetryCount(int maxRetryCount);
+    fun setMaxRetryCount(maxRetryCount: Int): HttpStack
 
     /**
-     * 获取连接超时时间，单位毫秒，默认值是 {@link HttpStack#DEFAULT_CONNECT_TIMEOUT}
+     * 获取连接超时时间，单位毫秒，默认值是 [HttpStack.DEFAULT_CONNECT_TIMEOUT]
      */
-    int getConnectTimeout();
+    val connectTimeout: Int
 
     /**
      * 设置连接超时时间
      *
      * @param connectTimeout 连接超时时间，单位毫秒
      */
-    @NonNull
-    HttpStack setConnectTimeout(int connectTimeout);
+    fun setConnectTimeout(connectTimeout: Int): HttpStack
 
     /**
-     * 获取读取超时时间，单位毫秒，默认值是 {@link HttpStack#DEFAULT_READ_TIMEOUT}
+     * 获取读取超时时间，单位毫秒，默认值是 [HttpStack.DEFAULT_READ_TIMEOUT]
      */
-    int getReadTimeout();
+    val readTimeout: Int
 
     /**
      * 设置读取超时时间
      *
      * @param readTimeout 读取超时时间，单位毫秒
      */
-    @NonNull
-    HttpStack setReadTimeout(int readTimeout);
+    fun setReadTimeout(readTimeout: Int): HttpStack
 
     /**
      * 获取自定义请求头中的 User-Agent 属性
      */
-    @Nullable
-    String getUserAgent();
+    val userAgent: String?
 
     /**
      * 设置请求头中的 User-Agent 属性
      *
      * @param userAgent 请求头中的 User-Agent 属性
      */
-    @NonNull
-    HttpStack setUserAgent(String userAgent);
+    fun setUserAgent(userAgent: String?): HttpStack
 
     /**
      * 获取扩展请求属性
      */
-    @Nullable
-    Map<String, String> getExtraHeaders();
+    val extraHeaders: Map<String?, String?>?
 
     /**
      * 设置扩展请求属性集
      *
      * @param extraHeaders 扩展请求属性集
      */
-    @NonNull
-    HttpStack setExtraHeaders(Map<String, String> extraHeaders);
+    fun setExtraHeaders(extraHeaders: Map<String?, String?>?): HttpStack
 
     /**
      * 获取可存在多个的请求属性
      */
-    @Nullable
-    Map<String, String> getAddExtraHeaders();
+    val addExtraHeaders: Map<String?, String?>?
 
     /**
      * 添加可存在多个的请求属性
      *
      * @param extraHeaders 扩展请求属性集
      */
-    @NonNull
-    HttpStack addExtraHeaders(Map<String, String> extraHeaders);
+    fun addExtraHeaders(extraHeaders: Map<String?, String?>?): HttpStack
 
     /**
      * 发送请求并获取响应
      *
      * @param uri http uri
-     * @return {@link Response}
+     * @return [Response]
      */
-    @NonNull
-    Response getResponse(String uri) throws IOException;
+    @Throws(IOException::class)
+    fun getResponse(uri: String?): Response
 
     /**
      * 是否可以重试
      */
-    boolean canRetry(@NonNull Throwable throwable);
+    fun canRetry(throwable: Throwable): Boolean
 
     /**
      * 统一响应接口
@@ -135,71 +124,68 @@ public interface HttpStack {
          *
          * @throws IOException IO
          */
-        int getCode() throws IOException;
+        @get:Throws(IOException::class)
+        val code: Int
 
         /**
          * 获取响应消息
          *
          * @throws IOException IO
          */
-        @Nullable
-        String getMessage() throws IOException;
+        @get:Throws(IOException::class)
+        val message: String?
 
         /**
          * 获取内容长度
          */
-        long getContentLength();
+        val contentLength: Long
 
         /**
          * 获取内容类型
          */
-        @Nullable
-        String getContentType();
+        val contentType: String?
 
         /**
          * 内容是否是分块的？
          */
-        boolean isContentChunked();
+        val isContentChunked: Boolean
 
         /**
          * 获取内容编码
          */
-        @Nullable
-        String getContentEncoding();
+        val contentEncoding: String?
 
         /**
          * 获取响应头
          */
-        @Nullable
-        String getHeaderField(@NonNull String name);
+        fun getHeaderField(name: String): String?
 
         /**
          * 获取响应头并转换成 int
          */
-        int getHeaderFieldInt(@NonNull String name, int defaultValue);
+        fun getHeaderFieldInt(name: String, defaultValue: Int): Int
 
         /**
          * 获取响应头并转换成 long
          */
-        long getHeaderFieldLong(@NonNull String name, long defaultValue);
+        fun getHeaderFieldLong(name: String, defaultValue: Long): Long
 
         /**
          * 获取所有的响应头
          */
-        @Nullable
-        String getHeadersString();
+        val headersString: String?
 
         /**
          * 获取内容输入流
          *
          * @throws IOException IO
          */
-        @NonNull
-        InputStream getContent() throws IOException;
+        @get:Throws(IOException::class)
+        val content: InputStream
 
         /**
          * 释放连接
          */
-        void releaseConnection();
+        fun releaseConnection()
     }
 }

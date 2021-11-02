@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.state
 
-package com.github.panpf.sketch.state;
-
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.request.DisplayOptions;
+import android.content.Context
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.request.DisplayOptions
 
 /**
  * 用于为加载中、失败、暂停状态提供占位图片
  */
-public interface StateImage {
-
+interface StateImage {
     /**
      * 获取图片
      *
-     * @param context        {@link Context}
-     * @param sketchView     {@link SketchView}
-     * @param displayOptions {@link DisplayOptions}
-     * @return {@link Drawable}
+     * @param context        [Context]
+     * @param sketchView     [SketchView]
+     * @param displayOptions [DisplayOptions]
+     * @return [Drawable]
      */
-    @Nullable
-    Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions);
+    fun getDrawable(
+        context: Context,
+        sketchView: SketchView,
+        displayOptions: DisplayOptions
+    ): Drawable?
 }

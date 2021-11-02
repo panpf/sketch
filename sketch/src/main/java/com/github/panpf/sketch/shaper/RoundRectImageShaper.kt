@@ -13,187 +13,147 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.shaper
 
-package com.github.panpf.sketch.shaper;
-
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.request.ShapeSize;
+import android.graphics.*
+import com.github.panpf.sketch.shaper.ImageShaper
+import com.github.panpf.sketch.shaper.RoundRectImageShaper
+import com.github.panpf.sketch.request.ShapeSize
 
 /**
  * 圆角矩形的绘制时图片整形器，还可以有描边
  */
-@SuppressWarnings({"WeakerAccess"})
-public class RoundRectImageShaper implements ImageShaper {
-    private float[] outerRadii;
-    @NonNull
-    private Rect boundsCached = new Rect();
+class RoundRectImageShaper(radiis: FloatArray?) : ImageShaper {
 
-    @NonNull
-    private Path bitmapPath = new Path();
-    @Nullable
-    private Path innerStrokePath;
-    @Nullable
-    private Path outerStrokePath;
-    @Nullable
-    private Path clipPath;
+    val outerRadii: FloatArray
+    private val boundsCached = Rect()
+    private val bitmapPath = Path()
+    private var innerStrokePath: Path? = null
+    private var outerStrokePath: Path? = null
+    private var clipPath: Path? = null
+    var strokeWidth = 0
+        private set
+    var strokeColor = 0
+        private set
+    private var strokePaint: Paint? = null
+    private var boundsBack: Rect? = null
+    private var rectF: RectF? = null
+    private var path: Path? = null
 
-    private int strokeWidth;
-    private int strokeColor;
+    constructor(
+        topLeftRadii: Float,
+        topRightRadii: Float,
+        bottomLeftRadii: Float,
+        bottomRightRadii: Float
+    ) : this(
+        floatArrayOf(
+            topLeftRadii, topLeftRadii,
+            topRightRadii, topRightRadii,
+            bottomLeftRadii, bottomLeftRadii,
+            bottomRightRadii, bottomRightRadii
+        )
+    )
 
-    @Nullable
-    private Paint strokePaint;
+    constructor(radii: Float) : this(radii, radii, radii, radii)
 
-    @Nullable
-    private Rect boundsBack;
-    @Nullable
-    private RectF rectF;
-    @Nullable
-    private Path path;
-
-    public RoundRectImageShaper(float[] radiis) {
-        if (radiis == null || radiis.length < 8) {
-            throw new ArrayIndexOutOfBoundsException("outer radii must have >= 8 values");
+    init {
+        if (radiis == null || radiis.size < 8) {
+            throw ArrayIndexOutOfBoundsException("outer radii must have >= 8 values")
         }
-        this.outerRadii = radiis;
+        outerRadii = radiis
     }
 
-    public RoundRectImageShaper(float topLeftRadii, float topRightRadii, float bottomLeftRadii, float bottomRightRadii) {
-        this(new float[]{topLeftRadii, topLeftRadii, topRightRadii, topRightRadii,
-                bottomLeftRadii, bottomLeftRadii, bottomRightRadii, bottomRightRadii});
+    fun setStroke(strokeColor: Int, strokeWidth: Int): RoundRectImageShaper {
+        this.strokeColor = strokeColor
+        this.strokeWidth = strokeWidth
+        updatePaint()
+        return this
     }
 
-    public RoundRectImageShaper(float radii) {
-        this(radii, radii, radii, radii);
-    }
-
-    public float[] getOuterRadii() {
-        return outerRadii;
-    }
-
-    public int getStrokeColor() {
-        return strokeColor;
-    }
-
-    @NonNull
-    public RoundRectImageShaper setStroke(int strokeColor, int strokeWidth) {
-        this.strokeColor = strokeColor;
-        this.strokeWidth = strokeWidth;
-        updatePaint();
-        return this;
-    }
-
-    public int getStrokeWidth() {
-        return strokeWidth;
-    }
-
-    private void updatePaint() {
+    private fun updatePaint() {
         if (hasStroke()) {
             if (strokePaint == null) {
-                strokePaint = new Paint();
-                strokePaint.setStyle(Paint.Style.STROKE);
-                strokePaint.setAntiAlias(true);
+                strokePaint = Paint()
+                strokePaint!!.style = Paint.Style.STROKE
+                strokePaint!!.isAntiAlias = true
             }
-
-            strokePaint.setColor(strokeColor);
-            strokePaint.setStrokeWidth(strokeWidth);
-
+            strokePaint!!.color = strokeColor
+            strokePaint!!.strokeWidth = strokeWidth.toFloat()
             if (innerStrokePath == null) {
-                innerStrokePath = new Path();
+                innerStrokePath = Path()
             }
-
             if (outerStrokePath == null) {
-                outerStrokePath = new Path();
+                outerStrokePath = Path()
             }
-
             if (clipPath == null) {
-                clipPath = new Path();
+                clipPath = Path()
             }
         }
     }
 
-    private boolean hasStroke() {
-        return strokeColor != 0 && strokeWidth > 0;
+    private fun hasStroke(): Boolean {
+        return strokeColor != 0 && strokeWidth > 0
     }
 
-    @NonNull
-    @Override
-    public Path getPath(@NonNull Rect bounds) {
-        if (path != null && boundsBack != null && boundsBack.equals(bounds)) {
-            return path;
+    override fun getPath(bounds: Rect): Path {
+        val cachePath = path
+        if (cachePath != null && boundsBack != null && boundsBack == bounds) {
+            return cachePath
         }
-
         if (boundsBack == null) {
-            boundsBack = new Rect();
+            boundsBack = Rect()
         }
-        boundsBack.set(bounds);
-
-        if (path == null) {
-            path = new Path();
+        boundsBack!!.set(bounds)
+        val path = path ?: Path().apply {
+            this@RoundRectImageShaper.path = this
         }
-        path.reset();
-
-        if (rectF == null) {
-            rectF = new RectF();
+        path.reset()
+        val rectF = rectF ?: RectF().apply {
+            this@RoundRectImageShaper.rectF = this
         }
-        rectF.set(boundsBack);
-
-        path.addRoundRect(rectF, outerRadii, Path.Direction.CW);
-
-        return path;
+        rectF.set(boundsBack)
+        path.addRoundRect(rectF, outerRadii, Path.Direction.CW)
+        return path
     }
 
-
-    @Override
-    public void onUpdateShaderMatrix(@NonNull Matrix matrix, @NonNull Rect bounds, int bitmapWidth, int bitmapHeight,
-                                     @Nullable ShapeSize shapeSize, @NonNull Rect srcRect) {
-
+    override fun onUpdateShaderMatrix(
+        matrix: Matrix, bounds: Rect, bitmapWidth: Int, bitmapHeight: Int,
+        shapeSize: ShapeSize?, srcRect: Rect
+    ) {
     }
 
-    @Override
-    public void draw(@NonNull Canvas canvas, @NonNull Paint paint, @NonNull Rect bounds) {
-        if (!boundsCached.equals(bounds)) {
-            RectF rectF = new RectF(bounds);
-
-            bitmapPath.reset();
-            bitmapPath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+    override fun draw(canvas: Canvas, paint: Paint, bounds: Rect) {
+        if (boundsCached != bounds) {
+            val rectF = RectF(bounds)
+            bitmapPath.reset()
+            bitmapPath.addRoundRect(rectF, outerRadii, Path.Direction.CW)
 
             // 假如描边宽度是10，那么会是5个像素在图片外面，5个像素在图片里面
             // 因为描边会有一半是在图片外面，所以如果图片被紧紧（没有缝隙）包括在Layout中，那么描边就会丢失一半
             if (hasStroke()) {
                 // 内圈，往图片里面偏移描边宽度的一半，让描边都在图片里面，都在里面导致圆角部分会露出来一些
-                final float offset = strokeWidth / 2f;
-                rectF.set(bounds.left + offset, bounds.top + offset,
-                        bounds.right - offset, bounds.bottom - offset);
-                innerStrokePath.reset();
-                innerStrokePath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+                val offset = strokeWidth / 2f
+                rectF[bounds.left + offset, bounds.top + offset, bounds.right - offset] =
+                    bounds.bottom - offset
+                innerStrokePath!!.reset()
+                innerStrokePath!!.addRoundRect(rectF, outerRadii, Path.Direction.CW)
 
                 // 外圈，主要用来盖住内圈描边无法覆盖导致露出的圆角部分
-                outerStrokePath.reset();
-                rectF.set(bounds.left, bounds.top, bounds.right, bounds.bottom);
-                outerStrokePath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
-
-                rectF.set(bounds);
-                clipPath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+                outerStrokePath!!.reset()
+                rectF[bounds.left.toFloat(), bounds.top.toFloat(), bounds.right.toFloat()] =
+                    bounds.bottom.toFloat()
+                outerStrokePath!!.addRoundRect(rectF, outerRadii, Path.Direction.CW)
+                rectF.set(bounds)
+                clipPath!!.addRoundRect(rectF, outerRadii, Path.Direction.CW)
             }
         }
-
-        paint.setAntiAlias(true);
-        canvas.drawPath(bitmapPath, paint);
-
+        paint.isAntiAlias = true
+        canvas.drawPath(bitmapPath, paint)
         if (hasStroke() && strokePaint != null) {
             // 裁掉外圈跑出图片的部分
-            canvas.clipPath(clipPath);
-
-            canvas.drawPath(innerStrokePath, strokePaint);
-            canvas.drawPath(outerStrokePath, strokePaint);
+            canvas.clipPath(clipPath)
+            canvas.drawPath(innerStrokePath, strokePaint)
+            canvas.drawPath(outerStrokePath, strokePaint)
         }
     }
 }

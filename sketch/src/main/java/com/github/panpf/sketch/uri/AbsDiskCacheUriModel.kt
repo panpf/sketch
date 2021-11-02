@@ -13,127 +13,135 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
-
-import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.DiskCache;
-import com.github.panpf.sketch.datasource.ByteArrayDataSource;
-import com.github.panpf.sketch.datasource.DataSource;
-import com.github.panpf.sketch.datasource.DiskCacheDataSource;
-import com.github.panpf.sketch.request.DownloadResult;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.util.DiskLruCache;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.content.Context
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.DiskLruCache.EditorChangedException
+import com.github.panpf.sketch.util.DiskLruCache.FileNotExistException
+import com.github.panpf.sketch.util.SketchUtils
+import java.io.BufferedOutputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 /**
  * 为需要磁盘缓存的 UriModel 封装好 getDataSource 部分
  */
-public abstract class AbsDiskCacheUriModel<Content> extends UriModel {
+abstract class AbsDiskCacheUriModel<CONTENT> : UriModel() {
 
-    private static final String NAME = "AbsDiskCacheUriModel";
-
-    @NonNull
-    @Override
-    public final DataSource getDataSource(@NonNull Context context, @NonNull String uri, @Nullable DownloadResult downloadResult) throws GetDataSourceException {
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        String diskCacheKey = getDiskCacheKey(uri);
-
-        DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+    @Throws(GetDataSourceException::class)
+    override fun getDataSource(
+        context: Context,
+        uri: String,
+        downloadResult: DownloadResult?
+    ): DataSource {
+        val diskCache = Sketch.with(context).configuration.diskCache
+        val diskCacheKey = getDiskCacheKey(uri)
+        var cacheEntry = diskCache[diskCacheKey]
         if (cacheEntry != null) {
-            return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
+            return DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE)
         }
-
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
-        try {
-            cacheEntry = diskCache.get(diskCacheKey);
+        val diskCacheEditLock = diskCache.getEditLock(diskCacheKey)
+        diskCacheEditLock.lock()
+        return try {
+            cacheEntry = diskCache[diskCacheKey]
             if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE);
+                DiskCacheDataSource(cacheEntry, ImageFrom.DISK_CACHE)
             } else {
-                return readContent(context, uri, diskCacheKey);
+                readContent(context, uri, diskCacheKey)
             }
         } finally {
-            diskCacheEditLock.unlock();
+            diskCacheEditLock.unlock()
         }
     }
 
-    @NonNull
-    private DataSource readContent(@NonNull Context context, @NonNull String uri, @NonNull String diskCacheKey) throws GetDataSourceException {
-        Content content = getContent(context, uri);
-
-        DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
-        OutputStream outputStream;
-        if (diskCacheEditor != null) {
+    @Throws(GetDataSourceException::class)
+    private fun readContent(context: Context, uri: String, diskCacheKey: String): DataSource {
+        val content = getContent(context, uri)
+        val diskCache = Sketch.with(context).configuration.diskCache
+        val diskCacheEditor = diskCache.edit(diskCacheKey)
+        val outputStream: OutputStream = if (diskCacheEditor != null) {
             try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-            } catch (IOException e) {
-                diskCacheEditor.abort();
-                closeContent(content, context);
-
-                String cause = String.format("Open output stream exception. %s", uri);
-                SLog.emt(NAME, e, cause);
-                throw new GetDataSourceException(cause, e);
+                BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024)
+            } catch (e: IOException) {
+                diskCacheEditor.abort()
+                closeContent(content, context)
+                val cause = String.format("Open output stream exception. %s", uri)
+                SLog.emt(NAME, e, cause)
+                throw GetDataSourceException(cause, e)
             }
         } else {
-            outputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream()
         }
-
         try {
-            outContent(content, outputStream);
-        } catch (Throwable tr) {
-            if (diskCacheEditor != null) {
-                diskCacheEditor.abort();
-            }
-            String cause = String.format("Output data exception. %s", uri);
-            SLog.emt(NAME, tr, cause);
-            throw new GetDataSourceException(cause, tr);
+            outContent(content, outputStream)
+        } catch (tr: Throwable) {
+            diskCacheEditor?.abort()
+            val cause = String.format("Output data exception. %s", uri)
+            SLog.emt(NAME, tr, cause)
+            throw GetDataSourceException(cause, tr)
         } finally {
-            SketchUtils.close(outputStream);
-            closeContent(content, context);
+            SketchUtils.close(outputStream)
+            closeContent(content, context)
         }
-
         if (diskCacheEditor != null) {
             try {
-                diskCacheEditor.commit();
-            } catch (IOException | DiskLruCache.EditorChangedException | DiskLruCache.ClosedException | DiskLruCache.FileNotExistException e) {
-                diskCacheEditor.abort();
-                String cause = String.format("Commit disk cache exception. %s", uri);
-                SLog.emt(NAME, e, cause);
-                throw new GetDataSourceException(cause, e);
+                diskCacheEditor.commit()
+            } catch (e: IOException) {
+                diskCacheEditor.abort()
+                val cause = String.format("Commit disk cache exception. %s", uri)
+                SLog.emt(NAME, e, cause)
+                throw GetDataSourceException(cause, e)
+            } catch (e: EditorChangedException) {
+                diskCacheEditor.abort()
+                val cause = String.format("Commit disk cache exception. %s", uri)
+                SLog.emt(NAME, e, cause)
+                throw GetDataSourceException(cause, e)
+            } catch (e: DiskLruCache.ClosedException) {
+                diskCacheEditor.abort()
+                val cause = String.format("Commit disk cache exception. %s", uri)
+                SLog.emt(NAME, e, cause)
+                throw GetDataSourceException(cause, e)
+            } catch (e: FileNotExistException) {
+                diskCacheEditor.abort()
+                val cause = String.format("Commit disk cache exception. %s", uri)
+                SLog.emt(NAME, e, cause)
+                throw GetDataSourceException(cause, e)
             }
         }
-
-        if (diskCacheEditor == null) {
-            return new ByteArrayDataSource(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
+        return if (diskCacheEditor == null) {
+            ByteArrayDataSource(
+                (outputStream as ByteArrayOutputStream).toByteArray(),
+                ImageFrom.LOCAL
+            )
         } else {
-            DiskCache.Entry cacheEntry = diskCache.get(diskCacheKey);
+            val cacheEntry = diskCache[diskCacheKey]
             if (cacheEntry != null) {
-                return new DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL);
+                DiskCacheDataSource(cacheEntry, ImageFrom.LOCAL)
             } else {
-                String cause = String.format("Not found disk cache after save. %s", uri);
-                SLog.em(NAME, cause);
-                throw new GetDataSourceException(cause);
+                val cause = String.format("Not found disk cache after save. %s", uri)
+                SLog.em(NAME, cause)
+                throw GetDataSourceException(cause)
             }
         }
     }
 
-    @NonNull
-    protected abstract Content getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException;
+    @Throws(GetDataSourceException::class)
+    protected abstract fun getContent(context: Context, uri: String): CONTENT
 
-    protected abstract void outContent(@NonNull Content content, @NonNull OutputStream outputStream) throws Exception;
+    @Throws(Exception::class)
+    protected abstract fun outContent(content: CONTENT, outputStream: OutputStream)
+    protected abstract fun closeContent(content: CONTENT, context: Context)
 
-    protected abstract void closeContent(@NonNull Content content, @NonNull Context context);
+    companion object {
+        private const val NAME = "AbsDiskCacheUriModel"
+    }
 }

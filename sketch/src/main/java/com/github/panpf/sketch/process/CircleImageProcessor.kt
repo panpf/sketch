@@ -13,104 +13,94 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.process
 
-package com.github.panpf.sketch.process;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ResizeCalculator;
-import com.github.panpf.sketch.request.Resize;
+import android.graphics.*
+import com.github.panpf.sketch.process.WrappedImageProcessor
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Resize
+import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.decode.ResizeCalculator
+import com.github.panpf.sketch.decode.ResizeCalculator.Mapping
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.process.CircleImageProcessor
 
 /**
  * 圆形图片处理器
  */
-@SuppressWarnings("WeakerAccess")
-public class CircleImageProcessor extends WrappedImageProcessor {
+class CircleImageProcessor(wrappedProcessor: WrappedImageProcessor?) :
+    WrappedImageProcessor(wrappedProcessor) {
 
+    private constructor() : this(null)
 
-    @Nullable
-    private static CircleImageProcessor instance;
+    override val isInterceptResize: Boolean = true
 
-    public CircleImageProcessor(@Nullable WrappedImageProcessor wrappedProcessor) {
-        super(wrappedProcessor);
-    }
-
-    private CircleImageProcessor() {
-        this(null);
-    }
-
-    public static CircleImageProcessor getInstance() {
-        if (instance == null) {
-            synchronized (CircleImageProcessor.class) {
-                if (instance == null) {
-                    instance = new CircleImageProcessor();
-                }
-            }
+    override fun onProcess(
+        sketch: Sketch,
+        bitmap: Bitmap,
+        resize: Resize?,
+        lowQualityImage: Boolean
+    ): Bitmap {
+        if (bitmap.isRecycled) {
+            return bitmap
         }
-        return instance;
-    }
-
-    @Override
-    protected boolean isInterceptResize() {
-        return true;
-    }
-
-    @NonNull
-    @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
-        if (bitmap.isRecycled()) {
-            return bitmap;
-        }
-
-        int targetWidth = resize != null ? resize.getWidth() : bitmap.getWidth();
-        int targetHeight = resize != null ? resize.getHeight() : bitmap.getHeight();
-        int newBitmapSize = targetWidth < targetHeight ? targetWidth : targetHeight;
-        ImageView.ScaleType scaleType = resize != null ? resize.getScaleType() : ImageView.ScaleType.FIT_CENTER;
-
-        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                newBitmapSize, newBitmapSize, scaleType, resize != null && resize.getMode() == Resize.Mode.EXACTLY_SAME);
-
-        Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
-        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-
-        Bitmap circleBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config);
-
-        Canvas canvas = new Canvas(circleBitmap);
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(0xFFFF0000);
+        val targetWidth = resize?.width ?: bitmap.width
+        val targetHeight = resize?.height ?: bitmap.height
+        val newBitmapSize = if (targetWidth < targetHeight) targetWidth else targetHeight
+        val scaleType = if (resize != null) resize.scaleType else ScaleType.FIT_CENTER
+        val resizeCalculator = sketch.configuration.resizeCalculator
+        val mapping = resizeCalculator.calculator(
+            bitmap.width,
+            bitmap.height,
+            newBitmapSize,
+            newBitmapSize,
+            scaleType,
+            resize != null && resize.mode == Resize.Mode.EXACTLY_SAME
+        )
+        val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
+        val bitmapPool = sketch.configuration.bitmapPool
+        val circleBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config)
+        val canvas = Canvas(circleBitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = -0x10000
 
         // 绘制圆形的罩子
-        canvas.drawCircle(mapping.imageWidth / 2, mapping.imageHeight / 2,
-                (mapping.imageWidth < mapping.imageHeight ? mapping.imageWidth : mapping.imageHeight) / 2, paint);
+        canvas.drawCircle(
+            (mapping.imageWidth / 2).toFloat(),
+            (mapping.imageHeight / 2).toFloat(),
+            (
+                    (if (mapping.imageWidth < mapping.imageHeight) mapping.imageWidth else mapping.imageHeight) / 2).toFloat(),
+            paint
+        )
 
         // 应用遮罩模式并绘制图片
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint);
-
-        return circleBitmap;
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint)
+        return circleBitmap
     }
 
-    @NonNull
-    @Override
-    public String onToString() {
-        return "CircleImageProcessor";
+    override fun onToString(): String {
+        return "CircleImageProcessor"
     }
 
-    @Override
-    public String onGetKey() {
-        return "Circle";
+    override fun onGetKey(): String {
+        return "Circle"
+    }
+
+    companion object {
+        var instance: CircleImageProcessor? = null
+            get() {
+                if (field == null) {
+                    synchronized(CircleImageProcessor::class.java) {
+                        if (field == null) {
+                            field = CircleImageProcessor()
+                        }
+                    }
+                }
+                return field
+            }
+            private set
     }
 }

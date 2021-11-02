@@ -13,65 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.process
 
-package com.github.panpf.sketch.process;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Arrays;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ResizeCalculator;
-import com.github.panpf.sketch.request.Resize;
+import android.graphics.*
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Resize
 
 /**
  * 圆角矩形图片处理器
  */
-@SuppressWarnings({"WeakerAccess"})
-public class RoundRectImageProcessor extends WrappedImageProcessor {
+class RoundRectImageProcessor @JvmOverloads constructor(
+    topLeftRadius: Float, topRightRadius: Float, bottomLeftRadius: Float,
+    bottomRightRadius: Float, wrappedImageProcessor: WrappedImageProcessor? = null
+) : WrappedImageProcessor(wrappedImageProcessor) {
 
-    @NonNull
-    private float[] cornerRadius;
-
-    /**
-     * 创建一个圆角矩形图片处理器
-     *
-     * @param topLeftRadius         左上角圆角角度
-     * @param topRightRadius        右上角圆角角度
-     * @param bottomLeftRadius      左下角圆角角度
-     * @param bottomRightRadius     右下角圆角角度
-     * @param wrappedImageProcessor 嵌套一个图片处理器
-     */
-    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius,
-                                   float bottomRightRadius, @Nullable WrappedImageProcessor wrappedImageProcessor) {
-        super(wrappedImageProcessor);
-        cornerRadius = new float[]{topLeftRadius, topLeftRadius,
-                topRightRadius, topRightRadius,
-                bottomLeftRadius, bottomLeftRadius,
-                bottomRightRadius, bottomRightRadius};
-    }
-
-    /**
-     * 创建一个圆角矩形图片处理器
-     *
-     * @param topLeftRadius     左上角圆角角度
-     * @param topRightRadius    右上角圆角角度
-     * @param bottomLeftRadius  左下角圆角角度
-     * @param bottomRightRadius 右下角圆角角度
-     */
-    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
-        this(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, null);
-    }
+    val cornerRadius: FloatArray = floatArrayOf(
+        topLeftRadius, topLeftRadius,
+        topRightRadius, topRightRadius,
+        bottomLeftRadius, bottomLeftRadius,
+        bottomRightRadius, bottomRightRadius
+    )
 
     /**
      * 创建一个圆角矩形图片处理器
@@ -79,74 +40,75 @@ public class RoundRectImageProcessor extends WrappedImageProcessor {
      * @param cornerRadius          圆角角度
      * @param wrappedImageProcessor 嵌套一个图片处理器
      */
-    public RoundRectImageProcessor(float cornerRadius, @Nullable WrappedImageProcessor wrappedImageProcessor) {
-        this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, wrappedImageProcessor);
-    }
+    constructor(cornerRadius: Float, wrappedImageProcessor: WrappedImageProcessor?) : this(
+        cornerRadius,
+        cornerRadius,
+        cornerRadius,
+        cornerRadius,
+        wrappedImageProcessor
+    )
 
     /**
      * 创建一个圆角矩形图片处理器
      *
      * @param cornerRadius 圆角角度
      */
-    public RoundRectImageProcessor(float cornerRadius) {
-        this(cornerRadius, cornerRadius, cornerRadius, cornerRadius, null);
-    }
+    constructor(cornerRadius: Float) : this(
+        cornerRadius,
+        cornerRadius,
+        cornerRadius,
+        cornerRadius,
+        null
+    )
 
-    @Override
-    protected boolean isInterceptResize() {
-        return true;
-    }
+    override val isInterceptResize: Boolean = true
 
-    @NonNull
-    @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
-        if (bitmap.isRecycled()) {
-            return bitmap;
+    override fun onProcess(
+        sketch: Sketch,
+        bitmap: Bitmap,
+        resize: Resize?,
+        lowQualityImage: Boolean
+    ): Bitmap {
+        if (bitmap.isRecycled) {
+            return bitmap
         }
-
-        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                resize != null ? resize.getWidth() : bitmap.getWidth(),
-                resize != null ? resize.getHeight() : bitmap.getHeight(),
-                resize != null ? resize.getScaleType() : null,
-                resize != null && resize.getMode() == Resize.Mode.EXACTLY_SAME);
-
-        Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
-        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-
-        Bitmap roundRectBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config);
-
-        Canvas canvas = new Canvas(roundRectBitmap);
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(0xFFFF0000);
+        val resizeCalculator = sketch.configuration.resizeCalculator
+        val mapping = resizeCalculator.calculator(
+            bitmap.width, bitmap.height,
+            resize?.width ?: bitmap.width,
+            resize?.height ?: bitmap.height,
+            resize?.scaleType,
+            resize != null && resize.mode == Resize.Mode.EXACTLY_SAME
+        )
+        val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
+        val bitmapPool = sketch.configuration.bitmapPool
+        val roundRectBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config)
+        val canvas = Canvas(roundRectBitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = -0x10000
 
         // 绘制圆角的罩子
-        Path path = new Path();
-        path.addRoundRect(new RectF(0, 0, mapping.imageWidth, mapping.imageHeight), cornerRadius, Path.Direction.CW);
-        canvas.drawPath(path, paint);
+        val path = Path()
+        path.addRoundRect(
+            RectF(0f, 0f, mapping.imageWidth.toFloat(), mapping.imageHeight.toFloat()),
+            cornerRadius,
+            Path.Direction.CW
+        )
+        canvas.drawPath(path, paint)
 
         // 应用遮罩模式并绘制图片
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint);
-
-        return roundRectBitmap;
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, paint)
+        return roundRectBitmap
     }
 
-    @NonNull
-    public float[] getCornerRadius() {
-        return cornerRadius;
+    override fun onToString(): String {
+        return String.format("%s(%s)", "RoundRectImageProcessor", cornerRadius.contentToString())
     }
 
-    @NonNull
-    @Override
-    public String onToString() {
-        return String.format("%s(%s)", "RoundRectImageProcessor", Arrays.toString(cornerRadius));
-    }
-
-    @Override
-    public String onGetKey() {
-        return String.format("%s(%s)", "RoundRect", Arrays.toString(cornerRadius));
+    override fun onGetKey(): String {
+        return String.format("%s(%s)", "RoundRect", cornerRadius.contentToString())
     }
 }

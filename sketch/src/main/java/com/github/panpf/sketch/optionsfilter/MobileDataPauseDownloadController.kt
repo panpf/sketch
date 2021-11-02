@@ -1,120 +1,96 @@
-package com.github.panpf.sketch.optionsfilter;
+package com.github.panpf.sketch.optionsfilter
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
-
-import androidx.annotation.NonNull;
-
-import java.lang.ref.WeakReference;
-
-import com.github.panpf.sketch.Configuration;
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import com.github.panpf.sketch.Configuration
+import java.lang.ref.WeakReference
 
 /**
  * 全局移动数据或有流量限制的 WIFI 下暂停下载控制器
  */
-@SuppressWarnings("WeakerAccess")
-public class MobileDataPauseDownloadController {
-    @NonNull
-    private NetworkChangedBroadcastReceiver receiver;
-    private boolean opened;
-    @NonNull
-    private Configuration configuration;
+class MobileDataPauseDownloadController(private val configuration: Configuration) {
 
-    public MobileDataPauseDownloadController(@NonNull Configuration configuration) {
-        receiver = new NetworkChangedBroadcastReceiver(configuration.getContext(), this);
-        this.configuration = configuration;
-    }
-
-    /**
-     * 已经开启了？
-     */
-    public boolean isOpened() {
-        return opened;
-    }
+    private val receiver: NetworkChangedBroadcastReceiver =
+        NetworkChangedBroadcastReceiver(configuration.context, this)
 
     /**
      * 开启功能
-     *
-     * @param opened 开启
      */
-    public void setOpened(boolean opened) {
-        if (this.opened == opened) {
-            return;
+    var isOpened = false
+        set(opened) {
+            if (isOpened == opened) {
+                return
+            }
+            field = opened
+            if (isOpened) {
+                updateStatus(receiver.context)
+                receiver.register()
+            } else {
+                configuration.isPauseDownloadEnabled = false
+                receiver.unregister()
+            }
         }
-        this.opened = opened;
-
-        if (this.opened) {
-            updateStatus(receiver.context);
-            receiver.register();
-        } else {
-            configuration.setPauseDownloadEnabled(false);
-            receiver.unregister();
-        }
-    }
 
     /**
      * 网络状态变化或初始化时更新全局暂停功能
      *
-     * @param context {@link Context}
+     * @param context [Context]
      */
-    private void updateStatus(@NonNull Context context) {
-        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        boolean pause = false;
-        if (networkInfo != null && networkInfo.isAvailable()) {
-            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                pause = true;
-            } else if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && connectivityManager.isActiveNetworkMetered()) {
-                    pause = true;
+    private fun updateStatus(context: Context) {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        var pause = false
+        if (networkInfo != null && networkInfo.isAvailable) {
+            if (networkInfo.type == ConnectivityManager.TYPE_MOBILE) {
+                pause = true
+            } else if (networkInfo.type == ConnectivityManager.TYPE_WIFI) {
+                if (connectivityManager.isActiveNetworkMetered) {
+                    pause = true
                 }
             }
         }
-        configuration.setPauseDownloadEnabled(pause);
+        configuration.isPauseDownloadEnabled = pause
     }
 
     /**
      * 监听网络变化的广播
      */
-    private static class NetworkChangedBroadcastReceiver extends BroadcastReceiver {
-        @NonNull
-        private Context context;
-        @NonNull
-        private WeakReference<MobileDataPauseDownloadController> weakReference;
+    private class NetworkChangedBroadcastReceiver(
+        context: Context,
+        download: MobileDataPauseDownloadController
+    ) : BroadcastReceiver() {
 
-        public NetworkChangedBroadcastReceiver(@NonNull Context context, @NonNull MobileDataPauseDownloadController download) {
-            this.context = context.getApplicationContext();
-            this.weakReference = new WeakReference<>(download);
-        }
+        val context: Context = context.applicationContext
+        private val weakReference: WeakReference<MobileDataPauseDownloadController> =
+            WeakReference(download)
 
-        @Override
-        public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-                MobileDataPauseDownloadController pauseDownloadController = weakReference.get();
-                if (pauseDownloadController != null) {
-                    pauseDownloadController.updateStatus(context);
-                }
+        override fun onReceive(context: Context, intent: Intent) {
+            if (ConnectivityManager.CONNECTIVITY_ACTION == intent.action) {
+                val pauseDownloadController = weakReference.get()
+                pauseDownloadController?.updateStatus(context)
             }
         }
 
-        private void register() {
+        fun register() {
             try {
-                context.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                context.registerReceiver(
+                    this,
+                    IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+                )
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
             }
         }
 
-        private void unregister() {
+        fun unregister() {
             try {
-                context.unregisterReceiver(this);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                context.unregisterReceiver(this)
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
             }
         }
     }

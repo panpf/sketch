@@ -13,106 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.datasource
 
-package com.github.panpf.sketch.datasource;
-
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchGifFactory;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.text.TextUtils
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.decode.NotFoundGifLibraryException
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import com.github.panpf.sketch.drawable.SketchGifFactory
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.util.SketchUtils
+import java.io.*
 
 /**
  * 用于读取字节数组格式的图片
  */
-public class ByteArrayDataSource implements DataSource {
+class ByteArrayDataSource(
+    private val data: ByteArray, override val imageFrom: ImageFrom
+) : DataSource {
 
-    @NonNull
-    private byte[] data;
-    @NonNull
-    private ImageFrom imageFrom;
+    @get:Throws(IOException::class)
+    override val inputStream: InputStream
+        get() = ByteArrayInputStream(data)
 
-    public ByteArrayDataSource(@NonNull byte[] data, @NonNull ImageFrom imageFrom) {
-        this.data = data;
-        this.imageFrom = imageFrom;
-    }
+    @get:Throws(IOException::class)
+    override val length: Long
+        get() = data.size.toLong()
 
-    @NonNull
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return new ByteArrayInputStream(data);
-    }
-
-    @Override
-    public long getLength() throws IOException {
-        return data.length;
-    }
-
-    @Override
-    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
+    @Throws(IOException::class)
+    override fun getFile(outDir: File?, outName: String?): File? {
         if (outDir == null) {
-            return null;
+            return null
         }
-
-        if (!outDir.exists() && !outDir.getParentFile().mkdirs()) {
-            return null;
+        if (!outDir.exists() && !outDir.parentFile.mkdirs()) {
+            return null
         }
-
-        File outFile;
-        if (!TextUtils.isEmpty(outName)) {
-            outFile = new File(outDir, outName);
+        val outFile: File = if (!TextUtils.isEmpty(outName)) {
+            File(outDir, outName)
         } else {
-            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, String.valueOf(System.currentTimeMillis())));
+            File(
+                outDir,
+                SketchUtils.generatorTempFileName(this, System.currentTimeMillis().toString())
+            )
         }
-
-        InputStream inputStream = getInputStream();
-
-        OutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(outFile);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
+        val inputStream = inputStream
+        val outputStream: OutputStream = try {
+            FileOutputStream(outFile)
+        } catch (e: IOException) {
+            SketchUtils.close(inputStream)
+            throw e
         }
-
-        byte[] data = new byte[1024];
-        int length;
+        val data = ByteArray(1024)
+        var length: Int
         try {
-            while ((length = inputStream.read(data)) != -1) {
-                outputStream.write(data, 0, length);
+            while (inputStream.read(data).also { length = it } != -1) {
+                outputStream.write(data, 0, length)
             }
         } finally {
-            SketchUtils.close(outputStream);
-            SketchUtils.close(inputStream);
+            SketchUtils.close(outputStream)
+            SketchUtils.close(inputStream)
         }
-
-        return outFile;
+        return outFile
     }
 
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
-                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, data);
+    @Throws(IOException::class, NotFoundGifLibraryException::class)
+    override fun makeGifDrawable(
+        key: String,
+        uri: String,
+        imageAttrs: ImageAttrs,
+        bitmapPool: BitmapPool
+    ): SketchGifDrawable {
+        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, imageFrom, bitmapPool, data)
     }
 }

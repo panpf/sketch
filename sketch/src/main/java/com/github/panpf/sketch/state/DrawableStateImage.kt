@@ -13,60 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.state
 
-package com.github.panpf.sketch.state;
-
-import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable;
-import com.github.panpf.sketch.request.DisplayOptions;
-import com.github.panpf.sketch.request.ShapeSize;
-import com.github.panpf.sketch.shaper.ImageShaper;
+import android.content.Context
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable
+import com.github.panpf.sketch.request.DisplayOptions
+import com.github.panpf.sketch.request.ShapeSize
+import com.github.panpf.sketch.shaper.ImageShaper
 
 /**
- * 给什么图片显示什么图片，支持 {@link ShapeSize} 和 {@link ImageShaper}
+ * 给什么图片显示什么图片，支持 [ShapeSize] 和 [ImageShaper]
  */
-public class DrawableStateImage implements StateImage {
-    @Nullable
-    private Drawable originDrawable;
-    private int resId = -1;
+class DrawableStateImage : StateImage {
 
-    public DrawableStateImage(@NonNull Drawable drawable) {
-        this.originDrawable = drawable;
+    var originDrawable: Drawable? = null
+        private set
+    var resId = -1
+        private set
+
+    constructor(drawable: Drawable) {
+        originDrawable = drawable
     }
 
-    public DrawableStateImage(int resId) {
-        this.resId = resId;
+    constructor(resId: Int) {
+        this.resId = resId
     }
 
-    @Nullable
-    @Override
-    public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
-        Drawable drawable = originDrawable;
+    override fun getDrawable(
+        context: Context,
+        sketchView: SketchView,
+        displayOptions: DisplayOptions
+    ): Drawable? {
+        var drawable = originDrawable
         if (drawable == null && resId != -1) {
-            drawable = context.getResources().getDrawable(resId);
+            drawable = context.resources.getDrawable(resId)
         }
-
-        ShapeSize shapeSize = displayOptions.getShapeSize();
-        ImageShaper imageShaper = displayOptions.getShaper();
-        if ((shapeSize != null || imageShaper != null) && drawable instanceof BitmapDrawable) {
-            drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
+        val shapeSize = displayOptions.shapeSize
+        val imageShaper = displayOptions.shaper
+        if ((shapeSize != null || imageShaper != null) && drawable is BitmapDrawable) {
+            drawable = SketchShapeBitmapDrawable(
+                context,
+                (drawable as BitmapDrawable?)!!,
+                shapeSize,
+                imageShaper
+            )
         }
-
-        return drawable;
-    }
-
-    @Nullable
-    public Drawable getOriginDrawable() {
-        return originDrawable;
-    }
-
-    public int getResId() {
-        return resId;
+        return drawable
     }
 }

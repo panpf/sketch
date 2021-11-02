@@ -13,101 +13,75 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.process
 
-package com.github.panpf.sketch.process;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.request.Resize;
+import android.graphics.*
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.request.Resize
+import java.util.*
 
 /**
  * 旋转图片处理器
  */
-public class RotateImageProcessor extends WrappedImageProcessor {
+class RotateImageProcessor @JvmOverloads constructor(
+    private val degrees: Int,
+    wrappedImageProcessor: WrappedImageProcessor? = null
+) : WrappedImageProcessor(wrappedImageProcessor) {
 
-    private int degrees;
-
-    /**
-     * 创建一个图片旋转处理器
-     *
-     * @param degrees               旋转角度
-     * @param wrappedImageProcessor 嵌套一个图片处理器
-     */
-    public RotateImageProcessor(int degrees, @Nullable WrappedImageProcessor wrappedImageProcessor) {
-        super(wrappedImageProcessor);
-        this.degrees = degrees;
+    override fun onProcess(
+        sketch: Sketch,
+        bitmap: Bitmap,
+        resize: Resize?,
+        lowQualityImage: Boolean
+    ): Bitmap {
+        return if (bitmap.isRecycled || degrees % 360 == 0) {
+            bitmap
+        } else rotate(
+            bitmap,
+            degrees,
+            sketch.configuration.bitmapPool
+        )
     }
 
-    /**
-     * 创建一个图片旋转处理器
-     *
-     * @param degrees 旋转角度
-     */
-    public RotateImageProcessor(int degrees) {
-        this(degrees, null);
+    override fun onToString(): String {
+        return String.format(Locale.US, "%s(%d)", "RotateImageProcessor", degrees)
     }
 
-    public static Bitmap rotate(@NonNull Bitmap bitmap, int degrees, @NonNull BitmapPool bitmapPool) {
-        Matrix matrix = new Matrix();
-        matrix.setRotate(degrees);
-
-        // 根据旋转角度计算新的图片的尺寸
-        RectF newRect = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        matrix.mapRect(newRect);
-        int newWidth = (int) newRect.width();
-        int newHeight = (int) newRect.height();
-
-        // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
-        Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : Bitmap.Config.ARGB_8888;
-        if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
-            config = Bitmap.Config.ARGB_8888;
-        }
-
-        Bitmap result = bitmapPool.getOrMake(newWidth, newHeight, config);
-
-        matrix.postTranslate(-newRect.left, -newRect.top);
-
-        final Canvas canvas = new Canvas(result);
-        final Paint paint = new Paint(Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(bitmap, matrix, paint);
-
-        return result;
-    }
-
-    @NonNull
-    @Override
-    public Bitmap onProcess(@NonNull Sketch sketch, @NonNull Bitmap bitmap, Resize resize, boolean lowQualityImage) {
-        if (bitmap.isRecycled() || degrees % 360 == 0) {
-            return bitmap;
-        }
-
-        return rotate(bitmap, degrees, sketch.getConfiguration().getBitmapPool());
-    }
-
-    @NonNull
-    @Override
-    public String onToString() {
-        return String.format(Locale.US, "%s(%d)", "RotateImageProcessor", degrees);
-    }
-
-    @Nullable
-    @Override
-    public String onGetKey() {
+    override fun onGetKey(): String? {
         // 0 度或 360 度时不加标识，这样做是为了避免浪费合适的内存缓存
-        if (degrees % 360 == 0) {
-            return null;
-        }
+        return if (degrees % 360 == 0) {
+            null
+        } else String.format(
+            Locale.US,
+            "%s(%d)",
+            "Rotate",
+            degrees
+        )
+    }
 
-        return String.format(Locale.US, "%s(%d)", "Rotate", degrees);
+    companion object {
+        fun rotate(bitmap: Bitmap, degrees: Int, bitmapPool: BitmapPool): Bitmap {
+            val matrix = Matrix()
+            matrix.setRotate(degrees.toFloat())
+
+            // 根据旋转角度计算新的图片的尺寸
+            val newRect = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
+            matrix.mapRect(newRect)
+            val newWidth = newRect.width().toInt()
+            val newHeight = newRect.height().toInt()
+
+            // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
+            var config = if (bitmap.config != null) bitmap.config else Bitmap.Config.ARGB_8888
+            if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
+                config = Bitmap.Config.ARGB_8888
+            }
+            val result = bitmapPool.getOrMake(newWidth, newHeight, config)
+            matrix.postTranslate(-newRect.left, -newRect.top)
+            val canvas = Canvas(result)
+            val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
+            canvas.drawBitmap(bitmap, matrix, paint)
+            return result
+        }
     }
 }

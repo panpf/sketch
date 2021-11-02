@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.content.Context
+import com.github.panpf.sketch.uri.AbsDiskCacheUriModel
+import android.graphics.Bitmap
+import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.sketch.cache.BitmapPoolUtils
+import com.github.panpf.sketch.Sketch
+import java.io.OutputStream
+import java.lang.Exception
 
-import android.content.Context;
-import android.graphics.Bitmap;
+abstract class AbsBitmapDiskCacheUriModel : AbsDiskCacheUriModel<Bitmap>() {
 
-import java.io.OutputStream;
-
-import androidx.annotation.NonNull;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPoolUtils;
-import com.github.panpf.sketch.util.SketchUtils;
-
-public abstract class AbsBitmapDiskCacheUriModel extends AbsDiskCacheUriModel<Bitmap> {
-
-    @Override
-    protected final void outContent(@NonNull Bitmap bitmap, @NonNull OutputStream outputStream) throws Exception {
-        bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.getConfig()), 100, outputStream);
+    @Throws(Exception::class)
+    override fun outContent(bitmap: Bitmap, outputStream: OutputStream) {
+        bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.config), 100, outputStream)
     }
 
-    @Override
-    protected final void closeContent(@NonNull Bitmap bitmap, @NonNull Context context) {
-        BitmapPoolUtils.freeBitmapToPool(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
+    override fun closeContent(bitmap: Bitmap, context: Context) {
+        BitmapPoolUtils.freeBitmapToPool(bitmap, Sketch.with(context).configuration.bitmapPool)
     }
 }

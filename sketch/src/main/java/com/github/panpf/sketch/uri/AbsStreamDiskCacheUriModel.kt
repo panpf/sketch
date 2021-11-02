@@ -13,34 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.content.Context
+import com.github.panpf.sketch.util.SketchUtils
+import java.io.InputStream
+import java.io.OutputStream
 
-import android.content.Context;
-import androidx.annotation.NonNull;
+abstract class AbsStreamDiskCacheUriModel : AbsDiskCacheUriModel<InputStream>() {
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import com.github.panpf.sketch.util.SketchUtils;
-
-public abstract class AbsStreamDiskCacheUriModel extends AbsDiskCacheUriModel<InputStream> {
-
-    @Override
-    protected final void outContent(@NonNull InputStream inputStream, @NonNull OutputStream outputStream) throws Exception {
-        byte[] buffer = new byte[8 * 1024];
-        int realLength;
+    @Throws(Exception::class)
+    override fun outContent(inputStream: InputStream, outputStream: OutputStream) {
+        val buffer = ByteArray(8 * 1024)
+        var realLength: Int
         while (true) {
-            realLength = inputStream.read(buffer);
+            realLength = inputStream.read(buffer)
             if (realLength < 0) {
-                break;
+                break
             }
-            outputStream.write(buffer, 0, realLength);
+            outputStream.write(buffer, 0, realLength)
         }
     }
 
-    @Override
-    protected final void closeContent(@NonNull InputStream inputStream, @NonNull Context context) {
-        SketchUtils.close(inputStream);
+    override fun closeContent(inputStream: InputStream, context: Context) {
+        SketchUtils.close(inputStream)
     }
 }

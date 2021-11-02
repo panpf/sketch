@@ -22,16 +22,17 @@ import com.github.panpf.sketch.SketchView
  * The default image display, without any animation effects
  */
 class DefaultImageDisplayer : ImageDisplayer {
-    override fun display(sketchView: SketchView, newDrawable: Drawable) {
-        sketchView.clearAnimation()
-        sketchView.setImageDrawable(newDrawable)
-    }
 
     override val duration: Int
         get() = 0
 
     override val isAlwaysUse: Boolean
         get() = false
+
+    override fun display(sketchView: SketchView, newDrawable: Drawable) {
+        sketchView.clearAnimation()
+        sketchView.setImageDrawable(newDrawable)
+    }
 
     override fun toString(): String = "DefaultImageDisplayer"
 }

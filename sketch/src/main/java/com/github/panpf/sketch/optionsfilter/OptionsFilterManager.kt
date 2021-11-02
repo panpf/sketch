@@ -13,231 +13,177 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.optionsfilter
 
-package com.github.panpf.sketch.optionsfilter;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import com.github.panpf.sketch.Configuration;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.request.DownloadOptions;
-import com.github.panpf.sketch.request.LoadListener;
+import com.github.panpf.sketch.Configuration
+import com.github.panpf.sketch.request.DownloadOptions
+import java.util.*
 
 /**
- * 负责管理 {@link OptionsFilter} 和过滤 Options，内置了以下选项过滤器<p>
- * <ul>
- * <li>全局暂停下载功能 == {@link PauseDownloadOptionsFilter}</li>
- * <li>全局暂停加载功能 == {@link PauseLoadOptionsFilter}</li>
- * <li>全局使用低质量图片功能 == {@link LowQualityOptionsFilter}</li>
- * <li>全局解码时质量优先功能 == {@link InPreferQualityOverSpeedOptionsFilter}</li>
- * <li>全局移动数据下暂停下载功能 == {@link MobileDataPauseDownloadController}</li>
- * </ul>
+ * 负责管理 [OptionsFilter] 和过滤 Options，内置了以下选项过滤器
+ *
+ *
+ *
+ *  * 全局暂停下载功能 == [PauseDownloadOptionsFilter]
+ *  * 全局暂停加载功能 == [PauseLoadOptionsFilter]
+ *  * 全局使用低质量图片功能 == [LowQualityOptionsFilter]
+ *  * 全局解码时质量优先功能 == [InPreferQualityOverSpeedOptionsFilter]
+ *  * 全局移动数据下暂停下载功能 == [MobileDataPauseDownloadController]
+ *
  */
-public class OptionsFilterManager {
-
-    @Nullable
-    private PauseDownloadOptionsFilter pauseDownloadOptionsFilter;
-    @Nullable
-    private PauseLoadOptionsFilter pauseLoadOptionsFilter;
-    @Nullable
-    private LowQualityOptionsFilter lowQualityOptionsFilter;
-    @Nullable
-    private InPreferQualityOverSpeedOptionsFilter inPreferQualityOverSpeedOptionsFilter;
-    @Nullable
-    private MobileDataPauseDownloadController mobileDataPauseDownloadController;
-    @Nullable
-    private List<OptionsFilter> extrasFilters;
+class OptionsFilterManager {
+    private var pauseDownloadOptionsFilter: PauseDownloadOptionsFilter? = null
+    private var pauseLoadOptionsFilter: PauseLoadOptionsFilter? = null
+    private var lowQualityOptionsFilter: LowQualityOptionsFilter? = null
+    private var inPreferQualityOverSpeedOptionsFilter: InPreferQualityOverSpeedOptionsFilter? = null
+    private var mobileDataPauseDownloadController: MobileDataPauseDownloadController? = null
+    private var extrasFilters: MutableList<OptionsFilter>? = null
 
     /**
-     * 添加一个 {@link OptionsFilter}
+     * 添加一个 [OptionsFilter]
      *
-     * @param optionsFilter {@link OptionsFilter}
-     * @return {@link OptionsFilterManager}. 为了支持链式调用
+     * @param optionsFilter [OptionsFilter]
+     * @return [OptionsFilterManager]. 为了支持链式调用
      */
-    @NonNull
-    public OptionsFilterManager add(@NonNull OptionsFilter optionsFilter) {
-        //noinspection ConstantConditions
-        if (optionsFilter != null) {
-            if (extrasFilters == null) {
-                extrasFilters = new LinkedList<>();
-            }
-            extrasFilters.add(optionsFilter);
+    fun add(optionsFilter: OptionsFilter): OptionsFilterManager {
+        if (extrasFilters == null) {
+            extrasFilters = LinkedList()
         }
-        return this;
+        extrasFilters!!.add(optionsFilter)
+        return this
     }
 
     /**
-     * 添加一个 {@link OptionsFilter} 到指定位置
+     * 添加一个 [OptionsFilter] 到指定位置
      *
      * @param index         指定位置
-     * @param optionsFilter {@link OptionsFilter}
-     * @return {@link OptionsFilterManager}. 为了支持链式调用
+     * @param optionsFilter [OptionsFilter]
+     * @return [OptionsFilterManager]. 为了支持链式调用
      */
-    @NonNull
-    public OptionsFilterManager add(int index, @NonNull OptionsFilter optionsFilter) {
-        //noinspection ConstantConditions
-        if (optionsFilter != null) {
-            if (extrasFilters == null) {
-                extrasFilters = new LinkedList<>();
-            }
-            extrasFilters.add(index, optionsFilter);
+    fun add(index: Int, optionsFilter: OptionsFilter): OptionsFilterManager {
+        if (extrasFilters == null) {
+            extrasFilters = LinkedList()
         }
-        return this;
+        extrasFilters!!.add(index, optionsFilter)
+        return this
     }
 
     /**
-     * 删除一个 {@link OptionsFilter}
+     * 删除一个 [OptionsFilter]
      *
-     * @param optionsFilter {@link OptionsFilter}
-     * @return true：存在指定 {@link OptionsFilter} 并已删除
+     * @param optionsFilter [OptionsFilter]
+     * @return true：存在指定 [OptionsFilter] 并已删除
      */
-    public boolean remove(@NonNull OptionsFilter optionsFilter) {
-        //noinspection ConstantConditions
-        return optionsFilter != null && extrasFilters != null && extrasFilters.remove(optionsFilter);
+    fun remove(optionsFilter: OptionsFilter): Boolean {
+        return extrasFilters != null && extrasFilters!!.remove(
+            optionsFilter
+        )
     }
 
     /**
      * 过滤指定 Options
      *
-     * @param options {@link DownloadOptions}
+     * @param options [DownloadOptions]
      */
-    public void filter(@NonNull DownloadOptions options) {
-        //noinspection ConstantConditions
-        if (options == null) {
-            return;
-        }
-
+    fun filter(options: DownloadOptions) {
         if (pauseLoadOptionsFilter != null) {
-            pauseLoadOptionsFilter.filter(options);
+            pauseLoadOptionsFilter!!.filter(options)
         }
         if (pauseDownloadOptionsFilter != null) {
-            pauseDownloadOptionsFilter.filter(options);
+            pauseDownloadOptionsFilter!!.filter(options)
         }
         if (lowQualityOptionsFilter != null) {
-            lowQualityOptionsFilter.filter(options);
+            lowQualityOptionsFilter!!.filter(options)
         }
         if (inPreferQualityOverSpeedOptionsFilter != null) {
-            inPreferQualityOverSpeedOptionsFilter.filter(options);
+            inPreferQualityOverSpeedOptionsFilter!!.filter(options)
         }
-
         if (extrasFilters != null) {
-            for (OptionsFilter filter : extrasFilters) {
-                filter.filter(options);
+            for (filter in extrasFilters!!) {
+                filter.filter(options)
             }
         }
     }
 
-
     /**
-     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
+     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 [Sketch.display] 方法和 [Sketch.load] 方法
      */
-    public boolean isPauseDownloadEnabled() {
-        return pauseDownloadOptionsFilter != null;
-    }
-
-    /**
-     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
-     *
-     * @param pauseDownloadEnabled 全局暂停下载新图片
-     */
-    public void setPauseDownloadEnabled(boolean pauseDownloadEnabled) {
-        if (isPauseDownloadEnabled() != pauseDownloadEnabled) {
-            this.pauseDownloadOptionsFilter = pauseDownloadEnabled ? new PauseDownloadOptionsFilter() : null;
+    var isPauseDownloadEnabled: Boolean
+        get() = pauseDownloadOptionsFilter != null
+        set(pauseDownloadEnabled) {
+            if (isPauseDownloadEnabled != pauseDownloadEnabled) {
+                pauseDownloadOptionsFilter =
+                    if (pauseDownloadEnabled) PauseDownloadOptionsFilter() else null
+            }
         }
-    }
 
     /**
-     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响 {@link Sketch#display(String, SketchView)} 方法
+     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 [Sketch.display] 方法
      */
-    public boolean isPauseLoadEnabled() {
-        return pauseLoadOptionsFilter != null;
-    }
-
-    /**
-     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响 {@link Sketch#display(String, SketchView)} 方法
-     *
-     * @param pauseLoadEnabled 全局暂停加载新图片
-     */
-    public void setPauseLoadEnabled(boolean pauseLoadEnabled) {
-        if (isPauseLoadEnabled() != pauseLoadEnabled) {
-            this.pauseLoadOptionsFilter = pauseLoadEnabled ? new PauseLoadOptionsFilter() : null;
+    var isPauseLoadEnabled: Boolean
+        get() = pauseLoadOptionsFilter != null
+        set(pauseLoadEnabled) {
+            if (isPauseLoadEnabled != pauseLoadEnabled) {
+                pauseLoadOptionsFilter = if (pauseLoadEnabled) PauseLoadOptionsFilter() else null
+            }
         }
-    }
-
-    /**
-     * 全局使用低质量的图片？
-     */
-    public boolean isLowQualityImageEnabled() {
-        return lowQualityOptionsFilter != null;
-    }
 
     /**
      * 设置全局使用低质量的图片
-     *
-     * @param lowQualityImageEnabled 全局使用低质量图片
      */
-    public void setLowQualityImageEnabled(boolean lowQualityImageEnabled) {
-        if (isLowQualityImageEnabled() != lowQualityImageEnabled) {
-            this.lowQualityOptionsFilter = lowQualityImageEnabled ? new LowQualityOptionsFilter() : null;
+    var isLowQualityImageEnabled: Boolean
+        get() = lowQualityOptionsFilter != null
+        set(lowQualityImageEnabled) {
+            if (isLowQualityImageEnabled != lowQualityImageEnabled) {
+                lowQualityOptionsFilter =
+                    if (lowQualityImageEnabled) LowQualityOptionsFilter() else null
+            }
         }
-    }
-
-    /**
-     * 全局解码时优先考虑速度还是质量 (默认优先考虑速度)
-     *
-     * @return true：质量；false：速度
-     */
-    public boolean isInPreferQualityOverSpeedEnabled() {
-        return inPreferQualityOverSpeedOptionsFilter != null;
-    }
 
     /**
      * 开启全局解码时优先考虑速度还是质量 (默认优先考虑速度)
-     *
-     * @param inPreferQualityOverSpeedEnabled true：质量优先；false：速度优先
      */
-    public void setInPreferQualityOverSpeedEnabled(boolean inPreferQualityOverSpeedEnabled) {
-        if (isInPreferQualityOverSpeedEnabled() != inPreferQualityOverSpeedEnabled) {
-            this.inPreferQualityOverSpeedOptionsFilter = inPreferQualityOverSpeedEnabled ? new InPreferQualityOverSpeedOptionsFilter() : null;
+    var isInPreferQualityOverSpeedEnabled: Boolean
+        get() = inPreferQualityOverSpeedOptionsFilter != null
+        set(inPreferQualityOverSpeedEnabled) {
+            if (isInPreferQualityOverSpeedEnabled != inPreferQualityOverSpeedEnabled) {
+                inPreferQualityOverSpeedOptionsFilter =
+                    if (inPreferQualityOverSpeedEnabled) InPreferQualityOverSpeedOptionsFilter() else null
+            }
         }
-    }
 
     /**
      * 全局移动数据下暂停下载？只影响display请求和load请求
      */
-    @SuppressWarnings("unused")
-    public boolean isMobileDataPauseDownloadEnabled() {
-        return mobileDataPauseDownloadController != null && mobileDataPauseDownloadController.isOpened();
-    }
+    val isMobileDataPauseDownloadEnabled: Boolean
+        get() = mobileDataPauseDownloadController != null && mobileDataPauseDownloadController!!.isOpened
 
     /**
-     * 开启全局移动数据或有流量限制的 WIFI 下暂停下载的功能，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
+     * 开启全局移动数据或有流量限制的 WIFI 下暂停下载的功能，只影响 [Sketch.display] 方法和 [Sketch.load] 方法
      *
      * @param mobileDataPauseDownloadEnabled 全局移动数据下暂停下载
      */
-    public void setMobileDataPauseDownloadEnabled(Configuration configuration, boolean mobileDataPauseDownloadEnabled) {
-        if (isMobileDataPauseDownloadEnabled() != mobileDataPauseDownloadEnabled) {
+    fun setMobileDataPauseDownloadEnabled(
+        configuration: Configuration?,
+        mobileDataPauseDownloadEnabled: Boolean
+    ) {
+        if (isMobileDataPauseDownloadEnabled != mobileDataPauseDownloadEnabled) {
             if (mobileDataPauseDownloadEnabled) {
-                if (this.mobileDataPauseDownloadController == null) {
-                    this.mobileDataPauseDownloadController = new MobileDataPauseDownloadController(configuration);
+                if (mobileDataPauseDownloadController == null) {
+                    mobileDataPauseDownloadController = MobileDataPauseDownloadController(
+                        configuration!!
+                    )
                 }
-                this.mobileDataPauseDownloadController.setOpened(true);
+                mobileDataPauseDownloadController!!.isOpened = true
             } else {
-                if (this.mobileDataPauseDownloadController != null) {
-                    this.mobileDataPauseDownloadController.setOpened(false);
+                if (mobileDataPauseDownloadController != null) {
+                    mobileDataPauseDownloadController!!.isOpened = false
                 }
             }
         }
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "OptionsFilterManager";
+    override fun toString(): String {
+        return "OptionsFilterManager"
     }
 }

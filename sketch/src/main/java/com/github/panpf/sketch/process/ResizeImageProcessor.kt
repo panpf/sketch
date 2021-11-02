@@ -13,60 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.process
 
-package com.github.panpf.sketch.process;
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Resize
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ResizeCalculator;
-import com.github.panpf.sketch.request.Resize;
-
-public class ResizeImageProcessor implements ImageProcessor {
-
-    @NonNull
-    @Override
-    public Bitmap process(@NonNull Sketch sketch, @NonNull Bitmap bitmap, @Nullable Resize resize, boolean lowQualityImage) {
-        if (bitmap.isRecycled()) {
-            return bitmap;
+open class ResizeImageProcessor : ImageProcessor {
+    override fun process(
+        sketch: Sketch,
+        bitmap: Bitmap,
+        resize: Resize?,
+        lowQualityImage: Boolean
+    ): Bitmap {
+        if (bitmap.isRecycled) {
+            return bitmap
         }
-
-        if (resize == null || resize.getWidth() == 0 || resize.getHeight() == 0 ||
-                (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())) {
-            return bitmap;
+        if (resize == null || resize.width == 0 || resize.height == 0 ||
+            bitmap.width == resize.width && bitmap.height == resize.height
+        ) {
+            return bitmap
         }
-
-        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                resize.getWidth(), resize.getHeight(), resize.getScaleType(), resize.getMode() == Resize.Mode.EXACTLY_SAME);
-
-        Bitmap.Config config = bitmap.getConfig();
+        val resizeCalculator = sketch.configuration.resizeCalculator
+        val mapping = resizeCalculator.calculator(
+            bitmap.width, bitmap.height,
+            resize.width, resize.height, resize.scaleType, resize.mode == Resize.Mode.EXACTLY_SAME
+        )
+        var config = bitmap.config
         if (config == null) {
-            config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
+            config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
         }
-        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-
-        Bitmap resizeBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config);
-
-        Canvas canvas = new Canvas(resizeBitmap);
-        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null);
-
-        return resizeBitmap;
+        val bitmapPool = sketch.configuration.bitmapPool
+        val resizeBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config)
+        val canvas = Canvas(resizeBitmap)
+        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
+        return resizeBitmap
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "ResizeImageProcessor";
+    override fun toString(): String {
+        return "ResizeImageProcessor"
     }
 
-    @Nullable
-    @Override
-    public String getKey() {
-        return "Resize";
+    override fun getKey(): String? {
+        return "Resize"
     }
 }

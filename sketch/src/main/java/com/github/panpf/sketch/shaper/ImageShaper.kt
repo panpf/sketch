@@ -13,48 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.shaper
 
-package com.github.panpf.sketch.shaper;
-
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.Shader;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.request.ShapeSize;
+import android.graphics.*
+import com.github.panpf.sketch.request.ShapeSize
 
 /**
  * 用于绘制时改变图片的形状
  */
-public interface ImageShaper {
+interface ImageShaper {
     /**
      * 获取形状 Path
      */
-    @NonNull
-    Path getPath(@NonNull Rect bounds);
+    fun getPath(bounds: Rect): Path
 
     /**
-     * {@link Shader} 的 {@link Matrix} 更新时回调
+     * [Shader] 的 [Matrix] 更新时回调
      *
-     * @param matrix       {@link Shader} 的 {@link Matrix}
-     * @param bounds       {@link Rect}. 绘制区域的边界位置
+     * @param matrix       [Shader] 的 [Matrix]
+     * @param bounds       [Rect]. 绘制区域的边界位置
      * @param bitmapWidth  bitmap 宽
      * @param bitmapHeight bitmap 高
-     * @param shapeSize    {@link ShapeSize}
-     * @param srcRect      {@link Rect}. 原图中的位置
+     * @param shapeSize    [ShapeSize]
+     * @param srcRect      [Rect]. 原图中的位置
      */
-    void onUpdateShaderMatrix(@NonNull Matrix matrix, @NonNull Rect bounds, int bitmapWidth, int bitmapHeight, @Nullable ShapeSize shapeSize, @NonNull Rect srcRect);
+    fun onUpdateShaderMatrix(
+        matrix: Matrix,
+        bounds: Rect,
+        bitmapWidth: Int,
+        bitmapHeight: Int,
+        shapeSize: ShapeSize?,
+        srcRect: Rect
+    )
 
     /**
      * 绘制
      *
-     * @param canvas {@link Canvas}
-     * @param paint  {@link Paint}
-     * @param bounds {@link Rect}. 绘制区域的边界位置
+     * @param canvas [Canvas]
+     * @param paint  [Paint]
+     * @param bounds [Rect]. 绘制区域的边界位置
      */
-    void draw(@NonNull Canvas canvas, @NonNull Paint paint, @NonNull Rect bounds);
+    fun draw(canvas: Canvas, paint: Paint, bounds: Rect)
 }

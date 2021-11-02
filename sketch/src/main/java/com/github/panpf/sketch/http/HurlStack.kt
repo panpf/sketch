@@ -13,275 +13,195 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.http
 
-package com.github.panpf.sketch.http;
+import android.os.Build
+import com.github.panpf.sketch.util.SketchUtils
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
+import java.net.URL
+import java.util.*
 
-import android.os.Build;
+class HurlStack : HttpStack {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    override var readTimeout = HttpStack.DEFAULT_READ_TIMEOUT
+        private set
+    override var maxRetryCount = HttpStack.DEFAULT_MAX_RETRY_COUNT
+        private set
+    override var connectTimeout = HttpStack.DEFAULT_CONNECT_TIMEOUT
+        private set
+    override var userAgent: String? = null
+        private set
+    override var extraHeaders: Map<String?, String?>? = null
+        private set
+    override var addExtraHeaders: Map<String?, String?>? = null
+        private set
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import com.github.panpf.sketch.util.SketchUtils;
-
-public class HurlStack implements HttpStack {
-    private static final String KEY = "HurlStack";
-
-    private int readTimeout = DEFAULT_READ_TIMEOUT;
-    private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
-    private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
-    private String userAgent;
-    private Map<String, String> setExtraHeaders;
-    private Map<String, String> addExtraHeaders;
-
-    @Override
-    public int getMaxRetryCount() {
-        return maxRetryCount;
+    override fun setMaxRetryCount(maxRetryCount: Int): HurlStack {
+        this.maxRetryCount = maxRetryCount
+        return this
     }
 
-    @NonNull
-    @Override
-    public HurlStack setMaxRetryCount(int maxRetryCount) {
-        this.maxRetryCount = maxRetryCount;
-        return this;
+    override fun setConnectTimeout(connectTimeout: Int): HurlStack {
+        this.connectTimeout = connectTimeout
+        return this
     }
 
-    @Override
-    public int getConnectTimeout() {
-        return connectTimeout;
+    override fun setReadTimeout(readTimeout: Int): HurlStack {
+        this.readTimeout = readTimeout
+        return this
     }
 
-    @NonNull
-    @Override
-    public HurlStack setConnectTimeout(int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-        return this;
+    override fun setUserAgent(userAgent: String?): HurlStack {
+        this.userAgent = userAgent
+        return this
     }
 
-    @Override
-    public int getReadTimeout() {
-        return readTimeout;
+    override fun setExtraHeaders(extraHeaders: Map<String?, String?>?): HurlStack {
+        this.extraHeaders = extraHeaders
+        return this
     }
 
-    @NonNull
-    @Override
-    public HurlStack setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
-        return this;
+    override fun addExtraHeaders(extraHeaders: Map<String?, String?>?): HurlStack {
+        addExtraHeaders = extraHeaders
+        return this
     }
 
-    @Override
-    public String getUserAgent() {
-        return userAgent;
+    override fun canRetry(throwable: Throwable): Boolean {
+        return throwable is SocketTimeoutException
     }
 
-    @NonNull
-    @Override
-    public HurlStack setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-        return this;
+    override fun toString(): String {
+        return String.format(
+            Locale.US, "%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
+            KEY, maxRetryCount, connectTimeout, readTimeout, userAgent
+        )
     }
 
-    @Override
-    public Map<String, String> getExtraHeaders() {
-        return setExtraHeaders;
-    }
-
-    @NonNull
-    @Override
-    public HurlStack setExtraHeaders(Map<String, String> extraHeaders) {
-        this.setExtraHeaders = extraHeaders;
-        return this;
-    }
-
-    @Override
-    public Map<String, String> getAddExtraHeaders() {
-        return addExtraHeaders;
-    }
-
-    @NonNull
-    @Override
-    public HurlStack addExtraHeaders(Map<String, String> extraHeaders) {
-        this.addExtraHeaders = extraHeaders;
-        return this;
-    }
-
-    @Override
-    public boolean canRetry(@NonNull Throwable throwable) {
-        return throwable instanceof SocketTimeoutException;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
-                KEY, maxRetryCount, connectTimeout, readTimeout, userAgent);
-    }
-
-    @NonNull
-    @Override
-    public Response getResponse(String uri) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
-
-        connection.setConnectTimeout(connectTimeout);
-        connection.setReadTimeout(readTimeout);
-        connection.setDoInput(true);
-
+    @Throws(IOException::class)
+    override fun getResponse(uri: String?): HttpStack.Response {
+        val connection = URL(uri).openConnection() as HttpURLConnection
+        connection.connectTimeout = connectTimeout
+        connection.readTimeout = readTimeout
+        connection.doInput = true
         if (userAgent != null) {
-            connection.setRequestProperty("User-Agent", userAgent);
+            connection.setRequestProperty("User-Agent", userAgent)
         }
-
-        if (addExtraHeaders != null && addExtraHeaders.size() > 0) {
-            for (Map.Entry<String, String> entry : addExtraHeaders.entrySet()) {
-                connection.addRequestProperty(entry.getKey(), entry.getValue());
+        if (addExtraHeaders != null && addExtraHeaders!!.isNotEmpty()) {
+            for ((key, value) in addExtraHeaders!!) {
+                connection.addRequestProperty(key, value)
             }
         }
-        if (setExtraHeaders != null && setExtraHeaders.size() > 0) {
-            for (Map.Entry<String, String> entry : setExtraHeaders.entrySet()) {
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
+        if (extraHeaders != null && extraHeaders!!.isNotEmpty()) {
+            for ((key, value) in extraHeaders!!) {
+                connection.setRequestProperty(key, value)
             }
         }
-
-        processRequest(uri, connection);
-
-        connection.connect();
-
-        return new HurlResponse(connection);
+        processRequest(uri, connection)
+        connection.connect()
+        return HurlResponse(connection)
     }
 
-    protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
-                                  @SuppressWarnings("UnusedParameters") HttpURLConnection connection) {
+    protected fun processRequest(uri: String?, connection: HttpURLConnection?) {
 
     }
 
-    private static class HurlResponse implements Response {
-        private HttpURLConnection connection;
+    private class HurlResponse(private val connection: HttpURLConnection) : HttpStack.Response {
 
-        HurlResponse(HttpURLConnection connection) {
-            this.connection = connection;
-        }
+        @get:Throws(IOException::class)
+        override val code: Int
+            get() = connection.responseCode
 
-        @Override
-        public int getCode() throws IOException {
-            return connection.getResponseCode();
-        }
+        @get:Throws(IOException::class)
+        override val message: String?
+            get() = connection.responseMessage
 
-        @Nullable
-        @Override
-        public String getMessage() throws IOException {
-            return connection.getResponseMessage();
-        }
-
-        @Override
-        public long getContentLength() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                return connection.getContentLengthLong();
+        override val contentLength: Long
+            get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                connection.contentLengthLong
             } else {
-                return getHeaderFieldLong("content-length", -1);
+                getHeaderFieldLong("content-length", -1)
             }
-        }
 
-        @Nullable
-        @Override
-        public String getContentType() {
-            return connection.getContentType();
-        }
+        override val contentType: String?
+            get() = connection.contentType
 
-        @Override
-        public String getHeadersString() {
-            Map<String, List<String>> headers = connection.getHeaderFields();
-            if (headers == null || headers.size() == 0) {
-                return null;
-            }
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("[");
-            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-                if (stringBuilder.length() != 1) {
-                    stringBuilder.append(", ");
+        override val headersString: String?
+            get() {
+                val headers = connection.headerFields
+                if (headers == null || headers.isEmpty()) {
+                    return null
                 }
-
-                stringBuilder.append("{");
-
-                stringBuilder.append(entry.getKey());
-
-                stringBuilder.append(":");
-
-                List<String> values = entry.getValue();
-                if (values.size() == 0) {
-                    stringBuilder.append("");
-                } else if (values.size() == 1) {
-                    stringBuilder.append(values.get(0));
-                } else {
-                    stringBuilder.append(values.toString());
+                val stringBuilder = StringBuilder()
+                stringBuilder.append("[")
+                for ((key, values) in headers) {
+                    if (stringBuilder.length != 1) {
+                        stringBuilder.append(", ")
+                    }
+                    stringBuilder.append("{")
+                    stringBuilder.append(key)
+                    stringBuilder.append(":")
+                    if (values.size == 0) {
+                        stringBuilder.append("")
+                    } else if (values.size == 1) {
+                        stringBuilder.append(values[0])
+                    } else {
+                        stringBuilder.append(values.toString())
+                    }
+                    stringBuilder.append("}")
                 }
-
-                stringBuilder.append("}");
+                stringBuilder.append("]")
+                return stringBuilder.toString()
             }
-            stringBuilder.append("]");
-            return stringBuilder.toString();
-        }
 
-        @NonNull
-        @Override
-        public InputStream getContent() throws IOException {
-            return connection.getInputStream();
-        }
+        @get:Throws(IOException::class)
+        override val content: InputStream
+            get() = connection.inputStream
 
-        @Override
-        public void releaseConnection() {
+        override fun releaseConnection() {
             try {
-                SketchUtils.close(getContent());
-            } catch (IOException e) {
-                e.printStackTrace();
+                SketchUtils.close(content)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
 
-        @Override
-        public boolean isContentChunked() {
-            String transferEncodingValue = connection.getHeaderField("Transfer-Encoding");
-            if (transferEncodingValue != null) {
-                transferEncodingValue = transferEncodingValue.trim();
+        override val isContentChunked: Boolean
+            get() {
+                var transferEncodingValue = connection.getHeaderField("Transfer-Encoding")
+                if (transferEncodingValue != null) {
+                    transferEncodingValue = transferEncodingValue.trim { it <= ' ' }
+                }
+                return "chunked".equals(transferEncodingValue, ignoreCase = true)
             }
-            return "chunked".equalsIgnoreCase(transferEncodingValue);
+        override val contentEncoding: String?
+            get() = connection.contentEncoding
+
+        override fun getHeaderField(name: String): String? {
+            return connection.getHeaderField(name)
         }
 
-        @Nullable
-        @Override
-        public String getContentEncoding() {
-            return connection.getContentEncoding();
+        override fun getHeaderFieldInt(name: String, defaultValue: Int): Int {
+            return connection.getHeaderFieldInt(name, defaultValue)
         }
 
-        @Nullable
-        @Override
-        public String getHeaderField(@NonNull String name) {
-            return connection.getHeaderField(name);
-        }
-
-        @Override
-        public int getHeaderFieldInt(@NonNull String name, int defaultValue) {
-            return connection.getHeaderFieldInt(name, defaultValue);
-        }
-
-        @Override
-        public long getHeaderFieldLong(@NonNull String name, long defaultValue) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                return connection.getHeaderFieldLong(name, defaultValue);
+        override fun getHeaderFieldLong(name: String, defaultValue: Long): Long {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                connection.getHeaderFieldLong(name, defaultValue)
             } else {
-                String value = connection.getHeaderField(name);
+                val value = connection.getHeaderField(name)
                 try {
-                    return Long.parseLong(value);
-                } catch (Exception e) {
-                    return defaultValue;
+                    value.toLong()
+                } catch (e: Exception) {
+                    defaultValue
                 }
             }
         }
+    }
+
+    companion object {
+        private const val KEY = "HurlStack"
     }
 }

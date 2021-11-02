@@ -13,40 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.http
 
-package com.github.panpf.sketch.http;
+import com.github.panpf.sketch.SketchException
+import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.ErrorCause
 
-import androidx.annotation.NonNull;
+class DownloadException : SketchException {
 
-import com.github.panpf.sketch.SketchException;
-import com.github.panpf.sketch.request.DownloadRequest;
-import com.github.panpf.sketch.request.ErrorCause;
+    val request: DownloadRequest
+    val errorCause: ErrorCause
 
-public class DownloadException extends SketchException {
-    @NonNull
-    private DownloadRequest request;
-    @NonNull
-    private ErrorCause errorCause;
-
-    public DownloadException(@NonNull Throwable cause, @NonNull DownloadRequest request, @NonNull String message, @NonNull ErrorCause errorCause) {
-        super(message, cause);
-        this.request = request;
-        this.errorCause = errorCause;
+    constructor(
+        cause: Throwable,
+        request: DownloadRequest,
+        message: String,
+        errorCause: ErrorCause
+    ) : super(message, cause) {
+        this.request = request
+        this.errorCause = errorCause
     }
 
-    public DownloadException(@NonNull DownloadRequest request, @NonNull String message, @NonNull ErrorCause errorCause) {
-        super(message);
-        this.request = request;
-        this.errorCause = errorCause;
-    }
-
-    @NonNull
-    public ErrorCause getErrorCause() {
-        return errorCause;
-    }
-
-    @NonNull
-    public DownloadRequest getRequest() {
-        return request;
+    constructor(
+        request: DownloadRequest,
+        message: String,
+        errorCause: ErrorCause
+    ) : super(message) {
+        this.request = request
+        this.errorCause = errorCause
     }
 }

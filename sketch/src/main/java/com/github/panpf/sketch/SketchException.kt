@@ -1,18 +1,8 @@
-package com.github.panpf.sketch;
+package com.github.panpf.sketch
 
-public abstract class SketchException extends Exception {
-    public SketchException() {
-    }
-
-    public SketchException(String message) {
-        super(message);
-    }
-
-    public SketchException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public SketchException(Throwable cause) {
-        super(cause);
-    }
+abstract class SketchException : Exception {
+    constructor()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
 }

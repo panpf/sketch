@@ -24,7 +24,7 @@ class CircleImageProcessorTestFragment : BindingFragment<FragmentCircleBinding>(
             options.apply {
                 val metrics = resources.displayMetrics
                 setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
-                processor = CircleImageProcessor.getInstance()
+                processor = CircleImageProcessor.instance
                 displayer = TransitionImageDisplayer()
             }
 

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.text.TextUtils
 
-import androidx.annotation.NonNull;
-import android.text.TextUtils;
+class HttpsUriModel : HttpUriModel() {
 
-public class HttpsUriModel extends HttpUriModel {
+    companion object {
+        const val SCHEME = "https://"
+    }
 
-    public static final String SCHEME = "https://";
-
-    @Override
-    protected boolean match(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    override fun match(uri: String): Boolean {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME)
     }
 }

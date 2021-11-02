@@ -13,64 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.state
 
-package com.github.panpf.sketch.state;
-
-import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.drawable.SketchLoadingDrawable;
-import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable;
-import com.github.panpf.sketch.request.DisplayOptions;
-import com.github.panpf.sketch.request.ShapeSize;
-import com.github.panpf.sketch.shaper.ImageShaper;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.content.Context
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.drawable.SketchLoadingDrawable
+import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable
+import com.github.panpf.sketch.request.DisplayOptions
+import com.github.panpf.sketch.util.SketchUtils
 
 /**
- * 使用当前 {@link ImageView} 正在显示的图片作为状态图片
+ * 使用当前 [ImageView] 正在显示的图片作为状态图片
  */
-public class OldStateImage implements StateImage {
-    @Nullable
-    private StateImage whenEmptyImage;
+class OldStateImage : StateImage {
+    private var whenEmptyImage: StateImage? = null
 
-    public OldStateImage(@Nullable StateImage whenEmptyImage) {
-        this.whenEmptyImage = whenEmptyImage;
+    constructor(whenEmptyImage: StateImage?) {
+        this.whenEmptyImage = whenEmptyImage
     }
 
-    public OldStateImage() {
-    }
+    constructor()
 
-    @Nullable
-    @Override
-    public Drawable getDrawable(@NonNull Context context, @NonNull SketchView sketchView, @NonNull DisplayOptions displayOptions) {
-        Drawable drawable = SketchUtils.getLastDrawable(sketchView.getDrawable());
-
-        if (drawable instanceof SketchLoadingDrawable) {
-            drawable = ((SketchLoadingDrawable) drawable).getWrappedDrawable();
+    override fun getDrawable(
+        context: Context,
+        sketchView: SketchView,
+        displayOptions: DisplayOptions
+    ): Drawable? {
+        var drawable = SketchUtils.getLastDrawable(sketchView.drawable)
+        if (drawable is SketchLoadingDrawable) {
+            drawable = drawable.wrappedDrawable
         }
-
         if (drawable != null) {
-            ShapeSize shapeSize = displayOptions.getShapeSize();
-            ImageShaper imageShaper = displayOptions.getShaper();
+            val shapeSize = displayOptions.shapeSize
+            val imageShaper = displayOptions.shaper
             if (shapeSize != null || imageShaper != null) {
-                if (drawable instanceof SketchShapeBitmapDrawable) {
-                    drawable = new SketchShapeBitmapDrawable(context, ((SketchShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);
-                } else if (drawable instanceof BitmapDrawable) {
-                    drawable = new SketchShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
+                if (drawable is SketchShapeBitmapDrawable) {
+                    drawable = SketchShapeBitmapDrawable(
+                        context,
+                        drawable.bitmapDrawable,
+                        shapeSize,
+                        imageShaper
+                    )
+                } else if (drawable is BitmapDrawable) {
+                    drawable = SketchShapeBitmapDrawable(
+                        context,
+                        (drawable as BitmapDrawable?)!!,
+                        shapeSize,
+                        imageShaper
+                    )
                 }
             }
         }
-
         if (drawable == null && whenEmptyImage != null) {
-            drawable = whenEmptyImage.getDrawable(context, sketchView, displayOptions);
+            drawable = whenEmptyImage!!.getDrawable(context, sketchView, displayOptions)
         }
-
-        return drawable;
+        return drawable
     }
 }

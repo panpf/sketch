@@ -13,34 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.datasource
 
-package com.github.panpf.sketch.datasource;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.request.ImageFrom;
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.decode.NotFoundGifLibraryException
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * 数据源
  */
-public interface DataSource {
+interface DataSource {
     /**
      * 获取输入流
      *
-     * @return {@link InputStream}
+     * @return [InputStream]
      * @throws IOException 数据源异常
      */
-    @NonNull
-    InputStream getInputStream() throws IOException;
+    @get:Throws(IOException::class)
+    val inputStream: InputStream
 
     /**
      * 获取数据长度
@@ -48,7 +43,8 @@ public interface DataSource {
      * @return 数据长度
      * @throws IOException 数据源异常
      */
-    long getLength() throws IOException;
+    @get:Throws(IOException::class)
+    val length: Long
 
     /**
      * 获取可用的文件
@@ -57,16 +53,15 @@ public interface DataSource {
      * @param outName 输出文件的名字
      * @return null：无可用文件
      */
-    @Nullable
-    File getFile(@Nullable File outDir, @Nullable String outName) throws IOException;
+    @Throws(IOException::class)
+    fun getFile(outDir: File?, outName: String?): File?
 
     /**
      * 获取图片来源
      *
-     * @return {@link ImageFrom}
+     * @return [ImageFrom]
      */
-    @NonNull
-    ImageFrom getImageFrom();
+    val imageFrom: ImageFrom
 
     /**
      * 创建 GifDrawable
@@ -74,12 +69,14 @@ public interface DataSource {
      * @param key        请求的唯一标识 key
      * @param uri        图片 uri
      * @param imageAttrs 图片的属性
-     * @param bitmapPool {@link android.graphics.Bitmap} 缓存池
-     * @return {@link SketchGifDrawable}
+     * @param bitmapPool [android.graphics.Bitmap] 缓存池
+     * @return [SketchGifDrawable]
      * @throws IOException                 数据源异常
      * @throws NotFoundGifLibraryException 没有集成 sketch-gif
      */
-    @NonNull
-    SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
-                                      @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException;
+    @Throws(IOException::class, NotFoundGifLibraryException::class)
+    fun makeGifDrawable(
+        key: String, uri: String, imageAttrs: ImageAttrs,
+        bitmapPool: BitmapPool
+    ): SketchGifDrawable
 }

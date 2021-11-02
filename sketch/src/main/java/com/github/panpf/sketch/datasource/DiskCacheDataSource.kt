@@ -13,86 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.datasource
 
-package com.github.panpf.sketch.datasource;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.cache.DiskCache;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchGifFactory;
-import com.github.panpf.sketch.request.ImageFrom;
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.decode.NotFoundGifLibraryException
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import com.github.panpf.sketch.drawable.SketchGifFactory
+import com.github.panpf.sketch.request.ImageFrom
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * 用于读取来自磁盘缓存的图片
  */
-public class DiskCacheDataSource implements DataSource {
-    @NonNull
-    private DiskCache.Entry diskCacheEntry;
-    @NonNull
-    private ImageFrom imageFrom;
-    private long length = -1;
-    private boolean fromProcessedCache; // 标识是否来自已处理缓存，后续对已处理缓存的图片会有额外处理
+class DiskCacheDataSource(
+    val diskCacheEntry: DiskCache.Entry, override val imageFrom: ImageFrom
+) : DataSource {
 
-    public DiskCacheDataSource(@NonNull DiskCache.Entry diskCacheEntry, @NonNull ImageFrom imageFrom) {
-        this.diskCacheEntry = diskCacheEntry;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return diskCacheEntry.newInputStream();
-    }
-
-    @Override
-    public long getLength() throws IOException {
-        if (length >= 0) {
-            return length;
+    @get:Throws(IOException::class)
+    override var length: Long = -1
+        get() {
+            if (field >= 0) {
+                return field
+            }
+            field = diskCacheEntry.file.length()
+            return field
         }
+        private set
+    var isFromProcessedCache = false // 标识是否来自已处理缓存，后续对已处理缓存的图片会有额外处理
+        private set
 
-        length = diskCacheEntry.getFile().length();
-        return length;
+    @get:Throws(IOException::class)
+    override val inputStream: InputStream
+        get() = diskCacheEntry.newInputStream()
+
+    override fun getFile(outDir: File?, outName: String?): File {
+        return diskCacheEntry.file
     }
 
-    @Override
-    public File getFile(@Nullable File outDir, @Nullable String outName) {
-        return diskCacheEntry.getFile();
+    @Throws(IOException::class, NotFoundGifLibraryException::class)
+    override fun makeGifDrawable(
+        key: String,
+        uri: String,
+        imageAttrs: ImageAttrs,
+        bitmapPool: BitmapPool
+    ): SketchGifDrawable {
+        return SketchGifFactory.createGifDrawable(
+            key,
+            uri,
+            imageAttrs,
+            imageFrom,
+            bitmapPool,
+            diskCacheEntry.file
+        )
     }
 
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @NonNull
-    public DiskCache.Entry getDiskCacheEntry() {
-        return diskCacheEntry;
-    }
-
-    @NonNull
-    @Override
-    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
-                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, diskCacheEntry.getFile());
-    }
-
-    public boolean isFromProcessedCache() {
-        return fromProcessedCache;
-    }
-
-    @NonNull
-    public DiskCacheDataSource setFromProcessedCache(boolean fromProcessedCache) {
-        this.fromProcessedCache = fromProcessedCache;
-        return this;
+    fun setFromProcessedCache(fromProcessedCache: Boolean): DiskCacheDataSource {
+        isFromProcessedCache = fromProcessedCache
+        return this
     }
 }

@@ -13,22 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.http
 
-package com.github.panpf.sketch.http;
-
-import androidx.annotation.NonNull;
-
-@SuppressWarnings("WeakerAccess")
-public class RedirectsException extends Exception {
-    @NonNull
-    private String newUrl;
-
-    public RedirectsException(@NonNull String newUrl) {
-        this.newUrl = newUrl;
-    }
-
-    @NonNull
-    public String getNewUrl() {
-        return newUrl;
-    }
-}
+class RedirectsException(val newUrl: String) : Exception()

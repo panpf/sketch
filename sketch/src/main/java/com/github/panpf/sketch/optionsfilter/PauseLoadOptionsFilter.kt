@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.optionsfilter
 
-package com.github.panpf.sketch.optionsfilter;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.request.DisplayOptions;
-import com.github.panpf.sketch.request.DownloadOptions;
-import com.github.panpf.sketch.request.RequestLevel;
+import com.github.panpf.sketch.request.DisplayOptions
+import com.github.panpf.sketch.request.DownloadOptions
+import com.github.panpf.sketch.request.RequestLevel
 
 /**
  * 暂停加载
  */
-public class PauseLoadOptionsFilter implements OptionsFilter {
-
-    @Override
-    public void filter(@NonNull DownloadOptions options) {
+class PauseLoadOptionsFilter : OptionsFilter {
+    override fun filter(options: DownloadOptions) {
         // 仅限 display 请求
-        if (options instanceof DisplayOptions) {
-            // TODO 这里改成了 按大小覆盖之后强制点击显示就不起作用了
-            RequestLevel level = options.getRequestLevel();
-            if (level == null || level.getLevel() > RequestLevel.MEMORY.getLevel()) {
-                options.setRequestLevel(RequestLevel.MEMORY);
+        if (options is DisplayOptions) {
+            // TODO 这里改成了按大小覆盖之后强制点击显示就不起作用了
+            val level = options.getRequestLevel()
+            if (level == null || level.level > RequestLevel.MEMORY.level) {
+                options.requestLevel = RequestLevel.MEMORY
             }
         }
     }

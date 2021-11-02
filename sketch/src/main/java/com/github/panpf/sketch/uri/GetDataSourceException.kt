@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
-
-import androidx.annotation.NonNull;
-
-public class GetDataSourceException extends Exception {
-
-    public GetDataSourceException(@NonNull String message) {
-        super(message);
-    }
-
-    public GetDataSourceException(@NonNull String message, @NonNull Throwable cause) {
-        super(message, cause);
-    }
-
-    public GetDataSourceException(@NonNull Throwable cause) {
-        super(cause);
-    }
+class GetDataSourceException : Exception {
+    constructor(message: String) : super(message)
+    constructor(message: String, cause: Throwable) : super(message, cause)
+    constructor(cause: Throwable) : super(cause)
 }

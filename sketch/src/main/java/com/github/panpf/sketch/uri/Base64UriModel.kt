@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.content.Context
+import android.text.TextUtils
+import android.util.Base64
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Base64;
+open class Base64UriModel : AbsStreamDiskCacheUriModel() {
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+    companion object {
+        const val SCHEME = "data:image/"
+    }
 
-public class Base64UriModel extends AbsStreamDiskCacheUriModel {
-
-    public static final String SCHEME = "data:image/";
-
-    @Override
-    protected boolean match(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    override fun match(uri: String): Boolean {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME)
     }
 
     /**
@@ -39,26 +37,19 @@ public class Base64UriModel extends AbsStreamDiskCacheUriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z"，就会返回 "/9j/4QaORX...C8bg/U7T/in//Z"
      */
-    @NonNull
-    @Override
-    public String getUriContent(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) ? uri.substring(uri.indexOf(";") + ";base64,".length()) : uri;
+    override fun getUriContent(uri: String): String {
+        return if (!TextUtils.isEmpty(uri)) uri.substring(uri.indexOf(";") + ";base64,".length) else uri
     }
 
-    @NonNull
-    @Override
-    public String getDiskCacheKey(@NonNull String uri) {
-        return getUriContent(uri);
+    override fun getDiskCacheKey(uri: String): String {
+        return getUriContent(uri)
     }
 
-    @Override
-    public boolean isConvertShortUriForKey() {
-        return true;
-    }
+    override val isConvertShortUriForKey: Boolean
+        get() = true
 
-    @NonNull
-    @Override
-    protected InputStream getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
-        return new ByteArrayInputStream(Base64.decode(getUriContent(uri), Base64.DEFAULT));
+    @Throws(GetDataSourceException::class)
+    override fun getContent(context: Context, uri: String): InputStream {
+        return ByteArrayInputStream(Base64.decode(getUriContent(uri), Base64.DEFAULT))
     }
 }

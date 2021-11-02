@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.text.TextUtils
 
-import androidx.annotation.NonNull;
-import android.text.TextUtils;
+class Base64VariantUriModel : Base64UriModel() {
 
-public class Base64VariantUriModel extends Base64UriModel {
-
-    public static final String SCHEME = "data:img/";
-
+    companion object {
+        const val SCHEME = "data:img/"
+    }
     /**
      * 获取 uri 所真正包含的内容部分，例如 "data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z"，就会返回 "/9j/4QaORX...C8bg/U7T/in//Z"
      *
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z"，就会返回 "/9j/4QaORX...C8bg/U7T/in//Z"
      */
-    @NonNull
-    @Override
-    public String getUriContent(@NonNull String uri) {
-        return super.getUriContent(uri);
+    override fun getUriContent(uri: String): String {
+        return super.getUriContent(uri)
     }
 
-    @Override
-    protected boolean match(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    override fun match(uri: String): Boolean {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME)
     }
 }

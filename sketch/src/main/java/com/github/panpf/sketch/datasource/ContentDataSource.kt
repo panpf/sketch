@@ -13,126 +13,106 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.datasource
 
-package com.github.panpf.sketch.datasource;
-
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.net.Uri;
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchGifFactory;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.content.res.AssetFileDescriptor
+import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.decode.NotFoundGifLibraryException
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
+import android.text.TextUtils
+import com.github.panpf.sketch.drawable.SketchGifFactory
+import java.io.*
 
 /**
- * 用于读取来自 {@link android.content.ContentProvider} 的图片，使用 {@link ContentResolver#openInputStream(Uri)} 方法读取数据，
+ * 用于读取来自 [android.content.ContentProvider] 的图片，使用 [ContentResolver.openInputStream] 方法读取数据，
  * 支持 content://、file://、android.resource:// 格式的 uri
  */
-public class ContentDataSource implements DataSource {
-    @NonNull
-    private Context context;
-    @NonNull
-    private Uri contentUri;
-    private long length = -1;
+class ContentDataSource(
+    private val context: Context, private val contentUri: Uri
+) : DataSource {
 
-    public ContentDataSource(@NonNull Context context, @NonNull Uri contentUri) {
-        this.context = context;
-        this.contentUri = contentUri;
-    }
+    override val imageFrom: ImageFrom
+        get() = ImageFrom.LOCAL
 
-    @NonNull
-    @Override
-    public InputStream getInputStream() throws IOException {
-        InputStream inputStream = context.getContentResolver().openInputStream(contentUri);
-        if (inputStream == null) {
-            throw new IOException("ContentResolver.openInputStream() return null. " + contentUri.toString());
+    @get:Throws(IOException::class)
+    @get:Synchronized
+    override var length: Long = -1
+        get() {
+            if (field >= 0) {
+                return field
+            }
+            var fileDescriptor: AssetFileDescriptor? = null
+            try {
+                fileDescriptor = context.contentResolver.openAssetFileDescriptor(contentUri, "r")
+                field = fileDescriptor?.length ?: 0
+            } finally {
+                SketchUtils.close(fileDescriptor)
+            }
+            return field
         }
-        return inputStream;
-    }
+        private set
 
-    @Override
-    public synchronized long getLength() throws IOException {
-        if (length >= 0) {
-            return length;
-        }
+    @get:Throws(IOException::class)
+    override val inputStream: InputStream
+        get() = context.contentResolver.openInputStream(
+            contentUri
+        ) ?: throw IOException("ContentResolver.openInputStream() return null. $contentUri")
 
-        AssetFileDescriptor fileDescriptor = null;
-        try {
-            fileDescriptor = context.getContentResolver().openAssetFileDescriptor(contentUri, "r");
-            length = fileDescriptor != null ? fileDescriptor.getLength() : 0;
-        } finally {
-            SketchUtils.close(fileDescriptor);
-        }
-        return length;
-    }
-
-    @Override
-    public File getFile(@Nullable File outDir, @Nullable String outName) throws IOException {
+    @Throws(IOException::class)
+    override fun getFile(outDir: File?, outName: String?): File? {
         if (outDir == null) {
-            return null;
+            return null
         }
-
-        if (!outDir.exists() && !outDir.getParentFile().mkdirs()) {
-            return null;
+        if (!outDir.exists() && !outDir.parentFile.mkdirs()) {
+            return null
         }
-
-        File outFile;
-        if (!TextUtils.isEmpty(outName)) {
-            outFile = new File(outDir, outName);
+        val outFile: File = if (!TextUtils.isEmpty(outName)) {
+            File(outDir, outName)
         } else {
-            outFile = new File(outDir, SketchUtils.generatorTempFileName(this, contentUri.toString()));
+            File(outDir, SketchUtils.generatorTempFileName(this, contentUri.toString()))
         }
-
-        InputStream inputStream = getInputStream();
-
-        OutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(outFile);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
+        val inputStream = inputStream
+        val outputStream: OutputStream = try {
+            FileOutputStream(outFile)
+        } catch (e: IOException) {
+            SketchUtils.close(inputStream)
+            throw e
         }
-
-        byte[] data = new byte[1024];
-        int length;
+        val data = ByteArray(1024)
+        var length: Int
         try {
-            while ((length = inputStream.read(data)) != -1) {
-                outputStream.write(data, 0, length);
+            while (inputStream.read(data).also { length = it } != -1) {
+                outputStream.write(data, 0, length)
             }
         } finally {
-            SketchUtils.close(outputStream);
-            SketchUtils.close(inputStream);
+            SketchUtils.close(outputStream)
+            SketchUtils.close(inputStream)
         }
-
-        return outFile;
+        return outFile
     }
 
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return ImageFrom.LOCAL;
-    }
-
-    @NonNull
-    @Override
-    public SketchGifDrawable makeGifDrawable(@NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs,
-                                             @NonNull BitmapPool bitmapPool) throws IOException, NotFoundGifLibraryException {
-        ContentResolver contentResolver = context.getContentResolver();
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, getImageFrom(), bitmapPool, contentResolver, contentUri);
+    @Throws(IOException::class, NotFoundGifLibraryException::class)
+    override fun makeGifDrawable(
+        key: String,
+        uri: String,
+        imageAttrs: ImageAttrs,
+        bitmapPool: BitmapPool
+    ): SketchGifDrawable {
+        val contentResolver = context.contentResolver
+        return SketchGifFactory.createGifDrawable(
+            key,
+            uri,
+            imageAttrs,
+            imageFrom,
+            bitmapPool,
+            contentResolver,
+            contentUri
+        )
     }
 }

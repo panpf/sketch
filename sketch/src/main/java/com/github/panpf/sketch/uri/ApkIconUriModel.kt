@@ -13,32 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.uri
 
-package com.github.panpf.sketch.uri;
+import android.content.Context
+import android.graphics.Bitmap
+import android.text.TextUtils
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.SketchUtils
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import androidx.annotation.NonNull;
-import android.text.TextUtils;
+class ApkIconUriModel : AbsBitmapDiskCacheUriModel() {
 
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.util.SketchUtils;
+    companion object {
+        const val SCHEME = "apk.icon://"
+        private const val NAME = "ApkIconUriModel"
 
-public class ApkIconUriModel extends AbsBitmapDiskCacheUriModel {
-
-    public static final String SCHEME = "apk.icon://";
-    private static final String NAME = "ApkIconUriModel";
-
-    @NonNull
-    public static String makeUri(@NonNull String filePath) {
-        return SCHEME + filePath;
+        @JvmStatic
+        fun makeUri(filePath: String): String {
+            return SCHEME + filePath
+        }
     }
 
-    @Override
-    protected boolean match(@NonNull String uri) {
-        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME);
+    override fun match(uri: String): Boolean {
+        return !TextUtils.isEmpty(uri) && uri.startsWith(SCHEME)
     }
 
     /**
@@ -47,29 +44,24 @@ public class ApkIconUriModel extends AbsBitmapDiskCacheUriModel {
      * @param uri 图片 uri
      * @return uri 所真正包含的内容部分，例如 "apk.icon:///sdcard/test.apk"，就会返回 "/sdcard/test.apk"
      */
-    @NonNull
-    @Override
-    public String getUriContent(@NonNull String uri) {
-        return match(uri) ? uri.substring(SCHEME.length()) : uri;
+    override fun getUriContent(uri: String): String {
+        return if (match(uri)) uri.substring(SCHEME.length) else uri
     }
 
-    @NonNull
-    @Override
-    public String getDiskCacheKey(@NonNull String uri) {
-        return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri));
+    override fun getDiskCacheKey(uri: String): String {
+        return SketchUtils.createFileUriDiskCacheKey(uri, getUriContent(uri))
     }
 
-    @NonNull
-    @Override
-    protected Bitmap getContent(@NonNull Context context, @NonNull String uri) throws GetDataSourceException {
-        BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, getUriContent(uri), false, NAME, bitmapPool);
-
-        if (iconBitmap == null || iconBitmap.isRecycled()) {
-            String cause = String.format("Apk icon bitmap invalid. %s", uri);
-            SLog.em(NAME, cause);
-            throw new GetDataSourceException(cause);
+    @Throws(GetDataSourceException::class)
+    override fun getContent(context: Context, uri: String): Bitmap {
+        val bitmapPool = Sketch.with(context).configuration.bitmapPool
+        val iconBitmap =
+            SketchUtils.readApkIcon(context, getUriContent(uri), false, NAME, bitmapPool)
+        if (iconBitmap == null || iconBitmap.isRecycled) {
+            val cause = String.format("Apk icon bitmap invalid. %s", uri)
+            SLog.em(NAME, cause)
+            throw GetDataSourceException(cause)
         }
-        return iconBitmap;
+        return iconBitmap
     }
 }
