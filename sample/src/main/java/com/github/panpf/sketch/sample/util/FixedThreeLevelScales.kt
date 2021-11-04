@@ -1,77 +1,76 @@
-package com.github.panpf.sketch.sample.util;
+package com.github.panpf.sketch.sample.util
 
-import android.content.Context;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.zoom.Sizes;
-import com.github.panpf.sketch.zoom.ZoomScales;
+import android.content.Context
+import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.zoom.Sizes
+import com.github.panpf.sketch.zoom.ZoomScales
 
 /**
  * 固定的三级缩放比例
  */
-public class FixedThreeLevelScales implements ZoomScales {
+class FixedThreeLevelScales : ZoomScales {
 
-    private float[] scales = new float[]{1.0f, 2.0f, 3.0f};
-    private float fullZoomScale; // 能够看到图片全貌的缩放比例
-    private float fillZoomScale;    // 能够让图片填满宽或高的缩放比例
-    private float originZoomScale;  // 能够让图片按照真实尺寸一比一显示的缩放比例
+    private val scales = floatArrayOf(1.0f, 2.0f, 3.0f)
+    private var fullZoomScale = 0f  // 能够看到图片全貌的缩放比例
+    private var fillZoomScale = 0f  // 能够让图片填满宽或高的缩放比例
+    private var originZoomScale = 0f    // 能够让图片按照真实尺寸一比一显示的缩放比例
 
-    @Override
-    public void reset(@NonNull final Context context, @NonNull final Sizes sizes, @Nullable final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode) {
-        final int drawableWidth = rotateDegrees % 180 == 0 ? sizes.drawableSize.getWidth() : sizes.drawableSize.getHeight();
-        final int drawableHeight = rotateDegrees % 180 == 0 ? sizes.drawableSize.getHeight() : sizes.drawableSize.getWidth();
-        final int imageWidth = rotateDegrees % 180 == 0 ? sizes.imageSize.getWidth() : sizes.imageSize.getHeight();
-        final int imageHeight = rotateDegrees % 180 == 0 ? sizes.imageSize.getHeight() : sizes.imageSize.getWidth();
-
-        final float widthScale = (float) sizes.viewSize.getWidth() / drawableWidth;
-        final float heightScale = (float) sizes.viewSize.getHeight() / drawableHeight;
+    override fun reset(
+        context: Context,
+        sizes: Sizes,
+        scaleType: ScaleType?,
+        rotateDegrees: Float,
+        readMode: Boolean
+    ) {
+        val drawableWidth =
+            if (rotateDegrees % 180 == 0f) sizes.drawableSize.width else sizes.drawableSize.height
+        val drawableHeight =
+            if (rotateDegrees % 180 == 0f) sizes.drawableSize.height else sizes.drawableSize.width
+        val imageWidth =
+            if (rotateDegrees % 180 == 0f) sizes.imageSize.width else sizes.imageSize.height
+        val imageHeight =
+            if (rotateDegrees % 180 == 0f) sizes.imageSize.height else sizes.imageSize.width
+        val widthScale = sizes.viewSize.width.toFloat() / drawableWidth
+        val heightScale = sizes.viewSize.height.toFloat() / drawableHeight
 
         // 小的是完整显示比例，大的是充满比例
-        fullZoomScale = Math.min(widthScale, heightScale);
-        fillZoomScale = Math.max(widthScale, heightScale);
-        originZoomScale = Math.max((float) imageWidth / drawableWidth, (float) imageHeight / drawableHeight);
+        fullZoomScale = widthScale.coerceAtMost(heightScale)
+        fillZoomScale = widthScale.coerceAtLeast(heightScale)
+        originZoomScale =
+            (imageWidth.toFloat() / drawableWidth).coerceAtLeast(imageHeight.toFloat() / drawableHeight)
     }
 
-    @Override
-    public float getMinZoomScale() {
-        return 1.0f;
+    override fun getMinZoomScale(): Float {
+        return 1.0f
     }
 
-    @Override
-    public float getMaxZoomScale() {
-        return 3.0f;
+    override fun getMaxZoomScale(): Float {
+        return 3.0f
     }
 
-    @Override
-    public float getInitZoomScale() {
-        return 1.0f;
+    override fun getInitZoomScale(): Float {
+        return 1.0f
     }
 
-    @Override
-    public float getFullZoomScale() {
-        return fullZoomScale;
+    override fun getFullZoomScale(): Float {
+        return fullZoomScale
     }
 
-    @Override
-    public float getFillZoomScale() {
-        return fillZoomScale;
+    override fun getFillZoomScale(): Float {
+        return fillZoomScale
     }
 
-    @Override
-    public float getOriginZoomScale() {
-        return originZoomScale;
+    override fun getOriginZoomScale(): Float {
+        return originZoomScale
     }
 
-    @Override
-    public float[] getZoomScales() {
-        return scales;
+    override fun getZoomScales(): FloatArray {
+        return scales
     }
 
-    @Override
-    public void clean() {
-        fullZoomScale = fillZoomScale = originZoomScale = 1.0f;
+    override fun clean() {
+        originZoomScale = 1.0f
+        fillZoomScale = originZoomScale
+        fullZoomScale = fillZoomScale
     }
 }

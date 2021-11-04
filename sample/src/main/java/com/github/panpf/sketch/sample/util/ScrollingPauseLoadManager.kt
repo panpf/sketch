@@ -1,94 +1,80 @@
-package com.github.panpf.sketch.sample.util;
+package com.github.panpf.sketch.sample.util
 
-import android.content.Context;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.WrapperListAdapter;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.sample.MyServicesKt;
+import android.content.Context
+import android.widget.AbsListView
+import android.widget.BaseAdapter
+import android.widget.WrapperListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.sample.appSettingsService
 
 /**
  * 滚动中暂停暂停加载新图片管理器支持RecyclerView和AbsListView
  */
-public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener {
-    private Sketch sketch;
-    private AbsListView.OnScrollListener absListScrollListener;
-    private RecyclerView.OnScrollListener recyclerScrollListener;
+class ScrollingPauseLoadManager(context: Context?) : RecyclerView.OnScrollListener(),
+    AbsListView.OnScrollListener {
 
-    public ScrollingPauseLoadManager(Context context) {
-        this.sketch = Sketch.with(context);
+    private val sketch: Sketch = Sketch.with(context!!)
+    private var absListScrollListener: AbsListView.OnScrollListener? = null
+    private var recyclerScrollListener: RecyclerView.OnScrollListener? = null
+
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        super.onScrolled(recyclerView, dx, dy)
+        recyclerScrollListener?.onScrolled(recyclerView, dx, dy)
     }
 
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-        if (recyclerScrollListener != null) {
-            recyclerScrollListener.onScrolled(recyclerView, dx, dy);
-        }
-    }
-
-    @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-
-        if (MyServicesKt.getAppSettingsService(recyclerView).getScrollingPauseLoadEnabled().getValue() && recyclerView.getAdapter() != null) {
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        super.onScrollStateChanged(recyclerView, newState)
+        if (recyclerView.appSettingsService.scrollingPauseLoadEnabled.value == true && recyclerView.adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                sketch.getConfiguration().setPauseLoadEnabled(true);
+                sketch.configuration.isPauseLoadEnabled = true
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (sketch.getConfiguration().isPauseLoadEnabled()) {
-                    sketch.getConfiguration().setPauseLoadEnabled(false);
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                if (sketch.configuration.isPauseLoadEnabled) {
+                    sketch.configuration.isPauseLoadEnabled = false
+                    recyclerView.adapter!!.notifyDataSetChanged()
                 }
             }
         }
-
-        if (recyclerScrollListener != null) {
-            recyclerScrollListener.onScrollStateChanged(recyclerView, newState);
-        }
+        recyclerScrollListener?.onScrollStateChanged(recyclerView, newState)
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (MyServicesKt.getAppSettingsService(view).getScrollingPauseLoadEnabled().getValue() && view.getAdapter() != null) {
-            ListAdapter listAdapter = view.getAdapter();
-            if (listAdapter instanceof WrapperListAdapter) {
-                listAdapter = ((WrapperListAdapter) listAdapter).getWrappedAdapter();
+    override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
+        if (view.appSettingsService.scrollingPauseLoadEnabled.value == true && view.adapter != null) {
+            var listAdapter = view.adapter
+            if (listAdapter is WrapperListAdapter) {
+                listAdapter = listAdapter.wrappedAdapter
             }
-            if (listAdapter instanceof BaseAdapter) {
+            if (listAdapter is BaseAdapter) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    if (!sketch.getConfiguration().isPauseLoadEnabled()) {
-                        sketch.getConfiguration().setPauseLoadEnabled(true);
+                    if (!sketch.configuration.isPauseLoadEnabled) {
+                        sketch.configuration.isPauseLoadEnabled = true
                     }
                 } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (sketch.getConfiguration().isPauseLoadEnabled()) {
-                        sketch.getConfiguration().setPauseLoadEnabled(false);
-                        ((BaseAdapter) listAdapter).notifyDataSetChanged();
+                    if (sketch.configuration.isPauseLoadEnabled) {
+                        sketch.configuration.isPauseLoadEnabled = false
+                        listAdapter.notifyDataSetChanged()
                     }
                 }
             }
         }
-
-        if (absListScrollListener != null) {
-            absListScrollListener.onScrollStateChanged(view, scrollState);
-        }
+        absListScrollListener?.onScrollStateChanged(view, scrollState)
     }
 
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (absListScrollListener != null) {
-            absListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        }
+    override fun onScroll(
+        view: AbsListView,
+        firstVisibleItem: Int,
+        visibleItemCount: Int,
+        totalItemCount: Int
+    ) {
+        absListScrollListener?.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount)
     }
 
-    public void setOnScrollListener(AbsListView.OnScrollListener absListViewScrollListener) {
-        this.absListScrollListener = absListViewScrollListener;
+    fun setOnScrollListener(absListViewScrollListener: AbsListView.OnScrollListener?) {
+        absListScrollListener = absListViewScrollListener
     }
 
-    public void setOnScrollListener(RecyclerView.OnScrollListener recyclerScrollListener) {
-        this.recyclerScrollListener = recyclerScrollListener;
+    fun setOnScrollListener(recyclerScrollListener: RecyclerView.OnScrollListener?) {
+        this.recyclerScrollListener = recyclerScrollListener
     }
+
 }

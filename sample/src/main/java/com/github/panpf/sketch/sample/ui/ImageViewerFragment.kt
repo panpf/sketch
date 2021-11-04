@@ -19,25 +19,26 @@ package com.github.panpf.sketch.sample.ui
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
+import com.github.panpf.sketch.sample.base.BindingFragment
+import com.github.panpf.sketch.sample.bean.Image
+import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
+import com.github.panpf.sketch.sample.image.ImageOptions
+import com.github.panpf.sketch.sample.item.ImageFragmentItemFactory
+import com.github.panpf.sketch.sample.vm.ShowingImageChangedViewModel
+import com.github.panpf.tools4a.display.Displayx
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import com.github.panpf.sketch.sample.base.BindingFragment
-import com.github.panpf.sketch.sample.bean.Image
-import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
-import com.github.panpf.sketch.sample.image.ImageOptions
-import com.github.panpf.sketch.sample.item.ImageFragmentItemFactory
-import com.github.panpf.sketch.sample.util.DeviceUtils
-import com.github.panpf.sketch.sample.vm.ShowingImageChangedViewModel
 
 class ImageViewerFragment : BindingFragment<FragmentImageViewerBinding>() {
 
@@ -54,11 +55,17 @@ class ImageViewerFragment : BindingFragment<FragmentImageViewerBinding>() {
             updateLayoutParams<ViewGroup.LayoutParams> {
                 width = requireContext().getScreenWidth()
                 height = requireContext().getScreenHeight()
-                // + DeviceUtils.getWindowHeightSupplement(this) for MIX 2
+                // + DeviceUtils.getNavigationBarHeight(requireActivity()) for MIX 2
+                val windowHeightSupplement =
+                    if (requireActivity().window.decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) {
+                        Displayx.getNavigationBarHeight(requireActivity())
+                    } else {
+                        0
+                    }
                 if (isOrientationPortrait()) {
-                    height += DeviceUtils.getWindowHeightSupplement(requireActivity())
+                    height += windowHeightSupplement
                 } else {
-                    width += DeviceUtils.getWindowHeightSupplement(requireActivity())
+                    width += windowHeightSupplement
                 }
             }
             setOptions(ImageOptions.WINDOW_BACKGROUND)

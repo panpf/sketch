@@ -8,9 +8,10 @@ import retrofit2.Retrofit
 
 class ApiServices(private val context: Context) {
 
-    private val jsonConverterFactory = Json {
+    private val json = Json {
         ignoreUnknownKeys = true
-    }.asConverterFactory(MediaType.get("application/json"))
+    }
+    private val jsonConverterFactory = json.asConverterFactory(MediaType.get("application/json"))
 
     val unsplash = Retrofit.Builder()
         .baseUrl("https://api.unsplash.com")

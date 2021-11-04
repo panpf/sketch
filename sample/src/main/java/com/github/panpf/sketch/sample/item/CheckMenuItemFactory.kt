@@ -9,6 +9,7 @@ import com.github.panpf.sketch.sample.databinding.ItemCheckBoxMenuBinding
 
 class CheckMenuItemFactory(private val onClick: (() -> Unit)? = null) :
     BindingItemFactory<CheckMenu, ItemCheckBoxMenuBinding>(CheckMenu::class) {
+
     override fun createItemViewBinding(
         context: Context,
         inflater: LayoutInflater,

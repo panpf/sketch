@@ -17,11 +17,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MySketchLogProxy(context: Context) : SLog.Proxy {
-    private val outLog2SDCard: OutLog2SDCard
 
-    init {
-        outLog2SDCard = OutLog2SDCard(context)
-    }
+    private val outLog2SDCard: OutLog2SDCard = OutLog2SDCard(context)
 
     override fun v(tag: String, msg: String): Int {
         outLog2SDCard.out("V", tag, msg, null)
