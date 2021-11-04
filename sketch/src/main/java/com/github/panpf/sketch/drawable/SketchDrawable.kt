@@ -13,69 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.drawable
 
-package com.github.panpf.sketch.drawable;
+import android.graphics.Bitmap
+import com.github.panpf.sketch.request.ImageFrom
 
-import android.graphics.Bitmap;
-
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.request.ImageFrom;
-
-public interface SketchDrawable {
+interface SketchDrawable {
     /**
      * 获取图片 ID
      */
-    @Nullable
-    String getKey();
+    val key: String?
 
     /**
      * 获取图片 uri
      */
-    @Nullable
-    String getUri();
+    val uri: String?
 
     /**
      * 获取图片原始宽
      */
-    int getOriginWidth();
+    val originWidth: Int
 
     /**
      * 获取图片原始高
      */
-    int getOriginHeight();
+    val originHeight: Int
 
     /**
      * 获取图片类型
      */
-    @Nullable
-    String getMimeType();
+    val mimeType: String?
 
     /**
      * 获取图片方向
      */
-    int getExifOrientation();
+    val exifOrientation: Int
 
     /**
      * 获取占用内存，单位字节
      */
-    int getByteCount();
+    val byteCount: Int
 
     /**
-     * 获取 {@link Bitmap} 配置
+     * 获取 [Bitmap] 配置
      */
-    @Nullable
-    Bitmap.Config getBitmapConfig();
+    val bitmapConfig: Bitmap.Config?
 
     /**
      * 获取图片来源
      */
-    @Nullable
-    ImageFrom getImageFrom();
+    val imageFrom: ImageFrom?
 
     /**
      * 获取一些信息
      */
-    @Nullable
-    String getInfo();
+    val info: String?
 }

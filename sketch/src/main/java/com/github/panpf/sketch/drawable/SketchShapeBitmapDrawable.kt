@@ -13,315 +13,245 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.drawable
 
-package com.github.panpf.sketch.drawable;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.decode.ResizeCalculator;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.request.ShapeSize;
-import com.github.panpf.sketch.shaper.ImageShaper;
-import com.github.panpf.sketch.util.ExifInterface;
+import android.content.Context
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.ResizeCalculator
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.request.ShapeSize
+import com.github.panpf.sketch.shaper.ImageShaper
+import com.github.panpf.sketch.util.ExifInterface
 
 /**
- * 可以改变 {@link BitmapDrawable} 的形状和尺寸
+ * 可以改变 [BitmapDrawable] 的形状和尺寸
  */
-public class SketchShapeBitmapDrawable extends Drawable implements SketchRefDrawable {
-    private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
+class SketchShapeBitmapDrawable(
+    context: Context,
+    bitmapDrawable: BitmapDrawable,
+    shapeSize: ShapeSize?,
+    shaper: ImageShaper?
+) : Drawable(), SketchRefDrawable {
 
-    @NonNull
-    private BitmapDrawable bitmapDrawable;
-    @Nullable
-    private ShapeSize shapeSize;
-    @Nullable
-    private ImageShaper shaper;
+    val bitmapDrawable: BitmapDrawable
+    private var shapeSize: ShapeSize? = null
+    private var shaper: ImageShaper? = null
+    private val paint: Paint
+    private val srcRect: Rect
+    private var bitmapShader: BitmapShader? = null
+    private var refDrawable: SketchRefDrawable? = null
+    private var sketchDrawable: SketchDrawable? = null
+    private val resizeCalculator: ResizeCalculator
 
-    @NonNull
-    private Paint paint;
-    @NonNull
-    private Rect srcRect;
-    @Nullable
-    private BitmapShader bitmapShader;
+    constructor(context: Context, bitmapDrawable: BitmapDrawable, shapeSize: ShapeSize?) : this(
+        context,
+        bitmapDrawable,
+        shapeSize,
+        null
+    )
 
-    @Nullable
-    private SketchRefDrawable refDrawable;
-    @Nullable
-    private SketchDrawable sketchDrawable;
-
-    @NonNull
-    private ResizeCalculator resizeCalculator;
-
-    public SketchShapeBitmapDrawable(@NonNull Context context, @NonNull BitmapDrawable bitmapDrawable, @Nullable ShapeSize shapeSize, @Nullable ImageShaper shaper) {
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        if (bitmap == null || bitmap.isRecycled()) {
-            throw new IllegalArgumentException(bitmap == null ? "bitmap is null" : "bitmap recycled");
-        }
-
-        if (shapeSize == null && shaper == null) {
-            throw new IllegalArgumentException("shapeSize is null and shapeImage is null");
-        }
-
-        this.bitmapDrawable = bitmapDrawable;
-        this.paint = new Paint(DEFAULT_PAINT_FLAGS);
-        this.srcRect = new Rect();
-        this.resizeCalculator = Sketch.with(context).getConfiguration().getResizeCalculator();
-
-        setShapeSize(shapeSize);
-        setShaper(shaper);
-
-        if (bitmapDrawable instanceof SketchRefDrawable) {
-            this.refDrawable = (SketchRefDrawable) bitmapDrawable;
-        }
-
-        if (bitmapDrawable instanceof SketchDrawable) {
-            this.sketchDrawable = (SketchDrawable) bitmapDrawable;
-        }
+    constructor(context: Context, bitmapDrawable: BitmapDrawable, shaper: ImageShaper?) : this(
+        context,
+        bitmapDrawable,
+        null,
+        shaper
+    ) {
     }
 
-    @SuppressWarnings("unused")
-    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize) {
-        this(context, bitmapDrawable, shapeSize, null);
-    }
-
-    @SuppressWarnings("unused")
-    public SketchShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ImageShaper shaper) {
-        this(context, bitmapDrawable, null, shaper);
-    }
-
-    @Override
-    public void draw(@SuppressWarnings("NullableProblems") Canvas canvas) {
-        Rect bounds = getBounds();
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        if (bounds.isEmpty() || bitmap == null || bitmap.isRecycled()) {
-            return;
+    override fun draw(canvas: Canvas) {
+        val bounds = bounds
+        val bitmap = bitmapDrawable.bitmap
+        if (bounds.isEmpty || bitmap == null || bitmap.isRecycled) {
+            return
         }
-
         if (shaper != null && bitmapShader != null) {
-            shaper.draw(canvas, paint, bounds);
+            shaper!!.draw(canvas, paint, bounds)
         } else {
-            canvas.drawBitmap(bitmap, !srcRect.isEmpty() ? srcRect : null, bounds, paint);
+            canvas.drawBitmap(bitmap, if (!srcRect.isEmpty) srcRect else null, bounds, paint)
         }
     }
 
-    @Override
-    public int getIntrinsicWidth() {
-        return shapeSize != null ? shapeSize.getWidth() : bitmapDrawable.getIntrinsicWidth();
+    override fun getIntrinsicWidth(): Int {
+        return if (shapeSize != null) shapeSize!!.width else bitmapDrawable.intrinsicWidth
     }
 
-    @Override
-    public int getIntrinsicHeight() {
-        return shapeSize != null ? shapeSize.getHeight() : bitmapDrawable.getIntrinsicHeight();
+    override fun getIntrinsicHeight(): Int {
+        return if (shapeSize != null) shapeSize!!.height else bitmapDrawable.intrinsicHeight
     }
 
-    @Override
-    public int getAlpha() {
-        return paint.getAlpha();
+    override fun getAlpha(): Int {
+        return paint.alpha
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        final int oldAlpha = paint.getAlpha();
+    override fun setAlpha(alpha: Int) {
+        val oldAlpha = paint.alpha
         if (alpha != oldAlpha) {
-            paint.setAlpha(alpha);
-            invalidateSelf();
+            paint.alpha = alpha
+            invalidateSelf()
         }
     }
 
-    @Override
-    public ColorFilter getColorFilter() {
-        return paint.getColorFilter();
+    override fun getColorFilter(): ColorFilter {
+        return paint.colorFilter
     }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        paint.setColorFilter(cf);
-        invalidateSelf();
+    override fun setColorFilter(cf: ColorFilter) {
+        paint.colorFilter = cf
+        invalidateSelf()
     }
 
-    @Override
-    public void setDither(boolean dither) {
-        paint.setDither(dither);
-        invalidateSelf();
+    override fun setDither(dither: Boolean) {
+        paint.isDither = dither
+        invalidateSelf()
     }
 
-    @Override
-    public void setFilterBitmap(boolean filter) {
-        paint.setFilterBitmap(filter);
-        invalidateSelf();
+    override fun setFilterBitmap(filter: Boolean) {
+        paint.isFilterBitmap = filter
+        invalidateSelf()
     }
 
-    @Override
-    public int getOpacity() {
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        return (bitmap.hasAlpha() || paint.getAlpha() < 255) ? PixelFormat.TRANSLUCENT : PixelFormat.OPAQUE;
+    override fun getOpacity(): Int {
+        val bitmap = bitmapDrawable.bitmap
+        return if (bitmap.hasAlpha() || paint.alpha < 255) PixelFormat.TRANSLUCENT else PixelFormat.OPAQUE
     }
 
-    @Override
-    protected void onBoundsChange(Rect bounds) {
-        super.onBoundsChange(bounds);
-
-        int boundsWidth = bounds.width();
-        int boundsHeight = bounds.height();
-        int bitmapWidth = bitmapDrawable.getBitmap().getWidth();
-        int bitmapHeight = bitmapDrawable.getBitmap().getHeight();
-
+    override fun onBoundsChange(bounds: Rect) {
+        super.onBoundsChange(bounds)
+        val boundsWidth = bounds.width()
+        val boundsHeight = bounds.height()
+        val bitmapWidth = bitmapDrawable.bitmap.width
+        val bitmapHeight = bitmapDrawable.bitmap.height
         if (boundsWidth == 0 || boundsHeight == 0 || bitmapWidth == 0 || bitmapHeight == 0) {
-            srcRect.setEmpty();
-        } else if ((float) bitmapWidth / (float) bitmapHeight == (float) boundsWidth / (float) boundsHeight) {
-            srcRect.set(0, 0, bitmapWidth, bitmapHeight);
+            srcRect.setEmpty()
+        } else if (bitmapWidth.toFloat() / bitmapHeight.toFloat() == boundsWidth.toFloat() / boundsHeight.toFloat()) {
+            srcRect[0, 0, bitmapWidth] = bitmapHeight
         } else {
-            ImageView.ScaleType scaleType = shapeSize != null ? shapeSize.getScaleType() : ImageView.ScaleType.FIT_CENTER;
-            ResizeCalculator.Mapping mapping = resizeCalculator.calculator(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, scaleType, true);
-            srcRect.set(mapping.srcRect);
+            val scaleType = if (shapeSize != null) shapeSize!!.scaleType else ScaleType.FIT_CENTER
+            val mapping = resizeCalculator.calculator(
+                bitmapWidth,
+                bitmapHeight,
+                boundsWidth,
+                boundsHeight,
+                scaleType,
+                true
+            )
+            srcRect.set(mapping.srcRect)
         }
-
         if (shaper != null && bitmapShader != null) {
-            float widthScale = (float) boundsWidth / bitmapWidth;
-            float heightScale = (float) boundsHeight / bitmapHeight;
+            val widthScale = boundsWidth.toFloat() / bitmapWidth
+            val heightScale = boundsHeight.toFloat() / bitmapHeight
 
             // 缩放图片充满bounds
-            Matrix shaderMatrix = new Matrix();
-            float scale = Math.max(widthScale, heightScale);
-            shaderMatrix.postScale(scale, scale);
+            val shaderMatrix = Matrix()
+            val scale = Math.max(widthScale, heightScale)
+            shaderMatrix.postScale(scale, scale)
 
             // 显示图片中间部分
-            if (!srcRect.isEmpty()) {
-                shaderMatrix.postTranslate(-srcRect.left * scale, -srcRect.top * scale);
+            if (!srcRect.isEmpty) {
+                shaderMatrix.postTranslate(-srcRect.left * scale, -srcRect.top * scale)
             }
-
-            shaper.onUpdateShaderMatrix(shaderMatrix, bounds, bitmapWidth, bitmapHeight, shapeSize, srcRect);
-            bitmapShader.setLocalMatrix(shaderMatrix);
-            paint.setShader(bitmapShader);
+            shaper!!.onUpdateShaderMatrix(
+                shaderMatrix,
+                bounds,
+                bitmapWidth,
+                bitmapHeight,
+                shapeSize,
+                srcRect
+            )
+            bitmapShader!!.setLocalMatrix(shaderMatrix)
+            paint.shader = bitmapShader
         }
     }
 
-    @NonNull
-    public BitmapDrawable getBitmapDrawable() {
-        return bitmapDrawable;
+    fun getShapeSize(): ShapeSize? {
+        return shapeSize
     }
 
-    @Nullable
-    public ShapeSize getShapeSize() {
-        return shapeSize;
+    fun setShapeSize(shapeSize: ShapeSize?) {
+        this.shapeSize = shapeSize
+        invalidateSelf()
     }
 
-    public void setShapeSize(ShapeSize shapeSize) {
-        this.shapeSize = shapeSize;
-        invalidateSelf();
+    fun getShaper(): ImageShaper? {
+        return shaper
     }
 
-    @Nullable
-    public ImageShaper getShaper() {
-        return shaper;
-    }
-
-    public void setShaper(@Nullable ImageShaper shaper) {
-        this.shaper = shaper;
-
+    fun setShaper(shaper: ImageShaper?) {
+        this.shaper = shaper
         if (this.shaper != null) {
             if (bitmapShader == null) {
-                bitmapShader = new BitmapShader(bitmapDrawable.getBitmap(), Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-                paint.setShader(bitmapShader);
+                bitmapShader = BitmapShader(
+                    bitmapDrawable.bitmap,
+                    Shader.TileMode.REPEAT,
+                    Shader.TileMode.REPEAT
+                )
+                paint.shader = bitmapShader
             }
         } else {
             if (bitmapShader != null) {
-                bitmapShader = null;
-                paint.setShader(null);
+                bitmapShader = null
+                paint.shader = null
             }
         }
-
-        invalidateSelf();
+        invalidateSelf()
     }
 
-    @Nullable
-    @Override
-    public String getKey() {
-        return sketchDrawable != null ? sketchDrawable.getKey() : null;
+    override val key: String?
+        get() = sketchDrawable?.key
+    override val uri: String?
+        get() = sketchDrawable?.uri
+    override val originWidth: Int
+        get() = sketchDrawable?.originWidth ?: 0
+    override val originHeight: Int
+        get() = sketchDrawable?.originHeight ?: 0
+    override val mimeType: String?
+        get() = sketchDrawable?.mimeType
+    override val exifOrientation: Int
+        get() = sketchDrawable?.exifOrientation
+            ?: ExifInterface.ORIENTATION_UNDEFINED
+    override val byteCount: Int
+        get() = sketchDrawable?.byteCount ?: 0
+    override val bitmapConfig: Bitmap.Config?
+        get() = sketchDrawable?.bitmapConfig
+    override val imageFrom: ImageFrom?
+        get() = sketchDrawable?.imageFrom
+    override val info: String?
+        get() = sketchDrawable?.info
+
+    override fun setIsDisplayed(callingStation: String, displayed: Boolean) {
+        refDrawable?.setIsDisplayed(callingStation, displayed)
     }
 
-    @Nullable
-    @Override
-    public String getUri() {
-        return sketchDrawable != null ? sketchDrawable.getUri() : null;
+    override fun setIsWaitingUse(callingStation: String, waitingUse: Boolean) {
+        refDrawable?.setIsWaitingUse(callingStation, waitingUse)
     }
 
-    @Override
-    public int getOriginWidth() {
-        return sketchDrawable != null ? sketchDrawable.getOriginWidth() : 0;
+    override val isRecycled: Boolean
+        get() = refDrawable?.isRecycled != false
+
+    companion object {
+        private const val DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG
     }
 
-    @Override
-    public int getOriginHeight() {
-        return sketchDrawable != null ? sketchDrawable.getOriginHeight() : 0;
-    }
-
-    @Nullable
-    @Override
-    public String getMimeType() {
-        return sketchDrawable != null ? sketchDrawable.getMimeType() : null;
-    }
-
-    @Override
-    public int getExifOrientation() {
-        return sketchDrawable != null ? sketchDrawable.getExifOrientation() : ExifInterface.ORIENTATION_UNDEFINED;
-    }
-
-    @Override
-    public int getByteCount() {
-        return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
-    }
-
-    @Nullable
-    @Override
-    public Bitmap.Config getBitmapConfig() {
-        return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
-    }
-
-    @Nullable
-    @Override
-    public ImageFrom getImageFrom() {
-        return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
-    }
-
-    @Nullable
-    @Override
-    public String getInfo() {
-        return sketchDrawable != null ? sketchDrawable.getInfo() : null;
-    }
-
-    @Override
-    public void setIsDisplayed(@NonNull String callingStation, boolean displayed) {
-        if (refDrawable != null) {
-            refDrawable.setIsDisplayed(callingStation, displayed);
+    init {
+        val bitmap = bitmapDrawable.bitmap
+        require(!(bitmap == null || bitmap.isRecycled)) { if (bitmap == null) "bitmap is null" else "bitmap recycled" }
+        require(!(shapeSize == null && shaper == null)) { "shapeSize is null and shapeImage is null" }
+        this.bitmapDrawable = bitmapDrawable
+        paint = Paint(DEFAULT_PAINT_FLAGS)
+        srcRect = Rect()
+        resizeCalculator = Sketch.with(context).configuration.resizeCalculator
+        setShapeSize(shapeSize)
+        setShaper(shaper)
+        if (bitmapDrawable is SketchRefDrawable) {
+            refDrawable = bitmapDrawable
         }
-    }
-
-    @Override
-    public void setIsWaitingUse(@NonNull String callingStation, boolean waitingUse) {
-        if (refDrawable != null) {
-            refDrawable.setIsWaitingUse(callingStation, waitingUse);
+        if (bitmapDrawable is SketchDrawable) {
+            sketchDrawable = bitmapDrawable
         }
-    }
-
-    @Override
-    public boolean isRecycled() {
-        return refDrawable == null || refDrawable.isRecycled();
     }
 }

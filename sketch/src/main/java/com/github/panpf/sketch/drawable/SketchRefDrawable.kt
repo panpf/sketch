@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.drawable
 
-package com.github.panpf.sketch.drawable;
+interface SketchRefDrawable : SketchDrawable {
 
-public interface SketchRefDrawable extends SketchDrawable {
+    fun setIsDisplayed(callingStation: String, displayed: Boolean)
 
-    void setIsDisplayed(String callingStation, boolean displayed);
+    fun setIsWaitingUse(callingStation: String, waitingUse: Boolean)
 
-    void setIsWaitingUse(String callingStation, boolean waitingUse);
-
-    boolean isRecycled();
+    val isRecycled: Boolean
 }

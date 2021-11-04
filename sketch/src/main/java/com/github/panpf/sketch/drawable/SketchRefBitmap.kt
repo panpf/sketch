@@ -13,55 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.drawable
 
-package com.github.panpf.sketch.drawable;
-
-import android.graphics.Bitmap;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.cache.BitmapPoolUtils;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.graphics.Bitmap
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.BitmapPoolUtils
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.util.SketchUtils
 
 /**
- * 引用 {@link Bitmap}，能够计算缓存引用、显示引用以及等待显示引用
+ * 引用 [Bitmap]，能够计算缓存引用、显示引用以及等待显示引用
  */
-public class SketchRefBitmap extends SketchBitmap {
-    private static final String NAME = "SketchRefBitmap";
+class SketchRefBitmap(
+    bitmap: Bitmap,
+    key: String,
+    uri: String,
+    imageAttrs: ImageAttrs,
+    private val bitmapPool: BitmapPool
+) : SketchBitmap(bitmap, key, uri, imageAttrs) {
 
-    private int memoryCacheRefCount;  // 内存缓存引用
-    private int displayRefCount;    // 真正显示引用
-    private int waitingUseRefCount; // 等待使用引用
-
-    @NonNull
-    private BitmapPool bitmapPool;
-
-    public SketchRefBitmap(@NonNull Bitmap bitmap, @NonNull String key, @NonNull String uri, @NonNull ImageAttrs imageAttrs, @NonNull BitmapPool bitmapPool) {
-        super(bitmap, key, uri, imageAttrs);
-        this.bitmapPool = bitmapPool;
+    companion object {
+        private const val NAME = "SketchRefBitmap"
     }
 
-    @NonNull
-    @Override
-    public String getInfo() {
-        if (isRecycled()) {
-            return String.format("%s(Recycled,%s)", NAME, getKey());
+    private var memoryCacheRefCount = 0  // 内存缓存引用
+    private var displayRefCount = 0 // 真正显示引用
+    private var waitingUseRefCount = 0 // 等待使用引用
+
+    override val info: String
+        get() = if (isRecycled) {
+            String.format("%s(Recycled,%s)", NAME, key)
         } else {
-            ImageAttrs imageAttrs = getAttrs();
-            return SketchUtils.makeImageInfo(NAME, imageAttrs.getWidth(), imageAttrs.getHeight(),
-                    imageAttrs.getMimeType(), imageAttrs.getExifOrientation(), bitmap, getByteCount(), getKey());
+            val imageAttrs = attrs
+            SketchUtils.makeImageInfo(
+                NAME,
+                imageAttrs.width,
+                imageAttrs.height,
+                imageAttrs.mimeType,
+                imageAttrs.exifOrientation,
+                bitmap,
+                byteCount.toLong(),
+                key
+            )
         }
-    }
 
     /**
      * 已回收？
      */
-    public synchronized boolean isRecycled() {
-        return bitmap == null || bitmap.isRecycled();
-    }
+    @get:Synchronized
+    val isRecycled: Boolean
+        get() = bitmap == null || bitmap!!.isRecycled
 
     /**
      * 设置显示引用
@@ -69,13 +71,14 @@ public class SketchRefBitmap extends SketchBitmap {
      * @param callingStation 调用位置
      * @param displayed      显示
      */
-    public synchronized void setIsDisplayed(@NonNull String callingStation, boolean displayed) {
+    @Synchronized
+    fun setIsDisplayed(callingStation: String, displayed: Boolean) {
         if (displayed) {
-            displayRefCount++;
-            referenceChanged(callingStation);
+            displayRefCount++
+            referenceChanged(callingStation)
         } else if (displayRefCount > 0) {
-            displayRefCount--;
-            referenceChanged(callingStation);
+            displayRefCount--
+            referenceChanged(callingStation)
         }
     }
 
@@ -85,13 +88,14 @@ public class SketchRefBitmap extends SketchBitmap {
      * @param callingStation 调用位置
      * @param cached         缓存
      */
-    public synchronized void setIsCached(@NonNull String callingStation, boolean cached) {
+    @Synchronized
+    fun setIsCached(callingStation: String, cached: Boolean) {
         if (cached) {
-            memoryCacheRefCount++;
-            referenceChanged(callingStation);
+            memoryCacheRefCount++
+            referenceChanged(callingStation)
         } else if (memoryCacheRefCount > 0) {
-            memoryCacheRefCount--;
-            referenceChanged(callingStation);
+            memoryCacheRefCount--
+            referenceChanged(callingStation)
         }
     }
 
@@ -101,13 +105,14 @@ public class SketchRefBitmap extends SketchBitmap {
      * @param callingStation 调用位置
      * @param waitingUse     等待使用
      */
-    public synchronized void setIsWaitingUse(@NonNull String callingStation, boolean waitingUse) {
+    @Synchronized
+    fun setIsWaitingUse(callingStation: String, waitingUse: Boolean) {
         if (waitingUse) {
-            waitingUseRefCount++;
-            referenceChanged(callingStation);
+            waitingUseRefCount++
+            referenceChanged(callingStation)
         } else if (waitingUseRefCount > 0) {
-            waitingUseRefCount--;
-            referenceChanged(callingStation);
+            waitingUseRefCount--
+            referenceChanged(callingStation)
         }
     }
 
@@ -116,23 +121,23 @@ public class SketchRefBitmap extends SketchBitmap {
      *
      * @param callingStation 调用位置
      */
-    private void referenceChanged(@NonNull String callingStation) {
-        if (isRecycled()) {
-            SLog.emf(NAME, "Recycled. %s. %s", callingStation, getKey());
-            return;
+    private fun referenceChanged(callingStation: String) {
+        if (isRecycled) {
+            SLog.emf(NAME, "Recycled. %s. %s", callingStation, key)
+            return
         }
-
         if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Free. %s. %s", callingStation, getInfo());
+                SLog.dmf(NAME, "Free. %s. %s", callingStation, info)
             }
-
-            BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
-            bitmap = null;
+            BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool)
+            bitmap = null
         } else {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Can't free. %s. references(%d,%d,%d). %s",
-                        callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getInfo());
+                SLog.dmf(
+                    NAME, "Can't free. %s. references(%d,%d,%d). %s",
+                    callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, info
+                )
             }
         }
     }

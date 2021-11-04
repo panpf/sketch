@@ -13,85 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.drawable
 
-package com.github.panpf.sketch.drawable;
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.util.ExifInterface
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
+class SketchTransitionDrawable(
+    oldDrawable: Drawable, newDrawable: Drawable
+) : TransitionDrawable(arrayOf(oldDrawable, newDrawable)), SketchDrawable {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    private var sketchDrawable: SketchDrawable? = null
 
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.util.ExifInterface;
-
-public class SketchTransitionDrawable extends TransitionDrawable implements SketchDrawable {
-
-    @Nullable
-    private SketchDrawable sketchDrawable;
-
-    public SketchTransitionDrawable(@NonNull Drawable oldDrawable, @NonNull Drawable newDrawable) {
-        super(new Drawable[]{oldDrawable, newDrawable});
-
-        if (newDrawable instanceof SketchDrawable) {
-            sketchDrawable = (SketchDrawable) newDrawable;
+    init {
+        if (newDrawable is SketchDrawable) {
+            sketchDrawable = newDrawable
         }
     }
 
-    @Nullable
-    @Override
-    public String getKey() {
-        return sketchDrawable != null ? sketchDrawable.getKey() : null;
-    }
+    override val key: String?
+        get() = sketchDrawable?.key
 
-    @Nullable
-    @Override
-    public String getUri() {
-        return sketchDrawable != null ? sketchDrawable.getUri() : null;
-    }
+    override val uri: String?
+        get() = sketchDrawable?.uri
 
-    @Override
-    public int getOriginWidth() {
-        return sketchDrawable != null ? sketchDrawable.getOriginWidth() : 0;
-    }
+    override val originWidth: Int
+        get() = sketchDrawable?.originWidth ?: 0
 
-    @Override
-    public int getOriginHeight() {
-        return sketchDrawable != null ? sketchDrawable.getOriginHeight() : 0;
-    }
+    override val originHeight: Int
+        get() = sketchDrawable?.originHeight ?: 0
 
-    @Nullable
-    @Override
-    public String getMimeType() {
-        return sketchDrawable != null ? sketchDrawable.getMimeType() : null;
-    }
+    override val mimeType: String?
+        get() = sketchDrawable?.mimeType
 
-    @Override
-    public int getExifOrientation() {
-        return sketchDrawable != null ? sketchDrawable.getExifOrientation() : ExifInterface.ORIENTATION_UNDEFINED;
-    }
+    override val exifOrientation: Int
+        get() = sketchDrawable?.exifOrientation ?: ExifInterface.ORIENTATION_UNDEFINED
 
-    @Override
-    public int getByteCount() {
-        return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
-    }
+    override val byteCount: Int
+        get() = sketchDrawable?.byteCount ?: 0
 
-    @Nullable
-    @Override
-    public Bitmap.Config getBitmapConfig() {
-        return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
-    }
+    override val bitmapConfig: Bitmap.Config?
+        get() = sketchDrawable?.bitmapConfig
 
-    @Nullable
-    @Override
-    public ImageFrom getImageFrom() {
-        return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
-    }
+    override val imageFrom: ImageFrom?
+        get() = sketchDrawable?.imageFrom
 
-    @Nullable
-    @Override
-    public String getInfo() {
-        return sketchDrawable != null ? sketchDrawable.getInfo() : null;
-    }
+    override val info: String?
+        get() = sketchDrawable?.info
 }
