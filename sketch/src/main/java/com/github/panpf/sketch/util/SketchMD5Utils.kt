@@ -13,96 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.util
 
-package com.github.panpf.sketch.util;
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.security.MessageDigest
 
-import androidx.annotation.NonNull;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-public class SketchMD5Utils {
+object SketchMD5Utils {
     /**
      * 默认的密码字符串组合，用来将字节转换成 16 进制表示的字符,apache校验下载的文件的正确性用的就是默认的这个组合
      */
-    private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-    private static ObjectPool<MessageDigest> digestObjectPool = new ObjectPool<MessageDigest>(new ObjectPool.ObjectFactory<MessageDigest>() {
-        @NonNull
-        @Override
-        public MessageDigest newObject() {
-            try {
-                return MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-                return null;
+    private val hexDigits =
+        charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
+    private val digestObjectPool = ObjectPool({ MessageDigest.getInstance("MD5") }, 3)
+
+    @Throws(IOException::class)
+    fun md5(file: File?): String {
+        val digest = digestObjectPool.get()
+        var inputStream: FileInputStream? = null
+        return try {
+            inputStream = FileInputStream(file)
+            val reads = ByteArray(8192)
+            var length: Int
+            while (inputStream.read(reads).also { length = it } != -1) {
+                digest.update(reads, 0, length)
             }
-        }
-    }, 3);
-
-    public static String md5(File file) throws IOException {
-        MessageDigest digest = digestObjectPool.get();
-
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
-
-            byte[] reads = new byte[8192];
-            int length;
-            while ((length = inputStream.read(reads)) != -1) {
-                digest.update(reads, 0, length);
-            }
-
-            byte[] bytes = digest.digest();
-            return bufferToHex(bytes, 0, bytes.length);
+            val bytes = digest.digest()
+            bufferToHex(bytes, 0, bytes.size)
         } finally {
-            SketchUtils.close(inputStream);
-
-            digest.reset();
-            digestObjectPool.put(digest);
+            SketchUtils.close(inputStream)
+            digest.reset()
+            digestObjectPool.put(digest)
         }
     }
 
-    @NonNull
-    public static String md5(String txt) {
-        MessageDigest digest = digestObjectPool.get();
-
-        byte[] textBytes = txt.getBytes();
-        digest.update(textBytes);
-
-        byte[] md = digest.digest();
-        int j = md.length;
-        char str[] = new char[j * 2];
-        int k = 0;
-        for (byte byte0 : md) {
-            str[k++] = hexDigits[byte0 >>> 4 & 0xf];
-            str[k++] = hexDigits[byte0 & 0xf];
+    @JvmStatic
+    fun md5(txt: String): String {
+        val digest = digestObjectPool.get()
+        val textBytes = txt.toByteArray()
+        digest.update(textBytes)
+        val md = digest.digest()
+        val j = md.size
+        val str = CharArray(j * 2)
+        var k = 0
+        for (byte0 in md) {
+            str[k++] = hexDigits[byte0.toInt() ushr 4 and 0xf]
+            str[k++] = hexDigits[byte0.toInt() and 0xf]
         }
-        String result = new String(str);
-
-        digest.reset();
-        digestObjectPool.put(digest);
-        return result;
+        val result = String(str)
+        digest.reset()
+        digestObjectPool.put(digest)
+        return result
     }
 
-    private static String bufferToHex(byte bytes[], int m, int n) {
-        StringBuffer stringbuffer = new StringBuffer(2 * n);
-        int k = m + n;
-        for (int l = m; l < k; l++) {
-            appendHexPair(bytes[l], stringbuffer);
+    private fun bufferToHex(bytes: ByteArray, m: Int, n: Int): String {
+        val stringbuffer = StringBuffer(2 * n)
+        val k = m + n
+        for (l in m until k) {
+            appendHexPair(bytes[l], stringbuffer)
         }
-        return stringbuffer.toString();
+        return stringbuffer.toString()
     }
 
-    private static void appendHexPair(byte bt, StringBuffer stringbuffer) {
+    private fun appendHexPair(bt: Byte, stringbuffer: StringBuffer) {
         // 取字节中高 4 位的数字转换, >>>
-        char c0 = hexDigits[(bt & 0xf0) >> 4];
+        val c0 = hexDigits[bt.toInt() and 0xf0 shr 4]
         // 为逻辑右移，将符号位一起右移,此处未发现两种符号有何不同
         // 取字节中低 4 位的数字转换
-        char c1 = hexDigits[bt & 0xf];
-        stringbuffer.append(c0);
-        stringbuffer.append(c1);
+        val c1 = hexDigits[bt.toInt() and 0xf]
+        stringbuffer.append(c0)
+        stringbuffer.append(c1)
     }
 }

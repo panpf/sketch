@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.http
 
-import android.text.TextUtils
 import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.*
@@ -224,7 +223,7 @@ class ImageDownloader {
             // redirects
             if (responseCode == 301 || responseCode == 302) {
                 val newUri = response.getHeaderField("Location")
-                if (!TextUtils.isEmpty(newUri)) {
+                if (newUri != null && newUri.isNotEmpty()) {
                     // To prevent infinite redirection
                     if (uri == request.uri) {
                         if (SLog.isLoggable(SLog.DEBUG)) {
@@ -236,7 +235,7 @@ class ImageDownloader {
                                 request.key
                             )
                         }
-                        throw RedirectsException(newUri!!)
+                        throw RedirectsException(newUri)
                     } else {
                         SLog.emf(
                             NAME,

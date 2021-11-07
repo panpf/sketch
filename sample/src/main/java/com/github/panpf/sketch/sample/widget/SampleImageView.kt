@@ -57,7 +57,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     fun setOptions(@ImageOptions.Type optionsId: Int) {
-        setOptions(ImageOptions.getDisplayOptions(context, optionsId))
+        options = ImageOptions.getDisplayOptions(context, optionsId)
     }
 
     override fun redisplay(listener: RedisplayListener?): Boolean {

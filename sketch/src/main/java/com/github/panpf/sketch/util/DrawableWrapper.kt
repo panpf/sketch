@@ -13,241 +13,168 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.util
 
-package com.github.panpf.sketch.util;
+import android.content.res.ColorStateList
+import android.graphics.*
+import android.graphics.drawable.Drawable
+import android.os.Build
 
-import android.content.res.ColorStateList;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.Region;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+open class DrawableWrapper(drawable: Drawable?) : Drawable(), Drawable.Callback {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    var wrappedDrawable: Drawable? = drawable
+        set(value) {
+            if (value !== this@DrawableWrapper) {
+                field?.callback = null
+                value?.callback = this
+                field = value
+            }
+        }
 
-public class DrawableWrapper extends Drawable implements Drawable.Callback {
-
-    @Nullable
-    private Drawable wrappedDrawable;
-
-    public DrawableWrapper(@Nullable Drawable drawable) {
-        setWrappedDrawable(drawable);
+    override fun draw(canvas: Canvas) {
+        wrappedDrawable?.draw(canvas)
     }
 
-    @Override
-    public void draw(@NonNull Canvas canvas) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.draw(canvas);
+    override fun onBoundsChange(bounds: Rect) {
+        wrappedDrawable?.bounds = bounds
+    }
+
+    override fun getChangingConfigurations(): Int {
+        return wrappedDrawable?.changingConfigurations ?: super.getChangingConfigurations()
+    }
+
+    override fun setChangingConfigurations(configs: Int) {
+        wrappedDrawable?.changingConfigurations = configs
+    }
+
+    override fun setDither(dither: Boolean) {
+        wrappedDrawable?.setDither(dither)
+    }
+
+    override fun setFilterBitmap(filter: Boolean) {
+        wrappedDrawable?.isFilterBitmap = filter
+    }
+
+    override fun setAlpha(alpha: Int) {
+        wrappedDrawable?.alpha = alpha
+    }
+
+    override fun setColorFilter(cf: ColorFilter) {
+        wrappedDrawable?.colorFilter = cf
+    }
+
+    override fun isStateful(): Boolean {
+        return wrappedDrawable?.isStateful ?: super.isStateful()
+    }
+
+    override fun setState(stateSet: IntArray): Boolean {
+        return wrappedDrawable?.setState(stateSet) ?: super.setState(stateSet)
+    }
+
+    override fun getState(): IntArray {
+        return wrappedDrawable?.state ?: super.getState()
+    }
+
+    override fun jumpToCurrentState() {
+        wrappedDrawable?.jumpToCurrentState()
+    }
+
+    override fun getCurrent(): Drawable {
+        return wrappedDrawable?.current ?: super.getCurrent()
+    }
+
+    override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
+        return super.setVisible(
+            visible,
+            restart
+        ) || wrappedDrawable?.setVisible(visible, restart) == true
+    }
+
+    override fun getOpacity(): Int {
+        return wrappedDrawable?.opacity ?: PixelFormat.UNKNOWN
+    }
+
+    override fun getTransparentRegion(): Region? {
+        return wrappedDrawable?.transparentRegion ?: super.getTransparentRegion()
+    }
+
+    override fun getIntrinsicWidth(): Int {
+        return wrappedDrawable?.intrinsicWidth ?: super.getIntrinsicWidth()
+    }
+
+    override fun getIntrinsicHeight(): Int {
+        return wrappedDrawable?.intrinsicHeight ?: super.getIntrinsicHeight()
+    }
+
+    override fun getMinimumWidth(): Int {
+        return wrappedDrawable?.minimumWidth ?: super.getMinimumWidth()
+    }
+
+    override fun getMinimumHeight(): Int {
+        return wrappedDrawable?.minimumHeight ?: super.getMinimumHeight()
+    }
+
+    override fun getPadding(padding: Rect): Boolean {
+        return wrappedDrawable?.getPadding(padding) ?: super.getPadding(
+            padding
+        )
+    }
+
+    override fun onLevelChange(level: Int): Boolean {
+        return wrappedDrawable?.setLevel(level) ?: super.onLevelChange(
+            level
+        )
+    }
+
+    override fun isAutoMirrored(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && wrappedDrawable?.isAutoMirrored == true
+    }
+
+    override fun setAutoMirrored(mirrored: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            wrappedDrawable?.isAutoMirrored = mirrored
         }
     }
 
-    @Override
-    protected void onBoundsChange(Rect bounds) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setBounds(bounds);
+    override fun setTint(tint: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wrappedDrawable?.setTint(tint)
         }
     }
 
-    @Override
-    public int getChangingConfigurations() {
-        return wrappedDrawable != null ? wrappedDrawable.getChangingConfigurations() : super.getChangingConfigurations();
-    }
-
-    @Override
-    public void setChangingConfigurations(int configs) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setChangingConfigurations(configs);
+    override fun setTintList(tint: ColorStateList) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wrappedDrawable?.setTintList(tint)
         }
     }
 
-    @Override
-    public void setDither(boolean dither) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setDither(dither);
+    override fun setTintMode(tintMode: PorterDuff.Mode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wrappedDrawable?.setTintMode(tintMode)
         }
     }
 
-    @Override
-    public void setFilterBitmap(boolean filter) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setFilterBitmap(filter);
+    override fun setHotspot(x: Float, y: Float) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wrappedDrawable?.setHotspot(x, y)
         }
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setAlpha(alpha);
+    override fun setHotspotBounds(left: Int, top: Int, right: Int, bottom: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wrappedDrawable?.setHotspotBounds(left, top, right, bottom)
         }
     }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setColorFilter(cf);
-        }
+    override fun invalidateDrawable(who: Drawable) {
+        invalidateSelf()
     }
 
-    @Override
-    public boolean isStateful() {
-        return wrappedDrawable != null ? wrappedDrawable.isStateful() : super.isStateful();
+    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+        scheduleSelf(what, `when`)
     }
 
-    @Override
-    public boolean setState(@NonNull final int[] stateSet) {
-        return wrappedDrawable != null ? wrappedDrawable.setState(stateSet) : super.setState(stateSet);
-    }
-
-    @NonNull
-    @Override
-    public int[] getState() {
-        return wrappedDrawable != null ? wrappedDrawable.getState() : super.getState();
-    }
-
-    @Override
-    public void jumpToCurrentState() {
-        if (wrappedDrawable != null) {
-            wrappedDrawable.jumpToCurrentState();
-        }
-    }
-
-    @NonNull
-    @Override
-    public Drawable getCurrent() {
-        return wrappedDrawable != null ? wrappedDrawable.getCurrent() : super.getCurrent();
-    }
-
-    @Override
-    public boolean setVisible(boolean visible, boolean restart) {
-        return super.setVisible(visible, restart) || (wrappedDrawable != null && wrappedDrawable.setVisible(visible, restart));
-    }
-
-    @Override
-    public int getOpacity() {
-        return wrappedDrawable != null ? wrappedDrawable.getOpacity() : PixelFormat.UNKNOWN;
-    }
-
-    @Override
-    public Region getTransparentRegion() {
-        return wrappedDrawable != null ? wrappedDrawable.getTransparentRegion() : super.getTransparentRegion();
-    }
-
-    @Override
-    public int getIntrinsicWidth() {
-        return wrappedDrawable != null ? wrappedDrawable.getIntrinsicWidth() : super.getIntrinsicWidth();
-    }
-
-    @Override
-    public int getIntrinsicHeight() {
-        return wrappedDrawable != null ? wrappedDrawable.getIntrinsicHeight() : super.getIntrinsicHeight();
-    }
-
-    @Override
-    public int getMinimumWidth() {
-        return wrappedDrawable != null ? wrappedDrawable.getMinimumWidth() : super.getMinimumWidth();
-    }
-
-    @Override
-    public int getMinimumHeight() {
-        return wrappedDrawable != null ? wrappedDrawable.getMinimumHeight() : super.getMinimumHeight();
-    }
-
-    @Override
-    public boolean getPadding(@NonNull Rect padding) {
-        return wrappedDrawable != null ? wrappedDrawable.getPadding(padding) : super.getPadding(padding);
-    }
-
-    @Override
-    protected boolean onLevelChange(int level) {
-        return wrappedDrawable != null ? wrappedDrawable.setLevel(level) : super.onLevelChange(level);
-    }
-
-    @Override
-    public boolean isAutoMirrored() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && wrappedDrawable != null && wrappedDrawable.isAutoMirrored();
-    }
-
-    @Override
-    public void setAutoMirrored(boolean mirrored) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && wrappedDrawable != null) {
-            wrappedDrawable.setAutoMirrored(mirrored);
-        }
-    }
-
-    @Override
-    public void setTint(int tint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && wrappedDrawable != null) {
-            wrappedDrawable.setTint(tint);
-        }
-    }
-
-    @Override
-    public void setTintList(ColorStateList tint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && wrappedDrawable != null) {
-            wrappedDrawable.setTintList(tint);
-        }
-    }
-
-    @Override
-    public void setTintMode(@NonNull PorterDuff.Mode tintMode) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && wrappedDrawable != null) {
-            wrappedDrawable.setTintMode(tintMode);
-        }
-    }
-
-    @Override
-    public void setHotspot(float x, float y) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && wrappedDrawable != null) {
-            wrappedDrawable.setHotspot(x, y);
-        }
-    }
-
-    @Override
-    public void setHotspotBounds(int left, int top, int right, int bottom) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && wrappedDrawable != null) {
-            wrappedDrawable.setHotspotBounds(left, top, right, bottom);
-        }
-    }
-
-
-    @Override
-    public void invalidateDrawable(@NonNull Drawable who) {
-        invalidateSelf();
-    }
-
-    @Override
-    public void scheduleDrawable(@NonNull Drawable who, @NonNull Runnable what, long when) {
-        scheduleSelf(what, when);
-    }
-
-    @Override
-    public void unscheduleDrawable(@NonNull Drawable who, @NonNull Runnable what) {
-        unscheduleSelf(what);
-    }
-
-
-    @Nullable
-    public Drawable getWrappedDrawable() {
-        return wrappedDrawable;
-    }
-
-    public void setWrappedDrawable(@Nullable Drawable drawable) {
-        if (drawable == this) {
-            return;
-        }
-
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setCallback(null);
-        }
-
-        this.wrappedDrawable = drawable;
-
-        if (wrappedDrawable != null) {
-            wrappedDrawable.setCallback(this);
-        }
+    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+        unscheduleSelf(what)
     }
 }

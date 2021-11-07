@@ -55,7 +55,6 @@ open class ResizeImageProcessor : ImageProcessor {
         return "ResizeImageProcessor"
     }
 
-    override fun getKey(): String? {
-        return "Resize"
-    }
+    override val key: String?
+        get() = "Resize"
 }

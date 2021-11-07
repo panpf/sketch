@@ -25,7 +25,7 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     fun setOptions(@ImageOptions.Type optionsId: Int) {
-        setOptions(ImageOptions.getDisplayOptions(context, optionsId))
+        options = ImageOptions.getDisplayOptions(context, optionsId)
     }
 
     override fun redisplay(listener: RedisplayListener?): Boolean {

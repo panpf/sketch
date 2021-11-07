@@ -53,7 +53,7 @@ class TransitionImageDisplayer @JvmOverloads constructor(
                 setImageDrawable(newDrawable)
             }
         } else {
-            val oldDrawable = SketchUtils.getLastDrawable(sketchView.drawable)
+            val oldDrawable = SketchUtils.getLastDrawable(sketchView.getDrawable())
                 ?: ColorDrawable(Color.TRANSPARENT)
             if (oldDrawable is SketchDrawable
                 && oldDrawable !is SketchLoadingDrawable

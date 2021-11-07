@@ -66,6 +66,8 @@ public class DisplayHelper {
     private final DisplayListener displayListener;
     @Nullable
     private final DownloadProgressListener downloadProgressListener;
+    @Nullable
+    private Stopwatch stopwatch;
 
     public DisplayHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
         this.sketch = sketch;
@@ -75,18 +77,22 @@ public class DisplayHelper {
         this.downloadProgressListener = sketchView.getDownloadProgressListener();
 
         if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().start(NAME + ". display use time");
+            stopwatch = new Stopwatch();
+        }
+
+        if (stopwatch != null) {
+            stopwatch.start(NAME + ". display use time");
         }
 
         // onDisplay 一定要在最前面执行，因为 在onDisplay 中会设置一些属性，这些属性会影响到后续一些 get 方法返回的结果
         this.sketchView.onReadyDisplay(uri);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("onReadyDisplay");
+        if (stopwatch != null) {
+            stopwatch.record("onReadyDisplay");
         }
 
         this.displayOptions = new DisplayOptions(sketchView.getOptions());
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("init");
+        if (stopwatch != null) {
+            stopwatch.record("init");
         }
     }
 
@@ -390,53 +396,53 @@ public class DisplayHelper {
         }
 
         processOptions();
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("processOptions");
+        if (stopwatch != null) {
+            stopwatch.record("processOptions");
         }
 
         saveOptions();
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("saveOptions");
+        if (stopwatch != null) {
+            stopwatch.record("saveOptions");
         }
 
         final String key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey());
         boolean checkResult = checkMemoryCache(key);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("checkMemoryCache");
+        if (stopwatch != null) {
+            stopwatch.record("checkMemoryCache");
         }
         if (!checkResult) {
-            if (SLog.isLoggable(SLog.VERBOSE)) {
-                Stopwatch.with().print(key);
+            if (stopwatch != null) {
+                stopwatch.print(key);
             }
             return null;
         }
 
         checkResult = checkRequestLevel(key, uriModel);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("checkRequestLevel");
+        if (stopwatch != null) {
+            stopwatch.record("checkRequestLevel");
         }
         if (!checkResult) {
-            if (SLog.isLoggable(SLog.VERBOSE)) {
-                Stopwatch.with().print(key);
+            if (stopwatch != null) {
+                stopwatch.print(key);
             }
             return null;
         }
 
         DisplayRequest potentialRequest = checkRepeatRequest(key);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("checkRepeatRequest");
+        if (stopwatch != null) {
+            stopwatch.record("checkRepeatRequest");
         }
         if (potentialRequest != null) {
-            if (SLog.isLoggable(SLog.VERBOSE)) {
-                Stopwatch.with().print(key);
+            if (stopwatch != null) {
+                stopwatch.print(key);
             }
             return potentialRequest;
         }
 
         DisplayRequest request = submitRequest(key, uriModel);
 
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().print(key);
+        if (stopwatch != null) {
+            stopwatch.print(key);
         }
         return request;
     }
@@ -673,15 +679,15 @@ public class DisplayHelper {
     @NonNull
     private DisplayRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
         CallbackHandler.postCallbackStarted(displayListener, false);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("callbackStarted");
+        if (stopwatch != null) {
+            stopwatch.record("callbackStarted");
         }
 
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
         DisplayRequest request = new DisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
                 requestAndViewBinder, displayListener, downloadProgressListener);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("createRequest");
+        if (stopwatch != null) {
+            stopwatch.record("createRequest");
         }
 
         SketchLoadingDrawable loadingDrawable;
@@ -693,13 +699,13 @@ public class DisplayHelper {
         } else {
             loadingDrawable = new SketchLoadingDrawable(null, request);
         }
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("createLoadingImage");
+        if (stopwatch != null) {
+            stopwatch.record("createLoadingImage");
         }
 
         sketchView.setImageDrawable(loadingDrawable);
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("setLoadingImage");
+        if (stopwatch != null) {
+            stopwatch.record("setLoadingImage");
         }
 
         if (SLog.isLoggable(SLog.DEBUG)) {
@@ -707,8 +713,8 @@ public class DisplayHelper {
         }
 
         request.submitDispatch();
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            Stopwatch.with().record("submitRequest");
+        if (stopwatch != null) {
+            stopwatch.record("submitRequest");
         }
 
         return request;

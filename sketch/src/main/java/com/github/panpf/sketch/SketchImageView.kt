@@ -13,89 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch
 
-package com.github.panpf.sketch;
+import android.content.Context
+import android.util.AttributeSet
+import androidx.annotation.DrawableRes
+import com.github.panpf.sketch.Sketch.Companion.with
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.RedisplayListener
+import com.github.panpf.sketch.viewfun.FunctionPropertyView
 
-import android.content.Context;
-import android.util.AttributeSet;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.request.DisplayCache;
-import com.github.panpf.sketch.request.DisplayRequest;
-import com.github.panpf.sketch.request.RedisplayListener;
-import com.github.panpf.sketch.uri.UriModel;
-import com.github.panpf.sketch.viewfun.FunctionPropertyView;
-
-public class SketchImageView extends FunctionPropertyView {
-
-    public SketchImageView(@NonNull Context context) {
-        super(context);
-    }
-
-    public SketchImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public SketchImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Nullable
-    @Override
-    public DisplayRequest displayImage(@Nullable String uri) {
-        return Sketch.with(getContext()).display(uri, this).commit();
-    }
-
-    @Nullable
-    @Override
-    public DisplayRequest displayResourceImage(@DrawableRes int drawableResId) {
-        return Sketch.with(getContext()).displayFromResource(drawableResId, this).commit();
-    }
-
-    @Nullable
-    @Override
-    public DisplayRequest displayAssetImage(@NonNull String assetFileName) {
-        return Sketch.with(getContext()).displayFromAsset(assetFileName, this).commit();
-    }
-
-    @Nullable
-    @Override
-    public DisplayRequest displayContentImage(@NonNull String uri) {
-        return Sketch.with(getContext()).displayFromContent(uri, this).commit();
-    }
-
-    @Override
-    public boolean redisplay(@Nullable RedisplayListener listener) {
-        DisplayCache displayCache = getDisplayCache();
-        if (displayCache == null || displayCache.uri == null) {
-            return false;
-        }
-
-        if (listener != null) {
-            listener.onPreCommit(displayCache.uri, displayCache.options);
-        }
-        Sketch.with(getContext())
-                .display(displayCache.uri, this)
-                .options(displayCache.options)
-                .commit();
-        return true;
-    }
+open class SketchImageView : FunctionPropertyView {
 
     /**
      * 获取选项 KEY，可用于组装缓存 KEY
      *
-     * @see com.github.panpf.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
+     * @see com.github.panpf.sketch.util.SketchUtils.makeRequestKey
      */
-    @NonNull
-    public String getOptionsKey() {
-        DisplayCache displayCache = getDisplayCache();
-        if (displayCache != null) {
-            return displayCache.options.makeKey();
-        } else {
-            return getOptions().makeKey();
+    val optionsKey: String
+        get() {
+            return displayCache?.options?.makeKey() ?: options.makeKey()
         }
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int)
+            : super(context, attrs, defStyle)
+
+    override fun displayImage(uri: String?): DisplayRequest? {
+        return with(context).display(uri.orEmpty(), this).commit()
+    }
+
+    override fun displayResourceImage(@DrawableRes drawableResId: Int?): DisplayRequest? {
+        return if (drawableResId != null) {
+            with(context).displayFromResource(drawableResId, this).commit()
+        } else {
+            with(context).display("", this).commit()
+        }
+    }
+
+    override fun displayAssetImage(assetFileName: String?): DisplayRequest? {
+        return if (assetFileName?.isNotEmpty() == true) {
+            with(context).displayFromAsset(assetFileName.orEmpty(), this).commit()
+        } else {
+            with(context).display("", this).commit()
+        }
+    }
+
+    override fun displayContentImage(uri: String?): DisplayRequest? {
+        return with(context).displayFromContent(uri.orEmpty(), this).commit()
+    }
+
+    override fun redisplay(listener: RedisplayListener?): Boolean {
+        val displayCache = displayCache
+        if (displayCache?.uri == null) {
+            return false
+        }
+        listener?.onPreCommit(displayCache.uri!!, displayCache.options)
+        with(context)
+            .display(displayCache.uri!!, this)
+            .options(displayCache.options)
+            .commit()
+        return true
     }
 }

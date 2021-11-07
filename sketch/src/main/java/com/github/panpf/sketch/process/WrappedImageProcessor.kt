@@ -69,20 +69,22 @@ abstract class WrappedImageProcessor protected constructor(
     protected open val isInterceptResize: Boolean
         get() = false
 
-    override fun getKey(): String? {
-        val selfKey = onGetKey()
-        val wrappedKey = wrappedProcessor?.key
-        if (!TextUtils.isEmpty(selfKey)) {
-            return if (!TextUtils.isEmpty(wrappedKey)) {
-                String.format("%s->%s", selfKey, wrappedKey)
+    override val key: String?
+        get() {
+            val selfKey = onGetKey()
+            val wrappedKey = wrappedProcessor?.key
+            return if (!TextUtils.isEmpty(selfKey)) {
+                if (!TextUtils.isEmpty(wrappedKey)) {
+                    String.format("%s->%s", selfKey, wrappedKey)
+                } else {
+                    selfKey
+                }
+            } else if (!TextUtils.isEmpty(wrappedKey)) {
+                wrappedKey
             } else {
-                selfKey
+                null
             }
-        } else if (!TextUtils.isEmpty(wrappedKey)) {
-            return wrappedKey
         }
-        return null
-    }
 
     abstract fun onGetKey(): String?
 

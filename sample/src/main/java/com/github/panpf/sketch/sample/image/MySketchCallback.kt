@@ -5,8 +5,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.text.format.Formatter
-import com.github.panpf.tools4a.device.Devicex
-import com.tencent.bugly.crashreport.CrashReport
 import com.github.panpf.sketch.SketchCallback
 import com.github.panpf.sketch.SketchException
 import com.github.panpf.sketch.cache.InstallDiskCacheException
@@ -15,10 +13,10 @@ import com.github.panpf.sketch.request.BitmapRecycledOnDisplayException
 import com.github.panpf.sketch.uri.DrawableUriModel
 import com.github.panpf.sketch.uri.UriModel
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.UnableCreateDirException
-import com.github.panpf.sketch.util.UnableCreateFileException
 import com.github.panpf.sketch.zoom.block.Block
 import com.github.panpf.sketch.zoom.block.BlockSortException
+import com.github.panpf.tools4a.device.Devicex
+import com.tencent.bugly.crashreport.CrashReport
 import java.util.*
 
 internal class MySketchCallback(context: Application) :
@@ -40,7 +38,10 @@ internal class MySketchCallback(context: Application) :
             is NotFoundGifSoException ->
                 if (!uploadNotFoundGidSoError) {// 每次运行只上报一次
                     uploadNotFoundGidSoError = true
-                    val message = String.format("Didn't find “libpl_droidsonroids_gif.so” file, abis=%s", Devicex.getSupportedAbis())
+                    val message = String.format(
+                        "Didn't find “libpl_droidsonroids_gif.so” file, abis=%s",
+                        Devicex.getSupportedAbis()
+                    )
                     CrashReport.postCatchedException(Exception(message, e))
                 }
             is InstallDiskCacheException -> {   // 每半小时上传一次
@@ -53,10 +54,10 @@ internal class MySketchCallback(context: Application) :
                 val builder = StringBuilder()
 
                 builder.append("Sketch")
-                        .append(" - ").append("InstallDiskCacheFailed")
+                    .append(" - ").append("InstallDiskCacheFailed")
                 when (e) {
-                    is UnableCreateDirException -> builder.append(" - ").append("UnableCreateDirException")
-                    is UnableCreateFileException -> builder.append(" - ").append("UnableCreateFileException")
+//                    is UnableCreateDirException -> builder.append(" - ").append("UnableCreateDirException")
+//                    is UnableCreateFileException -> builder.append(" - ").append("UnableCreateFileException")
                     else -> builder.append(" - ").append(e.javaClass.simpleName)
                 }
                 builder.append(" - ").append(e.cacheDir.path)
@@ -71,10 +72,10 @@ internal class MySketchCallback(context: Application) :
                     val totalBytes = SketchUtils.getTotalBytes(sdcardDir)
                     val availableBytes = SketchUtils.getAvailableBytes(sdcardDir)
                     builder.append("\n")
-                            .append("sdcardSize: ")
-                            .append(Formatter.formatFileSize(appContext, availableBytes))
-                            .append("/")
-                            .append(Formatter.formatFileSize(appContext, totalBytes))
+                        .append("sdcardSize: ")
+                        .append(Formatter.formatFileSize(appContext, availableBytes))
+                        .append("/")
+                        .append(Formatter.formatFileSize(appContext, totalBytes))
                 }
 
                 CrashReport.postCatchedException(Exception(builder.toString(), e))
@@ -90,18 +91,33 @@ internal class MySketchCallback(context: Application) :
                 val builder = StringBuilder().apply {
                     append("Sketch")
                     append(" - ").append("DecodeGifImageFailed")
-                    append(" - ").append(e.cause!!.javaClass.simpleName)
+                    append(" - ").append(e.cause.javaClass.simpleName)
                     append(" - ").append(decodeUri(appContext, e.request.uri))
 
                     append("\n")
-                    append("exceptionMessage: ").append(e.cause!!.message)
+                    append("exceptionMessage: ").append(e.cause.message)
 
-                    if (e.cause!! is OutOfMemoryError) {
+                    if (e.cause is OutOfMemoryError) {
                         append("\n")
                         append("memoryInfo: ")
-                        append("maxMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().maxMemory()))
-                        append(", freeMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().freeMemory()))
-                        append(", totalMemory=").append(Formatter.formatFileSize(appContext, Runtime.getRuntime().totalMemory()))
+                        append("maxMemory=").append(
+                            Formatter.formatFileSize(
+                                appContext,
+                                Runtime.getRuntime().maxMemory()
+                            )
+                        )
+                        append(", freeMemory=").append(
+                            Formatter.formatFileSize(
+                                appContext,
+                                Runtime.getRuntime().freeMemory()
+                            )
+                        )
+                        append(", totalMemory=").append(
+                            Formatter.formatFileSize(
+                                appContext,
+                                Runtime.getRuntime().totalMemory()
+                            )
+                        )
                     }
 
                     append("\n")
@@ -111,7 +127,7 @@ internal class MySketchCallback(context: Application) :
                     append(", outMimeType=").append(e.outMimeType)
                 }
 
-                CrashReport.postCatchedException(Exception(builder.toString(), e.cause!!))
+                CrashReport.postCatchedException(Exception(builder.toString(), e.cause))
             }
             is DecodeImageException -> {
                 // 每半小时上报一次
@@ -124,29 +140,30 @@ internal class MySketchCallback(context: Application) :
                 val builder = StringBuilder()
 
                 builder.append("Sketch")
-                        .append(" - ").append("DecodeNormalImageFailed")
-                        .append(" - ").append(e.cause.javaClass.simpleName)
-                        .append(" - ").append(decodeUri(appContext, e.request.uri))
+                    .append(" - ").append("DecodeNormalImageFailed")
+                    .append(" - ").append(e.cause.javaClass.simpleName)
+                    .append(" - ").append(decodeUri(appContext, e.request.uri))
 
                 builder.append("\n").append("exceptionMessage: ").append(e.cause.message)
 
-                if (e.cause!! is OutOfMemoryError) {
+                if (e.cause is OutOfMemoryError) {
                     val maxMemory = Runtime.getRuntime().maxMemory()
                     val freeMemory = Runtime.getRuntime().freeMemory()
                     val totalMemory = Runtime.getRuntime().totalMemory()
                     val maxMemoryFormatted = Formatter.formatFileSize(this.appContext, maxMemory)
                     val freeMemoryFormatted = Formatter.formatFileSize(this.appContext, freeMemory)
-                    val totalMemoryFormatted = Formatter.formatFileSize(this.appContext, totalMemory)
+                    val totalMemoryFormatted =
+                        Formatter.formatFileSize(this.appContext, totalMemory)
                     builder.append("\n").append("memoryInfo: ")
-                            .append("maxMemory=").append(maxMemoryFormatted)
-                            .append(", freeMemory=").append(freeMemoryFormatted)
-                            .append(", totalMemory=").append(totalMemoryFormatted)
+                        .append("maxMemory=").append(maxMemoryFormatted)
+                        .append(", freeMemory=").append(freeMemoryFormatted)
+                        .append(", totalMemory=").append(totalMemoryFormatted)
                 }
 
                 builder.append("\n").append("imageInfo: ")
-                        .append("outWidth=").append(e.outWidth)
-                        .append(", outHeight=").append(e.outHeight)
-                        .append(", outMimeType=").append(e.outMimeType)
+                    .append("outWidth=").append(e.outWidth)
+                    .append(", outHeight=").append(e.outHeight)
+                    .append(", outMimeType=").append(e.outMimeType)
 
                 CrashReport.postCatchedException(Exception(builder.toString(), e.cause))
             }
@@ -158,64 +175,93 @@ internal class MySketchCallback(context: Application) :
                 }
                 lastUploadProcessImageFailedTime = currentTime
 
-                val outOfMemoryInfo = if (e.cause is OutOfMemoryError) String.format("\nmemoryState: %s", systemState) else ""
-                CrashReport.postCatchedException(Exception(String.format(
-                        "Sketch - %s - " +
-                                "%s" +
-                                "\n%s",
-                        e.processor.toString(),
-                        decodeUri(appContext, e.imageUri),
-                        outOfMemoryInfo
-                ), e.cause))
+                val outOfMemoryInfo = if (e.cause is OutOfMemoryError) String.format(
+                    "\nmemoryState: %s",
+                    systemState
+                ) else ""
+                CrashReport.postCatchedException(
+                    Exception(
+                        String.format(
+                            "Sketch - %s - " +
+                                    "%s" +
+                                    "\n%s",
+                            e.processor.toString(),
+                            decodeUri(appContext, e.imageUri),
+                            outOfMemoryInfo
+                        ), e.cause
+                    )
+                )
             }
             is BlockSortException -> {
-                CrashReport.postCatchedException(Exception(String.format(
-                        "Sketch - BlockSortError - " +
-                                "%s " +
-                                "\nblocks: %s",
-                        if (e.isUseLegacyMergeSort) "useLegacyMergeSort. " else "",
-                        Block.blockListToString(e.blockList)
-                ), e))
+                CrashReport.postCatchedException(
+                    Exception(
+                        String.format(
+                            "Sketch - BlockSortError - " +
+                                    "%s " +
+                                    "\nblocks: %s",
+                            if (e.isUseLegacyMergeSort) "useLegacyMergeSort. " else "",
+                            Block.blockListToString(e.blockList)
+                        ), e
+                    )
+                )
             }
             is BitmapRecycledOnDisplayException -> {
-                CrashReport.postCatchedException(Exception(String.format(
-                        "Sketch - BitmapRecycledOnDisplay - " +
-                                "%s " +
-                                "\ndrawable: %s",
-                        decodeUri(appContext, e.request.uri),
-                        e.sketchDrawable.info)))
+                CrashReport.postCatchedException(
+                    Exception(
+                        String.format(
+                            "Sketch - BitmapRecycledOnDisplay - " +
+                                    "%s " +
+                                    "\ndrawable: %s",
+                            decodeUri(appContext, e.request.uri),
+                            e.sketchDrawable.info
+                        )
+                    )
+                )
             }
             is InBitmapDecodeException -> {
-                CrashReport.postCatchedException(Exception(String.format(
-                        "Sketch - InBitmapDecodeError - " +
-                                "%s" +
-                                "\nimage：%dx%d/%s" +
-                                "\ninSampleSize：%d" +
-                                "\ninBitmap：%dx%d, %d, %s" +
-                                "\nsystemState：%s",
-                        decodeUri(appContext, e.imageUri),
-                        e.imageWidth, e.imageHeight, e.imageMimeType,
-                        e.inSampleSize,
-                        e.inBitmap.width, e.inBitmap.height, SketchUtils.getByteCount(e.inBitmap), e.inBitmap.config,
-                        systemState
-                ), e.cause))
+                CrashReport.postCatchedException(
+                    Exception(
+                        String.format(
+                            "Sketch - InBitmapDecodeError - " +
+                                    "%s" +
+                                    "\nimage：%dx%d/%s" +
+                                    "\ninSampleSize：%d" +
+                                    "\ninBitmap：%dx%d, %d, %s" +
+                                    "\nsystemState：%s",
+                            decodeUri(appContext, e.imageUri),
+                            e.imageWidth,
+                            e.imageHeight,
+                            e.imageMimeType,
+                            e.inSampleSize,
+                            e.inBitmap.width,
+                            e.inBitmap.height,
+                            SketchUtils.getByteCount(e.inBitmap),
+                            e.inBitmap.config,
+                            systemState
+                        ), e.cause
+                    )
+                )
             }
             is DecodeRegionException -> {
-                CrashReport.postCatchedException(Exception(String.format(
-                        "Sketch - DecodeRegionError - " +
-                                "%s" +
-                                "\nimage：%dx%d/%s" +
-                                "\nsrcRect：%s" +
-                                "\ninSampleSize：%d" +
-                                "\nsrcRect：%s" +
-                                "\nsystemState：%s",
-                        decodeUri(appContext, e.imageUri),
-                        e.imageWidth, e.imageHeight, e.imageMimeType,
-                        e.srcRect.toString(),
-                        e.inSampleSize,
-                        e.srcRect.toShortString(),
-                        systemState
-                ), e.cause))
+                CrashReport.postCatchedException(
+                    Exception(
+                        String.format(
+                            "Sketch - DecodeRegionError - " +
+                                    "%s" +
+                                    "\nimage：%dx%d/%s" +
+                                    "\nsrcRect：%s" +
+                                    "\ninSampleSize：%d" +
+                                    "\nsrcRect：%s" +
+                                    "\nsystemState：%s",
+                            decodeUri(appContext, e.imageUri),
+                            e.imageWidth, e.imageHeight, e.imageMimeType,
+                            e.srcRect.toString(),
+                            e.inSampleSize,
+                            e.srcRect.toShortString(),
+                            systemState
+                        ), e.cause
+                    )
+                )
             }
         }
     }

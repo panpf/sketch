@@ -1,7 +1,5 @@
-package com.github.panpf.sketch;
+package com.github.panpf.sketch
 
-import androidx.annotation.NonNull;
-
-public interface SketchCallback {
-    void onError(@NonNull SketchException e);
+interface SketchCallback {
+    fun onError(e: SketchException)
 }

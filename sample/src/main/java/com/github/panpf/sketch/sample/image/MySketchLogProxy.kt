@@ -91,11 +91,11 @@ class MySketchLogProxy(context: Context) : SLog.Proxy {
         private var closed: Boolean = false
 
         init {
-            logEntryObjectPool = ObjectPool(ObjectPool.ObjectFactory { LogEntry(logEntryObjectPool!!) })
+            logEntryObjectPool = ObjectPool( { LogEntry(logEntryObjectPool!!) })
             logTimeDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.US)
         }
 
-        fun out(level: String, tag: String, msg: String?, tr: Throwable??) {
+        fun out(level: String, tag: String, msg: String?, tr: Throwable?) {
             if (closed) {
                 return
             }

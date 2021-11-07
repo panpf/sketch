@@ -13,36 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.util
 
-package com.github.panpf.sketch.util;
+import java.util.concurrent.atomic.AtomicInteger
 
-import androidx.annotation.NonNull;
+class KeyCounter {
+    private val number: AtomicInteger = AtomicInteger()
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-/**
- * Key 计数器
- */
-public class KeyCounter {
-    @NonNull
-    private AtomicInteger number;
-
-    public KeyCounter() {
-        this.number = new AtomicInteger();
-    }
-
-    /**
-     * 刷新 key
-     */
-    public void refresh() {
-        if (number.get() == Integer.MAX_VALUE) {
-            number.set(0);
+    fun refresh() {
+        if (number.get() == Int.MAX_VALUE) {
+            number.set(0)
         } else {
-            number.addAndGet(1);
+            number.addAndGet(1)
         }
     }
 
-    public int getKey() {
-        return number.get();
-    }
+    val key: Int
+        get() = number.get()
+
 }

@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.util
 
-package com.github.panpf.sketch.util;
+import java.lang.Exception
 
-import androidx.annotation.NonNull;
-
-@SuppressWarnings("WeakerAccess")
-public class NoSpaceException extends Exception {
-
-    public NoSpaceException(@NonNull String detailMessage) {
-        super(detailMessage);
-    }
-}
+class NoSpaceException(detailMessage: String) : Exception(detailMessage)

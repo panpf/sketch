@@ -13,296 +13,331 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch
 
-package com.github.panpf.sketch;
+import android.text.TextUtils
+import android.util.Log
+import androidx.annotation.IntDef
 
-import android.text.TextUtils;
-import android.util.Log;
+class SLog {
+    companion object {
+        const val VERBOSE = 1
+        const val DEBUG = 2
+        const val INFO = 4
+        const val WARNING = 8
+        const val ERROR = 16
+        const val NONE = 32
+        const val NAME_VERBOSE = "VERBOSE"
+        const val NAME_DEBUG = "DEBUG"
+        const val NAME_INFO = "INFO"
+        const val NAME_WARNING = "WARNING"
+        const val NAME_ERROR = "ERROR"
+        const val NAME_NONE = "NONE"
+        private const val TAG = "Sketch"
+        private var level = 0
+        private var proxy: Proxy = DefaultProxy()
 
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
-public class SLog {
-
-    public static final int VERBOSE = 1;
-    public static final int DEBUG = 2;
-    public static final int INFO = 4;
-    public static final int WARNING = 8;
-    public static final int ERROR = 16;
-    public static final int NONE = 32;
-
-    public static final String NAME_VERBOSE = "VERBOSE";
-    public static final String NAME_DEBUG = "DEBUG";
-    public static final String NAME_INFO = "INFO";
-    public static final String NAME_WARNING = "WARNING";
-    public static final String NAME_ERROR = "ERROR";
-    public static final String NAME_NONE = "NONE";
-
-    private static final String TAG = "Sketch";
-    private static int level;
-    private static Proxy proxy = new DefaultProxy();
-
-    static {
-        setLevel(INFO);
-    }
-
-    public static void setProxy(@Nullable Proxy proxy) {
-        if (SLog.proxy != proxy) {
-            SLog.proxy.onReplaced();
-            SLog.proxy = proxy != null ? proxy : new DefaultProxy();
-        }
-    }
-
-    public static boolean isLoggable(@Level int level) {
-        return level >= SLog.level;
-    }
-
-    @Level
-    public static int getLevel() {
-        return level;
-    }
-
-    public static void setLevel(@Level int level) {
-        if (SLog.level != level) {
-            String oldLevelName = getLevelName();
-            SLog.level = level;
-            Log.w(TAG, "SLog. " + String.format("setLevel. %s -> %s", oldLevelName, getLevelName()));
-        }
-    }
-
-    @NonNull
-    public static String getLevelName() {
-        switch (level) {
-            case VERBOSE:
-                return NAME_VERBOSE;
-            case DEBUG:
-                return NAME_DEBUG;
-            case INFO:
-                return NAME_INFO;
-            case WARNING:
-                return NAME_WARNING;
-            case ERROR:
-                return NAME_ERROR;
-            case NONE:
-                return NAME_NONE;
-            default:
-                return "UNKNOWN(" + level + ")";
-        }
-    }
-
-    private static String joinMessage(@Nullable String module, @NonNull String formatOrLog, @Nullable Object... args) {
-        if (TextUtils.isEmpty(formatOrLog)) {
-            return "";
+        init {
+            setLevel(INFO)
         }
 
-        if (args != null && args.length > 0) {
-            if (!TextUtils.isEmpty(module)) {
-                return module + ". " + String.format(formatOrLog, args);
-            } else {
-                return String.format(formatOrLog, args);
-            }
-        } else {
-            if (!TextUtils.isEmpty(module)) {
-                return module + ". " + formatOrLog;
-            } else {
-                return formatOrLog;
+        @JvmStatic
+        fun setProxy(proxy: Proxy?) {
+            if (SLog.proxy !== proxy) {
+                SLog.proxy.onReplaced()
+                SLog.proxy = proxy ?: DefaultProxy()
             }
         }
-    }
 
-
-    public static int v(@NonNull String msg) {
-        return isLoggable(VERBOSE) ? proxy.v(TAG, joinMessage(null, msg, (Object[]) null)) : 0;
-    }
-
-    public static int vf(@NonNull String format, @NonNull Object... args) {
-        return isLoggable(VERBOSE) ? proxy.v(TAG, joinMessage(null, format, args)) : 0;
-    }
-
-    public static int vm(@NonNull String module, @NonNull String msg) {
-        return isLoggable(VERBOSE) ? proxy.v(TAG, joinMessage(module, msg, (Object[]) null)) : 0;
-    }
-
-    public static int vmf(@NonNull String module, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(VERBOSE) ? proxy.v(TAG, joinMessage(module, format, args)) : 0;
-    }
-
-
-    public static int d(@NonNull String msg) {
-        return isLoggable(DEBUG) ? proxy.d(TAG, joinMessage(null, msg, (Object[]) null)) : 0;
-    }
-
-    public static int df(@NonNull String format, @NonNull Object... args) {
-        return isLoggable(DEBUG) ? proxy.d(TAG, joinMessage(null, format, args)) : 0;
-    }
-
-    public static int dm(@NonNull String module, @NonNull String msg) {
-        return isLoggable(DEBUG) ? proxy.d(TAG, joinMessage(module, msg, (Object[]) null)) : 0;
-    }
-
-    public static int dmf(@NonNull String module, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(DEBUG) ? proxy.d(TAG, joinMessage(module, format, args)) : 0;
-    }
-
-
-    public static int i(@NonNull String msg) {
-        return isLoggable(INFO) ? proxy.i(TAG, joinMessage(null, msg, (Object[]) null)) : 0;
-    }
-
-    public static int iff(@NonNull String format, @NonNull Object... args) {
-        return isLoggable(INFO) ? proxy.i(TAG, joinMessage(null, format, args)) : 0;
-    }
-
-    public static int im(@NonNull String module, @NonNull String msg) {
-        return isLoggable(INFO) ? proxy.i(TAG, joinMessage(module, msg, (Object[]) null)) : 0;
-    }
-
-    public static int imf(@NonNull String module, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(INFO) ? proxy.i(TAG, joinMessage(module, format, args)) : 0;
-    }
-
-
-    public static int w(@NonNull String msg) {
-        return isLoggable(WARNING) ? proxy.w(TAG, joinMessage(null, msg, (Object[]) null)) : 0;
-    }
-
-    public static int wf(@NonNull String format, @NonNull Object... args) {
-        return isLoggable(WARNING) ? proxy.w(TAG, joinMessage(null, format, args)) : 0;
-    }
-
-    public static int wm(@NonNull String module, @NonNull String msg) {
-        return isLoggable(WARNING) ? proxy.w(TAG, joinMessage(module, msg, (Object[]) null)) : 0;
-    }
-
-    public static int wmf(@NonNull String module, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(WARNING) ? proxy.w(TAG, joinMessage(module, format, args)) : 0;
-    }
-
-    public static int wmt(@NonNull String module, @NonNull Throwable tr, @NonNull String msg) {
-        return isLoggable(WARNING) ? proxy.w(TAG, joinMessage(module, msg, (Object[]) null), tr) : 0;
-    }
-
-    public static int wmtf(@NonNull String module, @NonNull Throwable tr, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(WARNING) ? proxy.w(TAG, joinMessage(module, format, args), tr) : 0;
-    }
-
-
-    public static int e(@NonNull String msg) {
-        return isLoggable(ERROR) ? proxy.e(TAG, joinMessage(null, msg, (Object[]) null)) : 0;
-    }
-
-    public static int ef(@NonNull String format, @NonNull Object... args) {
-        return isLoggable(ERROR) ? proxy.e(TAG, joinMessage(null, format, args)) : 0;
-    }
-
-    public static int em(@NonNull String module, @NonNull String msg) {
-        return isLoggable(ERROR) ? proxy.e(TAG, joinMessage(module, msg, (Object[]) null)) : 0;
-    }
-
-    public static int emf(@NonNull String module, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(ERROR) ? proxy.e(TAG, joinMessage(module, format, args)) : 0;
-    }
-
-    public static int emt(@NonNull String module, @NonNull Throwable tr, @NonNull String msg) {
-        return isLoggable(ERROR) ? proxy.e(TAG, joinMessage(module, msg, (Object[]) null), tr) : 0;
-    }
-
-    public static int emtf(@NonNull String module, @NonNull Throwable tr, @NonNull String format, @NonNull Object... args) {
-        return isLoggable(ERROR) ? proxy.e(TAG, joinMessage(module, format, args), tr) : 0;
-    }
-
-
-    @Retention(RetentionPolicy.SOURCE)
-    @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
-    @IntDef({VERBOSE, DEBUG, INFO, WARNING, ERROR, NONE,})
-    public @interface Level {
-    }
-
-    public interface Proxy {
-        int v(@NonNull String tag, @NonNull String msg);
-
-        int v(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr);
-
-        int d(@NonNull String tag, @NonNull String msg);
-
-        int d(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr);
-
-        int i(@NonNull String tag, @NonNull String msg);
-
-        int i(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr);
-
-        int w(@NonNull String tag, @NonNull String msg);
-
-        int w(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr);
-
-        int e(@NonNull String tag, @NonNull String msg);
-
-        int e(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr);
-
-        void onReplaced();
-    }
-
-    private static class DefaultProxy implements Proxy {
-
-        @Override
-        public int v(@NonNull String tag, @NonNull String msg) {
-            return Log.v(tag, msg);
+        @JvmStatic
+        fun isLoggable(@Level level: Int): Boolean {
+            return level >= SLog.level
         }
 
-        @Override
-        public int v(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr) {
-            return Log.v(tag, msg, tr);
+        @Level
+        @JvmStatic
+        fun getLevel(): Int {
+            return level
         }
 
-        @Override
-        public int d(@NonNull String tag, @NonNull String msg) {
-            return Log.d(tag, msg);
+        @JvmStatic
+        fun setLevel(@Level level: Int) {
+            if (SLog.level != level) {
+                val oldLevelName = levelName
+                SLog.level = level
+                Log.w(TAG, "SLog. " + String.format("setLevel. %s -> %s", oldLevelName, levelName))
+            }
         }
 
-        @Override
-        public int d(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr) {
-            return Log.d(tag, msg, tr);
+        @JvmStatic
+        val levelName: String
+            get() = when (level) {
+                VERBOSE -> NAME_VERBOSE
+                DEBUG -> NAME_DEBUG
+                INFO -> NAME_INFO
+                WARNING -> NAME_WARNING
+                ERROR -> NAME_ERROR
+                NONE -> NAME_NONE
+                else -> "UNKNOWN(" + level + ")"
+            }
+
+        @JvmStatic
+        private fun joinMessage(module: String?, formatOrLog: String, vararg args: Any?): String {
+            if (TextUtils.isEmpty(formatOrLog)) {
+                return ""
+            }
+            return if (args.isNotEmpty()) {
+                if (!TextUtils.isEmpty(module)) {
+                    module + ". " + String.format(formatOrLog, *args)
+                } else {
+                    String.format(formatOrLog, *args)
+                }
+            } else {
+                if (!TextUtils.isEmpty(module)) {
+                    "$module. $formatOrLog"
+                } else {
+                    formatOrLog
+                }
+            }
         }
 
-        @Override
-        public int i(@NonNull String tag, @NonNull String msg) {
-            return Log.i(tag, msg);
+        @JvmStatic
+        fun v(msg: String): Int {
+            return if (isLoggable(VERBOSE)) proxy.v(
+                TAG,
+                joinMessage(null, msg, *(null as Array<Any?>?)!!)
+            ) else 0
         }
 
-        @Override
-        public int i(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr) {
-            return Log.i(tag, msg, tr);
+        @JvmStatic
+        fun vf(format: String, vararg args: Any): Int {
+            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(null, format, *args)) else 0
         }
 
-        @Override
-        public int w(@NonNull String tag, @NonNull String msg) {
-            return Log.w(tag, msg);
+        @JvmStatic
+        fun vm(module: String, msg: String): Int {
+            return if (isLoggable(VERBOSE)) proxy.v(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!)
+            ) else 0
         }
 
-        @Override
-        public int w(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr) {
-            return Log.w(tag, msg, tr);
+        @JvmStatic
+        fun vmf(module: String, format: String, vararg args: Any): Int {
+            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(module, format, *args)) else 0
         }
 
-        @Override
-        public int e(@NonNull String tag, @NonNull String msg) {
-            return Log.e(tag, msg);
+        @JvmStatic
+        fun d(msg: String): Int {
+            return if (isLoggable(DEBUG)) proxy.d(
+                TAG,
+                joinMessage(null, msg, *(null as Array<Any?>?)!!)
+            ) else 0
         }
 
-        @Override
-        public int e(@NonNull String tag, @NonNull String msg, @Nullable Throwable tr) {
-            return Log.e(tag, msg, tr);
+        @JvmStatic
+        fun df(format: String, vararg args: Any): Int {
+            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(null, format, *args)) else 0
         }
 
-        @Override
-        public void onReplaced() {
+        @JvmStatic
+        fun dm(module: String, msg: String): Int {
+            return if (isLoggable(DEBUG)) proxy.d(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun dmf(module: String, format: String, vararg args: Any): Int {
+            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(module, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun i(msg: String): Int {
+            return if (isLoggable(INFO)) proxy.i(
+                TAG,
+                joinMessage(null, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun iff(format: String, vararg args: Any): Int {
+            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(null, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun im(module: String, msg: String): Int {
+            return if (isLoggable(INFO)) proxy.i(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun imf(module: String, format: String, vararg args: Any): Int {
+            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(module, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun w(msg: String): Int {
+            return if (isLoggable(WARNING)) proxy.w(
+                TAG,
+                joinMessage(null, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun wf(format: String, vararg args: Any): Int {
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(null, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun wm(module: String, msg: String): Int {
+            return if (isLoggable(WARNING)) proxy.w(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun wmf(module: String, format: String, vararg args: Any): Int {
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(module, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun wmt(module: String, tr: Throwable, msg: String): Int {
+            return if (isLoggable(WARNING)) proxy.w(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!),
+                tr
+            ) else 0
+        }
+
+        @JvmStatic
+        fun wmtf(module: String, tr: Throwable, format: String, vararg args: Any): Int {
+            return if (isLoggable(WARNING)) proxy.w(
+                TAG,
+                joinMessage(module, format, *args),
+                tr
+            ) else 0
+        }
+
+        @JvmStatic
+        fun e(msg: String): Int {
+            return if (isLoggable(ERROR)) proxy.e(
+                TAG,
+                joinMessage(null, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun ef(format: String, vararg args: Any): Int {
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(null, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun em(module: String, msg: String): Int {
+            return if (isLoggable(ERROR)) proxy.e(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!)
+            ) else 0
+        }
+
+        @JvmStatic
+        fun emf(module: String, format: String, vararg args: Any): Int {
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(module, format, *args)) else 0
+        }
+
+        @JvmStatic
+        fun emt(module: String, tr: Throwable, msg: String): Int {
+            return if (isLoggable(ERROR)) proxy.e(
+                TAG,
+                joinMessage(module, msg, *(null as Array<Any?>?)!!),
+                tr
+            ) else 0
+        }
+
+        @JvmStatic
+        fun emtf(module: String, tr: Throwable, format: String, vararg args: Any): Int {
+            return if (isLoggable(ERROR)) proxy.e(
+                TAG,
+                joinMessage(module, format, *args),
+                tr
+            ) else 0
+        }
+
+        @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+        @Target(
+            AnnotationTarget.VALUE_PARAMETER,
+            AnnotationTarget.FIELD,
+            AnnotationTarget.FUNCTION,
+            AnnotationTarget.PROPERTY_GETTER,
+            AnnotationTarget.PROPERTY_SETTER,
+            AnnotationTarget.LOCAL_VARIABLE
+        )
+        @IntDef(
+            VERBOSE, DEBUG, INFO, WARNING, ERROR, NONE
+        )
+        annotation class Level
+    }
+
+    interface Proxy {
+        fun v(tag: String, msg: String): Int
+        fun v(tag: String, msg: String, tr: Throwable?): Int
+        fun d(tag: String, msg: String): Int
+        fun d(tag: String, msg: String, tr: Throwable?): Int
+        fun i(tag: String, msg: String): Int
+        fun i(tag: String, msg: String, tr: Throwable?): Int
+        fun w(tag: String, msg: String): Int
+        fun w(tag: String, msg: String, tr: Throwable?): Int
+        fun e(tag: String, msg: String): Int
+        fun e(tag: String, msg: String, tr: Throwable?): Int
+        fun onReplaced()
+    }
+
+    private class DefaultProxy : Proxy {
+        override fun v(tag: String, msg: String): Int {
+            return Log.v(tag, msg)
+        }
+
+        override fun v(tag: String, msg: String, tr: Throwable?): Int {
+            return Log.v(tag, msg, tr)
+        }
+
+        override fun d(tag: String, msg: String): Int {
+            return Log.d(tag, msg)
+        }
+
+        override fun d(tag: String, msg: String, tr: Throwable?): Int {
+            return Log.d(tag, msg, tr)
+        }
+
+        override fun i(tag: String, msg: String): Int {
+            return Log.i(tag, msg)
+        }
+
+        override fun i(tag: String, msg: String, tr: Throwable?): Int {
+            return Log.i(tag, msg, tr)
+        }
+
+        override fun w(tag: String, msg: String): Int {
+            return Log.w(tag, msg)
+        }
+
+        override fun w(tag: String, msg: String, tr: Throwable?): Int {
+            return Log.w(tag, msg, tr)
+        }
+
+        override fun e(tag: String, msg: String): Int {
+            return Log.e(tag, msg)
+        }
+
+        override fun e(tag: String, msg: String, tr: Throwable?): Int {
+            return Log.e(tag, msg, tr)
+        }
+
+        override fun onReplaced() {
             // do nothing
         }
     }

@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch
 
-package com.github.panpf.sketch;
+import android.content.Context
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-
-public interface Initializer {
-    void onInitialize(@NonNull Context context, @NonNull Configuration configuration);
+interface Initializer {
+    fun onInitialize(context: Context, configuration: Configuration)
 }

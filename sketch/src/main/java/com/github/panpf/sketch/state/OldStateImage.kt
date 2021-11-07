@@ -41,7 +41,7 @@ class OldStateImage : StateImage {
         sketchView: SketchView,
         displayOptions: DisplayOptions
     ): Drawable? {
-        var drawable = SketchUtils.getLastDrawable(sketchView.drawable)
+        var drawable = SketchUtils.getLastDrawable(sketchView.getDrawable())
         if (drawable is SketchLoadingDrawable) {
             drawable = drawable.wrappedDrawable
         }

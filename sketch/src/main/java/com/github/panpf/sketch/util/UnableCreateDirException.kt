@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.util
 
-package com.github.panpf.sketch.util;
+import java.lang.Exception
 
-public class UnableCreateDirException extends Exception {
-
-    public UnableCreateDirException(String detailMessage) {
-        super(detailMessage);
-    }
-}
+class UnableCreateDirException(detailMessage: String?) : Exception(detailMessage)

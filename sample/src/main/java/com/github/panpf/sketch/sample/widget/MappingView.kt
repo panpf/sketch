@@ -57,7 +57,11 @@ class MappingView : SketchImageView {
         init(context)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         init(context)
     }
 
@@ -98,32 +102,40 @@ class MappingView : SketchImageView {
 
             for (block in depBlockDisplayer!!.blockList) {
                 if (!block.isEmpty) {
-                    canvas.drawRect((block.srcRect.left + 1) / widthScale,
-                            (block.srcRect.top + 1) / heightScale,
-                            (block.srcRect.right - 1) / widthScale,
-                            (block.srcRect.bottom - 1) / heightScale, drawBlockPaint!!)
+                    canvas.drawRect(
+                        (block.srcRect.left + 1) / widthScale,
+                        (block.srcRect.top + 1) / heightScale,
+                        (block.srcRect.right - 1) / widthScale,
+                        (block.srcRect.bottom - 1) / heightScale, drawBlockPaint!!
+                    )
                 } else if (!block.isDecodeParamEmpty) {
-                    canvas.drawRect((block.srcRect.left + 1) / widthScale,
-                            (block.srcRect.top + 1) / heightScale,
-                            (block.srcRect.right - 1) / widthScale,
-                            (block.srcRect.bottom - 1) / heightScale, loadingBlockPaint!!)
+                    canvas.drawRect(
+                        (block.srcRect.left + 1) / widthScale,
+                        (block.srcRect.top + 1) / heightScale,
+                        (block.srcRect.right - 1) / widthScale,
+                        (block.srcRect.bottom - 1) / heightScale, loadingBlockPaint!!
+                    )
                 }
             }
 
             val drawSrcRect = depBlockDisplayer!!.drawSrcRect
             if (!drawSrcRect.isEmpty) {
-                canvas.drawRect(drawSrcRect.left / widthScale,
-                        drawSrcRect.top / heightScale,
-                        drawSrcRect.right / widthScale,
-                        drawSrcRect.bottom / heightScale, originSrcRectPaint!!)
+                canvas.drawRect(
+                    drawSrcRect.left / widthScale,
+                    drawSrcRect.top / heightScale,
+                    drawSrcRect.right / widthScale,
+                    drawSrcRect.bottom / heightScale, originSrcRectPaint!!
+                )
             }
 
             val decodeSrcRect = depBlockDisplayer!!.decodeSrcRect
             if (!decodeSrcRect.isEmpty) {
-                canvas.drawRect(decodeSrcRect.left / widthScale,
-                        decodeSrcRect.top / heightScale,
-                        decodeSrcRect.right / widthScale,
-                        decodeSrcRect.bottom / heightScale, realSrcRectPaint!!)
+                canvas.drawRect(
+                    decodeSrcRect.left / widthScale,
+                    decodeSrcRect.top / heightScale,
+                    decodeSrcRect.right / widthScale,
+                    decodeSrcRect.bottom / heightScale, realSrcRectPaint!!
+                )
             }
         }
 
@@ -154,14 +166,18 @@ class MappingView : SketchImageView {
 
     private val imageUri: String?
         get() {
-            val displayCache = displayCache
             return displayCache?.uri
         }
 
     fun update(newDrawableSize: Size, newVisibleRect: Rect) {
         if (newDrawableSize.width == 0 || newDrawableSize.height == 0 || newVisibleRect.isEmpty) {
-            SLog.wmf("MappingView", "update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
-                    imageUri, newDrawableSize.toString(), newVisibleRect.toShortString())
+            SLog.wmf(
+                "MappingView",
+                "update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
+                imageUri ?: "",
+                newDrawableSize.toString(),
+                newVisibleRect.toShortString()
+            )
 
             drawableSize.set(0, 0)
             visibleRect.setEmpty()
@@ -178,7 +194,11 @@ class MappingView : SketchImageView {
 
         if (!isUsableDrawable || width == 0 || height == 0) {
             if (SLog.isLoggable(SLog.VERBOSE)) {
-                SLog.vmf("MappingView", "update. view size is 0 or getDrawable() is null. %s", imageUri!!)
+                SLog.vmf(
+                    "MappingView",
+                    "update. view size is 0 or getDrawable() is null. %s",
+                    imageUri!!
+                )
             }
 
             if (!visibleMappingRect!!.isEmpty) {
@@ -232,7 +252,11 @@ class MappingView : SketchImageView {
         val drawableHeight = drawable.intrinsicHeight
         val maxWidth: Int
         val maxHeight: Int
-        if (Math.max(drawableWidth, drawableHeight).toFloat() / Math.min(drawableWidth, drawableHeight) >= 4) {
+        if (Math.max(drawableWidth, drawableHeight).toFloat() / Math.min(
+                drawableWidth,
+                drawableHeight
+            ) >= 4
+        ) {
             maxWidth = Math.round(resources.displayMetrics.widthPixels / 2f)
             maxHeight = Math.round(resources.displayMetrics.heightPixels / 2f)
         } else {
@@ -242,7 +266,8 @@ class MappingView : SketchImageView {
         val newViewWidth: Int
         val newViewHeight: Int
         if (drawableWidth > maxWidth || drawableHeight > maxHeight) {
-            val finalScale = Math.min(maxWidth.toFloat() / drawableWidth, maxHeight.toFloat() / drawableHeight)
+            val finalScale =
+                Math.min(maxWidth.toFloat() / drawableWidth, maxHeight.toFloat() / drawableHeight)
             newViewWidth = Math.round(drawableWidth * finalScale)
             newViewHeight = Math.round(drawableHeight * finalScale)
         } else {
@@ -268,10 +293,11 @@ class MappingView : SketchImageView {
         val widthScale = selfWidth.toFloat() / drawableSize.width
         val heightScale = selfHeight.toFloat() / drawableSize.height
         this.visibleMappingRect!!.set(
-                Math.round(visibleRect.left * widthScale),
-                Math.round(visibleRect.top * heightScale),
-                Math.round(visibleRect.right * widthScale),
-                Math.round(visibleRect.bottom * heightScale))
+            Math.round(visibleRect.left * widthScale),
+            Math.round(visibleRect.top * heightScale),
+            Math.round(visibleRect.right * widthScale),
+            Math.round(visibleRect.bottom * heightScale)
+        )
     }
 
     fun interface OnSingleClickListener {

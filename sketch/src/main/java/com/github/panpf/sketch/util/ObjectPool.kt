@@ -13,116 +13,89 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.util
 
-package com.github.panpf.sketch.util;
+import com.github.panpf.sketch.util.ObjectPool.ObjectFactory
+import java.util.*
 
-import androidx.annotation.NonNull;
+class ObjectPool<T> @JvmOverloads constructor(
+    private val objectFactory: ObjectFactory<T>,
+    private var maxPoolSize: Int = MAX_POOL_SIZE
+) {
 
-import java.util.LinkedList;
-import java.util.Queue;
-
-@SuppressWarnings("WeakerAccess")
-public class ObjectPool<T> {
-    private static final int MAX_POOL_SIZE = 10;
-    private final Object editLock = new Object();
-
-    @NonNull
-    private Queue<T> cacheQueue;
-    @NonNull
-    private ObjectFactory<T> objectFactory;
-    private int maxPoolSize;
-
-    public ObjectPool(@NonNull ObjectFactory<T> objectFactory, int maxPoolSize) {
-        this.objectFactory = objectFactory;
-        this.maxPoolSize = maxPoolSize;
-        this.cacheQueue = new LinkedList<T>();
+    companion object {
+        private const val MAX_POOL_SIZE = 10
     }
 
-    public ObjectPool(@NonNull ObjectFactory<T> objectFactory) {
-        this(objectFactory, MAX_POOL_SIZE);
+    private val editLock = Any()
+    private val cacheQueue: Queue<T>
+
+    @JvmOverloads
+    constructor(classType: Class<T>, maxPoolSize: Int = MAX_POOL_SIZE) : this(ObjectFactory<T> {
+        try {
+            classType.newInstance()
+        } catch (e: InstantiationException) {
+            throw RuntimeException(e)
+        } catch (e: IllegalAccessException) {
+            throw RuntimeException(e)
+        }
+    }, maxPoolSize)
+
+    init {
+        cacheQueue = LinkedList()
     }
 
-    public ObjectPool(@NonNull final Class<T> classType, int maxPoolSize) {
-        this(new ObjectFactory<T>() {
-            @NonNull
-            @Override
-            public T newObject() {
-                try {
-                    return classType.newInstance();
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+    fun get(): T {
+        synchronized(editLock) {
+            val t = if (!cacheQueue.isEmpty()) cacheQueue.poll() else objectFactory.newObject()
+            if (t is CacheStatus) {
+                (t as CacheStatus).isInCachePool = false
+            }
+            return t
+        }
+    }
+
+    fun put(t: T) {
+        synchronized(editLock) {
+            if (cacheQueue.size < maxPoolSize) {
+                if (t is CacheStatus) {
+                    (t as CacheStatus).isInCachePool = true
                 }
-            }
-        }, maxPoolSize);
-    }
-
-    public ObjectPool(@NonNull final Class<T> classType) {
-        this(classType, MAX_POOL_SIZE);
-    }
-
-    @NonNull
-    public T get() {
-        synchronized (editLock) {
-            T t = !cacheQueue.isEmpty() ? cacheQueue.poll() : objectFactory.newObject();
-            if (t instanceof CacheStatus) {
-                ((CacheStatus) t).setInCachePool(false);
-            }
-            return t;
-        }
-    }
-
-    public void put(@NonNull T t) {
-        synchronized (editLock) {
-            if (cacheQueue.size() < maxPoolSize) {
-                if (t instanceof CacheStatus) {
-                    ((CacheStatus) t).setInCachePool(true);
-                }
-                cacheQueue.add(t);
+                cacheQueue.add(t)
             }
         }
     }
 
-    public void clear() {
-        synchronized (editLock) {
-            cacheQueue.clear();
-        }
+    fun clear() {
+        synchronized(editLock) { cacheQueue.clear() }
     }
 
-    public int getMaxPoolSize() {
-        return maxPoolSize;
+    fun getMaxPoolSize(): Int {
+        return maxPoolSize
     }
 
-    public void setMaxPoolSize(int maxPoolSize) {
-        this.maxPoolSize = maxPoolSize;
-
-        synchronized (editLock) {
-            if (cacheQueue.size() > maxPoolSize) {
-                int number = maxPoolSize - cacheQueue.size();
-                int count = 0;
+    fun setMaxPoolSize(maxPoolSize: Int) {
+        this.maxPoolSize = maxPoolSize
+        synchronized(editLock) {
+            if (cacheQueue.size > maxPoolSize) {
+                val number = maxPoolSize - cacheQueue.size
+                var count = 0
                 while (count++ < number) {
-                    cacheQueue.poll();
+                    cacheQueue.poll()
                 }
             }
         }
     }
 
-    public int size() {
-        synchronized (editLock) {
-            return cacheQueue.size();
-        }
+    fun size(): Int {
+        synchronized(editLock) { return cacheQueue.size }
     }
 
-    public interface ObjectFactory<T> {
-        @NonNull
-        T newObject();
+    fun interface ObjectFactory<T> {
+        fun newObject(): T
     }
 
-    public interface CacheStatus {
-
-        boolean isInCachePool();
-
-        void setInCachePool(boolean inCachePool);
+    interface CacheStatus {
+        var isInCachePool: Boolean
     }
 }
