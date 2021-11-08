@@ -13,37 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
+import com.github.panpf.sketch.request.DownloadProgressListener
+import java.lang.ref.WeakReference
 
-import androidx.annotation.NonNull;
+internal class ProgressListenerProxy(view: FunctionCallbackView) : DownloadProgressListener {
 
-import java.lang.ref.WeakReference;
+    private val viewWeakReference: WeakReference<FunctionCallbackView> = WeakReference(view)
 
-import com.github.panpf.sketch.request.DownloadProgressListener;
-
-class ProgressListenerProxy implements DownloadProgressListener {
-    @NonNull
-    private WeakReference<FunctionCallbackView> viewWeakReference;
-
-    ProgressListenerProxy(@NonNull FunctionCallbackView view) {
-        this.viewWeakReference = new WeakReference<>(view);
-    }
-
-    @Override
-    public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return;
-        }
-
-        boolean needInvokeInvalidate = view.getFunctions().onUpdateDownloadProgress(totalLength, completedLength);
+    override fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int) {
+        val view = viewWeakReference.get() ?: return
+        val needInvokeInvalidate =
+            view.functions.onUpdateDownloadProgress(totalLength, completedLength)
         if (needInvokeInvalidate) {
-            view.invalidate();
+            view.invalidate()
         }
-
-        if (view.wrappedProgressListener != null) {
-            view.wrappedProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
-        }
+        view.wrappedProgressListener?.onUpdateDownloadProgress(totalLength, completedLength)
     }
 }

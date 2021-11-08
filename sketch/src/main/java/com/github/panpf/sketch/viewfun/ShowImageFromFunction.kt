@@ -13,143 +13,108 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.drawable.SketchDrawable;
-import com.github.panpf.sketch.drawable.SketchLoadingDrawable;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.annotation.SuppressLint
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.drawable.Drawable
+import android.view.View
+import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.drawable.SketchLoadingDrawable
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.util.SketchUtils
 
 /**
- * 显示图片来源功能，会在 {@link android.widget.ImageView} 的左上角显示一个三角形的色块用于标识本次图片是从哪里来的
- * <ul>
- * <li>红色：网络</li>
- * <li>黄色：磁盘缓存</li>
- * <li>蓝色：本地</li>
- * <li>绿色：内存缓存
- * <li>紫色：内存
- * </ul>
+ * 显示图片来源功能，会在 [android.widget.ImageView] 的左上角显示一个三角形的色块用于标识本次图片是从哪里来的
+ *
+ *  * 红色：网络
+ *  * 黄色：磁盘缓存
+ *  * 蓝色：本地
+ *  * 绿色：内存缓存
+ *  * 紫色：内存
+ *
  */
-@SuppressWarnings("WeakerAccess")
-public class ShowImageFromFunction extends ViewFunction {
-    private static final int FROM_FLAG_COLOR_MEMORY = 0x88A020F0;
-    private static final int FROM_FLAG_COLOR_MEMORY_CACHE = 0x8800FF00;
-    private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
-    private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
-    private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
-
-    @NonNull
-    private View view;
-
-    @Nullable
-    private Path imageFromPath;
-    @Nullable
-    private Paint imageFromPaint;
-    @Nullable
-    private ImageFrom imageFrom;
-
-    public ShowImageFromFunction(@NonNull View view) {
-        this.view = view;
+class ShowImageFromFunction(private val view: View) : ViewFunction() {
+    private var imageFromPath: Path? = null
+    private var imageFromPaint: Paint? = null
+    var imageFrom: ImageFrom? = null
+    override fun onReadyDisplay(uri: String): Boolean {
+        imageFrom = null
+        return true
     }
 
-    @Override
-    public boolean onReadyDisplay(@NonNull String uri) {
-        imageFrom = null;
-        return true;
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        initImageFromPath()
     }
 
-    @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        initImageFromPath();
-    }
-
-    @Override
-    public void onDraw(@NonNull Canvas canvas) {
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas) {
         if (imageFrom == null) {
-            return;
+            return
         }
-
         if (imageFromPath == null) {
-            initImageFromPath();
+            initImageFromPath()
         }
-        if (imageFromPaint == null) {
-            imageFromPaint = new Paint();
-            imageFromPaint.setAntiAlias(true);
+        val imageFromPaint = imageFromPaint ?: Paint().apply {
+            this@ShowImageFromFunction.imageFromPaint = this
+            isAntiAlias = true
         }
-        switch (imageFrom) {
-            case MEMORY_CACHE:
-                imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY_CACHE);
-                break;
-            case DISK_CACHE:
-                imageFromPaint.setColor(FROM_FLAG_COLOR_DISK_CACHE);
-                break;
-            case NETWORK:
-                imageFromPaint.setColor(FROM_FLAG_COLOR_NETWORK);
-                break;
-            case LOCAL:
-                imageFromPaint.setColor(FROM_FLAG_COLOR_LOCAL);
-                break;
-            case MEMORY:
-                imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY);
-                break;
-            default:
-                return;
+        when (imageFrom) {
+            ImageFrom.MEMORY_CACHE -> imageFromPaint.color = FROM_FLAG_COLOR_MEMORY_CACHE
+            ImageFrom.DISK_CACHE -> imageFromPaint.color = FROM_FLAG_COLOR_DISK_CACHE
+            ImageFrom.NETWORK -> imageFromPaint.color = FROM_FLAG_COLOR_NETWORK
+            ImageFrom.LOCAL -> imageFromPaint.color = FROM_FLAG_COLOR_LOCAL
+            ImageFrom.MEMORY -> imageFromPaint.color = FROM_FLAG_COLOR_MEMORY
+            else -> return
         }
-        canvas.drawPath(imageFromPath, imageFromPaint);
+        canvas.drawPath(imageFromPath, imageFromPaint)
     }
 
-    private void initImageFromPath() {
+    private fun initImageFromPath() {
         if (imageFromPath == null) {
-            imageFromPath = new Path();
+            imageFromPath = Path()
         } else {
-            imageFromPath.reset();
+            imageFromPath!!.reset()
         }
-        int x = view.getWidth() / 10;
-        int y = view.getWidth() / 10;
-        int left2 = view.getPaddingLeft();
-        int top2 = view.getPaddingTop();
-        imageFromPath.moveTo(left2, top2);
-        imageFromPath.lineTo(left2 + x, top2);
-        imageFromPath.lineTo(left2, top2 + y);
-        imageFromPath.close();
+        val x = view.width / 10
+        val y = view.width / 10
+        val left2 = view.paddingLeft
+        val top2 = view.paddingTop
+        imageFromPath!!.moveTo(left2.toFloat(), top2.toFloat())
+        imageFromPath!!.lineTo((left2 + x).toFloat(), top2.toFloat())
+        imageFromPath!!.lineTo(left2.toFloat(), (top2 + y).toFloat())
+        imageFromPath!!.close()
     }
 
-    @Override
-    public boolean onDetachedFromWindow() {
+    override fun onDetachedFromWindow(): Boolean {
         // drawable都已经被清空了，图片来源标识当然要重置了
-        imageFrom = null;
-        return false;
+        imageFrom = null
+        return false
     }
 
-    @Override
-    public boolean onDrawableChanged(@NonNull String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        ImageFrom oldImageFrom = imageFrom;
-        ImageFrom newImageFrom = null;
-        Drawable lastDrawable = SketchUtils.getLastDrawable(newDrawable);
-        if (!(lastDrawable instanceof SketchLoadingDrawable) && lastDrawable instanceof SketchDrawable) {
-            SketchDrawable sketchDrawable = (SketchDrawable) lastDrawable;
-            newImageFrom = sketchDrawable.getImageFrom();
+    override fun onDrawableChanged(
+        callPosition: String,
+        oldDrawable: Drawable?,
+        newDrawable: Drawable?
+    ): Boolean {
+        val oldImageFrom = imageFrom
+        var newImageFrom: ImageFrom? = null
+        val lastDrawable = SketchUtils.getLastDrawable(newDrawable)
+        if (lastDrawable !is SketchLoadingDrawable && lastDrawable is SketchDrawable) {
+            val sketchDrawable = lastDrawable as SketchDrawable
+            newImageFrom = sketchDrawable.imageFrom
         }
-        imageFrom = newImageFrom;
-        return oldImageFrom != newImageFrom;
+        imageFrom = newImageFrom
+        return oldImageFrom != newImageFrom
     }
 
-    @Nullable
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    public void setImageFrom(@Nullable ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
+    companion object {
+        private const val FROM_FLAG_COLOR_MEMORY = -0x775fdf10
+        private const val FROM_FLAG_COLOR_MEMORY_CACHE = -0x77ff0100
+        private const val FROM_FLAG_COLOR_LOCAL = -0x77ffff01
+        private const val FROM_FLAG_COLOR_DISK_CACHE = -0x77000100
+        private const val FROM_FLAG_COLOR_NETWORK = -0x77010000
     }
 }

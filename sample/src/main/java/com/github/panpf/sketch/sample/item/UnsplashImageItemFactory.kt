@@ -47,7 +47,7 @@ class UnsplashImageItemFactory(
         binding.imageUnsplashImageItem.apply {
             setShowGifFlagEnabled(R.drawable.ic_gif)
             setOptions(ImageOptions.LIST_FULL)
-            onClickListener = View.OnClickListener {
+            setOnClickListener {
                 onClickPhoto(
                     binding.imageUnsplashImageItem,
                     item.absoluteAdapterPosition,
@@ -66,7 +66,7 @@ class UnsplashImageItemFactory(
 
         binding.imageUnsplashImageItemUserProfile.apply {
             setOptions(ImageOptions.CIRCULAR_STROKE)
-            onClickListener = View.OnClickListener {
+            setOnClickListener {
                 val data = item.dataOrThrow
                 val uri = Uri.parse(data.user!!.links!!.html)
                     .buildUpon()

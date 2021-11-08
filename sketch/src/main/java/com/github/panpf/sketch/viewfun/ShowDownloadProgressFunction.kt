@@ -13,165 +13,145 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.request.CancelCause;
-import com.github.panpf.sketch.request.DisplayCache;
-import com.github.panpf.sketch.request.ErrorCause;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.shaper.ImageShaper;
-import com.github.panpf.sketch.uri.UriModel;
+import android.annotation.SuppressLint
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.view.View
+import androidx.annotation.ColorInt
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.request.CancelCause
+import com.github.panpf.sketch.request.DisplayCache
+import com.github.panpf.sketch.request.ErrorCause
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.shaper.ImageShaper
+import com.github.panpf.sketch.uri.UriModel
 
 /**
- * 显示下载进度功能，会在 {@link android.widget.ImageView} 上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
+ * 显示下载进度功能，会在 [android.widget.ImageView] 上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
-@SuppressWarnings("WeakerAccess")
-public class ShowDownloadProgressFunction extends ViewFunction {
-    static final int DEFAULT_MASK_COLOR = 0x22000000;
+class ShowDownloadProgressFunction(private val view: FunctionPropertyView) : ViewFunction() {
 
-    private static final String NAME = "ShowProgressFunction";
-    private static final int NONE = -1;
+    private var maskColor = DEFAULT_MASK_COLOR
+    private var maskShaper: ImageShaper? = null
+    private var maskPaint: Paint? = null
+    private var progress = NONE.toFloat()
+    private var bounds: Rect? = null
 
-    @NonNull
-    private FunctionPropertyView view;
-    private int maskColor = DEFAULT_MASK_COLOR;
-    @Nullable
-    private ImageShaper maskShaper;
-
-    @Nullable
-    private Paint maskPaint;
-    private float progress = NONE;
-    @Nullable
-    private Rect bounds;
-
-    public ShowDownloadProgressFunction(@NonNull FunctionPropertyView view) {
-        this.view = view;
+    override fun onReadyDisplay(uri: String): Boolean {
+        val uriModel = UriModel.match(view.context, uri)
+        val newProgress = if (uriModel != null && uriModel.isFromNet) 0 else NONE.toLong()
+        val needRefresh = progress != newProgress.toFloat()
+        progress = newProgress.toFloat()
+        return needRefresh
     }
 
-    @Override
-    public boolean onReadyDisplay(@NonNull String uri) {
-        UriModel uriModel = UriModel.match(view.getContext(), uri);
-        long newProgress = uriModel != null && uriModel.isFromNet() ? 0 : NONE;
-        boolean needRefresh = progress != newProgress;
-        progress = newProgress;
-        return needRefresh;
-    }
-
-    @Override
-    public void onDraw(@NonNull Canvas canvas) {
-        if (progress == NONE) {
-            return;
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas) {
+        if (progress == NONE.toFloat()) {
+            return
         }
-
-        ImageShaper shaper = getMaskShaper();
+        val shaper = getMaskShaper()
         if (shaper != null) {
-            canvas.save();
+            canvas.save()
             try {
-                if (bounds == null) {
-                    bounds = new Rect();
+                val bounds = bounds ?: Rect().apply {
+                    this@ShowDownloadProgressFunction.bounds = this
                 }
-                bounds.set(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom());
-                Path maskPath = shaper.getPath(bounds);
-                canvas.clipPath(maskPath);
-            } catch (UnsupportedOperationException e) {
-                SLog.em(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                e.printStackTrace();
+                bounds.set(
+                    view.paddingLeft,
+                    view.paddingTop,
+                    view.width - view.paddingRight,
+                    view.height - view.paddingBottom
+                )
+                val maskPath = shaper.getPath(bounds)
+                canvas.clipPath(maskPath)
+            } catch (e: UnsupportedOperationException) {
+                SLog.em(
+                    NAME,
+                    "The current environment doesn't support clipPath has shut down automatically hardware acceleration"
+                )
+                view.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                e.printStackTrace()
             }
         }
-
-        if (maskPaint == null) {
-            maskPaint = new Paint();
-            maskPaint.setColor(maskColor);
-            maskPaint.setAntiAlias(true);
+        val maskPaint = maskPaint ?: Paint().apply {
+            color = maskColor
+            isAntiAlias = true
+            this@ShowDownloadProgressFunction.maskPaint = this
         }
         canvas.drawRect(
-                view.getPaddingLeft(),
-                view.getPaddingTop() + (progress * view.getHeight()),
-                view.getWidth() - view.getPaddingLeft() - view.getPaddingRight(),
-                view.getHeight() - view.getPaddingTop() - view.getPaddingBottom(),
-                maskPaint);
-
+            view.paddingLeft.toFloat(),
+            view.paddingTop + progress * view.height,
+            (view.width - view.paddingLeft - view.paddingRight).toFloat(),
+            (view.height - view.paddingTop - view.paddingBottom).toFloat(),
+            maskPaint
+        )
         if (shaper != null) {
-            canvas.restore();
+            canvas.restore()
         }
     }
 
-    @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        progress = (float) completedLength / totalLength;
-        return true;
+    override fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int): Boolean {
+        progress = completedLength.toFloat() / totalLength
+        return true
     }
 
-    @Override
-    public boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
-        progress = NONE;
-        return true;
+    override fun onDisplayCompleted(
+        drawable: Drawable,
+        imageFrom: ImageFrom,
+        imageAttrs: ImageAttrs
+    ): Boolean {
+        progress = NONE.toFloat()
+        return true
     }
 
-    @Override
-    public boolean onDisplayError(@NonNull ErrorCause errorCause) {
-        progress = NONE;
-        return true;
+    override fun onDisplayError(errorCause: ErrorCause): Boolean {
+        progress = NONE.toFloat()
+        return true
     }
 
-    @Override
-    public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
-        progress = NONE;
-        return false;
+    override fun onDisplayCanceled(cancelCause: CancelCause): Boolean {
+        progress = NONE.toFloat()
+        return false
     }
 
-    public boolean setMaskColor(@ColorInt int maskColor) {
+    fun setMaskColor(@ColorInt maskColor: Int): Boolean {
         if (this.maskColor == maskColor) {
-            return false;
+            return false
         }
-
-        this.maskColor = maskColor;
+        this.maskColor = maskColor
         if (maskPaint != null) {
-            maskPaint.setColor(maskColor);
+            maskPaint!!.color = maskColor
         }
-        return true;
+        return true
     }
 
-    private ImageShaper getMaskShaper() {
+    private fun getMaskShaper(): ImageShaper? {
+        val maskShaper = maskShaper
         if (maskShaper != null) {
-            return maskShaper;
+            return maskShaper
         }
-
-        DisplayCache displayCache = view.getDisplayCache();
-        ImageShaper shaperFromCacheOptions = displayCache != null ? displayCache.options.getShaper() : null;
-        if (shaperFromCacheOptions != null) {
-            return shaperFromCacheOptions;
-        }
-
-        ImageShaper shaperFromOptions = view.getOptions().getShaper();
-        if (shaperFromOptions != null) {
-            return shaperFromOptions;
-        }
-
-        return null;
+        val displayCache: DisplayCache? = view.displayCache
+        val shaperFromCacheOptions = displayCache?.options?.shaper
+        return shaperFromCacheOptions ?: view.options.shaper
     }
 
-    public boolean setMaskShaper(@Nullable ImageShaper maskShaper) {
-        if (this.maskShaper == maskShaper) {
-            return false;
+    fun setMaskShaper(maskShaper: ImageShaper?): Boolean {
+        if (this.maskShaper === maskShaper) {
+            return false
         }
+        this.maskShaper = maskShaper
+        return true
+    }
 
-        this.maskShaper = maskShaper;
-        return true;
+    companion object {
+        const val DEFAULT_MASK_COLOR = 0x22000000
+        private const val NAME = "ShowProgressFunction"
+        private const val NONE = -1
     }
 }

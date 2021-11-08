@@ -75,7 +75,7 @@ interface SketchView {
     /**
      * 显示参数
      */
-    var options: DisplayOptions?
+    var options: DisplayOptions
 
     /**
      * 显示监听器

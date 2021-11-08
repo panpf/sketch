@@ -13,95 +13,121 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.shaper.ImageShaper;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.shaper.ImageShaper
 
 /**
  * 这个类负责提供各种 function 开关和属性设置
  */
-public abstract class FunctionPropertyView extends FunctionCallbackView {
+abstract class FunctionPropertyView : FunctionCallbackView {
 
-    public FunctionPropertyView(@NonNull Context context) {
-        super(context);
-    }
-
-    public FunctionPropertyView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public FunctionPropertyView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-
-    /**
-     * 是否开启了暂停下载的时候点击强制显示图片功能
-     */
-    @SuppressWarnings("unused")
-    public boolean isClickRetryOnPauseDownloadEnabled() {
-        return getFunctions().clickRetryFunction != null && getFunctions().clickRetryFunction.isClickRetryOnPauseDownloadEnabled();
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int)
+            : super(context, attrs, defStyle)
 
     /**
      * 开启暂停下载的时候点击强制显示图片功能
      */
-    public void setClickRetryOnPauseDownloadEnabled(boolean enabled) {
-        if (isClickRetryOnPauseDownloadEnabled() == enabled) {
-            return;
+    var isClickRetryOnPauseDownloadEnabled: Boolean
+        get() = functions.clickRetryFunction != null && functions.clickRetryFunction!!.isClickRetryOnPauseDownloadEnabled
+        set(enabled) {
+            if (isClickRetryOnPauseDownloadEnabled == enabled) {
+                return
+            }
+            if (functions.clickRetryFunction == null) {
+                functions.clickRetryFunction = ClickRetryFunction(this)
+            }
+            functions.clickRetryFunction!!.isClickRetryOnPauseDownloadEnabled = enabled
+            updateClickable()
         }
-
-        if (getFunctions().clickRetryFunction == null) {
-            getFunctions().clickRetryFunction = new ClickRetryFunction(this);
-        }
-        getFunctions().clickRetryFunction.setClickRetryOnPauseDownloadEnabled(enabled);
-        updateClickable();
-    }
-
-
-    /**
-     * 是否开启了显示失败时点击重试功能
-     */
-    @SuppressWarnings("unused")
-    public boolean isClickRetryOnDisplayErrorEnabled() {
-        return getFunctions().clickRetryFunction != null && getFunctions().clickRetryFunction.isClickRetryOnDisplayErrorEnabled();
-    }
 
     /**
      * 开启显示失败时点击重试功能
      */
-    public void setClickRetryOnDisplayErrorEnabled(boolean enabled) {
-        if (isClickRetryOnDisplayErrorEnabled() == enabled) {
-            return;
+    var isClickRetryOnDisplayErrorEnabled: Boolean
+        get() = functions.clickRetryFunction != null && functions.clickRetryFunction!!.isClickRetryOnDisplayErrorEnabled
+        set(enabled) {
+            if (isClickRetryOnDisplayErrorEnabled == enabled) {
+                return
+            }
+            if (functions.clickRetryFunction == null) {
+                functions.clickRetryFunction = ClickRetryFunction(this)
+            }
+            functions.clickRetryFunction!!.isClickRetryOnDisplayErrorEnabled = enabled
+            updateClickable()
         }
 
-        if (getFunctions().clickRetryFunction == null) {
-            getFunctions().clickRetryFunction = new ClickRetryFunction(this);
+    /**
+     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
+     */
+    var isShowDownloadProgressEnabled: Boolean
+        get() = functions.showDownloadProgressFunction != null
+        set(enabled) {
+            setShowDownloadProgressEnabled(
+                enabled,
+                ShowDownloadProgressFunction.DEFAULT_MASK_COLOR,
+                null
+            )
         }
-        getFunctions().clickRetryFunction.setClickRetryOnDisplayErrorEnabled(enabled);
-        updateClickable();
-    }
-
 
     /**
      * 是否开启了点击播放 gif 功能
      */
-    @SuppressWarnings("unused")
-    public boolean isClickPlayGifEnabled() {
-        return getFunctions().clickPlayGifFunction != null;
-    }
+    val isClickPlayGifEnabled: Boolean
+        get() = functions.clickPlayGifFunction != null
+
+    /**
+     * 开启显示按下状态功能，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
+     */
+    var isShowPressedStatusEnabled: Boolean
+        get() = functions.showPressedFunction != null
+        set(enabled) {
+            setShowPressedStatusEnabled(enabled, ShowPressedFunction.DEFAULT_MASK_COLOR, null)
+        }
+
+    /**
+     * 开启显示图片来源功能，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，
+     * 黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存缓存加载的，紫色代表是从内存加载的
+     */
+    var isShowImageFromEnabled: Boolean
+        get() = functions.showImageFromFunction != null
+        set(enabled) {
+            if (isShowImageFromEnabled == enabled) {
+                return
+            }
+            if (enabled) {
+                functions.showImageFromFunction = ShowImageFromFunction(this)
+                functions.showImageFromFunction!!.onDrawableChanged(
+                    "setShowImageFromEnabled",
+                    null,
+                    drawable
+                )
+            } else {
+                functions.showImageFromFunction = null
+            }
+            invalidate()
+        }
+
+    /**
+     * 获取图片来源
+     */
+    val imageFrom: ImageFrom?
+        get() = if (functions.showImageFromFunction != null) functions.showImageFromFunction!!.imageFrom else null
+
+    /**
+     * 是否开启了显示GIF标识功能
+     */
+    val isShowGifFlagEnabled: Boolean
+        get() = functions.showGifFlagFunction != null
 
     /**
      * 开启点击播放gif 功能
@@ -109,8 +135,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * @param playIconResId 播放图标资源ID
      */
     @SuppressLint("ResourceType")
-    public void setClickPlayGifEnabled(@DrawableRes int playIconResId) {
-        setClickPlayGifEnabled(playIconResId > 0 ? getResources().getDrawable(playIconResId) : null);
+    fun setClickPlayGifEnabled(@DrawableRes playIconResId: Int) {
+        setClickPlayGifEnabled(if (playIconResId > 0) resources.getDrawable(playIconResId) else null)
     }
 
     /**
@@ -118,42 +144,25 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param playIconDrawable 播放图标
      */
-    public void setClickPlayGifEnabled(@Nullable Drawable playIconDrawable) {
-        boolean update = false;
-
+    fun setClickPlayGifEnabled(playIconDrawable: Drawable?) {
+        var update = false
         if (playIconDrawable != null) {
-            if (getFunctions().clickPlayGifFunction == null) {
-                getFunctions().clickPlayGifFunction = new ClickPlayGifFunction(this);
-                update = true;
+            if (functions.clickPlayGifFunction == null) {
+                functions.clickPlayGifFunction = ClickPlayGifFunction(this)
+                update = true
             }
-
-            update |= getFunctions().clickPlayGifFunction.setPlayIconDrawable(playIconDrawable);
+            update =
+                update or functions.clickPlayGifFunction!!.setPlayIconDrawable(playIconDrawable)
         } else {
-            if (getFunctions().clickPlayGifFunction != null) {
-                getFunctions().clickPlayGifFunction = null;
-                update = true;
+            if (functions.clickPlayGifFunction != null) {
+                functions.clickPlayGifFunction = null
+                update = true
             }
         }
-
         if (update) {
-            updateClickable();
-            invalidate();
+            updateClickable()
+            invalidate()
         }
-    }
-
-    /**
-     * 是否开启了显示下载进度功能
-     */
-    @SuppressWarnings("unused")
-    public boolean isShowDownloadProgressEnabled() {
-        return getFunctions().showDownloadProgressFunction != null;
-    }
-
-    /**
-     * 开启显示下载进度功能，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
-     */
-    public void setShowDownloadProgressEnabled(boolean enabled) {
-        setShowDownloadProgressEnabled(enabled, ShowDownloadProgressFunction.DEFAULT_MASK_COLOR, null);
     }
 
     /**
@@ -161,9 +170,12 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param maskShaper 下载进度蒙层的形状
      */
-    @SuppressWarnings("unused")
-    public void setShowDownloadProgressEnabled(boolean enabled, @Nullable ImageShaper maskShaper) {
-        setShowDownloadProgressEnabled(enabled, ShowDownloadProgressFunction.DEFAULT_MASK_COLOR, maskShaper);
+    fun setShowDownloadProgressEnabled(enabled: Boolean, maskShaper: ImageShaper?) {
+        setShowDownloadProgressEnabled(
+            enabled,
+            ShowDownloadProgressFunction.DEFAULT_MASK_COLOR,
+            maskShaper
+        )
     }
 
     /**
@@ -171,9 +183,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param maskColor 下载进度蒙层的颜色
      */
-    @SuppressWarnings("unused")
-    public void setShowDownloadProgressEnabled(boolean enabled, @ColorInt int maskColor) {
-        setShowDownloadProgressEnabled(enabled, maskColor, null);
+    fun setShowDownloadProgressEnabled(enabled: Boolean, @ColorInt maskColor: Int) {
+        setShowDownloadProgressEnabled(enabled, maskColor, null)
     }
 
     /**
@@ -182,43 +193,28 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * @param maskColor  下载进度蒙层的颜色
      * @param maskShaper 下载进度蒙层的形状
      */
-    @SuppressWarnings("unused")
-    public void setShowDownloadProgressEnabled(boolean enabled, @ColorInt int maskColor, @Nullable ImageShaper maskShaper) {
-        boolean update = false;
-
+    fun setShowDownloadProgressEnabled(
+        enabled: Boolean,
+        @ColorInt maskColor: Int,
+        maskShaper: ImageShaper?
+    ) {
+        var update = false
         if (enabled) {
-            if (getFunctions().showDownloadProgressFunction == null) {
-                getFunctions().showDownloadProgressFunction = new ShowDownloadProgressFunction(this);
-                update = true;
+            if (functions.showDownloadProgressFunction == null) {
+                functions.showDownloadProgressFunction = ShowDownloadProgressFunction(this)
+                update = true
             }
-            update |= getFunctions().showDownloadProgressFunction.setMaskColor(maskColor);
-            update |= getFunctions().showDownloadProgressFunction.setMaskShaper(maskShaper);
+            update = update or functions.showDownloadProgressFunction!!.setMaskColor(maskColor)
+            update = update or functions.showDownloadProgressFunction!!.setMaskShaper(maskShaper)
         } else {
-            if (getFunctions().showDownloadProgressFunction != null) {
-                getFunctions().showDownloadProgressFunction = null;
-                update = true;
+            if (functions.showDownloadProgressFunction != null) {
+                functions.showDownloadProgressFunction = null
+                update = true
             }
         }
-
         if (update) {
-            invalidate();
+            invalidate()
         }
-    }
-
-
-    /**
-     * 是否开启了显示按下状态功能
-     */
-    @SuppressWarnings("unused")
-    public boolean isShowPressedStatusEnabled() {
-        return getFunctions().showPressedFunction != null;
-    }
-
-    /**
-     * 开启显示按下状态功能，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
-     */
-    public void setShowPressedStatusEnabled(boolean enabled) {
-        setShowPressedStatusEnabled(enabled, ShowPressedFunction.DEFAULT_MASK_COLOR, null);
     }
 
     /**
@@ -226,9 +222,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param maskShaper 按下状态蒙层的形状
      */
-    @SuppressWarnings("unused")
-    public void setShowPressedStatusEnabled(boolean enabled, ImageShaper maskShaper) {
-        setShowPressedStatusEnabled(enabled, ShowPressedFunction.DEFAULT_MASK_COLOR, maskShaper);
+    fun setShowPressedStatusEnabled(enabled: Boolean, maskShaper: ImageShaper?) {
+        setShowPressedStatusEnabled(enabled, ShowPressedFunction.DEFAULT_MASK_COLOR, maskShaper)
     }
 
     /**
@@ -236,9 +231,8 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param maskColor 下载进度蒙层的颜色
      */
-    @SuppressWarnings("unused")
-    public void setShowPressedStatusEnabled(boolean enabled, @ColorInt int maskColor) {
-        setShowPressedStatusEnabled(enabled, maskColor, null);
+    fun setShowPressedStatusEnabled(enabled: Boolean, @ColorInt maskColor: Int) {
+        setShowPressedStatusEnabled(enabled, maskColor, null)
     }
 
     /**
@@ -247,73 +241,28 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * @param maskColor  按下状态蒙层的颜色
      * @param maskShaper 按下状态蒙层的形状
      */
-    @SuppressWarnings("unused")
-    public void setShowPressedStatusEnabled(boolean enabled, @ColorInt int maskColor, ImageShaper maskShaper) {
-        boolean update = false;
-
+    fun setShowPressedStatusEnabled(
+        enabled: Boolean,
+        @ColorInt maskColor: Int,
+        maskShaper: ImageShaper?
+    ) {
+        var update = false
         if (enabled) {
-            if (getFunctions().showPressedFunction == null) {
-                getFunctions().showPressedFunction = new ShowPressedFunction(this);
-                update = true;
+            if (functions.showPressedFunction == null) {
+                functions.showPressedFunction = ShowPressedFunction(this)
+                update = true
             }
-            update |= getFunctions().showPressedFunction.setMaskColor(maskColor);
-            update |= getFunctions().showPressedFunction.setMaskShaper(maskShaper);
+            update = update or functions.showPressedFunction!!.setMaskColor(maskColor)
+            update = update or functions.showPressedFunction!!.setMaskShaper(maskShaper)
         } else {
-            if (getFunctions().showPressedFunction != null) {
-                getFunctions().showPressedFunction = null;
-                update = true;
+            if (functions.showPressedFunction != null) {
+                functions.showPressedFunction = null
+                update = true
             }
         }
-
         if (update) {
-            invalidate();
+            invalidate()
         }
-    }
-
-
-    /**
-     * 是否开启了显示图片来源功能
-     */
-    @SuppressWarnings("unused")
-    public boolean isShowImageFromEnabled() {
-        return getFunctions().showImageFromFunction != null;
-    }
-
-    /**
-     * 开启显示图片来源功能，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，
-     * 黄色代表本次是从本地加载的，绿色代表本次是从内存缓存加载的，绿色代表本次是从内存缓存加载的，紫色代表是从内存加载的
-     */
-    public void setShowImageFromEnabled(boolean enabled) {
-        if (isShowImageFromEnabled() == enabled) {
-            return;
-        }
-
-        if (enabled) {
-            getFunctions().showImageFromFunction = new ShowImageFromFunction(this);
-            getFunctions().showImageFromFunction.onDrawableChanged("setShowImageFromEnabled", null, getDrawable());
-        } else {
-            getFunctions().showImageFromFunction = null;
-        }
-
-        invalidate();
-    }
-
-    /**
-     * 获取图片来源
-     */
-    @Nullable
-    @SuppressWarnings("unused")
-    public ImageFrom getImageFrom() {
-        return getFunctions().showImageFromFunction != null ? getFunctions().showImageFromFunction.getImageFrom() : null;
-    }
-
-
-    /**
-     * 是否开启了显示GIF标识功能
-     */
-    @SuppressWarnings("unused")
-    public boolean isShowGifFlagEnabled() {
-        return getFunctions().showGifFlagFunction != null;
     }
 
     /**
@@ -321,26 +270,22 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      *
      * @param gifFlagDrawable gif标识图标
      */
-    @SuppressWarnings("unused")
-    public void setShowGifFlagEnabled(Drawable gifFlagDrawable) {
-        boolean update = false;
-
+    fun setShowGifFlagEnabled(gifFlagDrawable: Drawable?) {
+        var update = false
         if (gifFlagDrawable != null) {
-            if (getFunctions().showGifFlagFunction == null) {
-                getFunctions().showGifFlagFunction = new ShowGifFlagFunction(this);
-                update = true;
+            if (functions.showGifFlagFunction == null) {
+                functions.showGifFlagFunction = ShowGifFlagFunction(this)
+                update = true
             }
-
-            update |= getFunctions().showGifFlagFunction.setGifFlagDrawable(gifFlagDrawable);
+            update = update or functions.showGifFlagFunction!!.setGifFlagDrawable(gifFlagDrawable)
         } else {
-            if (getFunctions().showGifFlagFunction != null) {
-                getFunctions().showGifFlagFunction = null;
-                update = true;
+            if (functions.showGifFlagFunction != null) {
+                functions.showGifFlagFunction = null
+                update = true
             }
         }
-
         if (update) {
-            invalidate();
+            invalidate()
         }
     }
 
@@ -350,7 +295,11 @@ public abstract class FunctionPropertyView extends FunctionCallbackView {
      * @param gifFlagDrawableResId gif标识图标
      */
     @SuppressLint("ResourceType")
-    public void setShowGifFlagEnabled(@DrawableRes int gifFlagDrawableResId) {
-        setShowGifFlagEnabled(gifFlagDrawableResId > 0 ? getResources().getDrawable(gifFlagDrawableResId) : null);
+    fun setShowGifFlagEnabled(@DrawableRes gifFlagDrawableResId: Int) {
+        setShowGifFlagEnabled(
+            if (gifFlagDrawableResId > 0) resources.getDrawable(
+                gifFlagDrawableResId
+            ) else null
+        )
     }
 }

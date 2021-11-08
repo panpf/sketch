@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.util.AttributeSet
-import android.view.View.OnLongClickListener
 import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageOrientationCorrector
@@ -48,7 +47,7 @@ class SampleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
                 cacheOptions.isCacheProcessedImageInDisk = cacheProcessedImageInDisk
             }
         }
-        onLongClickListener = OnLongClickListener {
+        setOnLongClickListener {
             if (it.context is Activity) {
                 showInfo(it.context as Activity)
             }

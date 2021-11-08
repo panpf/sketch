@@ -13,526 +13,465 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.view.MotionEvent
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.request.CancelCause
+import com.github.panpf.sketch.request.ErrorCause
+import com.github.panpf.sketch.request.ImageFrom
+import java.util.*
 
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
+class ViewFunctions(view: FunctionCallbackView) {
+    @JvmField
+    var requestFunction: RequestFunction = RequestFunction(view)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    @JvmField
+    var showImageFromFunction: ShowImageFromFunction? = null
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+    @JvmField
+    var showDownloadProgressFunction: ShowDownloadProgressFunction? = null
 
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.request.CancelCause;
-import com.github.panpf.sketch.request.ErrorCause;
-import com.github.panpf.sketch.request.ImageFrom;
+    @JvmField
+    var showPressedFunction: ShowPressedFunction? = null
 
-class ViewFunctions {
-    @NonNull
-    RequestFunction requestFunction;
-    @Nullable
-    ShowImageFromFunction showImageFromFunction;
-    @Nullable
-    ShowDownloadProgressFunction showDownloadProgressFunction;
-    @Nullable
-    ShowPressedFunction showPressedFunction;
-    @Nullable
-    ShowGifFlagFunction showGifFlagFunction;
-    @Nullable
-    ClickRetryFunction clickRetryFunction;
-    @Nullable
-    ClickPlayGifFunction clickPlayGifFunction;
-    @NonNull
-    private RecyclerCompatFunction recyclerCompatFunction;
-    private List<ViewFunctionItem> viewFunctions = new LinkedList<>();
+    @JvmField
+    var showGifFlagFunction: ShowGifFlagFunction? = null
 
-    ViewFunctions(FunctionCallbackView view) {
-        requestFunction = new RequestFunction(view);
-        recyclerCompatFunction = new RecyclerCompatFunction(view);
+    @JvmField
+    var clickRetryFunction: ClickRetryFunction? = null
+
+    @JvmField
+    var clickPlayGifFunction: ClickPlayGifFunction? = null
+    private val recyclerCompatFunction: RecyclerCompatFunction = RecyclerCompatFunction(view)
+    private val viewFunctions: MutableList<ViewFunctionItem> = LinkedList()
+
+    fun addViewFunction(viewFunction: ViewFunction, priority: Int) {
+        viewFunctions.add(ViewFunctionItem(priority, viewFunction))
+        viewFunctions.sortWith { o1, o2 -> -1 * (o1.priority - o2.priority) }
     }
 
-    public void addViewFunction(@NonNull ViewFunction viewFunction, int priority) {
-        viewFunctions.add(new ViewFunctionItem(priority, viewFunction));
-        Collections.sort(viewFunctions, new Comparator<ViewFunctionItem>() {
-            @Override
-            public int compare(ViewFunctionItem o1, ViewFunctionItem o2) {
-                return -1 * (o1.priority - o2.priority);
-            }
-        });
-    }
-
-    public void removeViewFunction(@NonNull ViewFunction viewFunction) {
-        Iterator<ViewFunctionItem> iterator = viewFunctions.iterator();
+    fun removeViewFunction(viewFunction: ViewFunction) {
+        val iterator = viewFunctions.iterator()
         while (iterator.hasNext()) {
-            ViewFunctionItem functionItem = iterator.next();
-            if (functionItem.function.equals(viewFunction)) {
-                iterator.remove();
+            val functionItem = iterator.next()
+            if (functionItem.function == viewFunction) {
+                iterator.remove()
             }
         }
     }
 
-    void onAttachedToWindow() {
-        requestFunction.onAttachedToWindow();
-        if (recyclerCompatFunction != null) {
-            recyclerCompatFunction.onAttachedToWindow();
-        }
+    fun onAttachedToWindow() {
+        requestFunction.onAttachedToWindow()
+        recyclerCompatFunction.onAttachedToWindow()
         if (showPressedFunction != null) {
-            showPressedFunction.onAttachedToWindow();
+            showPressedFunction?.onAttachedToWindow()
         }
         if (showDownloadProgressFunction != null) {
-            showDownloadProgressFunction.onAttachedToWindow();
+            showDownloadProgressFunction?.onAttachedToWindow()
         }
         if (showGifFlagFunction != null) {
-            showGifFlagFunction.onAttachedToWindow();
+            showGifFlagFunction?.onAttachedToWindow()
         }
         if (showImageFromFunction != null) {
-            showImageFromFunction.onAttachedToWindow();
+            showImageFromFunction?.onAttachedToWindow()
         }
         if (clickRetryFunction != null) {
-            clickRetryFunction.onAttachedToWindow();
+            clickRetryFunction?.onAttachedToWindow()
         }
         if (clickPlayGifFunction != null) {
-            clickPlayGifFunction.onAttachedToWindow();
+            clickPlayGifFunction?.onAttachedToWindow()
         }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            viewFunctionItem.function.onAttachedToWindow();
+        viewFunctions.forEach { viewFunctionItem ->
+            viewFunctionItem.function.onAttachedToWindow()
         }
     }
 
-    void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         if (showImageFromFunction != null) {
-            showImageFromFunction.onLayout(changed, left, top, right, bottom);
+            showImageFromFunction?.onLayout(changed, left, top, right, bottom)
         }
         if (showDownloadProgressFunction != null) {
-            showDownloadProgressFunction.onLayout(changed, left, top, right, bottom);
+            showDownloadProgressFunction?.onLayout(changed, left, top, right, bottom)
         }
         if (showGifFlagFunction != null) {
-            showGifFlagFunction.onLayout(changed, left, top, right, bottom);
+            showGifFlagFunction?.onLayout(changed, left, top, right, bottom)
         }
         if (showPressedFunction != null) {
-            showPressedFunction.onLayout(changed, left, top, right, bottom);
+            showPressedFunction?.onLayout(changed, left, top, right, bottom)
         }
         if (clickRetryFunction != null) {
-            clickRetryFunction.onLayout(changed, left, top, right, bottom);
+            clickRetryFunction?.onLayout(changed, left, top, right, bottom)
         }
-        if (requestFunction != null) {
-            requestFunction.onLayout(changed, left, top, right, bottom);
-        }
-        if (recyclerCompatFunction != null) {
-            recyclerCompatFunction.onLayout(changed, left, top, right, bottom);
-        }
+        requestFunction.onLayout(changed, left, top, right, bottom)
+        recyclerCompatFunction.onLayout(changed, left, top, right, bottom)
         if (clickPlayGifFunction != null) {
-            clickPlayGifFunction.onLayout(changed, left, top, right, bottom);
+            clickPlayGifFunction?.onLayout(changed, left, top, right, bottom)
         }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            viewFunctionItem.function.onLayout(changed, left, top, right, bottom);
+        for (viewFunctionItem in viewFunctions) {
+            viewFunctionItem.function.onLayout(changed, left, top, right, bottom)
         }
     }
 
-    void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (requestFunction != null) {
-            requestFunction.onSizeChanged(w, h, oldw, oldh);
-        }
-        if (recyclerCompatFunction != null) {
-            recyclerCompatFunction.onSizeChanged(w, h, oldw, oldh);
-        }
+    fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        requestFunction.onSizeChanged(w, h, oldw, oldh)
+        recyclerCompatFunction.onSizeChanged(w, h, oldw, oldh)
         if (showPressedFunction != null) {
-            showPressedFunction.onSizeChanged(w, h, oldw, oldh);
+            showPressedFunction?.onSizeChanged(w, h, oldw, oldh)
         }
         if (showDownloadProgressFunction != null) {
-            showDownloadProgressFunction.onSizeChanged(w, h, oldw, oldh);
+            showDownloadProgressFunction?.onSizeChanged(w, h, oldw, oldh)
         }
         if (showGifFlagFunction != null) {
-            showGifFlagFunction.onSizeChanged(w, h, oldw, oldh);
+            showGifFlagFunction?.onSizeChanged(w, h, oldw, oldh)
         }
         if (showImageFromFunction != null) {
-            showImageFromFunction.onSizeChanged(w, h, oldw, oldh);
+            showImageFromFunction?.onSizeChanged(w, h, oldw, oldh)
         }
         if (clickRetryFunction != null) {
-            clickRetryFunction.onSizeChanged(w, h, oldw, oldh);
+            clickRetryFunction?.onSizeChanged(w, h, oldw, oldh)
         }
         if (clickPlayGifFunction != null) {
-            clickPlayGifFunction.onSizeChanged(w, h, oldw, oldh);
+            clickPlayGifFunction?.onSizeChanged(w, h, oldw, oldh)
         }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            viewFunctionItem.function.onSizeChanged(w, h, oldw, oldh);
+        for (viewFunctionItem in viewFunctions) {
+            viewFunctionItem.function.onSizeChanged(w, h, oldw, oldh)
         }
     }
 
-    void onDraw(Canvas canvas) {
+    fun onDraw(canvas: Canvas) {
         if (showPressedFunction != null) {
-            showPressedFunction.onDraw(canvas);
+            showPressedFunction?.onDraw(canvas)
         }
         if (showDownloadProgressFunction != null) {
-            showDownloadProgressFunction.onDraw(canvas);
+            showDownloadProgressFunction?.onDraw(canvas)
         }
         if (showImageFromFunction != null) {
-            showImageFromFunction.onDraw(canvas);
+            showImageFromFunction?.onDraw(canvas)
         }
         if (showGifFlagFunction != null) {
-            showGifFlagFunction.onDraw(canvas);
+            showGifFlagFunction?.onDraw(canvas)
         }
         if (clickRetryFunction != null) {
-            clickRetryFunction.onDraw(canvas);
+            clickRetryFunction?.onDraw(canvas)
         }
-        if (requestFunction != null) {
-            requestFunction.onDraw(canvas);
-        }
-        if (recyclerCompatFunction != null) {
-            recyclerCompatFunction.onDraw(canvas);
-        }
+        requestFunction.onDraw(canvas)
+        recyclerCompatFunction.onDraw(canvas)
         if (clickPlayGifFunction != null) {
-            clickPlayGifFunction.onDraw(canvas);
+            clickPlayGifFunction?.onDraw(canvas)
         }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            viewFunctionItem.function.onDraw(canvas);
+        for (viewFunctionItem in viewFunctions) {
+            viewFunctionItem.function.onDraw(canvas)
         }
     }
 
     /**
      * @return true：事件已处理
      */
-    boolean onTouchEvent(MotionEvent event) {
-        if (showPressedFunction != null && showPressedFunction.onTouchEvent(event)) {
-            return true;
+    fun onTouchEvent(event: MotionEvent): Boolean {
+        if (showPressedFunction?.onTouchEvent(event) == true) {
+            return true
         }
-        if (showDownloadProgressFunction != null && showDownloadProgressFunction.onTouchEvent(event)) {
-            return true;
+        if (showDownloadProgressFunction?.onTouchEvent(event) == true) {
+            return true
         }
-        if (showImageFromFunction != null && showImageFromFunction.onTouchEvent(event)) {
-            return true;
+        if (showImageFromFunction?.onTouchEvent(event) == true) {
+            return true
         }
-        if (showGifFlagFunction != null && showGifFlagFunction.onTouchEvent(event)) {
-            return true;
+        if (showGifFlagFunction?.onTouchEvent(event) == true) {
+            return true
         }
-        if (clickRetryFunction != null && clickRetryFunction.onTouchEvent(event)) {
-            return true;
+        if (clickRetryFunction?.onTouchEvent(event) == true) {
+            return true
         }
-        if (requestFunction != null && requestFunction.onTouchEvent(event)) {
-            return true;
+        if (requestFunction.onTouchEvent(event)) {
+            return true
         }
-        if (recyclerCompatFunction != null && recyclerCompatFunction.onTouchEvent(event)) {
-            return true;
+        if (recyclerCompatFunction.onTouchEvent(event)) {
+            return true
         }
-        if (clickPlayGifFunction != null && clickPlayGifFunction.onTouchEvent(event)) {
-            return true;
+        if (clickPlayGifFunction?.onTouchEvent(event) == true) {
+            return true
         }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
+        for (viewFunctionItem in viewFunctions) {
             if (viewFunctionItem.function.onTouchEvent(event)) {
-                return true;
+                return true
             }
         }
-        return false;
+        return false
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        boolean needInvokeInvalidate = false;
-
-        if (requestFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= requestFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+    fun onDrawableChanged(
+        callPosition: String,
+        oldDrawable: Drawable?,
+        newDrawable: Drawable?
+    ): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate = needInvokeInvalidate or requestFunction.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        )
+        needInvokeInvalidate = needInvokeInvalidate or (showGifFlagFunction?.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or (showImageFromFunction?.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or (showPressedFunction?.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        ) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onDrawableChanged(
+                callPosition, oldDrawable, newDrawable
+            ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or (clickRetryFunction?.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or recyclerCompatFunction.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        )
+        needInvokeInvalidate = needInvokeInvalidate or (clickPlayGifFunction?.onDrawableChanged(
+            callPosition, oldDrawable, newDrawable
+        ) == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onDrawableChanged(
+                    callPosition, oldDrawable, newDrawable
+                )
         }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (showImageFromFunction != null) {
-            needInvokeInvalidate |= showImageFromFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 
     /**
      * @return true：需要设置drawable为null
      */
-    boolean onDetachedFromWindow() {
-        boolean needSetImageNull = false;
-
-        if (requestFunction != null) {
-            //noinspection ConstantConditions
-            needSetImageNull |= requestFunction.onDetachedFromWindow();
+    fun onDetachedFromWindow(): Boolean {
+        var needSetImageNull = false
+        needSetImageNull = needSetImageNull or requestFunction.onDetachedFromWindow()
+        needSetImageNull = needSetImageNull or recyclerCompatFunction.onDetachedFromWindow()
+        needSetImageNull = needSetImageNull or (showPressedFunction?.onDetachedFromWindow() == true)
+        needSetImageNull =
+            needSetImageNull or (showDownloadProgressFunction?.onDetachedFromWindow() == true)
+        needSetImageNull = needSetImageNull or (showGifFlagFunction?.onDetachedFromWindow() == true)
+        needSetImageNull =
+            needSetImageNull or (showImageFromFunction?.onDetachedFromWindow() == true)
+        needSetImageNull = needSetImageNull or (clickRetryFunction?.onDetachedFromWindow() == true)
+        needSetImageNull =
+            needSetImageNull or (clickPlayGifFunction?.onDetachedFromWindow() == true)
+        for (viewFunctionItem in viewFunctions) {
+            needSetImageNull = needSetImageNull or viewFunctionItem.function.onDetachedFromWindow()
         }
-        if (recyclerCompatFunction != null) {
-            needSetImageNull |= recyclerCompatFunction.onDetachedFromWindow();
-        }
-        if (showPressedFunction != null) {
-            needSetImageNull |= showPressedFunction.onDetachedFromWindow();
-        }
-        if (showDownloadProgressFunction != null) {
-            needSetImageNull |= showDownloadProgressFunction.onDetachedFromWindow();
-        }
-        if (showGifFlagFunction != null) {
-            needSetImageNull |= showGifFlagFunction.onDetachedFromWindow();
-        }
-        if (showImageFromFunction != null) {
-            needSetImageNull |= showImageFromFunction.onDetachedFromWindow();
-        }
-        if (clickRetryFunction != null) {
-            needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
-        }
-        if (clickPlayGifFunction != null) {
-            needSetImageNull |= clickPlayGifFunction.onDetachedFromWindow();
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needSetImageNull |= viewFunctionItem.function.onDetachedFromWindow();
-        }
-
-        return needSetImageNull;
+        return needSetImageNull
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onReadyDisplay(@NonNull String uri) {
-        boolean needInvokeInvalidate = false;
-
-        if (requestFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= requestFunction.onReadyDisplay(uri);
+    fun onReadyDisplay(uri: String): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate = needInvokeInvalidate or requestFunction.onReadyDisplay(uri)
+        needInvokeInvalidate =
+            needInvokeInvalidate or recyclerCompatFunction.onReadyDisplay(uri)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showPressedFunction?.onReadyDisplay(uri) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onReadyDisplay(uri) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showGifFlagFunction?.onReadyDisplay(uri) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showImageFromFunction?.onReadyDisplay(uri) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickRetryFunction?.onReadyDisplay(uri) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickPlayGifFunction?.onReadyDisplay(uri) == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onReadyDisplay(uri)
         }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onReadyDisplay(uri);
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uri);
-        }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onReadyDisplay(uri);
-        }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uri);
-        }
-        if (showImageFromFunction != null) {
-            needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uri);
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uri);
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onReadyDisplay(uri);
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onReadyDisplay(uri);
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayStarted() {
-        boolean needInvokeInvalidate = false;
-
-        if (showImageFromFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
+    fun onDisplayStarted(): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showImageFromFunction?.onDisplayStarted() == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onDisplayStarted() == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showGifFlagFunction?.onDisplayStarted() == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showPressedFunction?.onDisplayStarted() == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickRetryFunction?.onDisplayStarted() == true)
+        needInvokeInvalidate = needInvokeInvalidate or requestFunction.onDisplayStarted()
+        needInvokeInvalidate = needInvokeInvalidate or recyclerCompatFunction.onDisplayStarted()
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickPlayGifFunction?.onDisplayStarted() == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onDisplayStarted()
         }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayStarted();
-        }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplayStarted();
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplayStarted();
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
-        }
-        if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onDisplayStarted();
-        }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDisplayStarted();
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onDisplayStarted();
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
-        boolean needInvokeInvalidate = false;
-
-        if (showImageFromFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
+    fun onDisplayCompleted(
+        drawable: Drawable,
+        imageFrom: ImageFrom,
+        imageAttrs: ImageAttrs
+    ): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showImageFromFunction?.onDisplayCompleted(
+                drawable, imageFrom, imageAttrs
+            ) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onDisplayCompleted(
+                drawable, imageFrom, imageAttrs
+            ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or (showGifFlagFunction?.onDisplayCompleted(
+            drawable, imageFrom, imageAttrs
+        ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or (showPressedFunction?.onDisplayCompleted(
+            drawable, imageFrom, imageAttrs
+        ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or (clickRetryFunction?.onDisplayCompleted(
+            drawable, imageFrom, imageAttrs
+        ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or requestFunction.onDisplayCompleted(
+            drawable, imageFrom, imageAttrs
+        )
+        needInvokeInvalidate = needInvokeInvalidate or recyclerCompatFunction.onDisplayCompleted(
+            drawable, imageFrom, imageAttrs
+        )
+        needInvokeInvalidate = needInvokeInvalidate or (clickPlayGifFunction?.onDisplayCompleted(
+            drawable, imageFrom, imageAttrs
+        ) == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onDisplayCompleted(
+                    drawable, imageFrom, imageAttrs
+                )
         }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onDisplayCompleted(drawable, imageFrom, imageAttrs);
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayError(@NonNull ErrorCause errorCause) {
-        boolean needInvokeInvalidate = false;
-
-        if (showImageFromFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onDisplayError(errorCause);
+    fun onDisplayError(errorCause: ErrorCause): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showImageFromFunction?.onDisplayError(errorCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onDisplayError(errorCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showGifFlagFunction?.onDisplayError(errorCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showPressedFunction?.onDisplayError(errorCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickRetryFunction?.onDisplayError(errorCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or requestFunction.onDisplayError(errorCause)
+        needInvokeInvalidate =
+            needInvokeInvalidate or recyclerCompatFunction.onDisplayError(errorCause)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickPlayGifFunction?.onDisplayError(errorCause) == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onDisplayError(errorCause)
         }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayError(errorCause);
-        }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplayError(errorCause);
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplayError(errorCause);
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplayError(errorCause);
-        }
-        if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onDisplayError(errorCause);
-        }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplayError(errorCause);
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDisplayError(errorCause);
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onDisplayError(errorCause);
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
-        boolean needInvokeInvalidate = false;
-
-        if (showImageFromFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onDisplayCanceled(cancelCause);
+    fun onDisplayCanceled(cancelCause: CancelCause): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showImageFromFunction?.onDisplayCanceled(cancelCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onDisplayCanceled(cancelCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showGifFlagFunction?.onDisplayCanceled(cancelCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showPressedFunction?.onDisplayCanceled(cancelCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickRetryFunction?.onDisplayCanceled(cancelCause) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or requestFunction.onDisplayCanceled(cancelCause)
+        needInvokeInvalidate =
+            needInvokeInvalidate or recyclerCompatFunction.onDisplayCanceled(cancelCause)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickPlayGifFunction?.onDisplayCanceled(cancelCause) == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onDisplayCanceled(cancelCause)
         }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onDisplayCanceled(cancelCause);
-        }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplayCanceled(cancelCause);
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplayCanceled(cancelCause);
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplayCanceled(cancelCause);
-        }
-        if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onDisplayCanceled(cancelCause);
-        }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplayCanceled(cancelCause);
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onDisplayCanceled(cancelCause);
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onDisplayCanceled(cancelCause);
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 
     /**
      * @return true：需要调用invalidate()刷新view
      */
-    boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        boolean needInvokeInvalidate = false;
-
-        if (showImageFromFunction != null) {
-            //noinspection ConstantConditions
-            needInvokeInvalidate |= showImageFromFunction.onUpdateDownloadProgress(totalLength, completedLength);
+    fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int): Boolean {
+        var needInvokeInvalidate = false
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showImageFromFunction?.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            ) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showDownloadProgressFunction?.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            ) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showPressedFunction?.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            ) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (showGifFlagFunction?.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            ) == true)
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickRetryFunction?.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            ) == true)
+        needInvokeInvalidate = needInvokeInvalidate or requestFunction.onUpdateDownloadProgress(
+            totalLength,
+            completedLength
+        )
+        needInvokeInvalidate =
+            needInvokeInvalidate or recyclerCompatFunction.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            )
+        needInvokeInvalidate =
+            needInvokeInvalidate or (clickPlayGifFunction?.onUpdateDownloadProgress(
+                totalLength,
+                completedLength
+            ) == true)
+        for (viewFunctionItem in viewFunctions) {
+            needInvokeInvalidate =
+                needInvokeInvalidate or viewFunctionItem.function.onUpdateDownloadProgress(
+                    totalLength,
+                    completedLength
+                )
         }
-        if (showDownloadProgressFunction != null) {
-            needInvokeInvalidate |= showDownloadProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (requestFunction != null) {
-            needInvokeInvalidate |= requestFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        if (clickPlayGifFunction != null) {
-            needInvokeInvalidate |= clickPlayGifFunction.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-        for (ViewFunctionItem viewFunctionItem : viewFunctions) {
-            needInvokeInvalidate |= viewFunctionItem.function.onUpdateDownloadProgress(totalLength, completedLength);
-        }
-
-        return needInvokeInvalidate;
+        return needInvokeInvalidate
     }
 }

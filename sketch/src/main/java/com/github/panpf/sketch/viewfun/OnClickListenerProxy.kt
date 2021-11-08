@@ -13,58 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
+import android.view.View
+import java.lang.ref.WeakReference
 
-import android.view.View;
+internal class OnClickListenerProxy(view: FunctionCallbackView) : View.OnClickListener {
 
-import androidx.annotation.NonNull;
+    private val viewWeakReference: WeakReference<FunctionCallbackView> = WeakReference(view)
 
-import java.lang.ref.WeakReference;
-
-class OnClickListenerProxy implements View.OnClickListener {
-    @NonNull
-    private WeakReference<FunctionCallbackView> viewWeakReference;
-
-    OnClickListenerProxy(@NonNull FunctionCallbackView view) {
-        this.viewWeakReference = new WeakReference<>(view);
+    override fun onClick(v: View) {
+        val view = viewWeakReference.get() ?: return
+        if (view.functions.clickRetryFunction?.onClick() == true) {
+            return
+        }
+        if (view.functions.clickPlayGifFunction?.onClick() == true) {
+            return
+        }
+        view.wrappedClickListener?.onClick(v)
     }
 
-    @Override
-    public void onClick(@NonNull View v) {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return;
+    val isClickable: Boolean
+        get() {
+            val view = viewWeakReference.get() ?: return false
+            if (view.functions.clickRetryFunction?.isClickable == true) {
+                return true
+            }
+            if (view.functions.clickPlayGifFunction?.isClickable == true) {
+                return true
+            }
+            return view.wrappedClickListener != null
         }
 
-        if (view.getFunctions().clickRetryFunction != null && view.getFunctions().clickRetryFunction.onClick(v)) {
-            return;
-        }
-
-        if (view.getFunctions().clickPlayGifFunction != null && view.getFunctions().clickPlayGifFunction.onClick(v)) {
-            return;
-        }
-
-        if (view.wrappedClickListener != null) {
-            view.wrappedClickListener.onClick(v);
-        }
-    }
-
-    boolean isClickable() {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return false;
-        }
-
-        if (view.getFunctions().clickRetryFunction != null && view.getFunctions().clickRetryFunction.isClickable()) {
-            return true;
-        }
-
-        //noinspection SimplifiableIfStatement
-        if (view.getFunctions().clickPlayGifFunction != null && view.getFunctions().clickPlayGifFunction.isClickable()) {
-            return true;
-        }
-
-        return view.wrappedClickListener != null;
-    }
 }

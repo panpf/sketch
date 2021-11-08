@@ -13,186 +13,158 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.request.DisplayCache;
-import com.github.panpf.sketch.shaper.ImageShaper;
+import android.annotation.SuppressLint
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
+import android.view.View
+import androidx.annotation.ColorInt
+import com.github.panpf.sketch.SLog.Companion.em
+import com.github.panpf.sketch.request.DisplayCache
+import com.github.panpf.sketch.shaper.ImageShaper
 
 /**
  * 显示按下状态，按下后会在图片上显示一个黑色半透明的蒙层，此功能需要注册点击事件或设置 Clickable 为 true
  */
-@SuppressWarnings("WeakerAccess")
-public class ShowPressedFunction extends ViewFunction {
-    static final int DEFAULT_MASK_COLOR = 0x33000000;
-    private static final String NAME = "ShowPressedFunction";
+class ShowPressedFunction(private val view: FunctionPropertyView) : ViewFunction() {
 
-    @NonNull
-    private FunctionPropertyView view;
-    @Nullable
-    private ImageShaper maskShaper;
-    private int maskColor = DEFAULT_MASK_COLOR;
-
-    private boolean showProcessed;
-    private boolean singleTapUp;
-    @Nullable
-    private Paint maskPaint;
-    @NonNull
-    private GestureDetector gestureDetector;
-    @Nullable
-    private Rect bounds;
-
-    public ShowPressedFunction(@NonNull FunctionPropertyView view) {
-        this.view = view;
-
-        this.gestureDetector = new GestureDetector(view.getContext(), new PressedStatusManager());
+    companion object {
+        const val DEFAULT_MASK_COLOR = 0x33000000
+        private const val NAME = "ShowPressedFunction"
     }
 
-    @Override
-    public boolean onTouchEvent(@NonNull MotionEvent event) {
-        if (view.isClickable()) {
-            gestureDetector.onTouchEvent(event);
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_OUTSIDE:
-                    if (showProcessed && !singleTapUp) {
-                        showProcessed = false;
-                        view.invalidate();
-                    }
-                    break;
-            }
-        }
-        return false;
+    private var maskShaper: ImageShaper? = null
+    private var maskColor = DEFAULT_MASK_COLOR
+    private var showProcessed = false
+    private var singleTapUp = false
+    private var maskPaint: Paint? = null
+    private val gestureDetector: GestureDetector
+    private var bounds: Rect? = null
+
+    init {
+        gestureDetector = GestureDetector(view.context, PressedStatusManager())
     }
 
-    @Override
-    public void onDraw(@NonNull Canvas canvas) {
-        if (!showProcessed) {
-            return;
-        }
-
-        ImageShaper shaper = getMaskShaper();
-        if (shaper != null) {
-            canvas.save();
-            try {
-                if (bounds == null) {
-                    bounds = new Rect();
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (view.isClickable) {
+            gestureDetector.onTouchEvent(event)
+            when (event.action and MotionEvent.ACTION_MASK) {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_OUTSIDE -> if (showProcessed && !singleTapUp) {
+                    showProcessed = false
+                    view.invalidate()
                 }
-                bounds.set(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom());
-                Path maskPath = shaper.getPath(bounds);
-                canvas.clipPath(maskPath);
-            } catch (UnsupportedOperationException e) {
-                SLog.em(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                e.printStackTrace();
             }
         }
+        return false
+    }
 
-        if (maskPaint == null) {
-            maskPaint = new Paint();
-            maskPaint.setColor(maskColor);
-            maskPaint.setAntiAlias(true);
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas) {
+        if (!showProcessed) {
+            return
         }
-
-        canvas.drawRect(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(),
-                view.getHeight() - view.getPaddingBottom(), maskPaint);
-
+        val shaper = getMaskShaper()
         if (shaper != null) {
-            canvas.restore();
+            canvas.save()
+            try {
+                val bounds = bounds ?: Rect().apply {
+                    this@ShowPressedFunction.bounds = this
+                }
+                bounds.set(
+                    view.paddingLeft,
+                    view.paddingTop,
+                    view.width - view.paddingRight,
+                    view.height - view.paddingBottom
+                )
+                val maskPath = shaper.getPath(bounds)
+                canvas.clipPath(maskPath)
+            } catch (e: UnsupportedOperationException) {
+                em(
+                    NAME,
+                    "The current environment doesn't support clipPath has shut down automatically hardware acceleration"
+                )
+                view.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                e.printStackTrace()
+            }
+        }
+        val maskPaint = maskPaint ?: Paint().apply {
+            color = maskColor
+            isAntiAlias = true
+            this@ShowPressedFunction.maskPaint = this
+        }
+        canvas.drawRect(
+            view.paddingLeft.toFloat(),
+            view.paddingTop.toFloat(),
+            (view.width - view.paddingRight).toFloat(),
+            (view.height - view.paddingBottom).toFloat(),
+            maskPaint
+        )
+        if (shaper != null) {
+            canvas.restore()
         }
     }
 
-    public boolean setMaskColor(@ColorInt int maskColor) {
+    fun setMaskColor(@ColorInt maskColor: Int): Boolean {
         if (this.maskColor == maskColor) {
-            return false;
+            return false
         }
-
-        this.maskColor = maskColor;
-        if (maskPaint != null) {
-            maskPaint.setColor(maskColor);
-        }
-        return true;
+        this.maskColor = maskColor
+        maskPaint?.color = maskColor
+        return true
     }
 
-    private ImageShaper getMaskShaper() {
+    private fun getMaskShaper(): ImageShaper? {
         if (maskShaper != null) {
-            return maskShaper;
+            return maskShaper
         }
-
-        DisplayCache displayCache = view.getDisplayCache();
-        ImageShaper shaperFromCacheOptions = displayCache != null ? displayCache.options.getShaper() : null;
+        val displayCache: DisplayCache? = view.displayCache
+        val shaperFromCacheOptions = displayCache?.options?.shaper
         if (shaperFromCacheOptions != null) {
-            return shaperFromCacheOptions;
+            return shaperFromCacheOptions
         }
-
-        ImageShaper shaperFromOptions = view.getOptions().getShaper();
-        if (shaperFromOptions != null) {
-            return shaperFromOptions;
-        }
-
-        return null;
+        return view.options.shaper
     }
 
-    public boolean setMaskShaper(@Nullable ImageShaper maskShaper) {
-        if (this.maskShaper == maskShaper) {
-            return false;
+    fun setMaskShaper(maskShaper: ImageShaper?): Boolean {
+        if (this.maskShaper === maskShaper) {
+            return false
         }
-
-        this.maskShaper = maskShaper;
-        return true;
+        this.maskShaper = maskShaper
+        return true
     }
 
-    private class PressedStatusManager extends GestureDetector.SimpleOnGestureListener {
-
-        private Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                showProcessed = false;
-                view.invalidate();
-            }
-        };
-
-        @Override
-        public boolean onDown(MotionEvent event) {
-            showProcessed = false;
-            singleTapUp = false;
-            view.removeCallbacks(runnable);
-            return true;
+    private inner class PressedStatusManager : SimpleOnGestureListener() {
+        private val runnable = Runnable {
+            showProcessed = false
+            view.invalidate()
         }
 
-        @Override
-        public void onShowPress(MotionEvent e) {
-            super.onShowPress(e);
-
-            showProcessed = true;
-            view.invalidate();
+        override fun onDown(event: MotionEvent): Boolean {
+            showProcessed = false
+            singleTapUp = false
+            view.removeCallbacks(runnable)
+            return true
         }
 
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            singleTapUp = true;
+        override fun onShowPress(e: MotionEvent) {
+            super.onShowPress(e)
+            showProcessed = true
+            view.invalidate()
+        }
 
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            singleTapUp = true
             if (!showProcessed) {
-                showProcessed = true;
-                view.invalidate();
+                showProcessed = true
+                view.invalidate()
             }
-            view.postDelayed(runnable, 120);
-
-            return super.onSingleTapUp(e);
+            view.postDelayed(runnable, 120)
+            return super.onSingleTapUp(e)
         }
     }
 }

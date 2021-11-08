@@ -13,38 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.view.MotionEvent
+import android.widget.ImageView
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.request.ErrorCause
+import com.github.panpf.sketch.request.CancelCause
 
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.request.CancelCause;
-import com.github.panpf.sketch.request.ErrorCause;
-import com.github.panpf.sketch.request.ImageFrom;
-
-public abstract class ViewFunction {
+abstract class ViewFunction {
     /**
-     * 依附到 {@link android.view.Window}
+     * 依附到 [android.view.Window]
      */
-    public void onAttachedToWindow() {
-
-    }
+    open fun onAttachedToWindow() {}
 
     /**
      * 发生触摸事件
      *
-     * @param event {@link MotionEvent}. 事件
+     * @param event [MotionEvent]. 事件
      * @return 拦截事件
      */
-    public boolean onTouchEvent(@NonNull MotionEvent event) {
-        return false;
+    open fun onTouchEvent(event: MotionEvent): Boolean {
+        return false
     }
 
     /**
@@ -56,57 +49,56 @@ public abstract class ViewFunction {
      * @param right   右边位置
      * @param bottom  底部位置
      */
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
-    }
+    open fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {}
 
     /**
      * 绘制
      *
-     * @param canvas {@link Canvas}
+     * @param canvas [Canvas]
      */
-    public void onDraw(@NonNull Canvas canvas) {
-
-    }
+    open fun onDraw(canvas: Canvas) {}
 
     /**
-     * 从 {@link android.view.Window} 脱离
+     * 从 [android.view.Window] 脱离
      *
-     * @return true：是否需要调用父 {@link ImageView#setImageDrawable(Drawable)} 清空图片
+     * @return true：是否需要调用父 [ImageView.setImageDrawable] 清空图片
      */
-    public boolean onDetachedFromWindow() {
-        return false;
+    open fun onDetachedFromWindow(): Boolean {
+        return false
     }
 
     /**
-     * {@link Drawable} 改变
+     * [Drawable] 改变
      *
      * @param callPosition 执行这个方法的场景或位置
      * @param oldDrawable  旧图片
      * @param newDrawable  新图片
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onDrawableChanged(@NonNull String callPosition, @Nullable Drawable oldDrawable, @Nullable Drawable newDrawable) {
-        return false;
+    open fun onDrawableChanged(
+        callPosition: String,
+        oldDrawable: Drawable?,
+        newDrawable: Drawable?
+    ): Boolean {
+        return false
     }
-
 
     /**
      * 准备显示图片
      *
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onReadyDisplay(@NonNull String uri) {
-        return false;
+    open fun onReadyDisplay(uri: String): Boolean {
+        return false
     }
 
     /**
      * 开始转入异步线程加载或下载图片
      *
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onDisplayStarted() {
-        return false;
+    fun onDisplayStarted(): Boolean {
+        return false
     }
 
     /**
@@ -114,10 +106,10 @@ public abstract class ViewFunction {
      *
      * @param totalLength     总长度
      * @param completedLength 已完成长度
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
+    open fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int): Boolean {
+        return false
     }
 
     /**
@@ -126,30 +118,34 @@ public abstract class ViewFunction {
      * @param drawable   新图片
      * @param imageFrom  图片来源
      * @param imageAttrs 图片属性
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onDisplayCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
-        return false;
+    open fun onDisplayCompleted(
+        drawable: Drawable,
+        imageFrom: ImageFrom,
+        imageAttrs: ImageAttrs
+    ): Boolean {
+        return false
     }
 
     /**
      * 显示失败
      *
      * @param errorCause 错误原因
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onDisplayError(@NonNull ErrorCause errorCause) {
-        return false;
+    open fun onDisplayError(errorCause: ErrorCause): Boolean {
+        return false
     }
 
     /**
      * 显示取消
      *
      * @param cancelCause 取消原因
-     * @return 是否需要调用 {@link ImageView#invalidate()} 刷新 {@link ImageView}
+     * @return 是否需要调用 [ImageView.invalidate] 刷新 [ImageView]
      */
-    public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
-        return false;
+    open fun onDisplayCanceled(cancelCause: CancelCause): Boolean {
+        return false
     }
 
     /**
@@ -160,7 +156,5 @@ public abstract class ViewFunction {
      * @param right  右边位置
      * @param bottom 底部位置
      */
-    public void onSizeChanged(int left, int top, int right, int bottom) {
-
-    }
+    open fun onSizeChanged(left: Int, top: Int, right: Int, bottom: Int) {}
 }

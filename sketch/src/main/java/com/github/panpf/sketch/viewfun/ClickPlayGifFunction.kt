@@ -13,119 +13,99 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.request.DisplayOptions;
-import com.github.panpf.sketch.request.RedisplayListener;
-import com.github.panpf.sketch.state.OldStateImage;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import com.github.panpf.sketch.request.DisplayOptions
+import com.github.panpf.sketch.request.RedisplayListener
+import com.github.panpf.sketch.state.OldStateImage
+import com.github.panpf.sketch.util.SketchUtils
 
 /**
  * 点击播放 gif 功能
  */
-@SuppressWarnings("WeakerAccess")
-public class ClickPlayGifFunction extends ViewFunction {
-    @NonNull
-    private FunctionCallbackView view;
-    @Nullable
-    private Drawable playIconDrawable;
+class ClickPlayGifFunction(private val view: FunctionCallbackView) : ViewFunction() {
 
-    private boolean canClickPlay;
-    @Nullable
-    private Drawable lastDrawable;
-    private int cacheViewWidth;
-    private int cacheViewHeight;
-    private int iconDrawLeft;
-    private int iconDrawTop;
+    private var playIconDrawable: Drawable? = null
+    var isClickable = false
+        private set
+    private var lastDrawable: Drawable? = null
+    private var cacheViewWidth = 0
+    private var cacheViewHeight = 0
+    private var iconDrawLeft = 0
+    private var iconDrawTop = 0
+    private var redisplayListener: PlayGifRedisplayListener? = null
 
-    @Nullable
-    private PlayGifRedisplayListener redisplayListener;
-
-    public ClickPlayGifFunction(@NonNull FunctionCallbackView view) {
-        this.view = view;
-    }
-
-    @Override
-    public void onDraw(@NonNull Canvas canvas) {
-        Drawable drawable = view.getDrawable();
-        if (drawable != lastDrawable) {
-            canClickPlay = canClickPlay(drawable);
-            lastDrawable = drawable;
+    override fun onDraw(canvas: Canvas) {
+        val playIconDrawable = playIconDrawable ?: return
+        val drawable = view.drawable
+        if (drawable !== lastDrawable) {
+            isClickable = canClickPlay(drawable)
+            lastDrawable = drawable
         }
-
-        if (!canClickPlay) {
-            return;
+        if (!isClickable) {
+            return
         }
-
-        if (cacheViewWidth != view.getWidth() || cacheViewHeight != view.getHeight()) {
-            cacheViewWidth = view.getWidth();
-            cacheViewHeight = view.getHeight();
-            int availableWidth = view.getWidth() - view.getPaddingLeft() - view.getPaddingRight() - playIconDrawable.getBounds().width();
-            int availableHeight = view.getHeight() - view.getPaddingTop() - view.getPaddingBottom() - playIconDrawable.getBounds().height();
-            iconDrawLeft = view.getPaddingLeft() + (availableWidth / 2);
-            iconDrawTop = view.getPaddingTop() + (availableHeight / 2);
+        if (cacheViewWidth != view.width || cacheViewHeight != view.height) {
+            cacheViewWidth = view.width
+            cacheViewHeight = view.height
+            val availableWidth =
+                view.width - view.paddingLeft - view.paddingRight - playIconDrawable.bounds.width()
+            val availableHeight =
+                view.height - view.paddingTop - view.paddingBottom - playIconDrawable.bounds.height()
+            iconDrawLeft = view.paddingLeft + availableWidth / 2
+            iconDrawTop = view.paddingTop + availableHeight / 2
         }
-
-        canvas.save();
-        canvas.translate(iconDrawLeft, iconDrawTop);
-        playIconDrawable.draw(canvas);
-        canvas.restore();
+        canvas.save()
+        canvas.translate(iconDrawLeft.toFloat(), iconDrawTop.toFloat())
+        playIconDrawable.draw(canvas)
+        canvas.restore()
     }
 
     /**
      * 点击事件
      *
-     * @param v View
      * @return true：已经消费了，不必往下传了
      */
-    public boolean onClick(@SuppressWarnings("UnusedParameters") View v) {
-        if (isClickable()) {
+    fun onClick(): Boolean {
+        if (isClickable) {
             if (redisplayListener == null) {
-                redisplayListener = new PlayGifRedisplayListener();
+                redisplayListener = PlayGifRedisplayListener()
             }
-            view.redisplay(redisplayListener);
-            return true;
+            view.redisplay(redisplayListener)
+            return true
         }
-        return false;
+        return false
     }
 
-    public boolean isClickable() {
-        return canClickPlay;
-    }
-
-    private boolean canClickPlay(Drawable newDrawable) {
+    private fun canClickPlay(newDrawable: Drawable?): Boolean {
         if (newDrawable == null) {
-            return false;
+            return false
         }
-        Drawable endDrawable = SketchUtils.getLastDrawable(newDrawable);
-        return SketchUtils.isGifImage(endDrawable) && !(endDrawable instanceof SketchGifDrawable);
+        val endDrawable = SketchUtils.getLastDrawable(newDrawable)
+        return SketchUtils.isGifImage(endDrawable) && endDrawable !is SketchGifDrawable
     }
 
-    public boolean setPlayIconDrawable(@NonNull Drawable playIconDrawable) {
-        if (this.playIconDrawable == playIconDrawable) {
-            return false;
+    fun setPlayIconDrawable(playIconDrawable: Drawable): Boolean {
+        if (this.playIconDrawable === playIconDrawable) {
+            return false
         }
-
-        this.playIconDrawable = playIconDrawable;
-        this.playIconDrawable.setBounds(0, 0, playIconDrawable.getIntrinsicWidth(), playIconDrawable.getIntrinsicHeight());
-        return true;
+        playIconDrawable.setBounds(
+            0,
+            0,
+            playIconDrawable.intrinsicWidth,
+            playIconDrawable.intrinsicHeight
+        )
+        this.playIconDrawable = playIconDrawable
+        return true
     }
 
-    private static class PlayGifRedisplayListener implements RedisplayListener {
-
-        @Override
-        public void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions) {
-            cacheOptions.setLoadingImage(new OldStateImage());
-            cacheOptions.setDecodeGifImage(true);
+    private class PlayGifRedisplayListener : RedisplayListener {
+        override fun onPreCommit(cacheUri: String, cacheOptions: DisplayOptions) {
+            cacheOptions.loadingImage = OldStateImage()
+            cacheOptions.isDecodeGifImage = true
         }
     }
 }

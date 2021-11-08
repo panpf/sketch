@@ -13,93 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.request.CancelCause
+import com.github.panpf.sketch.request.DisplayListener
+import com.github.panpf.sketch.request.ErrorCause
+import com.github.panpf.sketch.request.ImageFrom
+import java.lang.ref.WeakReference
 
-import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
+internal class DisplayListenerProxy(view: FunctionCallbackView) : DisplayListener {
 
-import java.lang.ref.WeakReference;
+    private val viewWeakReference: WeakReference<FunctionCallbackView> = WeakReference(view)
 
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.request.CancelCause;
-import com.github.panpf.sketch.request.DisplayListener;
-import com.github.panpf.sketch.request.ErrorCause;
-import com.github.panpf.sketch.request.ImageFrom;
-
-class DisplayListenerProxy implements DisplayListener {
-    @NonNull
-    private WeakReference<FunctionCallbackView> viewWeakReference;
-
-    DisplayListenerProxy(@NonNull FunctionCallbackView view) {
-        this.viewWeakReference = new WeakReference<>(view);
+    override fun onStarted() {
+        val view = viewWeakReference.get() ?: return
+        val needInvokeInvalidate = view.functions.onDisplayStarted()
+        if (needInvokeInvalidate) {
+            view.invalidate()
+        }
+        view.wrappedDisplayListener?.onStarted()
     }
 
-    @Override
-    public void onStarted() {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return;
-        }
-
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayStarted();
+    override fun onCompleted(drawable: Drawable, imageFrom: ImageFrom, imageAttrs: ImageAttrs) {
+        val view = viewWeakReference.get() ?: return
+        val needInvokeInvalidate =
+            view.functions.onDisplayCompleted(drawable, imageFrom, imageAttrs)
         if (needInvokeInvalidate) {
-            view.invalidate();
+            view.invalidate()
         }
-
-        if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onStarted();
-        }
+        view.wrappedDisplayListener?.onCompleted(drawable, imageFrom, imageAttrs)
     }
 
-    @Override
-    public void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return;
-        }
-
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayCompleted(drawable, imageFrom, imageAttrs);
+    override fun onError(cause: ErrorCause) {
+        val view = viewWeakReference.get() ?: return
+        val needInvokeInvalidate = view.functions.onDisplayError(cause)
         if (needInvokeInvalidate) {
-            view.invalidate();
+            view.invalidate()
         }
-
-        if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onCompleted(drawable, imageFrom, imageAttrs);
-        }
+        view.wrappedDisplayListener?.onError(cause)
     }
 
-    @Override
-    public void onError(@NonNull ErrorCause cause) {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return;
-        }
-
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayError(cause);
+    override fun onCanceled(cause: CancelCause) {
+        val view = viewWeakReference.get() ?: return
+        val needInvokeInvalidate = view.functions.onDisplayCanceled(cause)
         if (needInvokeInvalidate) {
-            view.invalidate();
+            view.invalidate()
         }
-
-        if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onError(cause);
-        }
-    }
-
-    @Override
-    public void onCanceled(@NonNull CancelCause cause) {
-        FunctionCallbackView view = viewWeakReference.get();
-        if (view == null) {
-            return;
-        }
-
-        boolean needInvokeInvalidate = view.getFunctions().onDisplayCanceled(cause);
-        if (needInvokeInvalidate) {
-            view.invalidate();
-        }
-
-        if (view.wrappedDisplayListener != null) {
-            view.wrappedDisplayListener.onCanceled(cause);
-        }
+        view.wrappedDisplayListener?.onCanceled(cause)
     }
 }

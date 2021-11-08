@@ -13,69 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.request.DisplayOptions;
-import com.github.panpf.sketch.request.RedisplayListener;
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.request.DisplayOptions
+import com.github.panpf.sketch.request.RedisplayListener
 
 /**
  * 由于 RecyclerView 在往回滚动的时候遇到可以直接使用的 Item（位置没有变）会不走 onBindViewHolder 而直接走 onAttachedToWindow 然后显示，
- * <br>可是 RequestFunction 在 onDetachedFromWindow 的时候会主动清空 Drawable 导致没有重新走 onBindViewHolder 的 Item 会没有 Drawable 而显示空白
- * <br>因此 RecyclerCompatFunction 就判断了如果在 onAttachedToWindow 之前没有调用相关显示图片的方法就会根据 DisplayCache 恢复之前的图片
+ * <br></br>可是 RequestFunction 在 onDetachedFromWindow 的时候会主动清空 Drawable 导致没有重新走 onBindViewHolder 的 Item 会没有 Drawable 而显示空白
+ * <br></br>因此 RecyclerCompatFunction 就判断了如果在 onAttachedToWindow 之前没有调用相关显示图片的方法就会根据 DisplayCache 恢复之前的图片
  */
 // todo 尝试不再主动清空图片
-@SuppressWarnings("WeakerAccess")
-public class RecyclerCompatFunction extends ViewFunction {
-    private static final String NAME = "RecyclerCompatFunction";
+class RecyclerCompatFunction(private val sketchView: SketchView) : ViewFunction() {
 
-    @NonNull
-    private SketchView sketchView;
+    private var isSetImage = false
+    private var redisplayListener: RedisplayListener? = null
 
-    private boolean isSetImage;
-    @Nullable
-    private RedisplayListener redisplayListener;
-
-    public RecyclerCompatFunction(@NonNull SketchView sketchView) {
-        this.sketchView = sketchView;
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        if (isSetImage) {
-            return;
+    override fun onAttachedToWindow() {
+        if (!isSetImage) {
+            sketchView.redisplay(redisplayListener ?: RecyclerRedisplayListener().apply {
+                this@RecyclerCompatFunction.redisplayListener = this
+            })
         }
-
-        if (redisplayListener == null) {
-            redisplayListener = new RecyclerRedisplayListener();
-        }
-        sketchView.redisplay(redisplayListener);
     }
 
-    @Override
-    public boolean onReadyDisplay(@NonNull String uri) {
-        isSetImage = true;
-        return false;
+    override fun onReadyDisplay(uri: String): Boolean {
+        isSetImage = true
+        return false
     }
 
-    @Override
-    public boolean onDetachedFromWindow() {
-        this.isSetImage = false;
-        return false;
+    override fun onDetachedFromWindow(): Boolean {
+        isSetImage = false
+        return false
     }
 
-    private static class RecyclerRedisplayListener implements RedisplayListener {
-
-        @Override
-        public void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions) {
+    private class RecyclerRedisplayListener : RedisplayListener {
+        override fun onPreCommit(cacheUri: String, cacheOptions: DisplayOptions) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "restore image on attached to window. %s", cacheUri);
+                SLog.dmf(NAME, "restore image on attached to window. %s", cacheUri)
             }
         }
+    }
+
+    companion object {
+        private const val NAME = "RecyclerCompatFunction"
     }
 }

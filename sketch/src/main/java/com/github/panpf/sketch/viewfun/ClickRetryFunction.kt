@@ -13,115 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.viewfun
 
-package com.github.panpf.sketch.viewfun;
-
-import android.view.View;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.request.CancelCause;
-import com.github.panpf.sketch.request.DisplayOptions;
-import com.github.panpf.sketch.request.ErrorCause;
-import com.github.panpf.sketch.request.RedisplayListener;
-import com.github.panpf.sketch.request.RequestLevel;
+import com.github.panpf.sketch.request.*
 
 /**
- * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击 {@link android.widget.ImageView} 重新或强制显示图片
+ * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击 [android.widget.ImageView] 重新或强制显示图片
  */
-@SuppressWarnings("WeakerAccess")
-public class ClickRetryFunction extends ViewFunction {
-    private boolean clickRetryOnDisplayErrorEnabled;
-    private boolean clickRetryOnPauseDownloadEnabled;
+class ClickRetryFunction(private val view: FunctionCallbackView) : ViewFunction() {
 
-    private boolean displayError;
-    private boolean pauseDownload;
+    /**
+     * 设置当失败的时候点击重新显示图片
+     */
+    var isClickRetryOnDisplayErrorEnabled = false
 
-    @NonNull
-    private FunctionCallbackView view;
-    private RedisplayListener redisplayListener;
+    /**
+     * 设置当暂停下载的时候点击显示图片
+     */
+    var isClickRetryOnPauseDownloadEnabled = false
 
-    public ClickRetryFunction(@NonNull FunctionCallbackView view) {
-        this.view = view;
-    }
+    val isClickable: Boolean
+        get() = isClickRetryOnDisplayErrorEnabled && displayError || isClickRetryOnPauseDownloadEnabled && pauseDownload
 
-    @Override
-    public boolean onReadyDisplay(@NonNull String uri) {
+    private var displayError = false
+    private var pauseDownload = false
+    private var redisplayListener: RedisplayListener? = null
+
+    override fun onReadyDisplay(uri: String): Boolean {
         // 重新走了一遍显示流程，这些要重置
-        displayError = false;
-        pauseDownload = false;
-
-        view.updateClickable();
-        return false;
+        displayError = false
+        pauseDownload = false
+        view.updateClickable()
+        return false
     }
 
-    @Override
-    public boolean onDisplayError(@NonNull ErrorCause errorCause) {
+    override fun onDisplayError(errorCause: ErrorCause): Boolean {
         // 正常的失败才能重试，因此要过滤一下失败原因
-        displayError = errorCause != ErrorCause.URI_INVALID && errorCause != ErrorCause.URI_NO_SUPPORT;
-
-        view.updateClickable();
-        return false;
+        displayError =
+            errorCause != ErrorCause.URI_INVALID && errorCause != ErrorCause.URI_NO_SUPPORT
+        view.updateClickable()
+        return false
     }
 
-    @Override
-    public boolean onDisplayCanceled(@NonNull CancelCause cancelCause) {
-        pauseDownload = cancelCause == CancelCause.PAUSE_DOWNLOAD;
-
-        view.updateClickable();
-        return false;
+    override fun onDisplayCanceled(cancelCause: CancelCause): Boolean {
+        pauseDownload = cancelCause == CancelCause.PAUSE_DOWNLOAD
+        view.updateClickable()
+        return false
     }
 
     /**
      * 点击事件
      *
-     * @param v View
      * @return true：已经消费了，不必往下传了
      */
-    public boolean onClick(View v) {
-        if (isClickable()) {
+    fun onClick(): Boolean {
+        if (isClickable) {
             if (redisplayListener == null) {
-                redisplayListener = new RetryOnPauseDownloadRedisplayListener();
+                redisplayListener = RetryOnPauseDownloadRedisplayListener()
             }
-
-            return view.redisplay(redisplayListener);
+            return view.redisplay(redisplayListener)
         }
-
-        return false;
+        return false
     }
 
-    public boolean isClickable() {
-        return (clickRetryOnDisplayErrorEnabled && displayError) || (clickRetryOnPauseDownloadEnabled && pauseDownload);
-    }
-
-    public boolean isClickRetryOnDisplayErrorEnabled() {
-        return clickRetryOnDisplayErrorEnabled;
-    }
-
-    public boolean isClickRetryOnPauseDownloadEnabled() {
-        return clickRetryOnPauseDownloadEnabled;
-    }
-
-    /**
-     * 设置当暂停下载的时候点击显示图片
-     */
-    public void setClickRetryOnPauseDownloadEnabled(boolean clickRetryOnPauseDownloadEnabled) {
-        this.clickRetryOnPauseDownloadEnabled = clickRetryOnPauseDownloadEnabled;
-    }
-
-    /**
-     * 设置当失败的时候点击重新显示图片
-     */
-    public void setClickRetryOnDisplayErrorEnabled(boolean clickRetryOnDisplayErrorEnabled) {
-        this.clickRetryOnDisplayErrorEnabled = clickRetryOnDisplayErrorEnabled;
-    }
-
-    private class RetryOnPauseDownloadRedisplayListener implements RedisplayListener {
-
-        @Override
-        public void onPreCommit(@NonNull String cacheUri, @NonNull DisplayOptions cacheOptions) {
-            if (clickRetryOnPauseDownloadEnabled && pauseDownload) {
-                cacheOptions.setRequestLevel(RequestLevel.NET);
+    private inner class RetryOnPauseDownloadRedisplayListener : RedisplayListener {
+        override fun onPreCommit(cacheUri: String, cacheOptions: DisplayOptions) {
+            if (isClickRetryOnPauseDownloadEnabled && pauseDownload) {
+                cacheOptions.requestLevel = RequestLevel.NET
             }
         }
     }
