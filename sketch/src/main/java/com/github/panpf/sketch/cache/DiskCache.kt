@@ -13,65 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.cache
 
-package com.github.panpf.sketch.cache;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantLock;
-
-import com.github.panpf.sketch.util.DiskLruCache;
+import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.DiskLruCache.EditorChangedException
+import com.github.panpf.sketch.util.DiskLruCache.FileNotExistException
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 磁盘缓存管理器
  */
-public interface DiskCache {
-    String DISK_CACHE_DIR_NAME = "sketch";
-    int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
-    int DISK_CACHE_RESERVED_SPACE_SIZE = 200 * 1024 * 1024;
+interface DiskCache {
+
+    companion object {
+        const val DISK_CACHE_DIR_NAME = "sketch"
+        const val DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024
+        const val DISK_CACHE_RESERVED_SPACE_SIZE = 200 * 1024 * 1024
+    }
 
     /**
      * 是否存在指定 key 的缓存
      *
      * @param key 缓存 key
      */
-    boolean exist(@NonNull String key);
+    fun exist(key: String): Boolean
 
     /**
      * 获取指定 key 的缓存
      *
      * @param key 缓存 key
-     * @return {@link Entry} 缓存实体，用于读取缓存数据
+     * @return [Entry] 缓存实体，用于读取缓存数据
      */
-    @Nullable
-    Entry get(@NonNull String key);
+    operator fun get(key: String): Entry?
 
     /**
      * 编辑指定 uri 的缓存
      *
      * @param key 缓存 key
-     * @return {@link Editor} 缓存编辑器
+     * @return [Editor] 缓存编辑器
      */
-    @Nullable
-    Editor edit(@NonNull String key);
+    fun edit(key: String): Editor?
 
     /**
      * 获取缓存目录
      *
-     * @return {@link File}
+     * @return [File]
      */
-    @NonNull
-    File getCacheDir();
+    val cacheDir: File
 
     /**
      * 获取最大容量（默认为 100M）
      */
-    long getMaxSize();
+    val maxSize: Long
 
     /**
      * 将 key 进行转码
@@ -79,49 +76,39 @@ public interface DiskCache {
      * @param key 缓存 key
      * @return 转码后的 key
      */
-    @NonNull
-    String keyEncode(@NonNull String key);
+    fun keyEncode(key: String): String
 
     /**
      * 获取已用容量
      */
-    long getSize();
-
+    val size: Long
     /**
      * 是否已禁用
      */
-    boolean isDisabled();
-
-    /**
-     * 设置是否禁用
-     *
-     * @param disabled 是否禁用
-     */
-    void setDisabled(boolean disabled);
+    var isDisabled: Boolean
 
     /**
      * 清除所有缓存
      */
-    void clear();
+    fun clear()
 
     /**
      * 是否已关闭
      */
-    boolean isClosed();
+    val isClosed: Boolean
 
     /**
-     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 {@link #setDisabled(boolean)}
+     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 [.setDisabled]
      */
-    void close();
+    fun close()
 
     /**
      * 获取编辑锁
      *
      * @param key 缓存 key
-     * @return {@link ReentrantLock}. 编辑锁
+     * @return [ReentrantLock]. 编辑锁
      */
-    @NonNull
-    ReentrantLock getEditLock(@NonNull String key);
+    fun getEditLock(key: String): ReentrantLock
 
     /**
      * 磁盘缓存实体
@@ -130,34 +117,32 @@ public interface DiskCache {
         /**
          * 创建输入流
          *
-         * @return {@link InputStream}
+         * @return [InputStream]
          * @throws IOException IO 异常
          */
-        @NonNull
-        InputStream newInputStream() throws IOException;
+        @Throws(IOException::class)
+        fun newInputStream(): InputStream
 
         /**
          * 获取缓存文件
          *
-         * @return {@link File}
+         * @return [File]
          */
-        @NonNull
-        File getFile();
+        val file: File
 
         /**
          * 获取缓存 key
          *
          * @return 缓存 key，未转码的
          */
-        @NonNull
-        String getKey();
+        val key: String
 
         /**
          * 删除实体
          *
          * @return true：删除成功
          */
-        boolean delete();
+        fun delete(): Boolean
     }
 
     /**
@@ -167,10 +152,11 @@ public interface DiskCache {
         /**
          * 创建一个输出流，用于写出文件
          *
-         * @return {@link OutputStream}
+         * @return [OutputStream]
          * @throws IOException IO 异常
          */
-        OutputStream newOutputStream() throws IOException;
+        @Throws(IOException::class)
+        fun newOutputStream(): OutputStream?
 
         /**
          * 写完提交
@@ -180,11 +166,17 @@ public interface DiskCache {
          * @throws DiskLruCache.ClosedException        已经关闭了
          * @throws DiskLruCache.FileNotExistException  文件被删除了
          */
-        void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException;
+        @Throws(
+            IOException::class,
+            EditorChangedException::class,
+            DiskLruCache.ClosedException::class,
+            FileNotExistException::class
+        )
+        fun commit()
 
         /**
          * 中断编辑
          */
-        void abort();
+        fun abort()
     }
 }

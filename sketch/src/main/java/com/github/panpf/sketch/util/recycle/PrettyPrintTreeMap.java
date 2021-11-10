@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.cache.recycle;
+package com.github.panpf.sketch.util.recycle;
 
 import java.util.TreeMap;
 

@@ -13,429 +13,416 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.cache
 
-package com.github.panpf.sketch.cache;
-
-import android.content.Context;
-import android.os.Environment;
-import android.text.format.Formatter;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Locale;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-
-import com.github.panpf.sketch.Configuration;
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.util.DiskLruCache;
-import com.github.panpf.sketch.util.NoSpaceException;
-import com.github.panpf.sketch.util.SketchMD5Utils;
-import com.github.panpf.sketch.util.SketchUtils;
-import com.github.panpf.sketch.util.UnableCreateDirException;
-import com.github.panpf.sketch.util.UnableCreateFileException;
+import android.content.Context
+import android.os.Environment
+import android.text.format.Formatter
+import com.github.panpf.sketch.Configuration
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.SLog.Companion.dmf
+import com.github.panpf.sketch.SLog.Companion.emf
+import com.github.panpf.sketch.SLog.Companion.isLoggable
+import com.github.panpf.sketch.SLog.Companion.wmf
+import com.github.panpf.sketch.util.*
+import com.github.panpf.sketch.util.SketchMD5Utils.md5
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 
 /**
- * 根据最少使用规则释放缓存的磁盘缓存管理器
+ * 创建一个根据最少使用规则释放缓存的磁盘缓存管理器
+ *
+ * @param context        [Context]
+ * @param configuration  [Configuration]
+ * @param appVersionCode app 版本，用于删除旧缓存，想要主动删除旧缓存时更新这个值即可
+ * @param maxSize        最大容量
  */
-public class LruDiskCache implements DiskCache {
-    private static final String NAME = "LruDiskCache";
+class LruDiskCache(
+    context: Context,
+    private val configuration: Configuration,
+    private val appVersionCode: Int,
+    maxSize: Int
+) : DiskCache {
 
-    private int maxSize;
-    private int appVersionCode;
-    @NonNull
-    private File cacheDir;
-    @NonNull
-    private Context context;
-    @Nullable
-    private DiskLruCache cache;
-    @NonNull
-    private Configuration configuration;
-    private boolean closed;
-    private boolean disabled;
-    @Nullable
-    private Map<String, ReentrantLock> editLockMap;
-
-    /**
-     * 创建根据最少使用规则释放缓存的磁盘缓存管理器
-     *
-     * @param context        {@link Context}
-     * @param configuration  {@link Configuration}
-     * @param appVersionCode app 版本，用于删除旧缓存，想要主动删除旧缓存时更新这个值即可
-     * @param maxSize        最大容量
-     */
-    public LruDiskCache(@NonNull Context context, @NonNull Configuration configuration, int appVersionCode, int maxSize) {
-        context = context.getApplicationContext();
-        this.context = context;
-        this.maxSize = maxSize;
-        this.appVersionCode = appVersionCode;
-        this.configuration = configuration;
-        this.cacheDir = SketchUtils.getDefaultSketchCacheDir(context, DISK_CACHE_DIR_NAME, true);
+    companion object {
+        private const val NAME = "LruDiskCache"
     }
+
+    override val maxSize: Long = maxSize.toLong()
+
+    @get:Synchronized
+    private var cacheDirHolder: File =
+        SketchUtils.getDefaultSketchCacheDir(
+            context.applicationContext,
+            DiskCache.DISK_CACHE_DIR_NAME,
+            true
+        )
+
+    @get:Synchronized
+    override val cacheDir: File
+        get() = cacheDirHolder
+    private val appContext: Context = context.applicationContext
+    private var cache: DiskLruCache? = null
+
+    @get:Synchronized
+    override var isClosed = false
+        private set
+    override var isDisabled: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                wmf(NAME, "setDisabled. %s", value)
+            }
+        }
+    private var editLockMap: MutableMap<String, ReentrantLock>? = null
 
     /**
      * 检查磁盘缓存器是否可用
      */
-    protected boolean checkDiskCache() {
-        return cache != null && !cache.isClosed();
+    private fun checkDiskCache(): Boolean {
+        return cache != null && !cache!!.isClosed
     }
 
     /**
      * 检查缓存目录是否存在并可用
      */
-    protected boolean checkCacheDir() {
-        return cacheDir.exists();
+    private fun checkCacheDir(): Boolean {
+        return cacheDir.exists()
     }
 
     /**
      * 安装磁盘缓存
      */
-    protected synchronized void installDiskCache() {
-        if (closed) {
-            return;
+    @Synchronized
+    private fun installDiskCache() {
+        if (isClosed) {
+            return
         }
 
         // 旧的要关闭
         if (cache != null) {
             try {
-                cache.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                cache!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-            cache = null;
+            cache = null
         }
 
         // 创建缓存目录，然后检查空间并创建个文件测试一下
-        try {
-            cacheDir = SketchUtils.buildCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
-        } catch (NoSpaceException | UnableCreateDirException | UnableCreateFileException e) {
-            e.printStackTrace();
-            SLog.emf(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
-                    e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
-            configuration.getCallback().onError(new InstallDiskCacheException(e, cacheDir));
-            return;
+        cacheDirHolder = try {
+            SketchUtils.buildCacheDir(
+                context = appContext,
+                dirName = DiskCache.DISK_CACHE_DIR_NAME,
+                compatManyProcess = true,
+                minSpaceSize = DiskCache.DISK_CACHE_RESERVED_SPACE_SIZE.toLong(),
+                cleanOnNoSpace = true,
+                cleanOldCacheFiles = true,
+                expandNumber = 10
+            )
+        } catch (e: NoSpaceException) {
+            e.printStackTrace()
+            emf(
+                NAME,
+                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+                e.javaClass.simpleName,
+                e.message!!,
+                Environment.getExternalStorageState(),
+                cacheDir.path
+            )
+            configuration.callback.onError(InstallDiskCacheException(e, cacheDir))
+            return
+        } catch (e: UnableCreateDirException) {
+            e.printStackTrace()
+            emf(
+                NAME,
+                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+                e.javaClass.simpleName,
+                e.message!!,
+                Environment.getExternalStorageState(),
+                cacheDir.path
+            )
+            configuration.callback.onError(InstallDiskCacheException(e, cacheDir))
+            return
+        } catch (e: UnableCreateFileException) {
+            e.printStackTrace()
+            emf(
+                NAME,
+                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+                e.javaClass.simpleName,
+                e.message!!,
+                Environment.getExternalStorageState(),
+                cacheDir.path
+            )
+            configuration.callback.onError(InstallDiskCacheException(e, cacheDir))
+            return
         }
-
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(NAME, "diskCacheDir: %s", cacheDir.getPath());
+        if (isLoggable(SLog.DEBUG)) {
+            dmf(NAME, "diskCacheDir: %s", cacheDir.path)
         }
-
         try {
-            cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
-        } catch (IOException e) {
-            e.printStackTrace();
-            SLog.emf(NAME, "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
-                    e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
-            configuration.getCallback().onError(new InstallDiskCacheException(e, cacheDir));
+            cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            emf(
+                NAME,
+                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
+                e.javaClass.simpleName,
+                e.message!!,
+                Environment.getExternalStorageState(),
+                cacheDir.path
+            )
+            configuration.callback.onError(InstallDiskCacheException(e, cacheDir))
         }
     }
 
     // 这个方法性能优先，因此不加synchronized
-    @Override
-    public boolean exist(@NonNull String key) {
-        if (closed) {
-            return false;
+    override fun exist(key: String): Boolean {
+        if (isClosed) {
+            return false
         }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Disabled. Unable judge exist, key=%s", key);
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(NAME, "Disabled. Unable judge exist, key=%s", key)
             }
-            return false;
+            return false
         }
 
         // 这个方法性能优先，因此不检查缓存目录
         if (!checkDiskCache()) {
-            installDiskCache();
+            installDiskCache()
             if (!checkDiskCache()) {
-                return false;
+                return false
             }
         }
-
-        try {
-            return cache.exist(keyEncode(key));
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        return try {
+            cache!!.exist(keyEncode(key))
+        } catch (e: DiskLruCache.ClosedException) {
+            e.printStackTrace()
+            false
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
         }
     }
 
-    @Override
-    public synchronized Entry get(@NonNull String key) {
-        if (closed) {
-            return null;
+    @Synchronized
+    override fun get(key: String): DiskCache.Entry? {
+        if (isClosed) {
+            return null
         }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Disabled. Unable get, key=%s", key);
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(NAME, "Disabled. Unable get, key=%s", key)
             }
-            return null;
+            return null
         }
-
         if (!checkDiskCache() || !checkCacheDir()) {
-            installDiskCache();
+            installDiskCache()
             if (!checkDiskCache()) {
-                return null;
+                return null
             }
         }
-
-        DiskLruCache.SimpleSnapshot snapshot = null;
+        var snapshot: DiskLruCache.SimpleSnapshot? = null
         try {
-            snapshot = cache.getSimpleSnapshot(keyEncode(key));
-        } catch (IOException | DiskLruCache.ClosedException e) {
-            e.printStackTrace();
+            snapshot = cache!!.getSimpleSnapshot(keyEncode(key))
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: DiskLruCache.ClosedException) {
+            e.printStackTrace()
         }
-        return snapshot != null ? new LruDiskCacheEntry(key, snapshot) : null;
+        return snapshot?.let { LruDiskCacheEntry(key, it) }
     }
 
-    @Override
-    public synchronized Editor edit(@NonNull String key) {
-        if (closed) {
-            return null;
+    @Synchronized
+    override fun edit(key: String): DiskCache.Editor? {
+        if (isClosed) {
+            return null
         }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Disabled. Unable edit, key=%s", key);
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(NAME, "Disabled. Unable edit, key=%s", key)
             }
-            return null;
+            return null
         }
-
         if (!checkDiskCache() || !checkCacheDir()) {
-            installDiskCache();
+            installDiskCache()
             if (!checkDiskCache()) {
-                return null;
+                return null
             }
         }
-
-        DiskLruCache.Editor diskEditor = null;
+        var diskEditor: DiskLruCache.Editor? = null
         try {
-            diskEditor = cache.edit(keyEncode(key));
-        } catch (IOException e) {
-            e.printStackTrace();
+            diskEditor = cache!!.edit(keyEncode(key))
+        } catch (e: IOException) {
+            e.printStackTrace()
 
             // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重装DiskLruCache，能显著提高遇错恢复能力
-            installDiskCache();
+            installDiskCache()
             if (!checkDiskCache()) {
-                return null;
+                return null
             }
-
             try {
-                diskEditor = cache.edit(keyEncode(key));
-            } catch (IOException | DiskLruCache.ClosedException e1) {
-                e1.printStackTrace();
+                diskEditor = cache!!.edit(keyEncode(key))
+            } catch (e1: IOException) {
+                e1.printStackTrace()
+            } catch (e1: DiskLruCache.ClosedException) {
+                e1.printStackTrace()
             }
-        } catch (DiskLruCache.ClosedException e) {
-            e.printStackTrace();
+        } catch (e: DiskLruCache.ClosedException) {
+            e.printStackTrace()
 
             // 旧的关闭了，必须要重装DiskLruCache
-            installDiskCache();
+            installDiskCache()
             if (!checkDiskCache()) {
-                return null;
+                return null
             }
-
             try {
-                diskEditor = cache.edit(keyEncode(key));
-            } catch (IOException | DiskLruCache.ClosedException e1) {
-                e1.printStackTrace();
+                diskEditor = cache!!.edit(keyEncode(key))
+            } catch (e1: IOException) {
+                e1.printStackTrace()
+            } catch (e1: DiskLruCache.ClosedException) {
+                e1.printStackTrace()
             }
         }
-        return diskEditor != null ? new LruDiskCacheEditor(diskEditor) : null;
+        return diskEditor?.let { LruDiskCacheEditor(it) }
     }
 
-    @NonNull
-    @Override
-    public synchronized File getCacheDir() {
-        return cacheDir;
-    }
-
-    @Override
-    public long getMaxSize() {
-        return maxSize;
-    }
-
-    @NonNull
-    @Override
-    public String keyEncode(@NonNull String key) {
+    override fun keyEncode(key: String): String {
         // 由于DiskLruCache会在key后面加序列号，因此这里不用再对apk文件的名称做特殊处理了
 //        if (SketchUtils.checkSuffix(key, ".apk")) {
 //            key += ".icon";
 //        }
-        return SketchMD5Utils.md5(key);
+        return md5(key)
     }
 
-    @Override
-    public synchronized long getSize() {
-        if (closed) {
-            return 0;
-        }
-
-        if (!checkDiskCache()) {
-            return 0;
-        }
-
-        return cache.size();
-    }
-
-    @Override
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    @Override
-    public void setDisabled(boolean disabled) {
-        if (this.disabled != disabled) {
-            this.disabled = disabled;
-            if (disabled) {
-                SLog.wmf(NAME, "setDisabled. %s", true);
-            } else {
-                SLog.wmf(NAME, "setDisabled. %s", false);
+    @get:Synchronized
+    override val size: Long
+        get() {
+            if (isClosed) {
+                return 0
             }
-        }
-    }
-
-    @Override
-    public synchronized void clear() {
-        if (closed) {
-            return;
+            return if (!checkDiskCache()) {
+                0
+            } else cache!!.size()
         }
 
+    @Synchronized
+    override fun clear() {
+        if (isClosed) {
+            return
+        }
         if (cache != null) {
             try {
-                cache.delete();
-            } catch (IOException e) {
-                e.printStackTrace();
+                cache!!.delete()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-            cache = null;
+            cache = null
         }
-
-        installDiskCache();
+        installDiskCache()
     }
 
-    @Override
-    public synchronized boolean isClosed() {
-        return closed;
-    }
-
-    @Override
-    public synchronized void close() {
-        if (closed) {
-            return;
+    @Synchronized
+    override fun close() {
+        if (isClosed) {
+            return
         }
-
-        closed = true;
-
+        isClosed = true
         if (cache != null) {
             try {
-                cache.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                cache!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-            cache = null;
+            cache = null
         }
     }
 
-    @NonNull
-    @Override
-    public synchronized ReentrantLock getEditLock(@NonNull String key) {
+    @Synchronized
+    override fun getEditLock(key: String): ReentrantLock {
         if (editLockMap == null) {
-            synchronized (this) {
+            synchronized(this) {
                 if (editLockMap == null) {
-                    editLockMap = new WeakHashMap<>();
+                    editLockMap = WeakHashMap()
                 }
             }
         }
-
-        ReentrantLock lock = editLockMap.get(key);
+        var lock = editLockMap!![key]
         if (lock == null) {
-            lock = new ReentrantLock();
-            editLockMap.put(key, lock);
+            lock = ReentrantLock()
+            editLockMap!![key] = lock
         }
-        return lock;
+        return lock
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
-                NAME, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
+    override fun toString(): String {
+        return String.format(
+            Locale.US,
+            "%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
+            NAME,
+            Formatter.formatFileSize(appContext, maxSize),
+            appVersionCode,
+            cacheDir.path
+        )
     }
 
-    public static class LruDiskCacheEntry implements Entry {
-        private String key;
-        private DiskLruCache.SimpleSnapshot snapshot;
-
-        public LruDiskCacheEntry(String key, DiskLruCache.SimpleSnapshot snapshot) {
-            this.key = key;
-            this.snapshot = snapshot;
+    class LruDiskCacheEntry(
+        override val key: String,
+        private val snapshot: DiskLruCache.SimpleSnapshot
+    ) :
+        DiskCache.Entry {
+        @Throws(IOException::class)
+        override fun newInputStream(): InputStream {
+            return snapshot.newInputStream(0)
         }
 
-        @NonNull
-        @Override
-        public InputStream newInputStream() throws IOException {
-            return snapshot.newInputStream(0);
-        }
+        override val file: File
+            get() = snapshot.getFile(0)
 
-        @NonNull
-        @Override
-        public File getFile() {
-            return snapshot.getFile(0);
-        }
-
-        @NonNull
-        @Override
-        public String getKey() {
-            return key;
-        }
-
-        @Override
-        public boolean delete() {
-            try {
-                snapshot.getDiskLruCache().remove(snapshot.getKey());
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            } catch (DiskLruCache.ClosedException e) {
-                e.printStackTrace();
-                return false;
+        override fun delete(): Boolean {
+            return try {
+                snapshot.diskLruCache.remove(snapshot.key)
+                true
+            } catch (e: IOException) {
+                e.printStackTrace()
+                false
+            } catch (e: DiskLruCache.ClosedException) {
+                e.printStackTrace()
+                false
             }
         }
     }
 
-    public static class LruDiskCacheEditor implements Editor {
-        private DiskLruCache.Editor diskEditor;
-
-        public LruDiskCacheEditor(DiskLruCache.Editor diskEditor) {
-            this.diskEditor = diskEditor;
+    class LruDiskCacheEditor(private val diskEditor: DiskLruCache.Editor) : DiskCache.Editor {
+        @Throws(IOException::class)
+        override fun newOutputStream(): OutputStream? {
+            return diskEditor.newOutputStream(0)
         }
 
-        @Override
-        public OutputStream newOutputStream() throws IOException {
-            return diskEditor.newOutputStream(0);
+        @Throws(
+            IOException::class,
+            DiskLruCache.EditorChangedException::class,
+            DiskLruCache.ClosedException::class,
+            DiskLruCache.FileNotExistException::class
+        )
+        override fun commit() {
+            diskEditor.commit()
         }
 
-        @Override
-        public void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
-            diskEditor.commit();
-        }
-
-        @Override
-        public void abort() {
+        override fun abort() {
             try {
-                diskEditor.abort();
-            } catch (IOException | DiskLruCache.FileNotExistException | DiskLruCache.EditorChangedException e) {
-                e.printStackTrace();
+                diskEditor.abort()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: DiskLruCache.FileNotExistException) {
+                e.printStackTrace()
+            } catch (e: DiskLruCache.EditorChangedException) {
+                e.printStackTrace()
             }
         }
     }

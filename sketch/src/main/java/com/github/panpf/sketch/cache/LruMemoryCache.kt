@@ -13,215 +13,187 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.cache
 
-package com.github.panpf.sketch.cache;
-
-import android.content.Context;
-import android.text.format.Formatter;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.drawable.SketchRefBitmap;
-import com.github.panpf.sketch.util.LruCache;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.content.ComponentCallbacks2
+import android.content.Context
+import android.text.format.Formatter
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.SLog.Companion.dmf
+import com.github.panpf.sketch.SLog.Companion.isLoggable
+import com.github.panpf.sketch.SLog.Companion.wm
+import com.github.panpf.sketch.SLog.Companion.wmf
+import com.github.panpf.sketch.drawable.SketchRefBitmap
+import com.github.panpf.sketch.util.LruCache
+import com.github.panpf.sketch.util.SketchUtils.Companion.getTrimLevelName
 
 /**
- * 根据最少使用规则释放缓存的内存缓存管理器
+ * 创建根据最少使用规则释放缓存的内存缓存管理器
+ *
+ * @param context [Context]
+ * @param maxSize 最大容量
  */
-public class LruMemoryCache implements MemoryCache {
-    private static final String MODULE = "LruMemoryCache";
+class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
 
-    @NonNull
-    private final LruCache<String, SketchRefBitmap> cache;
-    @NonNull
-    private Context context;
-    private boolean closed;
-    private boolean disabled;
-
-    /**
-     * 创建根据最少使用规则释放缓存的内存缓存管理器
-     *
-     * @param context {@link Context}
-     * @param maxSize 最大容量
-     */
-    public LruMemoryCache(@NonNull Context context, int maxSize) {
-        context = context.getApplicationContext();
-        this.context = context;
-        this.cache = new RefBitmapLruCache(maxSize);
+    companion object {
+        private const val MODULE = "LruMemoryCache"
     }
 
-    @Override
-    public synchronized void put(@NonNull String key, @NonNull SketchRefBitmap refBitmap) {
-        if (closed) {
-            return;
-        }
+    private val cache: LruCache<String, SketchRefBitmap> = RefBitmapLruCache(maxSize)
+    private val appContext: Context = context.applicationContext
 
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Disabled. Unable put, key=%s", key);
-            }
-            return;
-        }
+    @get:Synchronized
+    override var isClosed = false
+        private set
 
-        if (cache.get(key) != null) {
-            SLog.wm(MODULE, String.format("Exist. key=%s", key));
-            return;
-        }
-
-        int oldCacheSize = 0;
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            oldCacheSize = cache.size();
-        }
-
-        cache.put(key, refBitmap);
-
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(MODULE, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
-                    Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
-                    Formatter.formatFileSize(context, cache.size()));
-        }
-    }
-
-    @Override
-    public synchronized SketchRefBitmap get(@NonNull String key) {
-        if (closed) {
-            return null;
-        }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Disabled. Unable get, key=%s", key);
-            }
-            return null;
-        }
-
-        return cache.get(key);
-    }
-
-    @Override
-    public synchronized SketchRefBitmap remove(@NonNull String key) {
-        if (closed) {
-            return null;
-        }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Disabled. Unable remove, key=%s", key);
-            }
-            return null;
-        }
-
-        SketchRefBitmap refBitmap = cache.remove(key);
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(MODULE, "remove. memoryCacheSize: %s",
-                    Formatter.formatFileSize(context, cache.size()));
-        }
-        return refBitmap;
-    }
-
-    @Override
-    public synchronized long getSize() {
-        if (closed) {
-            return 0;
-        }
-
-        return cache.size();
-    }
-
-    @Override
-    public long getMaxSize() {
-        return cache.maxSize();
-    }
-
-    @Override
-    public synchronized void trimMemory(int level) {
-        if (closed) {
-            return;
-        }
-
-        long memoryCacheSize = getSize();
-
-        if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-            cache.evictAll();
-        } else if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
-            cache.trimToSize(cache.maxSize() / 2);
-        }
-
-        long releasedSize = memoryCacheSize - getSize();
-        SLog.wmf(MODULE, "trimMemory. level=%s, released: %s",
-                SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
-    }
-
-    @Override
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    @Override
-    public void setDisabled(boolean disabled) {
-        if (this.disabled != disabled) {
-            this.disabled = disabled;
-            if (disabled) {
-                SLog.wmf(MODULE, "setDisabled. %s", true);
-            } else {
-                SLog.wmf(MODULE, "setDisabled. %s", false);
+    override var isDisabled = false
+        set(value) {
+            if (field != value) {
+                field = value
+                wmf(MODULE, "setDisabled. %s", value)
             }
         }
+
+    @Synchronized
+    override fun put(key: String, refBitmap: SketchRefBitmap) {
+        if (isClosed) {
+            return
+        }
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(MODULE, "Disabled. Unable put, key=%s", key)
+            }
+            return
+        }
+        if (cache[key] != null) {
+            wm(MODULE, String.format("Exist. key=%s", key))
+            return
+        }
+        var oldCacheSize = 0
+        if (isLoggable(SLog.DEBUG)) {
+            oldCacheSize = cache.size()
+        }
+        cache.put(key, refBitmap)
+        if (isLoggable(SLog.DEBUG)) {
+            dmf(
+                MODULE, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+                Formatter.formatFileSize(appContext, oldCacheSize.toLong()), refBitmap.info,
+                Formatter.formatFileSize(appContext, cache.size().toLong())
+            )
+        }
     }
 
-    @Override
-    public synchronized void clear() {
-        if (closed) {
-            return;
+    @Synchronized
+    override fun get(key: String): SketchRefBitmap? {
+        if (isClosed) {
+            return null
         }
-
-        SLog.wmf(MODULE, "clear. before size: %s", Formatter.formatFileSize(context, cache.size()));
-        cache.evictAll();
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(MODULE, "Disabled. Unable get, key=%s", key)
+            }
+            return null
+        }
+        return cache[key]
     }
 
-    @Override
-    public synchronized boolean isClosed() {
-        return closed;
+    @Synchronized
+    override fun remove(key: String): SketchRefBitmap? {
+        if (isClosed) {
+            return null
+        }
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(MODULE, "Disabled. Unable remove, key=%s", key)
+            }
+            return null
+        }
+        val refBitmap = cache.remove(key)
+        if (isLoggable(SLog.DEBUG)) {
+            dmf(
+                MODULE, "remove. memoryCacheSize: %s",
+                Formatter.formatFileSize(appContext, cache.size().toLong())
+            )
+        }
+        return refBitmap
     }
 
-    @Override
-    public synchronized void close() {
-        if (closed) {
-            return;
-        }
-        closed = true;
+    @get:Synchronized
+    override val size: Long
+        get() = if (isClosed) {
+            0
+        } else cache.size().toLong()
+    override val maxSize: Long
+        get() = cache.maxSize().toLong()
 
-        cache.evictAll();
+    @Synchronized
+    override fun trimMemory(level: Int) {
+        if (isClosed) {
+            return
+        }
+        val memoryCacheSize = size
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
+            cache.evictAll()
+        } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
+            cache.trimToSize(cache.maxSize() / 2)
+        }
+        val releasedSize = memoryCacheSize - size
+        wmf(
+            MODULE, "trimMemory. level=%s, released: %s",
+            getTrimLevelName(level), Formatter.formatFileSize(appContext, releasedSize)
+        )
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format("%s(maxSize=%s)", MODULE, Formatter.formatFileSize(context, getMaxSize()));
+    @Synchronized
+    override fun clear() {
+        if (isClosed) {
+            return
+        }
+        wmf(
+            MODULE,
+            "clear. before size: %s",
+            Formatter.formatFileSize(appContext, cache.size().toLong())
+        )
+        cache.evictAll()
     }
 
-    private static class RefBitmapLruCache extends LruCache<String, SketchRefBitmap> {
+    @Synchronized
+    override fun close() {
+        if (isClosed) {
+            return
+        }
+        isClosed = true
+        cache.evictAll()
+    }
 
-        RefBitmapLruCache(int maxSize) {
-            super(maxSize);
+    override fun toString(): String {
+        return String.format(
+            "%s(maxSize=%s)",
+            MODULE,
+            Formatter.formatFileSize(appContext, maxSize)
+        )
+    }
+
+    private class RefBitmapLruCache constructor(maxSize: Int) :
+        LruCache<String, SketchRefBitmap>(maxSize) {
+
+        override fun put(key: String, refBitmap: SketchRefBitmap): SketchRefBitmap? {
+            refBitmap.setIsCached("$MODULE:put", true)
+            return super.put(key, refBitmap)
         }
 
-        @Override
-        public SketchRefBitmap put(String key, SketchRefBitmap refBitmap) {
-            refBitmap.setIsCached(MODULE + ":put", true);
-            return super.put(key, refBitmap);
+        override fun sizeOf(key: String, refBitmap: SketchRefBitmap): Int {
+            val bitmapSize = refBitmap.byteCount
+            return if (bitmapSize == 0) 1 else bitmapSize
         }
 
-        @Override
-        public int sizeOf(String key, SketchRefBitmap refBitmap) {
-            int bitmapSize = refBitmap.getByteCount();
-            return bitmapSize == 0 ? 1 : bitmapSize;
-        }
-
-        @Override
-        protected void entryRemoved(boolean evicted, String key, SketchRefBitmap oldRefBitmap, SketchRefBitmap newRefBitmap) {
-            oldRefBitmap.setIsCached(MODULE + ":entryRemoved", false);
+        override fun entryRemoved(
+            evicted: Boolean,
+            key: String,
+            oldRefBitmap: SketchRefBitmap,
+            newRefBitmap: SketchRefBitmap
+        ) {
+            oldRefBitmap.setIsCached("$MODULE:entryRemoved", false)
         }
     }
 }

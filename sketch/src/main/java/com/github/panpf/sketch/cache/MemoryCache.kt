@@ -13,51 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.cache
 
-package com.github.panpf.sketch.cache;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.drawable.SketchRefBitmap;
+import com.github.panpf.sketch.drawable.SketchRefBitmap
 
 /**
  * 内存缓存管理器
  */
-public interface MemoryCache {
+interface MemoryCache {
     /**
      * 缓存一张图片
      *
      * @param key       缓存 key
      * @param refBitmap 待缓存图片
      */
-    void put(@NonNull String key, @NonNull SketchRefBitmap refBitmap);
+    fun put(key: String, refBitmap: SketchRefBitmap)
 
     /**
      * 根据指定 key 获取图片
      *
      * @param key 缓存 key
      */
-    @Nullable
-    SketchRefBitmap get(@NonNull String key);
+    operator fun get(key: String): SketchRefBitmap?
 
     /**
      * 根据指定 key 删除图片
      *
      * @param key 缓存 key
      */
-    @Nullable
-    SketchRefBitmap remove(@NonNull String key);
+    fun remove(key: String): SketchRefBitmap?
 
     /**
      * 获取已用容量
      */
-    long getSize();
+    val size: Long
 
     /**
      * 获取最大容量
      */
-    long getMaxSize();
+    val maxSize: Long
 
     /**
      * 根据 level 修整缓存
@@ -65,32 +59,24 @@ public interface MemoryCache {
      * @param level 修剪级别，对应 APP 的不同状态
      * @see android.content.ComponentCallbacks2
      */
-    void trimMemory(int level);
-
+    fun trimMemory(level: Int)
     /**
      * 是否禁用
      */
-    boolean isDisabled();
-
-    /**
-     * 设置是否禁用
-     *
-     * @param disabled 是否禁用
-     */
-    void setDisabled(boolean disabled);
+    var isDisabled: Boolean
 
     /**
      * 清除缓存
      */
-    void clear();
+    fun clear()
 
     /**
      * 是否已关闭
      */
-    boolean isClosed();
+    val isClosed: Boolean
 
     /**
-     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 {@link #setDisabled(boolean)}
+     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 [.setDisabled]
      */
-    void close();
+    fun close()
 }

@@ -238,6 +238,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
         if (mBuffer == null) {
             return
         }
+        val bitmapPool = bitmapPool
         if (bitmapPool != null) {
             BitmapPoolUtils.freeBitmapToPool(mBuffer, bitmapPool)
         } else {

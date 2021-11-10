@@ -1,363 +1,339 @@
-package com.github.panpf.sketch.cache;
+package com.github.panpf.sketch.cache
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Build;
-import android.text.format.Formatter;
-
-import androidx.annotation.NonNull;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.cache.recycle.AttributeStrategy;
-import com.github.panpf.sketch.cache.recycle.LruPoolStrategy;
-import com.github.panpf.sketch.cache.recycle.SizeConfigStrategy;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.annotation.SuppressLint
+import android.content.ComponentCallbacks2
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.os.Build
+import android.text.format.Formatter
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.SLog.Companion.dmf
+import com.github.panpf.sketch.SLog.Companion.isLoggable
+import com.github.panpf.sketch.SLog.Companion.wm
+import com.github.panpf.sketch.SLog.Companion.wmf
+import com.github.panpf.sketch.util.SketchUtils.Companion.getTrimLevelName
+import com.github.panpf.sketch.util.SketchUtils.Companion.toHexString
+import com.github.panpf.sketch.util.recycle.AttributeStrategy
+import com.github.panpf.sketch.util.recycle.LruPoolStrategy
+import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
+import java.util.*
 
 /**
- * 根据最少使用规则释放缓存的 {@link Bitmap} 复用池
+ * 创建根据最少使用规则释放缓存的 [Bitmap] 复用池，使用默认的 [Bitmap] 匹配策略和 [Bitmap.Config] 白名单
+ *
+ * @param maxSize 最大容量
  */
-public class LruBitmapPool implements BitmapPool {
-    private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
-    private static final String MODULE = "LruBitmapPool";
+class LruBitmapPool @JvmOverloads constructor(
+    context: Context,
+    maxSize: Int,
+    private val strategy: LruPoolStrategy = defaultStrategy,
+    private val allowedConfigs: Set<Bitmap.Config?> = defaultAllowedConfigs
+) : BitmapPool {
 
-    @NonNull
-    private final LruPoolStrategy strategy;
-    @NonNull
-    private final Set<Bitmap.Config> allowedConfigs;
-    private final int initialMaxSize;
-    private final BitmapTracker tracker;
+    private val initialMaxSize: Int = maxSize
+    private val tracker: BitmapTracker = NullBitmapTracker()
+    private var maxSizeHolder: Int = maxSize
+    override val maxSize: Int
+        get() = maxSizeHolder
+    override var size = 0
+        private set
+    private var hits = 0
+    private var misses = 0
+    private var puts = 0
+    private var evictions = 0
+    private val appContext: Context = context.applicationContext
 
-    private int maxSize;
-    private int currentSize;
-    private int hits;
-    private int misses;
-    private int puts;
-    private int evictions;
-
-    private Context context;
-    private boolean closed;
-    private boolean disabled;
-
-    public LruBitmapPool(Context context, int maxSize, @NonNull LruPoolStrategy strategy, @NonNull Set<Bitmap.Config> allowedConfigs) {
-        this.context = context.getApplicationContext();
-        this.initialMaxSize = maxSize;
-        this.maxSize = maxSize;
-        this.strategy = strategy;
-        this.allowedConfigs = allowedConfigs;
-        this.tracker = new NullBitmapTracker();
-    }
-
-    /**
-     * 创建根据最少使用规则释放缓存的 {@link Bitmap} 复用池，使用默认的 {@link Bitmap} 匹配策略和 {@link Bitmap.Config} 白名单
-     *
-     * @param maxSize 最大容量
-     */
-    public LruBitmapPool(Context context, int maxSize) {
-        this(context, maxSize, getDefaultStrategy(), getDefaultAllowedConfigs());
-    }
+    @get:Synchronized
+    override var isClosed = false
+        private set
+    override var isDisabled = false
+        set(value) {
+            if (field != value) {
+                field = value
+                wmf(MODULE, "setDisabled. %s", value)
+            }
+        }
 
     /**
-     * 创建根据最少使用规则释放缓存的 {@link Bitmap} 复用池，使用默认的 {@link Bitmap} 匹配策略
+     * 创建根据最少使用规则释放缓存的 [Bitmap] 复用池，使用默认的 [Bitmap] 匹配策略
      *
      * @param maxSize        最大容量
-     * @param allowedConfigs {@link Bitmap.Config} 白名单
+     * @param allowedConfigs [Bitmap.Config] 白名单
      */
-    public LruBitmapPool(Context context, int maxSize, @NonNull Set<Bitmap.Config> allowedConfigs) {
-        this(context, maxSize, getDefaultStrategy(), allowedConfigs);
-    }
+    constructor(context: Context, maxSize: Int, allowedConfigs: Set<Bitmap.Config?>) : this(
+        context,
+        maxSize,
+        defaultStrategy,
+        allowedConfigs
+    )
 
-    private static LruPoolStrategy getDefaultStrategy() {
-        final LruPoolStrategy strategy;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            strategy = new SizeConfigStrategy();
-        } else {
-            strategy = new AttributeStrategy();
+    @Synchronized
+    override fun put(bitmap: Bitmap): Boolean {
+        if (isClosed) {
+            return false
         }
-        return strategy;
-    }
-
-    private static Set<Bitmap.Config> getDefaultAllowedConfigs() {
-        Set<Bitmap.Config> configs = new HashSet<>(Arrays.asList(Bitmap.Config.values()));
-        if (Build.VERSION.SDK_INT >= 19) {
-            configs.add(null);
-        }
-        return Collections.unmodifiableSet(configs);
-    }
-
-    @Override
-    public synchronized boolean put(@NonNull Bitmap bitmap) {
-        if (closed) {
-            return false;
-        }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Disabled. Unable put, bitmap=%s,%s", strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(
+                    MODULE,
+                    "Disabled. Unable put, bitmap=%s,%s",
+                    strategy.logBitmap(bitmap),
+                    toHexString(bitmap)!!
+                )
             }
-            return false;
+            return false
         }
-
-        //noinspection ConstantConditions
-        if (bitmap == null) {
-            throw new NullPointerException("Bitmap must not be null");
+        if (
+            bitmap.isRecycled
+            || !bitmap.isMutable
+            || strategy.getSize(bitmap) > maxSize
+            || !allowedConfigs.contains(bitmap.config)
+        ) {
+            wmf(
+                MODULE,
+                "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s",
+                strategy.logBitmap(bitmap),
+                bitmap.isRecycled,
+                bitmap.isMutable,
+                allowedConfigs.contains(bitmap.config),
+                toHexString(bitmap)!!
+            )
+            return false
         }
-        if (bitmap.isRecycled() || !bitmap.isMutable() || strategy.getSize(bitmap) > maxSize || !allowedConfigs.contains(bitmap.getConfig())) {
-            SLog.wmf(MODULE, "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s",
-                    strategy.logBitmap(bitmap), bitmap.isRecycled(), bitmap.isMutable(),
-                    allowedConfigs.contains(bitmap.getConfig()), SketchUtils.toHexString(bitmap));
-            return false;
+        val size = strategy.getSize(bitmap)
+        strategy.put(bitmap)
+        tracker.add(bitmap)
+        puts++
+        this.size += size
+        if (isLoggable(SLog.DEBUG)) {
+            dmf(
+                MODULE,
+                "Put bitmap in pool=%s,%s",
+                strategy.logBitmap(bitmap),
+                toHexString(bitmap)!!
+            )
         }
-
-        final int size = strategy.getSize(bitmap);
-        strategy.put(bitmap);
-        tracker.add(bitmap);
-
-        puts++;
-        currentSize += size;
-
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(MODULE, "Put bitmap in pool=%s,%s", strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
-        }
-        dump();
-
-        evict();
-        return true;
+        dump()
+        evict()
+        return true
     }
 
-    @Override
-    public synchronized Bitmap getDirty(int width, int height, @NonNull Bitmap.Config config) {
-        if (closed) {
-            return null;
+    @Synchronized
+    override fun getDirty(width: Int, height: Int, config: Bitmap.Config): Bitmap? {
+        if (isClosed) {
+            return null
         }
-
-        if (disabled) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Disabled. Unable get, bitmap=%s,%s", strategy.logBitmap(width, height, config));
+        if (isDisabled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(
+                    MODULE,
+                    "Disabled. Unable get, bitmap=%s,%s",
+                    strategy.logBitmap(width, height, config)
+                )
             }
-            return null;
+            return null
         }
 
         // Config will be null for non public config types, which can lead to transformations naively passing in
         // null as the requested config here. See issue #194.
-        //noinspection ConstantConditions
-        final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
+        val result = strategy[width, height, config]
         if (result == null) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(MODULE, "Missing bitmap=%s", strategy.logBitmap(width, height, config))
             }
-            misses++;
+            misses++
         } else {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(
+                    MODULE,
+                    "Get bitmap=%s,%s",
+                    strategy.logBitmap(width, height, config),
+                    toHexString(result)!!
+                )
             }
-            hits++;
-            currentSize -= strategy.getSize(result);
-            tracker.remove(result);
-            result.setHasAlpha(true);
+            hits++
+            size -= strategy.getSize(result)
+            tracker.remove(result)
+            result.setHasAlpha(true)
         }
-        dump();
-
-        return result;
+        dump()
+        return result
     }
 
-    @Override
-    public synchronized Bitmap get(int width, int height, @NonNull Bitmap.Config config) {
-        Bitmap result = getDirty(width, height, config);
-        if (result != null) {
-            // Bitmaps in the pool contain random data that in some cases must be cleared for an image to be rendered
-            // correctly. we shouldn't force all consumers to independently erase the contents individually, so we do so
-            // here. See issue #131.
-            result.eraseColor(Color.TRANSPARENT);
-        }
-
-        return result;
+    @Synchronized
+    override fun get(width: Int, height: Int, config: Bitmap.Config): Bitmap? {
+        val result = getDirty(width, height, config)
+        result?.eraseColor(Color.TRANSPARENT)
+        return result
     }
 
-    @NonNull
-    @Override
-    public Bitmap getOrMake(int width, int height, @NonNull Bitmap.Config config) {
-        Bitmap result = get(width, height, config);
+    override fun getOrMake(width: Int, height: Int, config: Bitmap.Config): Bitmap {
+        var result = get(width, height, config)
         if (result == null) {
-            result = Bitmap.createBitmap(width, height, config);
-
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                StackTraceElement[] elements = new Exception().getStackTrace();
-                StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.dmf(MODULE, "Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
-                        result.getWidth(), result.getHeight(), result.getConfig(), SketchUtils.toHexString(result),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber());
+            result = Bitmap.createBitmap(width, height, config)
+            if (isLoggable(SLog.DEBUG)) {
+                val elements = Exception().stackTrace
+                val element = if (elements.size > 1) elements[1] else elements[0]
+                dmf(
+                    MODULE, "Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                    result.width, result.height, result.config, toHexString(result)!!,
+                    element.className, element.methodName, element.lineNumber
+                )
             }
         }
-
-        return result;
+        return result!!
     }
 
-    private void evict() {
-        if (closed) {
-            return;
+    private fun evict() {
+        if (isClosed) {
+            return
         }
-
-        trimToSize(maxSize);
+        trimToSize(maxSize)
     }
 
-    @Override
-    public int getMaxSize() {
-        return maxSize;
-    }
-
-    @Override
-    public int getSize() {
-        return currentSize;
-    }
-
-    @Override
-    public synchronized void setSizeMultiplier(float sizeMultiplier) {
-        if (closed) {
-            return;
+    @Synchronized
+    override fun setSizeMultiplier(sizeMultiplier: Float) {
+        if (isClosed) {
+            return
         }
-
-        maxSize = Math.round(initialMaxSize * sizeMultiplier);
-        evict();
-    }
-
-    @Override
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    @Override
-    public void setDisabled(boolean disabled) {
-        if (this.disabled != disabled) {
-            this.disabled = disabled;
-            if (disabled) {
-                SLog.wmf(MODULE, "setDisabled. %s", true);
-            } else {
-                SLog.wmf(MODULE, "setDisabled. %s", false);
-            }
-        }
+        maxSizeHolder = Math.round(initialMaxSize * sizeMultiplier)
+        evict()
     }
 
     @SuppressLint("InlinedApi")
-    @Override
-    public synchronized void trimMemory(int level) {
-        long size = getSize();
-
-        if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-            trimToSize(0);
-        } else if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
-            trimToSize(maxSize / 2);
+    @Synchronized
+    override fun trimMemory(level: Int) {
+        val size = size.toLong()
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
+            trimToSize(0)
+        } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
+            trimToSize(maxSize / 2)
         }
-
-        String releasedSize = Formatter.formatFileSize(context, size - getSize());
-        SLog.wmf(MODULE, "trimMemory. level=%s, released: %s", SketchUtils.getTrimLevelName(level), releasedSize);
+        val releasedSize = Formatter.formatFileSize(appContext, size - size)
+        wmf(MODULE, "trimMemory. level=%s, released: %s", getTrimLevelName(level), releasedSize)
     }
 
-    @Override
-    public synchronized void clear() {
-        SLog.wmf(MODULE, "clear. before size %s", Formatter.formatFileSize(context, getSize()));
-
-        trimToSize(0);
+    @Synchronized
+    override fun clear() {
+        wmf(MODULE, "clear. before size %s", Formatter.formatFileSize(appContext, size.toLong()))
+        trimToSize(0)
     }
 
-    @Override
-    public synchronized boolean isClosed() {
-        return closed;
-    }
-
-    @Override
-    public synchronized void close() {
-        if (closed) {
-            return;
+    @Synchronized
+    override fun close() {
+        if (isClosed) {
+            return
         }
-
-        closed = true;
-        trimToSize(0);
+        isClosed = true
+        trimToSize(0)
     }
 
-    private synchronized void trimToSize(int size) {
-        while (currentSize > size) {
-            final Bitmap removed = strategy.removeLast();
+    @Synchronized
+    private fun trimToSize(size: Int) {
+        while (this.size > size) {
+            val removed = strategy.removeLast()
             if (removed == null) {
-                SLog.wm(MODULE, "Size mismatch, resetting");
-                dumpUnchecked();
-                currentSize = 0;
-                return;
+                wm(MODULE, "Size mismatch, resetting")
+                dumpUnchecked()
+                this.size = 0
+                return
             }
-
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(MODULE, "Evicting bitmap=%s,%s", strategy.logBitmap(removed), SketchUtils.toHexString(removed));
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(
+                    MODULE,
+                    "Evicting bitmap=%s,%s",
+                    strategy.logBitmap(removed),
+                    toHexString(removed)!!
+                )
             }
-            tracker.remove(removed);
-            currentSize -= strategy.getSize(removed);
-            removed.recycle();
-            evictions++;
-            dump();
+            tracker.remove(removed)
+            this.size -= strategy.getSize(removed)
+            removed.recycle()
+            evictions++
+            dump()
         }
     }
 
-    private void dump() {
-        dumpUnchecked();
+    private fun dump() {
+        dumpUnchecked()
     }
 
-    private void dumpUnchecked() {
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(MODULE, "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
-                    hits, misses, puts, evictions, currentSize, maxSize, strategy);
+    private fun dumpUnchecked() {
+        if (isLoggable(SLog.DEBUG)) {
+            dmf(
+                MODULE,
+                "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
+                hits,
+                misses,
+                puts,
+                evictions,
+                size,
+                maxSize,
+                strategy
+            )
         }
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format("%s(maxSize=%s,strategy=%s,allowedConfigs=%s)",
-                MODULE, Formatter.formatFileSize(context, getMaxSize()), strategy.getKey(), allowedConfigs.toString());
+    override fun toString(): String {
+        return String.format(
+            "%s(maxSize=%s,strategy=%s,allowedConfigs=%s)",
+            MODULE,
+            Formatter.formatFileSize(appContext, maxSize.toLong()),
+            strategy.key,
+            allowedConfigs.toString()
+        )
     }
 
     private interface BitmapTracker {
-        void add(Bitmap bitmap);
-
-        void remove(Bitmap bitmap);
+        fun add(bitmap: Bitmap)
+        fun remove(bitmap: Bitmap)
     }
 
-    @SuppressWarnings("unused")
     // Only used for debugging
-    private static class ThrowingBitmapTracker implements BitmapTracker {
-        private final Set<Bitmap> bitmaps = Collections.synchronizedSet(new HashSet<Bitmap>());
-
-        @Override
-        public void add(Bitmap bitmap) {
-            if (bitmaps.contains(bitmap)) {
-                throw new IllegalStateException("Can't add already added bitmap: " + bitmap + " [" + bitmap.getWidth()
-                        + "x" + bitmap.getHeight() + "]");
+    private class ThrowingBitmapTracker : BitmapTracker {
+        private val bitmaps = Collections.synchronizedSet(HashSet<Bitmap>())
+        override fun add(bitmap: Bitmap) {
+            check(!bitmaps.contains(bitmap)) {
+                ("Can't add already added bitmap: " + bitmap + " [" + bitmap.width
+                        + "x" + bitmap.height + "]")
             }
-            bitmaps.add(bitmap);
+            bitmaps.add(bitmap)
         }
 
-        @Override
-        public void remove(Bitmap bitmap) {
-            if (!bitmaps.contains(bitmap)) {
-                throw new IllegalStateException("Cannot remove bitmap not in tracker");
-            }
-            bitmaps.remove(bitmap);
+        override fun remove(bitmap: Bitmap) {
+            check(bitmaps.contains(bitmap)) { "Cannot remove bitmap not in tracker" }
+            bitmaps.remove(bitmap)
         }
     }
 
-    private static class NullBitmapTracker implements BitmapTracker {
-        @Override
-        public void add(Bitmap bitmap) {
+    private class NullBitmapTracker : BitmapTracker {
+        override fun add(bitmap: Bitmap) {
             // Do nothing.
         }
 
-        @Override
-        public void remove(Bitmap bitmap) {
+        override fun remove(bitmap: Bitmap) {
             // Do nothing.
         }
+    }
+
+    companion object {
+        private val DEFAULT_CONFIG = Bitmap.Config.ARGB_8888
+        private const val MODULE = "LruBitmapPool"
+        private val defaultStrategy: LruPoolStrategy
+            get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                SizeConfigStrategy()
+            } else {
+                AttributeStrategy()
+            }
+        private val defaultAllowedConfigs: Set<Bitmap.Config?>
+            get() {
+                val configs: MutableSet<Bitmap.Config?> =
+                    HashSet(listOf(*Bitmap.Config.values()))
+                if (Build.VERSION.SDK_INT >= 19) {
+                    configs.add(null)
+                }
+                return Collections.unmodifiableSet(configs)
+            }
     }
 }
