@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
+package com.github.panpf.sketch.request
 
 /**
  * 请求监听器，可监听开始、失败、取消
  */
-public interface Listener {
-    void onStarted();
+// todo 提供 SimpleListener
+interface Listener {
+    fun onStarted()
 
     /**
      * 失败
      *
      * @param cause 原因
      */
-    void onError(@NonNull ErrorCause cause);
+    fun onError(cause: ErrorCause)
 
     /**
      * 取消
      *
      * @param cause 原因
      */
-    void onCanceled(@NonNull CancelCause cause);
-
-    // todo 提供 SimpleListener
+    fun onCanceled(cause: CancelCause)
 }

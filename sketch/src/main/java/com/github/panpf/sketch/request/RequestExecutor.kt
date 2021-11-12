@@ -13,211 +13,168 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import android.os.*
+import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 请求执行器
  */
-@SuppressWarnings("WeakerAccess")
-public class RequestExecutor {
-    public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
-    public static final int DEFAULT_NET_THREAD_POOL_SIZE = 3;
+class RequestExecutor @JvmOverloads constructor(
+    private val localThreadPoolSize: Int = DEFAULT_LOCAL_THREAD_POOL_SIZE,
+    private val netThreadPoolSize: Int = DEFAULT_NET_THREAD_POOL_SIZE
+) {
 
-    private static final String KEY = "RequestExecutor";
-
-    @Nullable
-    private ExecutorService netTaskExecutor;    //网络任务执行器
-    @Nullable
-    private ExecutorService localTaskExecutor;    //本地任务执行器
-    @Nullable
-    private Handler dispatchHandler;
-    @Nullable
-    private DispatchThread dispatchThread;
-    private boolean shutdown;
-    private int localThreadPoolSize;
-    private int netThreadPoolSize;
-
-    public RequestExecutor(int localThreadPoolSize, int netThreadPoolSize) {
-        this.localThreadPoolSize = localThreadPoolSize;
-        this.netThreadPoolSize = netThreadPoolSize;
+    companion object {
+        const val DEFAULT_LOCAL_THREAD_POOL_SIZE = 3
+        const val DEFAULT_NET_THREAD_POOL_SIZE = 3
+        private const val KEY = "RequestExecutor"
     }
 
-    public RequestExecutor() {
-        this(DEFAULT_LOCAL_THREAD_POOL_SIZE, DEFAULT_NET_THREAD_POOL_SIZE);
-    }
+    private var netTaskExecutor: ExecutorService? = null //网络任务执行器
+    private var localTaskExecutor: ExecutorService? = null //本地任务执行器
+    private var dispatchHandler: Handler? = null
+    private var dispatchThread: DispatchThread? = null
+    var isShutdown = false
+        private set
 
-    public void submitDispatch(@NonNull Runnable runnable) {
-        if (shutdown) {
-            return;
+    fun submitDispatch(runnable: Runnable) {
+        if (isShutdown) {
+            return
         }
 
         // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (dispatchHandler == null || dispatchThread == null) {
-            synchronized (RequestExecutor.this) {
-                if (dispatchHandler == null) {
-                    dispatchThread = new DispatchThread("DispatchThread");
-                    dispatchThread.start();
-                    dispatchHandler = new Handler(dispatchThread.getLooper(), new DispatchCallback());
+            synchronized(this@RequestExecutor) {
+                if (dispatchHandler == null || dispatchThread == null) {
+                    dispatchThread = DispatchThread("DispatchThread")
+                    dispatchThread!!.start()
+                    dispatchHandler = Handler(dispatchThread!!.looper, DispatchCallback())
                 }
             }
         }
-        dispatchHandler.obtainMessage(0, runnable).sendToTarget();
+        dispatchHandler!!.obtainMessage(0, runnable).sendToTarget()
     }
 
-    public void submitLoad(@NonNull Runnable runnable) {
-        if (shutdown) {
-            return;
+    fun submitLoad(runnable: Runnable) {
+        if (isShutdown) {
+            return
         }
 
         // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (localTaskExecutor == null) {
-            synchronized (RequestExecutor.this) {
+            synchronized(this@RequestExecutor) {
                 if (localTaskExecutor == null) {
-                    localTaskExecutor = new ThreadPoolExecutor(
-                            localThreadPoolSize,
-                            localThreadPoolSize,
-                            60, TimeUnit.SECONDS,
-                            new LinkedBlockingQueue<Runnable>(200),
-                            new DefaultThreadFactory("LoadThread"),
-                            new ThreadPoolExecutor.DiscardOldestPolicy());
+                    localTaskExecutor = ThreadPoolExecutor(
+                        localThreadPoolSize,
+                        localThreadPoolSize,
+                        60, TimeUnit.SECONDS,
+                        LinkedBlockingQueue(200),
+                        DefaultThreadFactory("LoadThread"),
+                        ThreadPoolExecutor.DiscardOldestPolicy()
+                    )
                 }
             }
         }
-        localTaskExecutor.execute(runnable);
+        localTaskExecutor!!.execute(runnable)
     }
 
-    public void submitDownload(@NonNull Runnable runnable) {
-        if (shutdown) {
-            return;
+    fun submitDownload(runnable: Runnable) {
+        if (isShutdown) {
+            return
         }
 
         // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (netTaskExecutor == null) {
-            synchronized (RequestExecutor.this) {
+            synchronized(this@RequestExecutor) {
                 if (netTaskExecutor == null) {
-                    netTaskExecutor = new ThreadPoolExecutor(
-                            netThreadPoolSize,
-                            netThreadPoolSize,
-                            60, TimeUnit.SECONDS,
-                            new LinkedBlockingQueue<Runnable>(200),
-                            new DefaultThreadFactory("DownloadThread"),
-                            new ThreadPoolExecutor.DiscardOldestPolicy());
+                    netTaskExecutor = ThreadPoolExecutor(
+                        netThreadPoolSize,
+                        netThreadPoolSize,
+                        60, TimeUnit.SECONDS,
+                        LinkedBlockingQueue(200),
+                        DefaultThreadFactory("DownloadThread"),
+                        ThreadPoolExecutor.DiscardOldestPolicy()
+                    )
                 }
             }
         }
-        netTaskExecutor.execute(runnable);
+        netTaskExecutor!!.execute(runnable)
     }
 
-    public void setLocalTaskExecutor(@NonNull ExecutorService localTaskExecutor) {
-        if (shutdown) {
-            return;
+    fun setLocalTaskExecutor(localTaskExecutor: ExecutorService) {
+        if (isShutdown) {
+            return
         }
-
-        this.localTaskExecutor = localTaskExecutor;
+        this.localTaskExecutor = localTaskExecutor
     }
 
-    public void setNetTaskExecutor(@NonNull ExecutorService netTaskExecutor) {
-        if (shutdown) {
-            return;
+    fun setNetTaskExecutor(netTaskExecutor: ExecutorService) {
+        if (isShutdown) {
+            return
         }
-
-        this.netTaskExecutor = netTaskExecutor;
+        this.netTaskExecutor = netTaskExecutor
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format("%s(%s", KEY, shutdown ? "shutdown" : "running)");
+    override fun toString(): String {
+        return String.format("%s(%s", KEY, if (isShutdown) "shutdown" else "running)")
     }
 
-    public void shutdown() {
+    fun shutdown() {
         if (dispatchHandler != null) {
-            dispatchHandler = null;
+            dispatchHandler = null
         }
-
         if (dispatchThread != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                dispatchThread.quitSafely();
+                dispatchThread!!.quitSafely()
             } else {
-                dispatchThread.quit();
+                dispatchThread!!.quit()
             }
-            dispatchThread = null;
+            dispatchThread = null
         }
-
         if (netTaskExecutor != null) {
-            netTaskExecutor.shutdown();
-            netTaskExecutor = null;
+            netTaskExecutor!!.shutdown()
+            netTaskExecutor = null
         }
-
         if (localTaskExecutor != null) {
-            localTaskExecutor.shutdown();
-            localTaskExecutor = null;
+            localTaskExecutor!!.shutdown()
+            localTaskExecutor = null
         }
-
-        shutdown = true;
+        isShutdown = true
     }
 
-    public boolean isShutdown() {
-        return shutdown;
-    }
+    private class DispatchThread(name: String?) :
+        HandlerThread(name, Process.THREAD_PRIORITY_BACKGROUND)
 
-    private static final class DispatchThread extends HandlerThread {
-
-        public DispatchThread(String name) {
-            // 调低线程优先级这对于流畅度很重要
-            super(name, android.os.Process.THREAD_PRIORITY_BACKGROUND);
+    private class DispatchCallback : Handler.Callback {
+        override fun handleMessage(msg: Message): Boolean {
+            (msg.obj as Runnable).run()
+            return true
         }
     }
 
-    private static final class DispatchCallback implements Handler.Callback {
-        @Override
-        public boolean handleMessage(Message msg) {
-            ((Runnable) msg.obj).run();
-            return true;
-        }
-    }
+    private class DefaultThreadFactory(namePrefix: String) : ThreadFactory {
+        private val group: ThreadGroup
+        private val threadNumber = AtomicInteger(1)
+        private val namePrefix: String
 
-    private static class DefaultThreadFactory implements ThreadFactory {
-        @NonNull
-        private final ThreadGroup group;
-        @NonNull
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        @NonNull
-        private final String namePrefix;
-
-        private DefaultThreadFactory(@NonNull String namePrefix) {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-            this.namePrefix = namePrefix;
+        init {
+            val s = System.getSecurityManager()
+            group = if (s != null) s.threadGroup else Thread.currentThread().threadGroup
+            this.namePrefix = namePrefix
         }
 
-        @NonNull
-        public Thread newThread(@NonNull Runnable r) {
-            Thread t = new Thread(group, r,
-                    namePrefix + threadNumber.getAndIncrement(),
-                    0);
-            if (t.isDaemon())
-                t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
-                t.setPriority(Thread.NORM_PRIORITY);
-            return t;
+        override fun newThread(r: Runnable): Thread {
+            val t = Thread(
+                group, r,
+                namePrefix + threadNumber.getAndIncrement(),
+                0
+            )
+            if (t.isDaemon) t.isDaemon = false
+            if (t.priority != Thread.NORM_PRIORITY) t.priority = Thread.NORM_PRIORITY
+            return t
         }
     }
 }

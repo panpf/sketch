@@ -13,152 +13,137 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import com.github.panpf.sketch.util.SketchUtils.Companion.isMainThread
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class CallbackHandler {
+    companion object {
+        private const val WHAT_RUN_COMPLETED = 33001
+        private const val WHAT_RUN_FAILED = 33002
+        private const val WHAT_RUN_CANCELED = 33003
+        private const val WHAT_RUN_UPDATE_PROGRESS = 33004
+        private const val WHAT_CALLBACK_STARTED = 44001
+        private const val WHAT_CALLBACK_FAILED = 44002
+        private const val WHAT_CALLBACK_CANCELED = 44003
+        private const val PARAM_FAILED_CAUSE = "failedCause"
+        private const val PARAM_CANCELED_CAUSE = "canceledCause"
 
-import com.github.panpf.sketch.util.SketchUtils;
+        private val handler = Handler(Looper.getMainLooper()) { msg ->
+            when (msg.what) {
+                WHAT_RUN_COMPLETED -> (msg.obj as BaseRequest).runCompletedInMain()
+                WHAT_RUN_CANCELED -> (msg.obj as BaseRequest).runCanceledInMain()
+                WHAT_RUN_UPDATE_PROGRESS -> (msg.obj as BaseRequest).runUpdateProgressInMain(
+                    msg.arg1,
+                    msg.arg2
+                )
+                WHAT_RUN_FAILED -> (msg.obj as BaseRequest).runErrorInMain()
+                WHAT_CALLBACK_STARTED -> (msg.obj as Listener).onStarted()
+                WHAT_CALLBACK_FAILED -> (msg.obj as Listener).onError(
+                    ErrorCause.valueOf(msg.data.getString(PARAM_FAILED_CAUSE)!!)
+                )
+                WHAT_CALLBACK_CANCELED -> (msg.obj as Listener).onCanceled(
+                    CancelCause.valueOf(msg.data.getString(PARAM_CANCELED_CAUSE)!!)
+                )
+            }
+            true
+        }
 
-public class CallbackHandler {
-    private static final Handler handler;
+        /**
+         * 推到主线程处理完成
+         */
+        @JvmStatic
+        fun postRunCompleted(request: BaseRequest) {
+            if (request.isSync) {
+                request.runCompletedInMain()
+            } else {
+                handler.obtainMessage(WHAT_RUN_COMPLETED, request).sendToTarget()
+            }
+        }
 
-    private static final int WHAT_RUN_COMPLETED = 33001;
-    private static final int WHAT_RUN_FAILED = 33002;
-    private static final int WHAT_RUN_CANCELED = 33003;
-    private static final int WHAT_RUN_UPDATE_PROGRESS = 33004;
+        /**
+         * 推到主线程处理取消
+         */
+        @JvmStatic
+        fun postRunCanceled(request: BaseRequest) {
+            if (request.isSync) {
+                request.runCanceledInMain()
+            } else {
+                handler.obtainMessage(WHAT_RUN_CANCELED, request).sendToTarget()
+            }
+        }
 
-    private static final int WHAT_CALLBACK_STARTED = 44001;
-    private static final int WHAT_CALLBACK_FAILED = 44002;
-    private static final int WHAT_CALLBACK_CANCELED = 44003;
+        /**
+         * 推到主线程处理失败
+         */
+        @JvmStatic
+        fun postRunError(request: BaseRequest) {
+            if (request.isSync) {
+                request.runErrorInMain()
+            } else {
+                handler.obtainMessage(WHAT_RUN_FAILED, request).sendToTarget()
+            }
+        }
 
-    private static final String PARAM_FAILED_CAUSE = "failedCause";
-    private static final String PARAM_CANCELED_CAUSE = "canceledCause";
+        /**
+         * 推到主线程处理进度
+         */
+        @JvmStatic
+        fun postRunUpdateProgress(request: BaseRequest, totalLength: Int, completedLength: Int) {
+            if (request.isSync) {
+                request.runUpdateProgressInMain(totalLength, completedLength)
+            } else {
+                handler.obtainMessage(
+                    WHAT_RUN_UPDATE_PROGRESS,
+                    totalLength,
+                    completedLength,
+                    request
+                )
+                    .sendToTarget()
+            }
+        }
 
-    static {
-        handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                switch (msg.what) {
-                    case WHAT_RUN_COMPLETED:
-                        ((BaseRequest) msg.obj).runCompletedInMain();
-                        break;
-                    case WHAT_RUN_CANCELED:
-                        ((BaseRequest) msg.obj).runCanceledInMain();
-                        break;
-                    case WHAT_RUN_UPDATE_PROGRESS:
-                        ((BaseRequest) msg.obj).runUpdateProgressInMain(msg.arg1, msg.arg2);
-                        break;
-                    case WHAT_RUN_FAILED:
-                        ((BaseRequest) msg.obj).runErrorInMain();
-                        break;
-
-                    case WHAT_CALLBACK_STARTED:
-                        ((Listener) msg.obj).onStarted();
-                        break;
-                    case WHAT_CALLBACK_FAILED:
-                        ((Listener) msg.obj).onError(ErrorCause.valueOf(msg.getData().getString(PARAM_FAILED_CAUSE)));
-                        break;
-                    case WHAT_CALLBACK_CANCELED:
-                        ((Listener) msg.obj).onCanceled(CancelCause.valueOf(msg.getData().getString(PARAM_CANCELED_CAUSE)));
-                        break;
+        @JvmStatic
+        fun postCallbackStarted(listener: Listener?, sync: Boolean) {
+            if (listener != null) {
+                if (sync || isMainThread) {
+                    listener.onStarted()
+                } else {
+                    handler.obtainMessage(WHAT_CALLBACK_STARTED, listener).sendToTarget()
                 }
-
-                return true;
-            }
-        });
-    }
-
-    private CallbackHandler() {
-    }
-
-    /**
-     * 推到主线程处理完成
-     */
-    static void postRunCompleted(@NonNull BaseRequest request) {
-        if (request.isSync()) {
-            request.runCompletedInMain();
-        } else {
-            handler.obtainMessage(WHAT_RUN_COMPLETED, request).sendToTarget();
-        }
-    }
-
-    /**
-     * 推到主线程处理取消
-     */
-    static void postRunCanceled(@NonNull BaseRequest request) {
-        if (request.isSync()) {
-            request.runCanceledInMain();
-        } else {
-            handler.obtainMessage(WHAT_RUN_CANCELED, request).sendToTarget();
-        }
-    }
-
-    /**
-     * 推到主线程处理失败
-     */
-    static void postRunError(@NonNull BaseRequest request) {
-        if (request.isSync()) {
-            request.runErrorInMain();
-        } else {
-            handler.obtainMessage(WHAT_RUN_FAILED, request).sendToTarget();
-        }
-    }
-
-    /**
-     * 推到主线程处理进度
-     */
-    static void postRunUpdateProgress(@NonNull BaseRequest request, int totalLength, int completedLength) {
-        if (request.isSync()) {
-            request.runUpdateProgressInMain(totalLength, completedLength);
-        } else {
-            handler.obtainMessage(WHAT_RUN_UPDATE_PROGRESS, totalLength, completedLength, request).sendToTarget();
-        }
-    }
-
-    static void postCallbackStarted(@Nullable Listener listener, boolean sync) {
-        if (listener != null) {
-            if (sync || SketchUtils.isMainThread()) {
-                listener.onStarted();
-            } else {
-                handler.obtainMessage(WHAT_CALLBACK_STARTED, listener).sendToTarget();
             }
         }
-    }
 
-    static void postCallbackError(@Nullable Listener listener, @NonNull ErrorCause errorCause, boolean sync) {
-        if (listener != null) {
-            if (sync || SketchUtils.isMainThread()) {
-                listener.onError(errorCause);
-            } else {
-                Message message = handler.obtainMessage(WHAT_CALLBACK_FAILED, listener);
-
-                Bundle bundle = new Bundle();
-                bundle.putString(PARAM_FAILED_CAUSE, errorCause.name());
-                message.setData(bundle);
-
-                message.sendToTarget();
+        @JvmStatic
+        fun postCallbackError(listener: Listener?, errorCause: ErrorCause, sync: Boolean) {
+            if (listener != null) {
+                if (sync || isMainThread) {
+                    listener.onError(errorCause)
+                } else {
+                    val message = handler.obtainMessage(WHAT_CALLBACK_FAILED, listener)
+                    val bundle = Bundle()
+                    bundle.putString(PARAM_FAILED_CAUSE, errorCause.name)
+                    message.data = bundle
+                    message.sendToTarget()
+                }
             }
         }
-    }
 
-    static void postCallbackCanceled(@Nullable Listener listener, @NonNull CancelCause cancelCause, boolean sync) {
-        if (listener != null) {
-            if (sync || SketchUtils.isMainThread()) {
-                listener.onCanceled(cancelCause);
-            } else {
-                Message message = handler.obtainMessage(WHAT_CALLBACK_CANCELED, listener);
-
-                Bundle bundle = new Bundle();
-                bundle.putString(PARAM_CANCELED_CAUSE, cancelCause.name());
-                message.setData(bundle);
-
-                message.sendToTarget();
+        @JvmStatic
+        fun postCallbackCanceled(listener: Listener?, cancelCause: CancelCause, sync: Boolean) {
+            if (listener != null) {
+                if (sync || isMainThread) {
+                    listener.onCanceled(cancelCause)
+                } else {
+                    val message = handler.obtainMessage(WHAT_CALLBACK_CANCELED, listener)
+                    val bundle = Bundle()
+                    bundle.putString(PARAM_CANCELED_CAUSE, cancelCause.name)
+                    message.data = bundle
+                    message.sendToTarget()
+                }
             }
         }
     }

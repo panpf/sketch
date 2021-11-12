@@ -13,32 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import com.github.panpf.sketch.cache.DiskCache
 
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.cache.DiskCache;
-
-public class CacheDownloadResult implements DownloadResult {
-    @NonNull
-    private DiskCache.Entry diskCacheEntry;
-    @NonNull
-    private ImageFrom imageFrom;
-
-    public CacheDownloadResult(@NonNull DiskCache.Entry diskCacheEntry, @NonNull ImageFrom imageFrom) {
-        this.diskCacheEntry = diskCacheEntry;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    public DiskCache.Entry getDiskCacheEntry() {
-        return diskCacheEntry;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-}
+class CacheDownloadResult(
+    val diskCacheEntry: DiskCache.Entry,
+    override val imageFrom: ImageFrom
+) : DownloadResult

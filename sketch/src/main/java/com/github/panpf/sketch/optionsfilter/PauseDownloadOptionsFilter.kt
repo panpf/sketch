@@ -27,7 +27,7 @@ class PauseDownloadOptionsFilter : OptionsFilter {
         // 仅限 display 和 load 请求
         if (options is LoadOptions) {
             // TODO 这里改成了按大小覆盖之后强制点击显示就不起作用了
-            val level = options.getRequestLevel()
+            val level = options.requestLevel
             if (level == null || level.level > RequestLevel.LOCAL.level) {
                 options.requestLevel = RequestLevel.LOCAL
             }

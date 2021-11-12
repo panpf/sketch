@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+class DisplayCache {
+    @JvmField
+    var uri: String? = null
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-public class DisplayCache {
-    @Nullable
-    public String uri;
     // todo 删除 optioins，增加 optionskey，
-    @NonNull
-    public DisplayOptions options = new DisplayOptions();
+    @JvmField
+    var options = DisplayOptions()
 }

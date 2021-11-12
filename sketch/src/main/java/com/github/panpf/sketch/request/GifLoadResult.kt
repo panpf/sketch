@@ -13,42 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.drawable.SketchGifDrawable
 
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-
-public class GifLoadResult implements LoadResult {
-    @NonNull
-    private SketchGifDrawable gifDrawable;
-    @NonNull
-    private ImageFrom imageFrom;
-    @NonNull
-    private ImageAttrs imageAttrs;
-
-    public GifLoadResult(@NonNull SketchGifDrawable gifDrawable, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
-        this.gifDrawable = gifDrawable;
-        this.imageAttrs = imageAttrs;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    public SketchGifDrawable getGifDrawable() {
-        return gifDrawable;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
-    }
-}
+class GifLoadResult(
+    val gifDrawable: SketchGifDrawable,
+    override val imageAttrs: ImageAttrs,
+    override val imageFrom: ImageFrom
+) : LoadResult

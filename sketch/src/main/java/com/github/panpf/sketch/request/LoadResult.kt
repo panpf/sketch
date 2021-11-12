@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import com.github.panpf.sketch.decode.ImageAttrs
 
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
-
-public interface LoadResult {
-
-    @NonNull
-    ImageFrom getImageFrom();
-
-    @NonNull
-    ImageAttrs getImageAttrs();
+interface LoadResult {
+    val imageFrom: ImageFrom
+    val imageAttrs: ImageAttrs
 }

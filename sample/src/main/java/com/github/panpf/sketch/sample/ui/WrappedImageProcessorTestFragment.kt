@@ -31,7 +31,7 @@ class WrappedImageProcessorTestFragment : BindingFragment<FragmentWrappedBinding
         binding.wrappedImage.apply {
             options.apply {
                 val metrics = resources.displayMetrics
-                setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
+                maxSize(metrics.widthPixels / 2, metrics.heightPixels / 2)
                 displayer = TransitionImageDisplayer()
             }
         }

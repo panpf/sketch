@@ -50,12 +50,12 @@ open class HttpUriModel : UriModel() {
         return if (downloadResult is BytesDownloadResult) {
             ByteArrayDataSource(
                 downloadResult.imageData,
-                downloadResult.getImageFrom()
+                downloadResult.imageFrom
             )
         } else if (downloadResult is CacheDownloadResult) {
             DiskCacheDataSource(
                 downloadResult.diskCacheEntry,
-                downloadResult.getImageFrom()
+                downloadResult.imageFrom
             )
         } else if (downloadResult == null) {
             val diskCache = Sketch.with(context).configuration.diskCache

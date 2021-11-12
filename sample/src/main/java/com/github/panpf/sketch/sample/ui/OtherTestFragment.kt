@@ -23,8 +23,12 @@ class OtherTestFragment : ToolbarBindingFragment<FragmentOtherTestBinding>() {
     ) {
         toolbar.title = "Other Test"
 
-        binding.otherTestFEmptyImage.options.setErrorImage(R.drawable.image_loading)
-        binding.otherTestFEmptyImage.options.shapeSize = ShapeSize.byViewFixedSize()
-        binding.otherTestFEmptyImage.displayImage("")
+        binding.otherTestFEmptyImage.apply {
+            options.apply {
+                errorImage(R.drawable.image_loading)
+                shapeSize = ShapeSize.byViewFixedSize()
+            }
+            displayImage("")
+        }
     }
 }

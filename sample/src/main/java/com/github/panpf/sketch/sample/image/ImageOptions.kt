@@ -19,8 +19,8 @@ package com.github.panpf.sketch.sample.image
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import androidx.annotation.IntDef
 import android.util.SparseArray
+import androidx.annotation.IntDef
 import com.github.panpf.sketch.display.TransitionImageDisplayer
 import com.github.panpf.sketch.process.GaussianBlurImageProcessor
 import com.github.panpf.sketch.request.DisplayOptions
@@ -66,61 +66,70 @@ object ImageOptions {
 
         OPTIONS_ARRAY.append(RECT, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
-                return DisplayOptions()
-                        .setLoadingImage(R.drawable.image_loading)
-                        .setErrorImage(R.drawable.image_error)
-                        .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setDisplayer(transitionImageDisplayer)
-                        .setShapeSize(ShapeSize.byViewFixedSize())
+                return DisplayOptions().apply {
+                    loadingImage(R.drawable.image_loading)
+                    errorImage(R.drawable.image_error)
+                    pauseDownloadImage(R.drawable.image_pause_download)
+                    displayer = transitionImageDisplayer
+                    shapeSize = ShapeSize.byViewFixedSize()
+                }
             }
         })
 
         OPTIONS_ARRAY.append(CIRCULAR_STROKE, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
-                return DisplayOptions()
-                        .setLoadingImage(R.drawable.image_loading)
-                        .setErrorImage(R.drawable.image_error)
-                        .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setDisplayer(transitionImageDisplayer)
-                        .setShaper(CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1)))
-                        .setShapeSize(ShapeSize.byViewFixedSize())
+                return DisplayOptions().apply {
+                    loadingImage(R.drawable.image_loading)
+                    errorImage(R.drawable.image_error)
+                    pauseDownloadImage(R.drawable.image_pause_download)
+                    displayer = transitionImageDisplayer
+                    shaper =
+                        CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 1))
+                    shapeSize = ShapeSize.byViewFixedSize()
+                }
             }
         })
 
         OPTIONS_ARRAY.append(WINDOW_BACKGROUND, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
-                return DisplayOptions()
-                        .setProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
-                        .setCacheProcessedImageInDisk(true)
-                        .setBitmapConfig(Bitmap.Config.ARGB_8888)   // 效果比较重要
-                        .setShapeSize(ShapeSize.byViewFixedSize())
-                        .setMaxSize(context.resources.displayMetrics.widthPixels / 4,
-                                context.resources.displayMetrics.heightPixels / 4)
-                        .setDisplayer(TransitionImageDisplayer(true))
+                return DisplayOptions().apply {
+                    processor =
+                        GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000"))
+                    isCacheProcessedImageInDisk = true
+                    bitmapConfig = Bitmap.Config.ARGB_8888   // 效果比较重要
+                    shapeSize = ShapeSize.byViewFixedSize()
+                    maxSize(
+                        context.resources.displayMetrics.widthPixels / 4,
+                        context.resources.displayMetrics.heightPixels / 4
+                    )
+                    displayer = TransitionImageDisplayer(true)
+                }
             }
         })
 
         OPTIONS_ARRAY.append(ROUND_RECT, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
-                return DisplayOptions()
-                        .setLoadingImage(R.drawable.image_loading)
-                        .setErrorImage(R.drawable.image_error)
-                        .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setShaper(RoundRectImageShaper(SketchUtils.dp2px(context, 6).toFloat()))
-                        .setDisplayer(transitionImageDisplayer)
-                        .setShapeSize(ShapeSize.byViewFixedSize())
+                return DisplayOptions().apply {
+                    loadingImage(R.drawable.image_loading)
+                    errorImage(R.drawable.image_error)
+                    pauseDownloadImage(R.drawable.image_pause_download)
+                    shaper = RoundRectImageShaper(SketchUtils.dp2px(context, 6).toFloat())
+                    displayer = transitionImageDisplayer
+                    shapeSize = ShapeSize.byViewFixedSize()
+                }
             }
         })
 
         OPTIONS_ARRAY.append(LIST_FULL, object : OptionsHolder() {
             override fun onCreateOptions(context: Context): DownloadOptions {
                 val displayMetrics = context.resources.displayMetrics
-                return DisplayOptions()
-                        .setLoadingImage(R.drawable.image_loading)
-                        .setErrorImage(R.drawable.image_error)
-                        .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setMaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
-                        .setDisplayer(transitionImageDisplayer)
+                return DisplayOptions().apply {
+                    loadingImage(R.drawable.image_loading)
+                    errorImage(R.drawable.image_error)
+                    pauseDownloadImage(R.drawable.image_pause_download)
+                    maxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
+                    displayer = transitionImageDisplayer
+                }
             }
         })
     }

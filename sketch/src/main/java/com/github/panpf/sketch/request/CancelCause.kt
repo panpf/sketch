@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.panpf.sketch.request;
+package com.github.panpf.sketch.request
 
 /**
  * 取消的原因
  */
-public enum CancelCause {
+enum class CancelCause {
     /**
      * 通过Sketch.cancel()方法取消
      */
@@ -63,5 +62,5 @@ public enum CancelCause {
     /**
      * 检测到绑定关系断开
      */
-    BIND_DISCONNECT,
+    BIND_DISCONNECT
 }

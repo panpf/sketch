@@ -13,90 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.state.StateImage
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.github.panpf.sketch.SketchImageView;
-import com.github.panpf.sketch.state.StateImage;
-import com.github.panpf.sketch.uri.UriModel;
-
-public class DownloadOptions {
-
+open class DownloadOptions {
     /**
      * Disabled disk caching
      */
-    private boolean cacheInDiskDisabled;
+    var isCacheInDiskDisabled = false
 
     /**
      * Limit request processing depth
      */
-    @Nullable
-    private RequestLevel requestLevel;
+    var requestLevel: RequestLevel? = null
 
-    public DownloadOptions() {
+    constructor()
+    constructor(from: DownloadOptions) {
+        copy(from)
     }
 
-    public DownloadOptions(@NonNull DownloadOptions from) {
-        copy(from);
+    open fun reset() {
+        isCacheInDiskDisabled = false
+        requestLevel = null
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isCacheInDiskDisabled() {
-        return cacheInDiskDisabled;
-    }
-
-    @NonNull
-    public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
-        this.cacheInDiskDisabled = cacheInDiskDisabled;
-        return this;
-    }
-
-    @Nullable
-    public RequestLevel getRequestLevel() {
-        return requestLevel;
-    }
-
-    @NonNull
-    public DownloadOptions setRequestLevel(@Nullable RequestLevel requestLevel) {
-        this.requestLevel = requestLevel;
-        return this;
-    }
-
-    public void reset() {
-        cacheInDiskDisabled = false;
-        requestLevel = null;
-    }
-
-    public void copy(@Nullable DownloadOptions options) {
-        if (options == null) {
-            return;
-        }
-
-        cacheInDiskDisabled = options.cacheInDiskDisabled;
-        requestLevel = options.requestLevel;
+    fun copy(options: DownloadOptions) {
+        isCacheInDiskDisabled = options.isCacheInDiskDisabled
+        requestLevel = options.requestLevel
     }
 
     /**
      * Generate option key for assembling the request key
      *
-     * @see SketchImageView#getOptionsKey()
-     * @see com.github.panpf.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
+     * @see SketchImageView.optionsKey
+     * @see com.github.panpf.sketch.util.SketchUtils.makeRequestKey
      */
-    @NonNull
-    public String makeKey() {
-        return "";
+    open fun makeKey(): String {
+        return ""
     }
 
     /**
-     * Generate option key for {@link StateImage} to assemble the memory cache for {@link StateImage}
+     * Generate option key for [StateImage] to assemble the memory cache for [StateImage]
      *
-     * @see com.github.panpf.sketch.util.SketchUtils#makeRequestKey(String, UriModel, String)
+     * @see com.github.panpf.sketch.util.SketchUtils.makeRequestKey
      */
-    @NonNull
-    public String makeStateImageKey() {
-        return "";
+    open fun makeStateImageKey(): String {
+        return ""
     }
 }

@@ -27,7 +27,7 @@ class PauseLoadOptionsFilter : OptionsFilter {
         // 仅限 display 请求
         if (options is DisplayOptions) {
             // TODO 这里改成了按大小覆盖之后强制点击显示就不起作用了
-            val level = options.getRequestLevel()
+            val level = options.requestLevel
             if (level == null || level.level > RequestLevel.MEMORY.level) {
                 options.requestLevel = RequestLevel.MEMORY
             }
