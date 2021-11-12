@@ -13,144 +13,195 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.text.TextUtils;
-import android.text.format.Formatter;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.SketchCallback;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.cache.BitmapPoolUtils;
-import com.github.panpf.sketch.datasource.DataSource;
-import com.github.panpf.sketch.datasource.DiskCacheDataSource;
-import com.github.panpf.sketch.request.ErrorCause;
-import com.github.panpf.sketch.request.LoadRequest;
-import com.github.panpf.sketch.uri.GetDataSourceException;
-import com.github.panpf.sketch.util.ExifInterface;
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.text.TextUtils
+import android.text.format.Formatter
+import com.github.panpf.sketch.SLog.Companion.emf
+import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.setInBitmapFromPool
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.request.ErrorCause
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.uri.GetDataSourceException
+import com.github.panpf.sketch.util.ExifInterface
+import java.util.*
 
 /**
  * 解码经过处理的缓存图片时只需原封不动读取，然后读取原图的类型、宽高信息即可
  */
-public class TransformCacheDecodeHelper extends DecodeHelper {
-    private static final String NAME = "ProcessedCacheDecodeHelper";
-
-    @Override
-    public boolean match(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType, @NonNull BitmapFactory.Options boundOptions) {
-        return dataSource instanceof DiskCacheDataSource && ((DiskCacheDataSource) dataSource).isFromProcessedCache();
+class TransformCacheDecodeHelper : DecodeHelper() {
+    override fun match(
+        request: LoadRequest,
+        dataSource: DataSource,
+        imageType: ImageType?,
+        boundOptions: BitmapFactory.Options
+    ): Boolean {
+        return dataSource is DiskCacheDataSource && dataSource.isFromProcessedCache
     }
 
-    @NonNull
-    @Override
-    public DecodeResult decode(@NonNull LoadRequest request, @NonNull DataSource dataSource, @Nullable ImageType imageType,
-                               @NonNull BitmapFactory.Options boundOptions, @NonNull BitmapFactory.Options decodeOptions, int exifOrientation) throws DecodeException {
-        decodeOptions.inSampleSize = 1;
+    @Throws(DecodeException::class)
+    override fun decode(
+        request: LoadRequest,
+        dataSource: DataSource,
+        imageType: ImageType?,
+        boundOptions: BitmapFactory.Options,
+        decodeOptions: BitmapFactory.Options,
+        exifOrientation: Int
+    ): DecodeResult {
+        decodeOptions.inSampleSize = 1
 
         // Set inBitmap from bitmap pool
-        if (!request.getOptions().isBitmapPoolDisabled()) {
-            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
-            BitmapPoolUtils.setInBitmapFromPool(decodeOptions,
-                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmapPool);
+        if (!request.options.isBitmapPoolDisabled) {
+            val bitmapPool = request.configuration.bitmapPool
+            setInBitmapFromPool(
+                decodeOptions,
+                boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, bitmapPool
+            )
         }
-
-        Bitmap bitmap;
-        try {
-            bitmap = ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions);
-        } catch (Throwable tr) {
-            Context application = request.getConfiguration().getContext();
-            SketchCallback callback = request.getConfiguration().getCallback();
-            BitmapPool bitmapPool = request.getConfiguration().getBitmapPool();
+        val bitmap: Bitmap? = try {
+            ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions)
+        } catch (tr: Throwable) {
+            val application = request.configuration.context
+            val callback = request.configuration.callback
+            val bitmapPool = request.configuration.bitmapPool
             if (ImageDecodeUtils.isInBitmapDecodeError(tr, decodeOptions, false)) {
-                ImageDecodeUtils.recycleInBitmapOnDecodeError(callback, bitmapPool, request.getUri(),
-                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType, tr, decodeOptions, false);
-
+                ImageDecodeUtils.recycleInBitmapOnDecodeError(
+                    callback,
+                    bitmapPool,
+                    request.uri,
+                    boundOptions.outWidth,
+                    boundOptions.outHeight,
+                    boundOptions.outMimeType,
+                    tr,
+                    decodeOptions,
+                    false
+                )
                 try {
-                    bitmap = ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions);
-                } catch (Throwable throwable1) {
-                    SLog.emf(NAME, "onDecodeNormalImageError. " +
-                                    "outWidth=%d, outHeight=%d, outMimeType=%s. " +
-                                    "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
-                            boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
-                            Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
-                            Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
-                            Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()),
-                            request.getKey());
-                    callback.onError(new DecodeImageException(throwable1, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType));
-                    throw new DecodeException("InBitmap retry", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
-                }
-            } else {
-                SLog.emf(NAME, "onDecodeNormalImageError. " +
+                    ImageDecodeUtils.decodeBitmap(dataSource, decodeOptions)
+                } catch (throwable1: Throwable) {
+                    emf(
+                        NAME, "onDecodeNormalImageError. " +
                                 "outWidth=%d, outHeight=%d, outMimeType=%s. " +
                                 "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
                         boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
                         Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
                         Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
                         Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()),
-                        request.getKey());
-                callback.onError(new DecodeImageException(tr, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType));
-                throw new DecodeException(tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION);
+                        request.key
+                    )
+                    callback.onError(
+                        DecodeImageException(
+                            throwable1,
+                            request,
+                            boundOptions.outWidth,
+                            boundOptions.outHeight,
+                            boundOptions.outMimeType
+                        )
+                    )
+                    throw DecodeException("InBitmap retry", tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION)
+                }
+            } else {
+                emf(
+                    NAME, "onDecodeNormalImageError. " +
+                            "outWidth=%d, outHeight=%d, outMimeType=%s. " +
+                            "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
+                    boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
+                    Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
+                    Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()),
+                    request.key
+                )
+                callback.onError(
+                    DecodeImageException(
+                        tr,
+                        request,
+                        boundOptions.outWidth,
+                        boundOptions.outHeight,
+                        boundOptions.outMimeType
+                    )
+                )
+                throw DecodeException(tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION)
             }
         }
 
         // 过滤掉无效的图片
-        if (bitmap == null || bitmap.isRecycled()) {
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid", null);
-            throw new DecodeException("Bitmap invalid", ErrorCause.DECODE_RESULT_BITMAP_INVALID);
+        if (bitmap == null || bitmap.isRecycled) {
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid", null)
+            throw DecodeException("Bitmap invalid", ErrorCause.DECODE_RESULT_BITMAP_INVALID)
         }
 
         // 过滤宽高小于等于1的图片
-        if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            String cause = String.format(Locale.US, "Bitmap width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d",
-                    boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight());
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null);
-            bitmap.recycle();
-            throw new DecodeException(cause, ErrorCause.DECODE_RESULT_BITMAP_SIZE_INVALID);
+        if (bitmap.width <= 1 || bitmap.height <= 1) {
+            val cause = String.format(
+                Locale.US,
+                "Bitmap width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d",
+                boundOptions.outWidth,
+                boundOptions.outHeight,
+                bitmap.width,
+                bitmap.height
+            )
+            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null)
+            bitmap.recycle()
+            throw DecodeException(cause, ErrorCause.DECODE_RESULT_BITMAP_SIZE_INVALID)
         }
 
         // 由于是读取的经过处理的缓存图片，因此要重新读取原图的类型、宽高信息
-        DataSource originFileDataSource;
-        try {
-            originFileDataSource = request.getDataSource(true);
-        } catch (GetDataSourceException e) {
-            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e);
-            throw new DecodeException(e, ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE);
+        val originFileDataSource: DataSource = try {
+            request.getDataSource(true)
+        } catch (e: GetDataSourceException) {
+            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e)
+            throw DecodeException(e, ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE)
         }
-
-        BitmapFactory.Options originImageOptions = new BitmapFactory.Options();
-        originImageOptions.inJustDecodeBounds = true;
+        val originImageOptions = BitmapFactory.Options()
+        originImageOptions.inJustDecodeBounds = true
         try {
-            ImageDecodeUtils.decodeBitmap(originFileDataSource, originImageOptions);
-        } catch (Throwable e) {
-            e.printStackTrace();
+            ImageDecodeUtils.decodeBitmap(originFileDataSource, originImageOptions)
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
-
-        ImageOrientationCorrector orientationCorrector = request.getConfiguration().getOrientationCorrector();
-
-        ImageAttrs imageAttrs;
+        val orientationCorrector = request.configuration.orientationCorrector
+        val imageAttrs: ImageAttrs
         if (!TextUtils.isEmpty(originImageOptions.outMimeType)) {
             // Read image orientation
-            int realExifOrientation = ExifInterface.ORIENTATION_UNDEFINED;
-            if (!request.getOptions().isCorrectImageOrientationDisabled()) {
-                realExifOrientation = orientationCorrector.readExifOrientation(originImageOptions.outMimeType, originFileDataSource);
+            var realExifOrientation = ExifInterface.ORIENTATION_UNDEFINED
+            if (!request.options.isCorrectImageOrientationDisabled) {
+                realExifOrientation = orientationCorrector.readExifOrientation(
+                    originImageOptions.outMimeType,
+                    originFileDataSource
+                )
             }
-
-            imageAttrs = new ImageAttrs(originImageOptions.outMimeType, originImageOptions.outWidth, originImageOptions.outHeight, realExifOrientation);
+            imageAttrs = ImageAttrs(
+                originImageOptions.outMimeType,
+                originImageOptions.outWidth,
+                originImageOptions.outHeight,
+                realExifOrientation
+            )
         } else {
-            imageAttrs = new ImageAttrs(boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight, exifOrientation);
+            imageAttrs = ImageAttrs(
+                boundOptions.outMimeType,
+                boundOptions.outWidth,
+                boundOptions.outHeight,
+                exifOrientation
+            )
         }
+        orientationCorrector.rotateSize(imageAttrs, imageAttrs.exifOrientation)
+        ImageDecodeUtils.decodeSuccess(
+            bitmap,
+            boundOptions.outWidth,
+            boundOptions.outHeight,
+            decodeOptions.inSampleSize,
+            request,
+            NAME
+        )
+        val result = BitmapDecodeResult(imageAttrs, bitmap, dataSource.imageFrom)
+        result.isBanProcess = true
+        return result
+    }
 
-        orientationCorrector.rotateSize(imageAttrs, imageAttrs.getExifOrientation());
-
-        ImageDecodeUtils.decodeSuccess(bitmap, boundOptions.outWidth, boundOptions.outHeight, decodeOptions.inSampleSize, request, NAME);
-        return new BitmapDecodeResult(imageAttrs, bitmap, dataSource.getImageFrom()).setBanProcess(true);
+    companion object {
+        private const val NAME = "ProcessedCacheDecodeHelper"
     }
 }

@@ -13,71 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
+import android.graphics.Bitmap
+import android.text.format.Formatter
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.cache.BitmapPoolUtils
+import com.github.panpf.sketch.request.BaseRequest
+import com.github.panpf.sketch.request.LoadRequest
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.text.format.Formatter;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.cache.BitmapPoolUtils;
-import com.github.panpf.sketch.process.ImageProcessor;
-import com.github.panpf.sketch.request.BaseRequest;
-import com.github.panpf.sketch.request.LoadOptions;
-import com.github.panpf.sketch.request.LoadRequest;
-
-public class ProcessImageResultProcessor implements ResultProcessor {
-
-    @Override
-    public void process(@NonNull LoadRequest request, @NonNull DecodeResult result) throws ProcessException {
-        if (result.isBanProcess()) {
-            return;
+class ProcessImageResultProcessor : ResultProcessor {
+    @Throws(ProcessException::class)
+    override fun process(request: LoadRequest, result: DecodeResult) {
+        if (result.isBanProcess) {
+            return
         }
-
-        if (!(result instanceof BitmapDecodeResult)) {
-            return;
+        if (result !is BitmapDecodeResult) {
+            return
         }
-
-        BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
-        Bitmap bitmap = bitmapDecodeResult.getBitmap();
-        if (bitmap == null) {
-            return;
-        }
-
-        LoadOptions loadOptions = request.getOptions();
-        ImageProcessor imageProcessor = loadOptions.getProcessor();
-        if (imageProcessor == null) {
-            return;
-        }
-
-        request.setStatus(BaseRequest.Status.PROCESSING);
-
-        Bitmap newBitmap = null;
+        val bitmap = result.bitmap
+        val loadOptions = request.options
+        val imageProcessor = loadOptions.processor ?: return
+        request.setStatus(BaseRequest.Status.PROCESSING)
+        var newBitmap: Bitmap? = null
         try {
-            newBitmap = imageProcessor.process(request.getSketch(), bitmap, loadOptions.getResize(), loadOptions.isLowQualityImage());
-        } catch (Throwable e) {
-            e.printStackTrace();
-            Context application = request.getConfiguration().getContext();
-            SLog.emf("ProcessImageResultProcessor", "onProcessImageError. imageUri: %s. processor: %s. " +
-                            "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
-                    request.getKey(), imageProcessor.toString(),
-                    Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
-                    Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
-                    Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()));
-            request.getConfiguration().getCallback().onError(new ProcessImageException(e, request.getKey(), imageProcessor));
+            newBitmap = imageProcessor.process(
+                request.sketch,
+                bitmap,
+                loadOptions.resize,
+                loadOptions.isLowQualityImage
+            )
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            val application = request.configuration.context
+            SLog.emf(
+                "ProcessImageResultProcessor",
+                "onProcessImageError. imageUri: %s. processor: %s. " +
+                        "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                request.key,
+                imageProcessor.toString(),
+                Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
+                Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
+                Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory())
+            )
+            request.configuration.callback.onError(
+                ProcessImageException(
+                    e,
+                    request.key,
+                    imageProcessor
+                )
+            )
         }
-
-        if (newBitmap != null && !newBitmap.isRecycled()) {
+        if (newBitmap != null && !newBitmap.isRecycled) {
             if (newBitmap != bitmap) {
-                BitmapPoolUtils.freeBitmapToPool(bitmap, request.getConfiguration().getBitmapPool());
-                bitmapDecodeResult.setBitmap(newBitmap);
+                BitmapPoolUtils.freeBitmapToPool(bitmap, request.configuration.bitmapPool)
+                result.bitmap = newBitmap
             }
-            result.setProcessed(true);
+            result.isProcessed = true
         } else {
-            throw new ProcessException("Process result bitmap null or recycled");
+            throw ProcessException("Process result bitmap null or recycled")
         }
     }
 }

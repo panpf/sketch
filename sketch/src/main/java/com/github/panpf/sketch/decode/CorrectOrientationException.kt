@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
+import java.lang.Exception
 
-import androidx.annotation.NonNull;
-
-@SuppressWarnings("WeakerAccess")
-public class CorrectOrientationException extends Exception {
-    public CorrectOrientationException(@NonNull String message) {
-        super(message);
-    }
-}
+class CorrectOrientationException(message: String) : Exception(message)

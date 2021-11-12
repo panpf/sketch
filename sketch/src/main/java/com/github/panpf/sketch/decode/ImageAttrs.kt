@@ -13,47 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.panpf.sketch.decode;
-
-import androidx.annotation.NonNull;
+package com.github.panpf.sketch.decode
 
 /**
  * 图片的真实宽、高、格式、方向等属性
  */
-public class ImageAttrs {
-    private int width;
-    private int height;
-    @NonNull
-    private String mimeType;
-    private int exifOrientation;
-
-    public ImageAttrs(@NonNull String mimeType, int width, int height, int exifOrientation) {
-        this.mimeType = mimeType;
-        this.width = width;
-        this.height = height;
-        this.exifOrientation = exifOrientation;
-    }
-
-    public int getExifOrientation() {
-        return exifOrientation;
-    }
-
-    @NonNull
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    void resetSize(int width, int height) {
-        this.width = width;
-        this.height = height;
+class ImageAttrs(
+    val mimeType: String,
+    var width: Int,
+    var height: Int,
+    val exifOrientation: Int
+) {
+    fun resetSize(width: Int, height: Int) {
+        this.width = width
+        this.height = height
     }
 }

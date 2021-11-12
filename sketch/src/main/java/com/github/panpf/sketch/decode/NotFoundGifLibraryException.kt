@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-public class NotFoundGifLibraryException extends Exception {
-}
+class NotFoundGifLibraryException : Exception()

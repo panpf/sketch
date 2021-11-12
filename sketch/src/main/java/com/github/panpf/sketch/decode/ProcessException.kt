@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-import androidx.annotation.NonNull;
-
-public class ProcessException extends Exception {
-
-    public ProcessException(@NonNull Throwable cause) {
-        super(cause);
-    }
-
-    public ProcessException(@NonNull String message, @NonNull Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProcessException(@NonNull String message) {
-        super(message);
-    }
+class ProcessException : Exception {
+    constructor(cause: Throwable) : super(cause)
+    constructor(message: String, cause: Throwable) : super(message, cause)
+    constructor(message: String) : super(message)
 }

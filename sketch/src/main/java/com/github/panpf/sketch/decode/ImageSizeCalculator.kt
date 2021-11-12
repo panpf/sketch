@@ -13,181 +13,116 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-
-package com.github.panpf.sketch.decode;
-
-import android.content.Context;
-import android.util.DisplayMetrics;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.lang.reflect.Field;
-
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.request.DisplayRequest;
-import com.github.panpf.sketch.request.FixedSize;
-import com.github.panpf.sketch.request.LoadRequest;
-import com.github.panpf.sketch.request.MaxSize;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.content.Context
+import android.view.ViewGroup
+import android.widget.ImageView
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.FixedSize
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.MaxSize
+import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.sketch.util.SketchUtils.Companion.calculateSamplingSize
+import com.github.panpf.sketch.util.SketchUtils.Companion.formatSupportBitmapRegionDecoder
 
 /**
  * 和图片尺寸相关的需求的计算器
  */
-public class ImageSizeCalculator {
-    private static final String KEY = "ImageSizeCalculator";
-
-    private int openGLMaxTextureSize = -1;
-    private float targetSizeScale = 1.1f;
-
-    private static int getWidth(@Nullable SketchView sketchView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
-        if (sketchView == null) {
-            return 0;
-        }
-
-        int width = 0;
-        final ViewGroup.LayoutParams params = sketchView.getLayoutParams();
-        if (params != null) {
-            width = params.width;
-            if (subtractPadding && width > 0 && (width - sketchView.getPaddingLeft() - sketchView.getPaddingRight()) > 0) {
-                width -= sketchView.getPaddingLeft() + sketchView.getPaddingRight();
-                return width;
-            }
-        }
-        if (width <= 0 && checkMaxWidth) {
-            width = getViewFieldValue(sketchView, "mMaxWidth");
-        }
-        if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            width = -1;
-        }
-        return width;
-    }
-
-    private static int getHeight(@Nullable SketchView sketchView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
-        if (sketchView == null) {
-            return 0;
-        }
-
-        int height = 0;
-        final ViewGroup.LayoutParams params = sketchView.getLayoutParams();
-        if (params != null) {
-            height = params.height;
-            if (subtractPadding && height > 0 && (height - sketchView.getPaddingTop() - sketchView.getPaddingBottom()) > 0) {
-                height -= sketchView.getPaddingTop() + sketchView.getPaddingBottom();
-                return height;
-            }
-        }
-        if (height <= 0 && checkMaxHeight) {
-            height = getViewFieldValue(sketchView, "mMaxHeight");
-        }
-        if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            height = -1;
-        }
-        return height;
-    }
-
-    private static int getViewFieldValue(@NonNull Object object, @NonNull String fieldName) {
-        int value = 0;
-        try {
-            Field field = ImageView.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            int fieldValue = (Integer) field.get(object);
-            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
-                value = fieldValue;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return value;
-    }
-
+class ImageSizeCalculator {
     /**
      * 获取 OpenGL 所允许的最大尺寸
      */
-    public int getOpenGLMaxTextureSize() {
-        if (openGLMaxTextureSize == -1) {
-            openGLMaxTextureSize = SketchUtils.getOpenGLMaxTextureSize();
-        }
-        return openGLMaxTextureSize;
-    }
-
     /**
      * 设置 OpenGL 所允许的最大尺寸,用来计算 inSampleSize
      */
-    public void setOpenGLMaxTextureSize(int openGLMaxTextureSize) {
-        this.openGLMaxTextureSize = openGLMaxTextureSize;
-    }
+    var openGLMaxTextureSize = -1
+        get() {
+            if (field == -1) {
+                field = SketchUtils.openGLMaxTextureSize
+            }
+            return field
+        }
 
     /**
-     * 计算 {@link MaxSize}
-     *
-     * @param sketchView 你需要根据 {@link ImageView} 的宽高来计算
-     * @return {@link MaxSize}
+     * 计算 inSampleSize 的时候将 targetSize 稍微放大一点儿，就是乘以这个倍数，默认值是 1.25f
      */
-    @Nullable
-    public MaxSize calculateImageMaxSize(@Nullable SketchView sketchView) {
-        int width = getWidth(sketchView, true, true, false);
-        int height = getHeight(sketchView, true, true, false);
+    var targetSizeScale = 1.1f
 
-        if (sketchView == null || (width <= 0 && height <= 0)) {
-            return null;
+    /**
+     * 计算 [MaxSize]
+     *
+     * @param sketchView 你需要根据 [ImageView] 的宽高来计算
+     * @return [MaxSize]
+     */
+    fun calculateImageMaxSize(sketchView: SketchView?): MaxSize? {
+        var width = getWidth(
+            sketchView,
+            checkMaxWidth = true,
+            acceptWrapContent = true,
+            subtractPadding = false
+        )
+        var height = getHeight(
+            sketchView,
+            checkMaxHeight = true,
+            acceptWrapContent = true,
+            subtractPadding = false
+        )
+        if (sketchView == null || width <= 0 && height <= 0) {
+            return null
         }
 
         // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
-        DisplayMetrics displayMetrics = sketchView.getResources().getDisplayMetrics();
-        int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
-        int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
+        val displayMetrics = sketchView.getResources().displayMetrics
+        val maxWidth = (displayMetrics.widthPixels * 1.5f).toInt()
+        val maxHeight = (displayMetrics.heightPixels * 1.5f).toInt()
         if (width > maxWidth || height > maxHeight) {
-            float widthScale = (float) width / maxWidth;
-            float heightScale = (float) height / maxHeight;
-            float finalScale = widthScale > heightScale ? widthScale : heightScale;
-
-            width /= finalScale;
-            height /= finalScale;
+            val widthScale = width.toFloat() / maxWidth
+            val heightScale = height.toFloat() / maxHeight
+            val finalScale = if (widthScale > heightScale) widthScale else heightScale
+            width /= finalScale.toInt()
+            height /= finalScale.toInt()
         }
-        return new MaxSize(width, height);
+        return MaxSize(width, height)
     }
 
     /**
-     * 获取默认的 {@link MaxSize}，默认 {@link MaxSize} 是屏幕宽高的 70%
+     * 获取默认的 [MaxSize]，默认 [MaxSize] 是屏幕宽高的 70%
      *
      * @param context 上下文
-     * @return {@link MaxSize}
+     * @return [MaxSize]
      */
-    @NonNull
-    public MaxSize getDefaultImageMaxSize(@NonNull Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+    fun getDefaultImageMaxSize(context: Context): MaxSize {
+        val displayMetrics = context.resources.displayMetrics
+        return MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
 
     /**
-     * 计算 {@link FixedSize}
+     * 计算 [FixedSize]
      *
-     * @param sketchView 你需要根据 {@link ImageView} 的宽高来计算
-     * @return {@link FixedSize}
+     * @param sketchView 你需要根据 [ImageView] 的宽高来计算
+     * @return [FixedSize]
      */
-    @Nullable
-    public FixedSize calculateImageFixedSize(@NonNull SketchView sketchView) {
-        ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
+    fun calculateImageFixedSize(sketchView: SketchView): FixedSize? {
+        val layoutParams = sketchView.getLayoutParams()
         if (layoutParams == null || layoutParams.width <= 0 || layoutParams.height <= 0) {
-            return null;
+            return null
         }
-
-        int fixedWidth = layoutParams.width - (sketchView.getPaddingLeft() + sketchView.getPaddingRight());
-        int fixedHeight = layoutParams.height - (sketchView.getPaddingTop() + sketchView.getPaddingBottom());
+        var fixedWidth =
+            layoutParams.width - (sketchView.getPaddingLeft() + sketchView.getPaddingRight())
+        var fixedHeight =
+            layoutParams.height - (sketchView.getPaddingTop() + sketchView.getPaddingBottom())
 
         // 限制不能超过OpenGL所允许的最大尺寸
-        int maxSize = getOpenGLMaxTextureSize();
+        val maxSize = openGLMaxTextureSize
         if (fixedWidth > maxSize || fixedHeight > maxSize) {
-            float finalScale = Math.max((float) fixedWidth / maxSize, (float) fixedHeight / maxSize);
-
-            fixedWidth /= finalScale;
-            fixedHeight /= finalScale;
+            val finalScale =
+                (fixedWidth.toFloat() / maxSize).coerceAtLeast(fixedHeight.toFloat() / maxSize)
+            fixedWidth /= finalScale.toInt()
+            fixedHeight /= finalScale.toInt()
         }
-        return new FixedSize(fixedWidth, fixedHeight);
+        return FixedSize(fixedWidth, fixedHeight)
     }
 
     /**
@@ -200,114 +135,189 @@ public class ImageSizeCalculator {
      * @param smallerThumbnails 是否使用较小的缩略图，当 inSampleSize 为 2 时，强制改为 4
      * @return 合适的 inSampleSize
      */
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean smallerThumbnails) {
-        targetWidth *= targetSizeScale;
-        targetHeight *= targetSizeScale;
+    fun calculateInSampleSize(
+        outWidth: Int,
+        outHeight: Int,
+        targetWidth: Int,
+        targetHeight: Int,
+        smallerThumbnails: Boolean
+    ): Int {
+        var newTargetWidth = (targetWidth * targetSizeScale).toInt()
+        var newTargetHeight = (targetHeight * targetSizeScale).toInt()
 
         // 限制target宽高不能大于OpenGL所允许的最大尺寸
-        int maxSize = getOpenGLMaxTextureSize();
-        if (targetWidth > maxSize) {
-            targetWidth = maxSize;
+        val maxSize = openGLMaxTextureSize
+        if (newTargetWidth > maxSize) {
+            newTargetWidth = maxSize
         }
-        if (targetHeight > maxSize) {
-            targetHeight = maxSize;
+        if (newTargetHeight > maxSize) {
+            newTargetHeight = maxSize
         }
-
-        int inSampleSize = 1;
+        var inSampleSize = 1
 
         // 如果目标宽高都小于等于0，就别计算了
-        if (targetWidth <= 0 && targetHeight <= 0) {
-            return inSampleSize;
+        if (newTargetWidth <= 0 && newTargetHeight <= 0) {
+            return inSampleSize
         }
 
         // 如果目标宽高都大于等于原始尺寸，也别计算了
-        if (targetWidth >= outWidth && targetHeight >= outHeight) {
-            return inSampleSize;
+        if (newTargetWidth >= outWidth && newTargetHeight >= outHeight) {
+            return inSampleSize
         }
-
-        if (targetWidth <= 0) {
+        if (newTargetWidth <= 0) {
             // 目标宽小于等于0时，只要高度满足要求即可
-            while (SketchUtils.calculateSamplingSize(outHeight, inSampleSize) > targetHeight) {
-                inSampleSize *= 2;
+            while (calculateSamplingSize(outHeight, inSampleSize) > newTargetHeight) {
+                inSampleSize *= 2
             }
-        } else if (targetHeight <= 0) {
+        } else if (newTargetHeight <= 0) {
             // 目标高小于等于0时，只要宽度满足要求即可
-            while (SketchUtils.calculateSamplingSize(outWidth, inSampleSize) > targetWidth) {
-                inSampleSize *= 2;
+            while (calculateSamplingSize(outWidth, inSampleSize) > newTargetWidth) {
+                inSampleSize *= 2
             }
         } else {
             // 首先限制像素数不能超过目标宽高的像素数
-            final long maxPixels = targetWidth * targetHeight;
-            while ((SketchUtils.calculateSamplingSize(outWidth, inSampleSize)) * (SketchUtils.calculateSamplingSize(outHeight, inSampleSize)) > maxPixels) {
-                inSampleSize *= 2;
+            val maxPixels = (newTargetWidth * newTargetHeight).toLong()
+            while (calculateSamplingSize(outWidth, inSampleSize) * calculateSamplingSize(
+                    outHeight,
+                    inSampleSize
+                ) > maxPixels
+            ) {
+                inSampleSize *= 2
             }
 
             // 然后限制宽高不能大于OpenGL所允许的最大尺寸
-            while (SketchUtils.calculateSamplingSize(outWidth, inSampleSize) > maxSize || SketchUtils.calculateSamplingSize(outHeight, inSampleSize) > maxSize) {
-                inSampleSize *= 2;
+            while (calculateSamplingSize(outWidth, inSampleSize) > maxSize || calculateSamplingSize(
+                    outHeight,
+                    inSampleSize
+                ) > maxSize
+            ) {
+                inSampleSize *= 2
             }
 
             // 想要较小的缩略图就将 2 改为 4
             if (smallerThumbnails && inSampleSize == 2) {
-                inSampleSize = 4;
+                inSampleSize = 4
             }
         }
-
-        return inSampleSize;
+        return inSampleSize
     }
 
     /**
      * 根据高度计算是否可以使用阅读模式
      */
-    public boolean canUseReadModeByHeight(int imageWidth, int imageHeight) {
-        return imageHeight > imageWidth * 2;
+    fun canUseReadModeByHeight(imageWidth: Int, imageHeight: Int): Boolean {
+        return imageHeight > imageWidth * 2
     }
 
     /**
      * 根据宽度度计算是否可以使用阅读模式
      */
-    public boolean canUseReadModeByWidth(int imageWidth, int imageHeight) {
-        return imageWidth > imageHeight * 3;
+    fun canUseReadModeByWidth(imageWidth: Int, imageHeight: Int): Boolean {
+        return imageWidth > imageHeight * 3
     }
 
     /**
      * 是否可以使用缩略图模式
      */
-    public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight) {
+    fun canUseThumbnailMode(
+        outWidth: Int,
+        outHeight: Int,
+        resizeWidth: Int,
+        resizeHeight: Int
+    ): Boolean {
         if (resizeWidth > outWidth && resizeHeight > outHeight) {
-            return false;
+            return false
         }
-
-        float resizeScale = (float) resizeWidth / resizeHeight;
-        float imageScale = (float) outWidth / outHeight;
-        return Math.max(resizeScale, imageScale) > Math.min(resizeScale, imageScale) * 1.5f;
+        val resizeScale = resizeWidth.toFloat() / resizeHeight
+        val imageScale = outWidth.toFloat() / outHeight
+        return resizeScale.coerceAtLeast(imageScale) > resizeScale.coerceAtMost(imageScale) * 1.5f
     }
 
     /**
      * 根据请求和图片类型判断是否使用更小的缩略图
      */
-    public boolean canUseSmallerThumbnails(@NonNull LoadRequest loadRequest, @NonNull ImageType imageType) {
-        return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).isUseSmallerThumbnails() &&
-                SketchUtils.formatSupportBitmapRegionDecoder(imageType);
+    fun canUseSmallerThumbnails(loadRequest: LoadRequest, imageType: ImageType): Boolean {
+        return loadRequest is DisplayRequest &&
+                loadRequest.isUseSmallerThumbnails &&
+                formatSupportBitmapRegionDecoder(imageType)
     }
 
-    public float getTargetSizeScale() {
-        return targetSizeScale;
+    override fun toString(): String {
+        return KEY
     }
 
-    /**
-     * 计算 inSampleSize 的时候将 targetSize 稍微放大一点儿，就是乘以这个倍数，默认值是 1.25f
-     *
-     * @param targetSizeScale 将 targetSize 稍微放大一点儿
-     */
-    public void setTargetSizeScale(float targetSizeScale) {
-        this.targetSizeScale = targetSizeScale;
-    }
+    companion object {
+        private const val KEY = "ImageSizeCalculator"
 
-    @NonNull
-    @Override
-    public String toString() {
-        return KEY;
+        @Suppress("SameParameterValue")
+        private fun getWidth(
+            sketchView: SketchView?,
+            checkMaxWidth: Boolean,
+            acceptWrapContent: Boolean,
+            subtractPadding: Boolean
+        ): Int {
+            if (sketchView == null) {
+                return 0
+            }
+            var width = 0
+            val params = sketchView.getLayoutParams()
+            if (params != null) {
+                width = params.width
+                if (subtractPadding && width > 0 && width - sketchView.getPaddingLeft() - sketchView.getPaddingRight() > 0) {
+                    width -= sketchView.getPaddingLeft() + sketchView.getPaddingRight()
+                    return width
+                }
+            }
+            if (width <= 0 && checkMaxWidth) {
+                width = getViewFieldValue(sketchView, "mMaxWidth")
+            }
+            if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                width = -1
+            }
+            return width
+        }
+
+        @Suppress("SameParameterValue")
+        private fun getHeight(
+            sketchView: SketchView?,
+            checkMaxHeight: Boolean,
+            acceptWrapContent: Boolean,
+            subtractPadding: Boolean
+        ): Int {
+            if (sketchView == null) {
+                return 0
+            }
+            var height = 0
+            val params = sketchView.getLayoutParams()
+            if (params != null) {
+                height = params.height
+                if (subtractPadding && height > 0 && height - sketchView.getPaddingTop() - sketchView.getPaddingBottom() > 0) {
+                    height -= sketchView.getPaddingTop() + sketchView.getPaddingBottom()
+                    return height
+                }
+            }
+            if (height <= 0 && checkMaxHeight) {
+                height = getViewFieldValue(sketchView, "mMaxHeight")
+            }
+            if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                height = -1
+            }
+            return height
+        }
+
+        private fun getViewFieldValue(`object`: Any, fieldName: String): Int {
+            var value = 0
+            try {
+                val field = ImageView::class.java.getDeclaredField(fieldName)
+                field.isAccessible = true
+                val fieldValue = field[`object`] as Int
+                if (fieldValue > 0 && fieldValue < Int.MAX_VALUE) {
+                    value = fieldValue
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return value
+        }
     }
 }

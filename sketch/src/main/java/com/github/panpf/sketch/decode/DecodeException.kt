@@ -13,36 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
+import com.github.panpf.sketch.request.ErrorCause
+import java.lang.Exception
 
-import androidx.annotation.NonNull;
+class DecodeException : Exception {
+    var errorCause: ErrorCause
+        private set
 
-import com.github.panpf.sketch.request.ErrorCause;
-
-@SuppressWarnings("WeakerAccess")
-public class DecodeException extends Exception {
-
-    @NonNull
-    private ErrorCause errorCause;
-
-    public DecodeException(@NonNull Throwable cause, @NonNull ErrorCause errorCause) {
-        super(cause);
-        this.errorCause = errorCause;
+    constructor(cause: Throwable, errorCause: ErrorCause) : super(cause) {
+        this.errorCause = errorCause
     }
 
-    public DecodeException(@NonNull String message, @NonNull ErrorCause errorCause) {
-        super(message);
-        this.errorCause = errorCause;
+    constructor(message: String, errorCause: ErrorCause) : super(message) {
+        this.errorCause = errorCause
     }
 
-    public DecodeException(@NonNull String message, @NonNull Throwable cause, @NonNull ErrorCause errorCause) {
-        super(message, cause);
-        this.errorCause = errorCause;
-    }
-
-    @NonNull
-    public ErrorCause getErrorCause() {
-        return errorCause;
+    constructor(message: String, cause: Throwable, errorCause: ErrorCause) : super(message, cause) {
+        this.errorCause = errorCause
     }
 }

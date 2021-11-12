@@ -13,36 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
+import com.github.panpf.sketch.SLog
+import java.text.DecimalFormat
 
-import androidx.annotation.NonNull;
-
-import java.text.DecimalFormat;
-
-import com.github.panpf.sketch.SLog;
-
-public class DecodeTimeAnalyze {
-    private volatile static long decodeCount;
-    private volatile static long useTimeCount;
-    private static DecimalFormat decimalFormat;
-
-    public long decodeStart() {
-        return System.currentTimeMillis();
+class DecodeTimeAnalyze {
+    fun decodeStart(): Long {
+        return System.currentTimeMillis()
     }
 
-    public synchronized void decodeEnd(long startTime, @NonNull String logName, String key) {
-        long useTime = System.currentTimeMillis() - startTime;
-        if ((Long.MAX_VALUE - decodeCount) < 1 || (Long.MAX_VALUE - useTimeCount) < useTime) {
-            decodeCount = 0;
-            useTimeCount = 0;
+    @Synchronized
+    fun decodeEnd(startTime: Long, logName: String, key: String?) {
+        val useTime = System.currentTimeMillis() - startTime
+        if (Long.MAX_VALUE - decodeCount < 1 || Long.MAX_VALUE - useTimeCount < useTime) {
+            decodeCount = 0
+            useTimeCount = 0
         }
-        decodeCount++;
-        useTimeCount += useTime;
-        if (decimalFormat == null) {
-            decimalFormat = new DecimalFormat("#.##");
+        decodeCount++
+        useTimeCount += useTime
+        val decimalFormat = decimalFormat ?: DecimalFormat("#.##").apply {
+            DecodeTimeAnalyze.decimalFormat = this
         }
-        SLog.dmf(logName, "decode use time %dms, average %sms. %s",
-                useTime, decimalFormat.format((double) useTimeCount / decodeCount), key);
+        SLog.dmf(
+            logName, "decode use time %dms, average %sms. %s",
+            useTime, decimalFormat.format(useTimeCount.toDouble() / decodeCount), key!!
+        )
+    }
+
+    companion object {
+        @Volatile
+        private var decodeCount: Long = 0
+
+        @Volatile
+        private var useTimeCount: Long = 0
+        private var decimalFormat: DecimalFormat? = null
     }
 }

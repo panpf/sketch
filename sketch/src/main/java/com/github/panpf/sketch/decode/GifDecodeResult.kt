@@ -13,75 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.drawable.SketchGifDrawable
+import com.github.panpf.sketch.request.ImageFrom
 
-import androidx.annotation.NonNull;
+class GifDecodeResult(
+    val gifDrawable: SketchGifDrawable,
+    override val imageAttrs: ImageAttrs,
+    override val imageFrom: ImageFrom
+) : DecodeResult {
+    override var isBanProcess = false
+    override var isProcessed = false
 
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.request.ImageFrom;
-
-public class GifDecodeResult implements DecodeResult {
-    @NonNull
-    private SketchGifDrawable gifDrawable;
-    @NonNull
-    private ImageAttrs imageAttrs;
-    @NonNull
-    private ImageFrom imageFrom;
-
-    private boolean banProcess;
-    private boolean processed;
-
-    public GifDecodeResult(@NonNull SketchGifDrawable gifDrawable, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
-        this.gifDrawable = gifDrawable;
-        this.imageAttrs = imageAttrs;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @Override
-    public boolean isBanProcess() {
-        return banProcess;
-    }
-
-    @NonNull
-    @Override
-    public GifDecodeResult setBanProcess(boolean banProcess) {
-        this.banProcess = banProcess;
-        return this;
-    }
-
-    @Override
-    public boolean isProcessed() {
-        return processed;
-    }
-
-    @NonNull
-    @Override
-    public GifDecodeResult setProcessed(boolean processed) {
-        this.processed = processed;
-        return this;
-    }
-
-    @NonNull
-    public SketchGifDrawable getGifDrawable() {
-        return gifDrawable;
-    }
-
-    @Override
-    public void recycle(@NonNull BitmapPool bitmapPool) {
-        gifDrawable.recycle();
+    override fun recycle(bitmapPool: BitmapPool) {
+        gifDrawable.recycle()
     }
 }

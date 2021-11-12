@@ -1,21 +1,12 @@
-package com.github.panpf.sketch.decode;
+package com.github.panpf.sketch.decode
 
-import androidx.annotation.NonNull;
+import com.github.panpf.sketch.SketchException
 
-import com.github.panpf.sketch.SketchException;
+class NotFoundGifSoException : SketchException {
+    constructor(cause: UnsatisfiedLinkError) : super(cause) {}
+    constructor(cause: ExceptionInInitializerError) : super(cause) {}
 
-public class NotFoundGifSoException extends SketchException {
-    public NotFoundGifSoException(@NonNull UnsatisfiedLinkError cause) {
-        super(cause);
-    }
-
-    public NotFoundGifSoException(@NonNull ExceptionInInitializerError cause) {
-        super(cause);
-    }
-
-    @NonNull
-    @Override
-    public synchronized Throwable getCause() {
-        return super.getCause();
-    }
+    @get:Synchronized
+    override val cause: Throwable
+        get() = super.cause!!
 }

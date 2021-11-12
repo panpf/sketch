@@ -13,153 +13,124 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-import android.graphics.Bitmap;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.util.concurrent.locks.ReentrantLock;
-
-import com.github.panpf.sketch.cache.DiskCache;
-import com.github.panpf.sketch.datasource.DiskCacheDataSource;
-import com.github.panpf.sketch.request.ImageFrom;
-import com.github.panpf.sketch.request.LoadOptions;
-import com.github.panpf.sketch.request.LoadRequest;
-import com.github.panpf.sketch.util.DiskLruCache;
-import com.github.panpf.sketch.util.SketchUtils;
+import android.graphics.Bitmap
+import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.request.LoadOptions
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.DiskLruCache.EditorChangedException
+import com.github.panpf.sketch.util.DiskLruCache.FileNotExistException
+import com.github.panpf.sketch.util.SketchUtils
+import java.io.BufferedOutputStream
+import java.io.IOException
 
 /**
  * Cache transform results, no need to transform again next time, can speed up the loading speed
  */
-public class TransformCacheManager {
-
-    public boolean canUse(@NonNull LoadOptions loadOptions) {
-        if (!loadOptions.isCacheProcessedImageInDisk()) {
-            return false;
+class TransformCacheManager {
+    fun canUse(loadOptions: LoadOptions): Boolean {
+        if (!loadOptions.isCacheProcessedImageInDisk) {
+            return false
         }
-
-        if (loadOptions.getMaxSize() != null || loadOptions.getResize() != null) {
-            return true;
+        if (loadOptions.maxSize != null || loadOptions.resize != null) {
+            return true
         }
-
-        if (loadOptions.getProcessor() != null) {
-            return true;
+        if (loadOptions.processor != null) {
+            return true
         }
-
-        if (loadOptions.isThumbnailMode() && loadOptions.getResize() != null) {
-            return true;
+        if (loadOptions.isThumbnailMode && loadOptions.resize != null) {
+            return true
         }
-
-        //noinspection RedundantIfStatement
-        if (!loadOptions.isCorrectImageOrientationDisabled()) {
-            return true;
-        }
-
-        return false;
+        return !loadOptions.isCorrectImageOrientationDisabled
     }
 
-    public boolean canUseByInSampleSize(int inSampleSize) {
-        return inSampleSize >= 8;
+    fun canUseByInSampleSize(inSampleSize: Int): Boolean {
+        return inSampleSize >= 8
     }
 
-    public boolean checkDiskCache(@NonNull LoadRequest request) {
-        DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String processedImageDiskCacheKey = request.getTransformCacheKey();
-        String diskCacheKey = request.getDiskCacheKey();
-        if (diskCacheKey.equals(processedImageDiskCacheKey)) {
-            return false;
+    fun checkDiskCache(request: LoadRequest): Boolean {
+        val diskCache = request.configuration.diskCache
+        val processedImageDiskCacheKey = request.transformCacheKey
+        val diskCacheKey = request.diskCacheKey
+        if (diskCacheKey == processedImageDiskCacheKey) {
+            return false
         }
-
-        ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
-        editLock.lock();
-
-        try {
-            return diskCache.exist(processedImageDiskCacheKey);
+        val editLock = diskCache.getEditLock(processedImageDiskCacheKey)
+        editLock.lock()
+        return try {
+            diskCache.exist(processedImageDiskCacheKey)
         } finally {
-            editLock.unlock();
+            editLock.unlock()
         }
     }
 
-    @Nullable
-    public DiskCacheDataSource getDiskCache(@NonNull LoadRequest request) {
-        DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String processedImageDiskCacheKey = request.getTransformCacheKey();
-        String diskCacheKey = request.getDiskCacheKey();
-        if (diskCacheKey.equals(processedImageDiskCacheKey)) {
-            return null;
+    fun getDiskCache(request: LoadRequest): DiskCacheDataSource? {
+        val diskCache = request.configuration.diskCache
+        val processedImageDiskCacheKey = request.transformCacheKey
+        val diskCacheKey = request.diskCacheKey
+        if (diskCacheKey == processedImageDiskCacheKey) {
+            return null
         }
-
-        ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
-        editLock.lock();
-
-        DiskCache.Entry diskCacheEntry;
-        try {
-            diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
+        val editLock = diskCache.getEditLock(processedImageDiskCacheKey)
+        editLock.lock()
+        val diskCacheEntry: DiskCache.Entry? = try {
+            diskCache[processedImageDiskCacheKey]
         } finally {
-            editLock.unlock();
+            editLock.unlock()
         }
-
-        if (diskCacheEntry == null) {
-            return null;
-        }
-
-        return new DiskCacheDataSource(diskCacheEntry, ImageFrom.DISK_CACHE).setFromProcessedCache(true);
+        return if (diskCacheEntry == null) {
+            null
+        } else DiskCacheDataSource(
+            diskCacheEntry,
+            ImageFrom.DISK_CACHE
+        ).setFromProcessedCache(true)
     }
 
-    public void saveToDiskCache(@NonNull LoadRequest request, @NonNull Bitmap bitmap) {
-        DiskCache diskCache = request.getConfiguration().getDiskCache();
-        String processedImageDiskCacheKey = request.getTransformCacheKey();
-        String diskCacheKey = request.getDiskCacheKey();
-        if (diskCacheKey.equals(processedImageDiskCacheKey)) {
-            return;
+    fun saveToDiskCache(request: LoadRequest, bitmap: Bitmap) {
+        val diskCache = request.configuration.diskCache
+        val processedImageDiskCacheKey = request.transformCacheKey
+        val diskCacheKey = request.diskCacheKey
+        if (diskCacheKey == processedImageDiskCacheKey) {
+            return
         }
-
-        ReentrantLock editLock = diskCache.getEditLock(processedImageDiskCacheKey);
-        editLock.lock();
-
+        val editLock = diskCache.getEditLock(processedImageDiskCacheKey)
+        editLock.lock()
         try {
-            DiskCache.Entry diskCacheEntry = diskCache.get(processedImageDiskCacheKey);
-
-            if (diskCacheEntry != null) {
-                diskCacheEntry.delete();
-            }
-
-            DiskCache.Editor diskCacheEditor = diskCache.edit(processedImageDiskCacheKey);
+            val diskCacheEntry = diskCache[processedImageDiskCacheKey]
+            diskCacheEntry?.delete()
+            val diskCacheEditor = diskCache.edit(processedImageDiskCacheKey)
             if (diskCacheEditor != null) {
-                BufferedOutputStream outputStream = null;
+                var outputStream: BufferedOutputStream? = null
                 try {
-                    outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
-                    bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.getConfig()), 100, outputStream);
-                    diskCacheEditor.commit();
-                } catch (DiskLruCache.EditorChangedException e) {
-                    e.printStackTrace();
-                    diskCacheEditor.abort();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    diskCacheEditor.abort();
-                } catch (DiskLruCache.ClosedException e) {
-                    e.printStackTrace();
-                    diskCacheEditor.abort();
-                } catch (DiskLruCache.FileNotExistException e) {
-                    e.printStackTrace();
-                    diskCacheEditor.abort();
+                    outputStream = BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024)
+                    bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.config), 100, outputStream)
+                    diskCacheEditor.commit()
+                } catch (e: EditorChangedException) {
+                    e.printStackTrace()
+                    diskCacheEditor.abort()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    diskCacheEditor.abort()
+                } catch (e: DiskLruCache.ClosedException) {
+                    e.printStackTrace()
+                    diskCacheEditor.abort()
+                } catch (e: FileNotExistException) {
+                    e.printStackTrace()
+                    diskCacheEditor.abort()
                 } finally {
-                    SketchUtils.close(outputStream);
+                    SketchUtils.close(outputStream)
                 }
             }
         } finally {
-            editLock.unlock();
+            editLock.unlock()
         }
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "TransformCache";
+    override fun toString(): String {
+        return "TransformCache"
     }
 }

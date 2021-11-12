@@ -13,38 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.request.LoadRequest;
+import com.github.panpf.sketch.request.LoadRequest
 
 /**
  * 缓存经过处理的图片，方便下次直接读取，加快速度
  */
-public class ProcessedResultCacheProcessor implements ResultProcessor {
-
-    @Override
-    public void process(@NonNull LoadRequest request, @NonNull DecodeResult result) {
-        if (result.isBanProcess()) {
-            return;
+class ProcessedResultCacheProcessor : ResultProcessor {
+    override fun process(request: LoadRequest, result: DecodeResult) {
+        if (result.isBanProcess) {
+            return
         }
-
-        if (!(result instanceof BitmapDecodeResult)) {
-            return;
+        if (result !is BitmapDecodeResult) {
+            return
         }
-
-        TransformCacheManager transformCacheManager = request.getConfiguration().getTransformCacheManager();
-        if (!transformCacheManager.canUse(request.getOptions())) {
-            return;
+        val transformCacheManager = request.configuration.transformCacheManager
+        if (!transformCacheManager.canUse(request.options)) {
+            return
         }
-
-        if (!result.isProcessed()) {
-            return;
+        if (!result.isProcessed) {
+            return
         }
-
-        BitmapDecodeResult bitmapDecodeResult = (BitmapDecodeResult) result;
-        transformCacheManager.saveToDiskCache(request, bitmapDecodeResult.getBitmap());
+        transformCacheManager.saveToDiskCache(request, result.bitmap)
     }
 }

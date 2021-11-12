@@ -191,7 +191,7 @@ class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
             evicted: Boolean,
             key: String,
             oldRefBitmap: SketchRefBitmap,
-            newRefBitmap: SketchRefBitmap
+            newRefBitmap: SketchRefBitmap?
         ) {
             oldRefBitmap.setIsCached("$MODULE:entryRemoved", false)
         }

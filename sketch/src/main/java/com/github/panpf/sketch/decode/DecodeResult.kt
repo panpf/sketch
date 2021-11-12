@@ -13,67 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.request.ImageFrom;
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.request.ImageFrom
 
 /**
  * 解码结果
  */
-public interface DecodeResult {
-
+interface DecodeResult {
     /**
      * 获取图片的属性
      *
-     * @return {@link ImageAttrs}
+     * @return [ImageAttrs]
      */
-    @NonNull
-    ImageAttrs getImageAttrs();
+    val imageAttrs: ImageAttrs
 
     /**
      * 获取图片的来源
      *
-     * @return {@link ImageFrom}
+     * @return [ImageFrom]
      */
-    @NonNull
-    ImageFrom getImageFrom();
+    val imageFrom: ImageFrom
 
     /**
      * 是否禁止对图片进行后期处理
      */
-    boolean isBanProcess();
-
-    /**
-     * 设置是否禁止对图片进行后期处理
-     *
-     * @param banProcess 是否禁止对图片进行后期处理
-     * @return {@link DecodeResult}
-     */
-    @NonNull
-    DecodeResult setBanProcess(boolean banProcess);
+    var isBanProcess: Boolean
 
     /**
      * 是否经过了后期处理
      */
-    boolean isProcessed();
-
-    /**
-     * 设置是否经过了后期处理
-     *
-     * @param processed 否经过了后期处理
-     * @return {@link DecodeResult}
-     */
-    @NonNull
-    DecodeResult setProcessed(boolean processed);
+    var isProcessed: Boolean
 
     /**
      * 回收图片
      *
-     * @param bitmapPool {@link BitmapPool}
+     * @param bitmapPool [BitmapPool]
      */
-    void recycle(@NonNull BitmapPool bitmapPool);
+    fun recycle(bitmapPool: BitmapPool)
 }

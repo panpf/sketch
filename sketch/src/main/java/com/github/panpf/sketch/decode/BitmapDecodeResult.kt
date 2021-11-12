@@ -13,85 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
+import android.graphics.Bitmap
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPool
+import com.github.panpf.sketch.request.ImageFrom
 
-import android.graphics.Bitmap;
+class BitmapDecodeResult internal constructor(
+    override val imageAttrs: ImageAttrs,
+    var bitmap: Bitmap,
+    override val imageFrom: ImageFrom
+) : DecodeResult {
+    override var isBanProcess = false
+    override var isProcessed = false
 
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.cache.BitmapPoolUtils;
-import com.github.panpf.sketch.request.ImageFrom;
-
-public class BitmapDecodeResult implements DecodeResult {
-
-    @NonNull
-    private Bitmap bitmap;
-    @NonNull
-    private ImageAttrs imageAttrs;
-    @NonNull
-    private ImageFrom imageFrom;
-
-    private boolean banProcess;
-    private boolean processed;
-
-    BitmapDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull Bitmap bitmap, @NonNull ImageFrom imageFrom) {
-        this.imageAttrs = imageAttrs;
-        this.bitmap = bitmap;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @Override
-    public boolean isBanProcess() {
-        return banProcess;
-    }
-
-    @NonNull
-    @Override
-    public BitmapDecodeResult setBanProcess(boolean banProcess) {
-        this.banProcess = banProcess;
-        return this;
-    }
-
-    @Override
-    public boolean isProcessed() {
-        return processed;
-    }
-
-    @NonNull
-    @Override
-    public BitmapDecodeResult setProcessed(boolean processed) {
-        this.processed = processed;
-        return this;
-    }
-
-    @Override
-    public void recycle(@NonNull BitmapPool bitmapPool) {
-        BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
-    }
-
-    @NonNull
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(@NonNull Bitmap bitmap) {
-        //noinspection ConstantConditions
-        if (bitmap != null) {
-            this.bitmap = bitmap;
-        }
+    override fun recycle(bitmapPool: BitmapPool) {
+        freeBitmapToPool(bitmap, bitmapPool)
     }
 }

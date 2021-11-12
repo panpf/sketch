@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.decode
 
-package com.github.panpf.sketch.decode;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.request.LoadRequest;
+import com.github.panpf.sketch.request.LoadRequest
 
 /**
  * 解码完成后处理图片
  */
-public interface ResultProcessor {
-
+interface ResultProcessor {
     /**
      * 后期处理
      *
-     * @param request {@link LoadRequest}
-     * @param result  {@link DecodeResult}
+     * @param request [LoadRequest]
+     * @param result  [DecodeResult]
      * @throws ProcessException 后期处理失败了
      */
-    void process(@NonNull LoadRequest request, @NonNull DecodeResult result) throws ProcessException;
+    @Throws(ProcessException::class)
+    fun process(request: LoadRequest, result: DecodeResult)
 }
