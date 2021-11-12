@@ -24,9 +24,10 @@ class LocalVideoItemFactory :
         binding: ListItemMyVideoBinding,
         item: BindingItem<VideoInfo, ListItemMyVideoBinding>
     ) {
-        binding.imageMyVideoItemIcon.options
-            .setLoadingImage(R.drawable.image_loading)
-            .displayer = TransitionImageDisplayer()
+        binding.imageMyVideoItemIcon.options.apply {
+            loadingImage(R.drawable.image_loading)
+            displayer = TransitionImageDisplayer()
+        }
     }
 
     override fun bindItemData(

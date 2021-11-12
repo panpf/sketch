@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
+package com.github.panpf.sketch.request
 
 /**
  * 决定请求的处理深度
  */
-public enum RequestLevel {
+enum class RequestLevel(val level: Int) {
     /**
      * 正常的情况，内存没有就从本地加载，本地还没有就从网络加载，适用于所有类型的图片
      */
@@ -37,25 +34,12 @@ public enum RequestLevel {
      */
     MEMORY(0);
 
-    private int level;
-
-    RequestLevel(int level) {
-        this.level = level;
-    }
-
-    @NonNull
-    public static RequestLevel fromLevel(int level) {
-        level = level % 3;
-        if (level == 0) {
-            return MEMORY;
-        } else if (level == 1) {
-            return LOCAL;
-        } else {
-            return NET;
+    companion object {
+        @JvmStatic
+        fun fromLevel(level: Int): RequestLevel = when (level % 3) {
+            0 -> MEMORY
+            1 -> LOCAL
+            else -> NET
         }
-    }
-
-    public int getLevel() {
-        return level;
     }
 }

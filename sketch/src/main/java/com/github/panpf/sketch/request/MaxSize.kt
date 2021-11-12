@@ -13,58 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.Key;
+import com.github.panpf.sketch.Key
+import java.util.*
 
 /**
  * 用于计算 inSimpleSize 缩小图片
  */
-public class MaxSize implements Key {
-    private int width;
-    private int height;
+data class MaxSize(val width: Int, val height: Int) : Key {
 
-    public MaxSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
+    override val key: String
+        get() = toString()
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof MaxSize) {
-            MaxSize other = (MaxSize) obj;
-            return width == other.width && height == other.height;
-        }
-        return false;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "MaxSize(%dx%d)", width, height);
-    }
-
-    @Override
-    public String getKey() {
-        return toString();
+    override fun toString(): String {
+        return String.format(Locale.US, "MaxSize(%dx%d)", width, height)
     }
 }

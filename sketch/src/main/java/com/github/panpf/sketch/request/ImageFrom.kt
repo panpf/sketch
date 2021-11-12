@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.panpf.sketch.request;
+package com.github.panpf.sketch.request
 
 /**
  * 图片来源
  */
-public enum ImageFrom {
+enum class ImageFrom {
     /**
      * 网络
      */
@@ -43,5 +42,5 @@ public enum ImageFrom {
     /**
      * 内存
      */
-    MEMORY,
+    MEMORY
 }

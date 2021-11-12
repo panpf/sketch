@@ -1,4 +1,3 @@
-package com.github.panpf.sketch.request;
+package com.github.panpf.sketch.request
 
-public class RunDownoadResult implements DispatchResult {
-}
+class RunDownloadResult : DispatchResult

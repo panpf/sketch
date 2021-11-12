@@ -145,7 +145,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper maxSize(int maxWidth, int maxHeight) {
-        displayOptions.setMaxSize(maxWidth, maxHeight);
+        displayOptions.maxSize(maxWidth, maxHeight);
         return this;
     }
 
@@ -163,7 +163,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper resize(int reWidth, int reHeight) {
-        displayOptions.setResize(reWidth, reHeight);
+        displayOptions.resize(reWidth, reHeight);
         return this;
     }
 
@@ -172,7 +172,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
-        displayOptions.setResize(reWidth, reHeight, scaleType);
+        displayOptions.resize(reWidth, reHeight, scaleType);
         return this;
     }
 
@@ -263,7 +263,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper loadingImage(@DrawableRes int drawableResId) {
-        displayOptions.setLoadingImage(drawableResId);
+        displayOptions.loadingImage(drawableResId);
         return this;
     }
 
@@ -281,7 +281,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper errorImage(@DrawableRes int drawableResId) {
-        displayOptions.setErrorImage(drawableResId);
+        displayOptions.errorImage(drawableResId);
         return this;
     }
 
@@ -299,7 +299,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper pauseDownloadImage(@DrawableRes int drawableResId) {
-        displayOptions.setPauseDownloadImage(drawableResId);
+        displayOptions.pauseDownloadImage(drawableResId);
         return this;
     }
 
@@ -326,7 +326,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper shapeSize(int shapeWidth, int shapeHeight) {
-        displayOptions.setShapeSize(shapeWidth, shapeHeight);
+        displayOptions.shapeSize(shapeWidth, shapeHeight);
         return this;
     }
 
@@ -335,7 +335,7 @@ public class DisplayHelper {
      */
     @NonNull
     public DisplayHelper shapeSize(int shapeWidth, int shapeHeight, ScaleType scaleType) {
-        displayOptions.setShapeSize(shapeWidth, shapeHeight, scaleType);
+        displayOptions.shapeSize(shapeWidth, shapeHeight, scaleType);
         return this;
     }
 
@@ -454,7 +454,7 @@ public class DisplayHelper {
 
         // Replace ShapeSize.ByViewFixedSizeShapeSize
         ShapeSize shapeSize = displayOptions.getShapeSize();
-        if (shapeSize instanceof ShapeSize.ByViewFixedSizeShapeSize) {
+        if (shapeSize == ShapeSize.getBY_VIEW_FIXED_SIZE()) {
             if (fixedSize != null) {
                 shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), scaleType);
                 displayOptions.setShapeSize(shapeSize);
@@ -477,7 +477,7 @@ public class DisplayHelper {
 
         // Replace Resize.ByViewFixedSizeShapeSize
         Resize resize = displayOptions.getResize();
-        if (resize instanceof Resize.ByViewFixedSizeResize) {
+        if (resize == Resize.getBY_VIEW_FIXED_SIZE() || resize == Resize.getBY_VIEW_FIXED_SIZE_EXACTLY_SAME()) {
             if (fixedSize != null) {
                 resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), scaleType, resize.getMode());
                 displayOptions.setResize(resize);
@@ -525,7 +525,7 @@ public class DisplayHelper {
         if (displayOptions.getDisplayer() instanceof TransitionImageDisplayer
                 && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
             if (fixedSize != null) {
-                displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
+                displayOptions.shapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
                 ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
                 String widthName = SketchUtils.viewLayoutFormatted(layoutParams != null ? layoutParams.width : -1);

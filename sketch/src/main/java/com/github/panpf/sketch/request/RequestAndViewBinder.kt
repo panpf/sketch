@@ -13,51 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.lang.ref.WeakReference;
-
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.util.SketchUtils;
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.util.SketchUtils.Companion.findDisplayRequest
+import java.lang.ref.WeakReference
 
 /**
  * Request与ImageView的关系绑定器
  */
-@SuppressWarnings("WeakerAccess")
-public class RequestAndViewBinder {
-    @Nullable
-    private DisplayRequest displayRequest;
-    @NonNull
-    private WeakReference<SketchView> imageViewReference;
+class RequestAndViewBinder(imageView: SketchView) {
 
-    public RequestAndViewBinder(@NonNull SketchView imageView) {
-        this.imageViewReference = new WeakReference<>(imageView);
+    private var displayRequest: DisplayRequest? = null
+    private val imageViewReference: WeakReference<SketchView> = WeakReference(imageView)
+
+    fun setDisplayRequest(displayRequest: DisplayRequest?) {
+        this.displayRequest = displayRequest
     }
 
-    public void setDisplayRequest(@Nullable DisplayRequest displayRequest) {
-        this.displayRequest = displayRequest;
-    }
-
-    @Nullable
-    public SketchView getView() {
-        final SketchView sketchView = imageViewReference.get();
-        if (displayRequest != null) {
-            DisplayRequest holderDisplayRequest = SketchUtils.findDisplayRequest(sketchView);
-            if (holderDisplayRequest != null && holderDisplayRequest == displayRequest) {
-                return sketchView;
+    val view: SketchView?
+        get() {
+            val sketchView = imageViewReference.get()
+            return if (displayRequest != null) {
+                val holderDisplayRequest = findDisplayRequest(sketchView)
+                if (holderDisplayRequest != null && holderDisplayRequest === displayRequest) {
+                    sketchView
+                } else {
+                    null
+                }
             } else {
-                return null;
+                sketchView
             }
-        } else {
-            return sketchView;
         }
-    }
 
-    public boolean isBroken() {
-        return getView() == null;
-    }
+    val isBroken: Boolean
+        get() = view == null
+
 }

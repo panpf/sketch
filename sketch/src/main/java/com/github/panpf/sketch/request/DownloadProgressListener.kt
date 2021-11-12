@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.panpf.sketch.request;
+package com.github.panpf.sketch.request
 
 /**
  * 下载进度监听器
  */
-public interface DownloadProgressListener {
-
+fun interface DownloadProgressListener {
     /**
      * 更新下载进度
      *
@@ -28,5 +26,5 @@ public interface DownloadProgressListener {
      * @param completedLength 已完成长度
      */
     // TODO: 2019-05-02 这里用的是 int 改成 long，涉及到的所有代码都要改
-    void onUpdateDownloadProgress(int totalLength, int completedLength);
+    fun onUpdateDownloadProgress(totalLength: Int, completedLength: Int)
 }

@@ -107,7 +107,7 @@ public class LoadHelper {
      */
     @NonNull
     public LoadHelper maxSize(int maxWidth, int maxHeight) {
-        loadOptions.setMaxSize(maxWidth, maxHeight);
+        loadOptions.maxSize(maxWidth, maxHeight);
         return this;
     }
 
@@ -125,7 +125,7 @@ public class LoadHelper {
      */
     @NonNull
     public LoadHelper resize(int reWidth, int reHeight) {
-        loadOptions.setResize(reWidth, reHeight);
+        loadOptions.resize(reWidth, reHeight);
         return this;
     }
 
@@ -134,7 +134,7 @@ public class LoadHelper {
      */
     @NonNull
     public LoadHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
-        loadOptions.setResize(reWidth, reHeight, scaleType);
+        loadOptions.resize(reWidth, reHeight, scaleType);
         return this;
     }
 
@@ -267,7 +267,7 @@ public class LoadHelper {
 
         // LoadRequest can not be used Resize.ByViewFixedSizeResize
         Resize resize = loadOptions.getResize();
-        if (resize instanceof Resize.ByViewFixedSizeResize) {
+        if (resize == Resize.getBY_VIEW_FIXED_SIZE() || resize == Resize.getBY_VIEW_FIXED_SIZE_EXACTLY_SAME()) {
             resize = null;
             loadOptions.setResize(null);
         }

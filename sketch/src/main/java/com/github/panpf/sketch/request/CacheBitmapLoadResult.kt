@@ -13,42 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import com.github.panpf.sketch.decode.ImageAttrs
+import com.github.panpf.sketch.drawable.SketchRefBitmap
 
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
-import com.github.panpf.sketch.drawable.SketchRefBitmap;
-
-public class CacheBitmapLoadResult implements LoadResult{
-    @NonNull
-    private SketchRefBitmap refBitmap;
-    @NonNull
-    private ImageFrom imageFrom;
-    @NonNull
-    private ImageAttrs imageAttrs;
-
-    public CacheBitmapLoadResult(@NonNull SketchRefBitmap refBitmap, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
-        this.refBitmap = refBitmap;
-        this.imageAttrs = imageAttrs;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    public SketchRefBitmap getRefBitmap() {
-        return refBitmap;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
-    }
-}
+class CacheBitmapLoadResult(
+    val refBitmap: SketchRefBitmap,
+    override val imageAttrs: ImageAttrs,
+    override val imageFrom: ImageFrom
+) : LoadResult

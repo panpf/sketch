@@ -13,43 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import android.graphics.Bitmap
+import com.github.panpf.sketch.decode.ImageAttrs
 
-import android.graphics.Bitmap;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
-
-public class BitmapLoadResult implements LoadResult{
-    @NonNull
-    private Bitmap bitmap;
-    @NonNull
-    private ImageFrom imageFrom;
-    @NonNull
-    private ImageAttrs imageAttrs;
-
-    public BitmapLoadResult(@NonNull Bitmap bitmap, @NonNull ImageAttrs imageAttrs, @NonNull ImageFrom imageFrom) {
-        this.bitmap = bitmap;
-        this.imageAttrs = imageAttrs;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @NonNull
-    @Override
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
-    }
-}
+class BitmapLoadResult(
+    val bitmap: Bitmap,
+    override val imageAttrs: ImageAttrs,
+    override val imageFrom: ImageFrom
+) : LoadResult

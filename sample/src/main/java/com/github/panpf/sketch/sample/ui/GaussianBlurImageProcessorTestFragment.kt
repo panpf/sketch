@@ -28,7 +28,7 @@ class GaussianBlurImageProcessorTestFragment : BindingFragment<FragmentGaussianB
         binding.gaussianBlurImage.apply {
             options.apply {
                 val metrics = resources.displayMetrics
-                setMaxSize(metrics.widthPixels / 4, metrics.heightPixels / 4)
+                maxSize(metrics.widthPixels / 4, metrics.heightPixels / 4)
                 displayer = TransitionImageDisplayer()
             }
         }

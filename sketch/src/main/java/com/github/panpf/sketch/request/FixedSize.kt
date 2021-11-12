@@ -13,51 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
-
-import java.util.Locale;
+import java.util.*
 
 /**
- * {@link android.widget.ImageView} 的固定尺寸，只能是通过 layout_width 和 layout_height 设置的固定值才能算是固定尺寸
+ * [android.widget.ImageView] 的固定尺寸，只能是通过 layout_width 和 layout_height 设置的固定值才能算是固定尺寸
  */
-public class FixedSize {
-    private int width;
-    private int height;
+data class FixedSize(val width: Int, val height: Int) {
 
-    public FixedSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof FixedSize) {
-            FixedSize other = (FixedSize) obj;
-            return width == other.width && height == other.height;
-        }
-        return false;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "FixedSize(%dx%d)", width, height);
+    override fun toString(): String {
+        return String.format(Locale.US, "FixedSize(%dx%d)", width, height)
     }
 }

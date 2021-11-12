@@ -13,30 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
-
-public class BytesDownloadResult implements DownloadResult{
-    @NonNull
-    private byte[] imageData;
-    @NonNull
-    private ImageFrom imageFrom;
-
-    public BytesDownloadResult(@NonNull byte[] imageData, @NonNull ImageFrom imageFrom) {
-        this.imageData = imageData;
-        this.imageFrom = imageFrom;
-    }
-
-    @NonNull
-    public byte[] getImageData() {
-        return imageData;
-    }
-
-    @NonNull
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-}
+class BytesDownloadResult(
+    val imageData: ByteArray,
+    override val imageFrom: ImageFrom
+) : DownloadResult

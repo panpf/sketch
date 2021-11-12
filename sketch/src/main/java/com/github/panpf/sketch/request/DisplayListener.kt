@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.decode.ImageAttrs
 
 /**
  * 显示监听器，所有的方法都会在主线中执行，所以不必考虑异步线程中刷新 UI 的问题
  */
-public interface DisplayListener extends Listener {
+// todo 提供 SimpleListener
+interface DisplayListener : Listener {
     /**
      * 开始转入异步线程加载图片
      */
-    @Override
-    void onStarted();
-
-    void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs);
-
-    // todo 提供 SimpleListener
+    override fun onStarted()
+    fun onCompleted(
+        drawable: Drawable,
+        imageFrom: ImageFrom,
+        imageAttrs: ImageAttrs
+    )
 }

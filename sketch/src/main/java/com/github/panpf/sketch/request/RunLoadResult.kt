@@ -1,4 +1,3 @@
-package com.github.panpf.sketch.request;
+package com.github.panpf.sketch.request
 
-public class RunLoadResult implements DispatchResult {
-}
+class RunLoadResult : DispatchResult

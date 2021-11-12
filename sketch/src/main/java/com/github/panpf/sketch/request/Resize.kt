@@ -13,162 +13,85 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.Key;
+import android.widget.ImageView
+import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.Key
+import com.github.panpf.sketch.request.Resize.Mode
+import java.util.*
 
 /**
- * 将图片加载到内存中之后根据 {@link Resize} 进行调整尺寸
- * <p>
- * 修正的原则就是最终返回的图片的比例一定是跟 {@link Resize} 一样的，但尺寸小于等于 {@link Resize} ，如果需要必须同 {@link Resize} 一致可以设置 {@link Mode#ASPECT_RATIO_SAME}
+ * 将图片加载到内存中之后根据 [Resize] 进行调整尺寸
+ *
+ *
+ * 修正的原则就是最终返回的图片的比例一定是跟 [Resize] 一样的，但尺寸小于等于 [Resize] ，如果需要必须同 [Resize] 一致可以设置 [Mode.ASPECT_RATIO_SAME]
  */
-public class Resize implements Key {
+data class Resize(
+    var width: Int,
+    var height: Int,
+    var scaleType: ScaleType? = null,
+    var mode: Mode = Mode.ASPECT_RATIO_SAME,
+) : Key {
 
-    private int width;
-    private int height;
-    @NonNull
-    private Mode mode = Mode.ASPECT_RATIO_SAME;
-    @Nullable
-    private ImageView.ScaleType scaleType;
+    constructor(sourceResize: Resize) : this(
+        width = sourceResize.width,
+        height = sourceResize.height,
+        mode = sourceResize.mode,
+        scaleType = sourceResize.scaleType,
+    )
 
-    public Resize(int width, int height, @Nullable ImageView.ScaleType scaleType, @Nullable Mode mode) {
-        this.width = width;
-        this.height = height;
-        this.scaleType = scaleType;
-        if (mode != null) {
-            this.mode = mode;
-        }
+    constructor(width: Int, height: Int) : this(width, height, null, Mode.ASPECT_RATIO_SAME)
+
+    constructor(width: Int, height: Int, scaleType: ScaleType) : this(width, height, scaleType, Mode.ASPECT_RATIO_SAME)
+
+    override val key: String
+        get() = toString()
+
+    override fun toString(): String {
+        return String.format(
+            Locale.US,
+            "Resize(%dx%d-%s-%s)",
+            width,
+            height,
+            if (scaleType != null) scaleType!!.name else "null",
+            mode.name
+        )
     }
 
-    public Resize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
-        this.width = width;
-        this.height = height;
-        this.scaleType = scaleType;
-    }
-
-    public Resize(int width, int height, @Nullable Mode mode) {
-        this.width = width;
-        this.height = height;
-        if (mode != null) {
-            this.mode = mode;
-        }
-    }
-
-    public Resize(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
-    public Resize(@NonNull Resize sourceResize) {
-        this.width = sourceResize.width;
-        this.height = sourceResize.height;
-        this.scaleType = sourceResize.scaleType;
-        this.mode = sourceResize.mode;
-    }
-
-    private Resize() {
-    }
-
-    /**
-     * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
-     */
-    public static Resize byViewFixedSize(@NonNull Mode mode) {
-        if (mode == Mode.EXACTLY_SAME) {
-            return ByViewFixedSizeResize.INSTANCE_EXACTLY_SAME;
-        } else {
-            return ByViewFixedSizeResize.INSTANCE;
-        }
-    }
-
-    /**
-     * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
-     */
-    @NonNull
-    public static Resize byViewFixedSize() {
-        return ByViewFixedSizeResize.INSTANCE;
-    }
-
-    @Nullable
-    public ImageView.ScaleType getScaleType() {
-        return scaleType;
-    }
-
-    void setScaleType(@Nullable ImageView.ScaleType scaleType) {
-        this.scaleType = scaleType;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof Resize) {
-            Resize other = (Resize) obj;
-            return width == other.width && height == other.height && scaleType == other.scaleType;
-        }
-        return false;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "Resize(%dx%d-%s-%s)", width, height, scaleType != null ? scaleType.name() : "null", mode.name());
-    }
-
-    @NonNull
-    public Mode getMode() {
-        return mode;
-    }
-
-    @Nullable
-    @Override
-    public String getKey() {
-        return toString();
-    }
-
-    public enum Mode {
+    enum class Mode {
         /**
-         * 新图片的尺寸不会比 {@link Resize} 大，但宽高比一定会一样
+         * 新图片的尺寸不会比 [Resize] 大，但宽高比一定会一样
          */
         ASPECT_RATIO_SAME,
 
         /**
-         * 即使原图尺寸比 {@link Resize} 小，也会得到一个跟 {@link Resize} 尺寸一样的 {@link android.graphics.Bitmap}
+         * 即使原图尺寸比 [Resize] 小，也会得到一个跟 [Resize] 尺寸一样的 [android.graphics.Bitmap]
          */
-        EXACTLY_SAME,
+        EXACTLY_SAME
     }
 
-    /**
-     * 使用 {@link ImageView} 的固定尺寸作为 {@link Resize}
-     */
-    static class ByViewFixedSizeResize extends Resize {
-        static ByViewFixedSizeResize INSTANCE = new ByViewFixedSizeResize();
-        static ByViewFixedSizeResize INSTANCE_EXACTLY_SAME = new ByViewFixedSizeResize(Mode.EXACTLY_SAME);
+    companion object {
+        @JvmStatic
+        val BY_VIEW_FIXED_SIZE = Resize(0, 0)
 
-        private ByViewFixedSizeResize(@NonNull Mode mode) {
-            super(0, 0, null, mode);
+        @JvmStatic
+        val BY_VIEW_FIXED_SIZE_EXACTLY_SAME = Resize(0, 0, null, Mode.EXACTLY_SAME)
+
+        /**
+         * 使用 [ImageView] 的固定尺寸作为 [Resize]
+         */
+        @JvmStatic
+        fun byViewFixedSize(mode: Mode): Resize = if (mode == Mode.EXACTLY_SAME) {
+            BY_VIEW_FIXED_SIZE_EXACTLY_SAME
+        } else {
+            BY_VIEW_FIXED_SIZE
         }
 
-        private ByViewFixedSizeResize() {
-        }
+        /**
+         * 使用 [ImageView] 的固定尺寸作为 [Resize]
+         */
+        @JvmStatic
+        fun byViewFixedSize(): Resize = BY_VIEW_FIXED_SIZE
     }
 }

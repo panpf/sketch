@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
-
-public interface DownloadResult {
-
-    @NonNull
-    ImageFrom getImageFrom();
+interface DownloadResult {
+    val imageFrom: ImageFrom
 }

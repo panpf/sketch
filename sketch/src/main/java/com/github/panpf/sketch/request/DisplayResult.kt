@@ -13,42 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.decode.ImageAttrs
 
-import android.graphics.drawable.Drawable;
-
-import androidx.annotation.NonNull;
-
-import com.github.panpf.sketch.decode.ImageAttrs;
-
-@SuppressWarnings("WeakerAccess")
-public class DisplayResult {
-    @NonNull
-    private Drawable drawable;
-    @NonNull
-    private ImageAttrs imageAttrs;
-    @NonNull
-    private ImageFrom imageFrom;
-
-    public DisplayResult(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
-        this.drawable = drawable;
-        this.imageFrom = imageFrom;
-        this.imageAttrs = imageAttrs;
-    }
-
-    @NonNull
-    public Drawable getDrawable() {
-        return drawable;
-    }
-
-    @NonNull
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @NonNull
-    public ImageAttrs getImageAttrs() {
-        return imageAttrs;
-    }
-}
+class DisplayResult(
+    val drawable: Drawable,
+    val imageFrom: ImageFrom,
+    val imageAttrs: ImageAttrs
+)

@@ -13,95 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Locale;
-
-import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable;
+import android.widget.ImageView
+import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable
+import java.util.*
 
 /**
- * 用来搭配 {@link SketchShapeBitmapDrawable} 在绘制时修改图片的尺寸，用来替代大多数情况下对 {@link Resize} 的依赖
- * <p>
- * 当多张图片的 inSampleSize 一样，那么读到内存里的 {@link android.graphics.Bitmap} 尺寸就一样，但是因为 {@link Resize} 不一样，导致会产生多个差别很小的 {@link android.graphics.Bitmap}，这样就降低了内存缓存利用率
- * <p>
- * 当使用 {@link ShapeSize} 时，就可以使用同一个 {@link android.graphics.Bitmap} 在绘制时显示出不同的尺寸，避免了产生多个差别很小的 {@link android.graphics.Bitmap}，提高了内存缓存利用率
+ * 用来搭配 [SketchShapeBitmapDrawable] 在绘制时修改图片的尺寸，用来替代大多数情况下对 [Resize] 的依赖
+ *
+ * 当多张图片的 inSampleSize 一样，那么读到内存里的 [android.graphics.Bitmap] 尺寸就一样，但是因为 [Resize] 不一样，导致会产生多个差别很小的 [android.graphics.Bitmap]，这样就降低了内存缓存利用率
+ *
+ * 当使用 [ShapeSize] 时，就可以使用同一个 [android.graphics.Bitmap] 在绘制时显示出不同的尺寸，避免了产生多个差别很小的 [android.graphics.Bitmap]，提高了内存缓存利用率
  */
-public class ShapeSize {
-    private int width;
-    private int height;
-    @Nullable
-    private ImageView.ScaleType scaleType;
+data class ShapeSize(
+    val width: Int,
+    val height: Int,
+    var scaleType: ScaleType? = null
+) {
 
-    public ShapeSize(int width, int height) {
-        this.width = width;
-        this.height = height;
+    constructor(width: Int, height: Int) : this(width, height, null)
+
+    override fun toString(): String {
+        return String.format(Locale.US, "ShapeSize(%dx%d)", width, height)
     }
 
-    public ShapeSize(int width, int height, @Nullable ImageView.ScaleType scaleType) {
-        this.width = width;
-        this.height = height;
-        this.scaleType = scaleType;
-    }
+    companion object {
+        /**
+         * 使用 [ImageView] 的固定尺寸作为 [ShapeSize]
+         */
+        @JvmStatic
+        val BY_VIEW_FIXED_SIZE = ShapeSize(0, 0)
 
-    private ShapeSize() {
-    }
-
-    /**
-     * 使用 {@link ImageView} 的固定尺寸作为 {@link ShapeSize}
-     */
-    @NonNull
-    public static ShapeSize byViewFixedSize() {
-        return ByViewFixedSizeShapeSize.INSTANCE;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    @Nullable
-    public ImageView.ScaleType getScaleType() {
-        return scaleType;
-    }
-
-    void setScaleType(@Nullable ImageView.ScaleType scaleType) {
-        this.scaleType = scaleType;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof ShapeSize) {
-            ShapeSize other = (ShapeSize) obj;
-            return width == other.width && height == other.height;
-        }
-        return false;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "ShapeSize(%dx%d)", width, height);
-    }
-
-    /**
-     * 使用 {@link ImageView} 的固定尺寸作为 {@link ShapeSize}
-     */
-    static class ByViewFixedSizeShapeSize extends ShapeSize {
-        static final ByViewFixedSizeShapeSize INSTANCE = new ByViewFixedSizeShapeSize();
+        @JvmStatic
+        fun byViewFixedSize() = BY_VIEW_FIXED_SIZE
     }
 }

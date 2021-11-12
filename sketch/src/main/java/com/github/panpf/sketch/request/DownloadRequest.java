@@ -116,7 +116,7 @@ public class DownloadRequest extends BaseRequest {
         if (SLog.isLoggable(SLog.DEBUG)) {
             SLog.dmf(getLogName(), "Dispatch. Download. %s. %s", getThreadName(), getKey());
         }
-        return new RunDownoadResult();
+        return new RunDownloadResult();
     }
 
     @Nullable

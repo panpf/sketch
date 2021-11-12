@@ -189,12 +189,12 @@ public abstract class BaseRequest implements Runnable {
             setStatus(Status.START_DISPATCH);
             DispatchResult dispatchResult = runDispatch();
             if (dispatchResult instanceof DownloadSuccessResult) {
-                DownloadResult downloadResult = ((DownloadSuccessResult) dispatchResult).result;
+                DownloadResult downloadResult = ((DownloadSuccessResult) dispatchResult).getResult();
                 onRunDownloadFinished(downloadResult);
                 if (this instanceof DownloadRequest) {
                     resultShareManager.unregisterDownloadShareProvider((DownloadRequest) this);
                 }
-            } else if (dispatchResult instanceof RunDownoadResult) {
+            } else if (dispatchResult instanceof RunDownloadResult) {
                 submitDownload();
             } else if (dispatchResult instanceof RunLoadResult) {
                 submitLoad();

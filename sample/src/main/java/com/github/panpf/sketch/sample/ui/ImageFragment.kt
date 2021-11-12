@@ -119,7 +119,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
             } else {
                 options.apply {
                     displayer = FadeInImageDisplayer()
-                    setMaxSize(600, 600)
+                    maxSize(600, 600)
                 }
 
                 // Follow Matrix changes to refresh the display area

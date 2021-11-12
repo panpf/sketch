@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
-
-import androidx.annotation.NonNull;
-
-public interface LoadListener extends Listener {
+// todo 提供 SimpleListener
+interface LoadListener : Listener {
     /**
      * 开始转入异步线程加载图片
      */
-    @Override
-    void onStarted();
+    override fun onStarted()
 
-    void onCompleted(@NonNull LoadResult result);
-
-    // todo 提供 SimpleListener
+    fun onCompleted(result: LoadResult)
 }
