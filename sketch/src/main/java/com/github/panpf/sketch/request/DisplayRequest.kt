@@ -13,323 +13,332 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.SLog.Companion.dmf
+import com.github.panpf.sketch.SLog.Companion.emf
+import com.github.panpf.sketch.SLog.Companion.isLoggable
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.drawable.*
+import com.github.panpf.sketch.uri.UriModel
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.List;
-
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.cache.MemoryCache;
-import com.github.panpf.sketch.display.ImageDisplayer;
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable;
-import com.github.panpf.sketch.drawable.SketchDrawable;
-import com.github.panpf.sketch.drawable.SketchGifDrawable;
-import com.github.panpf.sketch.drawable.SketchRefBitmap;
-import com.github.panpf.sketch.drawable.SketchRefDrawable;
-import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable;
-import com.github.panpf.sketch.state.StateImage;
-import com.github.panpf.sketch.uri.UriModel;
-
-@SuppressWarnings("WeakerAccess")
-public class DisplayRequest extends LoadRequest {
-
-    @Nullable
-    private DisplayListener displayListener;
-    private boolean useSmallerThumbnails;
-
-    @NonNull
-    private RequestAndViewBinder requestAndViewBinder;
-    @Nullable
-    private DisplayResult displayResult;
-    @Nullable
-    private List<DisplayRequest> waitingDisplayShareRequests;
-
-    public DisplayRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel,
-                          @NonNull String key, @NonNull DisplayOptions displayOptions,
-                          boolean useSmallerThumbnails, @NonNull RequestAndViewBinder requestAndViewBinder,
-                          @Nullable DisplayListener displayListener,
-                          @Nullable DownloadProgressListener downloadProgressListener) {
-        super(sketch, uri, uriModel, key, displayOptions, null, downloadProgressListener, "DisplayRequest");
-        this.useSmallerThumbnails = useSmallerThumbnails;
-        this.requestAndViewBinder = requestAndViewBinder;
-        this.displayListener = displayListener;
-        this.requestAndViewBinder.setDisplayRequest(this);
-    }
-
-    @NonNull
-    @Override
-    public DisplayOptions getOptions() {
-        return (DisplayOptions) super.getOptions();
-    }
-
-    @NonNull
-    public String getMemoryCacheKey() {
-        return getKey();
-    }
-
-    public boolean isUseSmallerThumbnails() {
-        return useSmallerThumbnails;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        if (super.isCanceled()) {
-            return true;
-        }
-
-        if (requestAndViewBinder.isBroken()) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "The request and the connection to the view are interrupted. %s. %s", getThreadName(), getKey());
+class DisplayRequest(
+    sketch: Sketch,
+    uri: String,
+    uriModel: UriModel,
+    key: String,
+    displayOptions: DisplayOptions,
+    val isUseSmallerThumbnails: Boolean,
+    private val requestAndViewBinder: RequestAndViewBinder,
+    private val displayListener: DisplayListener?,
+    downloadProgressListener: DownloadProgressListener?
+) : LoadRequest(
+    sketch,
+    uri,
+    uriModel,
+    key,
+    displayOptions,
+    null,
+    downloadProgressListener,
+    "DisplayRequest"
+) {
+    private var displayResult: DisplayResult? = null
+    var waitingDisplayShareRequests: MutableList<DisplayRequest>? = null
+    override val options: DisplayOptions
+        get() = super.options as DisplayOptions
+    val memoryCacheKey: String
+        get() = key
+    override val isCanceled: Boolean
+        get() {
+            if (super.isCanceled) {
+                return true
             }
-            doCancel(CancelCause.BIND_DISCONNECT);
-            return true;
+            if (requestAndViewBinder.isBroken) {
+                if (isLoggable(SLog.DEBUG)) {
+                    dmf(
+                        logName,
+                        "The request and the connection to the view are interrupted. %s. %s",
+                        threadName,
+                        key
+                    )
+                }
+                doCancel(CancelCause.BIND_DISCONNECT)
+                return true
+            }
+            return false
         }
 
-        return false;
-    }
-
-    @Override
-    protected void doError(@NonNull ErrorCause errorCause) {
-        if (displayListener != null || getOptions().getErrorImage() != null) {
-            setErrorCause(errorCause);
-            postToMainRunError();
+    override fun doError(errorCause: ErrorCause) {
+        if (displayListener != null || options.errorImage != null) {
+            setErrorCause(errorCause)
+            postToMainRunError()
         } else {
-            super.doError(errorCause);
+            super.doError(errorCause)
         }
     }
 
-    @Override
-    protected void doCancel(@NonNull CancelCause cancelCause) {
-        super.doCancel(cancelCause);
-
+    override fun doCancel(cancelCause: CancelCause) {
+        super.doCancel(cancelCause)
         if (displayListener != null) {
-            postToMainRunCanceled();
+            postToMainRunCanceled()
         }
     }
 
-    @Override
-    protected void postToMainRunError() {
-        setStatus(Status.WAIT_DISPLAY);
-        super.postToMainRunError();
+    override fun postToMainRunError() {
+        setStatus(Status.WAIT_DISPLAY)
+        super.postToMainRunError()
     }
 
-    @Override
-    protected void postRunCompleted() {
-        setStatus(Status.WAIT_DISPLAY);
-        super.postRunCompleted();
+    override fun postRunCompleted() {
+        setStatus(Status.WAIT_DISPLAY)
+        super.postRunCompleted()
     }
 
-    @Nullable
-    @Override
-    LoadResult runLoad() {
-        if (isCanceled()) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "Request end before decode. %s. %s", getThreadName(), getKey());
+    override fun runLoad(): LoadResult? {
+        if (isCanceled) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(logName, "Request end before decode. %s. %s", threadName, key)
             }
-            return null;
+            return null
         }
 
         // Check memory cache
-        DisplayOptions displayOptions = getOptions();
-        if (!displayOptions.isCacheInDiskDisabled()) {
-            setStatus(Status.CHECK_MEMORY_CACHE);
-            MemoryCache memoryCache = getConfiguration().getMemoryCache();
-            SketchRefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
+        val displayOptions = options
+        if (!displayOptions.isCacheInDiskDisabled) {
+            setStatus(Status.CHECK_MEMORY_CACHE)
+            val memoryCache = configuration.memoryCache
+            val cachedRefBitmap = memoryCache[memoryCacheKey]
             if (cachedRefBitmap != null) {
                 // 当 isDecodeGifImage 为 true 时是要播放 gif 的，而内存缓存里的 gif 图都是第一帧静态图片，所以不能用
-                if (!(getOptions().isDecodeGifImage() && "image/gif".equalsIgnoreCase(cachedRefBitmap.getAttrs().getMimeType()))) {
-                    if (!cachedRefBitmap.isRecycled()) {
-                        if (SLog.isLoggable(SLog.DEBUG)) {
-                            SLog.dmf(getLogName(), "From memory get drawable. bitmap=%s. %s. %s",
-                                    cachedRefBitmap.getInfo(), getThreadName(), getKey());
+                if (!(options.isDecodeGifImage && "image/gif".equals(
+                        cachedRefBitmap.attrs.mimeType,
+                        ignoreCase = true
+                    ))
+                ) {
+                    if (!cachedRefBitmap.isRecycled) {
+                        if (isLoggable(SLog.DEBUG)) {
+                            dmf(
+                                logName, "From memory get drawable. bitmap=%s. %s. %s",
+                                cachedRefBitmap.info, threadName, key
+                            )
                         }
-                        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", getLogName()), true); // 立马标记等待使用，防止被回收
-                        return new CacheBitmapLoadResult(cachedRefBitmap, cachedRefBitmap.getAttrs(), ImageFrom.MEMORY_CACHE);
+                        cachedRefBitmap.setIsWaitingUse(
+                            String.format(
+                                "%s:waitingUse:fromMemory",
+                                logName
+                            ), true
+                        ) // 立马标记等待使用，防止被回收
+                        return CacheBitmapLoadResult(
+                            cachedRefBitmap,
+                            cachedRefBitmap.attrs,
+                            ImageFrom.MEMORY_CACHE
+                        )
                     } else {
-                        memoryCache.remove(getMemoryCacheKey());
-                        SLog.emf(getLogName(), "Memory cache drawable recycled. bitmap=%s. %s. %s", cachedRefBitmap.getInfo(), getThreadName(), getKey());
+                        memoryCache.remove(memoryCacheKey)
+                        emf(
+                            logName,
+                            "Memory cache drawable recycled. bitmap=%s. %s. %s",
+                            cachedRefBitmap.info,
+                            threadName,
+                            key
+                        )
                     }
                 }
             }
         }
-
-        return super.runLoad();
+        return super.runLoad()
     }
 
-    @Override
-    void onRunLoadFinished(@Nullable LoadResult result) {
-        if (result instanceof BitmapLoadResult) {
-            BitmapPool bitmapPool = getConfiguration().getBitmapPool();
-            Bitmap bitmap = ((BitmapLoadResult) result).getBitmap();
-            SketchRefBitmap refBitmap = new SketchRefBitmap(bitmap, getKey(), getUri(), result.getImageAttrs(), bitmapPool);
-            refBitmap.setIsWaitingUse(String.format("%s:waitingUse:new", getLogName()), true);  // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
-            DisplayOptions displayOptions = getOptions();
-            if (!displayOptions.isCacheInMemoryDisabled()) {
-                getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
+    override fun onRunLoadFinished(result: LoadResult?) {
+        when (result) {
+            is BitmapLoadResult -> {
+                val bitmapPool = configuration.bitmapPool
+                val bitmap = result.bitmap
+                val refBitmap = SketchRefBitmap(bitmap, key, uri, result.imageAttrs, bitmapPool)
+                refBitmap.setIsWaitingUse(
+                    String.format("%s:waitingUse:new", logName),
+                    true
+                ) // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
+                val displayOptions = options
+                if (!displayOptions.isCacheInMemoryDisabled) {
+                    configuration.memoryCache.put(memoryCacheKey, refBitmap)
+                }
+                val drawable: Drawable = SketchBitmapDrawable(refBitmap, result.imageFrom)
+                onDisplayFinished(DisplayResult(drawable, result.imageFrom, result.imageAttrs))
             }
-
-            Drawable drawable = new SketchBitmapDrawable(refBitmap, result.getImageFrom());
-            onDisplayFinished(new DisplayResult(drawable, result.getImageFrom(), result.getImageAttrs()));
-        } else if (result instanceof GifLoadResult) {
-            // GifDrawable 不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
-            // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
-            SketchGifDrawable gifDrawable = ((GifLoadResult) result).getGifDrawable();
-            onDisplayFinished(new DisplayResult((Drawable) gifDrawable, result.getImageFrom(), result.getImageAttrs()));
-        } else if (result instanceof CacheBitmapLoadResult) {
-            Drawable drawable = new SketchBitmapDrawable(((CacheBitmapLoadResult) result).getRefBitmap(), result.getImageFrom());
-            onDisplayFinished(new DisplayResult(drawable, result.getImageFrom(), result.getImageAttrs()));
-        } else {
-            SLog.emf(getLogName(), "Not found data after load completed. %s. %s", getThreadName(), getKey());
-            doError(ErrorCause.DATA_LOST_AFTER_LOAD_COMPLETED);
-            onDisplayFinished(null);
+            is GifLoadResult -> {
+                // GifDrawable 不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
+                // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
+                val gifDrawable = result.gifDrawable
+                onDisplayFinished(
+                    DisplayResult(
+                        (gifDrawable as Drawable),
+                        result.imageFrom,
+                        result.imageAttrs
+                    )
+                )
+            }
+            is CacheBitmapLoadResult -> {
+                val drawable: Drawable = SketchBitmapDrawable(result.refBitmap, result.imageFrom)
+                onDisplayFinished(DisplayResult(drawable, result.imageFrom, result.imageAttrs))
+            }
+            else -> {
+                emf(logName, "Not found data after load completed. %s. %s", threadName, key)
+                doError(ErrorCause.DATA_LOST_AFTER_LOAD_COMPLETED)
+                onDisplayFinished(null)
+            }
         }
     }
 
-    protected void onDisplayFinished(@Nullable DisplayResult result) {
-        this.displayResult = result;
+    fun onDisplayFinished(result: DisplayResult?) {
+        displayResult = result
         if (result != null) {
-            postRunCompleted();
+            postRunCompleted()
         }
     }
 
-    @Override
-    protected void runCompletedInMain() {
-        Drawable drawable = displayResult != null ? displayResult.getDrawable() : null;
+    override fun runCompletedInMain() {
+        val drawable = if (displayResult != null) displayResult!!.drawable else null
         if (drawable == null) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "Drawable is null before call completed. %s. %s", getThreadName(), getKey());
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(logName, "Drawable is null before call completed. %s. %s", threadName, key)
             }
-            return;
+            return
         }
-
-        displayImage(displayResult, drawable);
+        displayImage(displayResult!!, drawable)
 
         // 使用完毕更新等待使用的引用计数
-        if (drawable instanceof SketchRefDrawable) {
-            ((SketchRefDrawable) drawable).setIsWaitingUse(String.format("%s:waitingUse:finish", getLogName()), false);
+        if (drawable is SketchRefDrawable) {
+            (drawable as SketchRefDrawable).setIsWaitingUse(
+                String.format(
+                    "%s:waitingUse:finish",
+                    logName
+                ), false
+            )
         }
     }
 
-    private void displayImage(@NonNull DisplayResult displayResult, @NonNull Drawable drawable) {
-        SketchView sketchView = requestAndViewBinder.getView();
-        if (isCanceled() || sketchView == null) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "Request end before call completed. %s. %s", getThreadName(), getKey());
+    private fun displayImage(displayResult: DisplayResult, drawable: Drawable) {
+        var newDrawable = drawable
+        val sketchView = requestAndViewBinder.view
+        if (isCanceled || sketchView == null) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(logName, "Request end before call completed. %s. %s", threadName, key)
             }
-            return;
+            return
         }
 
         // 过滤可能已回收的图片
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if (bitmapDrawable.getBitmap().isRecycled()) {
+        if (newDrawable is BitmapDrawable) {
+            if (newDrawable.bitmap.isRecycled) {
                 // 这里应该不会再出问题了
-                SLog.emf(getLogName(), "Bitmap recycled on display. imageUri=%s, drawable=%s",
-                        getUri(), ((SketchDrawable) drawable).getInfo());
-                getConfiguration().getCallback().onError(new BitmapRecycledOnDisplayException(this, (SketchDrawable) drawable));
+                emf(
+                    logName, "Bitmap recycled on display. imageUri=%s, drawable=%s",
+                    uri, (newDrawable as SketchDrawable).info!!
+                )
+                configuration.callback.onError(
+                    BitmapRecycledOnDisplayException(
+                        this,
+                        (newDrawable as SketchDrawable)
+                    )
+                )
 
                 // 图片不可用
-                if (SLog.isLoggable(SLog.DEBUG)) {
-                    SLog.dmf(getLogName(), "Display image exception. bitmap recycled. %s. %s. %s. %s",
-                            ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom(), getThreadName(), getKey());
+                if (isLoggable(SLog.DEBUG)) {
+                    dmf(
+                        logName,
+                        "Display image exception. bitmap recycled. %s. %s. %s. %s",
+                        (newDrawable as SketchDrawable).info!!,
+                        displayResult.imageFrom,
+                        threadName,
+                        key
+                    )
                 }
-
-                runErrorInMain();
-                return;
+                runErrorInMain()
+                return
             }
         }
 
         // 显示图片
-        DisplayOptions displayOptions = getOptions();
-        if ((displayOptions.getShapeSize() != null || displayOptions.getShaper() != null) && drawable instanceof BitmapDrawable) {
-            drawable = new SketchShapeBitmapDrawable(getConfiguration().getContext(), (BitmapDrawable) drawable,
-                    displayOptions.getShapeSize(), displayOptions.getShaper());
+        val displayOptions = options
+        if ((displayOptions.shapeSize != null || displayOptions.shaper != null) && newDrawable is BitmapDrawable) {
+            newDrawable = SketchShapeBitmapDrawable(
+                configuration.context, newDrawable,
+                displayOptions.shapeSize, displayOptions.shaper
+            )
         }
-
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            String drawableInfo = "unknown";
-            if (drawable instanceof SketchRefDrawable) {
-                drawableInfo = ((SketchRefDrawable) drawable).getInfo();
+        if (isLoggable(SLog.DEBUG)) {
+            var drawableInfo: String? = "unknown"
+            if (newDrawable is SketchRefDrawable) {
+                drawableInfo = (newDrawable as SketchRefDrawable).info
             }
-            SLog.dmf(getLogName(), "Display image completed. %s. %s. view(%s). %s. %s",
-                    displayResult.getImageFrom().name(), drawableInfo, Integer.toHexString(sketchView.hashCode()), getThreadName(), getKey());
+            dmf(
+                logName,
+                "Display image completed. %s. %s. view(%s). %s. %s",
+                displayResult.imageFrom.name,
+                drawableInfo!!,
+                Integer.toHexString(sketchView.hashCode()),
+                threadName,
+                key
+            )
         }
 
         // 一定要在 ImageDisplayer().display 之前执行
-        setStatus(Status.COMPLETED);
-
-        ImageDisplayer imageDisplayer = displayOptions.getDisplayer();
+        setStatus(Status.COMPLETED)
+        var imageDisplayer = displayOptions.displayer
         if (imageDisplayer == null) {
-            imageDisplayer = getConfiguration().getDefaultDisplayer();
+            imageDisplayer = configuration.defaultDisplayer
         }
-        imageDisplayer.display(sketchView, drawable);
-
-        if (displayListener != null) {
-            displayListener.onCompleted(displayResult.getDrawable(), displayResult.getImageFrom(), displayResult.getImageAttrs());
-        }
+        imageDisplayer.display(sketchView, newDrawable)
+        displayListener?.onCompleted(
+            displayResult.drawable,
+            displayResult.imageFrom,
+            displayResult.imageAttrs
+        )
     }
 
-    @Override
-    protected void runErrorInMain() {
-        SketchView sketchView = requestAndViewBinder.getView();
-        if (isCanceled() || sketchView == null) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "Request end before call error. %s. %s", getThreadName(), getKey());
+    override fun runErrorInMain() {
+        val sketchView = requestAndViewBinder.view
+        if (isCanceled || sketchView == null) {
+            if (isLoggable(SLog.DEBUG)) {
+                dmf(logName, "Request end before call error. %s. %s", threadName, key)
             }
-            return;
+            return
         }
-
-        setStatus(Status.FAILED);
-
-        DisplayOptions displayOptions = getOptions();
-        ImageDisplayer displayer = displayOptions.getDisplayer();
-        StateImage errorImage = displayOptions.getErrorImage();
+        setStatus(Status.FAILED)
+        val displayOptions = options
+        val displayer = displayOptions.displayer
+        val errorImage = displayOptions.errorImage
         if (displayer != null && errorImage != null) {
-            Drawable errorDrawable = errorImage.getDrawable(getContext(), sketchView, displayOptions);
+            val errorDrawable = errorImage.getDrawable(context, sketchView, displayOptions)
             if (errorDrawable != null) {
-                displayer.display(sketchView, errorDrawable);
+                displayer.display(sketchView, errorDrawable)
             }
         }
-
-        if (displayListener != null && getErrorCause() != null) {
-            displayListener.onError(getErrorCause());
+        if (displayListener != null && errorCause != null) {
+            displayListener.onError(errorCause!!)
         }
     }
 
-    @Override
-    protected void runCanceledInMain() {
-        if (displayListener != null && getCancelCause() != null) {
-            displayListener.onCanceled(getCancelCause());
+    override fun runCanceledInMain() {
+        if (displayListener != null && cancelCause != null) {
+            displayListener.onCanceled(cancelCause!!)
         }
     }
-
 
     /* ************************************** Display Share ************************************ */
-
-    public boolean canUseDisplayShare() {
-        MemoryCache memoryCache = getConfiguration().getMemoryCache();
-        return !memoryCache.isClosed() && !memoryCache.isDisabled()
-                && !getOptions().isCacheInMemoryDisabled()
-                && !getOptions().isDecodeGifImage()
-                && !isSync() && !getConfiguration().getExecutor().isShutdown();
+    fun canUseDisplayShare(): Boolean {
+        val memoryCache = configuration.memoryCache
+        return (!memoryCache.isClosed && !memoryCache.isDisabled
+                && !options.isCacheInMemoryDisabled
+                && !options.isDecodeGifImage
+                && !isSync && !configuration.executor.isShutdown)
     }
 
-    @Nullable
-    public List<DisplayRequest> getWaitingDisplayShareRequests() {
-        return waitingDisplayShareRequests;
-    }
-
-    public void setWaitingDisplayShareRequests(@Nullable List<DisplayRequest> waitingDisplayShareRequests) {
-        this.waitingDisplayShareRequests = waitingDisplayShareRequests;
+    init {
+        requestAndViewBinder.setDisplayRequest(this)
     }
 }

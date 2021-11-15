@@ -13,641 +13,598 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.text.TextUtils
+import android.widget.ImageView.ScaleType
+import androidx.annotation.DrawableRes
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.SketchView
+import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.ProcessedResultCacheProcessor
+import com.github.panpf.sketch.decode.ThumbnailModeDecodeHelper
+import com.github.panpf.sketch.display.ImageDisplayer
+import com.github.panpf.sketch.display.TransitionImageDisplayer
+import com.github.panpf.sketch.drawable.SketchBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchLoadingDrawable
+import com.github.panpf.sketch.drawable.SketchRefDrawable
+import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable
+import com.github.panpf.sketch.process.ImageProcessor
+import com.github.panpf.sketch.shaper.ImageShaper
+import com.github.panpf.sketch.state.StateImage
+import com.github.panpf.sketch.uri.UriModel
+import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.sketch.util.Stopwatch
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
-import android.view.ViewGroup;
-import android.widget.ImageView.ScaleType;
+class DisplayHelper(
+    private val sketch: Sketch,
+    private val uri: String,
+    private val sketchView: SketchView
+) {
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    companion object {
+        private const val NAME = "DisplayHelper"
+    }
 
-import com.github.panpf.sketch.Configuration;
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.SketchView;
-import com.github.panpf.sketch.cache.BitmapPool;
-import com.github.panpf.sketch.decode.ImageSizeCalculator;
-import com.github.panpf.sketch.decode.ProcessedResultCacheProcessor;
-import com.github.panpf.sketch.decode.ThumbnailModeDecodeHelper;
-import com.github.panpf.sketch.display.ImageDisplayer;
-import com.github.panpf.sketch.display.TransitionImageDisplayer;
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable;
-import com.github.panpf.sketch.drawable.SketchLoadingDrawable;
-import com.github.panpf.sketch.drawable.SketchRefBitmap;
-import com.github.panpf.sketch.drawable.SketchRefDrawable;
-import com.github.panpf.sketch.drawable.SketchShapeBitmapDrawable;
-import com.github.panpf.sketch.process.ImageProcessor;
-import com.github.panpf.sketch.shaper.ImageShaper;
-import com.github.panpf.sketch.state.StateImage;
-import com.github.panpf.sketch.uri.UriModel;
-import com.github.panpf.sketch.util.SketchUtils;
-import com.github.panpf.sketch.util.Stopwatch;
+    private val displayOptions: DisplayOptions
+    private val displayListener: DisplayListener? = sketchView.displayListener
+    private val downloadProgressListener: DownloadProgressListener? =
+        sketchView.downloadProgressListener
+    private val stopwatch = if (SLog.isLoggable(SLog.VERBOSE)) Stopwatch() else null
 
-@SuppressWarnings("WeakerAccess")
-public class DisplayHelper {
-    private static final String NAME = "DisplayHelper";
-
-    @NonNull
-    private final Sketch sketch;
-    @NonNull
-    private final String uri;
-    @NonNull
-    private final SketchView sketchView;
-
-    @NonNull
-    private final DisplayOptions displayOptions;
-    @Nullable
-    private final DisplayListener displayListener;
-    @Nullable
-    private final DownloadProgressListener downloadProgressListener;
-    @Nullable
-    private Stopwatch stopwatch;
-
-    public DisplayHelper(@NonNull Sketch sketch, @NonNull String uri, @NonNull SketchView sketchView) {
-        this.sketch = sketch;
-        this.uri = uri;
-        this.sketchView = sketchView;
-        this.displayListener = sketchView.getDisplayListener();
-        this.downloadProgressListener = sketchView.getDownloadProgressListener();
-
-        if (SLog.isLoggable(SLog.VERBOSE)) {
-            stopwatch = new Stopwatch();
-        }
-
-        if (stopwatch != null) {
-            stopwatch.start(NAME + ". display use time");
-        }
+    init {
+        stopwatch?.start("$NAME. display use time")
 
         // onDisplay 一定要在最前面执行，因为 在onDisplay 中会设置一些属性，这些属性会影响到后续一些 get 方法返回的结果
-        this.sketchView.onReadyDisplay(uri);
-        if (stopwatch != null) {
-            stopwatch.record("onReadyDisplay");
-        }
-
-        this.displayOptions = new DisplayOptions(sketchView.getOptions());
-        if (stopwatch != null) {
-            stopwatch.record("init");
-        }
+        sketchView.onReadyDisplay(uri)
+        stopwatch?.record("onReadyDisplay")
+        displayOptions = DisplayOptions(sketchView.options)
+        stopwatch?.record("init")
     }
 
     /**
      * Limit request processing depth
      */
-    @NonNull
-    public DisplayHelper requestLevel(@Nullable RequestLevel requestLevel) {
+    fun requestLevel(requestLevel: RequestLevel?): DisplayHelper {
         if (requestLevel != null) {
-            displayOptions.setRequestLevel(requestLevel);
+            displayOptions.requestLevel = requestLevel
         }
-        return this;
+        return this
     }
 
-    @NonNull
-    public DisplayHelper disableCacheInDisk() {
-        displayOptions.setCacheInDiskDisabled(true);
-        return this;
+    fun disableCacheInDisk(): DisplayHelper {
+        displayOptions.isCacheInDiskDisabled = true
+        return this
     }
 
     /**
-     * Disabled get reusable {@link Bitmap} from {@link BitmapPool}
+     * Disabled get reusable [Bitmap] from [BitmapPool]
      */
-    @NonNull
-    public DisplayHelper disableBitmapPool() {
-        displayOptions.setBitmapPoolDisabled(true);
-        return this;
+    fun disableBitmapPool(): DisplayHelper {
+        displayOptions.isBitmapPoolDisabled = true
+        return this
     }
 
     /**
      * Support gif images
      */
-    @NonNull
-    public DisplayHelper decodeGifImage() {
-        displayOptions.setDecodeGifImage(true);
-        return this;
+    fun decodeGifImage(): DisplayHelper {
+        displayOptions.isDecodeGifImage = true
+        return this
     }
 
     /**
      * Limit the maximum size of the bitmap, default value is 'new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)'
      */
-    @NonNull
-    public DisplayHelper maxSize(@Nullable MaxSize maxSize) {
-        displayOptions.setMaxSize(maxSize);
-        return this;
+    fun maxSize(maxSize: MaxSize?): DisplayHelper {
+        displayOptions.maxSize = maxSize
+        return this
     }
 
     /**
      * Limit the maximum size of the bitmap, default value is 'new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)'
      */
-    @NonNull
-    public DisplayHelper maxSize(int maxWidth, int maxHeight) {
-        displayOptions.maxSize(maxWidth, maxHeight);
-        return this;
+    fun maxSize(maxWidth: Int, maxHeight: Int): DisplayHelper {
+        displayOptions.maxSize(maxWidth, maxHeight)
+        return this
     }
 
     /**
      * The size of the desired bitmap
      */
-    @NonNull
-    public DisplayHelper resize(@Nullable Resize resize) {
-        displayOptions.setResize(resize);
-        return this;
+    fun resize(resize: Resize?): DisplayHelper {
+        displayOptions.resize = resize
+        return this
     }
 
     /**
      * The size of the desired bitmap
      */
-    @NonNull
-    public DisplayHelper resize(int reWidth, int reHeight) {
-        displayOptions.resize(reWidth, reHeight);
-        return this;
+    fun resize(reWidth: Int, reHeight: Int): DisplayHelper {
+        displayOptions.resize(reWidth, reHeight)
+        return this
     }
 
     /**
      * The size of the desired bitmap
      */
-    @NonNull
-    public DisplayHelper resize(int reWidth, int reHeight, @NonNull ScaleType scaleType) {
-        displayOptions.resize(reWidth, reHeight, scaleType);
-        return this;
+    fun resize(reWidth: Int, reHeight: Int, scaleType: ScaleType): DisplayHelper {
+        displayOptions.resize(reWidth, reHeight, scaleType)
+        return this
     }
 
     /**
-     * Prioritize low quality {@link Bitmap.Config} when creating bitmaps, the priority is lower than the {@link #bitmapConfig(Bitmap.Config)} method
+     * Prioritize low quality [Bitmap.Config] when creating bitmaps, the priority is lower than the [.bitmapConfig] method
      */
-    @NonNull
-    public DisplayHelper lowQualityImage() {
-        displayOptions.setLowQualityImage(true);
-        return this;
+    fun lowQualityImage(): DisplayHelper {
+        displayOptions.isLowQualityImage = true
+        return this
     }
 
     /**
      * Modify Bitmap after decoding the image
      */
-    @NonNull
-    public DisplayHelper processor(@Nullable ImageProcessor processor) {
-        displayOptions.setProcessor(processor);
-        return this;
+    fun processor(processor: ImageProcessor?): DisplayHelper {
+        displayOptions.processor = processor
+        return this
     }
 
     /**
-     * Specify {@link Bitmap.Config} to use when creating the bitmap.
-     * KITKAT and above {@link Bitmap.Config#ARGB_4444} will be forced to be replaced with {@link Bitmap.Config#ARGB_8888}.
-     * With priority higher than {@link #lowQualityImage()} method.
-     * Applied to {@link android.graphics.BitmapFactory.Options#inPreferredConfig}
+     * Specify [Bitmap.Config] to use when creating the bitmap.
+     * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+     * With priority higher than [.lowQualityImage] method.
+     * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
      */
-    @NonNull
-    public DisplayHelper bitmapConfig(@Nullable Bitmap.Config bitmapConfig) {
-        displayOptions.setBitmapConfig(bitmapConfig);
-        return this;
+    fun bitmapConfig(bitmapConfig: Bitmap.Config?): DisplayHelper {
+        displayOptions.bitmapConfig = bitmapConfig
+        return this
     }
 
     /**
-     * Priority is given to speed or quality when decoding. Applied to the {@link android.graphics.BitmapFactory.Options#inPreferQualityOverSpeed}
+     * Priority is given to speed or quality when decoding. Applied to the [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
      */
-    @NonNull
-    public DisplayHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
-        displayOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
-        return this;
+    fun inPreferQualityOverSpeed(inPreferQualityOverSpeed: Boolean): DisplayHelper {
+        displayOptions.isInPreferQualityOverSpeed = inPreferQualityOverSpeed
+        return this
     }
 
     /**
-     * Thumbnail mode, together with the {@link #resize(Resize)} method, gives a sharper thumbnail, see {@link ThumbnailModeDecodeHelper}
+     * Thumbnail mode, together with the [.resize] method, gives a sharper thumbnail, see [ThumbnailModeDecodeHelper]
      */
-    @NonNull
-    public DisplayHelper thumbnailMode() {
-        displayOptions.setThumbnailMode(true);
-        return this;
+    fun thumbnailMode(): DisplayHelper {
+        displayOptions.isThumbnailMode = true
+        return this
     }
 
     /**
-     * In order to speed up, save the image processed by {@link #processor(ImageProcessor)}, {@link #resize(Resize)} or {@link #thumbnailMode()} to the disk cache,
-     * read it directly next time, refer to {@link ProcessedResultCacheProcessor}
+     * In order to speed up, save the image processed by [.processor], [.resize] or [.thumbnailMode] to the disk cache,
+     * read it directly next time, refer to [ProcessedResultCacheProcessor]
      */
-    @NonNull
-    public DisplayHelper cacheProcessedImageInDisk() {
-        displayOptions.setCacheProcessedImageInDisk(true);
-        return this;
+    fun cacheProcessedImageInDisk(): DisplayHelper {
+        displayOptions.isCacheProcessedImageInDisk = true
+        return this
     }
 
     /**
      * Disabled correcting picture orientation
      */
-    @NonNull
-    public DisplayHelper disableCorrectImageOrientation() {
-        displayOptions.setCorrectImageOrientationDisabled(true);
-        return this;
+    fun disableCorrectImageOrientation(): DisplayHelper {
+        displayOptions.isCorrectImageOrientationDisabled = true
+        return this
     }
 
-    @NonNull
-    public DisplayHelper disableCacheInMemory() {
-        displayOptions.setCacheInMemoryDisabled(true);
-        return this;
-    }
-
-    /**
-     * Placeholder image displayed while loading
-     */
-    @NonNull
-    public DisplayHelper loadingImage(@Nullable StateImage loadingImage) {
-        displayOptions.setLoadingImage(loadingImage);
-        return this;
+    fun disableCacheInMemory(): DisplayHelper {
+        displayOptions.isCacheInMemoryDisabled = true
+        return this
     }
 
     /**
      * Placeholder image displayed while loading
      */
-    @NonNull
-    public DisplayHelper loadingImage(@DrawableRes int drawableResId) {
-        displayOptions.loadingImage(drawableResId);
-        return this;
+    fun loadingImage(loadingImage: StateImage?): DisplayHelper {
+        displayOptions.loadingImage = loadingImage
+        return this
+    }
+
+    /**
+     * Placeholder image displayed while loading
+     */
+    fun loadingImage(@DrawableRes drawableResId: Int): DisplayHelper {
+        displayOptions.loadingImage(drawableResId)
+        return this
     }
 
     /**
      * Show this image when loading fails
      */
-    @NonNull
-    public DisplayHelper errorImage(@Nullable StateImage errorImage) {
-        displayOptions.setErrorImage(errorImage);
-        return this;
+    fun errorImage(errorImage: StateImage?): DisplayHelper {
+        displayOptions.errorImage = errorImage
+        return this
     }
 
     /**
      * Show this image when loading fails
      */
-    @NonNull
-    public DisplayHelper errorImage(@DrawableRes int drawableResId) {
-        displayOptions.errorImage(drawableResId);
-        return this;
+    fun errorImage(@DrawableRes drawableResId: Int): DisplayHelper {
+        displayOptions.errorImage(drawableResId)
+        return this
     }
 
     /**
      * Show this image when pausing a download
      */
-    @NonNull
-    public DisplayHelper pauseDownloadImage(@Nullable StateImage pauseDownloadImage) {
-        displayOptions.setPauseDownloadImage(pauseDownloadImage);
-        return this;
+    fun pauseDownloadImage(pauseDownloadImage: StateImage?): DisplayHelper {
+        displayOptions.pauseDownloadImage = pauseDownloadImage
+        return this
     }
 
     /**
      * Show this image when pausing a download
      */
-    @NonNull
-    public DisplayHelper pauseDownloadImage(@DrawableRes int drawableResId) {
-        displayOptions.pauseDownloadImage(drawableResId);
-        return this;
+    fun pauseDownloadImage(@DrawableRes drawableResId: Int): DisplayHelper {
+        displayOptions.pauseDownloadImage(drawableResId)
+        return this
     }
 
     /**
      * Modify the shape of the image when drawing
      */
-    @NonNull
-    public DisplayHelper shaper(@Nullable ImageShaper imageShaper) {
-        displayOptions.setShaper(imageShaper);
-        return this;
+    fun shaper(imageShaper: ImageShaper?): DisplayHelper {
+        displayOptions.shaper = imageShaper
+        return this
     }
 
     /**
      * Modify the size of the image when drawing
      */
-    @NonNull
-    public DisplayHelper shapeSize(@Nullable ShapeSize shapeSize) {
-        displayOptions.setShapeSize(shapeSize);
-        return this;
+    fun shapeSize(shapeSize: ShapeSize?): DisplayHelper {
+        displayOptions.shapeSize = shapeSize
+        return this
     }
 
     /**
      * Modify the size of the image when drawing
      */
-    @NonNull
-    public DisplayHelper shapeSize(int shapeWidth, int shapeHeight) {
-        displayOptions.shapeSize(shapeWidth, shapeHeight);
-        return this;
+    fun shapeSize(shapeWidth: Int, shapeHeight: Int): DisplayHelper {
+        displayOptions.shapeSize(shapeWidth, shapeHeight)
+        return this
     }
 
     /**
      * Modify the size of the image when drawing
      */
-    @NonNull
-    public DisplayHelper shapeSize(int shapeWidth, int shapeHeight, ScaleType scaleType) {
-        displayOptions.shapeSize(shapeWidth, shapeHeight, scaleType);
-        return this;
+    fun shapeSize(shapeWidth: Int, shapeHeight: Int, scaleType: ScaleType?): DisplayHelper {
+        displayOptions.shapeSize(shapeWidth, shapeHeight, scaleType)
+        return this
     }
 
     /**
-     * Display image after image loading is completeThe, default value is {@link com.github.panpf.sketch.display.DefaultImageDisplayer}
+     * Display image after image loading is completeThe, default value is [com.github.panpf.sketch.display.DefaultImageDisplayer]
      */
-    @NonNull
-    public DisplayHelper displayer(@Nullable ImageDisplayer displayer) {
-        displayOptions.setDisplayer(displayer);
-        return this;
+    fun displayer(displayer: ImageDisplayer?): DisplayHelper {
+        displayOptions.displayer = displayer
+        return this
     }
-
 
     /**
      * Batch setting display parameters, all reset
      */
-    @NonNull
-    public DisplayHelper options(@Nullable DisplayOptions newOptions) {
-        displayOptions.copy(newOptions);
-        return this;
+    fun options(newOptions: DisplayOptions?): DisplayHelper {
+        displayOptions.copy(newOptions!!)
+        return this
     }
 
-    @Nullable
-    private Drawable getErrorDrawable() {
-        Drawable drawable = null;
-        if (displayOptions.getErrorImage() != null) {
-            Context context = sketch.getConfiguration().getContext();
-            drawable = displayOptions.getErrorImage().getDrawable(context, sketchView, displayOptions);
-        } else if (displayOptions.getLoadingImage() != null) {
-            Context context = sketch.getConfiguration().getContext();
-            drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+    private val errorDrawable: Drawable?
+        get() {
+            var drawable: Drawable? = null
+            if (displayOptions.errorImage != null) {
+                val context = sketch.configuration.context
+                drawable =
+                    displayOptions.errorImage!!.getDrawable(context, sketchView, displayOptions)
+            } else if (displayOptions.loadingImage != null) {
+                val context = sketch.configuration.context
+                drawable =
+                    displayOptions.loadingImage!!.getDrawable(context, sketchView, displayOptions)
+            }
+            return drawable
         }
-        return drawable;
-    }
 
-    @Nullable
-    public DisplayRequest commit() {
+    fun commit(): DisplayRequest? {
         // Cannot run on non-UI threads
-        if (!SketchUtils.isMainThread()) {
-            throw new IllegalStateException("Cannot run on non-UI thread");
-        }
+        check(SketchUtils.isMainThread) { "Cannot run on non-UI thread" }
 
         // Uri cannot is empty
         if (TextUtils.isEmpty(uri)) {
-            SLog.emf(NAME, "Uri is empty. view(%s)", Integer.toHexString(sketchView.hashCode()));
-            sketchView.setImageDrawable(getErrorDrawable());
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false);
-            return null;
+            SLog.emf(
+                NAME, "Uri is empty. view(%s)", Integer.toHexString(
+                    sketchView.hashCode()
+                )
+            )
+            sketchView.setImageDrawable(errorDrawable)
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_INVALID, false)
+            return null
         }
 
         // Uri type must be supported
-        final UriModel uriModel = UriModel.match(sketch, uri);
+        val uriModel = UriModel.match(sketch, uri)
         if (uriModel == null) {
-            SLog.emf(NAME, "Unsupported uri type. %s. view(%s)", uri, Integer.toHexString(sketchView.hashCode()));
-            sketchView.setImageDrawable(getErrorDrawable());
-            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
-            return null;
+            SLog.emf(
+                NAME, "Unsupported uri type. %s. view(%s)", uri, Integer.toHexString(
+                    sketchView.hashCode()
+                )
+            )
+            sketchView.setImageDrawable(errorDrawable)
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false)
+            return null
         }
-
-        processOptions();
-        if (stopwatch != null) {
-            stopwatch.record("processOptions");
-        }
-
-        saveOptions();
-        if (stopwatch != null) {
-            stopwatch.record("saveOptions");
-        }
-
-        final String key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey());
-        boolean checkResult = checkMemoryCache(key);
-        if (stopwatch != null) {
-            stopwatch.record("checkMemoryCache");
-        }
+        processOptions()
+        stopwatch?.record("processOptions")
+        saveOptions()
+        stopwatch?.record("saveOptions")
+        val key = SketchUtils.makeRequestKey(uri, uriModel, displayOptions.makeKey())
+        var checkResult = checkMemoryCache(key)
+        stopwatch?.record("checkMemoryCache")
         if (!checkResult) {
-            if (stopwatch != null) {
-                stopwatch.print(key);
-            }
-            return null;
+            stopwatch?.print(key)
+            return null
         }
-
-        checkResult = checkRequestLevel(key, uriModel);
-        if (stopwatch != null) {
-            stopwatch.record("checkRequestLevel");
-        }
+        checkResult = checkRequestLevel(key, uriModel)
+        stopwatch?.record("checkRequestLevel")
         if (!checkResult) {
-            if (stopwatch != null) {
-                stopwatch.print(key);
-            }
-            return null;
+            stopwatch?.print(key)
+            return null
         }
-
-        DisplayRequest potentialRequest = checkRepeatRequest(key);
-        if (stopwatch != null) {
-            stopwatch.record("checkRepeatRequest");
-        }
+        val potentialRequest = checkRepeatRequest(key)
+        stopwatch?.record("checkRepeatRequest")
         if (potentialRequest != null) {
-            if (stopwatch != null) {
-                stopwatch.print(key);
-            }
-            return potentialRequest;
+            stopwatch?.print(key)
+            return potentialRequest
         }
-
-        DisplayRequest request = submitRequest(key, uriModel);
-
-        if (stopwatch != null) {
-            stopwatch.print(key);
-        }
-        return request;
+        val request = submitRequest(key, uriModel)
+        stopwatch?.print(key)
+        return request
     }
 
-    private void processOptions() {
-        Configuration configuration = sketch.getConfiguration();
-        final FixedSize fixedSize = sketch.getConfiguration().getSizeCalculator().calculateImageFixedSize(sketchView);
-        final ScaleType scaleType = sketchView.getScaleType();
+    private fun processOptions() {
+        val configuration = sketch.configuration
+        val fixedSize = sketch.configuration.sizeCalculator.calculateImageFixedSize(
+            sketchView
+        )
+        val scaleType = sketchView.getScaleType()
 
         // Replace ShapeSize.ByViewFixedSizeShapeSize
-        ShapeSize shapeSize = displayOptions.getShapeSize();
-        if (shapeSize == ShapeSize.getBY_VIEW_FIXED_SIZE()) {
+        var shapeSize = displayOptions.shapeSize
+        if (shapeSize === ShapeSize.BY_VIEW_FIXED_SIZE) {
             if (fixedSize != null) {
-                shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), scaleType);
-                displayOptions.setShapeSize(shapeSize);
+                shapeSize = ShapeSize(fixedSize.width, fixedSize.height, scaleType)
+                displayOptions.shapeSize = shapeSize
             } else {
-                throw new IllegalStateException("ImageView's width and height are not fixed," +
-                        " can not be applied with the ShapeSize.byViewFixedSize() function");
+                throw IllegalStateException(
+                    "ImageView's width and height are not fixed," +
+                            " can not be applied with the ShapeSize.byViewFixedSize() function"
+                )
             }
         }
 
         // ShapeSize must set ScaleType
-        if (shapeSize != null && shapeSize.getScaleType() == null) {
-            shapeSize.setScaleType(scaleType);
+        if (shapeSize != null && shapeSize.scaleType == null) {
+            shapeSize.scaleType = scaleType
         }
 
         // The width and height of the ShapeSize must be greater than 0
-        if (shapeSize != null && (shapeSize.getWidth() == 0 || shapeSize.getHeight() == 0)) {
-            throw new IllegalArgumentException("ShapeSize width and height must be > 0");
-        }
+        require(!(shapeSize != null && (shapeSize.width == 0 || shapeSize.height == 0))) { "ShapeSize width and height must be > 0" }
 
 
         // Replace Resize.ByViewFixedSizeShapeSize
-        Resize resize = displayOptions.getResize();
-        if (resize == Resize.getBY_VIEW_FIXED_SIZE() || resize == Resize.getBY_VIEW_FIXED_SIZE_EXACTLY_SAME()) {
+        var resize = displayOptions.resize
+        if (resize === Resize.BY_VIEW_FIXED_SIZE || resize === Resize.BY_VIEW_FIXED_SIZE_EXACTLY_SAME) {
             if (fixedSize != null) {
-                resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), scaleType, resize.getMode());
-                displayOptions.setResize(resize);
+                resize = Resize(fixedSize.width, fixedSize.height, scaleType, resize.mode)
+                displayOptions.resize = resize
             } else {
-                throw new IllegalStateException("ImageView's width and height are not fixed," +
-                        " can not be applied with the Resize.byViewFixedSize() function");
+                throw IllegalStateException(
+                    "ImageView's width and height are not fixed," +
+                            " can not be applied with the Resize.byViewFixedSize() function"
+                )
             }
         }
 
         // Resize must set ScaleType
-        if (resize != null && resize.getScaleType() == null) {
-            resize.setScaleType(scaleType);
+        if (resize != null && resize.scaleType == null) {
+            resize.scaleType = scaleType
         }
 
         // The width and height of the Resize must be greater than 0
-        if (resize != null && (resize.getWidth() <= 0 || resize.getHeight() <= 0)) {
-            throw new IllegalArgumentException("Resize width and height must be > 0");
-        }
+        require(!(resize != null && (resize.width <= 0 || resize.height <= 0))) { "Resize width and height must be > 0" }
 
 
         // If MaxSize is not set, the default MaxSize is used.
-        MaxSize maxSize = displayOptions.getMaxSize();
+        var maxSize = displayOptions.maxSize
         if (maxSize == null) {
-            ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getSizeCalculator();
-            maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView);
+            val imageSizeCalculator = sketch.configuration.sizeCalculator
+            maxSize = imageSizeCalculator.calculateImageMaxSize(sketchView)
             if (maxSize == null) {
-                maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.getContext());
+                maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.context)
             }
-            displayOptions.setMaxSize(maxSize);
+            displayOptions.maxSize = maxSize
         }
 
         // The width or height of MaxSize is greater than 0.
-        if (maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
-            throw new IllegalArgumentException("MaxSize width or height must be > 0");
-        }
+        require(!(maxSize.width <= 0 && maxSize.height <= 0)) { "MaxSize width or height must be > 0" }
 
 
         // There is no ImageProcessor but there is a Resize, you need to set a default image cropping processor
-        if (displayOptions.getProcessor() == null && resize != null) {
-            displayOptions.setProcessor(configuration.getResizeProcessor());
+        if (displayOptions.processor == null && resize != null) {
+            displayOptions.processor = configuration.resizeProcessor
         }
 
 
         // When using TransitionImageDisplayer, if you use a loadingImage , you must have a ShapeSize
-        if (displayOptions.getDisplayer() instanceof TransitionImageDisplayer
-                && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
+        if (displayOptions.displayer is TransitionImageDisplayer
+            && displayOptions.loadingImage != null && displayOptions.shapeSize == null
+        ) {
             if (fixedSize != null) {
-                displayOptions.shapeSize(fixedSize.getWidth(), fixedSize.getHeight());
+                displayOptions.shapeSize(fixedSize.width, fixedSize.height)
             } else {
-                ViewGroup.LayoutParams layoutParams = sketchView.getLayoutParams();
-                String widthName = SketchUtils.viewLayoutFormatted(layoutParams != null ? layoutParams.width : -1);
-                String heightName = SketchUtils.viewLayoutFormatted(layoutParams != null ? layoutParams.height : -1);
-                String errorInfo = String.format("If you use TransitionImageDisplayer and loadingImage, " +
-                        "You must be setup ShapeSize or imageView width and height must be fixed. width=%s, height=%s", widthName, heightName);
+                val layoutParams = sketchView.getLayoutParams()
+                val widthName = SketchUtils.viewLayoutFormatted(layoutParams?.width ?: -1)
+                val heightName = SketchUtils.viewLayoutFormatted(layoutParams?.height ?: -1)
+                val errorInfo = String.format(
+                    "If you use TransitionImageDisplayer and loadingImage, " +
+                            "You must be setup ShapeSize or imageView width and height must be fixed. width=%s, height=%s",
+                    widthName,
+                    heightName
+                )
                 if (SLog.isLoggable(SLog.DEBUG)) {
-                    SLog.dmf(NAME, "%s. view(%s). %s", errorInfo, Integer.toHexString(sketchView.hashCode()), uri);
+                    SLog.dmf(
+                        NAME, "%s. view(%s). %s", errorInfo, Integer.toHexString(
+                            sketchView.hashCode()
+                        ), uri
+                    )
                 }
-                throw new IllegalArgumentException(errorInfo);
+                throw IllegalArgumentException(errorInfo)
             }
         }
-
-        configuration.getOptionsFilterManager().filter(displayOptions);
+        configuration.optionsFilterManager.filter(displayOptions)
     }
 
-    private void saveOptions() {
-        DisplayCache displayCache = sketchView.getDisplayCache();
+    private fun saveOptions() {
+        var displayCache = sketchView.displayCache
         if (displayCache == null) {
-            displayCache = new DisplayCache();
-            sketchView.setDisplayCache(displayCache);
+            displayCache = DisplayCache()
+            sketchView.displayCache = displayCache
         }
-
-        displayCache.uri = uri;
-        displayCache.options.copy(displayOptions);
+        displayCache.uri = uri
+        displayCache.options.copy(displayOptions)
     }
 
-    private boolean checkMemoryCache(@NonNull String key) {
-        if (displayOptions.isCacheInMemoryDisabled()) {
-            return true;
+    private fun checkMemoryCache(key: String): Boolean {
+        if (displayOptions.isCacheInMemoryDisabled) {
+            return true
         }
-
-        SketchRefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(key);
-        if (cachedRefBitmap == null) {
-            return true;
-        }
-
-        if (cachedRefBitmap.isRecycled()) {
-            sketch.getConfiguration().getMemoryCache().remove(key);
-            String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.wmf(NAME, "Memory cache drawable recycled. %s. view(%s)", cachedRefBitmap.getInfo(), viewCode);
-            return true;
+        val cachedRefBitmap = sketch.configuration.memoryCache[key] ?: return true
+        if (cachedRefBitmap.isRecycled) {
+            sketch.configuration.memoryCache.remove(key)
+            val viewCode = Integer.toHexString(sketchView.hashCode())
+            SLog.wmf(
+                NAME,
+                "Memory cache drawable recycled. %s. view(%s)",
+                cachedRefBitmap.info,
+                viewCode
+            )
+            return true
         }
 
         // Gif does not use memory cache
-        if (displayOptions.isDecodeGifImage() && "image/gif".equalsIgnoreCase(cachedRefBitmap.getAttrs().getMimeType())) {
-            SLog.dmf(NAME, "The picture in the memory cache is just the first frame of the gif. It cannot be used. %s", cachedRefBitmap.getInfo());
-            return true;
+        if (displayOptions.isDecodeGifImage && "image/gif".equals(
+                cachedRefBitmap.attrs.mimeType,
+                ignoreCase = true
+            )
+        ) {
+            SLog.dmf(
+                NAME,
+                "The picture in the memory cache is just the first frame of the gif. It cannot be used. %s",
+                cachedRefBitmap.info
+            )
+            return true
         }
-
-        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", NAME), true);
-
+        cachedRefBitmap.setIsWaitingUse(String.format("%s:waitingUse:fromMemory", NAME), true)
         if (SLog.isLoggable(SLog.DEBUG)) {
-            String viewCode = Integer.toHexString(sketchView.hashCode());
-            SLog.dmf(NAME, "Display image completed. %s. %s. view(%s)", ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
+            val viewCode = Integer.toHexString(sketchView.hashCode())
+            SLog.dmf(
+                NAME,
+                "Display image completed. %s. %s. view(%s)",
+                ImageFrom.MEMORY_CACHE.name,
+                cachedRefBitmap.info,
+                viewCode
+            )
         }
-
-        SketchBitmapDrawable refBitmapDrawable = new SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE);
-
-        Drawable finalDrawable;
-        if (displayOptions.getShapeSize() != null || displayOptions.getShaper() != null) {
-            finalDrawable = new SketchShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
-                    displayOptions.getShapeSize(), displayOptions.getShaper());
+        val refBitmapDrawable = SketchBitmapDrawable(cachedRefBitmap, ImageFrom.MEMORY_CACHE)
+        val finalDrawable: Drawable
+        finalDrawable = if (displayOptions.shapeSize != null || displayOptions.shaper != null) {
+            SketchShapeBitmapDrawable(
+                sketch.configuration.context, refBitmapDrawable,
+                displayOptions.shapeSize, displayOptions.shaper
+            )
         } else {
-            finalDrawable = refBitmapDrawable;
+            refBitmapDrawable
         }
-
-        ImageDisplayer imageDisplayer = displayOptions.getDisplayer();
-        if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
-            imageDisplayer.display(sketchView, finalDrawable);
+        val imageDisplayer = displayOptions.displayer
+        if (imageDisplayer != null && imageDisplayer.isAlwaysUse) {
+            imageDisplayer.display(sketchView, finalDrawable)
         } else {
-            sketchView.setImageDrawable(finalDrawable);
+            sketchView.setImageDrawable(finalDrawable)
         }
-        if (displayListener != null) {
-            displayListener.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getAttrs());
-        }
-
-        ((SketchRefDrawable) finalDrawable).setIsWaitingUse(String.format("%s:waitingUse:finish", NAME), false);
-        return false;
+        displayListener?.onCompleted(finalDrawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.attrs)
+        (finalDrawable as SketchRefDrawable).setIsWaitingUse(
+            String.format(
+                "%s:waitingUse:finish",
+                NAME
+            ), false
+        )
+        return false
     }
 
-    private boolean checkRequestLevel(@NonNull String key, @NonNull UriModel uriModel) {
-        if (displayOptions.getRequestLevel() == RequestLevel.MEMORY) {
+    private fun checkRequestLevel(key: String, uriModel: UriModel): Boolean {
+        if (displayOptions.requestLevel === RequestLevel.MEMORY) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Request cancel. %s. view(%s). %s", CancelCause.PAUSE_LOAD, Integer.toHexString(sketchView.hashCode()), key);
+                SLog.dmf(
+                    NAME,
+                    "Request cancel. %s. view(%s). %s",
+                    CancelCause.PAUSE_LOAD,
+                    Integer.toHexString(
+                        sketchView.hashCode()
+                    ),
+                    key
+                )
             }
-
-            Drawable loadingDrawable = null;
-            if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+            var loadingDrawable: Drawable? = null
+            if (displayOptions.loadingImage != null) {
+                val context = sketch.configuration.context
+                loadingDrawable =
+                    displayOptions.loadingImage!!.getDrawable(context, sketchView, displayOptions)
             }
-            sketchView.clearAnimation();
-            sketchView.setImageDrawable(loadingDrawable);
-
-            CallbackHandler.postCallbackCanceled(displayListener, CancelCause.PAUSE_LOAD, false);
-            return false;
+            sketchView.clearAnimation()
+            sketchView.setImageDrawable(loadingDrawable)
+            CallbackHandler.postCallbackCanceled(displayListener, CancelCause.PAUSE_LOAD, false)
+            return false
         }
-
-        if (displayOptions.getRequestLevel() == RequestLevel.LOCAL && uriModel.isFromNet()
-                && !sketch.getConfiguration().getDiskCache().exist(uriModel.getDiskCacheKey(uri))) {
-
+        if (displayOptions.requestLevel === RequestLevel.LOCAL && uriModel.isFromNet
+            && !sketch.configuration.diskCache.exist(uriModel.getDiskCacheKey(uri))
+        ) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Request cancel. %s. view(%s). %s", CancelCause.PAUSE_DOWNLOAD, Integer.toHexString(sketchView.hashCode()), key);
+                SLog.dmf(
+                    NAME,
+                    "Request cancel. %s. view(%s). %s",
+                    CancelCause.PAUSE_DOWNLOAD,
+                    Integer.toHexString(
+                        sketchView.hashCode()
+                    ),
+                    key
+                )
             }
-
-            Drawable drawable = null;
-            if (displayOptions.getPauseDownloadImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, sketchView, displayOptions);
-                sketchView.clearAnimation();
-            } else if (displayOptions.getLoadingImage() != null) {
-                Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, sketchView, displayOptions);
+            var drawable: Drawable? = null
+            if (displayOptions.pauseDownloadImage != null) {
+                val context = sketch.configuration.context
+                drawable = displayOptions.pauseDownloadImage!!.getDrawable(
+                    context,
+                    sketchView,
+                    displayOptions
+                )
+                sketchView.clearAnimation()
+            } else if (displayOptions.loadingImage != null) {
+                val context = sketch.configuration.context
+                drawable =
+                    displayOptions.loadingImage!!.getDrawable(context, sketchView, displayOptions)
             }
-            sketchView.setImageDrawable(drawable);
-
-            CallbackHandler.postCallbackCanceled(displayListener, CancelCause.PAUSE_DOWNLOAD, false);
-            return false;
+            sketchView.setImageDrawable(drawable)
+            CallbackHandler.postCallbackCanceled(displayListener, CancelCause.PAUSE_DOWNLOAD, false)
+            return false
         }
-
-        return true;
+        return true
     }
 
     /**
@@ -655,68 +612,61 @@ public class DisplayHelper {
      *
      * @return null: The request has been canceled or no existing; otherwise: the request is repeated
      */
-    @Nullable
-    private DisplayRequest checkRepeatRequest(@NonNull String key) {
-        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(sketchView);
-        if (potentialRequest != null && !potentialRequest.isFinished()) {
-            if (key.equals(potentialRequest.getKey())) {
+    private fun checkRepeatRequest(key: String): DisplayRequest? {
+        val potentialRequest = SketchUtils.findDisplayRequest(sketchView)
+        if (potentialRequest != null && !potentialRequest.isFinished) {
+            if (key == potentialRequest.key) {
                 if (SLog.isLoggable(SLog.DEBUG)) {
-                    SLog.dmf(NAME, "Repeat request. key=%s. view(%s)", key, Integer.toHexString(sketchView.hashCode()));
+                    SLog.dmf(
+                        NAME, "Repeat request. key=%s. view(%s)", key, Integer.toHexString(
+                            sketchView.hashCode()
+                        )
+                    )
                 }
-                return potentialRequest;
+                return potentialRequest
             } else {
                 if (SLog.isLoggable(SLog.DEBUG)) {
-                    SLog.dmf(NAME, "Cancel old request. newKey=%s. oldKey=%s. view(%s)",
-                            key, potentialRequest.getKey(), Integer.toHexString(sketchView.hashCode()));
+                    SLog.dmf(
+                        NAME, "Cancel old request. newKey=%s. oldKey=%s. view(%s)",
+                        key, potentialRequest.key, Integer.toHexString(sketchView.hashCode())
+                    )
                 }
-                potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
+                potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER)
             }
         }
-
-        return null;
+        return null
     }
 
-    @NonNull
-    private DisplayRequest submitRequest(@NonNull String key, @NonNull UriModel uriModel) {
-        CallbackHandler.postCallbackStarted(displayListener, false);
-        if (stopwatch != null) {
-            stopwatch.record("callbackStarted");
-        }
-
-        RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(sketchView);
-        DisplayRequest request = new DisplayRequest(sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails(),
-                requestAndViewBinder, displayListener, downloadProgressListener);
-        if (stopwatch != null) {
-            stopwatch.record("createRequest");
-        }
-
-        SketchLoadingDrawable loadingDrawable;
-        StateImage loadingImage = displayOptions.getLoadingImage();
-        if (loadingImage != null) {
-            Context context = sketch.getConfiguration().getContext();
-            Drawable drawable = loadingImage.getDrawable(context, sketchView, displayOptions);
-            loadingDrawable = new SketchLoadingDrawable(drawable, request);
+    private fun submitRequest(key: String, uriModel: UriModel): DisplayRequest {
+        CallbackHandler.postCallbackStarted(displayListener, false)
+        stopwatch?.record("callbackStarted")
+        val requestAndViewBinder = RequestAndViewBinder(sketchView)
+        val request = DisplayRequest(
+            sketch, uri, uriModel, key, displayOptions, sketchView.isUseSmallerThumbnails,
+            requestAndViewBinder, displayListener, downloadProgressListener
+        )
+        stopwatch?.record("createRequest")
+        val loadingDrawable: SketchLoadingDrawable
+        val loadingImage = displayOptions.loadingImage
+        loadingDrawable = if (loadingImage != null) {
+            val context = sketch.configuration.context
+            val drawable = loadingImage.getDrawable(context, sketchView, displayOptions)
+            SketchLoadingDrawable(drawable, request)
         } else {
-            loadingDrawable = new SketchLoadingDrawable(null, request);
+            SketchLoadingDrawable(null, request)
         }
-        if (stopwatch != null) {
-            stopwatch.record("createLoadingImage");
-        }
-
-        sketchView.setImageDrawable(loadingDrawable);
-        if (stopwatch != null) {
-            stopwatch.record("setLoadingImage");
-        }
-
+        stopwatch?.record("createLoadingImage")
+        sketchView.setImageDrawable(loadingDrawable)
+        stopwatch?.record("setLoadingImage")
         if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(NAME, "Run dispatch submitted. view(%s). %s", Integer.toHexString(sketchView.hashCode()), key);
+            SLog.dmf(
+                NAME, "Run dispatch submitted. view(%s). %s", Integer.toHexString(
+                    sketchView.hashCode()
+                ), key
+            )
         }
-
-        request.submitDispatch();
-        if (stopwatch != null) {
-            stopwatch.record("submitRequest");
-        }
-
-        return request;
+        request.submitDispatch()
+        stopwatch?.record("submitRequest")
+        return request
     }
 }

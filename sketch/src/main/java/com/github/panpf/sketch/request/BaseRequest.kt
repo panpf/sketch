@@ -13,154 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.request
 
-package com.github.panpf.sketch.request;
+import android.content.Context
+import androidx.annotation.AnyThread
+import androidx.annotation.UiThread
+import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Configuration
+import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.uri.UriModel
 
-import android.content.Context;
+abstract class BaseRequest internal constructor(
+    val sketch: Sketch,
+    val uri: String,
+    val uriModel: UriModel,
+    val key: String,
+    val logName: String
+) : Runnable {
 
-import androidx.annotation.AnyThread;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
+    private val resultShareManager: ResultShareManager = sketch.configuration.resultShareManager
 
-import com.github.panpf.sketch.Configuration;
-import com.github.panpf.sketch.SLog;
-import com.github.panpf.sketch.Sketch;
-import com.github.panpf.sketch.uri.UriModel;
+    val diskCacheKey: String by lazy { uriModel.getDiskCacheKey(uri) }
+    var status: Status? = null
+        private set
+    var errorCause: ErrorCause? = null
+        private set
+    var cancelCause: CancelCause? = null
+        private set
+    private var runStatus: RunStatus? = null
+    var isSync = false
+    val context: Context
+        get() = sketch.configuration.context
+    val configuration: Configuration
+        get() = sketch.configuration
 
-@SuppressWarnings("WeakerAccess")
-public abstract class BaseRequest implements Runnable {
-    @NonNull
-    private Sketch sketch;
-    @NonNull
-    private String uri;
-    @NonNull
-    private UriModel uriModel;
-    @NonNull
-    private String key;
-    @NonNull
-    private ResultShareManager resultShareManager;
-    @NonNull
-    private String logName;
-
-    @Nullable
-    private String diskCacheKey;
-    @Nullable
-    private Status status;
-    @Nullable
-    private ErrorCause errorCause;
-    @Nullable
-    private CancelCause cancelCause;
-    @Nullable
-    private RunStatus runStatus;
-    private boolean sync;
-
-    BaseRequest(@NonNull Sketch sketch, @NonNull String uri, @NonNull UriModel uriModel, @NonNull String key, @NonNull String logName) {
-        this.sketch = sketch;
-        this.uri = uri;
-        this.uriModel = uriModel;
-        this.key = key;
-        this.logName = logName;
-        this.resultShareManager = sketch.getConfiguration().getResultShareManager();
+    fun setStatus(status: Status) {
+        this.status = status
     }
 
-    @NonNull
-    public Sketch getSketch() {
-        return sketch;
-    }
-
-    public Context getContext() {
-        return sketch.getConfiguration().getContext();
-    }
-
-    public Configuration getConfiguration() {
-        return sketch.getConfiguration();
-    }
-
-    @NonNull
-    public String getUri() {
-        return uri;
-    }
-
-    @NonNull
-    public UriModel getUriModel() {
-        return uriModel;
-    }
-
-    @NonNull
-    public String getKey() {
-        return key;
-    }
-
-    @NonNull
-    public String getDiskCacheKey() {
-        final String diskCacheKey = this.diskCacheKey;
-        if (diskCacheKey != null) return diskCacheKey;
-
-        String newDiskCacheKey = uriModel.getDiskCacheKey(uri);
-        this.diskCacheKey = newDiskCacheKey;
-        return newDiskCacheKey;
-    }
-
-    @NonNull
-    public String getLogName() {
-        return logName;
-    }
-
-    @Nullable
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(@NonNull Status status) {
-        this.status = status;
-    }
-
-    @Nullable
-    public ErrorCause getErrorCause() {
-        return errorCause;
-    }
-
-    protected void setErrorCause(@NonNull ErrorCause cause) {
-        this.errorCause = cause;
+    protected fun setErrorCause(cause: ErrorCause) {
+        errorCause = cause
         if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(getLogName(), "Request error. %s. %s. %s", cause.name(), getThreadName(), getKey());
+            SLog.dmf(logName, "Request error. %s. %s. %s", cause.name, threadName, key)
         }
     }
 
-    @Nullable
-    public CancelCause getCancelCause() {
-        return cancelCause;
-    }
-
-    protected void setCancelCause(@NonNull CancelCause cause) {
-        if (!isFinished()) {
-            this.cancelCause = cause;
+    protected fun setCancelCause(cause: CancelCause) {
+        if (!isFinished) {
+            cancelCause = cause
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(getLogName(), "Request cancel. %s. %s. %s", cause.name(), getThreadName(), getKey());
+                SLog.dmf(logName, "Request cancel. %s. %s. %s", cause.name, threadName, key)
             }
         }
     }
 
-    public boolean isFinished() {
-        return status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
-    }
+    val isFinished: Boolean
+        get() = status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED
+    open val isCanceled: Boolean
+        get() = status == Status.CANCELED
 
-    public boolean isCanceled() {
-        return status == Status.CANCELED;
+    // todo 作为结果的一种传入 finished 方法处理
+    protected open fun doError(errorCause: ErrorCause) {
+        setErrorCause(errorCause)
+        setStatus(Status.FAILED)
     }
 
     // todo 作为结果的一种传入 finished 方法处理
-    protected void doError(@NonNull ErrorCause errorCause) {
-        setErrorCause(errorCause);
-        setStatus(Status.FAILED);
-    }
-
-    // todo 作为结果的一种传入 finished 方法处理
-    protected void doCancel(@NonNull CancelCause cancelCause) {
-        setCancelCause(cancelCause);
-        setStatus(Status.CANCELED);
+    protected open fun doCancel(cancelCause: CancelCause) {
+        setCancelCause(cancelCause)
+        setStatus(Status.CANCELED)
     }
 
     /**
@@ -168,212 +90,174 @@ public abstract class BaseRequest implements Runnable {
      *
      * @return false：request finished
      */
-    public boolean cancel(@NonNull CancelCause cancelCause) {
-        if (!isFinished()) {
-            doCancel(cancelCause);
-            return true;
+    fun cancel(cancelCause: CancelCause): Boolean {
+        return if (!isFinished) {
+            doCancel(cancelCause)
+            true
         } else {
-            return false;
+            false
         }
     }
 
-    @NonNull
-    public String getThreadName() {
-        return Thread.currentThread().getName();
-    }
+    val threadName: String
+        get() = Thread.currentThread().name
 
-    @Override
-    public final void run() {
-        final RunStatus runStatus = this.runStatus;
+    override fun run() {
+        val runStatus = runStatus
         if (runStatus == RunStatus.DISPATCH) {
-            setStatus(Status.START_DISPATCH);
-            DispatchResult dispatchResult = runDispatch();
-            if (dispatchResult instanceof DownloadSuccessResult) {
-                DownloadResult downloadResult = ((DownloadSuccessResult) dispatchResult).getResult();
-                onRunDownloadFinished(downloadResult);
-                if (this instanceof DownloadRequest) {
-                    resultShareManager.unregisterDownloadShareProvider((DownloadRequest) this);
+            setStatus(Status.START_DISPATCH)
+            val dispatchResult = runDispatch()
+            if (dispatchResult is DownloadSuccessResult) {
+                val downloadResult = dispatchResult.result
+                onRunDownloadFinished(downloadResult)
+                if (this is DownloadRequest) {
+                    resultShareManager.unregisterDownloadShareProvider(this)
                 }
-            } else if (dispatchResult instanceof RunDownloadResult) {
-                submitDownload();
-            } else if (dispatchResult instanceof RunLoadResult) {
-                submitLoad();
+            } else if (dispatchResult is RunDownloadResult) {
+                submitDownload()
+            } else if (dispatchResult is RunLoadResult) {
+                submitLoad()
             }
         } else if (runStatus == RunStatus.DOWNLOAD) {
-            setStatus(Status.START_DOWNLOAD);
-            DownloadResult downloadResult = runDownload();
-            onRunDownloadFinished(downloadResult);
-            if (this instanceof DownloadRequest) {
-                resultShareManager.unregisterDownloadShareProvider((DownloadRequest) this);
+            setStatus(Status.START_DOWNLOAD)
+            val downloadResult = runDownload()
+            onRunDownloadFinished(downloadResult)
+            if (this is DownloadRequest) {
+                resultShareManager.unregisterDownloadShareProvider(this)
             }
         } else if (runStatus == RunStatus.LOAD) {
-            setStatus(Status.START_LOAD);
-            onRunLoadFinished(runLoad());
-            if (this instanceof DisplayRequest) {
-                resultShareManager.unregisterDisplayResultShareProvider((DisplayRequest) this);
+            setStatus(Status.START_LOAD)
+            onRunLoadFinished(runLoad())
+            if (this is DisplayRequest) {
+                resultShareManager.unregisterDisplayResultShareProvider(this)
             }
         } else {
-            SLog.emf(getLogName(), "Unknown runStatus: %s", (runStatus != null ? runStatus.name() : null));
+            SLog.emf(logName, "Unknown runStatus: %s", runStatus?.name!!)
         }
     }
 
-    boolean isSync() {
-        return sync;
-    }
-
-    void setSync(boolean sync) {
-        this.sync = sync;
-    }
-
-    void submitDispatch() {
-        this.runStatus = RunStatus.DISPATCH;
-        if (sync) {
-            run();
+    fun submitDispatch() {
+        runStatus = RunStatus.DISPATCH
+        if (isSync) {
+            run()
         } else {
-            setStatus(Status.WAIT_DISPATCH);
-            getConfiguration().getExecutor().submitDispatch(this);
+            setStatus(Status.WAIT_DISPATCH)
+            configuration.executor.submitDispatch(this)
         }
     }
 
-    void submitDownload() {
-        this.runStatus = RunStatus.DOWNLOAD;
-        if (sync) {
-            run();
+    fun submitDownload() {
+        runStatus = RunStatus.DOWNLOAD
+        if (isSync) {
+            run()
         } else {
-            if (this instanceof DownloadRequest && ((DownloadRequest) this).canUseDownloadShare()) {
-                DownloadRequest downloadRequest = (DownloadRequest) this;
+            if (this is DownloadRequest && this.canUseDownloadShare()) {
+                val downloadRequest = this
                 if (!resultShareManager.requestAttachDownloadShare(downloadRequest)) {
-                    resultShareManager.registerDownloadShareProvider(downloadRequest);
-                    setStatus(Status.WAIT_DOWNLOAD);
-                    getConfiguration().getExecutor().submitDownload(this);
+                    resultShareManager.registerDownloadShareProvider(downloadRequest)
+                    setStatus(Status.WAIT_DOWNLOAD)
+                    configuration.executor.submitDownload(this)
                 }
             } else {
-                setStatus(Status.WAIT_DOWNLOAD);
-                getConfiguration().getExecutor().submitDownload(this);
+                setStatus(Status.WAIT_DOWNLOAD)
+                configuration.executor.submitDownload(this)
             }
         }
     }
 
-    void submitLoad() {
-        this.runStatus = RunStatus.LOAD;
-        if (sync) {
-            run();
+    fun submitLoad() {
+        runStatus = RunStatus.LOAD
+        if (isSync) {
+            run()
         } else {
-            if (this instanceof DisplayRequest && ((DisplayRequest) this).canUseDisplayShare()) {
-                DisplayRequest displayRequest = (DisplayRequest) this;
+            if (this is DisplayRequest && this.canUseDisplayShare()) {
+                val displayRequest = this
                 if (!resultShareManager.requestAttachDisplayShare(displayRequest)) {
-                    resultShareManager.registerDisplayResultShareProvider(displayRequest);
-                    setStatus(Status.WAIT_LOAD);
-                    getConfiguration().getExecutor().submitLoad(this);
+                    resultShareManager.registerDisplayResultShareProvider(displayRequest)
+                    setStatus(Status.WAIT_LOAD)
+                    configuration.executor.submitLoad(this)
                 }
             } else {
-                setStatus(Status.WAIT_LOAD);
-                getConfiguration().getExecutor().submitLoad(this);
+                setStatus(Status.WAIT_LOAD)
+                configuration.executor.submitLoad(this)
             }
         }
     }
 
-
-    @Nullable
     @WorkerThread
-    abstract DispatchResult runDispatch();
-
-    @Nullable
-    @WorkerThread
-    abstract DownloadResult runDownload();
+    abstract fun runDispatch(): DispatchResult?
 
     @WorkerThread
-    abstract void onRunDownloadFinished(@Nullable DownloadResult result);
-
-    @Nullable
-    @WorkerThread
-    abstract LoadResult runLoad();
+    abstract fun runDownload(): DownloadResult?
 
     @WorkerThread
-    abstract void onRunLoadFinished(@Nullable LoadResult result);
+    abstract fun onRunDownloadFinished(result: DownloadResult?)
 
-    void postToMainRunUpdateProgress(int totalLength, int completedLength) {
-        CallbackHandler.postRunUpdateProgress(this, totalLength, completedLength);
+    @WorkerThread
+    abstract fun runLoad(): LoadResult?
+
+    @WorkerThread
+    abstract fun onRunLoadFinished(result: LoadResult?)
+    fun postToMainRunUpdateProgress(totalLength: Int, completedLength: Int) {
+        CallbackHandler.postRunUpdateProgress(this, totalLength, completedLength)
     }
 
     @UiThread
-    abstract void runUpdateProgressInMain(int totalLength, int completedLength);
+    abstract fun runUpdateProgressInMain(totalLength: Int, completedLength: Int)
 
     @AnyThread
-    protected void postRunCompleted() {
-        CallbackHandler.postRunCompleted(this);
+    protected open fun postRunCompleted() {
+        CallbackHandler.postRunCompleted(this@BaseRequest)
     }
 
     @UiThread
-    abstract void runCompletedInMain();
+    abstract fun runCompletedInMain()
 
     @AnyThread
-    protected void postToMainRunError() {
-        CallbackHandler.postRunError(this);
+    protected open fun postToMainRunError() {
+        CallbackHandler.postRunError(this)
     }
 
     @UiThread
-    abstract void runErrorInMain();
+    abstract fun runErrorInMain()
 
     @AnyThread
-    void postToMainRunCanceled() {
-        CallbackHandler.postRunCanceled(this);
+    fun postToMainRunCanceled() {
+        CallbackHandler.postRunCanceled(this)
     }
 
     @UiThread
-    abstract void runCanceledInMain();
-
-    public final void updateProgress(int totalLength, int completedLength) {
-        onUpdateProgress(totalLength, completedLength);
-
-        if (this instanceof DownloadRequest) {
-            resultShareManager.updateDownloadProgress((DownloadRequest) this, totalLength, completedLength);
+    abstract fun runCanceledInMain()
+    fun updateProgress(totalLength: Int, completedLength: Int) {
+        onUpdateProgress(totalLength, completedLength)
+        if (this is DownloadRequest) {
+            resultShareManager.updateDownloadProgress(this, totalLength, completedLength)
         }
     }
 
-    abstract void onUpdateProgress(int totalLength, int completedLength);
+    abstract fun onUpdateProgress(totalLength: Int, completedLength: Int)
 
-
-    private enum RunStatus {
-        DISPATCH, LOAD, DOWNLOAD,
+    private enum class RunStatus {
+        DISPATCH, LOAD, DOWNLOAD
     }
 
-    public enum Status {
-        WAIT_DISPATCH(),
-
-        START_DISPATCH(),
-
-        INTERCEPT_LOCAL_TASK(),
-
-
-        WAIT_DOWNLOAD(),
-
-        START_DOWNLOAD(),
-
-        CHECK_DISK_CACHE(),
-
-        CONNECTING(),
-
-        READ_DATA(),
-
-
-        WAIT_LOAD(),
-
-        START_LOAD(),
-
-        CHECK_MEMORY_CACHE(),
-
-        DECODING(),
-
-        PROCESSING(),
-
-        WAIT_DISPLAY(),
-
-
-        COMPLETED(),
-
-        FAILED(),
-
-        CANCELED(),
+    enum class Status {
+        WAIT_DISPATCH,
+        START_DISPATCH,
+        INTERCEPT_LOCAL_TASK,
+        WAIT_DOWNLOAD,
+        START_DOWNLOAD,
+        CHECK_DISK_CACHE,
+        CONNECTING,
+        READ_DATA,
+        WAIT_LOAD,
+        START_LOAD,
+        CHECK_MEMORY_CACHE,
+        DECODING,
+        PROCESSING,
+        WAIT_DISPLAY,
+        COMPLETED,
+        FAILED,
+        CANCELED
     }
 }
