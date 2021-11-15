@@ -18,7 +18,7 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.util.ObjectPool.ObjectFactory
 import java.util.*
 
-class ObjectPool<T> @JvmOverloads constructor(
+class ObjectPool<T>(
     private val objectFactory: ObjectFactory<T>,
     private var maxPoolSize: Int = MAX_POOL_SIZE
 ) {
@@ -30,7 +30,6 @@ class ObjectPool<T> @JvmOverloads constructor(
     private val editLock = Any()
     private val cacheQueue: Queue<T>
 
-    @JvmOverloads
     constructor(classType: Class<T>, maxPoolSize: Int = MAX_POOL_SIZE) : this(ObjectFactory<T> {
         try {
             classType.newInstance()

@@ -13,59 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.panpf.sketch.zoom
 
-package com.github.panpf.sketch.zoom;
+import android.content.Context
+import android.widget.ImageView.ScaleType
 
-import android.content.Context;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-public interface ZoomScales {
-
-    /**
-     * 重置
-     */
-    void reset(@NonNull final Context context, @NonNull final Sizes sizes, @Nullable final ImageView.ScaleType scaleType, final float rotateDegrees, final boolean readMode);
+interface ZoomScales {
 
     /**
      * 最小缩放比例
      */
-    float getMinZoomScale();
+    val minZoomScale: Float
 
     /**
      * 最大缩放比例
      */
-    float getMaxZoomScale();
+    val maxZoomScale: Float
 
     /**
      * 最大初始缩放比例
      */
-    float getInitZoomScale();
+    val initZoomScale: Float
 
     /**
      * 能够看到图片全貌的缩放比例
      */
-    float getFullZoomScale();
+    val fullZoomScale: Float
 
     /**
      * 获取能够宽或高能够填满屏幕的缩放比例
      */
-    float getFillZoomScale();
+    val fillZoomScale: Float
 
     /**
      * 能够让图片按照真实尺寸一比一显示的缩放比例
      */
-    float getOriginZoomScale();
+    val originZoomScale: Float
 
     /**
      * 双击缩放所的比例组
      */
-    float[] getZoomScales();
+    val zoomScales: FloatArray?
+
+    /**
+     * 重置
+     */
+    fun reset(
+        context: Context,
+        sizes: Sizes,
+        scaleType: ScaleType?,
+        rotateDegrees: Float,
+        readMode: Boolean
+    )
 
     /**
      * 清理一下
      */
-    void clean();
+    fun clean()
 }

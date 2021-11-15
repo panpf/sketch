@@ -1,9 +1,7 @@
-package com.github.panpf.sketch.sample.util
+package com.github.panpf.sketch.zoom
 
 import android.content.Context
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.zoom.Sizes
-import com.github.panpf.sketch.zoom.ZoomScales
 
 /**
  * 固定的三级缩放比例
@@ -11,9 +9,23 @@ import com.github.panpf.sketch.zoom.ZoomScales
 class FixedThreeLevelScales : ZoomScales {
 
     private val scales = floatArrayOf(1.0f, 2.0f, 3.0f)
-    private var fullZoomScale = 0f  // 能够看到图片全貌的缩放比例
-    private var fillZoomScale = 0f  // 能够让图片填满宽或高的缩放比例
-    private var originZoomScale = 0f    // 能够让图片按照真实尺寸一比一显示的缩放比例
+    private var fullZoomScaleCache = 0f  // 能够看到图片全貌的缩放比例
+    private var fillZoomScaleCache = 0f  // 能够让图片填满宽或高的缩放比例
+    private var originZoomScaleCache = 0f    // 能够让图片按照真实尺寸一比一显示的缩放比例
+
+    override val minZoomScale = 1.0f
+
+    override val maxZoomScale = 3.0f
+
+    override val initZoomScale = 1.0f
+
+    override val fullZoomScale = fullZoomScaleCache
+
+    override val fillZoomScale = fillZoomScaleCache
+
+    override val originZoomScale = originZoomScaleCache
+
+    override val zoomScales = scales
 
     override fun reset(
         context: Context,
@@ -34,43 +46,15 @@ class FixedThreeLevelScales : ZoomScales {
         val heightScale = sizes.viewSize.height.toFloat() / drawableHeight
 
         // 小的是完整显示比例，大的是充满比例
-        fullZoomScale = widthScale.coerceAtMost(heightScale)
-        fillZoomScale = widthScale.coerceAtLeast(heightScale)
-        originZoomScale =
+        fullZoomScaleCache = widthScale.coerceAtMost(heightScale)
+        fillZoomScaleCache = widthScale.coerceAtLeast(heightScale)
+        originZoomScaleCache =
             (imageWidth.toFloat() / drawableWidth).coerceAtLeast(imageHeight.toFloat() / drawableHeight)
     }
 
-    override fun getMinZoomScale(): Float {
-        return 1.0f
-    }
-
-    override fun getMaxZoomScale(): Float {
-        return 3.0f
-    }
-
-    override fun getInitZoomScale(): Float {
-        return 1.0f
-    }
-
-    override fun getFullZoomScale(): Float {
-        return fullZoomScale
-    }
-
-    override fun getFillZoomScale(): Float {
-        return fillZoomScale
-    }
-
-    override fun getOriginZoomScale(): Float {
-        return originZoomScale
-    }
-
-    override fun getZoomScales(): FloatArray {
-        return scales
-    }
-
     override fun clean() {
-        originZoomScale = 1.0f
-        fillZoomScale = originZoomScale
-        fullZoomScale = fillZoomScale
+        originZoomScaleCache = 1.0f
+        fillZoomScaleCache = originZoomScale
+        fullZoomScaleCache = fillZoomScale
     }
 }

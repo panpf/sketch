@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.sample.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -97,8 +98,8 @@ class MappingView : SketchImageView {
         super.onDraw(canvas)
 
         if (depBlockDisplayer != null && depBlockDisplayer!!.isReady) {
-            val widthScale = depBlockDisplayer!!.imageSize.x.toFloat() / width
-            val heightScale = depBlockDisplayer!!.imageSize.y.toFloat() / height
+            val widthScale = depBlockDisplayer!!.imageSize!!.x.toFloat() / width
+            val heightScale = depBlockDisplayer!!.imageSize!!.y.toFloat() / height
 
             for (block in depBlockDisplayer!!.blockList) {
                 if (!block.isEmpty) {
@@ -155,6 +156,7 @@ class MappingView : SketchImageView {
         resetViewSize()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (detector == null) {
             return super.onTouchEvent(event)

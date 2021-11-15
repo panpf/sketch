@@ -13,14 +13,13 @@ import com.github.panpf.sketch.request.BitmapRecycledOnDisplayException
 import com.github.panpf.sketch.uri.DrawableUriModel
 import com.github.panpf.sketch.uri.UriModel
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.zoom.block.Block
-import com.github.panpf.sketch.zoom.block.BlockSortException
 import com.github.panpf.tools4a.device.Devicex
 import com.tencent.bugly.crashreport.CrashReport
 import java.util.*
+import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.block.BlockSortException
 
-internal class MySketchCallback(context: Application) :
-    SketchCallback {
+internal class MySketchCallback(context: Application) : SketchCallback {
 
     private val appContext = context.applicationContext
     private var lastUploadInstallFailedTime: Long = 0

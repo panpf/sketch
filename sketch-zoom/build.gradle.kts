@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("kotlin-android")
 }
 
 android {
@@ -23,6 +24,7 @@ android {
 }
 
 dependencies {
+    api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
     api(project(":sketch"))
 }
 

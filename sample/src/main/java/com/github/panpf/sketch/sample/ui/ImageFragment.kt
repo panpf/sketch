@@ -15,7 +15,7 @@ import com.github.panpf.sketch.display.FadeInImageDisplayer
 import com.github.panpf.sketch.drawable.SketchGifDrawable
 import com.github.panpf.sketch.request.*
 import com.github.panpf.sketch.sample.util.CompactDisplayListener
-import com.github.panpf.sketch.sample.util.FixedThreeLevelScales
+import com.github.panpf.sketch.zoom.FixedThreeLevelScales
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.BindingFragment
@@ -30,6 +30,8 @@ import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.uri.UriModel
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.zoom.AdaptiveTwoLevelScales
+import com.github.panpf.sketch.zoom.BlockDisplayer
+import com.github.panpf.sketch.zoom.ImageZoomer
 import java.util.*
 
 class ImageFragment : BindingFragment<FragmentImageBinding>() {
@@ -91,7 +93,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
                     isReadMode = it == true
                 }
 
-                setOnViewTapListener { _, x, y ->
+                onViewTapListener = ImageZoomer.OnViewTapListener { _, x, y ->
                     if (parentFragment is ImageViewerFragment) {
                         exitViewer()
                     } else {
@@ -99,7 +101,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
                     }
                 }
 
-                setOnViewLongPressListener { _, _, _ ->
+                onViewLongPressListener = ImageZoomer.OnViewLongPressListener { _, _, _ ->
                     showImageMenuViewModel.showImageMenuEvent.postValue(binding)
                 }
 
@@ -130,9 +132,10 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
                 }
 
                 // Follow the fragments to refresh the block area
-                binding.imageFragmentZoomImage.zoomer.blockDisplayer.setOnBlockChangedListener {
-                    blockChanged(it)
-                }
+                binding.imageFragmentZoomImage.zoomer.blockDisplayer.onBlockChangedListener =
+                    BlockDisplayer.OnBlockChangedListener {
+                        blockChanged(it)
+                    }
 
                 // Click MappingView to locate to the specified location
                 setOnSingleClickListener { x: Float, y: Float ->
@@ -228,7 +231,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
             args.normalQualityUrl, uriModel, loadingOptionsKey
         )
         val memoryCache = Sketch.with(requireContext()).configuration.memoryCache
-        return if (memoryCache.get(memoryCacheKey) != null) {
+        return if (memoryCache[memoryCacheKey] != null) {
             MemoryCacheStateImage(memoryCacheKey, null)
         } else {
             null
