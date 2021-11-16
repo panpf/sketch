@@ -47,9 +47,12 @@ class GifDecodeHelper : DecodeHelper() {
 
     @Throws(DecodeException::class)
     override fun decode(
-        request: LoadRequest, dataSource: DataSource,
-        imageType: ImageType?, boundOptions: BitmapFactory.Options,
-        decodeOptions: BitmapFactory.Options, exifOrientation: Int
+        request: LoadRequest,
+        dataSource: DataSource,
+        imageType: ImageType?,
+        boundOptions: BitmapFactory.Options,
+        decodeOptions: BitmapFactory.Options,
+        exifOrientation: Int
     ): DecodeResult {
         return try {
             val imageAttrs = ImageAttrs(
