@@ -75,7 +75,7 @@ class SketchUtils {
         @JvmStatic
         fun readApkIcon(
             context: Context, apkFilePath: String, lowQualityImage: Boolean,
-            logName: String, bitmapPool: BitmapPool
+            logName: String, bitmapPool: BitmapPool?
         ): Bitmap? {
             val packageManager = context.packageManager
             val packageInfo =

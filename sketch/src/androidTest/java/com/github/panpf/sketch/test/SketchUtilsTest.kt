@@ -1,124 +1,111 @@
-package com.github.panpf.sketch.test;
+package com.github.panpf.sketch.test
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
+import com.github.panpf.sketch.util.SketchUtils.Companion.cleanDir
+import com.github.panpf.sketch.util.SketchUtils.Companion.deleteFile
+import com.github.panpf.sketch.util.SketchUtils.Companion.drawableToBitmap
+import com.github.panpf.sketch.util.SketchUtils.Companion.getByteCount
+import com.github.panpf.sketch.util.SketchUtils.Companion.readApkIcon
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.File
+import java.io.IOException
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.IOException;
-
-import com.github.panpf.sketch.util.SketchUtils;
-
-@RunWith(AndroidJUnit4.class)
-public class SketchUtilsTest {
+@RunWith(AndroidJUnit4::class)
+class SketchUtilsTest {
     @Test
-    public void testReadApkIcon() {
-        Context context = InstrumentationRegistry.getContext();
-        PackageInfo packageInfo;
-        try {
-            packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-            return;
+    fun testReadApkIcon() {
+        val context = InstrumentationRegistry.getContext()
+        val packageInfo: PackageInfo = try {
+            context.packageManager.getPackageInfo(context.packageName, 0)
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            Assert.fail(e.message)
+            return
         }
-        String apkPath = packageInfo.applicationInfo.sourceDir;
-
-        if (!new File(apkPath).exists()) {
-            Assert.fail("Backup test app failed. " + apkPath);
+        val apkPath = packageInfo.applicationInfo.sourceDir
+        if (!File(apkPath).exists()) {
+            Assert.fail("Backup test app failed. $apkPath")
         }
-
-        Bitmap highQualityApkIconBitmap = SketchUtils.readApkIcon(context, apkPath, false, "testReadApkIcon", null);
+        val highQualityApkIconBitmap = readApkIcon(context, apkPath, false, "testReadApkIcon", null)
         if (highQualityApkIconBitmap == null) {
-            Assert.fail("Read high quality apk icon result is null");
+            Assert.fail("Read high quality apk icon result is null")
         }
-        if (highQualityApkIconBitmap.isRecycled()) {
-            Assert.fail("High quality apk icon bitmap recycled");
+        if (highQualityApkIconBitmap!!.isRecycled) {
+            Assert.fail("High quality apk icon bitmap recycled")
         }
-
-        Bitmap lowQualityApkIconBitmap = SketchUtils.readApkIcon(context, apkPath, true, "testReadApkIcon", null);
+        val lowQualityApkIconBitmap = readApkIcon(context, apkPath, true, "testReadApkIcon", null)
         if (lowQualityApkIconBitmap == null) {
-            highQualityApkIconBitmap.recycle();
-            Assert.fail("Read low quality apk icon result is null");
+            highQualityApkIconBitmap.recycle()
+            Assert.fail("Read low quality apk icon result is null")
         }
-        if (lowQualityApkIconBitmap.isRecycled()) {
-            highQualityApkIconBitmap.recycle();
-            Assert.fail("Low quality apk icon bitmap recycled");
+        if (lowQualityApkIconBitmap!!.isRecycled) {
+            highQualityApkIconBitmap.recycle()
+            Assert.fail("Low quality apk icon bitmap recycled")
         }
-
-        int highQualityByteCount = SketchUtils.getByteCount(highQualityApkIconBitmap);
-        int lowQualityByteCount = SketchUtils.getByteCount(lowQualityApkIconBitmap);
-
-        highQualityApkIconBitmap.recycle();
-        lowQualityApkIconBitmap.recycle();
+        val highQualityByteCount = getByteCount(highQualityApkIconBitmap)
+        val lowQualityByteCount = getByteCount(lowQualityApkIconBitmap)
+        highQualityApkIconBitmap.recycle()
+        lowQualityApkIconBitmap.recycle()
 
         // KITKAT 以上不再支持 ARGB4444，因此 lowQualityImage 参数应该无效
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (highQualityByteCount != lowQualityByteCount) {
-                Assert.fail("lowQualityImage attr invalid");
+                Assert.fail("lowQualityImage attr invalid")
             }
         } else {
             if (highQualityByteCount <= lowQualityByteCount) {
-                Assert.fail("lowQualityImage attr invalid");
+                Assert.fail("lowQualityImage attr invalid")
             }
         }
     }
 
     @Test
-    public void testDrawableToBitmap() {
-        Context context = InstrumentationRegistry.getContext();
-        //noinspection deprecation
-        Drawable drawable = context.getResources().getDrawable(R.drawable.shape_round_rect);
-
-        Bitmap highQualityApkIconBitmap = SketchUtils.drawableToBitmap(drawable, false, null);
+    fun testDrawableToBitmap() {
+        val context = InstrumentationRegistry.getContext()
+        val drawable = context.resources.getDrawable(R.drawable.shape_round_rect)
+        val highQualityApkIconBitmap = drawableToBitmap(drawable, false, null)
         if (highQualityApkIconBitmap == null) {
-            Assert.fail("Read quality high apk icon result is null");
+            Assert.fail("Read quality high apk icon result is null")
         }
-        if (highQualityApkIconBitmap.isRecycled()) {
-            Assert.fail("High quality apk icon bitmap recycled");
+        if (highQualityApkIconBitmap!!.isRecycled) {
+            Assert.fail("High quality apk icon bitmap recycled")
         }
-
-        Bitmap lowQualityApkIconBitmap = SketchUtils.drawableToBitmap(drawable, true, null);
+        val lowQualityApkIconBitmap = drawableToBitmap(drawable, true, null)
         if (lowQualityApkIconBitmap == null) {
-            highQualityApkIconBitmap.recycle();
-            Assert.fail("Read low quality apk icon result is null");
+            highQualityApkIconBitmap.recycle()
+            Assert.fail("Read low quality apk icon result is null")
         }
-        if (lowQualityApkIconBitmap.isRecycled()) {
-            highQualityApkIconBitmap.recycle();
-            Assert.fail("Low quality apk icon bitmap recycled");
+        if (lowQualityApkIconBitmap!!.isRecycled) {
+            highQualityApkIconBitmap.recycle()
+            Assert.fail("Low quality apk icon bitmap recycled")
         }
-
-        int highQualityByteCount = SketchUtils.getByteCount(highQualityApkIconBitmap);
-        int lowQualityByteCount = SketchUtils.getByteCount(lowQualityApkIconBitmap);
-
-        highQualityApkIconBitmap.recycle();
-        lowQualityApkIconBitmap.recycle();
+        val highQualityByteCount = getByteCount(highQualityApkIconBitmap)
+        val lowQualityByteCount = getByteCount(lowQualityApkIconBitmap)
+        highQualityApkIconBitmap.recycle()
+        lowQualityApkIconBitmap.recycle()
 
         // KITKAT 以上不再支持 ARGB4444，因此 lowQualityImage 参数应该无效
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (highQualityByteCount != lowQualityByteCount) {
-                Assert.fail("lowQualityImage attr invalid");
+                Assert.fail("lowQualityImage attr invalid")
             }
         } else {
             if (highQualityByteCount <= lowQualityByteCount) {
-                Assert.fail("lowQualityImage attr invalid");
+                Assert.fail("lowQualityImage attr invalid")
             }
         }
     }
 
     @Test
-    public void testCleanDir() {
-        Context context = InstrumentationRegistry.getContext();
-        File filesDir = context.getFilesDir();
+    fun testCleanDir() {
+        val context = InstrumentationRegistry.getContext()
+        val filesDir = context.filesDir
 
         /*
             files/
@@ -127,70 +114,57 @@ public class SketchUtilsTest {
                     childDir1/
                         testFile2.temp
          */
-        File testDir = new File(filesDir, "test");
-        File testFile1 = new File(testDir, "testFile1.temp");
-        File childDir1 = new File(testDir, "childDir1");
-        File testFile2 = new File(childDir1, "testFile2.temp");
-        //noinspection ResultOfMethodCallIgnored
-        testDir.mkdirs();
+        val testDir = File(filesDir, "test")
+        val testFile1 = File(testDir, "testFile1.temp")
+        val childDir1 = File(testDir, "childDir1")
+        val testFile2 = File(childDir1, "testFile2.temp")
+        testDir.mkdirs()
         if (!testDir.exists()) {
-            Assert.fail("Create dir failed. " + testDir.getPath());
+            Assert.fail("Create dir failed. " + testDir.path)
         }
-
         try {
-            //noinspection ResultOfMethodCallIgnored
-            testFile1.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            testFile1.createNewFile()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         if (!testFile1.exists()) {
-            Assert.fail("Create file failed. " + testFile1.getPath());
+            Assert.fail("Create file failed. " + testFile1.path)
         }
-
-        //noinspection ResultOfMethodCallIgnored
-        childDir1.mkdirs();
+        childDir1.mkdirs()
         if (!childDir1.exists()) {
-            Assert.fail("Create dir failed. " + childDir1.getPath());
+            Assert.fail("Create dir failed. " + childDir1.path)
         }
-
         try {
-            //noinspection ResultOfMethodCallIgnored
-            testFile2.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            testFile2.createNewFile()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         if (!testFile2.exists()) {
-            Assert.fail("Create file failed. " + testFile2.getPath());
+            Assert.fail("Create file failed. " + testFile2.path)
         }
-
-        SketchUtils.cleanDir(testDir);
-
+        cleanDir(testDir)
         if (testFile2.exists()) {
-            Assert.fail("Clean failed. " + testFile2.getPath());
+            Assert.fail("Clean failed. " + testFile2.path)
         }
-
         if (childDir1.exists()) {
-            Assert.fail("Clean failed. " + childDir1.getPath());
+            Assert.fail("Clean failed. " + childDir1.path)
         }
-
         if (testFile1.exists()) {
-            Assert.fail("Clean failed. " + testFile1.getPath());
+            Assert.fail("Clean failed. " + testFile1.path)
         }
-
         if (!testDir.exists()) {
-            Assert.fail("Root dir deleted. " + testDir.getPath());
+            Assert.fail("Root dir deleted. " + testDir.path)
         }
-
-        File[] childFiles = testDir.listFiles();
-        if (childFiles != null && childFiles.length > 0) {
-            Assert.fail("Clean failed. " + testFile1.getPath());
+        val childFiles = testDir.listFiles()
+        if (childFiles != null && childFiles.size > 0) {
+            Assert.fail("Clean failed. " + testFile1.path)
         }
     }
 
     @Test
-    public void testDeleteFile() {
-        Context context = InstrumentationRegistry.getContext();
-        File filesDir = context.getFilesDir();
+    fun testDeleteFile() {
+        val context = InstrumentationRegistry.getContext()
+        val filesDir = context.filesDir
 
         /*
             files/
@@ -199,75 +173,59 @@ public class SketchUtilsTest {
                     childDir1/
                         testFile2.temp
          */
-        File testDir = new File(filesDir, "test");
-        File testFile1 = new File(testDir, "testFile1.temp");
-        File childDir1 = new File(testDir, "childDir1");
-        File testFile2 = new File(childDir1, "testFile2.temp");
-        //noinspection ResultOfMethodCallIgnored
-        testDir.mkdirs();
+        val testDir = File(filesDir, "test")
+        val testFile1 = File(testDir, "testFile1.temp")
+        val childDir1 = File(testDir, "childDir1")
+        val testFile2 = File(childDir1, "testFile2.temp")
+        testDir.mkdirs()
         if (!testDir.exists()) {
-            Assert.fail("Create dir failed. " + testDir.getPath());
+            Assert.fail("Create dir failed. " + testDir.path)
         }
-
         try {
-            //noinspection ResultOfMethodCallIgnored
-            testFile1.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            testFile1.createNewFile()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         if (!testFile1.exists()) {
-            Assert.fail("Create file failed. " + testFile1.getPath());
+            Assert.fail("Create file failed. " + testFile1.path)
         }
-
-        //noinspection ResultOfMethodCallIgnored
-        childDir1.mkdirs();
+        childDir1.mkdirs()
         if (!childDir1.exists()) {
-            Assert.fail("Create dir failed. " + childDir1.getPath());
+            Assert.fail("Create dir failed. " + childDir1.path)
         }
-
         try {
-            //noinspection ResultOfMethodCallIgnored
-            testFile2.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            testFile2.createNewFile()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         if (!testFile2.exists()) {
-            Assert.fail("Create file failed. " + testFile2.getPath());
+            Assert.fail("Create file failed. " + testFile2.path)
         }
-
-        SketchUtils.deleteFile(testDir);
-
+        deleteFile(testDir)
         if (testFile2.exists()) {
-            Assert.fail("Delete failed. " + testFile2.getPath());
+            Assert.fail("Delete failed. " + testFile2.path)
         }
-
         if (childDir1.exists()) {
-            Assert.fail("Delete failed. " + childDir1.getPath());
+            Assert.fail("Delete failed. " + childDir1.path)
         }
-
         if (testFile1.exists()) {
-            Assert.fail("Delete failed. " + testFile1.getPath());
+            Assert.fail("Delete failed. " + testFile1.path)
         }
-
         if (testDir.exists()) {
-            Assert.fail("Delete failed. " + testDir.getPath());
+            Assert.fail("Delete failed. " + testDir.path)
         }
-
-        File testFile = new File(filesDir, "test.temp");
+        val testFile = File(filesDir, "test.temp")
         try {
-            //noinspection ResultOfMethodCallIgnored
-            testFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            testFile.createNewFile()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         if (!testFile.exists()) {
-            Assert.fail("Create file failed. " + testFile.getPath());
+            Assert.fail("Create file failed. " + testFile.path)
         }
-
-        SketchUtils.deleteFile(testFile);
-
+        deleteFile(testFile)
         if (testFile.exists()) {
-            Assert.fail("Delete failed. " + testFile.getPath());
+            Assert.fail("Delete failed. " + testFile.path)
         }
     }
 }
