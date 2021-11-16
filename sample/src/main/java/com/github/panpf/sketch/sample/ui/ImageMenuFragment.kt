@@ -378,7 +378,7 @@ class ImageMenuFragment : BaseFragment() {
 
                 kotlin.runCatching {
                     FileOutputStream(outImageFile).use { outputStream ->
-                        dataSource.inputStream.use { inputStream ->
+                        dataSource.newInputStream().use { inputStream ->
                             val data = ByteArray(1024)
                             var length: Int
                             while (inputStream.read(data).also { length = it } != -1) {

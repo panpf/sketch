@@ -18,11 +18,6 @@ package com.github.panpf.sketch.datasource
 import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.text.TextUtils
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.drawable.SketchGifDrawable
-import com.github.panpf.sketch.drawable.SketchGifFactory
 import com.github.panpf.sketch.request.ImageFrom
 import com.github.panpf.sketch.util.SketchUtils
 import java.io.*
@@ -30,7 +25,7 @@ import java.io.*
 /**
  * 用于读取来自 drawable 资源的图片
  */
-class DrawableDataSource(private val context: Context, private val drawableId: Int) : DataSource {
+class DrawableDataSource(val context: Context, val drawableId: Int) : DataSource {
 
     override val imageFrom: ImageFrom
         get() = ImageFrom.LOCAL
@@ -52,9 +47,10 @@ class DrawableDataSource(private val context: Context, private val drawableId: I
         }
         private set
 
-    @get:Throws(IOException::class)
-    override val inputStream: InputStream
-        get() = context.resources.openRawResource(drawableId)
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream {
+        return context.resources.openRawResource(drawableId)
+    }
 
     @Throws(IOException::class)
     override fun getFile(outDir: File?, outName: String?): File? {
@@ -69,7 +65,7 @@ class DrawableDataSource(private val context: Context, private val drawableId: I
         } else {
             File(outDir, SketchUtils.generatorTempFileName(this, drawableId.toString()))
         }
-        val inputStream = inputStream
+        val inputStream = newInputStream()
         val outputStream: OutputStream = try {
             FileOutputStream(outFile)
         } catch (e: IOException) {
@@ -87,24 +83,5 @@ class DrawableDataSource(private val context: Context, private val drawableId: I
             SketchUtils.close(inputStream)
         }
         return outFile
-    }
-
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    override fun makeGifDrawable(
-        key: String,
-        uri: String,
-        imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable {
-        val resources = context.resources
-        return SketchGifFactory.createGifDrawable(
-            key,
-            uri,
-            imageAttrs,
-            imageFrom,
-            bitmapPool,
-            resources,
-            drawableId
-        )
     }
 }

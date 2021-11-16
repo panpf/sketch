@@ -88,7 +88,7 @@ class ImageOrientationCorrector {
         }
         var inputStream: InputStream? = null
         return try {
-            inputStream = dataSource.inputStream
+            inputStream = dataSource.newInputStream()
             readExifOrientation(inputStream)
         } catch (e: IOException) {
             e.printStackTrace()

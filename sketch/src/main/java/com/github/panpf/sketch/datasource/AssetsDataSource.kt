@@ -17,21 +17,17 @@ package com.github.panpf.sketch.datasource
 
 import android.content.Context
 import android.content.res.AssetFileDescriptor
-import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.request.ImageFrom
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.drawable.SketchGifDrawable
 import android.text.TextUtils
-import com.github.panpf.sketch.drawable.SketchGifFactory
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.util.SketchUtils
 import java.io.*
 
 /**
  * 用于读取来自 asset 的图片
  */
 class AssetsDataSource(
-    private val context: Context, private val assetsFilePath: String
+    val context: Context,
+    val assetsFilePath: String
 ) : DataSource {
 
     override val imageFrom: ImageFrom
@@ -55,9 +51,10 @@ class AssetsDataSource(
         }
         private set
 
-    @get:Throws(IOException::class)
-    override val inputStream: InputStream
-        get() = context.assets.open(assetsFilePath)
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream {
+        return context.assets.open(assetsFilePath)
+    }
 
     @Throws(IOException::class)
     override fun getFile(outDir: File?, outName: String?): File? {
@@ -72,7 +69,7 @@ class AssetsDataSource(
         } else {
             File(outDir, SketchUtils.generatorTempFileName(this, assetsFilePath))
         }
-        val inputStream = inputStream
+        val inputStream = newInputStream()
         val outputStream: OutputStream = try {
             FileOutputStream(outFile)
         } catch (e: IOException) {
@@ -90,24 +87,5 @@ class AssetsDataSource(
             SketchUtils.close(inputStream)
         }
         return outFile
-    }
-
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    override fun makeGifDrawable(
-        key: String,
-        uri: String,
-        imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable {
-        val assetManager = context.assets
-        return SketchGifFactory.createGifDrawable(
-            key,
-            uri,
-            imageAttrs,
-            imageFrom,
-            bitmapPool,
-            assetManager,
-            assetsFilePath
-        )
     }
 }

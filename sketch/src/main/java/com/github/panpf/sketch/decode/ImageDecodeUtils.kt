@@ -46,7 +46,7 @@ class ImageDecodeUtils {
         fun decodeBitmap(dataSource: DataSource, options: BitmapFactory.Options): Bitmap? {
             var inputStream: InputStream? = null
             try {
-                inputStream = dataSource.inputStream
+                inputStream = dataSource.newInputStream()
                 return BitmapFactory.decodeStream(inputStream, null, options)
             } finally {
                 close(inputStream)
@@ -60,7 +60,7 @@ class ImageDecodeUtils {
             options: BitmapFactory.Options
         ): Bitmap? {
             val inputStream: InputStream = try {
-                dataSource.inputStream
+                dataSource.newInputStream()
             } catch (e: IOException) {
                 e.printStackTrace()
                 return null

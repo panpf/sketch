@@ -16,11 +16,6 @@
 package com.github.panpf.sketch.datasource
 
 import android.text.TextUtils
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.drawable.SketchGifDrawable
-import com.github.panpf.sketch.drawable.SketchGifFactory
 import com.github.panpf.sketch.request.ImageFrom
 import com.github.panpf.sketch.util.SketchUtils
 import java.io.*
@@ -29,12 +24,13 @@ import java.io.*
  * 用于读取字节数组格式的图片
  */
 class ByteArrayDataSource(
-    private val data: ByteArray, override val imageFrom: ImageFrom
+    val data: ByteArray, override val imageFrom: ImageFrom
 ) : DataSource {
 
-    @get:Throws(IOException::class)
-    override val inputStream: InputStream
-        get() = ByteArrayInputStream(data)
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream {
+        return ByteArrayInputStream(data)
+    }
 
     @get:Throws(IOException::class)
     override val length: Long
@@ -56,7 +52,7 @@ class ByteArrayDataSource(
                 SketchUtils.generatorTempFileName(this, System.currentTimeMillis().toString())
             )
         }
-        val inputStream = inputStream
+        val inputStream = newInputStream()
         val outputStream: OutputStream = try {
             FileOutputStream(outFile)
         } catch (e: IOException) {
@@ -74,15 +70,5 @@ class ByteArrayDataSource(
             SketchUtils.close(inputStream)
         }
         return outFile
-    }
-
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    override fun makeGifDrawable(
-        key: String,
-        uri: String,
-        imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable {
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, imageFrom, bitmapPool, data)
     }
 }

@@ -87,7 +87,7 @@ class ImageRegionDecoder(
             var inputStream: InputStream? = null
             val regionDecoder: BitmapRegionDecoder
             try {
-                inputStream = dataSource.inputStream
+                inputStream = dataSource.newInputStream()
                 regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false)
             } finally {
                 close(inputStream)

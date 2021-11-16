@@ -15,12 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
-import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.drawable.SketchGifDrawable
-import com.github.panpf.sketch.drawable.SketchGifFactory
 import com.github.panpf.sketch.request.ImageFrom
 import java.io.File
 import java.io.IOException
@@ -46,29 +41,13 @@ class DiskCacheDataSource(
     var isFromProcessedCache = false // 标识是否来自已处理缓存，后续对已处理缓存的图片会有额外处理
         private set
 
-    @get:Throws(IOException::class)
-    override val inputStream: InputStream
-        get() = diskCacheEntry.newInputStream()
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream {
+        return diskCacheEntry.newInputStream()
+    }
 
     override fun getFile(outDir: File?, outName: String?): File {
         return diskCacheEntry.file
-    }
-
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    override fun makeGifDrawable(
-        key: String,
-        uri: String,
-        imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable {
-        return SketchGifFactory.createGifDrawable(
-            key,
-            uri,
-            imageAttrs,
-            imageFrom,
-            bitmapPool,
-            diskCacheEntry.file
-        )
     }
 
     fun setFromProcessedCache(fromProcessedCache: Boolean): DiskCacheDataSource {

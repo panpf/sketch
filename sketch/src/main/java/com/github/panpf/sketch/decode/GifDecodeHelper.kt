@@ -18,7 +18,7 @@ package com.github.panpf.sketch.decode
 import android.graphics.BitmapFactory
 import android.os.Build
 import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.*
 import com.github.panpf.sketch.drawable.SketchGifFactory
 import com.github.panpf.sketch.request.ErrorCause
 import com.github.panpf.sketch.request.LoadRequest
@@ -58,9 +58,62 @@ class GifDecodeHelper : DecodeHelper() {
                 boundOptions.outHeight,
                 exifOrientation
             )
-            val bitmapPool = request.configuration.bitmapPool
-            val gifDrawable =
-                dataSource.makeGifDrawable(request.key, request.uri, imageAttrs, bitmapPool)
+
+            val gifDrawable = when (dataSource) {
+                is DiskCacheDataSource -> SketchGifFactory.createGifDrawable(
+                    request.key,
+                    request.uri,
+                    imageAttrs,
+                    dataSource.imageFrom,
+                    request.configuration.bitmapPool,
+                    dataSource.diskCacheEntry.file
+                )
+                is DrawableDataSource -> SketchGifFactory.createGifDrawable(
+                    request.key,
+                    request.uri,
+                    imageAttrs,
+                    dataSource.imageFrom,
+                    request.configuration.bitmapPool,
+                    dataSource.context.resources,
+                    dataSource.drawableId
+                )
+                is AssetsDataSource -> SketchGifFactory.createGifDrawable(
+                    request.key,
+                    request.uri,
+                    imageAttrs,
+                    dataSource.imageFrom,
+                    request.configuration.bitmapPool,
+                    dataSource.context.assets,
+                    dataSource.assetsFilePath
+                )
+                is ByteArrayDataSource -> SketchGifFactory.createGifDrawable(
+                    request.key,
+                    request.uri,
+                    imageAttrs,
+                    dataSource.imageFrom,
+                    request.configuration.bitmapPool,
+                    dataSource.data
+                )
+                is FileDataSource -> SketchGifFactory.createGifDrawable(
+                    request.key,
+                    request.uri,
+                    imageAttrs,
+                    dataSource.imageFrom,
+                    request.configuration.bitmapPool,
+                    dataSource.file
+                )
+                is ContentDataSource -> SketchGifFactory.createGifDrawable(
+                    request.key,
+                    request.uri,
+                    imageAttrs,
+                    dataSource.imageFrom,
+                    request.configuration.bitmapPool,
+                    dataSource.context.contentResolver,
+                    dataSource.contentUri
+                )
+                else -> throw IllegalArgumentException("Unknown DataSource type: ${dataSource::class.qualifiedName}")
+            }
+
             val result = GifDecodeResult(gifDrawable, imageAttrs, dataSource.imageFrom)
             result.isBanProcess = true
             result

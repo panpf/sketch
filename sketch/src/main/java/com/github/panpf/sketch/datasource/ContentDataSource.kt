@@ -15,18 +15,13 @@
  */
 package com.github.panpf.sketch.datasource
 
-import android.content.res.AssetFileDescriptor
-import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.request.ImageFrom
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.drawable.SketchGifDrawable
 import android.content.ContentResolver
 import android.content.Context
+import android.content.res.AssetFileDescriptor
 import android.net.Uri
 import android.text.TextUtils
-import com.github.panpf.sketch.drawable.SketchGifFactory
+import com.github.panpf.sketch.request.ImageFrom
+import com.github.panpf.sketch.util.SketchUtils
 import java.io.*
 
 /**
@@ -34,11 +29,11 @@ import java.io.*
  * 支持 content://、file://、android.resource:// 格式的 uri
  */
 class ContentDataSource(
-    private val context: Context, private val contentUri: Uri
+    val context: Context,
+    val contentUri: Uri
 ) : DataSource {
 
-    override val imageFrom: ImageFrom
-        get() = ImageFrom.LOCAL
+    override val imageFrom: ImageFrom = ImageFrom.LOCAL
 
     @get:Throws(IOException::class)
     @get:Synchronized
@@ -58,11 +53,11 @@ class ContentDataSource(
         }
         private set
 
-    @get:Throws(IOException::class)
-    override val inputStream: InputStream
-        get() = context.contentResolver.openInputStream(
-            contentUri
-        ) ?: throw IOException("ContentResolver.openInputStream() return null. $contentUri")
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream {
+        return context.contentResolver.openInputStream(contentUri)
+            ?: throw IOException("ContentResolver.openInputStream() return null. $contentUri")
+    }
 
     @Throws(IOException::class)
     override fun getFile(outDir: File?, outName: String?): File? {
@@ -77,7 +72,7 @@ class ContentDataSource(
         } else {
             File(outDir, SketchUtils.generatorTempFileName(this, contentUri.toString()))
         }
-        val inputStream = inputStream
+        val inputStream = newInputStream()
         val outputStream: OutputStream = try {
             FileOutputStream(outFile)
         } catch (e: IOException) {
@@ -95,24 +90,5 @@ class ContentDataSource(
             SketchUtils.close(inputStream)
         }
         return outFile
-    }
-
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    override fun makeGifDrawable(
-        key: String,
-        uri: String,
-        imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable {
-        val contentResolver = context.contentResolver
-        return SketchGifFactory.createGifDrawable(
-            key,
-            uri,
-            imageAttrs,
-            imageFrom,
-            bitmapPool,
-            contentResolver,
-            contentUri
-        )
     }
 }

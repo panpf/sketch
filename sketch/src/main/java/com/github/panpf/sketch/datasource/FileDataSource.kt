@@ -15,11 +15,6 @@
  */
 package com.github.panpf.sketch.datasource
 
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.drawable.SketchGifDrawable
-import com.github.panpf.sketch.drawable.SketchGifFactory
 import com.github.panpf.sketch.request.ImageFrom
 import java.io.File
 import java.io.FileInputStream
@@ -29,7 +24,7 @@ import java.io.InputStream
 /**
  * 用于读取来自本地的图片
  */
-class FileDataSource(private val file: File) : DataSource {
+class FileDataSource(val file: File) : DataSource {
 
     override val imageFrom: ImageFrom
         get() = ImageFrom.LOCAL
@@ -46,21 +41,12 @@ class FileDataSource(private val file: File) : DataSource {
         }
         private set
 
-    @get:Throws(IOException::class)
-    override val inputStream: InputStream
-        get() = FileInputStream(file)
-
-    override fun getFile(outDir: File?, outName: String?): File? {
-        return file
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream {
+        return FileInputStream(file)
     }
 
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    override fun makeGifDrawable(
-        key: String,
-        uri: String,
-        imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable {
-        return SketchGifFactory.createGifDrawable(key, uri, imageAttrs, imageFrom, bitmapPool, file)
+    override fun getFile(outDir: File?, outName: String?): File {
+        return file
     }
 }

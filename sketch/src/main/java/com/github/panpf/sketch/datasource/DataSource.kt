@@ -16,10 +16,6 @@
 package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.request.ImageFrom
-import com.github.panpf.sketch.decode.NotFoundGifLibraryException
-import com.github.panpf.sketch.decode.ImageAttrs
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.drawable.SketchGifDrawable
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -28,14 +24,6 @@ import java.io.InputStream
  * 数据源
  */
 interface DataSource {
-    /**
-     * 获取输入流
-     *
-     * @return [InputStream]
-     * @throws IOException 数据源异常
-     */
-    @get:Throws(IOException::class)
-    val inputStream: InputStream
 
     /**
      * 获取数据长度
@@ -47,6 +35,22 @@ interface DataSource {
     val length: Long
 
     /**
+     * 获取图片来源
+     *
+     * @return [ImageFrom]
+     */
+    val imageFrom: ImageFrom
+
+    /**
+     * 获取输入流
+     *
+     * @return [InputStream]
+     * @throws IOException 数据源异常
+     */
+    @Throws(IOException::class)
+    fun newInputStream(): InputStream
+
+    /**
      * 获取可用的文件
      *
      * @param outDir  如果当前数据源无法直接返回一个可用的文件，就将内容输出到指定文件夹中
@@ -55,28 +59,4 @@ interface DataSource {
      */
     @Throws(IOException::class)
     fun getFile(outDir: File?, outName: String?): File?
-
-    /**
-     * 获取图片来源
-     *
-     * @return [ImageFrom]
-     */
-    val imageFrom: ImageFrom
-
-    /**
-     * 创建 GifDrawable
-     *
-     * @param key        请求的唯一标识 key
-     * @param uri        图片 uri
-     * @param imageAttrs 图片的属性
-     * @param bitmapPool [android.graphics.Bitmap] 缓存池
-     * @return [SketchGifDrawable]
-     * @throws IOException                 数据源异常
-     * @throws NotFoundGifLibraryException 没有集成 sketch-gif
-     */
-    @Throws(IOException::class, NotFoundGifLibraryException::class)
-    fun makeGifDrawable(
-        key: String, uri: String, imageAttrs: ImageAttrs,
-        bitmapPool: BitmapPool
-    ): SketchGifDrawable
 }
