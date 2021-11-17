@@ -78,15 +78,19 @@ class SLog {
                 WARNING -> NAME_WARNING
                 ERROR -> NAME_ERROR
                 NONE -> NAME_NONE
-                else -> "UNKNOWN(" + level + ")"
+                else -> "UNKNOWN($level)"
             }
 
         @JvmStatic
-        private fun joinMessage(module: String?, formatOrLog: String, vararg args: Any?): String {
+        private fun joinMessage(
+            module: String?,
+            formatOrLog: String,
+            args: Array<out Any>? = null
+        ): String {
             if (TextUtils.isEmpty(formatOrLog)) {
                 return ""
             }
-            return if (args.isNotEmpty()) {
+            return if (args?.isNotEmpty() == true) {
                 if (!TextUtils.isEmpty(module)) {
                     module + ". " + String.format(formatOrLog, *args)
                 } else {
@@ -103,168 +107,126 @@ class SLog {
 
         @JvmStatic
         fun v(msg: String): Int {
-            return if (isLoggable(VERBOSE)) proxy.v(
-                TAG,
-                joinMessage(null, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(null, msg, arrayOf())) else 0
         }
 
         @JvmStatic
         fun vf(format: String, vararg args: Any): Int {
-            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(null, format, *args)) else 0
+            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(null, format, args)) else 0
         }
 
         @JvmStatic
         fun vm(module: String, msg: String): Int {
-            return if (isLoggable(VERBOSE)) proxy.v(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(module, msg)) else 0
         }
 
         @JvmStatic
         fun vmf(module: String, format: String, vararg args: Any): Int {
-            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(module, format, *args)) else 0
+            return if (isLoggable(VERBOSE)) proxy.v(TAG, joinMessage(module, format, args)) else 0
         }
 
         @JvmStatic
         fun d(msg: String): Int {
-            return if (isLoggable(DEBUG)) proxy.d(
-                TAG,
-                joinMessage(null, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(null, msg)) else 0
         }
 
         @JvmStatic
         fun df(format: String, vararg args: Any): Int {
-            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(null, format, *args)) else 0
+            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(null, format, args)) else 0
         }
 
         @JvmStatic
         fun dm(module: String, msg: String): Int {
-            return if (isLoggable(DEBUG)) proxy.d(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(module, msg)) else 0
         }
 
         @JvmStatic
         fun dmf(module: String, format: String, vararg args: Any): Int {
-            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(module, format, *args)) else 0
+            return if (isLoggable(DEBUG)) proxy.d(TAG, joinMessage(module, format, args)) else 0
         }
 
         @JvmStatic
         fun i(msg: String): Int {
-            return if (isLoggable(INFO)) proxy.i(
-                TAG,
-                joinMessage(null, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(null, msg)) else 0
         }
 
         @JvmStatic
         fun iff(format: String, vararg args: Any): Int {
-            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(null, format, *args)) else 0
+            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(null, format, args)) else 0
         }
 
         @JvmStatic
         fun im(module: String, msg: String): Int {
-            return if (isLoggable(INFO)) proxy.i(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(module, msg)) else 0
         }
 
         @JvmStatic
         fun imf(module: String, format: String, vararg args: Any): Int {
-            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(module, format, *args)) else 0
+            return if (isLoggable(INFO)) proxy.i(TAG, joinMessage(module, format, args)) else 0
         }
 
         @JvmStatic
         fun w(msg: String): Int {
-            return if (isLoggable(WARNING)) proxy.w(
-                TAG,
-                joinMessage(null, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(null, msg)) else 0
         }
 
         @JvmStatic
         fun wf(format: String, vararg args: Any): Int {
-            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(null, format, *args)) else 0
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(null, format, args)) else 0
         }
 
         @JvmStatic
         fun wm(module: String, msg: String): Int {
-            return if (isLoggable(WARNING)) proxy.w(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(module, msg)) else 0
         }
 
         @JvmStatic
         fun wmf(module: String, format: String, vararg args: Any): Int {
-            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(module, format, *args)) else 0
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(module, format, args)) else 0
         }
 
         @JvmStatic
         fun wmt(module: String, tr: Throwable, msg: String): Int {
-            return if (isLoggable(WARNING)) proxy.w(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!),
-                tr
-            ) else 0
+            return if (isLoggable(WARNING)) proxy.w(TAG, joinMessage(module, msg), tr) else 0
         }
 
         @JvmStatic
         fun wmtf(module: String, tr: Throwable, format: String, vararg args: Any): Int {
             return if (isLoggable(WARNING)) proxy.w(
                 TAG,
-                joinMessage(module, format, *args),
+                joinMessage(module, format, args),
                 tr
             ) else 0
         }
 
         @JvmStatic
         fun e(msg: String): Int {
-            return if (isLoggable(ERROR)) proxy.e(
-                TAG,
-                joinMessage(null, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(null, msg)) else 0
         }
 
         @JvmStatic
         fun ef(format: String, vararg args: Any): Int {
-            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(null, format, *args)) else 0
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(null, format, args)) else 0
         }
 
         @JvmStatic
         fun em(module: String, msg: String): Int {
-            return if (isLoggable(ERROR)) proxy.e(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!)
-            ) else 0
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(module, msg)) else 0
         }
 
         @JvmStatic
         fun emf(module: String, format: String, vararg args: Any): Int {
-            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(module, format, *args)) else 0
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(module, format, args)) else 0
         }
 
         @JvmStatic
         fun emt(module: String, tr: Throwable, msg: String): Int {
-            return if (isLoggable(ERROR)) proxy.e(
-                TAG,
-                joinMessage(module, msg, *(null as Array<Any?>?)!!),
-                tr
-            ) else 0
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(module, msg), tr) else 0
         }
 
         @JvmStatic
         fun emtf(module: String, tr: Throwable, format: String, vararg args: Any): Int {
-            return if (isLoggable(ERROR)) proxy.e(
-                TAG,
-                joinMessage(module, format, *args),
-                tr
-            ) else 0
+            return if (isLoggable(ERROR)) proxy.e(TAG, joinMessage(module, format, args), tr) else 0
         }
 
         @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
