@@ -24,6 +24,13 @@ import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.uri.UriModel
 
+// todo 一切目标为了将 GifDecodeHelper 从 sketch module 移到 sketch-gif 中，分以下几步
+// todo 首先需要在 DisplayRequest 中支持拦截器，这样 sketch-gif 就可以将 gifDecodeHelper 改为拦截器动态注册到 DisplayRequest 中
+// todo 然后将 ImageDecoder 中的 gifDecodeHelper 移除并内部实现改为 拦截器模式
+// todo 将三种 Request 完全分开不再具有继承关系
+// todo 将 Request 中的异步切换改为更直观的方式    第一步
+// todo 改为拦截器模式后可以将几个 request 中的各种缓存都改为拦截器方式实现
+
 abstract class BaseRequest internal constructor(
     val sketch: Sketch,
     val uri: String,
