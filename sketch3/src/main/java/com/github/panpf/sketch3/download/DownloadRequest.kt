@@ -2,7 +2,7 @@ package com.github.panpf.sketch3.download
 
 import com.github.panpf.sketch3.common.cache.CachePolicy
 
-class DownloadRequest(
+class DownloadRequest private constructor(
     val url: String,
     val diskCacheKey: String?,
     val diskCachePolicy: CachePolicy?,

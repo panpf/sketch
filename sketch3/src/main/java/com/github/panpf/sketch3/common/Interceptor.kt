@@ -1,6 +1,6 @@
 package com.github.panpf.sketch3.common
 
-interface Interceptor<T, R> {
+interface Interceptor<T: Any, R: Any> {
 
     fun intercept(chain: Chain<T, R>): R
 

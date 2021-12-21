@@ -25,8 +25,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.Locale
-import java.util.WeakHashMap
+import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
 /**
@@ -40,7 +39,6 @@ class LruDiskCache(
     context: Context,
     private val versionCode: Int = 1,
     maxSize: Int = DISK_CACHE_MAX_SIZE,
-    private val errorCallback: ErrorCallback? = null
 ) : DiskCache {
 
     companion object {
@@ -58,6 +56,8 @@ class LruDiskCache(
     private var cache: DiskLruCache? = null
 
     override val maxSize: Long = maxSize.toLong()
+
+    var errorCallback: ErrorCallback? = null
 
     @get:Synchronized
     override val cacheDir: File
