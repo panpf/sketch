@@ -56,63 +56,63 @@ class ImageDecoder {
         ProcessedResultCacheProcessor()
     )
 
-    @Throws(DecodeException::class)
-    fun readBasicInfo(request: LoadRequest): ImageBasicInfo {
-        val dataSource: DataSource = try {
-            request.getDataSource(false)
-        } catch (e: GetDataSourceException) {
-            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e)
-            throw DecodeException(
-                "Unable create DataSource",
-                e,
-                ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE
-            )
-        }
-
-        // Decode bounds and mime info
-        val boundOptions = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-        try {
-            ImageDecodeUtils.decodeBitmap(dataSource, boundOptions)
-        } catch (e: Throwable) {
-            ImageDecodeUtils.decodeError(
-                request,
-                dataSource,
-                NAME,
-                "Unable read bound information",
-                e
-            )
-            throw DecodeException(
-                "Unable read bound information",
-                e,
-                ErrorCause.DECODE_UNABLE_READ_BOUND_INFORMATION
-            )
-        }
-
-        // Exclude images with a width of less than or equal to 1
-        if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            val cause = "Image width or height less than or equal to 1px. imageSize: %dx%d"
-                .format(boundOptions.outWidth, boundOptions.outHeight)
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null)
-            throw DecodeException(cause, ErrorCause.DECODE_BOUND_RESULT_IMAGE_SIZE_INVALID)
-        }
-
-        // Read image orientation
-        var exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
-        if (!request.options.isCorrectImageOrientationDisabled) {
-            val imageOrientationCorrector = request.configuration.orientationCorrector
-            exifOrientation =
-                imageOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource)
-        }
-
-        return ImageBasicInfo(
-            boundOptions.outMimeType,
-            boundOptions.outWidth,
-            boundOptions.outHeight,
-            exifOrientation
-        )
-    }
+//    @Throws(DecodeException::class)
+//    fun readBasicInfo(request: LoadRequest): ImageBasicInfo {
+//        val dataSource: DataSource = try {
+//            request.getDataSource(false)
+//        } catch (e: GetDataSourceException) {
+//            ImageDecodeUtils.decodeError(request, null, NAME, "Unable create DataSource", e)
+//            throw DecodeException(
+//                "Unable create DataSource",
+//                e,
+//                ErrorCause.DECODE_UNABLE_CREATE_DATA_SOURCE
+//            )
+//        }
+//
+//        // Decode bounds and mime info
+//        val boundOptions = BitmapFactory.Options().apply {
+//            inJustDecodeBounds = true
+//        }
+//        try {
+//            ImageDecodeUtils.decodeBitmap(dataSource, boundOptions)
+//        } catch (e: Throwable) {
+//            ImageDecodeUtils.decodeError(
+//                request,
+//                dataSource,
+//                NAME,
+//                "Unable read bound information",
+//                e
+//            )
+//            throw DecodeException(
+//                "Unable read bound information",
+//                e,
+//                ErrorCause.DECODE_UNABLE_READ_BOUND_INFORMATION
+//            )
+//        }
+//
+//        // Exclude images with a width of less than or equal to 1
+//        if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
+//            val cause = "Image width or height less than or equal to 1px. imageSize: %dx%d"
+//                .format(boundOptions.outWidth, boundOptions.outHeight)
+//            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null)
+//            throw DecodeException(cause, ErrorCause.DECODE_BOUND_RESULT_IMAGE_SIZE_INVALID)
+//        }
+//
+//        // Read image orientation
+//        var exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
+//        if (!request.options.isCorrectImageOrientationDisabled) {
+//            val imageOrientationCorrector = request.configuration.orientationCorrector
+//            exifOrientation =
+//                imageOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource)
+//        }
+//
+//        return ImageBasicInfo(
+//            boundOptions.outMimeType,
+//            boundOptions.outWidth,
+//            boundOptions.outHeight,
+//            exifOrientation
+//        )
+//    }
 
     /**
      * 解码入口方法，统计解码时间、调用解码方法以及后续处理
