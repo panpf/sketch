@@ -1,4 +1,5 @@
 include(":sketch")
+include(":sketch3")
 include(":sketch-zoom")
 include(":sketch-gif")
 include(":sample")
