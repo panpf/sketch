@@ -16,28 +16,9 @@
 package com.github.panpf.sketch3.common
 
 enum class DataFrom {
-    /**
-     * 网络
-     */
     NETWORK,
-
-    /**
-     * 磁盘缓存
-     */
     DISK_CACHE,
-
-    /**
-     * 本地图片
-     */
     LOCAL,
-
-    /**
-     * 内存缓存
-     */
     MEMORY_CACHE,
-
-    /**
-     * 内存
-     */
     MEMORY
 }

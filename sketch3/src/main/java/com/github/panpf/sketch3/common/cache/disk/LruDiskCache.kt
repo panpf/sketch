@@ -21,13 +21,11 @@ import android.text.format.Formatter
 import com.github.panpf.sketch3.SLog
 import com.github.panpf.sketch3.util.DiskLruCache
 import com.github.panpf.sketch3.util.MD5Utils
-import kotlinx.coroutines.Deferred
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Create a disk cache manager that releases the cache according to the least used rule
@@ -74,8 +72,6 @@ class LruDiskCache(
                 SLog.wmf(NAME, "setDisabled. %s", value)
             }
         }
-    private var editLockMap: MutableMap<String, ReentrantLock>? = null
-    private var editDeferredMap: MutableMap<String, Deferred<Int>>? = null
 
     /**
      * 检查磁盘缓存器是否可用
@@ -92,13 +88,13 @@ class LruDiskCache(
     }
 
     // 这个方法性能优先，因此不加synchronized
-    override fun exist(key: String): Boolean {
+    override fun exist(encodedKey: String): Boolean {
         if (isClosed) {
             return false
         }
         if (isDisabled) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Disabled. Unable judge exist, key=%s", key)
+                SLog.dmf(NAME, "Disabled. Unable judge exist, key=%s", encodedKey)
             }
             return false
         }
@@ -111,7 +107,7 @@ class LruDiskCache(
             }
         }
         return try {
-            cache!!.exist(keyEncode(key))
+            cache!!.exist(encodeKey(encodedKey))
         } catch (e: DiskLruCache.ClosedException) {
             e.printStackTrace()
             false
@@ -122,13 +118,13 @@ class LruDiskCache(
     }
 
     @Synchronized
-    override fun get(key: String): DiskCache.Entry? {
+    override fun get(encodedKey: String): DiskCache.Entry? {
         if (isClosed) {
             return null
         }
         if (isDisabled) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Disabled. Unable get, key=%s", key)
+                SLog.dmf(NAME, "Disabled. Unable get, key=%s", encodedKey)
             }
             return null
         }
@@ -140,23 +136,23 @@ class LruDiskCache(
         }
         var snapshot: DiskLruCache.SimpleSnapshot? = null
         try {
-            snapshot = cache!!.getSimpleSnapshot(keyEncode(key))
+            snapshot = cache!!.getSimpleSnapshot(encodeKey(encodedKey))
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: DiskLruCache.ClosedException) {
             e.printStackTrace()
         }
-        return snapshot?.let { LruDiskCacheEntry(key, it) }
+        return snapshot?.let { LruDiskCacheEntry(encodedKey, it) }
     }
 
     @Synchronized
-    override fun edit(key: String): DiskCache.Editor? {
+    override fun edit(encodedKey: String): DiskCache.Editor? {
         if (isClosed) {
             return null
         }
         if (isDisabled) {
             if (SLog.isLoggable(SLog.DEBUG)) {
-                SLog.dmf(NAME, "Disabled. Unable edit, key=%s", key)
+                SLog.dmf(NAME, "Disabled. Unable edit, key=%s", encodedKey)
             }
             return null
         }
@@ -168,7 +164,7 @@ class LruDiskCache(
         }
         var diskEditor: DiskLruCache.Editor? = null
         try {
-            diskEditor = cache!!.edit(keyEncode(key))
+            diskEditor = cache!!.edit(encodeKey(encodedKey))
         } catch (e: IOException) {
             e.printStackTrace()
 
@@ -178,7 +174,7 @@ class LruDiskCache(
                 return null
             }
             try {
-                diskEditor = cache!!.edit(keyEncode(key))
+                diskEditor = cache!!.edit(encodeKey(encodedKey))
             } catch (e1: IOException) {
                 e1.printStackTrace()
             } catch (e1: DiskLruCache.ClosedException) {
@@ -193,7 +189,7 @@ class LruDiskCache(
                 return null
             }
             try {
-                diskEditor = cache!!.edit(keyEncode(key))
+                diskEditor = cache!!.edit(encodeKey(encodedKey))
             } catch (e1: IOException) {
                 e1.printStackTrace()
             } catch (e1: DiskLruCache.ClosedException) {
@@ -203,7 +199,7 @@ class LruDiskCache(
         return diskEditor?.let { LruDiskCacheEditor(it) }
     }
 
-    override fun keyEncode(key: String): String {
+    override fun encodeKey(key: String): String {
         return MD5Utils.md5(key)
     }
 
@@ -248,35 +244,6 @@ class LruDiskCache(
             }
             cache = null
         }
-    }
-
-    @Synchronized
-    override fun getEditLock(key: String): ReentrantLock {
-        if (editLockMap == null) {
-            synchronized(this) {
-                if (editLockMap == null) {
-                    editLockMap = WeakHashMap()
-                }
-            }
-        }
-        var lock = editLockMap!![key]
-        if (lock == null) {
-            lock = ReentrantLock()
-            editLockMap!![key] = lock
-        }
-        return lock
-    }
-
-    @Synchronized
-    override fun getSuspendEditDeferred(key: String): Deferred<Int>? {
-        if (editDeferredMap == null) {
-            synchronized(this) {
-                if (editDeferredMap == null) {
-                    editDeferredMap = WeakHashMap()
-                }
-            }
-        }
-        return editDeferredMap!![key]
     }
 
     override fun toString(): String {
@@ -325,7 +292,7 @@ class LruDiskCache(
                 NAME,
                 "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
                 e.javaClass.simpleName,
-                e.message?:"",
+                e.message ?: "",
                 Environment.getExternalStorageState(),
                 cacheDir.path
             )
@@ -343,7 +310,7 @@ class LruDiskCache(
                 NAME,
                 "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
                 e.javaClass.simpleName,
-                e.message?:"",
+                e.message ?: "",
                 Environment.getExternalStorageState(),
                 cacheDir.path
             )
@@ -380,7 +347,7 @@ class LruDiskCache(
 
     class LruDiskCacheEditor(private val diskEditor: DiskLruCache.Editor) : DiskCache.Editor {
         @Throws(IOException::class)
-        override fun newOutputStream(): OutputStream? {
+        override fun newOutputStream(): OutputStream {
             return diskEditor.newOutputStream(0)
         }
 

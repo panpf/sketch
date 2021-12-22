@@ -1,10 +1,7 @@
 package com.github.panpf.sketch3
 
 import android.content.Context
-import com.github.panpf.sketch3.common.ComponentRegistry
-import com.github.panpf.sketch3.common.Disposable
-import com.github.panpf.sketch3.common.Interceptor
-import com.github.panpf.sketch3.common.OneShotDisposable
+import com.github.panpf.sketch3.common.*
 import com.github.panpf.sketch3.common.cache.disk.DiskCache
 import com.github.panpf.sketch3.common.cache.disk.LruDiskCache
 import com.github.panpf.sketch3.common.fetch.HttpUriFetcher
@@ -14,12 +11,7 @@ import com.github.panpf.sketch3.download.DownloadRequest
 import com.github.panpf.sketch3.download.DownloadResult
 import com.github.panpf.sketch3.download.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch3.download.internal.DownloadExecutor
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import java.io.File
 
 class Sketch3 private constructor(
@@ -29,7 +21,8 @@ class Sketch3 private constructor(
     val httpStack: HttpStack,
     val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>,
 ) {
-    private val downloadExecutor: DownloadExecutor = DownloadExecutor(this)
+    private val downloadExecutor = DownloadExecutor(this)
+    val repeatTaskFilter = RepeatTaskFilter()
 
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->

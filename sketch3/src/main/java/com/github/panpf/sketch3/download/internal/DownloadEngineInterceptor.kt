@@ -5,13 +5,7 @@ import com.github.panpf.sketch3.common.Interceptor
 import com.github.panpf.sketch3.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch3.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch3.common.fetch.HttpUriFetcher
-import com.github.panpf.sketch3.common.fetch.SourceResult
-import com.github.panpf.sketch3.download.ByteArrayDownloadData
-import com.github.panpf.sketch3.download.DiskCacheDownloadData
-import com.github.panpf.sketch3.download.DownloadErrorResult
-import com.github.panpf.sketch3.download.DownloadRequest
-import com.github.panpf.sketch3.download.DownloadResult
-import com.github.panpf.sketch3.download.DownloadSuccessResult
+import com.github.panpf.sketch3.download.*
 
 class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
 
@@ -32,7 +26,7 @@ class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
 
         val fetchResult = fetcher.fetch()
             ?: return DownloadErrorResult(IllegalStateException("Unable fetch the result: ${request.uri}"))
-        return when (val source = (fetchResult as SourceResult).source) {
+        return when (val source = fetchResult.source) {
             is ByteArrayDataSource -> DownloadSuccessResult(ByteArrayDownloadData(source.data))
             is DiskCacheDataSource -> DownloadSuccessResult(DiskCacheDownloadData(source.diskCacheEntry))
             else -> DownloadErrorResult(IllegalArgumentException("The unknown source: ${source::class.qualifiedName}"))

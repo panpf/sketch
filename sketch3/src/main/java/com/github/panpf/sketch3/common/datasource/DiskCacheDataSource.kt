@@ -22,10 +22,9 @@ import java.io.IOException
 import java.io.InputStream
 
 class DiskCacheDataSource(
-    val diskCacheEntry: DiskCache.Entry
+    val diskCacheEntry: DiskCache.Entry,
+    override val dataFrom: DataFrom
 ) : DataSource {
-
-    override val dataFrom: DataFrom = DataFrom.DISK_CACHE
 
     @get:Throws(IOException::class)
     override var length: Long = -1

@@ -16,13 +16,25 @@ class DownloadRequest private constructor(
         return Builder(this)
     }
 
-    class Builder(private val uri: Uri) {
-        private var diskCacheKey: String? = null
-        private var diskCachePolicy: CachePolicy? = null
-        private var listener: DownloadListener? = null
-        private var progressListener: DownloadProgressListener? = null
+    class Builder {
+        private val uri: Uri
+        private var diskCacheKey: String?
+        private var diskCachePolicy: CachePolicy?
+        private var listener: DownloadListener?
+        private var progressListener: DownloadProgressListener?
 
-        constructor(request: DownloadRequest) : this(request.uri) {
+        constructor(uri: Uri) {
+            this.uri = uri
+            this.diskCacheKey = null
+            this.diskCachePolicy = null
+            this.listener = null
+            this.progressListener = null
+        }
+
+        constructor(uriString: String) : this(Uri.parse(uriString))
+
+        internal constructor(request: DownloadRequest) {
+            this.uri = request.uri
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.listener = request.listener

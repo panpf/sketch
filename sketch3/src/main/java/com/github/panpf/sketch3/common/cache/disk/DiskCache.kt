@@ -16,12 +16,10 @@
 package com.github.panpf.sketch3.common.cache.disk
 
 import com.github.panpf.sketch3.util.DiskLruCache
-import kotlinx.coroutines.Deferred
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 磁盘缓存管理器
@@ -29,27 +27,27 @@ import java.util.concurrent.locks.ReentrantLock
 interface DiskCache {
 
     /**
-     * 是否存在指定 key 的缓存
+     * 是否存在指定 encodedKey 的缓存
      *
-     * @param key 缓存 key
+     * @param encodedKey 缓存 encodedKey
      */
-    fun exist(key: String): Boolean
+    fun exist(encodedKey: String): Boolean
 
     /**
-     * 获取指定 key 的缓存
+     * 获取指定 encodedKey 的缓存
      *
-     * @param key 缓存 key
+     * @param encodedKey 缓存 encodedKey
      * @return [Entry] 缓存实体，用于读取缓存数据
      */
-    operator fun get(key: String): Entry?
+    operator fun get(encodedKey: String): Entry?
 
     /**
      * 编辑指定 uri 的缓存
      *
-     * @param key 缓存 key
+     * @param encodedKey 缓存 encodedKey
      * @return [Editor] 缓存编辑器
      */
-    fun edit(key: String): Editor?
+    fun edit(encodedKey: String): Editor?
 
     /**
      * 获取缓存目录
@@ -69,12 +67,13 @@ interface DiskCache {
      * @param key 缓存 key
      * @return 转码后的 key
      */
-    fun keyEncode(key: String): String
+    fun encodeKey(key: String): String
 
     /**
      * 获取已用容量
      */
     val size: Long
+
     /**
      * 是否已禁用
      */
@@ -94,20 +93,6 @@ interface DiskCache {
      * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 [.setDisabled]
      */
     fun close()
-
-    /**
-     * 获取编辑锁
-     *
-     * @param key 缓存 key
-     * @return [ReentrantLock]. 编辑锁
-     */
-    fun getEditLock(key: String): ReentrantLock
-
-    fun getSuspendEditDeferred(key: String): Deferred<Int>?
-
-//    fun putSuspendEditDeferred(key: String, deferred: Deferred<Int>)
-//
-//    fun removeSuspendEditDeferred(key: String, deferred: Deferred<Int>)
 
     /**
      * 磁盘缓存实体
@@ -155,7 +140,7 @@ interface DiskCache {
          * @throws IOException IO 异常
          */
         @Throws(IOException::class)
-        fun newOutputStream(): OutputStream?
+        fun newOutputStream(): OutputStream
 
         /**
          * 写完提交

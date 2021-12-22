@@ -189,6 +189,7 @@ class CacheDirCreator(private val context: Context) {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             dirStatFs.availableBytes
         } else {
+            @Suppress("DEPRECATION")
             dirStatFs.availableBlocks.toLong() * dirStatFs.blockSize
         }
     }
