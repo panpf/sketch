@@ -40,27 +40,36 @@ class HurlStack(
 
     @Throws(IOException::class)
     override fun getResponse(uri: String): HttpStack.Response {
-        val connection = (URL(uri).openConnection() as HttpURLConnection).apply {
-            connectTimeout = connectTimeout
-            readTimeout = readTimeout
-            doInput = true
-            if (userAgent != null) {
-                setRequestProperty("User-Agent", userAgent)
-            }
-            if (addExtraHeaders != null && addExtraHeaders.isNotEmpty()) {
-                for ((key, value) in addExtraHeaders) {
-                    addRequestProperty(key, value)
+        var newUri = uri
+        while (newUri.isNotEmpty()) {
+            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
+                connectTimeout = connectTimeout
+                readTimeout = readTimeout
+                doInput = true
+                if (userAgent != null) {
+                    setRequestProperty("User-Agent", userAgent)
                 }
-            }
-            if (extraHeaders != null && extraHeaders.isNotEmpty()) {
-                for ((key, value) in extraHeaders) {
-                    setRequestProperty(key, value)
+                if (addExtraHeaders != null && addExtraHeaders.isNotEmpty()) {
+                    for ((key, value) in addExtraHeaders) {
+                        addRequestProperty(key, value)
+                    }
                 }
+                if (extraHeaders != null && extraHeaders.isNotEmpty()) {
+                    for ((key, value) in extraHeaders) {
+                        setRequestProperty(key, value)
+                    }
+                }
+                processRequest?.invoke(uri, this)
             }
-            processRequest?.invoke(uri, this)
+            connection.connect()
+            val code = connection.responseCode
+            if (code == 301 || code == 302 || code == 307) {
+                newUri = connection.getHeaderField("Location")
+            } else {
+                return HurlResponse(connection)
+            }
         }
-        connection.connect()
-        return HurlResponse(connection)
+        throw IOException("Unable to get response")
     }
 
     override fun canRetry(throwable: Throwable): Boolean {

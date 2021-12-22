@@ -1,6 +1,5 @@
 package com.github.panpf.sketch3.common
 
-import android.net.Uri
 import com.github.panpf.sketch3.Sketch3
 import com.github.panpf.sketch3.common.fetch.Fetcher
 
@@ -10,9 +9,9 @@ class ComponentRegistry private constructor(
 
     fun newBuilder(): Builder = Builder(this)
 
-    fun newFetcher(uri: Uri, sketch3: Sketch3): Fetcher? {
+    fun newFetcher(sketch3: Sketch3, request: ImageRequest): Fetcher? {
         fetcherFactoryList.forEach {
-            val fetcher = it.create(uri, sketch3)
+            val fetcher = it.create(sketch3, request)
             if (fetcher != null) {
                 return fetcher
             }

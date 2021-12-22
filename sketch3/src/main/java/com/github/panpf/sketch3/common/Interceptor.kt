@@ -1,8 +1,10 @@
 package com.github.panpf.sketch3.common
 
+import com.github.panpf.sketch3.Sketch3
+
 interface Interceptor<T: Any, R: Any> {
 
-    fun intercept(chain: Chain<T, R>): R
+    suspend fun intercept(sketch3: Sketch3, chain: Chain<T, R>): R
 
     interface Chain<T, R> {
         val request: T
@@ -16,6 +18,6 @@ interface Interceptor<T: Any, R: Any> {
 //         */
 //        fun withSize(size: Size): Chain
 
-        suspend fun proceed(request: T): R
+        suspend fun proceed(sketch3: Sketch3, request: T): R
     }
 }

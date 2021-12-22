@@ -1,6 +1,6 @@
 package com.github.panpf.sketch3.download.internal
 
-import android.content.Context
+import com.github.panpf.sketch3.Sketch3
 import com.github.panpf.sketch3.download.DownloadErrorResult
 import com.github.panpf.sketch3.download.DownloadRequest
 import com.github.panpf.sketch3.download.DownloadResult
@@ -9,9 +9,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DownloadExecutor(private val context: Context) {
-
-    private val interceptors = listOf(DownloadEngineInterceptor())
+class DownloadExecutor(private val sketch3: Sketch3) {
 
     suspend fun executeOnMain(request: DownloadRequest): DownloadResult {
         try {
@@ -20,10 +18,10 @@ class DownloadExecutor(private val context: Context) {
             val result: DownloadResult = withContext(Dispatchers.IO) {
                 DownloadInterceptorChain(
                     initialRequest = request,
-                    interceptors = interceptors,
+                    interceptors = sketch3.downloadInterceptors,
                     index = 0,
                     request = request,
-                ).proceed(request)
+                ).proceed(sketch3, request)
             }
 
             when (result) {

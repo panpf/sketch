@@ -10,13 +10,13 @@ sealed class FetchResult
  * An [DataSource] result, which will be consumed by the relevant [Decoder].
  *
  * @param source The [ImageSource] to read from.
- * @param mimeType An optional MIME type for the [source].
- * @param dataSource The source that [source] was fetched from.
+// * @param mimeType An optional MIME type for the [source].
+ * @param from The source that [source] was fetched from.
  */
 data class SourceResult(
     val source: DataSource,
-    val mimeType: String?,
-    val dataFrom: DataFrom,
+//    val mimeType: String?,
+    val from: DataFrom,
 ) : FetchResult()
 
 ///**

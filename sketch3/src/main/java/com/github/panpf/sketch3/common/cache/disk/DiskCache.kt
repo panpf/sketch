@@ -16,6 +16,7 @@
 package com.github.panpf.sketch3.common.cache.disk
 
 import com.github.panpf.sketch3.util.DiskLruCache
+import kotlinx.coroutines.Deferred
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -101,6 +102,12 @@ interface DiskCache {
      * @return [ReentrantLock]. 编辑锁
      */
     fun getEditLock(key: String): ReentrantLock
+
+    fun getSuspendEditDeferred(key: String): Deferred<Int>?
+
+//    fun putSuspendEditDeferred(key: String, deferred: Deferred<Int>)
+//
+//    fun removeSuspendEditDeferred(key: String, deferred: Deferred<Int>)
 
     /**
      * 磁盘缓存实体

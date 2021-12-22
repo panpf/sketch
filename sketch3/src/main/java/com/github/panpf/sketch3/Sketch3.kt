@@ -3,6 +3,7 @@ package com.github.panpf.sketch3
 import android.content.Context
 import com.github.panpf.sketch3.common.ComponentRegistry
 import com.github.panpf.sketch3.common.Disposable
+import com.github.panpf.sketch3.common.Interceptor
 import com.github.panpf.sketch3.common.OneShotDisposable
 import com.github.panpf.sketch3.common.cache.disk.DiskCache
 import com.github.panpf.sketch3.common.cache.disk.LruDiskCache
@@ -11,21 +12,24 @@ import com.github.panpf.sketch3.common.http.HttpStack
 import com.github.panpf.sketch3.common.http.HurlStack
 import com.github.panpf.sketch3.download.DownloadRequest
 import com.github.panpf.sketch3.download.DownloadResult
+import com.github.panpf.sketch3.download.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch3.download.internal.DownloadExecutor
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.io.File
 
 class Sketch3 private constructor(
-    context: Context,
+    val appContext: Context,
     val diskCache: DiskCache,
-    componentRegistry: ComponentRegistry,
+    val componentRegistry: ComponentRegistry,
     val httpStack: HttpStack,
+    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>,
 ) {
-    val appContext = context.applicationContext
-    val componentRegistry = (componentRegistry.newBuilder()).apply {
-        addFetcher(HttpUriFetcher.Factory())
-    }.build()
-    private val downloadExecutor: DownloadExecutor = DownloadExecutor(context)
+    private val downloadExecutor: DownloadExecutor = DownloadExecutor(this)
 
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
@@ -67,6 +71,8 @@ class Sketch3 private constructor(
         private var diskCache: DiskCache? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
+        private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadResult>>? =
+            null
 
         fun diskCache(diskCache: DiskCache): Builder = apply {
             this.diskCache = diskCache
@@ -84,11 +90,22 @@ class Sketch3 private constructor(
             this.httpStack = httpStack
         }
 
+        fun addDownloadInterceptor(interceptor: Interceptor<DownloadRequest, DownloadResult>): Builder =
+            apply {
+                this.downloadInterceptors = (downloadInterceptors ?: mutableListOf()).apply {
+                    add(interceptor)
+                }
+            }
+
         fun build(): Sketch3 = Sketch3(
-            context = appContext,
+            appContext = appContext,
             diskCache = diskCache ?: LruDiskCache(appContext),
-            componentRegistry = componentRegistry ?: ComponentRegistry.Builder().build(),
-            httpStack = httpStack ?: HurlStack.Builder().build()
+            componentRegistry = (componentRegistry?.newBuilder()
+                ?: ComponentRegistry.Builder()).apply {
+                addFetcher(HttpUriFetcher.Factory())
+            }.build(),
+            httpStack = httpStack ?: HurlStack.Builder().build(),
+            downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
         )
     }
 }

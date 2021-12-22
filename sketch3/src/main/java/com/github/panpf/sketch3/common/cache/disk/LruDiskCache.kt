@@ -21,6 +21,7 @@ import android.text.format.Formatter
 import com.github.panpf.sketch3.SLog
 import com.github.panpf.sketch3.util.DiskLruCache
 import com.github.panpf.sketch3.util.MD5Utils
+import kotlinx.coroutines.Deferred
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -74,6 +75,7 @@ class LruDiskCache(
             }
         }
     private var editLockMap: MutableMap<String, ReentrantLock>? = null
+    private var editDeferredMap: MutableMap<String, Deferred<Int>>? = null
 
     /**
      * 检查磁盘缓存器是否可用
@@ -263,6 +265,18 @@ class LruDiskCache(
             editLockMap!![key] = lock
         }
         return lock
+    }
+
+    @Synchronized
+    override fun getSuspendEditDeferred(key: String): Deferred<Int>? {
+        if (editDeferredMap == null) {
+            synchronized(this) {
+                if (editDeferredMap == null) {
+                    editDeferredMap = WeakHashMap()
+                }
+            }
+        }
+        return editDeferredMap!![key]
     }
 
     override fun toString(): String {

@@ -5,10 +5,10 @@ import com.github.panpf.sketch3.common.cache.disk.DiskCache
 
 sealed interface DownloadData
 
-class BytesDownloadData(
-    val imageData: ByteArray,
+class ByteArrayDownloadData(
+    val data: ByteArray,
 ) : DownloadData
 
-class CacheDownloadData(
+class DiskCacheDownloadData(
     val diskCacheEntry: DiskCache.Entry,
 ) : DownloadData
