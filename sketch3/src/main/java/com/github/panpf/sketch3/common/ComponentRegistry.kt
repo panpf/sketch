@@ -19,6 +19,14 @@ class ComponentRegistry private constructor(
         return null
     }
 
+    companion object {
+        fun new(
+            configBlock: (Builder.() -> Unit)? = null
+        ): ComponentRegistry = Builder().apply {
+            configBlock?.invoke(this)
+        }.build()
+    }
+
     class Builder {
         private val fetcherFactoryList: MutableList<Fetcher.Factory>
 

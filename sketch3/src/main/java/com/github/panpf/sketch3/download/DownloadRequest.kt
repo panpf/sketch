@@ -16,6 +16,22 @@ class DownloadRequest private constructor(
         return Builder(this)
     }
 
+    companion object {
+        fun new(
+            uri: Uri,
+            configBlock: (Builder.() -> Unit)? = null
+        ): DownloadRequest = Builder(uri).apply {
+            configBlock?.invoke(this)
+        }.build()
+
+        fun new(
+            uriString: String,
+            configBlock: (Builder.() -> Unit)? = null
+        ): DownloadRequest = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }.build()
+    }
+
     class Builder {
         private val uri: Uri
         private var diskCacheKey: String?

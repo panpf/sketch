@@ -13,7 +13,9 @@ class DownloadExecutor(private val sketch3: Sketch3) {
 
     suspend fun executeOnMain(request: DownloadRequest): DownloadResult {
         try {
-            request.listener?.onStart(request)
+            withContext(Dispatchers.Main) {
+                request.listener?.onStart(request)
+            }
 
             val result: DownloadResult = withContext(Dispatchers.IO) {
                 DownloadInterceptorChain(
@@ -26,17 +28,23 @@ class DownloadExecutor(private val sketch3: Sketch3) {
 
             when (result) {
                 is DownloadSuccessResult -> {
-                    request.listener?.onSuccess(request, result.data)
+                    withContext(Dispatchers.Main) {
+                        request.listener?.onSuccess(request, result.data)
+                    }
                 }
                 is DownloadErrorResult -> {
-                    request.listener?.onError(request, result.throwable)
+                    withContext(Dispatchers.Main) {
+                        request.listener?.onError(request, result.throwable)
+                    }
                 }
             }
 
             return result
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                request.listener?.onCancel(request)
+                withContext(Dispatchers.Main) {
+                    request.listener?.onCancel(request)
+                }
                 throw throwable
             } else {
                 return DownloadErrorResult(throwable)

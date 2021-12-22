@@ -1,6 +1,7 @@
 package com.github.panpf.sketch3
 
 import android.content.Context
+import android.net.Uri
 import com.github.panpf.sketch3.common.*
 import com.github.panpf.sketch3.common.cache.disk.DiskCache
 import com.github.panpf.sketch3.common.cache.disk.LruDiskCache
@@ -50,6 +51,16 @@ class Sketch3 private constructor(
         return OneShotDisposable(job)
     }
 
+    fun enqueueDownload(
+        uri: Uri,
+        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
+    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uri, configBlock))
+
+    fun enqueueDownload(
+        uriString: String,
+        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
+    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uriString, configBlock))
+
     suspend fun executeDownload(downloadRequest: DownloadRequest): DownloadResult =
         coroutineScope {
             val job = scope.async {
@@ -57,6 +68,25 @@ class Sketch3 private constructor(
             }
             return@coroutineScope job.await()
         }
+
+    suspend fun executeDownload(
+        uri: Uri,
+        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
+    ): DownloadResult = executeDownload(DownloadRequest.new(uri, configBlock))
+
+    suspend fun executeDownload(
+        uriString: String,
+        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
+    ): DownloadResult = executeDownload(DownloadRequest.new(uriString, configBlock))
+
+    companion object {
+        fun new(
+            context: Context,
+            configBlock: (Builder.() -> Unit)? = null
+        ): Sketch3 = Builder(context).apply {
+            configBlock?.invoke(this)
+        }.build()
+    }
 
     class Builder(context: Context) {
 
@@ -97,7 +127,7 @@ class Sketch3 private constructor(
                 ?: ComponentRegistry.Builder()).apply {
                 addFetcher(HttpUriFetcher.Factory())
             }.build(),
-            httpStack = httpStack ?: HurlStack.Builder().build(),
+            httpStack = httpStack ?: HurlStack.new(),
             downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
         )
     }

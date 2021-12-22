@@ -32,12 +32,6 @@ class HurlStack(
     val processRequest: ((uri: String, connection: HttpURLConnection) -> Unit)?
 ) : HttpStack {
 
-    companion object {
-        private const val KEY = "HurlStack"
-    }
-
-    fun newBuilder(): Builder = Builder(this)
-
     @Throws(IOException::class)
     override fun getResponse(uri: String): HttpStack.Response {
         var newUri = uri
@@ -149,6 +143,18 @@ class HurlStack(
             }
         }
     }
+
+    companion object {
+        private const val KEY = "HurlStack"
+
+        fun new(
+            configBlock: (Builder.() -> Unit)? = null
+        ): HurlStack = Builder().apply {
+            configBlock?.invoke(this)
+        }.build()
+    }
+
+    fun newBuilder(): Builder = Builder(this)
 
     class Builder {
         private var readTimeout: Int
