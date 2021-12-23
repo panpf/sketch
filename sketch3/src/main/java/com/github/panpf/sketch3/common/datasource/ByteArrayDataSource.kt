@@ -20,7 +20,7 @@ import com.github.panpf.sketch3.util.MD5Utils
 import java.io.*
 
 class ByteArrayDataSource(
-    val data: ByteArray, override val dataFrom: DataFrom
+    val data: ByteArray, override val from: DataFrom
 ) : DataSource {
 
     @Throws(IOException::class)
@@ -42,5 +42,9 @@ class ByteArrayDataSource(
             }
         }
         return outFile
+    }
+
+    override fun toString(): String {
+        return "ByteArrayDataSource(from=$from, length=$length)"
     }
 }

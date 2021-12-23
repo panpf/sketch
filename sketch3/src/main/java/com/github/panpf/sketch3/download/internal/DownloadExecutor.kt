@@ -17,7 +17,7 @@ class DownloadExecutor(private val sketch3: Sketch3) {
                 request.listener?.onStart(request)
             }
 
-            val result: DownloadResult = withContext(Dispatchers.IO) {
+            val result: DownloadResult = withContext(sketch3.singleThreadTaskDispatcher) {
                 DownloadInterceptorChain(
                     initialRequest = request,
                     interceptors = sketch3.downloadInterceptors,

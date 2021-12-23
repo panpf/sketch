@@ -23,7 +23,7 @@ import java.io.InputStream
 
 class FileDataSource(val file: File) : DataSource {
 
-    override val dataFrom: DataFrom
+    override val from: DataFrom
         get() = DataFrom.LOCAL
 
     @get:Throws(IOException::class)
@@ -35,4 +35,8 @@ class FileDataSource(val file: File) : DataSource {
     override fun newInputStream(): InputStream = FileInputStream(file)
 
     override fun getFile(outDir: File?, outName: String?): File = file
+
+    override fun toString(): String {
+        return "DiskCacheDataSource(from=$from, file=${file.path})"
+    }
 }

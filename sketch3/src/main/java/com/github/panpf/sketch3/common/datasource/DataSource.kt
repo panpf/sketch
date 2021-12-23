@@ -39,7 +39,7 @@ interface DataSource {
      *
      * @return [DataFrom]
      */
-    val dataFrom: DataFrom
+    val from: DataFrom
 
     /**
      * 获取输入流

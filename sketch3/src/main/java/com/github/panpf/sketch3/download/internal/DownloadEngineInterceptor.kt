@@ -1,5 +1,6 @@
 package com.github.panpf.sketch3.download.internal
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch3.Sketch3
 import com.github.panpf.sketch3.common.Interceptor
 import com.github.panpf.sketch3.common.datasource.ByteArrayDataSource
@@ -9,6 +10,7 @@ import com.github.panpf.sketch3.download.*
 
 class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
 
+    @WorkerThread
     override suspend fun intercept(
         sketch3: Sketch3,
         chain: Interceptor.Chain<DownloadRequest, DownloadResult>

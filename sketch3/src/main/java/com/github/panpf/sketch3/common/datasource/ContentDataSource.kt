@@ -34,7 +34,7 @@ class ContentDataSource(
     val contentUri: Uri
 ) : DataSource {
 
-    override val dataFrom: DataFrom = DataFrom.LOCAL
+    override val from: DataFrom = DataFrom.LOCAL
 
     @get:Throws(IOException::class)
     @get:Synchronized
@@ -63,5 +63,9 @@ class ContentDataSource(
             }
         }
         return outFile
+    }
+
+    override fun toString(): String {
+        return "ContentDataSource(from=$from, contentUri=$contentUri)"
     }
 }

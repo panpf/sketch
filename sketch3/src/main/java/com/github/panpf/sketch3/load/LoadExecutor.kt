@@ -16,7 +16,7 @@
 //        try {
 //            request.listener?.onStart(request)
 //
-//            val result: LoadResult = withContext(Dispatchers.IO) {
+//            val result: LoadResult = withContext(sketch3.taskDispatcher) {
 //                LoadInterceptorChain(
 //                    initialRequest = request,
 //                    interceptors = interceptors,

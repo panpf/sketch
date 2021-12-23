@@ -25,7 +25,7 @@ import java.io.InputStream
 
 class DrawableDataSource(val context: Context, val drawableId: Int) : DataSource {
 
-    override val dataFrom: DataFrom
+    override val from: DataFrom
         get() = DataFrom.LOCAL
 
     @get:Throws(IOException::class)
@@ -51,5 +51,9 @@ class DrawableDataSource(val context: Context, val drawableId: Int) : DataSource
             }
         }
         return outFile
+    }
+
+    override fun toString(): String {
+        return "DrawableDataSource(from=$from, drawableId=$drawableId)"
     }
 }

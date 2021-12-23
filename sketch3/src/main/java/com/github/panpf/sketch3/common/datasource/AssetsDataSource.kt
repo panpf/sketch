@@ -28,7 +28,7 @@ class AssetsDataSource(
     private val assetsFilePath: String
 ) : DataSource {
 
-    override val dataFrom: DataFrom
+    override val from: DataFrom
         get() = DataFrom.LOCAL
 
     @get:Throws(IOException::class)
@@ -57,5 +57,9 @@ class AssetsDataSource(
             }
         }
         return outFile
+    }
+
+    override fun toString(): String {
+        return "AssetsDataSource(from=$from, assetsFilePath='$assetsFilePath')"
     }
 }

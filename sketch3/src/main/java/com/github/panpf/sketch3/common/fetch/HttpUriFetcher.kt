@@ -9,11 +9,7 @@ import com.github.panpf.sketch3.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch3.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch3.common.http.HttpStack
 import com.github.panpf.sketch3.download.DownloadRequest
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -22,7 +18,9 @@ class HttpUriFetcher(
     private val request: ImageRequest
 ) : Fetcher {
 
-    override suspend fun fetch(): FetchResult? = withContext(Dispatchers.IO) {
+    // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
+    // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
+    override suspend fun fetch(): FetchResult? = withContext(sketch3.singleThreadTaskDispatcher) {
         val diskCache = sketch3.diskCache
         val repeatTaskFilter = sketch3.repeatTaskFilter
         val httpStack = sketch3.httpStack
@@ -31,17 +29,17 @@ class HttpUriFetcher(
         val diskCachePolicy = downloadRequest.diskCachePolicy
         val repeatTaskFilterKey = request.uri.toString()
 
-        // todo Tests whether the repeat download and repeat edit filters work
         // Avoid repeated downloads whenever disk cache is required
-        if (diskCachePolicy.readEnabled) {
+        if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
             repeatTaskFilter.getHttpFetchTaskDeferred(repeatTaskFilterKey)?.await()
             diskCache.getEdiTaskDeferred(encodedDiskCacheKey)?.await()
-
+        }
+        if (diskCachePolicy.readEnabled) {
             val diskCacheEntry = diskCache[encodedDiskCacheKey]
             if (diskCacheEntry != null) {
                 return@withContext FetchResult(
+                    DataFrom.DISK_CACHE,
                     DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE),
-                    DataFrom.DISK_CACHE
                 )
             }
         }
@@ -60,8 +58,8 @@ class HttpUriFetcher(
                         writeToDiskCache(response, diskCacheEditor, diskCache, encodedDiskCacheKey)
                     if (diskCacheEntry != null) {
                         FetchResult(
+                            DataFrom.NETWORK,
                             DiskCacheDataSource(diskCacheEntry, DataFrom.NETWORK),
-                            DataFrom.NETWORK
                         )
                     } else {
                         null
@@ -70,8 +68,8 @@ class HttpUriFetcher(
                     val byteArray = writeToByteArray(response)
                     if (byteArray != null) {
                         FetchResult(
+                            DataFrom.NETWORK,
                             ByteArrayDataSource(byteArray, DataFrom.NETWORK),
-                            DataFrom.NETWORK
                         )
                     } else {
                         null
@@ -125,7 +123,7 @@ class HttpUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch3: Sketch3, request: ImageRequest): Fetcher? =
+        override fun create(sketch3: Sketch3, request: ImageRequest): HttpUriFetcher? =
             if (isApplicable(request.uri)) HttpUriFetcher(sketch3, request) else null
 
         private fun isApplicable(data: Uri): Boolean =

@@ -23,7 +23,7 @@ import java.io.InputStream
 
 class DiskCacheDataSource(
     val diskCacheEntry: DiskCache.Entry,
-    override val dataFrom: DataFrom
+    override val from: DataFrom
 ) : DataSource {
 
     @get:Throws(IOException::class)
@@ -51,5 +51,9 @@ class DiskCacheDataSource(
     fun setFromProcessedCache(fromProcessedCache: Boolean): DiskCacheDataSource {
         isFromProcessedCache = fromProcessedCache
         return this
+    }
+
+    override fun toString(): String {
+        return "DiskCacheDataSource(from=$from, file=${diskCacheEntry.file.path})"
     }
 }
