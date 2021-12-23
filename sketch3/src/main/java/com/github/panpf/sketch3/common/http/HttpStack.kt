@@ -17,6 +17,7 @@ package com.github.panpf.sketch3.common.http
 
 import java.io.IOException
 import java.io.InputStream
+import java.net.SocketTimeoutException
 
 /**
  * 负责发送 HTTP 请求，并返回响应
@@ -41,7 +42,9 @@ interface HttpStack {
     /**
      * 是否可以重试
      */
-    fun canRetry(throwable: Throwable): Boolean
+    fun canRetry(throwable: Throwable): Boolean {
+        return throwable is SocketTimeoutException
+    }
 
     /**
      * 统一响应接口

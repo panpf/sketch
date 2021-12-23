@@ -1,15 +1,14 @@
 package com.github.panpf.sketch3.common
 
-import com.github.panpf.sketch3.common.fetch.FetchResult
 import kotlinx.coroutines.Deferred
 import java.util.*
 
 class RepeatTaskFilter {
 
-    private val httpFetchTaskDeferredMap: MutableMap<String, Deferred<FetchResult?>> = WeakHashMap()
+    private val httpFetchTaskDeferredMap: MutableMap<String, Deferred<*>> = WeakHashMap()
 
     @Synchronized
-    fun putHttpFetchTaskDeferred(key: String, deferred: Deferred<FetchResult?>) {
+    fun putHttpFetchTaskDeferred(key: String, deferred: Deferred<*>) {
         httpFetchTaskDeferredMap[key] = deferred
     }
 
@@ -21,7 +20,7 @@ class RepeatTaskFilter {
 
     @Synchronized
     @Suppress("DeferredIsResult")
-    fun getHttpFetchTaskDeferred(key: String): Deferred<FetchResult?>? {
+    fun getHttpFetchTaskDeferred(key: String): Deferred<*>? {
         return httpFetchTaskDeferredMap[key]
     }
 }

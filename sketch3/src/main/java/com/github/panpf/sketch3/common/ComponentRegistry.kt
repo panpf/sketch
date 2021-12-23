@@ -9,15 +9,8 @@ class ComponentRegistry private constructor(
 
     fun newBuilder(): Builder = Builder(this)
 
-    fun newFetcher(sketch3: Sketch3, request: ImageRequest): Fetcher? {
-        fetcherFactoryList.forEach {
-            val fetcher = it.create(sketch3, request)
-            if (fetcher != null) {
-                return fetcher
-            }
-        }
-        return null
-    }
+    fun newFetcher(sketch3: Sketch3, request: ImageRequest): Fetcher? =
+        fetcherFactoryList.firstNotNullOfOrNull { it.create(sketch3, request) }
 
     companion object {
         fun new(

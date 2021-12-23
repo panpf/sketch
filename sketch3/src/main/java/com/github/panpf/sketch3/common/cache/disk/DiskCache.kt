@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch3.common.cache.disk
 
-import com.github.panpf.sketch3.common.fetch.FetchResult
 import com.github.panpf.sketch3.util.DiskLruCache
 import kotlinx.coroutines.Deferred
 import java.io.File
@@ -96,12 +95,12 @@ interface DiskCache {
      */
     fun close()
 
-    fun putEdiTaskDeferred(encodedKey: String, deferred: Deferred<FetchResult?>)
+    fun putEdiTaskDeferred(encodedKey: String, deferred: Deferred<*>)
 
     fun removeEdiTaskDeferred(encodedKey: String)
 
     @Suppress("DeferredIsResult")
-    fun getEdiTaskDeferred(encodedKey: String): Deferred<FetchResult?>?
+    fun getEdiTaskDeferred(encodedKey: String): Deferred<*>?
 
     /**
      * 磁盘缓存实体
