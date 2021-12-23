@@ -17,7 +17,7 @@ import java.io.OutputStream
 
 class HttpUriFetcher(
     private val sketch3: Sketch3,
-    private val request: ImageRequest
+    private val request: DownloadRequest,
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
@@ -26,7 +26,7 @@ class HttpUriFetcher(
         val diskCache = sketch3.diskCache
         val repeatTaskFilter = sketch3.repeatTaskFilter
         val httpStack = sketch3.httpStack
-        val downloadRequest = request as DownloadRequest
+        val downloadRequest = request
         val encodedDiskCacheKey = diskCache.encodeKey(downloadRequest.diskCacheKey)
         val diskCachePolicy = downloadRequest.diskCachePolicy
         val repeatTaskFilterKey = request.uri.toString()
@@ -114,11 +114,16 @@ class HttpUriFetcher(
         response: HttpStack.Response,
         diskCacheEditor: DiskCache.Editor,
         diskCache: DiskCache,
-        diskCacheKey: String, coroutineScope: CoroutineScope
+        diskCacheKey: String,
+        coroutineScope: CoroutineScope,
     ): DiskCache.Entry? = try {
         val readLength = response.content.use { input ->
             diskCacheEditor.newOutputStream().use { out ->
-                input.copyToWithActive(out, coroutineScope = coroutineScope)
+                input.copyToWithActive(
+                    out,
+                    coroutineScope = coroutineScope,
+                    contentLength = response.contentLength
+                )
             }
         }
         if (coroutineScope.isActive) {
@@ -144,7 +149,11 @@ class HttpUriFetcher(
         val byteArrayOutputStream = ByteArrayOutputStream()
         byteArrayOutputStream.use { out ->
             response.content.use { input ->
-                input.copyToWithActive(out, coroutineScope = coroutineScope)
+                input.copyToWithActive(
+                    out,
+                    coroutineScope = coroutineScope,
+                    contentLength = response.contentLength
+                )
             }
         }
         if (coroutineScope.isActive) {
@@ -161,21 +170,50 @@ class HttpUriFetcher(
         out: OutputStream,
         bufferSize: Int = DEFAULT_BUFFER_SIZE,
         coroutineScope: CoroutineScope,
+        contentLength: Long,
     ): Long {
         var bytesCopied: Long = 0
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
+        var lastNotifyTime = 0L
+        val progressListener = request.progressListener
+        var lastUpdateProgressBytesCopied = 0L
         while (bytes >= 0 && coroutineScope.isActive) {
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
+            if (progressListener != null && contentLength > 0) {
+                val currentTime = System.currentTimeMillis()
+                if ((currentTime - lastNotifyTime) > 1000) {
+                    lastNotifyTime = currentTime
+                    val currentBytesCopied = bytesCopied
+                    lastUpdateProgressBytesCopied = currentBytesCopied
+                    coroutineScope.async(Dispatchers.Main) {
+                        progressListener.onUpdateDownloadProgress(contentLength, currentBytesCopied)
+                    }
+                }
+            }
             bytes = read(buffer)
+        }
+        if (coroutineScope.isActive
+            && progressListener != null
+            && contentLength > 0
+            && bytesCopied > 0
+            && lastUpdateProgressBytesCopied != bytesCopied
+        ) {
+            coroutineScope.async(Dispatchers.Main) {
+                progressListener.onUpdateDownloadProgress(contentLength, bytesCopied)
+            }
         }
         return bytesCopied
     }
 
     class Factory : Fetcher.Factory {
         override fun create(sketch3: Sketch3, request: ImageRequest): HttpUriFetcher? =
-            if (isApplicable(request.uri)) HttpUriFetcher(sketch3, request) else null
+            if (request is DownloadRequest && isApplicable(request.uri)) {
+                HttpUriFetcher(sketch3, request)
+            } else {
+                null
+            }
 
         private fun isApplicable(data: Uri): Boolean =
             data.scheme == "http" || data.scheme == "https"

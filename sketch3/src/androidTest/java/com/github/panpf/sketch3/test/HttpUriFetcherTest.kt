@@ -12,6 +12,7 @@ import com.github.panpf.sketch3.common.fetch.HttpUriFetcher
 import com.github.panpf.sketch3.download.DownloadRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -235,6 +236,40 @@ class HttpUriFetcherTest {
                 )
             }
             Assert.assertNotNull(diskCache[encodedDiskCacheKey])
+        }
+    }
+
+    @Test
+    fun testProgress() {
+        val sketch3 = Sketch3.new(InstrumentationRegistry.getContext())
+        val diskCache = sketch3.diskCache
+        val httpUriFetcherFactory = HttpUriFetcher.Factory()
+        val progressList = mutableListOf<Long>()
+        val request = DownloadRequest.new(urls.first()) {
+            progressListener { _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
+        val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+
+        diskCache[encodedDiskCacheKey]?.delete()
+        Assert.assertNull(diskCache[encodedDiskCacheKey])
+
+        val httpUriFetcher = httpUriFetcherFactory.create(sketch3, request)!!
+        runBlocking {
+            httpUriFetcher.fetch()
+            delay(1000)
+        }
+        Assert.assertTrue(progressList.size > 0)
+        Assert.assertEquals(540456, progressList.last())
+
+        var lastProgress: Long? = null
+        progressList.forEach { progress ->
+            val currentLastProgress = lastProgress
+            if (currentLastProgress != null) {
+                Assert.assertTrue(currentLastProgress < progress)
+            }
+            lastProgress = progress
         }
     }
 }
