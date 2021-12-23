@@ -91,7 +91,7 @@ dependencies {
     add("normalImplementation", project(":sketch-gif"))
     add("lollipopImplementation", project(":sketch-gif"))
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("KOTLINX_SERIALIZATION_JSON")}")
 

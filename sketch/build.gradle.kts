@@ -29,7 +29,7 @@ android {
 dependencies {
     compileOnly(project(":sketch-gif"))
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
-    api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${property("KOTLIN")}")
+    api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
