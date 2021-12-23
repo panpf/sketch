@@ -19,7 +19,6 @@ import android.os.Build
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
-import java.net.SocketTimeoutException
 import java.net.URL
 
 class HurlStack(
@@ -64,10 +63,6 @@ class HurlStack(
             }
         }
         throw IOException("Unable to get response")
-    }
-
-    override fun canRetry(throwable: Throwable): Boolean {
-        return throwable is SocketTimeoutException
     }
 
     override fun toString(): String {

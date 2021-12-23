@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.panpf.sketch3.Sketch3
 import com.github.panpf.sketch3.common.DataFrom
 import com.github.panpf.sketch3.common.ImageRequest
+import com.github.panpf.sketch3.common.cache.CachePolicy
 import com.github.panpf.sketch3.common.cache.disk.DiskCache
 import com.github.panpf.sketch3.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch3.common.datasource.DiskCacheDataSource
@@ -40,64 +41,26 @@ class HttpUriFetcher(
             val diskCacheEntry = diskCache[encodedDiskCacheKey]
             if (diskCacheEntry != null) {
                 return@withContext FetchResult(
-                    DataFrom.DISK_CACHE,
-                    DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE),
+                    DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
                 )
             }
         }
 
         // Create a download task Deferred and cache it for other tasks to filter repeated downloads
         @Suppress("BlockingMethodInNonBlockingContext")
-        val downloadTaskDeferred: Deferred<FetchResult?> =
+        val downloadTaskDeferred: Deferred<Result<FetchResult?>> =
             async(sketch3.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
-                val response = httpStack.getResponse(request.uri.toString())
-                val responseCode = response.code
-                if (responseCode == 200) {
-                    val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
-                        diskCache.edit(encodedDiskCacheKey)
-                    } else {
-                        null
-                    }
-                    if (diskCacheEditor != null) {
-                        val diskCacheEntry =
-                            writeToDiskCache(
-                                response, diskCacheEditor, diskCache, encodedDiskCacheKey, this
-                            )
-                        if (diskCacheEntry != null) {
-                            if (diskCachePolicy.readEnabled) {
-                                FetchResult(
-                                    DataFrom.NETWORK,
-                                    DiskCacheDataSource(diskCacheEntry, DataFrom.NETWORK),
-                                )
-                            } else {
-                                val byteArray = diskCacheEntry.newInputStream().use {
-                                    it.readBytes()
-                                }
-                                FetchResult(
-                                    DataFrom.NETWORK,
-                                    ByteArrayDataSource(byteArray, DataFrom.NETWORK),
-                                )
-                            }
-                        } else {
-                            null
-                        }
-                    } else {
-                        val byteArray = writeToByteArray(response, this)
-                        if (byteArray != null) {
-                            FetchResult(
-                                DataFrom.NETWORK,
-                                ByteArrayDataSource(byteArray, DataFrom.NETWORK),
-                            )
-                        } else {
-                            null
-                        }
-                    }
-                } else {
-                    throw IllegalStateException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uri}")
+                // Because remove Deferred is needed later, we need to catch possible exceptions here, and make sure to throw it after remove is executed
+                try {
+                    val fetchResult = executeHttpDownload(
+                        httpStack, diskCachePolicy, diskCache, encodedDiskCacheKey, this
+                    )
+                    Result.success(fetchResult)
+                } catch (e: Throwable) {
+                    Result.failure(e)
                 }
             }
 
-        // 当前任务会写入缓存才需要让别人等
         if (diskCachePolicy.writeEnabled) {
             repeatTaskFilter.putHttpFetchTaskDeferred(repeatTaskFilterKey, downloadTaskDeferred)
             diskCache.putEdiTaskDeferred(encodedDiskCacheKey, downloadTaskDeferred)
@@ -107,9 +70,52 @@ class HttpUriFetcher(
             repeatTaskFilter.removeHttpFetchTaskDeferred(repeatTaskFilterKey)
             diskCache.removeEdiTaskDeferred(repeatTaskFilterKey)
         }
-        return@withContext result
+        if (result.isSuccess) {
+            return@withContext result.getOrThrow()
+        } else {
+            throw result.exceptionOrNull()!!
+        }
     }
 
+    @Throws(IOException::class)
+    private fun executeHttpDownload(
+        httpStack: HttpStack,
+        diskCachePolicy: CachePolicy,
+        diskCache: DiskCache,
+        encodedDiskCacheKey: String,
+        coroutineScope: CoroutineScope,
+    ): FetchResult? {
+        val response = httpStack.getResponse(request.uri.toString())
+        val responseCode = response.code
+        if (responseCode != 200) {
+            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uri}")
+        }
+
+        val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
+            diskCache.edit(encodedDiskCacheKey)
+        } else {
+            null
+        }
+        return if (diskCacheEditor != null) {
+            writeToDiskCache(
+                response, diskCacheEditor, diskCache, encodedDiskCacheKey, coroutineScope
+            )?.run {
+                if (diskCachePolicy.readEnabled) {
+                    FetchResult(DiskCacheDataSource(this, DataFrom.NETWORK))
+                } else {
+                    this.newInputStream()
+                        .use { it.readBytes() }
+                        .run { FetchResult(ByteArrayDataSource(this, DataFrom.NETWORK)) }
+                }
+            }
+        } else {
+            writeToByteArray(response, coroutineScope)?.run {
+                FetchResult(ByteArrayDataSource(this, DataFrom.NETWORK))
+            }
+        }
+    }
+
+    @Throws(IOException::class)
     private fun writeToDiskCache(
         response: HttpStack.Response,
         diskCacheEditor: DiskCache.Editor,
@@ -128,24 +134,31 @@ class HttpUriFetcher(
         }
         if (coroutineScope.isActive) {
             diskCacheEditor.commit()
-            diskCache[diskCacheKey]
+            diskCache[diskCacheKey].apply {
+                if (this == null) {
+                    throw IOException("Disk cache loss after write. key: $diskCacheKey")
+                }
+            }
         } else if (!response.isContentChunked && readLength == response.contentLength) {
             diskCacheEditor.commit()
-            diskCache[diskCacheKey]
+            diskCache[diskCacheKey].apply {
+                if (this == null) {
+                    throw IOException("Disk cache loss after write. key: $diskCacheKey")
+                }
+            }
         } else {
             diskCacheEditor.abort()
             null
         }
     } catch (e: IOException) {
-        e.printStackTrace()
         diskCacheEditor.abort()
-        null
+        throw e
     }
 
     private fun writeToByteArray(
         response: HttpStack.Response,
         coroutineScope: CoroutineScope
-    ): ByteArray? = try {
+    ): ByteArray? {
         val byteArrayOutputStream = ByteArrayOutputStream()
         byteArrayOutputStream.use { out ->
             response.content.use { input ->
@@ -156,14 +169,11 @@ class HttpUriFetcher(
                 )
             }
         }
-        if (coroutineScope.isActive) {
+        return if (coroutineScope.isActive) {
             byteArrayOutputStream.toByteArray()
         } else {
             null
         }
-    } catch (e: IOException) {
-        e.printStackTrace()
-        null
     }
 
     private fun InputStream.copyToWithActive(
