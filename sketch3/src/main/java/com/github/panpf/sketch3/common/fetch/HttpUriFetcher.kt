@@ -12,6 +12,8 @@ import com.github.panpf.sketch3.download.DownloadRequest
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 class HttpUriFetcher(
     private val sketch3: Sketch3,
@@ -45,35 +47,53 @@ class HttpUriFetcher(
         }
 
         // Create a download task Deferred and cache it for other tasks to filter repeated downloads
+        @Suppress("BlockingMethodInNonBlockingContext")
         val downloadTaskDeferred: Deferred<FetchResult?> =
-            async(Dispatchers.IO, start = CoroutineStart.LAZY) {
+            async(sketch3.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
                 val response = httpStack.getResponse(request.uri.toString())
-                val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
-                    diskCache.edit(encodedDiskCacheKey)
-                } else {
-                    null
-                }
-                if (diskCacheEditor != null) {
-                    val diskCacheEntry =
-                        writeToDiskCache(response, diskCacheEditor, diskCache, encodedDiskCacheKey)
-                    if (diskCacheEntry != null) {
-                        FetchResult(
-                            DataFrom.NETWORK,
-                            DiskCacheDataSource(diskCacheEntry, DataFrom.NETWORK),
-                        )
+                val responseCode = response.code
+                if (responseCode == 200) {
+                    val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
+                        diskCache.edit(encodedDiskCacheKey)
                     } else {
                         null
                     }
-                } else {
-                    val byteArray = writeToByteArray(response)
-                    if (byteArray != null) {
-                        FetchResult(
-                            DataFrom.NETWORK,
-                            ByteArrayDataSource(byteArray, DataFrom.NETWORK),
-                        )
+                    if (diskCacheEditor != null) {
+                        val diskCacheEntry =
+                            writeToDiskCache(
+                                response, diskCacheEditor, diskCache, encodedDiskCacheKey, this
+                            )
+                        if (diskCacheEntry != null) {
+                            if (diskCachePolicy.readEnabled) {
+                                FetchResult(
+                                    DataFrom.NETWORK,
+                                    DiskCacheDataSource(diskCacheEntry, DataFrom.NETWORK),
+                                )
+                            } else {
+                                val byteArray = diskCacheEntry.newInputStream().use {
+                                    it.readBytes()
+                                }
+                                FetchResult(
+                                    DataFrom.NETWORK,
+                                    ByteArrayDataSource(byteArray, DataFrom.NETWORK),
+                                )
+                            }
+                        } else {
+                            null
+                        }
                     } else {
-                        null
+                        val byteArray = writeToByteArray(response, this)
+                        if (byteArray != null) {
+                            FetchResult(
+                                DataFrom.NETWORK,
+                                ByteArrayDataSource(byteArray, DataFrom.NETWORK),
+                            )
+                        } else {
+                            null
+                        }
                     }
+                } else {
+                    throw IllegalStateException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uri}")
                 }
             }
 
@@ -94,32 +114,63 @@ class HttpUriFetcher(
         response: HttpStack.Response,
         diskCacheEditor: DiskCache.Editor,
         diskCache: DiskCache,
-        diskCacheKey: String
+        diskCacheKey: String, coroutineScope: CoroutineScope
     ): DiskCache.Entry? = try {
-        response.content.use { input ->
+        val readLength = response.content.use { input ->
             diskCacheEditor.newOutputStream().use { out ->
-                input.copyTo(out)
+                input.copyToWithActive(out, coroutineScope = coroutineScope)
             }
         }
-        diskCacheEditor.commit()
-        diskCache[diskCacheKey]
+        if (coroutineScope.isActive) {
+            diskCacheEditor.commit()
+            diskCache[diskCacheKey]
+        } else if (!response.isContentChunked && readLength == response.contentLength) {
+            diskCacheEditor.commit()
+            diskCache[diskCacheKey]
+        } else {
+            diskCacheEditor.abort()
+            null
+        }
     } catch (e: IOException) {
         e.printStackTrace()
         diskCacheEditor.abort()
         null
     }
 
-    private fun writeToByteArray(response: HttpStack.Response): ByteArray? = try {
+    private fun writeToByteArray(
+        response: HttpStack.Response,
+        coroutineScope: CoroutineScope
+    ): ByteArray? = try {
         val byteArrayOutputStream = ByteArrayOutputStream()
         byteArrayOutputStream.use { out ->
             response.content.use { input ->
-                input.copyTo(out)
+                input.copyToWithActive(out, coroutineScope = coroutineScope)
             }
         }
-        byteArrayOutputStream.toByteArray()
+        if (coroutineScope.isActive) {
+            byteArrayOutputStream.toByteArray()
+        } else {
+            null
+        }
     } catch (e: IOException) {
         e.printStackTrace()
         null
+    }
+
+    private fun InputStream.copyToWithActive(
+        out: OutputStream,
+        bufferSize: Int = DEFAULT_BUFFER_SIZE,
+        coroutineScope: CoroutineScope,
+    ): Long {
+        var bytesCopied: Long = 0
+        val buffer = ByteArray(bufferSize)
+        var bytes = read(buffer)
+        while (bytes >= 0 && coroutineScope.isActive) {
+            out.write(buffer, 0, bytes)
+            bytesCopied += bytes
+            bytes = read(buffer)
+        }
+        return bytesCopied
     }
 
     class Factory : Fetcher.Factory {
