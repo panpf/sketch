@@ -9,7 +9,11 @@ import com.github.panpf.sketch3.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch3.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch3.common.http.HttpStack
 import com.github.panpf.sketch3.download.DownloadRequest
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -27,15 +31,12 @@ class HttpUriFetcher(
         val diskCachePolicy = downloadRequest.diskCachePolicy
         val repeatTaskFilterKey = request.uri.toString()
 
+        // todo Tests whether the repeat download and repeat edit filters work
         // Avoid repeated downloads whenever disk cache is required
-        if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
-            val httpFetchTaskDeferred =
-                repeatTaskFilter.getHttpFetchTaskDeferred(repeatTaskFilterKey)
-            httpFetchTaskDeferred?.await()
-        }
-
-        // Disk cache is preferred
         if (diskCachePolicy.readEnabled) {
+            repeatTaskFilter.getHttpFetchTaskDeferred(repeatTaskFilterKey)?.await()
+            diskCache.getEdiTaskDeferred(encodedDiskCacheKey)?.await()
+
             val diskCacheEntry = diskCache[encodedDiskCacheKey]
             if (diskCacheEntry != null) {
                 return@withContext FetchResult(
@@ -77,10 +78,18 @@ class HttpUriFetcher(
                     }
                 }
             }
-        repeatTaskFilter.putHttpFetchTaskDeferred(repeatTaskFilterKey, downloadTaskDeferred)
+
+        // 当前任务会写入缓存才需要让别人等
+        if (diskCachePolicy.writeEnabled) {
+            repeatTaskFilter.putHttpFetchTaskDeferred(repeatTaskFilterKey, downloadTaskDeferred)
+            diskCache.putEdiTaskDeferred(encodedDiskCacheKey, downloadTaskDeferred)
+        }
         val result = downloadTaskDeferred.await()
-        repeatTaskFilter.removeHttpFetchTaskDeferred(repeatTaskFilterKey)
-        result
+        if (diskCachePolicy.writeEnabled) {
+            repeatTaskFilter.removeHttpFetchTaskDeferred(repeatTaskFilterKey)
+            diskCache.removeEdiTaskDeferred(repeatTaskFilterKey)
+        }
+        return@withContext result
     }
 
     private fun writeToDiskCache(

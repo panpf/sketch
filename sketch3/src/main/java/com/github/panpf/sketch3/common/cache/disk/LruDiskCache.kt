@@ -19,13 +19,16 @@ import android.content.Context
 import android.os.Environment
 import android.text.format.Formatter
 import com.github.panpf.sketch3.SLog
+import com.github.panpf.sketch3.common.fetch.FetchResult
 import com.github.panpf.sketch3.util.DiskLruCache
 import com.github.panpf.sketch3.util.MD5Utils
+import kotlinx.coroutines.Deferred
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Create a disk cache manager that releases the cache according to the least used rule
@@ -244,6 +247,25 @@ class LruDiskCache(
             }
             cache = null
         }
+    }
+
+    private val editTaskDeferredMap: MutableMap<String, Deferred<FetchResult?>> = WeakHashMap()
+
+    @Synchronized
+    override fun putEdiTaskDeferred(encodedKey: String, deferred: Deferred<FetchResult?>) {
+        editTaskDeferredMap[encodedKey] = deferred
+    }
+
+    @Synchronized
+    override fun removeEdiTaskDeferred(encodedKey: String) {
+        @Suppress("DeferredResultUnused")
+        editTaskDeferredMap.remove(encodedKey)
+    }
+
+    @Synchronized
+    @Suppress("DeferredIsResult")
+    override fun getEdiTaskDeferred(encodedKey: String): Deferred<FetchResult?>? {
+        return editTaskDeferredMap[encodedKey]
     }
 
     override fun toString(): String {
