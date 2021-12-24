@@ -1,5 +1,6 @@
 package com.github.panpf.sketch3.test
 
+import android.net.Uri
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch3.Sketch3
@@ -14,6 +15,7 @@ import kotlinx.coroutines.*
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class HttpUriFetcherTest {
@@ -287,26 +289,74 @@ class HttpUriFetcherTest {
     fun testCancel() {
         val context = InstrumentationRegistry.getContext()
         val sketch3 = Sketch3.new(context) {
-            httpStack(TestHttpStack(context))
+            httpStack(TestHttpStack(context, readDelayMillis = 1000))
         }
         val diskCache = sketch3.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.urls.first()
-        val request = DownloadRequest.new(testUri.uri)
+        val progressList = mutableListOf<Long>()
+        val request = DownloadRequest.new(testUri.uri) {
+            progressListener { _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
         val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+        val httpUriFetcher = httpUriFetcherFactory.create(sketch3, request)!!
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-        val httpUriFetcher = httpUriFetcherFactory.create(sketch3, request)!!
+        progressList.clear()
         runBlocking {
-            val deferred = launch {
+            val job = launch {
                 httpUriFetcher.fetch()
-                throw Exception("cancel failed")
             }
-            delay(1)
-            deferred.cancel("cancel test")
+            delay(2000)
+            job.cancel()
+            val repeatTaskFilter = sketch3.repeatTaskFilter
+            Assert.assertNotNull(repeatTaskFilter.getHttpFetchTaskDeferred(testUri.uri.toString()))
+            Assert.assertNotNull(diskCache.getEdiTaskDeferred(encodedDiskCacheKey))
+            delay(1000)
+            Assert.assertNull(repeatTaskFilter.getHttpFetchTaskDeferred(testUri.uri.toString()))
+            Assert.assertNull(diskCache.getEdiTaskDeferred(encodedDiskCacheKey))
         }
-        // todo Improve the test, the current test method is not rigorous
+        Assert.assertTrue(progressList.size > 0)
+        Assert.assertNull(progressList.find { it == testUri.contentLength })
+    }
+
+    @Test
+    fun testException() {
+        val context = InstrumentationRegistry.getContext()
+        val sketch3 = Sketch3.new(context) {
+            httpStack(TestHttpStack(context, readDelayMillis = 1000))
+        }
+        val diskCache = sketch3.diskCache
+        val httpUriFetcherFactory = HttpUriFetcher.Factory()
+        val testUri = TestHttpStack.TestUri(Uri.parse("http://fake.jpeg"), 43235)
+        val progressList = mutableListOf<Long>()
+        val request = DownloadRequest.new(testUri.uri) {
+            progressListener { _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
+        val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+        val httpUriFetcher = httpUriFetcherFactory.create(sketch3, request)!!
+
+        diskCache[encodedDiskCacheKey]?.delete()
+        Assert.assertNull(diskCache[encodedDiskCacheKey])
+
+        progressList.clear()
+        runBlocking {
+            try {
+                httpUriFetcher.fetch()
+                Assert.fail("No exception thrown")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            val repeatTaskFilter = sketch3.repeatTaskFilter
+            Assert.assertNull(repeatTaskFilter.getHttpFetchTaskDeferred(testUri.uri.toString()))
+            Assert.assertNull(diskCache.getEdiTaskDeferred(encodedDiskCacheKey))
+        }
+        Assert.assertEquals(0, progressList.size)
     }
 }

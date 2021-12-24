@@ -69,6 +69,21 @@ class DownloadRequest private constructor(
             this.listener = listener
         }
 
+        inline fun listener(
+            crossinline onStart: (request: DownloadRequest) -> Unit = {},
+            crossinline onCancel: (request: DownloadRequest) -> Unit = {},
+            crossinline onError: (request: DownloadRequest, result: Throwable) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DownloadRequest, result: DownloadData) -> Unit = { _, _ -> }
+        ) = listener(object : DownloadListener {
+            override fun onStart(request: DownloadRequest) = onStart(request)
+            override fun onCancel(request: DownloadRequest) = onCancel(request)
+            override fun onError(request: DownloadRequest, throwable: Throwable) =
+                onError(request, throwable)
+
+            override fun onSuccess(request: DownloadRequest, result: DownloadData) =
+                onSuccess(request, result)
+        })
+
         fun progressListener(progressListener: DownloadProgressListener?): Builder = apply {
             this.progressListener = progressListener
         }

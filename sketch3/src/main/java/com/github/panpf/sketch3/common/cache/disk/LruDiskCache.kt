@@ -266,6 +266,19 @@ class LruDiskCache(
         return editTaskDeferredMap[encodedKey]
     }
 
+    @Synchronized
+    @Suppress("DeferredIsResult")
+    override fun getActiveEdiTaskDeferred(encodedKey: String): Deferred<*>? {
+        val deferred = editTaskDeferredMap[encodedKey]
+        return if (deferred != null && !deferred.isActive) {
+            @Suppress("DeferredResultUnused")
+            editTaskDeferredMap.remove(encodedKey)
+            null
+        } else {
+            deferred
+        }
+    }
+
     override fun toString(): String {
         return String.format(
             Locale.US,

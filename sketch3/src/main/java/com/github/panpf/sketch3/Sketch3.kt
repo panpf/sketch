@@ -48,8 +48,8 @@ class Sketch3 private constructor(
     }
 
     fun enqueueDownload(downloadRequest: DownloadRequest): Disposable<DownloadResult> {
-        val job = scope.async {
-            downloadExecutor.executeOnMain(downloadRequest)
+        val job = scope.async(singleThreadTaskDispatcher) {
+            downloadExecutor.execute(downloadRequest)
         }
         return OneShotDisposable(job)
     }
@@ -64,13 +64,14 @@ class Sketch3 private constructor(
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
     ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uriString, configBlock))
 
-    suspend fun executeDownload(downloadRequest: DownloadRequest): DownloadResult =
-        coroutineScope {
-            val job = scope.async {
-                downloadExecutor.executeOnMain(downloadRequest)
+    suspend fun executeDownload(downloadRequest: DownloadRequest): DownloadResult {
+        return coroutineScope {
+            val job = async(singleThreadTaskDispatcher) {
+                downloadExecutor.execute(downloadRequest)
             }
-            return@coroutineScope job.await()
+            job.await()
         }
+    }
 
     suspend fun executeDownload(
         uri: Uri,
