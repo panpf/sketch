@@ -1,0 +1,40 @@
+package com.github.panpf.sketch.common
+
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.common.fetch.Fetcher
+
+class ComponentRegistry private constructor(
+    val fetcherFactoryList: List<Fetcher.Factory>
+) {
+
+    fun newBuilder(): Builder = Builder(this)
+
+    fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher? =
+        fetcherFactoryList.firstNotNullOfOrNull { it.create(sketch, request) }
+
+    companion object {
+        fun new(
+            configBlock: (Builder.() -> Unit)? = null
+        ): ComponentRegistry = Builder().apply {
+            configBlock?.invoke(this)
+        }.build()
+    }
+
+    class Builder {
+        private val fetcherFactoryList: MutableList<Fetcher.Factory>
+
+        constructor() {
+            this.fetcherFactoryList = mutableListOf()
+        }
+
+        constructor(componentRegistry: ComponentRegistry) {
+            this.fetcherFactoryList = componentRegistry.fetcherFactoryList.toMutableList()
+        }
+
+        fun addFetcher(factory: Fetcher.Factory) {
+            fetcherFactoryList.add(factory)
+        }
+
+        fun build(): ComponentRegistry = ComponentRegistry(fetcherFactoryList.toList())
+    }
+}
