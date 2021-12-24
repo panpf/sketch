@@ -23,7 +23,7 @@ class HttpUriFetcher(
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
-    override suspend fun fetch(): FetchResult? {
+    override suspend fun fetch(): FetchResult? = withContext(sketch3.singleThreadTaskDispatcher) {
         val diskCache = sketch3.diskCache
         val repeatTaskFilter = sketch3.repeatTaskFilter
         val httpStack = sketch3.httpStack
@@ -40,7 +40,7 @@ class HttpUriFetcher(
         if (diskCachePolicy.readEnabled) {
             val diskCacheEntry = diskCache[encodedDiskCacheKey]
             if (diskCacheEntry != null) {
-                return FetchResult(
+                return@withContext FetchResult(
                     DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
                 )
             }
@@ -49,25 +49,18 @@ class HttpUriFetcher(
         // Create a download task Deferred and cache it for other tasks to filter repeated downloads
         @Suppress("BlockingMethodInNonBlockingContext")
         val downloadTaskDeferred: Deferred<FetchResult?> =
-//            try {
-            coroutineScope {
-                async(sketch3.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
-                    executeHttpDownload(
-                        httpStack, diskCachePolicy, diskCache, encodedDiskCacheKey, this
-                    )
-                }
+            async(sketch3.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
+                executeHttpDownload(
+                    httpStack, diskCachePolicy, diskCache, encodedDiskCacheKey, this
+                )
             }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            throw e
-//        }
 
         if (diskCachePolicy.writeEnabled) {
             repeatTaskFilter.putHttpFetchTaskDeferred(repeatTaskFilterKey, downloadTaskDeferred)
             diskCache.putEdiTaskDeferred(encodedDiskCacheKey, downloadTaskDeferred)
         }
         try {
-            return downloadTaskDeferred.await()
+            return@withContext downloadTaskDeferred.await()
         } finally {
             // Cancel and exception both go here
             if (diskCachePolicy.writeEnabled) {
