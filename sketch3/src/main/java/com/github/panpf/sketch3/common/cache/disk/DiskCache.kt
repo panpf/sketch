@@ -100,6 +100,10 @@ interface DiskCache {
     fun removeEdiTaskDeferred(encodedKey: String)
 
     @Suppress("DeferredIsResult")
+    fun getActiveEdiTaskDeferred(encodedKey: String): Deferred<*>?
+
+    @Suppress("DeferredIsResult")
+    @Deprecated("This function is only used to test environment, production environment, please use getActiveHttpFetchTaskDeferred instead")
     fun getEdiTaskDeferred(encodedKey: String): Deferred<*>?
 
     /**

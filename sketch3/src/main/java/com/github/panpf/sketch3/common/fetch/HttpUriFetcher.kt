@@ -23,7 +23,7 @@ class HttpUriFetcher(
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
-    override suspend fun fetch(): FetchResult? = withContext(sketch3.singleThreadTaskDispatcher) {
+    override suspend fun fetch(): FetchResult? {
         val diskCache = sketch3.diskCache
         val repeatTaskFilter = sketch3.repeatTaskFilter
         val httpStack = sketch3.httpStack
@@ -34,13 +34,13 @@ class HttpUriFetcher(
 
         // Avoid repeated downloads whenever disk cache is required
         if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
-            repeatTaskFilter.getHttpFetchTaskDeferred(repeatTaskFilterKey)?.await()
-            diskCache.getEdiTaskDeferred(encodedDiskCacheKey)?.await()
+            repeatTaskFilter.getActiveHttpFetchTaskDeferred(repeatTaskFilterKey)?.await()
+            diskCache.getActiveEdiTaskDeferred(encodedDiskCacheKey)?.await()
         }
         if (diskCachePolicy.readEnabled) {
             val diskCacheEntry = diskCache[encodedDiskCacheKey]
             if (diskCacheEntry != null) {
-                return@withContext FetchResult(
+                return FetchResult(
                     DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
                 )
             }
@@ -48,32 +48,32 @@ class HttpUriFetcher(
 
         // Create a download task Deferred and cache it for other tasks to filter repeated downloads
         @Suppress("BlockingMethodInNonBlockingContext")
-        val downloadTaskDeferred: Deferred<Result<FetchResult?>> =
-            async(sketch3.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
-                // Because remove Deferred is needed later, we need to catch possible exceptions here, and make sure to throw it after remove is executed
-                try {
-                    val fetchResult = executeHttpDownload(
+        val downloadTaskDeferred: Deferred<FetchResult?> =
+//            try {
+//            coroutineScope {
+                async(sketch3.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
+                    executeHttpDownload(
                         httpStack, diskCachePolicy, diskCache, encodedDiskCacheKey, this
                     )
-                    Result.success(fetchResult)
-                } catch (e: Throwable) {
-                    Result.failure(e)
                 }
             }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            throw e
+//        }
 
         if (diskCachePolicy.writeEnabled) {
             repeatTaskFilter.putHttpFetchTaskDeferred(repeatTaskFilterKey, downloadTaskDeferred)
             diskCache.putEdiTaskDeferred(encodedDiskCacheKey, downloadTaskDeferred)
         }
-        val result = downloadTaskDeferred.await()
-        if (diskCachePolicy.writeEnabled) {
-            repeatTaskFilter.removeHttpFetchTaskDeferred(repeatTaskFilterKey)
-            diskCache.removeEdiTaskDeferred(repeatTaskFilterKey)
-        }
-        if (result.isSuccess) {
-            return@withContext result.getOrThrow()
-        } else {
-            throw result.exceptionOrNull()!!
+        try {
+            return downloadTaskDeferred.await()
+        } finally {
+            // Cancel and exception both go here
+            if (diskCachePolicy.writeEnabled) {
+                repeatTaskFilter.removeHttpFetchTaskDeferred(repeatTaskFilterKey)
+                diskCache.removeEdiTaskDeferred(encodedDiskCacheKey)
+            }
         }
     }
 

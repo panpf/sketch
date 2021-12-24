@@ -28,6 +28,7 @@ class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
 
         val fetchResult = fetcher.fetch()
             ?: return DownloadErrorResult(IllegalStateException("Unable fetch the result: ${request.uri}"))
+
         return when (val source = fetchResult.source) {
             is ByteArrayDataSource -> DownloadSuccessResult(ByteArrayDownloadData(source.data))
             is DiskCacheDataSource -> DownloadSuccessResult(DiskCacheDownloadData(source.diskCacheEntry))

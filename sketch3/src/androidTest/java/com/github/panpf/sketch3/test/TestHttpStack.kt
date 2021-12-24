@@ -3,10 +3,10 @@ package com.github.panpf.sketch3.test
 import android.content.Context
 import android.net.Uri
 import com.github.panpf.sketch3.common.http.HttpStack
-import java.io.IOException
+import com.github.panpf.sketch3.test.internal.SlowInputStream
 import java.io.InputStream
 
-class TestHttpStack(val context: Context) : HttpStack {
+class TestHttpStack(private val context: Context, val readDelayMillis: Long? = null) : HttpStack {
 
     companion object {
         val urls = arrayOf(
@@ -18,14 +18,15 @@ class TestHttpStack(val context: Context) : HttpStack {
     }
 
     override fun getResponse(uri: String): HttpStack.Response {
-        if (uri.endsWith("fd5717876ab046b8aa889c9aaac4b56c.jpeg")) {
-            return TestResponse(context)
-        } else {
-            throw IOException("TestHttpStack only support fd5717876ab046b8aa889c9aaac4b56c.jpeg")
-        }
+        return TestResponse(context, uri.substring(uri.lastIndexOf("/") + 1), readDelayMillis)
     }
 
-    class TestResponse(val context: Context) : HttpStack.Response {
+    class TestResponse(
+        private val context: Context,
+        private val assetFileName: String,
+        private val readDelayMillis: Long? = null
+    ) :
+        HttpStack.Response {
         override val code: Int
             get() = 200
         override val message: String?
@@ -54,7 +55,13 @@ class TestHttpStack(val context: Context) : HttpStack {
         override val headersString: String?
             get() = null
         override val content: InputStream
-            get() = context.assets.open("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
+            get() = context.assets.open(assetFileName).run {
+                if (readDelayMillis != null) {
+                    SlowInputStream(this, readDelayMillis)
+                } else {
+                    this
+                }
+            }
 
         override fun releaseConnection() {
         }
