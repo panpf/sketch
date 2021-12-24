@@ -5,8 +5,10 @@ import android.os.Looper
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch3.Sketch3
+import com.github.panpf.sketch3.common.cache.CachePolicy
 import com.github.panpf.sketch3.download.DownloadRequest
 import com.github.panpf.sketch3.download.internal.DownloadExecutor
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -62,6 +64,7 @@ class DownloadExecutorTest {
 
         val listenerList = mutableListOf<String>()
         val request = DownloadRequest.new(TestHttpStack.urls.first().uri) {
+            diskCachePolicy(CachePolicy.DISABLED)
             listener(
                 onStart = {
                     check(Looper.getMainLooper() === Looper.myLooper())
@@ -87,8 +90,9 @@ class DownloadExecutorTest {
             val job = launch {
                 downloadExecutor.execute(request)
             }
-            delay(2000)
-            job.cancel()
+            delay(1000)
+            job.cancelAndJoin()
+            delay(1000)
         }
         Assert.assertEquals("onStart, onCancel", listenerList.joinToString())
     }
@@ -103,6 +107,7 @@ class DownloadExecutorTest {
         val testUri = TestHttpStack.TestUri(Uri.parse("http://fake.jpeg"), 43235)
         val listenerList = mutableListOf<String>()
         val request = DownloadRequest.new(testUri.uri) {
+            diskCachePolicy(CachePolicy.DISABLED)
             listener(
                 onStart = {
                     check(Looper.getMainLooper() === Looper.myLooper())
@@ -128,12 +133,8 @@ class DownloadExecutorTest {
             val job = launch {
                 downloadExecutor.execute(request)
             }
-            delay(2000)
-            job.cancel()
+            job.join()
         }
         Assert.assertEquals("onStart, onError", listenerList.joinToString())
-        // todo 测试还不通过
     }
-
-    // todo 测试 execute 结果
 }

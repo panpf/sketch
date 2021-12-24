@@ -7,18 +7,17 @@ import com.github.panpf.sketch3.download.DownloadRequest
 import com.github.panpf.sketch3.download.DownloadResult
 import com.github.panpf.sketch3.download.DownloadSuccessResult
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.IOException
 
 class DownloadExecutor(private val sketch3: Sketch3) {
 
     @WorkerThread
     suspend fun execute(request: DownloadRequest): DownloadResult {
+        val listenerDelegate = request.listener?.run {
+            DownloadListenerDelegate(this)
+        }
+
         try {
-            withContext(Dispatchers.Main) {
-                request.listener?.onStart(request)
-            }
+            listenerDelegate?.onStart(request)
 
             val result: DownloadResult = DownloadInterceptorChain(
                 initialRequest = request,
@@ -27,32 +26,25 @@ class DownloadExecutor(private val sketch3: Sketch3) {
                 request = request,
             ).proceed(sketch3, request)
 
-            when (result) {
-                is DownloadSuccessResult -> {
-                    withContext(Dispatchers.Main) {
-                        request.listener?.onSuccess(request, result.data)
+            if (listenerDelegate != null) {
+                when (result) {
+                    is DownloadSuccessResult -> {
+                        listenerDelegate.onSuccess(request, result.data)
                     }
-                }
-                is DownloadErrorResult -> {
-                    withContext(Dispatchers.Main) {
-                        request.listener?.onError(request, result.throwable)
+                    is DownloadErrorResult -> {
+                        listenerDelegate.onError(request, result.throwable)
                     }
                 }
             }
-
             return result
         } catch (throwable: Throwable) {
-            // todo 捕获不到取消和异常
             if (throwable is CancellationException) {
-                withContext(Dispatchers.Main) {
-                    request.listener?.onCancel(request)
-                }
+                listenerDelegate?.onCancel(request)
                 throw throwable
             } else {
+                listenerDelegate?.onError(request, throwable)
                 return DownloadErrorResult(throwable)
             }
-        } finally {
-            println("")
         }
     }
 }

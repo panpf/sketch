@@ -22,18 +22,17 @@ class Sketch3 private constructor(
     val httpStack: HttpStack,
     val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>,
 ) {
+    private val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
+            SLog.wmt("scope", throwable, "exception")
+        }
+    )
     private val downloadExecutor = DownloadExecutor(this)
+
     val repeatTaskFilter = RepeatTaskFilter()
     val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
     val httpDownloadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
-
-    private val scope = CoroutineScope(
-        SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
-//          logger?.log(TAG, throwable)
-            SLog.wmt("scope", throwable, "exception")
-        }
-    )
 
     init {
         if (diskCache is LruDiskCache) {
