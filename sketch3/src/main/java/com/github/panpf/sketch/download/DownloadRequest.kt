@@ -12,9 +12,17 @@ class DownloadRequest private constructor(
     val progressListener: DownloadProgressListener?,
 ) : ImageRequest {
 
-    fun newBuilder(): Builder {
-        return Builder(this)
+    fun newBuilder(
+        configBlock: (Builder.() -> Unit)? = null
+    ): Builder = Builder(this).apply {
+        configBlock?.invoke(this)
     }
+
+    fun new(
+        configBlock: (Builder.() -> Unit)? = null
+    ): DownloadRequest = Builder(this).apply {
+        configBlock?.invoke(this)
+    }.build()
 
     companion object {
         fun new(

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test
+package com.github.panpf.sketch.test.common.fetch
 
 import android.net.Uri
 import androidx.test.InstrumentationRegistry

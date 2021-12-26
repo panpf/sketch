@@ -2,6 +2,7 @@ package com.github.panpf.sketch
 
 import android.content.Context
 import android.net.Uri
+import androidx.annotation.AnyThread
 import com.github.panpf.sketch.common.*
 import com.github.panpf.sketch.common.cache.disk.DiskCache
 import com.github.panpf.sketch.common.cache.disk.LruDiskCache
@@ -46,6 +47,7 @@ class Sketch private constructor(
         }
     }
 
+    @AnyThread
     fun enqueueDownload(downloadRequest: DownloadRequest): Disposable<DownloadResult> {
         val job = scope.async(singleThreadTaskDispatcher) {
             downloadExecutor.execute(downloadRequest)
@@ -53,11 +55,13 @@ class Sketch private constructor(
         return OneShotDisposable(job)
     }
 
+    @AnyThread
     fun enqueueDownload(
         uri: Uri,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
     ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uri, configBlock))
 
+    @AnyThread
     fun enqueueDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null

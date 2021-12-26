@@ -7,7 +7,17 @@ class ComponentRegistry private constructor(
     val fetcherFactoryList: List<Fetcher.Factory>
 ) {
 
-    fun newBuilder(): Builder = Builder(this)
+    fun newBuilder(
+        configBlock: (Builder.() -> Unit)? = null
+    ): Builder = Builder(this).apply {
+        configBlock?.invoke(this)
+    }
+
+    fun new(
+        configBlock: (Builder.() -> Unit)? = null
+    ): ComponentRegistry = Builder(this).apply {
+        configBlock?.invoke(this)
+    }.build()
 
     fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher? =
         fetcherFactoryList.firstNotNullOfOrNull { it.create(sketch, request) }

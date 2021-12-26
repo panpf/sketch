@@ -139,6 +139,18 @@ class HurlStack(
         }
     }
 
+    fun newBuilder(
+        configBlock: (Builder.() -> Unit)? = null
+    ): Builder = Builder(this).apply {
+        configBlock?.invoke(this)
+    }
+
+    fun new(
+        configBlock: (Builder.() -> Unit)? = null
+    ): HurlStack = Builder(this).apply {
+        configBlock?.invoke(this)
+    }.build()
+
     companion object {
         private const val KEY = "HurlStack"
 
@@ -148,8 +160,6 @@ class HurlStack(
             configBlock?.invoke(this)
         }.build()
     }
-
-    fun newBuilder(): Builder = Builder(this)
 
     class Builder {
         private var readTimeout: Int
