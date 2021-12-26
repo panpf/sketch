@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.download
+package com.github.panpf.sketch.load
 
-import androidx.annotation.MainThread
-
-fun interface DownloadProgressListener {
-    @MainThread
-    fun onUpdateDownloadProgress(totalLength: Long, completedLength: Long)
-}
+class ImageInfo(
+    val mimeType: String,
+    val width: Int,
+    val height: Int,
+    val exifOrientation: Int
+)

@@ -5,8 +5,12 @@ import android.os.Looper
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.common.Listener
 import com.github.panpf.sketch.common.cache.CachePolicy
-import com.github.panpf.sketch.download.*
+import com.github.panpf.sketch.download.DownloadData
+import com.github.panpf.sketch.download.DownloadErrorResult
+import com.github.panpf.sketch.download.DownloadRequest
+import com.github.panpf.sketch.download.DownloadSuccessResult
 import com.github.panpf.sketch.download.internal.DownloadExecutor
 import com.github.panpf.sketch.test.internal.TestHttpStack
 import kotlinx.coroutines.cancelAndJoin
@@ -32,11 +36,13 @@ class DownloadExecutorTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalListenerActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().uri) {
-            listener(normalDownloadListenerSupervisor)
-        }
+        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().uri)
         runBlocking {
-            DownloadExecutor(normalSketch).execute(normalRequest)
+            DownloadExecutor(normalSketch).execute(
+                normalRequest,
+                normalDownloadListenerSupervisor,
+                null
+            )
         }.apply {
             Assert.assertTrue(this is DownloadSuccessResult)
         }
@@ -52,11 +58,14 @@ class DownloadExecutorTest {
         val cancelListenerList = cancelDownloadListenerSupervisor.callbackActionList
         val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().uri) {
             diskCachePolicy(CachePolicy.DISABLED)
-            listener(cancelDownloadListenerSupervisor)
         }
         runBlocking {
             val job = launch {
-                DownloadExecutor(slowSketch).execute(cancelRequest)
+                DownloadExecutor(slowSketch).execute(
+                    cancelRequest,
+                    cancelDownloadListenerSupervisor,
+                    null
+                )
             }
             delay(1000)
             job.cancelAndJoin()
@@ -71,17 +80,20 @@ class DownloadExecutorTest {
         val errorListenerActionList = errorDownloadListenerSupervisor.callbackActionList
         val errorRequest = DownloadRequest.new(errorTestUri.uri) {
             diskCachePolicy(CachePolicy.DISABLED)
-            listener(errorDownloadListenerSupervisor)
         }
         runBlocking {
-            DownloadExecutor(slowSketch).execute(errorRequest)
+            DownloadExecutor(slowSketch).execute(
+                errorRequest,
+                errorDownloadListenerSupervisor,
+                null
+            )
         }.apply {
             Assert.assertTrue(this is DownloadErrorResult)
         }
         Assert.assertEquals("onStart, onError", errorListenerActionList.joinToString())
     }
 
-    private class DownloadListenerSupervisor : DownloadListener {
+    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadData> {
 
         val callbackActionList = mutableListOf<String>()
 

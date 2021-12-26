@@ -3,13 +3,14 @@ package com.github.panpf.sketch.common.fetch
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.DataFrom
+import com.github.panpf.sketch.common.DownloadableRequest
 import com.github.panpf.sketch.common.ImageRequest
+import com.github.panpf.sketch.common.ProgressListener
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.common.cache.disk.DiskCache
 import com.github.panpf.sketch.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.common.http.HttpStack
-import com.github.panpf.sketch.download.DownloadRequest
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -18,7 +19,8 @@ import java.io.OutputStream
 
 class HttpUriFetcher(
     private val sketch: Sketch,
-    private val request: DownloadRequest,
+    private val downloadableRequest: DownloadableRequest,
+    private val httpFetchProgressListener: ProgressListener<ImageRequest>?
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
@@ -27,10 +29,9 @@ class HttpUriFetcher(
         val diskCache = sketch.diskCache
         val repeatTaskFilter = sketch.repeatTaskFilter
         val httpStack = sketch.httpStack
-        val downloadRequest = request
-        val encodedDiskCacheKey = diskCache.encodeKey(downloadRequest.diskCacheKey)
-        val diskCachePolicy = downloadRequest.diskCachePolicy
-        val repeatTaskFilterKey = request.uri.toString()
+        val encodedDiskCacheKey = diskCache.encodeKey(downloadableRequest.diskCacheKey)
+        val diskCachePolicy = downloadableRequest.diskCachePolicy
+        val repeatTaskFilterKey = downloadableRequest.uri.toString()
 
         // Avoid repeated downloads whenever disk cache is required
         if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
@@ -78,10 +79,10 @@ class HttpUriFetcher(
         encodedDiskCacheKey: String,
         coroutineScope: CoroutineScope,
     ): FetchResult? {
-        val response = httpStack.getResponse(request.uri.toString())
+        val response = httpStack.getResponse(downloadableRequest.uri.toString())
         val responseCode = response.code
         if (responseCode != 200) {
-            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uri}")
+            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${downloadableRequest.uri}")
         }
 
         val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
@@ -179,7 +180,7 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListener = request.progressListener
+        val progressListener = httpFetchProgressListener
         var lastUpdateProgressBytesCopied = 0L
         while (bytes >= 0 && coroutineScope.isActive) {
             out.write(buffer, 0, bytes)
@@ -191,7 +192,11 @@ class HttpUriFetcher(
                     val currentBytesCopied = bytesCopied
                     lastUpdateProgressBytesCopied = currentBytesCopied
                     coroutineScope.async(Dispatchers.Main) {
-                        progressListener.onUpdateDownloadProgress(contentLength, currentBytesCopied)
+                        progressListener.onUpdateProgress(
+                            downloadableRequest,
+                            contentLength,
+                            currentBytesCopied
+                        )
                     }
                 }
             }
@@ -204,16 +209,20 @@ class HttpUriFetcher(
             && lastUpdateProgressBytesCopied != bytesCopied
         ) {
             coroutineScope.async(Dispatchers.Main) {
-                progressListener.onUpdateDownloadProgress(contentLength, bytesCopied)
+                progressListener.onUpdateProgress(downloadableRequest, contentLength, bytesCopied)
             }
         }
         return bytesCopied
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
-            if (request is DownloadRequest && isApplicable(request.uri)) {
-                HttpUriFetcher(sketch, request)
+        override fun create(
+            sketch: Sketch,
+            request: ImageRequest,
+            httpFetchProgressListener: ProgressListener<ImageRequest>?
+        ): HttpUriFetcher? =
+            if (request is DownloadableRequest && isApplicable(request.uri)) {
+                HttpUriFetcher(sketch, request, httpFetchProgressListener)
             } else {
                 null
             }

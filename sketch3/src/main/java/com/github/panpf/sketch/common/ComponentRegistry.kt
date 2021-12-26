@@ -19,8 +19,13 @@ class ComponentRegistry private constructor(
         configBlock?.invoke(this)
     }.build()
 
-    fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher? =
-        fetcherFactoryList.firstNotNullOfOrNull { it.create(sketch, request) }
+    fun newFetcher(
+        sketch: Sketch,
+        request: ImageRequest,
+        httpFetchProgressListener: ProgressListener<ImageRequest>?
+    ): Fetcher = fetcherFactoryList.firstNotNullOfOrNull {
+        it.create(sketch, request, httpFetchProgressListener)
+    } ?: throw IllegalArgumentException("Unsupported uri: ${request.uri}")
 
     companion object {
         fun new(

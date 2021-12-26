@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.common
+package com.github.panpf.sketch.common.internal
 
 import kotlinx.coroutines.Deferred
 import java.util.*

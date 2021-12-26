@@ -1,37 +1,37 @@
-package com.github.panpf.sketch.download
+package com.github.panpf.sketch.common
 
 import androidx.annotation.MainThread
 
 /**
- * A set of callbacks for an [DownloadRequest].
+ * A set of callbacks for an [ImageRequest].
  */
-interface DownloadListener {
+interface Listener<REQUEST : ImageRequest, RESULT : Any> {
 
     /**
      * Called if the request is started.
      */
     @MainThread
-    fun onStart(request: DownloadRequest) {
+    fun onStart(request: REQUEST) {
     }
 
     /**
      * Called if the request is cancelled.
      */
     @MainThread
-    fun onCancel(request: DownloadRequest) {
+    fun onCancel(request: REQUEST) {
     }
 
     /**
      * Called if an error occurs while executing the request.
      */
     @MainThread
-    fun onError(request: DownloadRequest, throwable: Throwable) {
+    fun onError(request: REQUEST, throwable: Throwable) {
     }
 
     /**
      * Called if the request completes successfully.
      */
     @MainThread
-    fun onSuccess(request: DownloadRequest, result: DownloadData) {
+    fun onSuccess(request: REQUEST, result: RESULT) {
     }
 }

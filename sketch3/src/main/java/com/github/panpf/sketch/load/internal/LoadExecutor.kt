@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.download.internal
+package com.github.panpf.sketch.load.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
@@ -6,17 +6,17 @@ import com.github.panpf.sketch.common.ImageRequest
 import com.github.panpf.sketch.common.Listener
 import com.github.panpf.sketch.common.ProgressListener
 import com.github.panpf.sketch.common.internal.ListenerDelegate
-import com.github.panpf.sketch.download.*
+import com.github.panpf.sketch.load.*
 import kotlinx.coroutines.CancellationException
 
-class DownloadExecutor(private val sketch: Sketch) {
+class LoadExecutor(private val sketch: Sketch) {
 
     @WorkerThread
     suspend fun execute(
-        request: DownloadRequest,
-        listener: Listener<DownloadRequest, DownloadData>?,
+        request: LoadRequest,
+        listener: Listener<LoadRequest, LoadData>?,
         httpFetchProgressListener: ProgressListener<ImageRequest>?,
-    ): DownloadResult {
+    ): LoadResult {
         val listenerDelegate = listener?.run {
             ListenerDelegate(this)
         }
@@ -24,19 +24,19 @@ class DownloadExecutor(private val sketch: Sketch) {
         try {
             listenerDelegate?.onStart(request)
 
-            val result: DownloadResult = DownloadInterceptorChain(
+            val result: LoadResult = LoadInterceptorChain(
                 initialRequest = request,
-                interceptors = sketch.downloadInterceptors,
+                interceptors = sketch.loadInterceptors,
                 index = 0,
                 request = request,
             ).proceed(sketch, request, httpFetchProgressListener)
 
             if (listenerDelegate != null) {
                 when (result) {
-                    is DownloadSuccessResult -> {
+                    is LoadSuccessResult -> {
                         listenerDelegate.onSuccess(request, result.data)
                     }
-                    is DownloadErrorResult -> {
+                    is LoadErrorResult -> {
                         listenerDelegate.onError(request, result.throwable)
                     }
                 }
@@ -48,7 +48,7 @@ class DownloadExecutor(private val sketch: Sketch) {
                 throw throwable
             } else {
                 listenerDelegate?.onError(request, throwable)
-                return DownloadErrorResult(throwable)
+                return LoadErrorResult(throwable)
             }
         }
     }
