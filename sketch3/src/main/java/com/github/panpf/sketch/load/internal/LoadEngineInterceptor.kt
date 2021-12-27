@@ -19,19 +19,14 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
         extras: RequestExtras<LoadRequest, LoadResult>?
     ): LoadResult {
         val request = chain.request
-
-        val fetcher = sketch.componentRegistry.newFetcher(
-            sketch, request, extras as RequestExtras<ImageRequest, ImageResult>?
-        )
-        val fetchResult = fetcher.fetch()
-        val decoder =
-            sketch.componentRegistry.newDecoder(sketch, request, extras, fetchResult.source)
-        val result = withContext(sketch.decodeTaskDispatcher) {
-            decoder.decode()
+        val componentRegistry = sketch.componentRegistry
+        val fetchRequestExtras = extras as RequestExtras<ImageRequest, ImageResult>?
+        val fetcher = componentRegistry.newFetcher(sketch, request, fetchRequestExtras)
+        return withContext(sketch.decodeTaskDispatcher) {
+            val fetchResult = fetcher.fetch()
+            val decoder = componentRegistry.newDecoder(sketch, request, extras, fetchResult.source)
+            val decodeResult = decoder.decode()
+            LoadResult(decodeResult.bitmap, decodeResult.info, fetchResult.from)
         }
-
-        // todo decode, maxSize resize, exifOrientation
-
-        throw Exception("To achieve")
     }
 }

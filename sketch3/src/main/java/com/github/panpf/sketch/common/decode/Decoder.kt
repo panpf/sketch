@@ -12,7 +12,7 @@ import com.github.panpf.sketch.common.datasource.DataSource
  */
 fun interface Decoder {
 
-    suspend fun decode(): DecodeResult?
+    suspend fun decode(): DecodeResult
 
     fun interface Factory {
 
