@@ -5,7 +5,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.ExecuteResult
 import com.github.panpf.sketch.common.RequestExtras
 import com.github.panpf.sketch.common.internal.ListenerDelegate
-import com.github.panpf.sketch.download.DownloadData
+import com.github.panpf.sketch.download.DownloadResult
 import com.github.panpf.sketch.download.DownloadRequest
 import kotlinx.coroutines.CancellationException
 
@@ -14,8 +14,8 @@ class DownloadExecutor(private val sketch: Sketch) {
     @WorkerThread
     suspend fun execute(
         request: DownloadRequest,
-        extras: RequestExtras<DownloadRequest, DownloadData>?,
-    ): ExecuteResult<DownloadData> {
+        extras: RequestExtras<DownloadRequest, DownloadResult>?,
+    ): ExecuteResult<DownloadResult> {
         val listenerDelegate = extras?.listener?.run {
             ListenerDelegate(this)
         }
@@ -23,7 +23,7 @@ class DownloadExecutor(private val sketch: Sketch) {
         try {
             listenerDelegate?.onStart(request)
 
-            val result: DownloadData = DownloadInterceptorChain(
+            val result: DownloadResult = DownloadInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.downloadInterceptors,
                 index = 0,

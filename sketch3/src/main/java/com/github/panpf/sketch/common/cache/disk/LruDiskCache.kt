@@ -22,6 +22,7 @@ import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.MD5Utils
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -248,6 +249,7 @@ class LruDiskCache(
     }
 
     private val editTaskDeferredMap: MutableMap<String, Deferred<*>> = WeakHashMap()
+    private val editMutexLockMap: MutableMap<String, Mutex> = WeakHashMap()
 
     @Synchronized
     override fun putEdiTaskDeferred(encodedKey: String, deferred: Deferred<*>) {
@@ -276,6 +278,13 @@ class LruDiskCache(
             null
         } else {
             deferred
+        }
+    }
+
+    @Synchronized
+    override fun getOrCreateEditMutexLock(encodedKey: String): Mutex {
+        return editMutexLockMap[encodedKey] ?: Mutex().apply {
+            this@LruDiskCache.editMutexLockMap[encodedKey] = this
         }
     }
 

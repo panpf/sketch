@@ -313,12 +313,6 @@ class HttpUriFetcherTest {
             }
             delay(2000)
             job.cancel()
-            val repeatTaskFilter = sketch.repeatTaskFilter
-            Assert.assertNotNull(repeatTaskFilter.getHttpFetchTaskDeferred(testUri.uri.toString()))
-            Assert.assertNotNull(diskCache.getEdiTaskDeferred(encodedDiskCacheKey))
-            delay(1000)
-            Assert.assertNull(repeatTaskFilter.getHttpFetchTaskDeferred(testUri.uri.toString()))
-            Assert.assertNull(diskCache.getEdiTaskDeferred(encodedDiskCacheKey))
         }
         Assert.assertTrue(progressList.size > 0)
         Assert.assertNull(progressList.find { it == testUri.contentLength })
@@ -352,9 +346,6 @@ class HttpUriFetcherTest {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            val repeatTaskFilter = sketch.repeatTaskFilter
-            Assert.assertNull(repeatTaskFilter.getHttpFetchTaskDeferred(testUri.uri.toString()))
-            Assert.assertNull(diskCache.getEdiTaskDeferred(encodedDiskCacheKey))
         }
         Assert.assertEquals(0, progressList.size)
     }

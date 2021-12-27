@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.load
 
-class ImageInfo(
+data class ImageInfo(
     val mimeType: String,
     val width: Int,
     val height: Int,

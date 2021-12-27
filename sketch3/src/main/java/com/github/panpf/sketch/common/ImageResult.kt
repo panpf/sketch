@@ -1,3 +1,3 @@
 package com.github.panpf.sketch.common
 
-interface ImageData
+interface ImageResult

@@ -6,28 +6,31 @@ import androidx.annotation.AnyThread
 import com.github.panpf.sketch.common.*
 import com.github.panpf.sketch.common.cache.disk.DiskCache
 import com.github.panpf.sketch.common.cache.disk.LruDiskCache
+import com.github.panpf.sketch.common.decode.BitmapFactoryDecoder
 import com.github.panpf.sketch.common.fetch.HttpUriFetcher
 import com.github.panpf.sketch.common.http.HttpStack
 import com.github.panpf.sketch.common.http.HurlStack
 import com.github.panpf.sketch.common.internal.RepeatTaskFilter
-import com.github.panpf.sketch.download.DownloadData
 import com.github.panpf.sketch.download.DownloadRequest
+import com.github.panpf.sketch.download.DownloadResult
 import com.github.panpf.sketch.download.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch.download.internal.DownloadExecutor
-import com.github.panpf.sketch.load.LoadData
 import com.github.panpf.sketch.load.LoadRequest
+import com.github.panpf.sketch.load.LoadResult
 import com.github.panpf.sketch.load.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.load.internal.LoadExecutor
+import com.github.panpf.sketch.load.internal.ResultCacheInterceptor
+import com.github.panpf.sketch.load.internal.TransformationInterceptor
 import kotlinx.coroutines.*
 import java.io.File
 
-class Sketch private constructor(
-    val appContext: Context,
-    val diskCache: DiskCache,
-    val componentRegistry: ComponentRegistry,
-    val httpStack: HttpStack,
-    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>,
-    val loadInterceptors: List<Interceptor<LoadRequest, LoadData>>,
+class Sketch constructor(
+    context: Context,
+    diskCache: DiskCache? = null,
+    componentRegistry: ComponentRegistry? = null,
+    httpStack: HttpStack? = null,
+    downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>? = null,
+    loadInterceptors: List<Interceptor<LoadRequest, LoadResult>>? = null,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
@@ -36,6 +39,18 @@ class Sketch private constructor(
     )
     private val downloadExecutor = DownloadExecutor(this)
     private val loadExecutor = LoadExecutor(this)
+
+    val appContext: Context = context.applicationContext
+    val httpStack = httpStack ?: HurlStack.new()
+    val diskCache = diskCache ?: LruDiskCache(appContext)
+    val componentRegistry: ComponentRegistry =
+        (componentRegistry?.newBuilder() ?: ComponentRegistry.Builder()).apply {
+            addFetcher(HttpUriFetcher.Factory())
+            addDecoder(BitmapFactoryDecoder.Factory())
+        }.build()
+    val downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
+    val loadInterceptors = (loadInterceptors
+        ?: listOf()) + ResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
 
     val repeatTaskFilter = RepeatTaskFilter()
     val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
@@ -57,16 +72,9 @@ class Sketch private constructor(
     @AnyThread
     fun enqueueDownload(
         request: DownloadRequest,
-        listener: Listener<DownloadRequest, DownloadData>? = null,
+        listener: Listener<DownloadRequest, DownloadResult>? = null,
         httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
-    ): Disposable<ExecuteResult<DownloadData>> {
-//        val progressListenerProxy: ProgressListener<DownloadRequest>? = httpFetchProgressListener?.let {
-//            ProgressListener<DownloadRequest> { request, totalLength, completedLength ->
-//                httpFetchProgressListener.onUpdateProgress(
-//                    request as DownloadRequest, totalLength, completedLength
-//                )
-//            }
-//        }
+    ): Disposable<ExecuteResult<DownloadResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
             downloadExecutor.execute(request, RequestExtras(listener, httpFetchProgressListener))
         }
@@ -77,63 +85,48 @@ class Sketch private constructor(
     fun enqueueDownload(
         uri: Uri,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<DownloadRequest, DownloadData>? = null,
+        listener: Listener<DownloadRequest, DownloadResult>? = null,
         httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
-    ): Disposable<ExecuteResult<DownloadData>> =
+    ): Disposable<ExecuteResult<DownloadResult>> =
         enqueueDownload(DownloadRequest.new(uri, configBlock), listener, httpFetchProgressListener)
 
     @AnyThread
     fun enqueueDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<DownloadRequest, DownloadData>? = null,
+        listener: Listener<DownloadRequest, DownloadResult>? = null,
         httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
-    ): Disposable<ExecuteResult<DownloadData>> =
-        enqueueDownload(
-            DownloadRequest.new(uriString, configBlock),
-            listener,
-            httpFetchProgressListener
-        )
+    ): Disposable<ExecuteResult<DownloadResult>> = enqueueDownload(
+        DownloadRequest.new(uriString, configBlock), listener, httpFetchProgressListener
+    )
 
-    suspend fun executeDownload(request: DownloadRequest): ExecuteResult<DownloadData> {
-        return coroutineScope {
+    suspend fun executeDownload(request: DownloadRequest): ExecuteResult<DownloadResult> =
+        coroutineScope {
             val job = async(singleThreadTaskDispatcher) {
                 downloadExecutor.execute(request, null)
             }
             job.await()
         }
-    }
 
     suspend fun executeDownload(
         uri: Uri,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadData> = executeDownload(DownloadRequest.new(uri, configBlock))
+    ): ExecuteResult<DownloadResult> = executeDownload(DownloadRequest.new(uri, configBlock))
 
     suspend fun executeDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadData> = executeDownload(DownloadRequest.new(uriString, configBlock))
+    ): ExecuteResult<DownloadResult> = executeDownload(DownloadRequest.new(uriString, configBlock))
 
 
     @AnyThread
     fun enqueueLoad(
         request: LoadRequest,
-        listener: Listener<LoadRequest, LoadData>? = null,
+        listener: Listener<LoadRequest, LoadResult>? = null,
         httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
-    ): Disposable<ExecuteResult<LoadData>> {
-//        val progressListenerProxy = httpFetchProgressListener?.let {
-//            ProgressListener<ImageRequest> { request, totalLength, completedLength ->
-//                httpFetchProgressListener.onUpdateProgress(
-//                    request as LoadRequest, totalLength, completedLength
-//                )
-//            }
-//        }
+    ): Disposable<ExecuteResult<LoadResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
-            loadExecutor.execute(
-                request,
-                listener,
-                RequestExtras(listener, httpFetchProgressListener)
-            )
+            loadExecutor.execute(request, RequestExtras(listener, httpFetchProgressListener))
         }
         return OneShotDisposable(job)
     }
@@ -142,42 +135,36 @@ class Sketch private constructor(
     fun enqueueLoad(
         uri: Uri,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<LoadRequest, LoadData>? = null,
+        listener: Listener<LoadRequest, LoadResult>? = null,
         httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
-    ): Disposable<ExecuteResult<LoadData>> =
+    ): Disposable<ExecuteResult<LoadResult>> =
         enqueueLoad(LoadRequest.new(uri, configBlock), listener, httpFetchProgressListener)
 
     @AnyThread
     fun enqueueLoad(
         uriString: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<LoadRequest, LoadData>? = null,
+        listener: Listener<LoadRequest, LoadResult>? = null,
         httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
-    ): Disposable<ExecuteResult<LoadData>> =
-        enqueueLoad(
-            LoadRequest.new(uriString, configBlock),
-            listener,
-            httpFetchProgressListener
-        )
+    ): Disposable<ExecuteResult<LoadResult>> =
+        enqueueLoad(LoadRequest.new(uriString, configBlock), listener, httpFetchProgressListener)
 
-    suspend fun executeLoad(request: LoadRequest): ExecuteResult<LoadData> {
-        return coroutineScope {
-            val job = async(singleThreadTaskDispatcher) {
-                loadExecutor.execute(request, null, null)
-            }
-            job.await()
+    suspend fun executeLoad(request: LoadRequest): ExecuteResult<LoadResult> = coroutineScope {
+        val job = async(singleThreadTaskDispatcher) {
+            loadExecutor.execute(request, null)
         }
+        job.await()
     }
 
     suspend fun executeLoad(
         uri: Uri,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<LoadData> = executeLoad(LoadRequest.new(uri, configBlock))
+    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(uri, configBlock))
 
     suspend fun executeLoad(
         uriString: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<LoadData> = executeLoad(LoadRequest.new(uriString, configBlock))
+    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(uriString, configBlock))
 
     companion object {
         fun new(
@@ -194,9 +181,9 @@ class Sketch private constructor(
         private var diskCache: DiskCache? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
-        private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadData>>? =
+        private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadResult>>? =
             null
-        private var loadInterceptors: MutableList<Interceptor<LoadRequest, LoadData>>? =
+        private var loadInterceptors: MutableList<Interceptor<LoadRequest, LoadResult>>? =
             null
 
         fun diskCache(diskCache: DiskCache): Builder = apply {
@@ -215,14 +202,14 @@ class Sketch private constructor(
             this.httpStack = httpStack
         }
 
-        fun addDownloadInterceptor(interceptor: Interceptor<DownloadRequest, DownloadData>): Builder =
+        fun addDownloadInterceptor(interceptor: Interceptor<DownloadRequest, DownloadResult>): Builder =
             apply {
                 this.downloadInterceptors = (downloadInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addLoadInterceptor(interceptor: Interceptor<LoadRequest, LoadData>): Builder =
+        fun addLoadInterceptor(interceptor: Interceptor<LoadRequest, LoadResult>): Builder =
             apply {
                 this.loadInterceptors = (loadInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
@@ -230,15 +217,12 @@ class Sketch private constructor(
             }
 
         fun build(): Sketch = Sketch(
-            appContext = appContext,
-            diskCache = diskCache ?: LruDiskCache(appContext),
-            componentRegistry = (componentRegistry?.newBuilder()
-                ?: ComponentRegistry.Builder()).apply {
-                addFetcher(HttpUriFetcher.Factory())
-            }.build(),
-            httpStack = httpStack ?: HurlStack.new(),
-            downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor(),
-            loadInterceptors = (loadInterceptors ?: listOf()) + LoadEngineInterceptor(),
+            context = appContext,
+            diskCache = diskCache,
+            componentRegistry = componentRegistry,
+            httpStack = httpStack,
+            downloadInterceptors = downloadInterceptors,
+            loadInterceptors = loadInterceptors,
         )
     }
 }

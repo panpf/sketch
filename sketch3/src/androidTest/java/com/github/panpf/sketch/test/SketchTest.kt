@@ -8,7 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.ExecuteResult
 import com.github.panpf.sketch.common.Listener
 import com.github.panpf.sketch.common.cache.CachePolicy
-import com.github.panpf.sketch.download.DownloadData
+import com.github.panpf.sketch.download.DownloadResult
 import com.github.panpf.sketch.download.DownloadRequest
 import com.github.panpf.sketch.test.internal.TestHttpStack
 import kotlinx.coroutines.cancelAndJoin
@@ -131,7 +131,7 @@ class SketchTest {
         }
     }
 
-    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadData> {
+    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadResult> {
 
         val callbackActionList = mutableListOf<String>()
 
@@ -153,7 +153,7 @@ class SketchTest {
             callbackActionList.add("onError")
         }
 
-        override fun onSuccess(request: DownloadRequest, result: DownloadData) {
+        override fun onSuccess(request: DownloadRequest, result: DownloadResult) {
             super.onSuccess(request, result)
             check(Looper.getMainLooper() === Looper.myLooper())
             callbackActionList.add("onSuccess")

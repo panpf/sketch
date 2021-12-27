@@ -17,12 +17,12 @@ import java.io.OutputStream
 class HttpUriFetcher(
     private val sketch: Sketch,
     private val request: DownloadableRequest,
-    private val extras: RequestExtras<ImageRequest, ImageData>?
+    private val extras: RequestExtras<ImageRequest, ImageResult>?
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
-    override suspend fun fetch(): FetchResult = withContext(sketch.singleThreadTaskDispatcher) {
+    override suspend fun fetch(): FetchResult {
         val diskCache = sketch.diskCache
         val repeatTaskFilter = sketch.repeatTaskFilter
         val httpStack = sketch.httpStack
@@ -31,51 +31,36 @@ class HttpUriFetcher(
         val repeatTaskFilterKey = request.uri.toString()
 
         // Avoid repeated downloads whenever disk cache is required
-        if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
-            repeatTaskFilter.getActiveHttpFetchTaskDeferred(repeatTaskFilterKey)?.await()
-            diskCache.getActiveEdiTaskDeferred(encodedDiskCacheKey)?.await()
+        val repeatTaskLock = if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
+            repeatTaskFilter.getOrCreateHttpFetchMutexLock(repeatTaskFilterKey)
+        } else {
+            null
         }
-        if (diskCachePolicy.readEnabled) {
-            val diskCacheEntry = diskCache[encodedDiskCacheKey]
-            if (diskCacheEntry != null) {
-                return@withContext FetchResult(
-                    DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
-                )
+        val diskCacheEditLock = if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
+            diskCache.getOrCreateEditMutexLock(encodedDiskCacheKey)
+        } else {
+            null
+        }
+        repeatTaskLock?.lock()
+        diskCacheEditLock?.lock()
+        try {
+            if (diskCachePolicy.readEnabled) {
+                val diskCacheEntry = diskCache[encodedDiskCacheKey]
+                if (diskCacheEntry != null) {
+                    return FetchResult(
+                        DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
+                    )
+                }
             }
-        }
 
-        // Create a download task Deferred and cache it for other tasks to filter repeated downloads
-        @Suppress("BlockingMethodInNonBlockingContext")
-        val downloadTaskDeferred: Deferred<FetchResult?> =
-            async(sketch.httpDownloadTaskDispatcher, start = CoroutineStart.LAZY) {
+            return withContext(sketch.httpDownloadTaskDispatcher) {
                 executeHttpDownload(
                     httpStack, diskCachePolicy, diskCache, encodedDiskCacheKey, this
                 )
-            }
-
-        if (diskCachePolicy.writeEnabled) {
-            repeatTaskFilter.putHttpFetchTaskDeferred(repeatTaskFilterKey, downloadTaskDeferred)
-            diskCache.putEdiTaskDeferred(encodedDiskCacheKey, downloadTaskDeferred)
-        }
-        try {
-            val result = downloadTaskDeferred.await()
-            when {
-                result != null -> {
-                    return@withContext result
-                }
-                isActive -> {
-                    throw Exception("Unable fetch the result: ${request.uri}")
-                }
-                else -> {
-                    throw CancellationException()
-                }
-            }
+            } ?: throw CancellationException()
         } finally {
-            // Cancel and exception both go here
-            if (diskCachePolicy.writeEnabled) {
-                repeatTaskFilter.removeHttpFetchTaskDeferred(repeatTaskFilterKey)
-                diskCache.removeEdiTaskDeferred(encodedDiskCacheKey)
-            }
+            repeatTaskLock?.unlock()
+            diskCacheEditLock?.unlock()
         }
     }
 
@@ -199,6 +184,7 @@ class HttpUriFetcher(
                     lastNotifyTime = currentTime
                     val currentBytesCopied = bytesCopied
                     lastUpdateProgressBytesCopied = currentBytesCopied
+                    @Suppress("DeferredResultUnused")
                     coroutineScope.async(Dispatchers.Main) {
                         progressListener.onUpdateProgress(
                             request,
@@ -216,6 +202,7 @@ class HttpUriFetcher(
             && bytesCopied > 0
             && lastUpdateProgressBytesCopied != bytesCopied
         ) {
+            @Suppress("DeferredResultUnused")
             coroutineScope.async(Dispatchers.Main) {
                 progressListener.onUpdateProgress(request, contentLength, bytesCopied)
             }
@@ -227,7 +214,7 @@ class HttpUriFetcher(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            extras: RequestExtras<ImageRequest, ImageData>?
+            extras: RequestExtras<ImageRequest, ImageResult>?
         ): HttpUriFetcher? =
             if (request is DownloadableRequest && isApplicable(request.uri)) {
                 HttpUriFetcher(sketch, request, extras)

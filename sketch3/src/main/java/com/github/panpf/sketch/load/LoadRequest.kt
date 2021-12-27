@@ -2,6 +2,7 @@ package com.github.panpf.sketch.load
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import com.github.panpf.sketch.common.LoadableRequest
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.load.transform.Transformation
@@ -16,10 +17,34 @@ class LoadRequest(
     override val resize: Resize?,
 //    override val thumbnailMode: Boolean?,
     override val transformations: List<Transformation>?,
-    override val cacheTransformationsResultInDisk: Boolean?,
+    override val cacheResultInDisk: Boolean?,
     override val disabledBitmapPool: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
+    // todo 添加额外参数，方面后面的自定义拦截器区分请求 例如 extras: Bundle
 ) : LoadableRequest {
+
+    val resultCacheKey: String? = buildString {
+        if (maxSize != null) {
+            if (length > 0) append("_")
+            append(maxSize.cacheKey)
+        }
+        if (bitmapConfig != null) {
+            if (length > 0) append("_")
+            append(bitmapConfig.cacheKey)
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && inPreferQualityOverSpeed == true) {
+            if (length > 0) append("_")
+            append("inPreferQualityOverSpeed")
+        }
+        if (resize != null) {
+            if (length > 0) append("_")
+            append(resize.cacheKey)
+        }
+        transformations?.forEach {
+            if (length > 0) append("_")
+            append(it.cacheKey)
+        }
+    }.takeIf { it.isNotEmpty() }
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -60,7 +85,7 @@ class LoadRequest(
 
         //        private var thumbnailMode: Boolean?
         private var transformations: List<Transformation>?
-        private var cacheTransformationsResultInDisk: Boolean?
+        private var cacheResultInDisk: Boolean?
         private var disabledBitmapPool: Boolean?
         private var disabledCorrectExifOrientation: Boolean?
 
@@ -74,7 +99,7 @@ class LoadRequest(
             this.resize = null
 //            this.thumbnailMode = null
             this.transformations = null
-            this.cacheTransformationsResultInDisk = null
+            this.cacheResultInDisk = null
             this.disabledBitmapPool = null
             this.disabledCorrectExifOrientation = null
         }
@@ -91,7 +116,7 @@ class LoadRequest(
             this.resize = request.resize
 //            this.thumbnailMode = request.thumbnailMode
             this.transformations = request.transformations
-            this.cacheTransformationsResultInDisk = request.cacheTransformationsResultInDisk
+            this.cacheResultInDisk = request.cacheResultInDisk
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
         }
@@ -138,7 +163,9 @@ class LoadRequest(
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         fun inPreferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
-            this.inPreferQualityOverSpeed = inPreferQualityOverSpeed
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                this.inPreferQualityOverSpeed = inPreferQualityOverSpeed
+            }
         }
 
         fun resize(resize: Resize?): Builder = apply {
@@ -165,9 +192,9 @@ class LoadRequest(
             this.transformations = transformations.toList()
         }
 
-        fun cacheTransformationsResultInDisk(cacheTransformationsResultInDisk: Boolean? = true): Builder =
+        fun cacheResultInDisk(cacheResultInDisk: Boolean? = true): Builder =
             apply {
-                this.cacheTransformationsResultInDisk = cacheTransformationsResultInDisk
+                this.cacheResultInDisk = cacheResultInDisk
             }
 
         fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder = apply {
@@ -189,7 +216,7 @@ class LoadRequest(
             resize = resize,
 //            thumbnailMode = thumbnailMode,
             transformations = transformations,
-            cacheTransformationsResultInDisk = cacheTransformationsResultInDisk,
+            cacheResultInDisk = cacheResultInDisk,
             disabledBitmapPool = disabledBitmapPool,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
         )

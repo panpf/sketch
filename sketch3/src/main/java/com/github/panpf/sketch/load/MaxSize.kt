@@ -17,6 +17,8 @@ package com.github.panpf.sketch.load
 
 data class MaxSize(val width: Int, val height: Int) {
 
+    val cacheKey: String = "MaxSize(${width}x${height})"
+
     companion object {
         /**
          * Will use screen size as MaxSize

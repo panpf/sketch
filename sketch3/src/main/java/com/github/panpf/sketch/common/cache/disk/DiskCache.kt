@@ -17,6 +17,7 @@ package com.github.panpf.sketch.common.cache.disk
 
 import com.github.panpf.sketch.util.DiskLruCache
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -105,6 +106,8 @@ interface DiskCache {
     @Suppress("DeferredIsResult")
     @Deprecated("This function is only used to test environment, production environment, please use getActiveHttpFetchTaskDeferred instead")
     fun getEdiTaskDeferred(encodedKey: String): Deferred<*>?
+
+    fun getOrCreateEditMutexLock(encodedKey: String): Mutex
 
     /**
      * 磁盘缓存实体

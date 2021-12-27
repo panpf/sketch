@@ -46,7 +46,7 @@ interface LoadableRequest : DownloadableRequest {
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
      */
-    @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
+    @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val inPreferQualityOverSpeed: Boolean?
 
     /**
@@ -65,9 +65,10 @@ interface LoadableRequest : DownloadableRequest {
     val transformations: List<Transformation>?
 
     /**
-     * In order to speed up the loading speed, the processed result of [transformations] is cached to disk, and it can be read directly next time
+     * In order to speed up the loading speed, you can cache results affected by [maxSize], [bitmapConfig],
+     * [inPreferQualityOverSpeed], [resize], [transformations] to disk so that you can read them directly next time
      */
-    val cacheTransformationsResultInDisk: Boolean?
+    val cacheResultInDisk: Boolean?
 
     /**
      * Disabled reuse of Bitmap from [BitmapPool]

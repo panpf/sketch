@@ -5,7 +5,7 @@ import androidx.annotation.MainThread
 /**
  * A set of callbacks for an [ImageRequest].
  */
-interface Listener<REQUEST : ImageRequest, RESULT : ImageData> {
+interface Listener<REQUEST : ImageRequest, RESULT : ImageResult> {
 
     /**
      * Called if the request is started.

@@ -25,6 +25,9 @@ data class Resize constructor(
     val thumbnailMode: Boolean = false
 ) {
 
+    val cacheKey: String =
+        "Resize(${width}x${height},${scaleType},${sizeMode},${if (thumbnailMode) "thumbnailMode" else "normalMode"})"
+
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
