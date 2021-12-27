@@ -82,6 +82,8 @@ data class Resize constructor(
             this.thumbnailMode = resize.thumbnailMode
         }
 
+        // todo size(width: Int, height: Int)
+
         fun scaleType(scaleType: ScaleType): Builder = apply {
             this.scaleType = scaleType
         }

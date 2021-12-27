@@ -2,25 +2,27 @@ package com.github.panpf.sketch.load.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.common.ImageData
 import com.github.panpf.sketch.common.ImageRequest
 import com.github.panpf.sketch.common.Interceptor
-import com.github.panpf.sketch.common.ProgressListener
-import com.github.panpf.sketch.load.LoadErrorResult
+import com.github.panpf.sketch.common.RequestExtras
+import com.github.panpf.sketch.load.LoadData
 import com.github.panpf.sketch.load.LoadRequest
-import com.github.panpf.sketch.load.LoadResult
 
-class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
+class LoadEngineInterceptor : Interceptor<LoadRequest, LoadData> {
 
     @WorkerThread
     override suspend fun intercept(
         sketch: Sketch,
-        chain: Interceptor.Chain<LoadRequest, LoadResult>,
-        httpFetchProgressListener: ProgressListener<ImageRequest>?
-    ): LoadResult {
+        chain: Interceptor.Chain<LoadRequest, LoadData>,
+        extras: RequestExtras<LoadRequest, LoadData>?
+    ): LoadData {
         val request = chain.request
 
         val fetcher =
-            sketch.componentRegistry.newFetcher(sketch, request, httpFetchProgressListener)
+            sketch.componentRegistry.newFetcher(
+                sketch, request, extras as RequestExtras<ImageRequest, ImageData>?
+            )
 //        if (fetcher !is HttpUriFetcher) {
 //            return LoadErrorResult(IllegalArgumentException("Load only support HTTP and HTTPS uri: ${request.uri}"))
 //        }
@@ -40,6 +42,6 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
 //            else -> LoadErrorResult(IllegalArgumentException("The unknown source: ${source::class.qualifiedName}"))
 //        }
         // todo To achieve
-        return LoadErrorResult(Exception("To achieve"))
+        throw Exception("To achieve")
     }
 }

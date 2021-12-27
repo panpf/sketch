@@ -1,12 +1,13 @@
 package com.github.panpf.sketch.common.internal
 
+import com.github.panpf.sketch.common.ImageData
 import com.github.panpf.sketch.common.ImageRequest
 import com.github.panpf.sketch.common.Listener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
-class ListenerDelegate<REQUEST : ImageRequest, RESULT : Any>(
+class ListenerDelegate<REQUEST : ImageRequest, RESULT : ImageData>(
     private val listener: Listener<REQUEST, RESULT>
 ) {
 

@@ -3,24 +3,24 @@ package com.github.panpf.sketch.common
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 
-interface Interceptor<T : ImageRequest, R : Any> {
+interface Interceptor<REQUEST : ImageRequest, RESULT : ImageData> {
 
     @WorkerThread
     suspend fun intercept(
         sketch: Sketch,
-        chain: Chain<T, R>,
-        httpFetchProgressListener: ProgressListener<ImageRequest>?
-    ): R
+        chain: Chain<REQUEST, RESULT>,
+        extras: RequestExtras<REQUEST, RESULT>?
+    ): RESULT
 
-    interface Chain<T : ImageRequest, R> {
+    interface Chain<REQUEST : ImageRequest, RESULT : ImageData> {
 
-        val request: T
+        val request: REQUEST
 
         @WorkerThread
         suspend fun proceed(
             sketch: Sketch,
-            request: T,
-            httpFetchProgressListener: ProgressListener<ImageRequest>?
-        ): R
+            request: REQUEST,
+            extras: RequestExtras<REQUEST, RESULT>?
+        ): RESULT
     }
 }

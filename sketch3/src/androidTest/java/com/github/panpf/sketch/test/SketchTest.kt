@@ -5,12 +5,11 @@ import android.os.Looper
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.common.ExecuteResult
 import com.github.panpf.sketch.common.Listener
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.download.DownloadData
-import com.github.panpf.sketch.download.DownloadErrorResult
 import com.github.panpf.sketch.download.DownloadRequest
-import com.github.panpf.sketch.download.DownloadSuccessResult
 import com.github.panpf.sketch.test.internal.TestHttpStack
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -41,7 +40,7 @@ class SketchTest {
         runBlocking {
             normalDisposable.job.await()
         }.apply {
-            Assert.assertTrue(this is DownloadSuccessResult)
+            Assert.assertTrue(this is ExecuteResult.Success)
         }
         Assert.assertEquals("onStart, onSuccess", normalCallbackActionList.joinToString())
 
@@ -79,7 +78,7 @@ class SketchTest {
         runBlocking {
             errorDisposable.job.await()
         }.apply {
-            Assert.assertTrue(this is DownloadErrorResult)
+            Assert.assertTrue(this is ExecuteResult.Error)
         }
         Assert.assertEquals("onStart, onError", errorCallbackActionList.joinToString())
     }
@@ -98,7 +97,7 @@ class SketchTest {
         runBlocking {
             normalSketch.executeDownload(normalRequest)
         }.apply {
-            Assert.assertTrue(this is DownloadSuccessResult)
+            Assert.assertTrue(this is ExecuteResult.Success)
         }
 
         /*
@@ -128,7 +127,7 @@ class SketchTest {
         runBlocking {
             slowSketch.executeDownload(errorRequest)
         }.apply {
-            Assert.assertTrue(this is DownloadErrorResult)
+            Assert.assertTrue(this is ExecuteResult.Error)
         }
     }
 

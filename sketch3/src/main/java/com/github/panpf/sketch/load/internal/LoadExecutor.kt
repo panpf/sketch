@@ -2,11 +2,12 @@ package com.github.panpf.sketch.load.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.common.ImageRequest
+import com.github.panpf.sketch.common.ExecuteResult
 import com.github.panpf.sketch.common.Listener
-import com.github.panpf.sketch.common.ProgressListener
+import com.github.panpf.sketch.common.RequestExtras
 import com.github.panpf.sketch.common.internal.ListenerDelegate
-import com.github.panpf.sketch.load.*
+import com.github.panpf.sketch.load.LoadData
+import com.github.panpf.sketch.load.LoadRequest
 import kotlinx.coroutines.CancellationException
 
 class LoadExecutor(private val sketch: Sketch) {
@@ -15,8 +16,8 @@ class LoadExecutor(private val sketch: Sketch) {
     suspend fun execute(
         request: LoadRequest,
         listener: Listener<LoadRequest, LoadData>?,
-        httpFetchProgressListener: ProgressListener<ImageRequest>?,
-    ): LoadResult {
+        extras: RequestExtras<LoadRequest, LoadData>?,
+    ): ExecuteResult<LoadData> {
         val listenerDelegate = listener?.run {
             ListenerDelegate(this)
         }
@@ -24,31 +25,22 @@ class LoadExecutor(private val sketch: Sketch) {
         try {
             listenerDelegate?.onStart(request)
 
-            val result: LoadResult = LoadInterceptorChain(
+            val result: LoadData = LoadInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.loadInterceptors,
                 index = 0,
                 request = request,
-            ).proceed(sketch, request, httpFetchProgressListener)
+            ).proceed(sketch, request, extras)
 
-            if (listenerDelegate != null) {
-                when (result) {
-                    is LoadSuccessResult -> {
-                        listenerDelegate.onSuccess(request, result.data)
-                    }
-                    is LoadErrorResult -> {
-                        listenerDelegate.onError(request, result.throwable)
-                    }
-                }
-            }
-            return result
+            listenerDelegate?.onSuccess(request, result)
+            return ExecuteResult.Success(result)
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 listenerDelegate?.onCancel(request)
                 throw throwable
             } else {
                 listenerDelegate?.onError(request, throwable)
-                return LoadErrorResult(throwable)
+                return ExecuteResult.Error(throwable)
             }
         }
     }

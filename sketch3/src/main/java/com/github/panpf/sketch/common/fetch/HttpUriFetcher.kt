@@ -2,10 +2,7 @@ package com.github.panpf.sketch.common.fetch
 
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.common.DataFrom
-import com.github.panpf.sketch.common.DownloadableRequest
-import com.github.panpf.sketch.common.ImageRequest
-import com.github.panpf.sketch.common.ProgressListener
+import com.github.panpf.sketch.common.*
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.common.cache.disk.DiskCache
 import com.github.panpf.sketch.common.datasource.ByteArrayDataSource
@@ -19,19 +16,19 @@ import java.io.OutputStream
 
 class HttpUriFetcher(
     private val sketch: Sketch,
-    private val downloadableRequest: DownloadableRequest,
-    private val httpFetchProgressListener: ProgressListener<ImageRequest>?
+    private val request: DownloadableRequest,
+    private val extras: RequestExtras<ImageRequest, ImageData>?
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
-    override suspend fun fetch(): FetchResult? = withContext(sketch.singleThreadTaskDispatcher) {
+    override suspend fun fetch(): FetchResult = withContext(sketch.singleThreadTaskDispatcher) {
         val diskCache = sketch.diskCache
         val repeatTaskFilter = sketch.repeatTaskFilter
         val httpStack = sketch.httpStack
-        val encodedDiskCacheKey = diskCache.encodeKey(downloadableRequest.diskCacheKey)
-        val diskCachePolicy = downloadableRequest.diskCachePolicy
-        val repeatTaskFilterKey = downloadableRequest.uri.toString()
+        val encodedDiskCacheKey = diskCache.encodeKey(request.diskCacheKey)
+        val diskCachePolicy = request.diskCachePolicy
+        val repeatTaskFilterKey = request.uri.toString()
 
         // Avoid repeated downloads whenever disk cache is required
         if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
@@ -61,7 +58,18 @@ class HttpUriFetcher(
             diskCache.putEdiTaskDeferred(encodedDiskCacheKey, downloadTaskDeferred)
         }
         try {
-            return@withContext downloadTaskDeferred.await()
+            val result = downloadTaskDeferred.await()
+            when {
+                result != null -> {
+                    return@withContext result
+                }
+                isActive -> {
+                    throw Exception("Unable fetch the result: ${request.uri}")
+                }
+                else -> {
+                    throw CancellationException()
+                }
+            }
         } finally {
             // Cancel and exception both go here
             if (diskCachePolicy.writeEnabled) {
@@ -79,10 +87,10 @@ class HttpUriFetcher(
         encodedDiskCacheKey: String,
         coroutineScope: CoroutineScope,
     ): FetchResult? {
-        val response = httpStack.getResponse(downloadableRequest.uri.toString())
+        val response = httpStack.getResponse(request.uri.toString())
         val responseCode = response.code
         if (responseCode != 200) {
-            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${downloadableRequest.uri}")
+            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uri}")
         }
 
         val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
@@ -180,7 +188,7 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListener = httpFetchProgressListener
+        val progressListener = extras?.httpFetchProgressListener
         var lastUpdateProgressBytesCopied = 0L
         while (bytes >= 0 && coroutineScope.isActive) {
             out.write(buffer, 0, bytes)
@@ -193,7 +201,7 @@ class HttpUriFetcher(
                     lastUpdateProgressBytesCopied = currentBytesCopied
                     coroutineScope.async(Dispatchers.Main) {
                         progressListener.onUpdateProgress(
-                            downloadableRequest,
+                            request,
                             contentLength,
                             currentBytesCopied
                         )
@@ -209,7 +217,7 @@ class HttpUriFetcher(
             && lastUpdateProgressBytesCopied != bytesCopied
         ) {
             coroutineScope.async(Dispatchers.Main) {
-                progressListener.onUpdateProgress(downloadableRequest, contentLength, bytesCopied)
+                progressListener.onUpdateProgress(request, contentLength, bytesCopied)
             }
         }
         return bytesCopied
@@ -219,10 +227,10 @@ class HttpUriFetcher(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            httpFetchProgressListener: ProgressListener<ImageRequest>?
+            extras: RequestExtras<ImageRequest, ImageData>?
         ): HttpUriFetcher? =
             if (request is DownloadableRequest && isApplicable(request.uri)) {
-                HttpUriFetcher(sketch, request, httpFetchProgressListener)
+                HttpUriFetcher(sketch, request, extras)
             } else {
                 null
             }

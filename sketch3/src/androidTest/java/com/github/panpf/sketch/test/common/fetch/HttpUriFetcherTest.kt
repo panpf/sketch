@@ -5,6 +5,7 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.DataFrom
+import com.github.panpf.sketch.common.RequestExtras
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.common.datasource.DiskCacheDataSource
@@ -265,9 +266,9 @@ class HttpUriFetcherTest {
         Assert.assertNull(diskCache[encodedDiskCacheKey])
 
         val httpUriFetcher =
-            httpUriFetcherFactory.create(sketch, request) { _, _, completedLength ->
+            httpUriFetcherFactory.create(sketch, request, RequestExtras(null) { _, _, completedLength ->
                 progressList.add(completedLength)
-            }!!
+            }) !!
         runBlocking {
             httpUriFetcher.fetch()
             delay(1000)
@@ -298,9 +299,9 @@ class HttpUriFetcherTest {
         val request = DownloadRequest.new(testUri.uri)
         val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
         val httpUriFetcher =
-            httpUriFetcherFactory.create(sketch, request) { _, _, completedLength ->
+            httpUriFetcherFactory.create(sketch, request, RequestExtras(null) { _, _, completedLength ->
                 progressList.add(completedLength)
-            }!!
+            })!!
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -336,9 +337,9 @@ class HttpUriFetcherTest {
         val request = DownloadRequest.new(testUri.uri)
         val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
         val httpUriFetcher =
-            httpUriFetcherFactory.create(sketch, request) { _, _, completedLength ->
+            httpUriFetcherFactory.create(sketch, request, RequestExtras(null) { _, _, completedLength ->
                 progressList.add(completedLength)
-            }!!
+            })!!
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])
