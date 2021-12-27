@@ -2,12 +2,12 @@ package com.github.panpf.sketch.load.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.common.ImageResult
 import com.github.panpf.sketch.common.ImageRequest
+import com.github.panpf.sketch.common.ImageResult
 import com.github.panpf.sketch.common.Interceptor
 import com.github.panpf.sketch.common.RequestExtras
-import com.github.panpf.sketch.load.LoadResult
 import com.github.panpf.sketch.load.LoadRequest
+import com.github.panpf.sketch.load.LoadResult
 import kotlinx.coroutines.withContext
 
 class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
@@ -30,11 +30,8 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
             decoder.decode()
         }
 
-//        request.transformations
+        // todo decode, maxSize resize, exifOrientation
 
-        // todo transformation
-        // todo transformation cache
-        // cache
         throw Exception("To achieve")
     }
 }

@@ -15,9 +15,33 @@
  */
 package com.github.panpf.sketch.load
 
+import org.json.JSONException
+import org.json.JSONObject
+
 data class ImageInfo(
     val mimeType: String,
     val width: Int,
     val height: Int,
     val exifOrientation: Int
-)
+) {
+
+    fun toJsonString(): String = JSONObject().apply {
+        put("mimeType", mimeType)
+        put("width", width)
+        put("height", height)
+        put("exifOrientation", exifOrientation)
+    }.toString()
+
+    companion object {
+        @Throws(JSONException::class)
+        fun fromJsonString(jsonString: String): ImageInfo {
+            val json = JSONObject(jsonString)
+            return ImageInfo(
+                json.getString("mimeType"),
+                json.getInt("width"),
+                json.getInt("height"),
+                json.getInt("exifOrientation"),
+            )
+        }
+    }
+}
