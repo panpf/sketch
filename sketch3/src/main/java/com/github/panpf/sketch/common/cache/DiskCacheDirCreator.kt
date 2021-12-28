@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.common.cache.disk
+package com.github.panpf.sketch.common.cache
 
 import android.app.ActivityManager
 import android.content.Context
@@ -13,7 +13,7 @@ import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
-class CacheDirCreator(private val context: Context) {
+class DiskCacheDirCreator(private val context: Context) {
 
     fun getSafeCacheDir(dirName: String): File {
         val appCacheDir = getAppCacheDir(context)

@@ -31,6 +31,7 @@ dependencies {
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
+    api("androidx.exifinterface:exifinterface:${property("ANDROIDX_EXIFINTERFACE")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")

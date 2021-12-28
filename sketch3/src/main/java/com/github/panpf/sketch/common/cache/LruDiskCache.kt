@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.common.cache.disk
+package com.github.panpf.sketch.common.cache
 
 import android.content.Context
 import android.os.Environment
 import android.text.format.Formatter
 import com.github.panpf.sketch.SLog
+import com.github.panpf.sketch.common.cache.DiskCache.Editor
+import com.github.panpf.sketch.common.cache.DiskCache.Entry
 import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.MD5Utils
 import kotlinx.coroutines.Deferred
@@ -50,7 +52,7 @@ class LruDiskCache(
     }
 
     private val appContext: Context = context.applicationContext
-    private val cacheDirCreator = CacheDirCreator(context)
+    private val cacheDirCreator = DiskCacheDirCreator(context)
 
     @get:Synchronized
     private var cacheDirHolder: File = cacheDirCreator.getSafeCacheDir(DISK_CACHE_DIR_NAME)
@@ -120,7 +122,7 @@ class LruDiskCache(
     }
 
     @Synchronized
-    override fun get(encodedKey: String): DiskCache.Entry? {
+    override fun get(encodedKey: String): Entry? {
         if (isClosed) {
             return null
         }
@@ -148,7 +150,7 @@ class LruDiskCache(
     }
 
     @Synchronized
-    override fun edit(encodedKey: String): DiskCache.Editor? {
+    override fun edit(encodedKey: String): Editor? {
         if (isClosed) {
             return null
         }
@@ -364,7 +366,7 @@ class LruDiskCache(
         override val key: String,
         private val snapshot: DiskLruCache.SimpleSnapshot
     ) :
-        DiskCache.Entry {
+        Entry {
         @Throws(IOException::class)
         override fun newInputStream(): InputStream {
             return snapshot.newInputStream(0)
@@ -387,7 +389,7 @@ class LruDiskCache(
         }
     }
 
-    class LruDiskCacheEditor(private val diskEditor: DiskLruCache.Editor) : DiskCache.Editor {
+    class LruDiskCacheEditor(private val diskEditor: DiskLruCache.Editor) : Editor {
         @Throws(IOException::class)
         override fun newOutputStream(): OutputStream {
             return diskEditor.newOutputStream(0)

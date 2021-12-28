@@ -1,12 +1,18 @@
 package com.github.panpf.sketch
 
+import android.content.ComponentCallbacks2
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.common.*
-import com.github.panpf.sketch.common.cache.disk.DiskCache
-import com.github.panpf.sketch.common.cache.disk.LruDiskCache
-import com.github.panpf.sketch.common.decode.BitmapFactoryDecoder
+import com.github.panpf.sketch.common.cache.BitmapPool
+import com.github.panpf.sketch.common.cache.BitmapPoolHelper
+import com.github.panpf.sketch.common.cache.DiskCache
+import com.github.panpf.sketch.common.cache.LruBitmapPool
+import com.github.panpf.sketch.common.cache.LruDiskCache
+import com.github.panpf.sketch.common.cache.MemorySizeCalculator
+import com.github.panpf.sketch.common.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.common.fetch.HttpUriFetcher
 import com.github.panpf.sketch.common.http.HttpStack
 import com.github.panpf.sketch.common.http.HurlStack
@@ -27,6 +33,7 @@ import java.io.File
 class Sketch constructor(
     context: Context,
     diskCache: DiskCache? = null,
+    bitmapPool: BitmapPool? = null,
     componentRegistry: ComponentRegistry? = null,
     httpStack: HttpStack? = null,
     downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>? = null,
@@ -43,6 +50,10 @@ class Sketch constructor(
     val appContext: Context = context.applicationContext
     val httpStack = httpStack ?: HurlStack.new()
     val diskCache = diskCache ?: LruDiskCache(appContext)
+    val bitmapPoolHelper = BitmapPoolHelper(
+        appContext,
+        bitmapPool ?: LruBitmapPool(appContext, MemorySizeCalculator(appContext).bitmapPoolSize)
+    )
     val componentRegistry: ComponentRegistry =
         (componentRegistry?.newBuilder() ?: ComponentRegistry.Builder()).apply {
             addFetcher(HttpUriFetcher.Factory())
@@ -179,6 +190,7 @@ class Sketch constructor(
 
         private val appContext: Context = context.applicationContext
         private var diskCache: DiskCache? = null
+        private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadResult>>? =
@@ -188,6 +200,10 @@ class Sketch constructor(
 
         fun diskCache(diskCache: DiskCache): Builder = apply {
             this.diskCache = diskCache
+        }
+
+        fun bitmapPool(bitmapPool: BitmapPool): Builder = apply {
+            this.bitmapPool = bitmapPool
         }
 
         fun components(components: ComponentRegistry): Builder = apply {
@@ -219,6 +235,7 @@ class Sketch constructor(
         fun build(): Sketch = Sketch(
             context = appContext,
             diskCache = diskCache,
+            bitmapPool = bitmapPool,
             componentRegistry = componentRegistry,
             httpStack = httpStack,
             downloadInterceptors = downloadInterceptors,

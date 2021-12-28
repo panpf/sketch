@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.common.cache.disk
+package com.github.panpf.sketch.common.cache
 
 import com.github.panpf.sketch.util.DiskLruCache
 import kotlinx.coroutines.Deferred

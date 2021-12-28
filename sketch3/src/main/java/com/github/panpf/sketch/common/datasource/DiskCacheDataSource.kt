@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.common.datasource
 
 import com.github.panpf.sketch.common.DataFrom
-import com.github.panpf.sketch.common.cache.disk.DiskCache
+import com.github.panpf.sketch.common.cache.DiskCache
 import java.io.File
 import java.io.IOException
 import java.io.InputStream

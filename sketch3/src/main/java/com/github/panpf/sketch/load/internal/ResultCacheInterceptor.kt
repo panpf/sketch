@@ -2,11 +2,12 @@ package com.github.panpf.sketch.load.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.DataFrom
 import com.github.panpf.sketch.common.Interceptor
 import com.github.panpf.sketch.common.RequestExtras
-import com.github.panpf.sketch.common.cache.disk.DiskCache
+import com.github.panpf.sketch.common.cache.DiskCache
 import com.github.panpf.sketch.load.ImageInfo
 import com.github.panpf.sketch.load.LoadRequest
 import com.github.panpf.sketch.load.LoadResult
@@ -14,6 +15,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
 class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
+
+    companion object {
+        const val MODULE = "ResultCacheInterceptor"
+    }
 
     override suspend fun intercept(
         sketch: Sketch,
@@ -26,13 +31,23 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         val mutex = resultCacheHelper?.getOrCreateEditMutexLock()
         mutex?.lock()
         try {
-            return withContext(sketch.decodeTaskDispatcher) {
-                resultCacheHelper?.readLoadResult()
-            } ?: chain.proceed(sketch, request, extras).apply {
-                withContext(sketch.decodeTaskDispatcher) {
-                    resultCacheHelper?.writeLoadResult(this@apply)
+            if (resultCacheHelper != null) {
+                val cacheLoadResult = withContext(sketch.decodeTaskDispatcher) {
+                    resultCacheHelper.readLoadResult()
+                }
+                if (cacheLoadResult != null) {
+                    return cacheLoadResult
                 }
             }
+
+            val loadResult = chain.proceed(sketch, request, extras)
+
+            if (resultCacheHelper != null) {
+                withContext(sketch.decodeTaskDispatcher) {
+                    resultCacheHelper.writeLoadResult(loadResult)
+                }
+            }
+            return loadResult
         } finally {
             mutex?.unlock()
         }
@@ -61,7 +76,18 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                         bitmapDataDiskCacheEntry.file.path,
                         buildOptionsByRequest(imageInfo)
                     )
-                    LoadResult(bitmap, imageInfo, DataFrom.DISK_CACHE)
+                    if (bitmap.width > 1 && bitmap.height > 1) {
+                        LoadResult(bitmap, imageInfo, DataFrom.DISK_CACHE)
+                    } else {
+                        SLog.emf(
+                            MODULE,
+                            "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s",
+                            bitmap.width, bitmap.height, request.uri, encodedBitmapDataDiskCacheKey
+                        )
+                        bitmapDataDiskCacheEntry.delete()
+                        metaDataDiskCacheEntry.delete()
+                        null
+                    }
                 } else {
                     bitmapDataDiskCacheEntry?.delete()
                     metaDataDiskCacheEntry?.delete()

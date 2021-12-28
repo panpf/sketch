@@ -2,7 +2,7 @@ package com.github.panpf.sketch.download
 
 import com.github.panpf.sketch.common.DataFrom
 import com.github.panpf.sketch.common.ImageResult
-import com.github.panpf.sketch.common.cache.disk.DiskCache
+import com.github.panpf.sketch.common.cache.DiskCache
 
 
 sealed interface DownloadResult : ImageResult

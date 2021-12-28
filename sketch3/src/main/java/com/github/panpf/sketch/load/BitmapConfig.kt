@@ -2,7 +2,7 @@ package com.github.panpf.sketch.load
 
 import android.graphics.Bitmap
 import android.os.Build
-import com.github.panpf.sketch.common.decode.BitmapFactoryDecoder
+import com.github.panpf.sketch.common.ImageType
 
 class BitmapConfig(private val config: Bitmap.Config) {
 
@@ -18,7 +18,7 @@ class BitmapConfig(private val config: Bitmap.Config) {
     fun getConfigByMimeType(mimeType: String?): Bitmap.Config = when {
         this === LOW_QUALITY -> {
             when {
-                mimeType == BitmapFactoryDecoder.MIME_TYPE_JPEG -> {
+                ImageType.valueOfMimeType(mimeType) == ImageType.JPEG -> {
                     Bitmap.Config.RGB_565
                 }
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> {
