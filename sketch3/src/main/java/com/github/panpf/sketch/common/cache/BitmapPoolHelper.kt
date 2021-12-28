@@ -18,7 +18,7 @@ import com.github.panpf.sketch.util.toHexString
 
 class BitmapPoolHelper(
     context: Context,
-    private val bitmapPool: BitmapPool
+    val bitmapPool: BitmapPool
 ) {
 
     companion object {
@@ -47,10 +47,9 @@ class BitmapPoolHelper(
      * @param outWidth    图片原始宽
      * @param outHeight   图片原始高
      * @param outMimeType 图片类型
-     * @param bitmapPool  BitmapPool 从这个池子里找可复用的 Bitmap
      * @return true：找到了可复用的 Bitmap
      */
-    fun setInBitmapFromPool(
+    fun setInBitmap(
         options: BitmapFactory.Options,
         outWidth: Int,
         outHeight: Int,
@@ -145,10 +144,9 @@ class BitmapPoolHelper(
      * 从 bitmap pool 中取出可复用的 Bitmap 设置到 inBitmap 上，适用于 BitmapRegionDecoder
      *
      * @param options    BitmapFactory.Options 需要用到 options 的 inSampleSize 以及 inPreferredConfig 属性
-     * @param bitmapPool BitmapPool 从这个池子里找可复用的 Bitmap
      * @return true：找到了可复用的 Bitmap
      */
-    fun setInBitmapFromPoolForRegionDecoder(
+    fun setInBitmapForRegionDecoder(
         options: BitmapFactory.Options,
         srcRect: Rect,
     ): Boolean {

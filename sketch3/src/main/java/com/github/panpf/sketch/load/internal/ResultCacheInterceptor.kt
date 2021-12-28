@@ -6,7 +6,7 @@ import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.DataFrom
 import com.github.panpf.sketch.common.Interceptor
-import com.github.panpf.sketch.common.RequestExtras
+import com.github.panpf.sketch.common.ListenerInfo
 import com.github.panpf.sketch.common.cache.DiskCache
 import com.github.panpf.sketch.load.ImageInfo
 import com.github.panpf.sketch.load.LoadRequest
@@ -23,7 +23,7 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<LoadRequest, LoadResult>,
-        extras: RequestExtras<LoadRequest, LoadResult>?
+        listenerInfo: ListenerInfo<LoadRequest, LoadResult>?
     ): LoadResult {
         val diskCache = sketch.diskCache
         val request = chain.request
@@ -40,7 +40,7 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                 }
             }
 
-            val loadResult = chain.proceed(sketch, request, extras)
+            val loadResult = chain.proceed(sketch, request, listenerInfo)
 
             if (resultCacheHelper != null) {
                 withContext(sketch.decodeTaskDispatcher) {
@@ -79,6 +79,7 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                     if (bitmap.width > 1 && bitmap.height > 1) {
                         LoadResult(bitmap, imageInfo, DataFrom.DISK_CACHE)
                     } else {
+                        bitmap.recycle()
                         SLog.emf(
                             MODULE,
                             "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s",
@@ -153,6 +154,7 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         companion object {
             @JvmStatic
             fun from(request: LoadRequest, diskCache: DiskCache): ResultCacheHelper? {
+                if (request.disabledCacheResultInDisk == true) return null
                 val resultCacheKey = request.resultCacheKey ?: return null
                 val bitmapDataDiskCacheKey = request.uri.toString() + "_" + resultCacheKey
                 val metaDataDiskCacheKey = bitmapDataDiskCacheKey + "_metadata"

@@ -2,13 +2,22 @@ package com.github.panpf.sketch.common.fetch
 
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.common.*
+import com.github.panpf.sketch.common.DataFrom
+import com.github.panpf.sketch.common.DownloadableRequest
+import com.github.panpf.sketch.common.ImageRequest
+import com.github.panpf.sketch.common.ImageResult
+import com.github.panpf.sketch.common.ListenerInfo
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.common.cache.DiskCache
 import com.github.panpf.sketch.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.common.http.HttpStack
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -17,7 +26,7 @@ import java.io.OutputStream
 class HttpUriFetcher(
     private val sketch: Sketch,
     private val request: DownloadableRequest,
-    private val extras: RequestExtras<ImageRequest, ImageResult>?
+    private val listenerInfo: ListenerInfo<ImageRequest, ImageResult>?
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
@@ -173,7 +182,7 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListener = extras?.httpFetchProgressListener
+        val progressListener = listenerInfo?.httpFetchProgressListener
         var lastUpdateProgressBytesCopied = 0L
         while (bytes >= 0 && coroutineScope.isActive) {
             out.write(buffer, 0, bytes)
@@ -214,10 +223,10 @@ class HttpUriFetcher(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            extras: RequestExtras<ImageRequest, ImageResult>?
+            listenerInfo: ListenerInfo<ImageRequest, ImageResult>?
         ): HttpUriFetcher? =
             if (request is DownloadableRequest && isApplicable(request.uri)) {
-                HttpUriFetcher(sketch, request, extras)
+                HttpUriFetcher(sketch, request, listenerInfo)
             } else {
                 null
             }

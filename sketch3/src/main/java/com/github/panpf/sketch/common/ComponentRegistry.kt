@@ -25,18 +25,18 @@ class ComponentRegistry private constructor(
     fun newFetcher(
         sketch: Sketch,
         request: ImageRequest,
-        extras: RequestExtras<in ImageRequest, in ImageResult>?
+        listenerInfo: ListenerInfo<in ImageRequest, in ImageResult>?
     ): Fetcher = fetcherFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, extras)
+        it.create(sketch, request, listenerInfo)
     } ?: throw IllegalArgumentException("Unsupported uri: ${request.uri}")
 
     fun newDecoder(
         sketch: Sketch,
         request: ImageRequest,
-        extras: RequestExtras<in ImageRequest, in ImageResult>?,
+        listenerInfo: ListenerInfo<in ImageRequest, in ImageResult>?,
         dataSource: DataSource,
     ): Decoder = decoderFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, extras, dataSource)
+        it.create(sketch, request, listenerInfo, dataSource)
     } ?: throw IllegalArgumentException("Unsupported image format: ${request.uri}")
 
     companion object {

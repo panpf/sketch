@@ -16,32 +16,39 @@
 package com.github.panpf.sketch.common.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.BitmapFactory.Options
 import android.graphics.BitmapRegionDecoder
-import android.text.format.Formatter
+import android.graphics.Point
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.common.DecodeException
 import com.github.panpf.sketch.common.ImageType
+import com.github.panpf.sketch.common.LoadableRequest
+import com.github.panpf.sketch.common.cache.BitmapPoolHelper
 import com.github.panpf.sketch.common.datasource.DataSource
 import com.github.panpf.sketch.common.decode.DecodeResult
+import com.github.panpf.sketch.common.decode.internal.ResizeCalculator.Mapping
 import com.github.panpf.sketch.load.ImageInfo
-import com.github.panpf.sketch.load.LoadRequest
 import com.github.panpf.sketch.load.Resize
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
-import java.util.Locale
 
 /**
  * 缩略图模式解码协助器，当开启缩略图模式并且满足使用缩略图模式的条件时会使用此协助器来解码
  *
  * 解码时会根据 resize 的尺寸并使用 [BitmapRegionDecoder] 读取原图中的部分区域来得到更清晰的缩略图
  */
-class ThumbnailModeDecodeHelper(
-    private val imageOrientationCorrector: ImageOrientationCorrector
-) {
+class ThumbnailModeDecodeHelper {
+
+    companion object {
+        private const val MODULE = "ThumbnailModeDecodeHelper"
+    }
 
     private val resizeCalculator = ResizeCalculator()
     private val sizeCalculator = ImageSizeCalculator()
 
-    private fun canUseThumbnailMode(
+    fun canUseThumbnailMode(
         resize: Resize?, imageInfo: ImageInfo, imageType: ImageType?
     ): Boolean {
         if (resize != null && resize.thumbnailMode && imageType?.supportBitmapRegionDecoder() == true) {
@@ -56,196 +63,138 @@ class ThumbnailModeDecodeHelper(
 
     fun decode(
         sketch: Sketch,
-        request: LoadRequest,
+        request: LoadableRequest,
         dataSource: DataSource,
-        imageType: ImageType?,
-        boundOptions: BitmapFactory.Options,
-        decodeOptions: BitmapFactory.Options,
-        exifOrientation: Int
+        imageInfo: ImageInfo,
+        decodeOptions: Options,
     ): DecodeResult {
-        val orientationCorrector = imageOrientationCorrector
-        orientationCorrector.rotateSize(boundOptions, exifOrientation)
+        val resize = request.resize!!
+        val maxSize = request.maxSize
+        val exifOrientation = imageInfo.exifOrientation
+        val bitmapPoolHelper = sketch.bitmapPoolHelper
 
-        // 缩略图模式强制质量优先
-        if (!decodeOptions.inPreferQualityOverSpeed) {
+        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
             decodeOptions.inPreferQualityOverSpeed = true
         }
 
-        // 计算 resize 区域在原图中的对应区域
-        val resize = request.resize!!
-        val mapping = resizeCalculator.calculator(
-            boundOptions.outWidth,
-            boundOptions.outHeight,
+        val imageSize = Point(imageInfo.width, imageInfo.height)
+
+        val imageOrientationCorrector =
+            ImageOrientationCorrector.fromExifOrientation(exifOrientation)
+        imageOrientationCorrector?.rotateSize(imageSize)
+
+        val resizeMapping = resizeCalculator.calculator(
+            imageSize.x,
+            imageSize.y,
             resize.width,
             resize.height,
             resize.scaleType,
             false
         )
+        val resizeMappingSrcWidth = resizeMapping.srcRect.width()
+        val resizeMappingSrcHeight = resizeMapping.srcRect.height()
 
-        // 根据 resize 的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
-        decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(
-            mapping.srcRect.width(), mapping.srcRect.height(), resize.width, resize.height
+        val resizeInSampleSize =
+            sizeCalculator.calculateInSampleSize(
+                resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
+            )
+        val maxSizeInSampleSize = maxSize?.let {
+            sizeCalculator.calculateInSampleSize(
+                resizeMappingSrcWidth, resizeMappingSrcHeight, it.width, it.height
+            )
+        } ?: 1
+        decodeOptions.inSampleSize = resizeInSampleSize.coerceAtLeast(maxSizeInSampleSize)
+
+        imageOrientationCorrector?.reverseRotateRect(
+            resizeMapping.srcRect,
+            imageSize.x,
+            imageSize.y,
         )
-        orientationCorrector.reverseRotate(
-            mapping.srcRect,
-            boundOptions.outWidth,
-            boundOptions.outHeight,
-            exifOrientation
-        )
-        if (request.disabledBitmapPool == true) {
-            val bitmapPoolHelper = sketch.bitmapPoolHelper
-            bitmapPoolHelper.setInBitmapFromPoolForRegionDecoder(decodeOptions, mapping.srcRect)
+
+        if (request.disabledBitmapPool != true) {
+            sketch.bitmapPoolHelper.setInBitmapForRegionDecoder(
+                decodeOptions,
+                resizeMapping.srcRect
+            )
         }
-        val bitmap: Bitmap? = try {
+
+        val bitmap = decodeRegionBitmap(
+            request, dataSource, resizeMapping, decodeOptions,
+            bitmapPoolHelper, imageSize, imageInfo
+        )
+
+        val correctedOrientationBitmap =
+            imageOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper.bitmapPool)
+        return if (correctedOrientationBitmap != null && correctedOrientationBitmap != bitmap) {
+            bitmapPoolHelper.freeBitmapToPool(bitmap)
+            DecodeResult(correctedOrientationBitmap, imageInfo)
+        } else {
+            DecodeResult(bitmap, imageInfo)
+        }
+    }
+
+    private fun decodeRegionBitmap(
+        request: LoadableRequest,
+        dataSource: DataSource,
+        mapping: Mapping,
+        decodeOptions: Options,
+        bitmapPoolHelper: BitmapPoolHelper,
+        imageSize: Point,
+        imageInfo: ImageInfo,
+    ): Bitmap {
+        val bitmap = try {
             dataSource.decodeRegionBitmap(mapping.srcRect, decodeOptions)
-        } catch (tr: Throwable) {
-            val application = request.configuration.context
-            val callback = request.configuration.callback
-            val bitmapPool = request.configuration.bitmapPool
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
             when {
-                ImageDecodeUtils.isInBitmapDecodeError(tr, decodeOptions, true) -> {
-                    ImageDecodeUtils.recycleInBitmapOnDecodeError(
-                        callback,
-                        bitmapPool,
-                        request.uri,
-                        boundOptions.outWidth,
-                        boundOptions.outHeight,
-                        boundOptions.outMimeType,
-                        tr,
-                        decodeOptions,
-                        true
-                    )
+                isInBitmapError(throwable, decodeOptions, true) -> {
+                    val message = "Bitmap region decode error. Because inBitmap. uri=%s"
+                        .format(request.uri)
+                    SLog.emt(MODULE, throwable, message)
+
+                    val inBitmap = decodeOptions.inBitmap
+                    decodeOptions.inBitmap = null
+                    bitmapPoolHelper.freeBitmapToPool(inBitmap)
                     try {
-                        ImageDecodeUtils.decodeRegionBitmap(
-                            dataSource,
-                            mapping.srcRect,
-                            decodeOptions
-                        )
-                    } catch (throwable1: Throwable) {
-                        emf(
-                            NAME, "onDecodeNormalImageError. " +
-                                    "outWidth=%d, outHeight=%d, outMimeType=%s. " +
-                                    "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
-                            boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
-                            Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
-                            Formatter.formatFileSize(
-                                application,
-                                Runtime.getRuntime().freeMemory()
-                            ),
-                            Formatter.formatFileSize(
-                                application,
-                                Runtime.getRuntime().totalMemory()
-                            ),
-                            request.key
-                        )
-                        callback.onError(
-                            DecodeImageException(
-                                throwable1, request, boundOptions.outWidth,
-                                boundOptions.outHeight, boundOptions.outMimeType
-                            )
-                        )
-                        throw DecodeException(
-                            "InBitmap retry",
-                            tr,
-                            ErrorCause.DECODE_UNKNOWN_EXCEPTION
-                        )
+                        dataSource.decodeRegionBitmap(mapping.srcRect, decodeOptions)
+                    } catch (throwable2: Throwable) {
+                        throwable.printStackTrace()
+                        val message2 = "Bitmap region decode error. uri=%s".format(request.uri)
+                        SLog.emt(MODULE, throwable2, message2)
+                        throw DecodeException(message2, throwable2)
                     }
                 }
-                ImageDecodeUtils.isSrcRectDecodeError(
-                    tr,
-                    boundOptions.outWidth,
-                    boundOptions.outHeight,
-                    mapping.srcRect
-                ) -> {
-                    emf(
-                        NAME,
-                        "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
-                        request.uri,
-                        boundOptions.outWidth,
-                        boundOptions.outHeight,
-                        boundOptions.outMimeType,
-                        mapping.srcRect.toString(),
-                        decodeOptions.inSampleSize
-                    )
-                    callback.onError(
-                        DecodeRegionException(
-                            tr, request.uri, boundOptions.outWidth, boundOptions.outHeight,
-                            boundOptions.outMimeType, mapping.srcRect, decodeOptions.inSampleSize
-                        )
-                    )
-                    throw DecodeException(
-                        "Because srcRect",
-                        tr,
-                        ErrorCause.DECODE_UNKNOWN_EXCEPTION
-                    )
+                isSrcRectError(throwable, imageSize.x, imageSize.y, mapping.srcRect) -> {
+                    val message =
+                        "Bitmap region decode error. Because srcRect. imageInfo=%s, resize=%s, srcRect=%s, uri=%s"
+                            .format(imageInfo, request.resize, mapping.srcRect, request.uri)
+                    SLog.emt(MODULE, throwable, message)
+                    throw DecodeException(message, throwable)
                 }
                 else -> {
-                    emf(
-                        NAME, "onDecodeNormalImageError. " +
-                                "outWidth=%d, outHeight=%d, outMimeType=%s. " +
-                                "appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s. %s",
-                        boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType,
-                        Formatter.formatFileSize(application, Runtime.getRuntime().maxMemory()),
-                        Formatter.formatFileSize(application, Runtime.getRuntime().freeMemory()),
-                        Formatter.formatFileSize(application, Runtime.getRuntime().totalMemory()),
-                        request.key
-                    )
-                    callback.onError(
-                        DecodeImageException(
-                            tr, request, boundOptions.outWidth,
-                            boundOptions.outHeight, boundOptions.outMimeType
-                        )
-                    )
-                    throw DecodeException(tr, ErrorCause.DECODE_UNKNOWN_EXCEPTION)
+                    val message = "Bitmap region decode error. uri=%s".format(request.uri)
+                    SLog.emt(MODULE, throwable, message)
+                    throw DecodeException(message, throwable)
                 }
             }
         }
-
-        // 过滤掉无效的图片
-        if (bitmap == null || bitmap.isRecycled) {
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, "Bitmap invalid", null)
-            throw DecodeException("Bitmap invalid", ErrorCause.DECODE_RESULT_BITMAP_INVALID)
+        if (bitmap == null) {
+            val message = "Bitmap region decode return null. uri=%s".format(request.uri)
+            SLog.em(MODULE, message)
+            throw DecodeException(message)
         }
 
-        // 过滤宽高小于等于1的图片
         if (bitmap.width <= 1 || bitmap.height <= 1) {
-            val cause = String.format(
-                Locale.US,
-                "Bitmap width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d",
-                boundOptions.outWidth,
-                boundOptions.outHeight,
-                bitmap.width,
-                bitmap.height
-            )
-            ImageDecodeUtils.decodeError(request, dataSource, NAME, cause, null)
             bitmap.recycle()
-            throw DecodeException(cause, ErrorCause.DECODE_RESULT_BITMAP_SIZE_INVALID)
+            val message = "Invalid image size. size=%dx%d, uri=%s".format(
+                imageInfo.width,
+                imageInfo.height,
+                request.uri
+            )
+            SLog.em(BitmapFactoryDecoder.MODULE, message)
+            throw DecodeException(message)
         }
-        val imageAttrs = ImageAttrs(
-            boundOptions.outMimeType,
-            boundOptions.outWidth,
-            boundOptions.outHeight,
-            exifOrientation
-        )
-        val result = BitmapDecodeResult(imageAttrs, bitmap, dataSource.imageFrom)
-        result.isProcessed = true
-        try {
-            correctOrientation(orientationCorrector, result, exifOrientation, request)
-        } catch (e: CorrectOrientationException) {
-            throw DecodeException(e, ErrorCause.DECODE_CORRECT_ORIENTATION_FAIL)
-        }
-        ImageDecodeUtils.decodeSuccess(
-            bitmap,
-            boundOptions.outWidth,
-            boundOptions.outHeight,
-            decodeOptions.inSampleSize,
-            request,
-            NAME
-        )
-        return result
-    }
 
-    companion object {
-        private const val NAME = "ThumbnailModeDecodeHelper"
+        return bitmap
     }
 }

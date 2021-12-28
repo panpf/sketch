@@ -33,169 +33,60 @@ import java.io.InputStream
 /**
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
-class ImageOrientationCorrector {
-    /**
-     * 根据mimeType判断该类型的图片是否支持通过ExitInterface读取旋转角度
-     *
-     * @param mimeType 从图片文件中取出的图片的mimeTye
-     */
-    fun support(mimeType: String): Boolean = ExifInterface.isSupportedMimeType(mimeType)
+class ImageOrientationCorrector(private val exifOrientation: Int) {
 
-    /**
-     * 根据exifOrientation判断图片是否被旋转了
-     *
-     * @param exifOrientation from exif info
-     * @return true：已旋转
-     */
-    fun hasRotate(exifOrientation: Int): Boolean =
-        exifOrientation != ExifInterface.ORIENTATION_UNDEFINED
-                && exifOrientation != ExifInterface.ORIENTATION_NORMAL
-
-    /**
-     * 读取图片方向
-     *
-     * @param inputStream 文件输入流
-     * @return exif 保存的原始方向
-     */
-    @Throws(IOException::class)
-    fun readExifOrientation(inputStream: InputStream): Int =
-        ExifInterface(inputStream).getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
-
-    /**
-     * 读取图片方向
-     *
-     * @param mimeType    图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
-     * @param inputStream 输入流
-     * @return exif 保存的原始方向
-     */
-    @Throws(IOException::class)
-    fun readExifOrientation(mimeType: String, inputStream: InputStream): Int =
-        if (support(mimeType)) {
-            readExifOrientation(inputStream)
-        } else {
-            ExifInterface.ORIENTATION_UNDEFINED
+    init {
+        if (!hasRotate(exifOrientation)) {
+            throw IllegalArgumentException("No rotation: $exifOrientation")
         }
-
-    /**
-     * 读取图片方向
-     *
-     * @param mimeType   图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
-     * @param dataSource DataSource
-     * @return exif 保存的原始方向
-     */
-    fun readExifOrientation(mimeType: String, dataSource: DataSource): Int {
-        if (support(mimeType)) {
-            try {
-                return dataSource.newInputStream().use {
-                    readExifOrientation(it)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return ExifInterface.ORIENTATION_UNDEFINED
     }
 
     /**
-     * 根据图片方向旋转图片
-     *
-     * @param exifOrientation 图片方向
+     * 根据旋转角度计算新图片旋转后的尺寸
      */
-    fun rotate(bitmap: Bitmap, exifOrientation: Int, bitmapPool: BitmapPool): Bitmap? {
-        if (!hasRotate(exifOrientation)) {
-            return null
-        }
+    fun rotateSize(imageInfo: ImageInfo): ImageInfo {
         val matrix = Matrix()
         initializeMatrixForExifRotation(exifOrientation, matrix)
-
-        // 根据旋转角度计算新的图片的尺寸
-        val newRect = RectF(
-            0F, 0F, bitmap.width.toFloat(), bitmap.height
-                .toFloat()
-        )
+        val newRect = RectF(0F, 0F, imageInfo.width.toFloat(), imageInfo.height.toFloat())
         matrix.mapRect(newRect)
-        val newWidth = newRect.width().toInt()
-        val newHeight = newRect.height().toInt()
+        return ImageInfo(
+            imageInfo.mimeType,
+            newRect.width().toInt(),
+            newRect.height().toInt(),
+            imageInfo.exifOrientation
+        )
+    }
 
-        // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
-        val degrees = getExifOrientationDegrees(exifOrientation)
-        var config = bitmap.config
-        if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
-            config = Bitmap.Config.ARGB_8888
-        }
-        val result = bitmapPool.getOrMake(newWidth, newHeight, config)
-        matrix.postTranslate(-newRect.left, -newRect.top)
-        val canvas = Canvas(result)
-        val paint = Paint(PAINT_FLAGS)
-        canvas.drawBitmap(bitmap, matrix, paint)
-        return result
+
+    /**
+     * 根据旋转角度计算新图片旋转后的尺寸
+     */
+    fun rotateSize(options: BitmapFactory.Options) {
+        val matrix = Matrix()
+        initializeMatrixForExifRotation(exifOrientation, matrix)
+        val newRect = RectF(0F, 0F, options.outWidth.toFloat(), options.outHeight.toFloat())
+        matrix.mapRect(newRect)
+        options.outWidth = newRect.width().toInt()
+        options.outHeight = newRect.height().toInt()
     }
 
     /**
      * 根据旋转角度计算新图片旋转后的尺寸
-     *
-     * @param exifOrientation 图片方向
      */
-    fun rotateSize(imageInfo: ImageInfo, exifOrientation: Int): ImageInfo =
-        if (hasRotate(exifOrientation)) {
-            val matrix = Matrix()
-            initializeMatrixForExifRotation(exifOrientation, matrix)
-            val newRect = RectF(0F, 0F, imageInfo.width.toFloat(), imageInfo.height.toFloat())
-            matrix.mapRect(newRect)
-            ImageInfo(
-                imageInfo.mimeType,
-                newRect.width().toInt(),
-                newRect.height().toInt(),
-                imageInfo.exifOrientation
-            )
-        } else {
-            imageInfo
-        }
-
-    /**
-     * 根据旋转角度计算新图片旋转后的尺寸
-     *
-     * @param exifOrientation 图片方向
-     */
-    fun rotateSize(options: BitmapFactory.Options, exifOrientation: Int) {
-        if (hasRotate(exifOrientation)) {
-            val matrix = Matrix()
-            initializeMatrixForExifRotation(exifOrientation, matrix)
-            val newRect = RectF(0F, 0F, options.outWidth.toFloat(), options.outHeight.toFloat())
-            matrix.mapRect(newRect)
-            options.outWidth = newRect.width().toInt()
-            options.outHeight = newRect.height().toInt()
-        }
-    }
-
-    /**
-     * 根据旋转角度计算新图片旋转后的尺寸
-     *
-     * @param exifOrientation 图片方向
-     */
-    fun rotateSize(size: Point, exifOrientation: Int) {
-        if (hasRotate(exifOrientation)) {
-            val matrix = Matrix()
-            initializeMatrixForExifRotation(exifOrientation, matrix)
-            val newRect = RectF(0F, 0F, size.x.toFloat(), size.y.toFloat())
-            matrix.mapRect(newRect)
-            size.x = newRect.width().toInt()
-            size.y = newRect.height().toInt()
-        }
+    fun rotateSize(size: Point) {
+        val matrix = Matrix()
+        initializeMatrixForExifRotation(exifOrientation, matrix)
+        val newRect = RectF(0F, 0F, size.x.toFloat(), size.y.toFloat())
+        matrix.mapRect(newRect)
+        size.x = newRect.width().toInt()
+        size.y = newRect.height().toInt()
     }
 
     /**
      * 根据图片方向恢复被旋转前的尺寸
-     *
-     * @param exifOrientation 图片方向
      */
-    fun reverseRotate(srcRect: Rect, imageWidth: Int, imageHeight: Int, exifOrientation: Int) {
-        if (!hasRotate(exifOrientation)) {
-            return
-        }
+    fun reverseRotateRect(srcRect: Rect, imageWidth: Int, imageHeight: Int) {
+        @Suppress("MoveVariableDeclarationIntoWhen")
         val rotateDegrees = 360 - getExifOrientationDegrees(exifOrientation)
         when (rotateDegrees) {
             90 -> {
@@ -223,13 +114,107 @@ class ImageOrientationCorrector {
         }
     }
 
-    override fun toString(): String {
-        return "ImageOrientationCorrector"
+    /**
+     * 根据图片方向旋转图片
+     */
+    fun rotateBitmap(bitmap: Bitmap, bitmapPool: BitmapPool): Bitmap {
+        val matrix = Matrix()
+        initializeMatrixForExifRotation(exifOrientation, matrix)
+
+        // 根据旋转角度计算新的图片的尺寸
+        val newRect = RectF(
+            0F, 0F, bitmap.width.toFloat(), bitmap.height
+                .toFloat()
+        )
+        matrix.mapRect(newRect)
+        val newWidth = newRect.width().toInt()
+        val newHeight = newRect.height().toInt()
+
+        // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
+        val degrees = getExifOrientationDegrees(exifOrientation)
+        var config = bitmap.config
+        if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
+            config = Bitmap.Config.ARGB_8888
+        }
+        val result = bitmapPool.getOrMake(newWidth, newHeight, config)
+        matrix.postTranslate(-newRect.left, -newRect.top)
+        val canvas = Canvas(result)
+        val paint = Paint(PAINT_FLAGS)
+        canvas.drawBitmap(bitmap, matrix, paint)
+        return result
     }
 
     companion object {
 
         const val PAINT_FLAGS = Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG
+
+        fun fromExifOrientation(exifOrientation: Int): ImageOrientationCorrector? =
+            if (hasRotate(exifOrientation)) ImageOrientationCorrector(exifOrientation) else null
+
+        /**
+         * 读取图片方向
+         *
+         * @param inputStream 文件输入流
+         * @return exif 保存的原始方向
+         */
+        @Throws(IOException::class)
+        fun readExifOrientation(inputStream: InputStream): Int =
+            ExifInterface(inputStream).getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
+
+        /**
+         * 读取图片方向
+         *
+         * @param mimeType    图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+         * @param inputStream 输入流
+         * @return exif 保存的原始方向
+         */
+        @Throws(IOException::class)
+        fun readExifOrientation(mimeType: String, inputStream: InputStream): Int =
+            if (support(mimeType)) {
+                readExifOrientation(inputStream)
+            } else {
+                ExifInterface.ORIENTATION_UNDEFINED
+            }
+
+        /**
+         * 读取图片方向
+         *
+         * @param mimeType   图片的类型，某些类型不支持读取旋转角度，需要过滤掉，免得浪费精力
+         * @param dataSource DataSource
+         * @return exif 保存的原始方向
+         */
+        fun readExifOrientation(mimeType: String, dataSource: DataSource): Int {
+            if (support(mimeType)) {
+                try {
+                    return dataSource.newInputStream().use {
+                        readExifOrientation(it)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+            return ExifInterface.ORIENTATION_UNDEFINED
+        }
+
+        /**
+         * 根据mimeType判断该类型的图片是否支持通过ExitInterface读取旋转角度
+         *
+         * @param mimeType 从图片文件中取出的图片的mimeTye
+         */
+        fun support(mimeType: String): Boolean = ExifInterface.isSupportedMimeType(mimeType)
+
+        /**
+         * 根据exifOrientation判断图片是否被旋转了
+         *
+         * @param exifOrientation from exif info
+         * @return true：已旋转
+         */
+        fun hasRotate(exifOrientation: Int): Boolean =
+            exifOrientation != ExifInterface.ORIENTATION_UNDEFINED
+                    && exifOrientation != ExifInterface.ORIENTATION_NORMAL
 
         fun toName(exifOrientation: Int): String {
             return when (exifOrientation) {
@@ -247,14 +232,20 @@ class ImageOrientationCorrector {
         }
 
         fun getExifOrientationDegrees(exifOrientation: Int): Int = when (exifOrientation) {
-            ExifInterface.ORIENTATION_TRANSPOSE, ExifInterface.ORIENTATION_ROTATE_90 -> 90
-            ExifInterface.ORIENTATION_ROTATE_180, ExifInterface.ORIENTATION_FLIP_VERTICAL -> 180
-            ExifInterface.ORIENTATION_TRANSVERSE, ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            ExifInterface.ORIENTATION_TRANSPOSE,
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180,
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> 180
+            ExifInterface.ORIENTATION_TRANSVERSE,
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
             else -> 0
         }
 
         fun getExifOrientationTranslation(exifOrientation: Int): Int = when (exifOrientation) {
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL, ExifInterface.ORIENTATION_FLIP_VERTICAL, ExifInterface.ORIENTATION_TRANSPOSE, ExifInterface.ORIENTATION_TRANSVERSE -> -1
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL,
+            ExifInterface.ORIENTATION_FLIP_VERTICAL,
+            ExifInterface.ORIENTATION_TRANSPOSE,
+            ExifInterface.ORIENTATION_TRANSVERSE -> -1
             else -> 1
         }
 

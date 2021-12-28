@@ -1,11 +1,16 @@
 package com.github.panpf.sketch
 
-import android.content.ComponentCallbacks2
 import android.content.Context
-import android.content.res.Configuration
 import android.net.Uri
 import androidx.annotation.AnyThread
-import com.github.panpf.sketch.common.*
+import com.github.panpf.sketch.common.ComponentRegistry
+import com.github.panpf.sketch.common.Disposable
+import com.github.panpf.sketch.common.ExecuteResult
+import com.github.panpf.sketch.common.Interceptor
+import com.github.panpf.sketch.common.Listener
+import com.github.panpf.sketch.common.ListenerInfo
+import com.github.panpf.sketch.common.OneShotDisposable
+import com.github.panpf.sketch.common.ProgressListener
 import com.github.panpf.sketch.common.cache.BitmapPool
 import com.github.panpf.sketch.common.cache.BitmapPoolHelper
 import com.github.panpf.sketch.common.cache.DiskCache
@@ -27,7 +32,13 @@ import com.github.panpf.sketch.load.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.load.internal.LoadExecutor
 import com.github.panpf.sketch.load.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.load.internal.TransformationInterceptor
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.io.File
 
 class Sketch constructor(
@@ -87,7 +98,7 @@ class Sketch constructor(
         httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
     ): Disposable<ExecuteResult<DownloadResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
-            downloadExecutor.execute(request, RequestExtras(listener, httpFetchProgressListener))
+            downloadExecutor.execute(request, ListenerInfo(listener, httpFetchProgressListener))
         }
         return OneShotDisposable(job)
     }
@@ -137,7 +148,7 @@ class Sketch constructor(
         httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
     ): Disposable<ExecuteResult<LoadResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
-            loadExecutor.execute(request, RequestExtras(listener, httpFetchProgressListener))
+            loadExecutor.execute(request, ListenerInfo(listener, httpFetchProgressListener))
         }
         return OneShotDisposable(job)
     }

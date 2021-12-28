@@ -2,7 +2,7 @@ package com.github.panpf.sketch.load.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.Interceptor
-import com.github.panpf.sketch.common.RequestExtras
+import com.github.panpf.sketch.common.ListenerInfo
 import com.github.panpf.sketch.load.LoadRequest
 import com.github.panpf.sketch.load.LoadResult
 import kotlinx.coroutines.withContext
@@ -12,10 +12,10 @@ class TransformationInterceptor : Interceptor<LoadRequest, LoadResult> {
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<LoadRequest, LoadResult>,
-        extras: RequestExtras<LoadRequest, LoadResult>?
+        listenerInfo: ListenerInfo<LoadRequest, LoadResult>?
     ): LoadResult {
         val request = chain.request
-        val result = chain.proceed(sketch, request, extras)
+        val result = chain.proceed(sketch, request, listenerInfo)
         val transformations = request.transformations
         return if (transformations?.isNotEmpty() == true) {
             val bitmap = withContext(sketch.decodeTaskDispatcher) {

@@ -9,7 +9,7 @@ interface Interceptor<REQUEST : ImageRequest, RESULT : ImageResult> {
     suspend fun intercept(
         sketch: Sketch,
         chain: Chain<REQUEST, RESULT>,
-        extras: RequestExtras<REQUEST, RESULT>?
+        listenerInfo: ListenerInfo<REQUEST, RESULT>?
     ): RESULT
 
     interface Chain<REQUEST : ImageRequest, RESULT : ImageResult> {
@@ -20,7 +20,7 @@ interface Interceptor<REQUEST : ImageRequest, RESULT : ImageResult> {
         suspend fun proceed(
             sketch: Sketch,
             request: REQUEST,
-            extras: RequestExtras<REQUEST, RESULT>?
+            listenerInfo: ListenerInfo<REQUEST, RESULT>?
         ): RESULT
     }
 }

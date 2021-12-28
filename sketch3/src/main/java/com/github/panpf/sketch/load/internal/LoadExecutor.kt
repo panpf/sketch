@@ -3,10 +3,10 @@ package com.github.panpf.sketch.load.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.ExecuteResult
-import com.github.panpf.sketch.common.RequestExtras
+import com.github.panpf.sketch.common.ListenerInfo
 import com.github.panpf.sketch.common.internal.ListenerDelegate
-import com.github.panpf.sketch.load.LoadResult
 import com.github.panpf.sketch.load.LoadRequest
+import com.github.panpf.sketch.load.LoadResult
 import kotlinx.coroutines.CancellationException
 
 class LoadExecutor(private val sketch: Sketch) {
@@ -14,9 +14,9 @@ class LoadExecutor(private val sketch: Sketch) {
     @WorkerThread
     suspend fun execute(
         request: LoadRequest,
-        extras: RequestExtras<LoadRequest, LoadResult>?,
+        listenerInfo: ListenerInfo<LoadRequest, LoadResult>?,
     ): ExecuteResult<LoadResult> {
-        val listenerDelegate = extras?.listener?.run {
+        val listenerDelegate = listenerInfo?.lifecycleListener?.run {
             ListenerDelegate(this)
         }
 
@@ -28,7 +28,7 @@ class LoadExecutor(private val sketch: Sketch) {
                 interceptors = sketch.loadInterceptors,
                 index = 0,
                 request = request,
-            ).proceed(sketch, request, extras)
+            ).proceed(sketch, request, listenerInfo)
 
             listenerDelegate?.onSuccess(request, result)
             return ExecuteResult.Success(result)

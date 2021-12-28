@@ -1,11 +1,13 @@
 package com.github.panpf.sketch.download
 
 import android.net.Uri
+import android.os.Bundle
 import com.github.panpf.sketch.common.DownloadableRequest
 import com.github.panpf.sketch.common.cache.CachePolicy
 
 class DownloadRequest constructor(
     override val uri: Uri,
+    override val extras: Bundle?,
     override val diskCacheKey: String,
     override val diskCachePolicy: CachePolicy,
 ) : DownloadableRequest {
@@ -40,11 +42,13 @@ class DownloadRequest constructor(
 
     class Builder {
         private val uri: Uri
+        private var extras: Bundle?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
 
         constructor(uri: Uri) {
             this.uri = uri
+            this.extras = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
         }
@@ -53,8 +57,13 @@ class DownloadRequest constructor(
 
         internal constructor(request: DownloadRequest) {
             this.uri = request.uri
+            this.extras = request.extras
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
+        }
+
+        fun extras(extras: Bundle?): Builder = apply {
+            this.extras = extras
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -67,6 +76,7 @@ class DownloadRequest constructor(
 
         fun build(): DownloadRequest = DownloadRequest(
             uri = uri,
+            extras = extras,
             diskCacheKey = diskCacheKey ?: uri.toString(),
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
         )

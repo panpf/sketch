@@ -3,39 +3,40 @@ package com.github.panpf.sketch.load
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import com.github.panpf.sketch.common.LoadableRequest
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.load.transform.Transformation
 
 class LoadRequest(
     override val uri: Uri,
+    override val extras: Bundle?,
     override val diskCacheKey: String,
     override val diskCachePolicy: CachePolicy,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val inPreferQualityOverSpeed: Boolean?,
     override val resize: Resize?,
-//    override val thumbnailMode: Boolean?,
     override val transformations: List<Transformation>?,
-    override val cacheResultInDisk: Boolean?,
     override val disabledBitmapPool: Boolean?,
+    override val disabledCacheResultInDisk: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
     // todo 添加额外参数，方面后面的自定义拦截器区分请求 例如 extras: Bundle
 ) : LoadableRequest {
 
     val resultCacheKey: String? = buildString {
-        if (maxSize != null) {
-            if (length > 0) append("_")
-            append(maxSize.cacheKey)
-        }
-        if (bitmapConfig != null) {
-            if (length > 0) append("_")
-            append(bitmapConfig.cacheKey)
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && inPreferQualityOverSpeed == true) {
-            if (length > 0) append("_")
-            append("inPreferQualityOverSpeed")
-        }
+//        if (maxSize != null) {
+//            if (length > 0) append("_")
+//            append(maxSize.cacheKey)
+//        }
+//        if (bitmapConfig != null) {
+//            if (length > 0) append("_")
+//            append(bitmapConfig.cacheKey)
+//        }
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && inPreferQualityOverSpeed == true) {
+//            if (length > 0) append("_")
+//            append("inPreferQualityOverSpeed")
+//        }
         if (resize != null) {
             if (length > 0) append("_")
             append(resize.cacheKey)
@@ -76,31 +77,30 @@ class LoadRequest(
 
     class Builder {
         private val uri: Uri
+        private var extras: Bundle?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
         private var bitmapConfig: BitmapConfig?
         private var inPreferQualityOverSpeed: Boolean?
         private var resize: Resize?
-
-        //        private var thumbnailMode: Boolean?
         private var transformations: List<Transformation>?
-        private var cacheResultInDisk: Boolean?
         private var disabledBitmapPool: Boolean?
+        private var disabledCacheResultInDisk: Boolean?
         private var disabledCorrectExifOrientation: Boolean?
 
         constructor(uri: Uri) {
             this.uri = uri
+            this.extras = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
             this.bitmapConfig = null
             this.inPreferQualityOverSpeed = null
             this.resize = null
-//            this.thumbnailMode = null
             this.transformations = null
-            this.cacheResultInDisk = null
             this.disabledBitmapPool = null
+            this.disabledCacheResultInDisk = null
             this.disabledCorrectExifOrientation = null
         }
 
@@ -108,17 +108,21 @@ class LoadRequest(
 
         internal constructor(request: LoadRequest) {
             this.uri = request.uri
+            this.extras = request.extras
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             this.inPreferQualityOverSpeed = request.inPreferQualityOverSpeed
             this.resize = request.resize
-//            this.thumbnailMode = request.thumbnailMode
             this.transformations = request.transformations
-            this.cacheResultInDisk = request.cacheResultInDisk
             this.disabledBitmapPool = request.disabledBitmapPool
+            this.disabledCacheResultInDisk = request.disabledCacheResultInDisk
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+        }
+
+        fun extras(extras: Bundle?): Builder = apply {
+            this.extras = extras
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -180,10 +184,6 @@ class LoadRequest(
             this.resize = Resize.new(width, height, configBlock)
         }
 
-//        fun thumbnailMode(thumbnailMode: Boolean? = true): Builder = apply {
-//            this.thumbnailMode = thumbnailMode
-//        }
-
         fun transformations(transformations: List<Transformation>?): Builder = apply {
             this.transformations = transformations
         }
@@ -192,13 +192,12 @@ class LoadRequest(
             this.transformations = transformations.toList()
         }
 
-        fun cacheResultInDisk(cacheResultInDisk: Boolean? = true): Builder =
-            apply {
-                this.cacheResultInDisk = cacheResultInDisk
-            }
-
         fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder = apply {
             this.disabledBitmapPool = disabledBitmapPool
+        }
+
+        fun disabledCacheResultInDisk(cacheResultInDisk: Boolean? = true): Builder = apply {
+            this.disabledCacheResultInDisk = cacheResultInDisk
         }
 
         fun disabledCorrectExifOrientation(disabledCorrectExifOrientation: Boolean? = true): Builder =
@@ -208,16 +207,16 @@ class LoadRequest(
 
         fun build(): LoadRequest = LoadRequest(
             uri = uri,
+            extras = extras,
             diskCacheKey = diskCacheKey ?: uri.toString(),
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             inPreferQualityOverSpeed = inPreferQualityOverSpeed,
             resize = resize,
-//            thumbnailMode = thumbnailMode,
             transformations = transformations,
-            cacheResultInDisk = cacheResultInDisk,
             disabledBitmapPool = disabledBitmapPool,
+            disabledCacheResultInDisk = disabledCacheResultInDisk,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
         )
     }

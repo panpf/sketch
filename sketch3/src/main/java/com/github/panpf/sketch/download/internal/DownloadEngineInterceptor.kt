@@ -2,17 +2,17 @@ package com.github.panpf.sketch.download.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.common.ImageResult
 import com.github.panpf.sketch.common.ImageRequest
+import com.github.panpf.sketch.common.ImageResult
 import com.github.panpf.sketch.common.Interceptor
-import com.github.panpf.sketch.common.RequestExtras
+import com.github.panpf.sketch.common.ListenerInfo
 import com.github.panpf.sketch.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.common.fetch.HttpUriFetcher
 import com.github.panpf.sketch.download.ByteArrayDownloadResult
 import com.github.panpf.sketch.download.DiskCacheDownloadResult
-import com.github.panpf.sketch.download.DownloadResult
 import com.github.panpf.sketch.download.DownloadRequest
+import com.github.panpf.sketch.download.DownloadResult
 
 class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
 
@@ -20,12 +20,12 @@ class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<DownloadRequest, DownloadResult>,
-        extras: RequestExtras<DownloadRequest, DownloadResult>?
+        listenerInfo: ListenerInfo<DownloadRequest, DownloadResult>?
     ): DownloadResult {
         val request = chain.request
 
         val fetcher = sketch.componentRegistry.newFetcher(
-            sketch, request, extras as RequestExtras<ImageRequest, ImageResult>?
+            sketch, request, listenerInfo as ListenerInfo<ImageRequest, ImageResult>?
         )
         if (fetcher !is HttpUriFetcher) {
             throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uri}")

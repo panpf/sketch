@@ -2,6 +2,8 @@ package com.github.panpf.sketch.common
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
+import com.github.panpf.sketch.common.cache.BitmapPool
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.load.BitmapConfig
 import com.github.panpf.sketch.load.MaxSize
@@ -10,6 +12,7 @@ import com.github.panpf.sketch.load.transform.Transformation
 
 interface ImageRequest {
     val uri: Uri
+    val extras: Bundle?
 }
 
 interface DownloadableRequest : ImageRequest {
@@ -65,15 +68,14 @@ interface LoadableRequest : DownloadableRequest {
     val transformations: List<Transformation>?
 
     /**
-     * In order to speed up the loading speed, you can cache results affected by [maxSize], [bitmapConfig],
-     * [inPreferQualityOverSpeed], [resize], [transformations] to disk so that you can read them directly next time
-     */
-    val cacheResultInDisk: Boolean?
-
-    /**
      * Disabled reuse of Bitmap from [BitmapPool]
      */
     val disabledBitmapPool: Boolean?
+
+    /**
+     * Disabled to cache bitmaps affected by [resize] and [transformations] to disk
+     */
+    val disabledCacheResultInDisk: Boolean?
 
     /**
      * Disabled correcting the image orientation based on 'exifOrientation'

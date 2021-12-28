@@ -19,18 +19,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
-import android.util.Log
 import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.dmf
-import com.github.panpf.sketch.SLog.Companion.em
-import com.github.panpf.sketch.SLog.Companion.emf
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.common.cache.BitmapPool
 import com.github.panpf.sketch.common.cache.BitmapPoolHelper
 import com.github.panpf.sketch.common.datasource.DataSource
-import com.github.panpf.sketch.common.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.common.datasource.FileDataSource
-import com.github.panpf.sketch.load.LoadRequest
 import com.github.panpf.sketch.util.byteCountCompat
 import java.io.IOException
 
@@ -91,20 +82,20 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
 //}
 //
 //fun decodeError(
-//    request: LoadRequest,
+//    request: LoadableRequest,
 //    dataSource: DataSource?,
 //    logName: String,
 //    cause: String,
 //    tr: Throwable?
 //) {
 //    if (tr != null) {
-//        em(logName, Log.getStackTraceString(tr))
+//        SLog.em(logName, Log.getStackTraceString(tr))
 //    }
 //    if (dataSource is DiskCacheDataSource) {
 //        val diskCacheEntry = dataSource.diskCacheEntry
 //        val cacheFile = diskCacheEntry.file
 //        if (diskCacheEntry.delete()) {
-//            emf(
+//            SLog.emf(
 //                logName,
 //                "Decode failed. %s. Disk cache deleted. fileLength=%d. %s",
 //                cause,
@@ -113,7 +104,7 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
 //                tr!!
 //            )
 //        } else {
-//            emf(
+//            SLog.emf(
 //                logName,
 //                "Decode failed. %s. Disk cache can not be deleted. fileLength=%d. %s",
 //                cause,
@@ -123,36 +114,29 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
 //        }
 //    } else if (dataSource is FileDataSource) {
 //        val file = dataSource.getFile(null, null)
-//        emf(
+//        SLog.emf(
 //            logName, "Decode failed. %s. filePath=%s, fileLength=%d. %s",
 //            cause, file!!.path, if (file.exists()) file.length() else -1, request.key
 //        )
 //    } else {
-//        emf(logName, "Decode failed. %s. %s", cause, request.uri)
+//        SLog.emf(logName, "Decode failed. %s. %s", cause, request.uri)
 //    }
 //}
 
 /**
  * 通过异常类型以及 message 确定是不是由 inBitmap 导致的解码失败
  */
-fun isInBitmapDecodeError(
+fun isInBitmapError(
     throwable: Throwable,
     options: BitmapFactory.Options,
     fromBitmapRegionDecoder: Boolean
 ): Boolean {
-    if (fromBitmapRegionDecoder) {
-        return false
+    if (options.inBitmap != null && !fromBitmapRegionDecoder && throwable is IllegalArgumentException) {
+        val message = throwable.message.orEmpty()
+        return message == "Problem decoding into existing bitmap"
+                || message.contains("bitmap")
     }
-    if (throwable !is IllegalArgumentException) {
-        return false
-    }
-    if (options.inBitmap == null) {
-        return false
-    }
-    val message = throwable.message
-    return message != null && (message == "Problem decoding into existing bitmap" || message.contains(
-        "bitmap"
-    ))
+    return false
 }
 
 /**
@@ -171,7 +155,7 @@ fun recycleInBitmapOnDecodeError(
     if (fromBitmapRegionDecoder) {
         return
     }
-    emf(
+    SLog.emf(
         "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
                 "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
         imageUri,
@@ -201,7 +185,7 @@ fun recycleInBitmapOnDecodeError(
 /**
  * 通过异常类型以及 message 确定是不是由 srcRect 导致的解码失败
  */
-fun isSrcRectDecodeError(
+fun isSrcRectError(
     throwable: Throwable,
     imageWidth: Int,
     imageHeight: Int,
