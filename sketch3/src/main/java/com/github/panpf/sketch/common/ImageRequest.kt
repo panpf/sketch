@@ -52,6 +52,8 @@ interface LoadableRequest : DownloadableRequest {
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val inPreferQualityOverSpeed: Boolean?
 
+    // todo ColorSpace
+
     /**
      * The size of the desired bitmap
      */

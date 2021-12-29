@@ -37,6 +37,7 @@ class LoadExecutor(private val sketch: Sketch) {
                 listenerDelegate?.onCancel(request)
                 throw throwable
             } else {
+                throwable.printStackTrace()
                 listenerDelegate?.onError(request, throwable)
                 return ExecuteResult.Error(throwable)
             }

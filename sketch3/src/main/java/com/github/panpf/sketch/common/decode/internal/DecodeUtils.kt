@@ -128,10 +128,9 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
  */
 fun isInBitmapError(
     throwable: Throwable,
-    options: BitmapFactory.Options,
     fromBitmapRegionDecoder: Boolean
 ): Boolean {
-    if (options.inBitmap != null && !fromBitmapRegionDecoder && throwable is IllegalArgumentException) {
+    if (!fromBitmapRegionDecoder && throwable is IllegalArgumentException) {
         val message = throwable.message.orEmpty()
         return message == "Problem decoding into existing bitmap"
                 || message.contains("bitmap")

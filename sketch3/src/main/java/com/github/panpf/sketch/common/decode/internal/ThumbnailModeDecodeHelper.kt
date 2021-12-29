@@ -28,7 +28,6 @@ import com.github.panpf.sketch.common.ImageType
 import com.github.panpf.sketch.common.LoadableRequest
 import com.github.panpf.sketch.common.cache.BitmapPoolHelper
 import com.github.panpf.sketch.common.datasource.DataSource
-import com.github.panpf.sketch.common.decode.DecodeResult
 import com.github.panpf.sketch.common.decode.internal.ResizeCalculator.Mapping
 import com.github.panpf.sketch.load.ImageInfo
 import com.github.panpf.sketch.load.Resize
@@ -67,43 +66,34 @@ class ThumbnailModeDecodeHelper {
         dataSource: DataSource,
         imageInfo: ImageInfo,
         decodeOptions: Options,
-    ): DecodeResult {
+        imageOrientationCorrector: ImageOrientationCorrector?
+    ): Bitmap {
         val resize = request.resize!!
         val maxSize = request.maxSize
-        val exifOrientation = imageInfo.exifOrientation
         val bitmapPoolHelper = sketch.bitmapPoolHelper
+        val imageSize = Point(imageInfo.width, imageInfo.height)
 
         if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
             decodeOptions.inPreferQualityOverSpeed = true
         }
 
-        val imageSize = Point(imageInfo.width, imageInfo.height)
-
-        val imageOrientationCorrector =
-            ImageOrientationCorrector.fromExifOrientation(exifOrientation)
         imageOrientationCorrector?.rotateSize(imageSize)
 
         val resizeMapping = resizeCalculator.calculator(
-            imageSize.x,
-            imageSize.y,
-            resize.width,
-            resize.height,
-            resize.scaleType,
-            false
+            imageWidth = imageSize.x,
+            imageHeight = imageSize.y,
+            resizeWidth = resize.width,
+            resizeHeight = resize.height,
+            scaleType = resize.scaleType,
+            exactlySame = false
         )
         val resizeMappingSrcWidth = resizeMapping.srcRect.width()
         val resizeMappingSrcHeight = resizeMapping.srcRect.height()
 
-        val resizeInSampleSize =
-            sizeCalculator.calculateInSampleSize(
-                resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
-            )
-        val maxSizeInSampleSize = maxSize?.let {
-            sizeCalculator.calculateInSampleSize(
-                resizeMappingSrcWidth, resizeMappingSrcHeight, it.width, it.height
-            )
-        } ?: 1
-        decodeOptions.inSampleSize = resizeInSampleSize.coerceAtLeast(maxSizeInSampleSize)
+        val resizeInSampleSize = sizeCalculator.calculateInSampleSize(
+            resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
+        )
+        decodeOptions.inSampleSize = resizeInSampleSize
 
         imageOrientationCorrector?.reverseRotateRect(
             resizeMapping.srcRect,
@@ -112,25 +102,14 @@ class ThumbnailModeDecodeHelper {
         )
 
         if (request.disabledBitmapPool != true) {
-            sketch.bitmapPoolHelper.setInBitmapForRegionDecoder(
-                decodeOptions,
-                resizeMapping.srcRect
-            )
+            bitmapPoolHelper
+                .setInBitmapForRegionDecoder(decodeOptions, resizeMapping.srcRect)
         }
 
-        val bitmap = decodeRegionBitmap(
+        return decodeRegionBitmap(
             request, dataSource, resizeMapping, decodeOptions,
             bitmapPoolHelper, imageSize, imageInfo
         )
-
-        val correctedOrientationBitmap =
-            imageOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper.bitmapPool)
-        return if (correctedOrientationBitmap != null && correctedOrientationBitmap != bitmap) {
-            bitmapPoolHelper.freeBitmapToPool(bitmap)
-            DecodeResult(correctedOrientationBitmap, imageInfo)
-        } else {
-            DecodeResult(bitmap, imageInfo)
-        }
     }
 
     private fun decodeRegionBitmap(
@@ -145,20 +124,18 @@ class ThumbnailModeDecodeHelper {
         val bitmap = try {
             dataSource.decodeRegionBitmap(mapping.srcRect, decodeOptions)
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            val inBitmap = decodeOptions.inBitmap
             when {
-                isInBitmapError(throwable, decodeOptions, true) -> {
+                inBitmap != null && isInBitmapError(throwable, true) -> {
                     val message = "Bitmap region decode error. Because inBitmap. uri=%s"
                         .format(request.uri)
                     SLog.emt(MODULE, throwable, message)
 
-                    val inBitmap = decodeOptions.inBitmap
                     decodeOptions.inBitmap = null
                     bitmapPoolHelper.freeBitmapToPool(inBitmap)
                     try {
                         dataSource.decodeRegionBitmap(mapping.srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
-                        throwable.printStackTrace()
                         val message2 = "Bitmap region decode error. uri=%s".format(request.uri)
                         SLog.emt(MODULE, throwable2, message2)
                         throw DecodeException(message2, throwable2)
@@ -186,12 +163,9 @@ class ThumbnailModeDecodeHelper {
 
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            val message = "Invalid image size. size=%dx%d, uri=%s".format(
-                imageInfo.width,
-                imageInfo.height,
-                request.uri
-            )
-            SLog.em(BitmapFactoryDecoder.MODULE, message)
+            val message = "Invalid image size. size=%dx%d, uri=%s"
+                .format(bitmap.width, bitmap.height, request.uri)
+            SLog.em(MODULE, message)
             throw DecodeException(message)
         }
 

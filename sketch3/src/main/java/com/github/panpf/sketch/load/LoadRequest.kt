@@ -21,22 +21,21 @@ class LoadRequest(
     override val disabledBitmapPool: Boolean?,
     override val disabledCacheResultInDisk: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
-    // todo 添加额外参数，方面后面的自定义拦截器区分请求 例如 extras: Bundle
 ) : LoadableRequest {
 
     val resultCacheKey: String? = buildString {
-//        if (maxSize != null) {
-//            if (length > 0) append("_")
-//            append(maxSize.cacheKey)
-//        }
-//        if (bitmapConfig != null) {
-//            if (length > 0) append("_")
-//            append(bitmapConfig.cacheKey)
-//        }
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && inPreferQualityOverSpeed == true) {
-//            if (length > 0) append("_")
-//            append("inPreferQualityOverSpeed")
-//        }
+        if (maxSize != null) {
+            if (length > 0) append("_")
+            append(maxSize.cacheKey)
+        }
+        if (bitmapConfig != null) {
+            if (length > 0) append("_")
+            append(bitmapConfig.cacheKey)
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && inPreferQualityOverSpeed == true) {
+            if (length > 0) append("_")
+            append("inPreferQualityOverSpeed")
+        }
         if (resize != null) {
             if (length > 0) append("_")
             append(resize.cacheKey)
@@ -44,6 +43,10 @@ class LoadRequest(
         transformations?.forEach {
             if (length > 0) append("_")
             append(it.cacheKey)
+        }
+        if (disabledCorrectExifOrientation != true) {
+            if (length > 0) append("_")
+            append("CorrectExifOrientation")
         }
     }.takeIf { it.isNotEmpty() }
 

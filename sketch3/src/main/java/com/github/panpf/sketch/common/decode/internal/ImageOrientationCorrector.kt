@@ -132,7 +132,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
 
         // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
         val degrees = getExifOrientationDegrees(exifOrientation)
-        var config = bitmap.config
+        var config = bitmap.config ?: Bitmap.Config.ARGB_8888
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }

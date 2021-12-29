@@ -64,7 +64,7 @@ class BitmapPoolHelper(
             return false
         }
 
-        // 使用 inBitmap 时4.4以下 inSampleSize 不能为 0，最小也得是 1
+        // 使用 inBitmap 时 4.4 以下 inSampleSize 不能为 0，最小也得是 1
         if (options.inSampleSize <= 0) {
             options.inSampleSize = 1
         }

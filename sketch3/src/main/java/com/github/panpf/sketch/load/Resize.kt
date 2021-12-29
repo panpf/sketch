@@ -58,7 +58,7 @@ data class Resize constructor(
         /**
          * Even if the size of the original image is smaller than [Resize], you will get a [android.graphics.Bitmap] with the same size as [Resize]
          */
-        SIZE_SAME
+        EXACTLY_SAME
     }
 
     class Builder {
