@@ -15,26 +15,39 @@
  */
 package com.github.panpf.sketch.load
 
+import android.graphics.Bitmap
 import android.widget.ImageView.ScaleType
 
 data class Resize constructor(
     val width: Int,
     val height: Int,
+    val mode: Mode = Mode.EXACTLY_SAME,
     val scaleType: ScaleType = ScaleType.FIT_CENTER,
-    val sizeMode: SizeMode = SizeMode.ASPECT_RATIO_SAME,
+    /**
+     * Only applies to [Resize.Mode.THUMBNAIL_MODE]
+     */
+    val minAspectRatio: Float = 1.5f,
 ) {
 
-    val cacheKey: String = "Resize(${width}x${height},${scaleType},${sizeMode})"
+    val cacheKey: String =
+        "Resize(${width}x${height},${scaleType},${mode}${if (mode == Mode.THUMBNAIL_MODE) "-$minAspectRatio" else ""})"
 
-    enum class SizeMode {
+    enum class Mode {
+        /**
+         * Even if the size of the original image is smaller than [Resize], you will get a [Bitmap] with the same size as [Resize]
+         */
+        EXACTLY_SAME,
+
         /**
          * The size of the new image will not be larger than [Resize], but the aspect ratio will be the same
          */
         ASPECT_RATIO_SAME,
 
         /**
-         * Even if the size of the original image is smaller than [Resize], you will get a [android.graphics.Bitmap] with the same size as [Resize]
+         * If the difference between the aspect ratio of resize and the aspect ratio of image exceeds [minAspectRatio],
+         * a portion of the original image will be captured based on the [width],[height],[scaleType] attributes.
+         * This mode is suitable for displaying thumbnails of super-long images in nine squares
          */
-        EXACTLY_SAME
+        THUMBNAIL_MODE,
     }
 }

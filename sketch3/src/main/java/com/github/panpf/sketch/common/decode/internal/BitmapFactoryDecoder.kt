@@ -21,6 +21,7 @@ import com.github.panpf.sketch.common.decode.Decoder
 import com.github.panpf.sketch.load.ImageInfo
 import com.github.panpf.sketch.load.Resize
 import com.github.panpf.sketch.util.calculateInSampleSize
+import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
 class BitmapFactoryDecoder(
@@ -99,11 +100,16 @@ class BitmapFactoryDecoder(
         resize: Resize, imageInfo: ImageInfo, imageType: ImageType?
     ): Boolean {
         if (imageType?.supportBitmapRegionDecoder() == true) {
-            val resizeAspectRatio =
-                "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
+            val resizeAspectRatio = (resize.width.toFloat() / resize.height.toFloat()).format(1)
             val imageAspectRatio =
-                "%.1f".format((imageInfo.width.toFloat() / imageInfo.height.toFloat()))
-            return resizeAspectRatio != imageAspectRatio
+                (imageInfo.width.toFloat() / imageInfo.height.toFloat()).format(1)
+            return if (resize.mode == Resize.Mode.THUMBNAIL_MODE) {
+                val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
+                val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
+                maxAspectRatio > minAspectRatio * resize.minAspectRatio
+            } else {
+                resizeAspectRatio != imageAspectRatio
+            }
         }
         return false
     }
@@ -261,29 +267,30 @@ class BitmapFactoryDecoder(
         return bitmap
     }
 
-    private fun tryResize(bitmap: Bitmap, resize: Resize?): Bitmap {
-        return when (resize?.sizeMode) {
-            Resize.SizeMode.ASPECT_RATIO_SAME -> {
-                val resizeAspectRatio =
-                    "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
-                val bitmapAspectRatio =
-                    "%.1f".format((bitmap.width.toFloat() / bitmap.height.toFloat()))
-                if (resizeAspectRatio != bitmapAspectRatio) {
-                    resize(bitmap, resize)
-                } else {
-                    bitmap
-                }
-            }
-            Resize.SizeMode.EXACTLY_SAME -> {
-                if (resize.width != bitmap.width || resize.height != bitmap.height) {
-                    resize(bitmap, resize)
-                } else {
-                    bitmap
-                }
-            }
-            else -> {
+    private fun tryResize(bitmap: Bitmap, resize: Resize?): Bitmap = when (resize?.mode) {
+        Resize.Mode.EXACTLY_SAME -> {
+            if (resize.width != bitmap.width || resize.height != bitmap.height) {
+                resize(bitmap, resize)
+            } else {
                 bitmap
             }
+        }
+        Resize.Mode.ASPECT_RATIO_SAME -> {
+            val resizeAspectRatio =
+                "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
+            val bitmapAspectRatio =
+                "%.1f".format((bitmap.width.toFloat() / bitmap.height.toFloat()))
+            if (resizeAspectRatio != bitmapAspectRatio) {
+                resize(bitmap, resize)
+            } else {
+                bitmap
+            }
+        }
+        Resize.Mode.THUMBNAIL_MODE -> {
+            bitmap
+        }
+        else -> {
+            bitmap
         }
     }
 
@@ -295,7 +302,7 @@ class BitmapFactoryDecoder(
             resizeWidth = resize.width,
             resizeHeight = resize.height,
             scaleType = resize.scaleType,
-            exactlySame = resize.sizeMode == Resize.SizeMode.EXACTLY_SAME
+            exactlySame = resize.mode == Resize.Mode.EXACTLY_SAME
         )
         val config = bitmap.config ?: ARGB_8888
         val bitmapPool = sketch.bitmapPoolHelper.bitmapPool

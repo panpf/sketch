@@ -9,6 +9,7 @@ import android.opengl.GLES10
 import android.opengl.GLES20
 import android.os.Build
 import com.github.panpf.sketch.common.ImageType
+import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 import kotlin.math.ceil
@@ -154,6 +155,11 @@ fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
 
 fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
     return floor((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+}
+
+fun Float.format(newScale: Int): Float {
+    val b = BigDecimal(this.toDouble())
+    return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 }
 
 

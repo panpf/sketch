@@ -3,7 +3,6 @@ package com.github.panpf.sketch.common
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.common.cache.BitmapPool
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.load.BitmapConfig
@@ -53,20 +52,12 @@ interface LoadableRequest : DownloadableRequest {
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val inPreferQualityOverSpeed: Boolean?
 
-    // todo 加一个单独的缩略图模式，就是为了解决长图在列表中预览的问题，缩略图模式有单独的 size 和 scaleType，和相差倍数，默认是 1.5 倍才满足缩略图的条件
-//    class ThumbnailMode(val width: Int, val height: Int, val scaleType: ScaleType, minDifferenceOfAspectRatio: Float)
-
     // todo ColorSpace
 
     /**
      * The size of the desired bitmap
      */
     val resize: Resize?
-
-//    /**
-//     * Thumbnail mode, together with the [resize] property, gives a sharper thumbnail
-//     */
-//    val thumbnailMode: Boolean?
 
     /**
      * The list of [Transformation]s to be applied to this request.

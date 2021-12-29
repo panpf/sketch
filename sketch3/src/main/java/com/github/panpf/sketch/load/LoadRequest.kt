@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.Px
 import com.github.panpf.sketch.common.LoadableRequest
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.load.transform.Transformation
@@ -179,8 +180,8 @@ class LoadRequest(
             this.resize = resize
         }
 
-        fun resize(width: Int, height: Int): Builder = apply {
-            this.resize = Resize(width, height)
+        fun resize(@Px width: Int, @Px height: Int, mode: Resize.Mode = Resize.Mode.EXACTLY_SAME): Builder = apply {
+            this.resize = Resize(width, height, mode)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
