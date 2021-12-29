@@ -69,6 +69,85 @@ fun getTrimLevelName(level: Int): String = when (level) {
 fun Any.toHexString(): String =
     Integer.toHexString(this.hashCode())
 
+/**
+ * 计算 inSampleSize
+ *
+ * @param imageWidth            原始宽
+ * @param imageHeight           原始高
+ * @param targetWidth           目标宽
+ * @param targetHeight          目标高
+ * @return 合适的 inSampleSize
+ */
+fun calculateInSampleSize(
+    imageWidth: Int,
+    imageHeight: Int,
+    targetWidth: Int,
+    targetHeight: Int,
+): Int {
+    // 计算 inSampleSize 的时候将 target size 稍微放大一点儿，这样能避免尺寸很接近的图片读取时尺寸被缩小
+    val targetSizeScale = 1.1f
+    var newTargetWidth = (targetWidth * targetSizeScale).toInt()
+    var newTargetHeight = (targetHeight * targetSizeScale).toInt()
+
+    // 限制target宽高不能大于OpenGL所允许的最大尺寸
+    val maxSize = openGLMaxTextureSize
+    if (newTargetWidth > maxSize) {
+        newTargetWidth = maxSize
+    }
+    if (newTargetHeight > maxSize) {
+        newTargetHeight = maxSize
+    }
+    var inSampleSize = 1
+
+    // 如果目标宽高都小于等于0，就别计算了
+    if (newTargetWidth <= 0 && newTargetHeight <= 0) {
+        return inSampleSize
+    }
+
+    // 如果目标宽高都大于等于原始尺寸，也别计算了
+    if (newTargetWidth >= imageWidth && newTargetHeight >= imageHeight) {
+        return inSampleSize
+    }
+    when {
+        newTargetWidth <= 0 -> {
+            // 目标宽小于等于0时，只要高度满足要求即可
+            while (calculateSamplingSize(imageHeight, inSampleSize) > newTargetHeight) {
+                inSampleSize *= 2
+            }
+        }
+        newTargetHeight <= 0 -> {
+            // 目标高小于等于0时，只要宽度满足要求即可
+            while (calculateSamplingSize(imageWidth, inSampleSize) > newTargetWidth) {
+                inSampleSize *= 2
+            }
+        }
+        else -> {
+            // 首先限制像素数不能超过目标宽高的像素数
+            val maxPixels = (newTargetWidth * newTargetHeight).toLong()
+            while (calculateSamplingSize(imageWidth, inSampleSize) * calculateSamplingSize(
+                    imageHeight,
+                    inSampleSize
+                ) > maxPixels
+            ) {
+                inSampleSize *= 2
+            }
+
+            // 然后限制宽高不能大于OpenGL所允许的最大尺寸
+            while (calculateSamplingSize(
+                    imageWidth,
+                    inSampleSize
+                ) > maxSize || calculateSamplingSize(
+                    imageHeight,
+                    inSampleSize
+                ) > maxSize
+            ) {
+                inSampleSize *= 2
+            }
+        }
+    }
+    return inSampleSize
+}
+
 fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
     return ceil((value1 / inSampleSize.toFloat()).toDouble()).toInt()
 }

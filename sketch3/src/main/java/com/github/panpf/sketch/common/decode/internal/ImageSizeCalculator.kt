@@ -27,10 +27,6 @@ import com.github.panpf.sketch.util.openGLMaxTextureSize
  */
 class ImageSizeCalculator {
 
-    /**
-     * 计算 inSampleSize 的时候将 targetSize 稍微放大一点儿，就是乘以这个倍数，默认值是 1.25f
-     */
-    var targetSizeScale = 1.1f
 
     fun calculateImageMaxSize(imageView: ImageView): MaxSize? {
         val width = imageView.layoutParams?.width?.takeIf { it > 0 }
@@ -95,76 +91,6 @@ class ImageSizeCalculator {
 //        }
 //        return FixedSize(fixedWidth, fixedHeight)
 //    }
-
-    /**
-     * 计算 inSampleSize
-     *
-     * @param outWidth          原始宽
-     * @param outHeight         原始高
-     * @param targetWidth       目标宽
-     * @param targetHeight      目标高
-     * @return 合适的 inSampleSize
-     */
-    fun calculateInSampleSize(
-        outWidth: Int,
-        outHeight: Int,
-        targetWidth: Int,
-        targetHeight: Int,
-    ): Int {
-        var newTargetWidth = (targetWidth * targetSizeScale).toInt()
-        var newTargetHeight = (targetHeight * targetSizeScale).toInt()
-
-        // 限制target宽高不能大于OpenGL所允许的最大尺寸
-        val maxSize = openGLMaxTextureSize
-        if (newTargetWidth > maxSize) {
-            newTargetWidth = maxSize
-        }
-        if (newTargetHeight > maxSize) {
-            newTargetHeight = maxSize
-        }
-        var inSampleSize = 1
-
-        // 如果目标宽高都小于等于0，就别计算了
-        if (newTargetWidth <= 0 && newTargetHeight <= 0) {
-            return inSampleSize
-        }
-
-        // 如果目标宽高都大于等于原始尺寸，也别计算了
-        if (newTargetWidth >= outWidth && newTargetHeight >= outHeight) {
-            return inSampleSize
-        }
-        if (newTargetWidth <= 0) {
-            // 目标宽小于等于0时，只要高度满足要求即可
-            while (calculateSamplingSize(outHeight, inSampleSize) > newTargetHeight) {
-                inSampleSize *= 2
-            }
-        } else if (newTargetHeight <= 0) {
-            // 目标高小于等于0时，只要宽度满足要求即可
-            while (calculateSamplingSize(outWidth, inSampleSize) > newTargetWidth) {
-                inSampleSize *= 2
-            }
-        } else {
-            // 首先限制像素数不能超过目标宽高的像素数
-            val maxPixels = (newTargetWidth * newTargetHeight).toLong()
-            while (calculateSamplingSize(outWidth, inSampleSize) * calculateSamplingSize(
-                    outHeight,
-                    inSampleSize
-                ) > maxPixels
-            ) {
-                inSampleSize *= 2
-            }
-
-            // 然后限制宽高不能大于OpenGL所允许的最大尺寸
-            while (calculateSamplingSize(outWidth, inSampleSize) > maxSize || calculateSamplingSize(
-                    outHeight,
-                    inSampleSize
-                ) > maxSize
-            ) {
-                inSampleSize *= 2
-            }
-        }
-        return inSampleSize
-    }
 
     /**
      * 根据高度计算是否可以使用阅读模式

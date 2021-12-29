@@ -20,6 +20,7 @@ import com.github.panpf.sketch.common.decode.DecodeResult
 import com.github.panpf.sketch.common.decode.Decoder
 import com.github.panpf.sketch.load.ImageInfo
 import com.github.panpf.sketch.load.Resize
+import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
 class BitmapFactoryDecoder(
@@ -28,8 +29,6 @@ class BitmapFactoryDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
-    private val resizeCalculator = ResizeCalculator()
-    private val sizeCalculator = ImageSizeCalculator()
     private val bitmapPoolHelper = sketch.bitmapPoolHelper
 
     companion object {
@@ -38,9 +37,6 @@ class BitmapFactoryDecoder(
 
     override suspend fun decode(): DecodeResult {
         val imageInfo = readImageInfo()
-        val resize = request.resize
-        val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
-        val bitmapPoolHelper = sketch.bitmapPoolHelper
 
         val imageOrientationCorrector =
             ImageOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
@@ -56,6 +52,8 @@ class BitmapFactoryDecoder(
             }
         }
 
+        val resize = request.resize
+        val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
         val bitmap = if (resize != null && shouldUseRegionDecoder(resize, imageInfo, imageType)) {
             decodeUseRegion(resize, imageInfo, decodeOptions, imageOrientationCorrector)
         } else {
@@ -124,7 +122,7 @@ class BitmapFactoryDecoder(
 
         imageOrientationCorrector?.rotateSize(imageSize)
 
-        val resizeMapping = resizeCalculator.calculator(
+        val resizeMapping = ResizeMapping.calculator(
             imageWidth = imageSize.x,
             imageHeight = imageSize.y,
             resizeWidth = resize.width,
@@ -135,7 +133,7 @@ class BitmapFactoryDecoder(
         val resizeMappingSrcWidth = resizeMapping.srcRect.width()
         val resizeMappingSrcHeight = resizeMapping.srcRect.height()
 
-        val resizeInSampleSize = sizeCalculator.calculateInSampleSize(
+        val resizeInSampleSize = calculateInSampleSize(
             resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
         )
         decodeOptions.inSampleSize = resizeInSampleSize
@@ -206,20 +204,14 @@ class BitmapFactoryDecoder(
         decodeOptions: Options,
         imageOrientationCorrector: ImageOrientationCorrector?
     ): Bitmap {
-        val resize = request.resize
-        val maxSize = request.maxSize
         val imageSize = Point(imageInfo.width, imageInfo.height)
         imageOrientationCorrector?.rotateSize(imageSize)
 
-        val maxSizeInSampleSize = maxSize?.let {
-            sizeCalculator.calculateInSampleSize(
-                imageSize.x, imageSize.y, it.width, it.height
-            )
+        val maxSizeInSampleSize = request.maxSize?.let {
+            calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
         } ?: 1
-        val resizeInSampleSize = resize?.let {
-            sizeCalculator.calculateInSampleSize(
-                imageSize.x, imageSize.y, it.width, it.height
-            )
+        val resizeInSampleSize = request.resize?.let {
+            calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
         } ?: 1
         decodeOptions.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
 
@@ -297,7 +289,7 @@ class BitmapFactoryDecoder(
 
     // todo Try resize and rotateBitmap together
     private fun resize(bitmap: Bitmap, resize: Resize): Bitmap {
-        val mapping = ResizeCalculator().calculator(
+        val mapping = ResizeMapping.calculator(
             imageWidth = bitmap.width,
             imageHeight = bitmap.height,
             resizeWidth = resize.width,
@@ -307,7 +299,7 @@ class BitmapFactoryDecoder(
         )
         val config = bitmap.config ?: ARGB_8888
         val bitmapPool = sketch.bitmapPoolHelper.bitmapPool
-        val resizeBitmap = bitmapPool.getOrMake(mapping.imageWidth, mapping.imageHeight, config)
+        val resizeBitmap = bitmapPool.getOrMake(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(resizeBitmap)
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
         return resizeBitmap

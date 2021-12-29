@@ -17,113 +17,107 @@ package com.github.panpf.sketch.common.decode.internal
 
 import android.graphics.Rect
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.load.Resize
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-/**
- * 用来计算 [Resize]
- */
-class ResizeCalculator {
-
-    override fun toString(): String {
-        return KEY
-    }
-
-    /**
-     * 计算
-     *
-     * @param imageWidth   图片原始宽
-     * @param imageHeight  图片原始高
-     * @param resizeWidth  目标宽
-     * @param resizeHeight 目标高
-     * @param scaleType    缩放类型
-     * @param exactlySame  强制使新图片的尺寸和 resizeWidth、resizeHeight 一致
-     * @return 计算结果
-     */
-    fun calculator(
-        imageWidth: Int,
-        imageHeight: Int,
-        resizeWidth: Int,
-        resizeHeight: Int,
-        scaleType: ScaleType?,
-        exactlySame: Boolean
-    ): Mapping {
-        val newScaleType = scaleType ?: ScaleType.FIT_CENTER
-        if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
-            return Mapping(
-                imageWidth,
-                imageHeight,
-                Rect(0, 0, imageWidth, imageHeight),
-                Rect(0, 0, imageWidth, imageHeight)
-            )
-        }
-        val newImageWidth: Int
-        val newImageHeight: Int
-        if (exactlySame) {
-            newImageWidth = resizeWidth
-            newImageHeight = resizeHeight
-        } else {
-            val finalImageSize = scaleTargetSize(imageWidth, imageHeight, resizeWidth, resizeHeight)
-            newImageWidth = finalImageSize[0]
-            newImageHeight = finalImageSize[1]
-        }
-        val destRect = Rect(0, 0, newImageWidth, newImageHeight)
-        val srcRect: Rect =
-            if (newScaleType == ScaleType.CENTER || newScaleType == ScaleType.CENTER_CROP || newScaleType == ScaleType.CENTER_INSIDE) {
-                srcMappingCenterRect(
-                    imageWidth,
-                    imageHeight,
-                    newImageWidth,
-                    newImageHeight
-                )
-            } else if (newScaleType == ScaleType.FIT_START) {
-                srcMappingStartRect(
-                    imageWidth,
-                    imageHeight,
-                    newImageWidth,
-                    newImageHeight
-                )
-            } else if (newScaleType == ScaleType.FIT_CENTER) {
-                srcMappingCenterRect(
-                    imageWidth,
-                    imageHeight,
-                    newImageWidth,
-                    newImageHeight
-                )
-            } else if (newScaleType == ScaleType.FIT_END) {
-                srcMappingEndRect(
-                    imageWidth,
-                    imageHeight,
-                    newImageWidth,
-                    newImageHeight
-                )
-            } else if (newScaleType == ScaleType.FIT_XY) {
-                Rect(0, 0, imageWidth, imageHeight)
-            } else if (newScaleType == ScaleType.MATRIX) {
-                srcMatrixRect(
-                    imageWidth,
-                    imageHeight,
-                    newImageWidth,
-                    newImageHeight
-                )
-            } else {
-                srcMappingCenterRect(
-                    imageWidth,
-                    imageHeight,
-                    newImageWidth,
-                    newImageHeight
-                )
-            }
-        return Mapping(newImageWidth, newImageHeight, srcRect, destRect)
-    }
-
-    class Mapping(var imageWidth: Int, var imageHeight: Int, var srcRect: Rect, var destRect: Rect)
+data class ResizeMapping(
+    val newWidth: Int,
+    val newHeight: Int,
+    val srcRect: Rect,
+    val destRect: Rect
+) {
 
     companion object {
-        private const val KEY = "ResizeCalculator"
+        /**
+         * 计算
+         *
+         * @param imageWidth   图片原始宽
+         * @param imageHeight  图片原始高
+         * @param resizeWidth  目标宽
+         * @param resizeHeight 目标高
+         * @param scaleType    缩放类型
+         * @param exactlySame  强制使新图片的尺寸和 resizeWidth、resizeHeight 一致
+         * @return 计算结果
+         */
+        fun calculator(
+            imageWidth: Int,
+            imageHeight: Int,
+            resizeWidth: Int,
+            resizeHeight: Int,
+            scaleType: ScaleType?,
+            exactlySame: Boolean
+        ): ResizeMapping {
+            val newScaleType = scaleType ?: ScaleType.FIT_CENTER
+            if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
+                return ResizeMapping(
+                    imageWidth,
+                    imageHeight,
+                    Rect(0, 0, imageWidth, imageHeight),
+                    Rect(0, 0, imageWidth, imageHeight)
+                )
+            }
+            val newImageWidth: Int
+            val newImageHeight: Int
+            if (exactlySame) {
+                newImageWidth = resizeWidth
+                newImageHeight = resizeHeight
+            } else {
+                val finalImageSize =
+                    scaleTargetSize(imageWidth, imageHeight, resizeWidth, resizeHeight)
+                newImageWidth = finalImageSize[0]
+                newImageHeight = finalImageSize[1]
+            }
+            val destRect = Rect(0, 0, newImageWidth, newImageHeight)
+            val srcRect: Rect =
+                if (newScaleType == ScaleType.CENTER || newScaleType == ScaleType.CENTER_CROP || newScaleType == ScaleType.CENTER_INSIDE) {
+                    srcMappingCenterRect(
+                        imageWidth,
+                        imageHeight,
+                        newImageWidth,
+                        newImageHeight
+                    )
+                } else if (newScaleType == ScaleType.FIT_START) {
+                    srcMappingStartRect(
+                        imageWidth,
+                        imageHeight,
+                        newImageWidth,
+                        newImageHeight
+                    )
+                } else if (newScaleType == ScaleType.FIT_CENTER) {
+                    srcMappingCenterRect(
+                        imageWidth,
+                        imageHeight,
+                        newImageWidth,
+                        newImageHeight
+                    )
+                } else if (newScaleType == ScaleType.FIT_END) {
+                    srcMappingEndRect(
+                        imageWidth,
+                        imageHeight,
+                        newImageWidth,
+                        newImageHeight
+                    )
+                } else if (newScaleType == ScaleType.FIT_XY) {
+                    Rect(0, 0, imageWidth, imageHeight)
+                } else if (newScaleType == ScaleType.MATRIX) {
+                    srcMatrixRect(
+                        imageWidth,
+                        imageHeight,
+                        newImageWidth,
+                        newImageHeight
+                    )
+                } else {
+                    srcMappingCenterRect(
+                        imageWidth,
+                        imageHeight,
+                        newImageWidth,
+                        newImageHeight
+                    )
+                }
+            return ResizeMapping(newImageWidth, newImageHeight, srcRect, destRect)
+        }
 
-        fun srcMappingStartRect(
+        private fun srcMappingStartRect(
             originalImageWidth: Int,
             originalImageHeight: Int,
             targetImageWidth: Int,
@@ -139,7 +133,7 @@ class ResizeCalculator {
             return Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
         }
 
-        fun srcMappingCenterRect(
+        private fun srcMappingCenterRect(
             originalImageWidth: Int,
             originalImageHeight: Int,
             targetImageWidth: Int,
@@ -155,7 +149,7 @@ class ResizeCalculator {
             return Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
         }
 
-        fun srcMappingEndRect(
+        private fun srcMappingEndRect(
             originalImageWidth: Int,
             originalImageHeight: Int,
             targetImageWidth: Int,
@@ -171,7 +165,7 @@ class ResizeCalculator {
             return Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
         }
 
-        fun srcMatrixRect(
+        private fun srcMatrixRect(
             originalImageWidth: Int,
             originalImageHeight: Int,
             targetImageWidth: Int,
@@ -190,7 +184,7 @@ class ResizeCalculator {
             }
         }
 
-        fun scaleTargetSize(
+        private fun scaleTargetSize(
             originalImageWidth: Int,
             originalImageHeight: Int,
             targetImageWidth: Int,
