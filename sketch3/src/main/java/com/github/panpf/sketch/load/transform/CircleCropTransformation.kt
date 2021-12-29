@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.load.transform
 
 import android.graphics.Bitmap
-import com.github.panpf.sketch.common.LoadableRequest
+import com.github.panpf.sketch.load.internal.LoadableRequest
 
 class CircleCropTransformation : Transformation {
     override val cacheKey: String

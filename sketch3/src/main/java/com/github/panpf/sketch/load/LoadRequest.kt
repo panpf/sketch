@@ -5,16 +5,16 @@ import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.common.Parameters
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.load.internal.LoadableRequest
 import com.github.panpf.sketch.load.transform.Transformation
 
 class LoadRequest(
     override val uri: Uri,
-    override val extras: Bundle?,
+    override val parameters: Parameters?,
     override val diskCacheKey: String,
     override val diskCachePolicy: CachePolicy,
     override val maxSize: MaxSize?,
@@ -29,6 +29,10 @@ class LoadRequest(
 ) : LoadableRequest {
 
     val resultCacheKey: String? = buildString {
+        if (parameters != null) {
+            if (length > 0) append("_")
+            append(parameters.cacheKey)
+        }
         if (maxSize != null) {
             if (length > 0) append("_")
             append(maxSize.cacheKey)
@@ -106,7 +110,7 @@ class LoadRequest(
     class Builder {
 
         private val uri: Uri
-        private var extras: Bundle?
+        private var parameters: Parameters?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
@@ -123,7 +127,7 @@ class LoadRequest(
 
         constructor(uri: Uri) {
             this.uri = uri
-            this.extras = null
+            this.parameters = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
@@ -143,7 +147,7 @@ class LoadRequest(
 
         internal constructor(request: LoadRequest) {
             this.uri = request.uri
-            this.extras = request.extras
+            this.parameters = request.parameters
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.maxSize = request.maxSize
@@ -159,8 +163,8 @@ class LoadRequest(
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
         }
 
-        fun extras(extras: Bundle?): Builder = apply {
-            this.extras = extras
+        fun parameters(parameters: Parameters?): Builder = apply {
+            this.parameters = parameters
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -258,7 +262,7 @@ class LoadRequest(
 
         fun build(): LoadRequest = LoadRequest(
             uri = uri,
-            extras = extras,
+            parameters = parameters,
             diskCacheKey = diskCacheKey ?: uri.toString(),
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
             maxSize = maxSize,

@@ -1,13 +1,13 @@
 package com.github.panpf.sketch.download
 
 import android.net.Uri
-import android.os.Bundle
+import com.github.panpf.sketch.common.Parameters
 import com.github.panpf.sketch.common.cache.CachePolicy
 import com.github.panpf.sketch.download.internal.DownloadableRequest
 
 class DownloadRequest constructor(
     override val uri: Uri,
-    override val extras: Bundle?,
+    override val parameters: Parameters?,
     override val diskCacheKey: String,
     override val diskCachePolicy: CachePolicy,
 ) : DownloadableRequest {
@@ -42,13 +42,13 @@ class DownloadRequest constructor(
 
     class Builder {
         private val uri: Uri
-        private var extras: Bundle?
+        private var parameters: Parameters?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
 
         constructor(uri: Uri) {
             this.uri = uri
-            this.extras = null
+            this.parameters = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
         }
@@ -57,13 +57,13 @@ class DownloadRequest constructor(
 
         internal constructor(request: DownloadRequest) {
             this.uri = request.uri
-            this.extras = request.extras
+            this.parameters = request.parameters
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
         }
 
-        fun extras(extras: Bundle?): Builder = apply {
-            this.extras = extras
+        fun parameters(parameters: Parameters?): Builder = apply {
+            this.parameters = parameters
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -76,7 +76,7 @@ class DownloadRequest constructor(
 
         fun build(): DownloadRequest = DownloadRequest(
             uri = uri,
-            extras = extras,
+            parameters = parameters,
             diskCacheKey = diskCacheKey ?: uri.toString(),
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
         )

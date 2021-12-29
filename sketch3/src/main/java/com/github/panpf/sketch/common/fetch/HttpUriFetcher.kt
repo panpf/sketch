@@ -3,7 +3,6 @@ package com.github.panpf.sketch.common.fetch
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.DataFrom
-import com.github.panpf.sketch.common.DownloadableRequest
 import com.github.panpf.sketch.common.ImageRequest
 import com.github.panpf.sketch.common.ImageResult
 import com.github.panpf.sketch.common.ListenerInfo
@@ -12,6 +11,7 @@ import com.github.panpf.sketch.common.cache.DiskCache
 import com.github.panpf.sketch.common.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.common.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.common.http.HttpStack
+import com.github.panpf.sketch.download.internal.DownloadableRequest
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
