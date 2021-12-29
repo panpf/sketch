@@ -1,12 +1,9 @@
 package com.github.panpf.sketch.common.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory.Options
 import android.graphics.Canvas
 import android.graphics.Point
-import android.os.Build
-import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.DecodeException
@@ -14,12 +11,12 @@ import com.github.panpf.sketch.common.ImageRequest
 import com.github.panpf.sketch.common.ImageResult
 import com.github.panpf.sketch.common.ImageType
 import com.github.panpf.sketch.common.ListenerInfo
-import com.github.panpf.sketch.common.LoadableRequest
 import com.github.panpf.sketch.common.datasource.DataSource
 import com.github.panpf.sketch.common.decode.DecodeResult
 import com.github.panpf.sketch.common.decode.Decoder
 import com.github.panpf.sketch.load.ImageInfo
 import com.github.panpf.sketch.load.Resize
+import com.github.panpf.sketch.load.internal.LoadableRequest
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -39,22 +36,12 @@ class BitmapFactoryDecoder(
     override suspend fun decode(): DecodeResult {
         val imageInfo = readImageInfo()
 
+        val resize = request.resize
+        val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
+        val decodeOptions = request.newDecodeOptionsWithQualityRelatedParams(imageInfo.mimeType)
         val imageOrientationCorrector =
             ImageOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
 
-        val decodeOptions = Options().apply {
-            if (request.inPreferQualityOverSpeed == true) {
-                inPreferQualityOverSpeed = true
-            }
-
-            val newConfig = request.bitmapConfig?.getConfigByMimeType(imageInfo.mimeType)
-            if (newConfig != null) {
-                inPreferredConfig = newConfig
-            }
-        }
-
-        val resize = request.resize
-        val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
         val bitmap = if (resize != null && shouldUseRegionDecoder(resize, imageInfo, imageType)) {
             decodeUseRegion(resize, imageInfo, decodeOptions, imageOrientationCorrector)
         } else {
@@ -122,9 +109,9 @@ class BitmapFactoryDecoder(
     ): Bitmap {
         val imageSize = Point(imageInfo.width, imageInfo.height)
 
-        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
-            decodeOptions.inPreferQualityOverSpeed = true
-        }
+//        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
+//            decodeOptions.inPreferQualityOverSpeed = true
+//        }
 
         imageOrientationCorrector?.rotateSize(imageSize)
 
@@ -304,7 +291,7 @@ class BitmapFactoryDecoder(
             scaleType = resize.scaleType,
             exactlySame = resize.mode == Resize.Mode.EXACTLY_SAME
         )
-        val config = bitmap.config ?: ARGB_8888
+        val config = bitmap.config ?: Bitmap.Config.ARGB_8888
         val bitmapPool = sketch.bitmapPoolHelper.bitmapPool
         val resizeBitmap = bitmapPool.getOrMake(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(resizeBitmap)

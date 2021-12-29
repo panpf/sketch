@@ -2,8 +2,8 @@ package com.github.panpf.sketch.download
 
 import android.net.Uri
 import android.os.Bundle
-import com.github.panpf.sketch.common.DownloadableRequest
 import com.github.panpf.sketch.common.cache.CachePolicy
+import com.github.panpf.sketch.download.internal.DownloadableRequest
 
 class DownloadRequest constructor(
     override val uri: Uri,

@@ -74,7 +74,7 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                     val imageInfo = ImageInfo.fromJsonString(jsonString)
                     val bitmap = BitmapFactory.decodeFile(
                         bitmapDataDiskCacheEntry.file.path,
-                        buildOptionsByRequest(imageInfo)
+                        request.newDecodeOptionsWithQualityRelatedParams(imageInfo.mimeType)
                     )
                     if (bitmap.width > 1 && bitmap.height > 1) {
                         LoadResult(bitmap, imageInfo, DataFrom.DISK_CACHE)
@@ -126,28 +126,6 @@ class ResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                 metaDataEditor.abort()
                 diskCache[encodedBitmapDataDiskCacheKey]?.delete()
                 return
-            }
-        }
-
-        private fun buildOptionsByRequest(imageInfo: ImageInfo): BitmapFactory.Options? {
-            val bitmapConfig = request.bitmapConfig
-            val inPreferQualityOverSpeedParam = request.inPreferQualityOverSpeed
-            return if (bitmapConfig != null || inPreferQualityOverSpeedParam == true) {
-                BitmapFactory.Options().apply {
-                    /*
-                     * 'bitmapConfig' and 'inPreferQualityOverSpeed' will affect the quality of the image,
-                     * so when you read the cached image, you must use a consistent quality configuration to read,
-                     * so as to ensure the same effect as possible
-                     */
-                    if (bitmapConfig != null) {
-                        inPreferredConfig = bitmapConfig.getConfigByMimeType(imageInfo.mimeType)
-                    }
-                    if (inPreferQualityOverSpeedParam == true) {
-                        inPreferQualityOverSpeed = true
-                    }
-                }
-            } else {
-                null
             }
         }
 

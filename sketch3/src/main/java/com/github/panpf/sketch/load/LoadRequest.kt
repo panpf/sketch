@@ -1,12 +1,15 @@
 package com.github.panpf.sketch.load
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ColorSpace
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.Px
-import com.github.panpf.sketch.common.LoadableRequest
+import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.common.cache.CachePolicy
+import com.github.panpf.sketch.load.internal.LoadableRequest
 import com.github.panpf.sketch.load.transform.Transformation
 
 class LoadRequest(
@@ -16,7 +19,8 @@ class LoadRequest(
     override val diskCachePolicy: CachePolicy,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
-    override val inPreferQualityOverSpeed: Boolean?,
+    override val colorSpace: ColorSpace?,
+    override val preferQualityOverSpeed: Boolean?,
     override val resize: Resize?,
     override val transformations: List<Transformation>?,
     override val disabledBitmapPool: Boolean?,
@@ -33,7 +37,11 @@ class LoadRequest(
             if (length > 0) append("_")
             append(bitmapConfig.cacheKey)
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && inPreferQualityOverSpeed == true) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && colorSpace != null) {
+            if (length > 0) append("_")
+            append(colorSpace.name.replace(" ", ""))
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && preferQualityOverSpeed == true) {
             if (length > 0) append("_")
             append("inPreferQualityOverSpeed")
         }
@@ -50,6 +58,22 @@ class LoadRequest(
             append("CorrectExifOrientation")
         }
     }.takeIf { it.isNotEmpty() }
+
+    override fun newDecodeOptionsWithQualityRelatedParams(mimeType: String): BitmapFactory.Options =
+        BitmapFactory.Options().apply {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M && preferQualityOverSpeed == true) {
+                inPreferQualityOverSpeed = true
+            }
+
+            val newConfig = bitmapConfig?.getConfigByMimeType(mimeType)
+            if (newConfig != null) {
+                inPreferredConfig = newConfig
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && colorSpace != null) {
+                inPreferredColorSpace = colorSpace
+            }
+        }
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -80,13 +104,17 @@ class LoadRequest(
     }
 
     class Builder {
+
         private val uri: Uri
         private var extras: Bundle?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
         private var bitmapConfig: BitmapConfig?
-        private var inPreferQualityOverSpeed: Boolean?
+
+        @RequiresApi(26)
+        private var colorSpace: ColorSpace? = null
+        private var preferQualityOverSpeed: Boolean?
         private var resize: Resize?
         private var transformations: List<Transformation>?
         private var disabledBitmapPool: Boolean?
@@ -100,7 +128,10 @@ class LoadRequest(
             this.diskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
             this.bitmapConfig = null
-            this.inPreferQualityOverSpeed = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.colorSpace = null
+            }
+            this.preferQualityOverSpeed = null
             this.resize = null
             this.transformations = null
             this.disabledBitmapPool = null
@@ -117,7 +148,10 @@ class LoadRequest(
             this.diskCachePolicy = request.diskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
-            this.inPreferQualityOverSpeed = request.inPreferQualityOverSpeed
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.colorSpace = request.colorSpace
+            }
+            this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resize = request.resize
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
@@ -157,6 +191,19 @@ class LoadRequest(
             this.bitmapConfig = BitmapConfig.LOW_QUALITY
         }
 
+        fun middenQualityBitmapConfig(): Builder = apply {
+            this.bitmapConfig = BitmapConfig.MIDDEN_QUALITY
+        }
+
+        fun highQualityBitmapConfig(): Builder = apply {
+            this.bitmapConfig = BitmapConfig.HIGH_QUALITY
+        }
+
+        @RequiresApi(26)
+        fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
+            this.colorSpace = colorSpace
+        }
+
         /**
          * From Android N (API 24), this is ignored.  The output will always be high quality.
          *
@@ -170,9 +217,9 @@ class LoadRequest(
          * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        fun inPreferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
+        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                this.inPreferQualityOverSpeed = inPreferQualityOverSpeed
+                this.preferQualityOverSpeed = inPreferQualityOverSpeed
             }
         }
 
@@ -180,7 +227,11 @@ class LoadRequest(
             this.resize = resize
         }
 
-        fun resize(@Px width: Int, @Px height: Int, mode: Resize.Mode = Resize.Mode.EXACTLY_SAME): Builder = apply {
+        fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            mode: Resize.Mode = Resize.Mode.EXACTLY_SAME
+        ): Builder = apply {
             this.resize = Resize(width, height, mode)
         }
 
@@ -212,7 +263,8 @@ class LoadRequest(
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
-            inPreferQualityOverSpeed = inPreferQualityOverSpeed,
+            colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
+            preferQualityOverSpeed = preferQualityOverSpeed,
             resize = resize,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
