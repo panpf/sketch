@@ -22,32 +22,9 @@ data class Resize constructor(
     val height: Int,
     val scaleType: ScaleType = ScaleType.FIT_CENTER,
     val sizeMode: SizeMode = SizeMode.ASPECT_RATIO_SAME,
-    val thumbnailMode: Boolean = false
 ) {
 
-    val cacheKey: String =
-        "Resize(${width}x${height},${scaleType},${sizeMode},${if (thumbnailMode) "thumbnailMode" else "normalMode"})"
-
-    fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
-    }
-
-    fun new(
-        configBlock: (Builder.() -> Unit)? = null
-    ): Resize = Builder(this).apply {
-        configBlock?.invoke(this)
-    }.build()
-
-    companion object {
-        fun new(
-            width: Int, height: Int,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Resize = Builder(width, height).apply {
-            configBlock?.invoke(this)
-        }.build()
-    }
+    val cacheKey: String = "Resize(${width}x${height},${scaleType},${sizeMode})"
 
     enum class SizeMode {
         /**
@@ -59,46 +36,5 @@ data class Resize constructor(
          * Even if the size of the original image is smaller than [Resize], you will get a [android.graphics.Bitmap] with the same size as [Resize]
          */
         EXACTLY_SAME
-    }
-
-    class Builder {
-
-        private val width: Int
-        private val height: Int
-        private var scaleType: ScaleType
-        private var sizeMode: SizeMode
-        private var thumbnailMode: Boolean
-
-        constructor(width: Int, height: Int) {
-            this.width = width
-            this.height = height
-            this.scaleType = ScaleType.FIT_CENTER
-            this.sizeMode = SizeMode.ASPECT_RATIO_SAME
-            this.thumbnailMode = false
-        }
-
-        constructor(resize: Resize) {
-            this.width = resize.width
-            this.height = resize.height
-            this.scaleType = resize.scaleType
-            this.sizeMode = resize.sizeMode
-            this.thumbnailMode = resize.thumbnailMode
-        }
-
-        // todo size(width: Int, height: Int)
-
-        fun scaleType(scaleType: ScaleType): Builder = apply {
-            this.scaleType = scaleType
-        }
-
-        fun mode(sizeMode: SizeMode): Builder = apply {
-            this.sizeMode = sizeMode
-        }
-
-        fun thumbnailMode(thumbnailMode: Boolean): Builder = apply {
-            this.thumbnailMode = thumbnailMode
-        }
-
-        fun build(): Resize = Resize(width, height, scaleType, sizeMode, thumbnailMode)
     }
 }

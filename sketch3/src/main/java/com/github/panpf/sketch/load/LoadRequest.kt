@@ -179,12 +179,8 @@ class LoadRequest(
             this.resize = resize
         }
 
-        fun resize(
-            width: Int,
-            height: Int,
-            configBlock: (Resize.Builder.() -> Unit)? = null
-        ): Builder = apply {
-            this.resize = Resize.new(width, height, configBlock)
+        fun resize(width: Int, height: Int): Builder = apply {
+            this.resize = Resize(width, height)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
