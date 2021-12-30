@@ -18,6 +18,8 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
     ): DisplayResult {
         val request = chain.request
 
+//        val
+
         val loadRequest = request.toLoadRequest()
         val newProgressListenerDelegate = httpFetchProgressListenerDelegate?.let {
             ProgressListenerDelegate<LoadRequest> { _, it2, it3 ->

@@ -32,7 +32,6 @@ import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.LoadResultCacheInterceptor
-import com.github.panpf.sketch.request.internal.RepeatTaskFilter
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.SLog
 import kotlinx.coroutines.CoroutineDispatcher
@@ -80,7 +79,6 @@ class Sketch constructor(
         ?: listOf()) + LoadResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
     val displayInterceptors = (displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
 
-    val repeatTaskFilter = RepeatTaskFilter()
     val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
     val httpDownloadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO

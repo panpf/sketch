@@ -43,7 +43,14 @@ class DisplayRequest(
     override val memoryCachePolicy: CachePolicy = memoryCachePolicy ?: CachePolicy.ENABLED
 
     override val memoryCacheKey: String by lazy {
-        memoryCacheKey ?: "${uri}${qualityKey?.let { "_$it" } ?: ""}"
+        if (memoryCacheKey != null) {
+            memoryCacheKey
+        } else {
+            val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
+            val animationDrawablePart =
+                if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
+            "${uri}${qualityKeyPart}${animationDrawablePart}"
+        }
     }
 
     override val qualityKey: String? by lazy {

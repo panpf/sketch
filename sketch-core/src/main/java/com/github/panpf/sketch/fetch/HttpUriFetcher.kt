@@ -32,24 +32,15 @@ class HttpUriFetcher(
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
     override suspend fun fetch(): FetchResult {
         val diskCache = sketch.diskCache
-        val repeatTaskFilter = sketch.repeatTaskFilter
         val httpStack = sketch.httpStack
         val encodedDiskCacheKey = diskCache.encodeKey(request.diskCacheKey)
         val diskCachePolicy = request.diskCachePolicy
-        val repeatTaskFilterKey = request.uri.toString()
 
-        // Avoid repeated downloads whenever disk cache is required
-        val repeatTaskLock = if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
-            repeatTaskFilter.getOrCreateHttpFetchMutexLock(repeatTaskFilterKey)
-        } else {
-            null
-        }
         val diskCacheEditLock = if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
             diskCache.getOrCreateEditMutexLock(encodedDiskCacheKey)
         } else {
             null
         }
-        repeatTaskLock?.lock()
         diskCacheEditLock?.lock()
         try {
             if (diskCachePolicy.readEnabled) {
@@ -67,7 +58,6 @@ class HttpUriFetcher(
                 )
             } ?: throw CancellationException()
         } finally {
-            repeatTaskLock?.unlock()
             diskCacheEditLock?.unlock()
         }
     }

@@ -14,6 +14,7 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.test.util.TestHttpStack
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ class HttpUriFetcherTest {
                 val deferredList = mutableListOf<Deferred<FetchResult?>>()
                 // Make 100 requests in a short period of time, expect only the first one to be downloaded from the network and the next 99 to be read from the disk cache
                 repeat(100) {
-                    val deferred = async {
+                    val deferred = async(Dispatchers.IO) {
                         httpUriFetcher.fetch()
                     }
                     deferredList.add(deferred)
@@ -97,9 +98,7 @@ class HttpUriFetcherTest {
                 }
                 Assert.assertTrue(
                     message,
-                    fromNetworkList.size == 1
-                            && fromNetworkList.first().first == 0
-                            && fromDiskCacheList.size == 99
+                    fromNetworkList.size == 1 && fromDiskCacheList.size == 99
                 )
             }
         }
