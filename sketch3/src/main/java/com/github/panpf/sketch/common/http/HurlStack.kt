@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.common.http
 
 import android.os.Build
+import com.github.panpf.sketch.download.internal.DownloadableRequest
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -32,7 +33,7 @@ class HurlStack(
 ) : HttpStack {
 
     @Throws(IOException::class)
-    override fun getResponse(uri: String): HttpStack.Response {
+    override fun getResponse(uri: String, request: DownloadableRequest): HttpStack.Response {
         var newUri = uri
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
@@ -51,6 +52,9 @@ class HurlStack(
                     for ((key, value) in extraHeaders) {
                         setRequestProperty(key, value)
                     }
+                }
+                request.httpHeaders?.forEach {
+                    setRequestProperty(it.key, it.value)
                 }
                 processRequest?.invoke(uri, this)
             }

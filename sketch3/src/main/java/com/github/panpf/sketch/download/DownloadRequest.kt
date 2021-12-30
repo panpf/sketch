@@ -8,6 +8,7 @@ import com.github.panpf.sketch.download.internal.DownloadableRequest
 class DownloadRequest constructor(
     override val uri: Uri,
     override val parameters: Parameters?,
+    override val httpHeaders: Map<String, String>?,
     override val diskCacheKey: String,
     override val diskCachePolicy: CachePolicy,
 ) : DownloadableRequest {
@@ -43,12 +44,14 @@ class DownloadRequest constructor(
     class Builder {
         private val uri: Uri
         private var parameters: Parameters?
+        private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
 
         constructor(uri: Uri) {
             this.uri = uri
             this.parameters = null
+            this.httpHeaders = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
         }
@@ -58,8 +61,13 @@ class DownloadRequest constructor(
         internal constructor(request: DownloadRequest) {
             this.uri = request.uri
             this.parameters = request.parameters
+            this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
+        }
+
+        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
+            this.httpHeaders = httpHeaders
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {
@@ -77,6 +85,7 @@ class DownloadRequest constructor(
         fun build(): DownloadRequest = DownloadRequest(
             uri = uri,
             parameters = parameters,
+            httpHeaders = httpHeaders,
             diskCacheKey = diskCacheKey ?: uri.toString(),
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
         )

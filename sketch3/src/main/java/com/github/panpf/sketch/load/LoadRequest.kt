@@ -15,6 +15,7 @@ import com.github.panpf.sketch.load.transform.Transformation
 class LoadRequest(
     override val uri: Uri,
     override val parameters: Parameters?,
+    override val httpHeaders: Map<String, String>?,
     override val diskCacheKey: String,
     override val diskCachePolicy: CachePolicy,
     override val maxSize: MaxSize?,
@@ -111,6 +112,7 @@ class LoadRequest(
 
         private val uri: Uri
         private var parameters: Parameters?
+        private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
@@ -128,6 +130,7 @@ class LoadRequest(
         constructor(uri: Uri) {
             this.uri = uri
             this.parameters = null
+            this.httpHeaders = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
@@ -148,6 +151,7 @@ class LoadRequest(
         internal constructor(request: LoadRequest) {
             this.uri = request.uri
             this.parameters = request.parameters
+            this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.maxSize = request.maxSize
@@ -165,6 +169,10 @@ class LoadRequest(
 
         fun parameters(parameters: Parameters?): Builder = apply {
             this.parameters = parameters
+        }
+
+        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
+            this.httpHeaders = httpHeaders
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -263,6 +271,7 @@ class LoadRequest(
         fun build(): LoadRequest = LoadRequest(
             uri = uri,
             parameters = parameters,
+            httpHeaders = httpHeaders,
             diskCacheKey = diskCacheKey ?: uri.toString(),
             diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
             maxSize = maxSize,

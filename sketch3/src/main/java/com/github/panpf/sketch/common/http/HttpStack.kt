@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.common.http
 
+import com.github.panpf.sketch.download.internal.DownloadableRequest
 import java.io.IOException
 import java.io.InputStream
 import java.net.SocketTimeoutException
@@ -37,7 +38,7 @@ interface HttpStack {
      * @return [Response]
      */
     @Throws(IOException::class)
-    fun getResponse(uri: String): Response
+    fun getResponse(uri: String, request: DownloadableRequest): Response
 
     /**
      * 是否可以重试
