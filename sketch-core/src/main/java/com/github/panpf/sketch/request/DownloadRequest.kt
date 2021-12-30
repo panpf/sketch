@@ -2,16 +2,19 @@ package com.github.panpf.sketch.request
 
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.internal.DownloadableRequest
 
 class DownloadRequest constructor(
     override val uri: Uri,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
-    override val diskCacheKey: String,
-    override val diskCachePolicy: CachePolicy,
+    diskCacheKey: String?,
+    diskCachePolicy: CachePolicy?,
 ) : DownloadableRequest {
+
+    override val diskCacheKey: String = diskCacheKey ?: uri.toString()
+
+    override val diskCachePolicy: CachePolicy = diskCachePolicy ?: CachePolicy.ENABLED
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -86,8 +89,8 @@ class DownloadRequest constructor(
             uri = uri,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            diskCacheKey = diskCacheKey ?: uri.toString(),
-            diskCachePolicy = diskCachePolicy ?: ENABLED,
+            diskCacheKey = diskCacheKey,
+            diskCachePolicy = diskCachePolicy,
         )
     }
 }

@@ -25,7 +25,7 @@ class CircleCropTransformation(val scaleType: ScaleType = ScaleType.FIT_CENTER) 
             input.width, input.height, newSize, newSize, scaleType, true
         )
 
-        val circleBitmap = sketch.bitmapPoolHelper.bitmapPool.getOrMake(
+        val circleBitmap = sketch.bitmapPoolHelper.getOrMake(
             resizeMapping.newWidth, resizeMapping.newHeight, input.safeConfig
         )
         val canvas = Canvas(circleBitmap)

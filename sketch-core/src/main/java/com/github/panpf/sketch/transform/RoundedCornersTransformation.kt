@@ -54,8 +54,8 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         request: LoadableRequest,
         input: Bitmap
     ): Bitmap {
-        val bitmapPool = sketch.bitmapPoolHelper.bitmapPool
-        val roundedCornersBitmap = bitmapPool.getOrMake(input.width, input.height, input.safeConfig)
+        val bitmapPoolHelper = sketch.bitmapPoolHelper
+        val roundedCornersBitmap = bitmapPoolHelper.getOrMake(input.width, input.height, input.safeConfig)
         val canvas = Canvas(roundedCornersBitmap)
         val paint = Paint()
         paint.isAntiAlias = true

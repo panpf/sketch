@@ -18,7 +18,7 @@ class DisplayRequest(
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
     diskCacheKey: String?,
-    override val diskCachePolicy: CachePolicy,
+    diskCachePolicy: CachePolicy?,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
@@ -29,23 +29,25 @@ class DisplayRequest(
     override val disabledCacheResultInDisk: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
     memoryCacheKey: String?,
-    override val memoryCachePolicy: CachePolicy,
+    memoryCachePolicy: CachePolicy?,
     override val disabledAnimationDrawable: Boolean?,
     override val placeholderDrawable: Drawable?,
     override val errorDrawable: Drawable?,
     override val emptyDrawable: Drawable?,
 ) : DisplayableRequest {
 
-    override val qualityKey: String? by lazy {
-        LoadableRequest.newQualityKey(this)
-    }
+    override val diskCacheKey: String = diskCacheKey ?: uri.toString()
 
-    override val diskCacheKey: String by lazy {
-        diskCacheKey ?: uri.toString()
-    }
+    override val diskCachePolicy: CachePolicy = diskCachePolicy ?: CachePolicy.ENABLED
+
+    override val memoryCachePolicy: CachePolicy = memoryCachePolicy ?: CachePolicy.ENABLED
 
     override val memoryCacheKey: String by lazy {
         memoryCacheKey ?: "${uri}${qualityKey?.let { "_$it" } ?: ""}"
+    }
+
+    override val qualityKey: String? by lazy {
+        LoadableRequest.newQualityKey(this)
     }
 
     override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
@@ -309,7 +311,7 @@ class DisplayRequest(
             parameters = parameters,
             httpHeaders = httpHeaders,
             diskCacheKey = diskCacheKey,
-            diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
+            diskCachePolicy = diskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
@@ -320,7 +322,7 @@ class DisplayRequest(
             disabledCacheResultInDisk = disabledCacheResultInDisk,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
             memoryCacheKey = memoryCacheKey,
-            memoryCachePolicy = memoryCachePolicy ?: CachePolicy.ENABLED,
+            memoryCachePolicy = memoryCachePolicy,
             disabledAnimationDrawable = disabledAnimationDrawable,
             placeholderDrawable = placeholderDrawable,
             errorDrawable = errorDrawable,

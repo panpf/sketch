@@ -7,18 +7,15 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.text.TextUtils
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.calculateSamplingSize
 import com.github.panpf.sketch.util.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.util.computeByteCount
 import com.github.panpf.sketch.util.toHexString
 
-class BitmapPoolHelper(
-    context: Context,
-    val bitmapPool: BitmapPool
-) {
+class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
 
     companion object {
         const val MODULE = "BitmapPoolHelper"
@@ -37,6 +34,10 @@ class BitmapPoolHelper(
                 bitmapPool.trimMemory(level)
             }
         })
+    }
+
+    fun getOrMake(width: Int, height: Int, config: Bitmap.Config): Bitmap{
+        return bitmapPool.getOrMake(width, height, config)
     }
 
     /**

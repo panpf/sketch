@@ -4,18 +4,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory.Options
 import android.graphics.Canvas
 import android.graphics.Point
-import com.github.panpf.sketch.util.SLog
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DecodeException
-import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.request.DecodeException
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Resize
+import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
-import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -48,7 +47,7 @@ class BitmapFactoryDecoder(
         }
 
         val correctedOrientationBitmap =
-            imageOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper.bitmapPool) ?: bitmap
+            imageOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper) ?: bitmap
         if (correctedOrientationBitmap !== bitmap) {
             bitmapPoolHelper.freeBitmapToPool(bitmap)
         }
@@ -291,8 +290,8 @@ class BitmapFactoryDecoder(
             exactlySame = resize.mode == Resize.Mode.EXACTLY_SAME
         )
         val config = bitmap.config ?: Bitmap.Config.ARGB_8888
-        val bitmapPool = sketch.bitmapPoolHelper.bitmapPool
-        val resizeBitmap = bitmapPool.getOrMake(mapping.newWidth, mapping.newHeight, config)
+        val resizeBitmap =
+            sketch.bitmapPoolHelper.getOrMake(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(resizeBitmap)
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
         return resizeBitmap

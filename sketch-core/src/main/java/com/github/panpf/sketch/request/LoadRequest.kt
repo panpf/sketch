@@ -16,7 +16,7 @@ class LoadRequest(
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
     diskCacheKey: String?,
-    override val diskCachePolicy: CachePolicy,
+    diskCachePolicy: CachePolicy?,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
@@ -28,12 +28,12 @@ class LoadRequest(
     override val disabledCorrectExifOrientation: Boolean?,
 ) : LoadableRequest {
 
+    override val diskCacheKey: String = diskCacheKey ?: uri.toString()
+
+    override val diskCachePolicy: CachePolicy = diskCachePolicy ?: CachePolicy.ENABLED
+
     override val qualityKey: String? by lazy {
         LoadableRequest.newQualityKey(this)
-    }
-
-    override val diskCacheKey: String by lazy {
-        diskCacheKey ?: uri.toString()
     }
 
     override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
@@ -238,7 +238,7 @@ class LoadRequest(
             parameters = parameters,
             httpHeaders = httpHeaders,
             diskCacheKey = diskCacheKey,
-            diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
+            diskCachePolicy = diskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,

@@ -6,7 +6,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.request.internal.LoadableRequest
 
 class RotateTransformation(val degrees: Int) : Transformation {
@@ -19,11 +19,11 @@ class RotateTransformation(val degrees: Int) : Transformation {
         input: Bitmap
     ): Bitmap {
         if (degrees % 360 == 0) return input
-        return rotate(input, degrees, sketch.bitmapPoolHelper.bitmapPool)
+        return rotate(input, degrees, sketch.bitmapPoolHelper)
     }
 
     companion object {
-        fun rotate(bitmap: Bitmap, degrees: Int, bitmapPool: BitmapPool): Bitmap {
+        fun rotate(bitmap: Bitmap, degrees: Int, bitmapPoolHelper: BitmapPoolHelper): Bitmap {
             val matrix = Matrix()
             matrix.setRotate(degrees.toFloat())
 
@@ -38,7 +38,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
             if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
                 config = Bitmap.Config.ARGB_8888
             }
-            val result = bitmapPool.getOrMake(newWidth, newHeight, config)
+            val result = bitmapPoolHelper.getOrMake(newWidth, newHeight, config)
             matrix.postTranslate(-newRect.left, -newRect.top)
             val canvas = Canvas(result)
             val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
