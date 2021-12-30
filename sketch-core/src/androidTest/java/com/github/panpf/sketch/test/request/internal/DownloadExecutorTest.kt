@@ -7,7 +7,6 @@ import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.ListenerInfo
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.DownloadRequest
@@ -39,8 +38,7 @@ class DownloadExecutorTest {
         val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().uri)
         runBlocking {
             DownloadExecutor(normalSketch).execute(
-                normalRequest,
-                ListenerInfo(normalDownloadListenerSupervisor, null)
+                normalRequest, normalDownloadListenerSupervisor, null
             )
         }.apply {
             Assert.assertTrue(this is ExecuteResult.Success)
@@ -61,8 +59,7 @@ class DownloadExecutorTest {
         runBlocking {
             val job = launch {
                 DownloadExecutor(slowSketch).execute(
-                    cancelRequest,
-                    ListenerInfo(cancelDownloadListenerSupervisor, null)
+                    cancelRequest, cancelDownloadListenerSupervisor, null
                 )
             }
             delay(1000)
@@ -81,8 +78,7 @@ class DownloadExecutorTest {
         }
         runBlocking {
             DownloadExecutor(slowSketch).execute(
-                errorRequest,
-                ListenerInfo(errorDownloadListenerSupervisor, null)
+                errorRequest, errorDownloadListenerSupervisor, null
             )
         }.apply {
             Assert.assertTrue(this is ExecuteResult.Error)

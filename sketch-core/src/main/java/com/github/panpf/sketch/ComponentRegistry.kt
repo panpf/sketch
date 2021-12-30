@@ -1,11 +1,10 @@
 package com.github.panpf.sketch
 
-import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.request.ListenerInfo
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 
 class ComponentRegistry private constructor(
     val fetcherFactoryList: List<Fetcher.Factory>,
@@ -27,19 +26,24 @@ class ComponentRegistry private constructor(
     fun newFetcher(
         sketch: Sketch,
         request: ImageRequest,
-        listenerInfo: ListenerInfo<in ImageRequest, in ImageResult>?
+        httpFetchProgressListenerDelegate: ProgressListenerDelegate<in ImageRequest>?
     ): Fetcher = fetcherFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, listenerInfo)
-    } ?: throw IllegalArgumentException("Unsupported uri: ${request.uri}")
+        it.create(sketch, request, httpFetchProgressListenerDelegate)
+    } ?: throw IllegalArgumentException(
+        "No Fetcher can handle this uri: ${request.uri}, " +
+                "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
+    )
 
     fun newDecoder(
         sketch: Sketch,
         request: ImageRequest,
-        listenerInfo: ListenerInfo<in ImageRequest, in ImageResult>?,
         dataSource: DataSource,
     ): Decoder = decoderFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, listenerInfo, dataSource)
-    } ?: throw IllegalArgumentException("Unsupported image format: ${request.uri}")
+        it.create(sketch, request, dataSource)
+    } ?: throw IllegalArgumentException(
+        "No Decoder can handle this uri: ${request.uri}, " +
+                "please pass ComponentRegistry. Builder addDecoder () function to add a new Decoder to support it"
+    )
 
     companion object {
         fun new(

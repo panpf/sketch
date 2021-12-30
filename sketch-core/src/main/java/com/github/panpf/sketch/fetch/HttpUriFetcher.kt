@@ -2,16 +2,15 @@ package com.github.panpf.sketch.fetch
 
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.request.ListenerInfo
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
+import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.internal.DownloadableRequest
+import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +25,7 @@ import java.io.OutputStream
 class HttpUriFetcher(
     private val sketch: Sketch,
     private val request: DownloadableRequest,
-    private val listenerInfo: ListenerInfo<ImageRequest, ImageResult>?
+    private val httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
@@ -74,7 +73,7 @@ class HttpUriFetcher(
     }
 
     @Throws(IOException::class)
-    private fun executeHttpDownload(
+    private suspend fun executeHttpDownload(
         httpStack: HttpStack,
         diskCachePolicy: CachePolicy,
         diskCache: DiskCache,
@@ -112,7 +111,7 @@ class HttpUriFetcher(
     }
 
     @Throws(IOException::class)
-    private fun writeToDiskCache(
+    private suspend fun writeToDiskCache(
         response: HttpStack.Response,
         diskCacheEditor: DiskCache.Editor,
         diskCache: DiskCache,
@@ -151,7 +150,7 @@ class HttpUriFetcher(
         throw e
     }
 
-    private fun writeToByteArray(
+    private suspend fun writeToByteArray(
         response: HttpStack.Response,
         coroutineScope: CoroutineScope
     ): ByteArray? {
@@ -172,7 +171,7 @@ class HttpUriFetcher(
         }
     }
 
-    private fun InputStream.copyToWithActive(
+    private suspend fun InputStream.copyToWithActive(
         out: OutputStream,
         bufferSize: Int = DEFAULT_BUFFER_SIZE,
         coroutineScope: CoroutineScope,
@@ -182,7 +181,7 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListener = listenerInfo?.httpFetchProgressListener
+        val progressListener = httpFetchProgressListenerDelegate
         var lastUpdateProgressBytesCopied = 0L
         while (bytes >= 0 && coroutineScope.isActive) {
             out.write(buffer, 0, bytes)
@@ -194,13 +193,9 @@ class HttpUriFetcher(
                     val currentBytesCopied = bytesCopied
                     lastUpdateProgressBytesCopied = currentBytesCopied
                     @Suppress("DeferredResultUnused")
-                    coroutineScope.async(Dispatchers.Main) {
-                        progressListener.onUpdateProgress(
-                            request,
-                            contentLength,
-                            currentBytesCopied
-                        )
-                    }
+                    progressListener.onUpdateProgress(
+                        request, contentLength, currentBytesCopied
+                    )
                 }
             }
             bytes = read(buffer)
@@ -223,10 +218,10 @@ class HttpUriFetcher(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            listenerInfo: ListenerInfo<ImageRequest, ImageResult>?
+            httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
         ): HttpUriFetcher? =
             if (request is DownloadableRequest && isApplicable(request.uri)) {
-                HttpUriFetcher(sketch, request, listenerInfo)
+                HttpUriFetcher(sketch, request, httpFetchProgressListenerDelegate)
             } else {
                 null
             }

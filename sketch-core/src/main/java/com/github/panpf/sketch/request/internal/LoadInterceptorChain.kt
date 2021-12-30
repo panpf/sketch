@@ -3,7 +3,6 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.ListenerInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 
@@ -16,12 +15,13 @@ internal class LoadInterceptorChain(
 
     @WorkerThread
     override suspend fun proceed(
-        sketch: Sketch, request: LoadRequest,
-        listenerInfo: ListenerInfo<LoadRequest, LoadResult>?
+        sketch: Sketch,
+        request: LoadRequest,
+        httpFetchProgressListenerDelegate: ProgressListenerDelegate<LoadRequest>?
     ): LoadResult {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)
-        return interceptor.intercept(sketch, next, listenerInfo)
+        return interceptor.intercept(sketch, next, httpFetchProgressListenerDelegate)
     }
 
     private fun copy(

@@ -3,6 +3,7 @@ package com.github.panpf.sketch.request.internal
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
+import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.request.BitmapConfig
@@ -70,5 +71,81 @@ interface LoadableRequest : DownloadableRequest {
      */
     val disabledCorrectExifOrientation: Boolean?
 
-    fun newDecodeOptionsWithQualityRelatedParams(mimeType: String): BitmapFactory.Options
+    fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options
+
+    val qualityKey: String?
+
+    companion object {
+
+        fun newDecodeOptionsByQualityParams(
+            request: LoadableRequest,
+            mimeType: String
+        ): BitmapFactory.Options =
+            BitmapFactory.Options().apply {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M && request.preferQualityOverSpeed == true) {
+                    inPreferQualityOverSpeed = true
+                }
+
+                val newConfig = request.bitmapConfig?.getConfigByMimeType(mimeType)
+                if (newConfig != null) {
+                    inPreferredConfig = newConfig
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && request.colorSpace != null) {
+                    inPreferredColorSpace = request.colorSpace
+                }
+            }
+
+        fun newQualityKey(request: LoadableRequest): String? = buildString {
+            val parameters = request.parameters
+            if (parameters != null) {
+                if (length > 0) append("_")
+                append(parameters.cacheKey)
+            }
+
+            val maxSize = request.maxSize
+            if (maxSize != null) {
+                if (length > 0) append("_")
+                append(maxSize.cacheKey)
+            }
+
+            val bitmapConfig = request.bitmapConfig
+            if (bitmapConfig != null) {
+                if (length > 0) append("_")
+                append(bitmapConfig.cacheKey)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val colorSpace = request.colorSpace
+                if (colorSpace != null) {
+                    if (length > 0) append("_")
+                    append("ColorSpace(${colorSpace.name.replace(" ", "")}")
+                }
+            }
+
+            val preferQualityOverSpeed = request.preferQualityOverSpeed
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && preferQualityOverSpeed == true) {
+                if (length > 0) append("_")
+                append("PreferQualityOverSpeed")
+            }
+
+            val resize = request.resize
+            if (resize != null) {
+                if (length > 0) append("_")
+                append(resize.cacheKey)
+            }
+
+            val transformations = request.transformations
+            if (transformations?.isNotEmpty() == true) {
+                if (length > 0) append("_")
+                append("Transformations(${transformations.joinToString(separator = ",")})")
+            }
+
+            val disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+            if (disabledCorrectExifOrientation != true) {
+                if (length > 0) append("_")
+                append("CorrectExifOrientation")
+            }
+        }.takeIf { it.isNotEmpty() }
+    }
 }

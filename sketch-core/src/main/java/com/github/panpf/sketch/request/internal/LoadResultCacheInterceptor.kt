@@ -2,28 +2,27 @@ package com.github.panpf.sketch.request.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.ListenerInfo
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.ImageInfo
+import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.util.SLog
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
 class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
 
     companion object {
-        const val MODULE = "ResultCacheInterceptor"
+        const val MODULE = "LoadResultCacheInterceptor"
     }
 
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<LoadRequest, LoadResult>,
-        listenerInfo: ListenerInfo<LoadRequest, LoadResult>?
+        httpFetchProgressListenerDelegate: ProgressListenerDelegate<LoadRequest>?
     ): LoadResult {
         val diskCache = sketch.diskCache
         val request = chain.request
@@ -40,7 +39,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                 }
             }
 
-            val loadResult = chain.proceed(sketch, request, listenerInfo)
+            val loadResult = chain.proceed(sketch, request, httpFetchProgressListenerDelegate)
 
             if (resultCacheHelper != null) {
                 withContext(sketch.decodeTaskDispatcher) {
@@ -74,7 +73,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                     val imageInfo = ImageInfo.fromJsonString(jsonString)
                     val bitmap = BitmapFactory.decodeFile(
                         bitmapDataDiskCacheEntry.file.path,
-                        request.newDecodeOptionsWithQualityRelatedParams(imageInfo.mimeType)
+                        request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
                     )
                     if (bitmap.width > 1 && bitmap.height > 1) {
                         LoadResult(bitmap, imageInfo, DISK_CACHE)
@@ -133,9 +132,9 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
             @JvmStatic
             fun from(request: LoadRequest, diskCache: DiskCache): ResultCacheHelper? {
                 if (request.disabledCacheResultInDisk == true) return null
-                val resultCacheKey = request.resultCacheKey ?: return null
-                val bitmapDataDiskCacheKey = request.uri.toString() + "_" + resultCacheKey
-                val metaDataDiskCacheKey = bitmapDataDiskCacheKey + "_metadata"
+                val qualityKey = request.qualityKey ?: return null
+                val bitmapDataDiskCacheKey = "${request.uri}_$qualityKey"
+                val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
                 val encodedBitmapDataDiskCacheKey = diskCache.encodeKey(bitmapDataDiskCacheKey)
                 val encodedMetaDataDiskCacheKey = diskCache.encodeKey(metaDataDiskCacheKey)
                 return ResultCacheHelper(

@@ -2,21 +2,21 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ExecuteResult
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import kotlinx.coroutines.CancellationException
 
-class DownloadExecutor(private val sketch: Sketch) {
+class DisplayExecutor(private val sketch: Sketch) {
 
     @WorkerThread
     suspend fun execute(
-        request: DownloadRequest,
-        lifecycleListener: Listener<DownloadRequest, DownloadResult>?,
-        httpFetchProgressListener: ProgressListener<DownloadRequest>?,
-    ): ExecuteResult<DownloadResult> {
+        request: DisplayRequest,
+        lifecycleListener: Listener<DisplayRequest, DisplayResult>?,
+        httpFetchProgressListener: ProgressListener<DisplayRequest>?,
+    ): ExecuteResult<DisplayResult> {
         val listenerDelegate = lifecycleListener?.run {
             ListenerDelegate(this)
         }
@@ -25,11 +25,12 @@ class DownloadExecutor(private val sketch: Sketch) {
         }
 
         try {
+            // todo 过滤重复请求
             listenerDelegate?.onStart(request)
 
-            val result: DownloadResult = DownloadInterceptorChain(
+            val result: DisplayResult = DisplayInterceptorChain(
                 initialRequest = request,
-                interceptors = sketch.downloadInterceptors,
+                interceptors = sketch.displayInterceptors,
                 index = 0,
                 request = request,
             ).proceed(sketch, request, progressListenerDelegate)

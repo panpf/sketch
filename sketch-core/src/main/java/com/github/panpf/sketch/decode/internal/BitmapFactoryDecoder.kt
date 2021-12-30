@@ -8,15 +8,14 @@ import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DecodeException
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.ImageType
-import com.github.panpf.sketch.request.ListenerInfo
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -38,7 +37,7 @@ class BitmapFactoryDecoder(
 
         val resize = request.resize
         val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
-        val decodeOptions = request.newDecodeOptionsWithQualityRelatedParams(imageInfo.mimeType)
+        val decodeOptions = request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
         val imageOrientationCorrector =
             ImageOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
 
@@ -304,7 +303,6 @@ class BitmapFactoryDecoder(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            listenerInfo: ListenerInfo<ImageRequest, ImageResult>?,
             dataSource: DataSource,
         ): Decoder? = if (request is LoadableRequest) {
             BitmapFactoryDecoder(sketch, request, dataSource)

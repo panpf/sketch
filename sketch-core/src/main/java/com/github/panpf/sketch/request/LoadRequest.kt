@@ -5,12 +5,9 @@ import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
 
@@ -18,7 +15,7 @@ class LoadRequest(
     override val uri: Uri,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
-    override val diskCacheKey: String,
+    diskCacheKey: String?,
     override val diskCachePolicy: CachePolicy,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
@@ -31,56 +28,24 @@ class LoadRequest(
     override val disabledCorrectExifOrientation: Boolean?,
 ) : LoadableRequest {
 
-    val resultCacheKey: String? = buildString {
-        if (parameters != null) {
-            if (length > 0) append("_")
-            append(parameters.cacheKey)
-        }
-        if (maxSize != null) {
-            if (length > 0) append("_")
-            append(maxSize.cacheKey)
-        }
-        if (bitmapConfig != null) {
-            if (length > 0) append("_")
-            append(bitmapConfig.cacheKey)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && colorSpace != null) {
-            if (length > 0) append("_")
-            append("ColorSpace(${colorSpace.name.replace(" ", "")}")
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && preferQualityOverSpeed == true) {
-            if (length > 0) append("_")
-            append("PreferQualityOverSpeed")
-        }
-        if (resize != null) {
-            if (length > 0) append("_")
-            append(resize.cacheKey)
-        }
-        if (transformations?.isNotEmpty() == true) {
-            if (length > 0) append("_")
-            append("Transformations(${transformations.joinToString(separator = ",")})")
-        }
-        if (disabledCorrectExifOrientation != true) {
-            if (length > 0) append("_")
-            append("CorrectExifOrientation")
-        }
-    }.takeIf { it.isNotEmpty() }
+    override val qualityKey: String? by lazy {
+        LoadableRequest.newQualityKey(this)
+    }
 
-    override fun newDecodeOptionsWithQualityRelatedParams(mimeType: String): BitmapFactory.Options =
-        BitmapFactory.Options().apply {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M && preferQualityOverSpeed == true) {
-                inPreferQualityOverSpeed = true
-            }
+    override val diskCacheKey: String by lazy {
+        diskCacheKey ?: uri.toString()
+    }
 
-            val newConfig = bitmapConfig?.getConfigByMimeType(mimeType)
-            if (newConfig != null) {
-                inPreferredConfig = newConfig
-            }
+    override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
+        LoadableRequest.newDecodeOptionsByQualityParams(this, mimeType)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && colorSpace != null) {
-                inPreferredColorSpace = colorSpace
-            }
-        }
+    fun toDownloadRequest(): DownloadRequest = DownloadRequest(
+        uri,
+        parameters,
+        httpHeaders,
+        diskCacheKey,
+        diskCachePolicy,
+    )
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -119,8 +84,6 @@ class LoadRequest(
         private var diskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
         private var bitmapConfig: BitmapConfig?
-
-        @RequiresApi(26)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean?
         private var resize: Resize?
@@ -274,11 +237,11 @@ class LoadRequest(
             uri = uri,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            diskCacheKey = diskCacheKey ?: uri.toString(),
-            diskCachePolicy = diskCachePolicy ?: ENABLED,
+            diskCacheKey = diskCacheKey,
+            diskCachePolicy = diskCachePolicy ?: CachePolicy.ENABLED,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
-            colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
+            colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resize = resize,
             transformations = transformations,

@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 
 interface Interceptor<REQUEST : ImageRequest, RESULT : ImageResult> {
 
@@ -11,7 +12,7 @@ interface Interceptor<REQUEST : ImageRequest, RESULT : ImageResult> {
     suspend fun intercept(
         sketch: Sketch,
         chain: Chain<REQUEST, RESULT>,
-        listenerInfo: ListenerInfo<REQUEST, RESULT>?
+        httpFetchProgressListenerDelegate: ProgressListenerDelegate<REQUEST>?
     ): RESULT
 
     interface Chain<REQUEST : ImageRequest, RESULT : ImageResult> {
@@ -22,7 +23,7 @@ interface Interceptor<REQUEST : ImageRequest, RESULT : ImageResult> {
         suspend fun proceed(
             sketch: Sketch,
             request: REQUEST,
-            listenerInfo: ListenerInfo<REQUEST, RESULT>?
+            httpFetchProgressListenerDelegate: ProgressListenerDelegate<REQUEST>?
         ): RESULT
     }
 }

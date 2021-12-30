@@ -2,8 +2,7 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.request.ListenerInfo
+import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 
 fun interface Fetcher {
 
@@ -14,7 +13,7 @@ fun interface Fetcher {
         fun create(
             sketch: Sketch,
             request: ImageRequest,
-            listenerInfo: ListenerInfo<ImageRequest, ImageResult>?
+            httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
         ): Fetcher?
     }
 }
