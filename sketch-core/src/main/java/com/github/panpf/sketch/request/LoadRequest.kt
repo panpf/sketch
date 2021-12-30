@@ -11,12 +11,12 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
 
-class LoadRequest(
+class LoadRequest private constructor(
     override val uri: Uri,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
-    diskCacheKey: String?,
-    diskCachePolicy: CachePolicy?,
+    _diskCacheKey: String?,
+    _diskCachePolicy: CachePolicy?,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
@@ -28,24 +28,29 @@ class LoadRequest(
     override val disabledCorrectExifOrientation: Boolean?,
 ) : LoadableRequest {
 
-    override val diskCacheKey: String = diskCacheKey ?: uri.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
-    override val diskCachePolicy: CachePolicy = diskCachePolicy ?: CachePolicy.ENABLED
+    override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
     override val qualityKey: String? by lazy {
         LoadableRequest.newQualityKey(this)
     }
 
+    override val key: String by lazy {
+        val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
+        val qualityKey = qualityKey?.let { "_${it}" } ?: ""
+        "Load_${uri}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
+    }
+
     override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
         LoadableRequest.newDecodeOptionsByQualityParams(this, mimeType)
 
-    fun toDownloadRequest(): DownloadRequest = DownloadRequest(
-        uri,
-        parameters,
-        httpHeaders,
-        diskCacheKey,
-        diskCachePolicy,
-    )
+    fun toDownloadRequest(): DownloadRequest = DownloadRequest.new(uri) {
+        parameters(parameters)
+        httpHeaders(httpHeaders)
+        diskCacheKey(diskCacheKey)
+        diskCachePolicy(diskCachePolicy)
+    }
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -237,8 +242,8 @@ class LoadRequest(
             uri = uri,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            diskCacheKey = diskCacheKey,
-            diskCachePolicy = diskCachePolicy,
+            _diskCacheKey = diskCacheKey,
+            _diskCachePolicy = diskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,

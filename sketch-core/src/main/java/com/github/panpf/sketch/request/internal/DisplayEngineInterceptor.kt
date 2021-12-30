@@ -19,6 +19,7 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
         val request = chain.request
 
 //        val
+        // todo memory cache lock
 
         val loadRequest = request.toLoadRequest()
         val newProgressListenerDelegate = httpFetchProgressListenerDelegate?.let {

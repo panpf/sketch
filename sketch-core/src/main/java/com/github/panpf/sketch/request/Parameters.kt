@@ -3,9 +3,9 @@
 
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.Parameters.Entry
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.Parameters.Entry
 
 /** A map of generic values that can be used to pass custom data to [Fetcher]s and [Decoder]s. */
 class Parameters private constructor(
@@ -49,6 +49,15 @@ class Parameters private constructor(
                 }
             }.toMap()
         }
+    }
+
+    val key: String by lazy {
+        val keys = map.mapNotNull {
+            it.value.value?.let { value ->
+                "${it.key}:$value"
+            }
+        }.sorted().joinToString(separator = ",")
+        "Parameters($keys)"
     }
 
     val cacheKey: String by lazy {

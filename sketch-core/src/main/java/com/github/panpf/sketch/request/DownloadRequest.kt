@@ -4,17 +4,22 @@ import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.internal.DownloadableRequest
 
-class DownloadRequest constructor(
+class DownloadRequest private constructor(
     override val uri: Uri,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
-    diskCacheKey: String?,
-    diskCachePolicy: CachePolicy?,
+    _diskCacheKey: String?,
+    _diskCachePolicy: CachePolicy?,
 ) : DownloadableRequest {
 
-    override val diskCacheKey: String = diskCacheKey ?: uri.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
-    override val diskCachePolicy: CachePolicy = diskCachePolicy ?: CachePolicy.ENABLED
+    override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+
+    override val key: String by lazy {
+        val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
+        "Download_${uri}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
+    }
 
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -89,8 +94,8 @@ class DownloadRequest constructor(
             uri = uri,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            diskCacheKey = diskCacheKey,
-            diskCachePolicy = diskCachePolicy,
+            _diskCacheKey = diskCacheKey,
+            _diskCachePolicy = diskCachePolicy,
         )
     }
 }

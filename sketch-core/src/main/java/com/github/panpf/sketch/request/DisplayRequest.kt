@@ -6,6 +6,8 @@ import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
@@ -17,8 +19,8 @@ class DisplayRequest(
     override val uri: Uri,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
-    diskCacheKey: String?,
-    diskCachePolicy: CachePolicy?,
+    _diskCacheKey: String?,
+    _diskCachePolicy: CachePolicy?,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
@@ -28,23 +30,23 @@ class DisplayRequest(
     override val disabledBitmapPool: Boolean?,
     override val disabledCacheResultInDisk: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
-    memoryCacheKey: String?,
-    memoryCachePolicy: CachePolicy?,
+    _memoryCacheKey: String?,
+    _memoryCachePolicy: CachePolicy?,
     override val disabledAnimationDrawable: Boolean?,
     override val placeholderDrawable: Drawable?,
     override val errorDrawable: Drawable?,
     override val emptyDrawable: Drawable?,
 ) : DisplayableRequest {
 
-    override val diskCacheKey: String = diskCacheKey ?: uri.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
-    override val diskCachePolicy: CachePolicy = diskCachePolicy ?: CachePolicy.ENABLED
+    override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
-    override val memoryCachePolicy: CachePolicy = memoryCachePolicy ?: CachePolicy.ENABLED
+    override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
 
     override val memoryCacheKey: String by lazy {
-        if (memoryCacheKey != null) {
-            memoryCacheKey
+        if (_memoryCacheKey != null) {
+            _memoryCacheKey
         } else {
             val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
             val animationDrawablePart =
@@ -55,6 +57,15 @@ class DisplayRequest(
 
     override val qualityKey: String? by lazy {
         LoadableRequest.newQualityKey(this)
+    }
+
+    override val key: String by lazy {
+        val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
+        val qualityKey = qualityKey?.let { "_${it}" } ?: ""
+        val animationDrawablePart =
+            if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
+        "Display_${uri}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
+                "${qualityKey}_memoryCacheKey($memoryCacheKey)_memoryCachePolicy($memoryCachePolicy)${animationDrawablePart}"
     }
 
     override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
@@ -72,22 +83,23 @@ class DisplayRequest(
         configBlock?.invoke(this)
     }.build()
 
-    fun toLoadRequest(): LoadRequest = LoadRequest(
-        uri,
-        parameters,
-        httpHeaders,
-        diskCacheKey,
-        diskCachePolicy,
-        maxSize,
-        bitmapConfig,
-        colorSpace,
-        preferQualityOverSpeed,
-        resize,
-        transformations,
-        disabledBitmapPool,
-        disabledCacheResultInDisk,
-        disabledCorrectExifOrientation
-    )
+    fun toLoadRequest(): LoadRequest = LoadRequest.new(uri) {
+        parameters(parameters)
+        httpHeaders(httpHeaders)
+        diskCacheKey(diskCacheKey)
+        diskCachePolicy(diskCachePolicy)
+        maxSize(maxSize)
+        bitmapConfig(bitmapConfig)
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            colorSpace(colorSpace)
+        }
+        preferQualityOverSpeed(preferQualityOverSpeed)
+        resize(resize)
+        transformations(transformations)
+        disabledBitmapPool(disabledBitmapPool)
+        disabledCacheResultInDisk(disabledCacheResultInDisk)
+        disabledCorrectExifOrientation(disabledCorrectExifOrientation)
+    }
 
     companion object {
         fun new(
@@ -317,8 +329,8 @@ class DisplayRequest(
             uri = uri,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            diskCacheKey = diskCacheKey,
-            diskCachePolicy = diskCachePolicy,
+            _diskCacheKey = diskCacheKey,
+            _diskCachePolicy = diskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
@@ -328,8 +340,8 @@ class DisplayRequest(
             disabledBitmapPool = disabledBitmapPool,
             disabledCacheResultInDisk = disabledCacheResultInDisk,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-            memoryCacheKey = memoryCacheKey,
-            memoryCachePolicy = memoryCachePolicy,
+            _memoryCacheKey = memoryCacheKey,
+            _memoryCachePolicy = memoryCachePolicy,
             disabledAnimationDrawable = disabledAnimationDrawable,
             placeholderDrawable = placeholderDrawable,
             errorDrawable = errorDrawable,
