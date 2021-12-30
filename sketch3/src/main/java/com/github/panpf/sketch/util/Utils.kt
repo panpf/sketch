@@ -3,6 +3,7 @@ package com.github.panpf.sketch.util
 import android.annotation.TargetApi
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.GLES10
@@ -30,6 +31,9 @@ val Bitmap.byteCountCompat: Int
             else -> this.byteCount
         }
     }
+
+val Bitmap.safeConfig: Config
+    get() = config ?: Config.ARGB_8888
 
 /**
  * 根据宽、高和配置计算所占用的字节数

@@ -46,7 +46,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
      */
     fun rotateSize(imageInfo: ImageInfo): ImageInfo {
         val matrix = Matrix()
-        initializeMatrixForExifRotation(exifOrientation, matrix)
+        initializeMatrix(exifOrientation, matrix)
         val newRect = RectF(0F, 0F, imageInfo.width.toFloat(), imageInfo.height.toFloat())
         matrix.mapRect(newRect)
         return ImageInfo(
@@ -63,7 +63,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
      */
     fun rotateSize(options: BitmapFactory.Options) {
         val matrix = Matrix()
-        initializeMatrixForExifRotation(exifOrientation, matrix)
+        initializeMatrix(exifOrientation, matrix)
         val newRect = RectF(0F, 0F, options.outWidth.toFloat(), options.outHeight.toFloat())
         matrix.mapRect(newRect)
         options.outWidth = newRect.width().toInt()
@@ -75,7 +75,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
      */
     fun rotateSize(size: Point) {
         val matrix = Matrix()
-        initializeMatrixForExifRotation(exifOrientation, matrix)
+        initializeMatrix(exifOrientation, matrix)
         val newRect = RectF(0F, 0F, size.x.toFloat(), size.y.toFloat())
         matrix.mapRect(newRect)
         size.x = newRect.width().toInt()
@@ -87,7 +87,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
      */
     fun reverseRotateRect(srcRect: Rect, imageWidth: Int, imageHeight: Int) {
         @Suppress("MoveVariableDeclarationIntoWhen")
-        val rotateDegrees = 360 - getExifOrientationDegrees(exifOrientation)
+        val rotateDegrees = 360 - getRotateDegrees(exifOrientation)
         when (rotateDegrees) {
             90 -> {
                 val top = srcRect.top
@@ -119,19 +119,16 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
      */
     fun rotateBitmap(bitmap: Bitmap, bitmapPool: BitmapPool): Bitmap {
         val matrix = Matrix()
-        initializeMatrixForExifRotation(exifOrientation, matrix)
+        initializeMatrix(exifOrientation, matrix)
 
         // 根据旋转角度计算新的图片的尺寸
-        val newRect = RectF(
-            0F, 0F, bitmap.width.toFloat(), bitmap.height
-                .toFloat()
-        )
+        val newRect = RectF(0F, 0F, bitmap.width.toFloat(), bitmap.height.toFloat())
         matrix.mapRect(newRect)
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
 
         // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
-        val degrees = getExifOrientationDegrees(exifOrientation)
+        val degrees = getRotateDegrees(exifOrientation)
         var config = bitmap.config ?: Bitmap.Config.ARGB_8888
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
@@ -139,14 +136,12 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
         val result = bitmapPool.getOrMake(newWidth, newHeight, config)
         matrix.postTranslate(-newRect.left, -newRect.top)
         val canvas = Canvas(result)
-        val paint = Paint(PAINT_FLAGS)
+        val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
         canvas.drawBitmap(bitmap, matrix, paint)
         return result
     }
 
     companion object {
-
-        const val PAINT_FLAGS = Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG
 
         fun fromExifOrientation(exifOrientation: Int): ImageOrientationCorrector? =
             if (hasRotate(exifOrientation)) ImageOrientationCorrector(exifOrientation) else null
@@ -231,7 +226,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
             }
         }
 
-        fun getExifOrientationDegrees(exifOrientation: Int): Int = when (exifOrientation) {
+        fun getRotateDegrees(exifOrientation: Int): Int = when (exifOrientation) {
             ExifInterface.ORIENTATION_TRANSPOSE,
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180,
@@ -241,7 +236,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
             else -> 0
         }
 
-        fun getExifOrientationTranslation(exifOrientation: Int): Int = when (exifOrientation) {
+        fun getTranslation(exifOrientation: Int): Int = when (exifOrientation) {
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL,
             ExifInterface.ORIENTATION_FLIP_VERTICAL,
             ExifInterface.ORIENTATION_TRANSPOSE,
@@ -249,7 +244,7 @@ class ImageOrientationCorrector(private val exifOrientation: Int) {
             else -> 1
         }
 
-        fun initializeMatrixForExifRotation(exifOrientation: Int, matrix: Matrix) {
+        fun initializeMatrix(exifOrientation: Int, matrix: Matrix) {
             when (exifOrientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> matrix.setRotate(90f)
                 ExifInterface.ORIENTATION_ROTATE_180 -> matrix.setRotate(180f)

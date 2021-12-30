@@ -44,19 +44,19 @@ class LoadRequest(
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && colorSpace != null) {
             if (length > 0) append("_")
-            append(colorSpace.name.replace(" ", ""))
+            append("ColorSpace(${colorSpace.name.replace(" ", "")}")
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && preferQualityOverSpeed == true) {
             if (length > 0) append("_")
-            append("inPreferQualityOverSpeed")
+            append("PreferQualityOverSpeed")
         }
         if (resize != null) {
             if (length > 0) append("_")
             append(resize.cacheKey)
         }
-        transformations?.forEach {
+        if (transformations?.isNotEmpty() == true) {
             if (length > 0) append("_")
-            append(it.cacheKey)
+            append("Transformations(${transformations.joinToString(separator = ",")})")
         }
         if (disabledCorrectExifOrientation != true) {
             if (length > 0) append("_")

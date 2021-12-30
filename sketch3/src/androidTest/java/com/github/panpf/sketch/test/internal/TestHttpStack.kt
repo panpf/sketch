@@ -2,6 +2,7 @@ package com.github.panpf.sketch.test.internal
 
 import android.content.Context
 import android.net.Uri
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.common.http.HttpStack
 import com.github.panpf.sketch.download.internal.DownloadableRequest
 import java.io.InputStream
@@ -17,7 +18,7 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
         )
     }
 
-    override fun getResponse(uri: String, request: DownloadableRequest): HttpStack.Response {
+    override fun getResponse(sketch: Sketch, request: DownloadableRequest, uri: String): HttpStack.Response {
         return TestResponse(context, uri.substring(uri.lastIndexOf("/") + 1), readDelayMillis)
     }
 

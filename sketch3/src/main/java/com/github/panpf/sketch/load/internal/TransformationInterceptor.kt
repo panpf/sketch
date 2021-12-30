@@ -21,10 +21,11 @@ class TransformationInterceptor : Interceptor<LoadRequest, LoadResult> {
             val bitmap = withContext(sketch.decodeTaskDispatcher) {
                 var currentBitmap = result.bitmap
                 transformations.forEach {
-                    val newBitmap = it.transform(request, currentBitmap)
+                    val newBitmap = it.transform(sketch, request, currentBitmap)
                     if (newBitmap !== currentBitmap) {
+                        val oldBitmap = currentBitmap
                         currentBitmap = newBitmap
-                        newBitmap.recycle() // todo Back on the bitmapPool
+                        sketch.bitmapPoolHelper.freeBitmapToPool(oldBitmap)
                     }
                 }
                 currentBitmap

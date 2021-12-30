@@ -29,7 +29,7 @@ class GroupedLinkedMap<K extends Poolable, V> {
             key.offer();
         }
 
-        // TODO: 2016/12/30 过滤重复的添加，这很重要，这里是为了备注修改了bitmap pool的代码了
+        // 2016/12/30 过滤重复的添加，这很重要，这里是为了备注修改了bitmap pool的代码了
         if (!entry.contains(value)) {
             entry.add(value);
         }

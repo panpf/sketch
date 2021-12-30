@@ -47,7 +47,7 @@ class LruDiskCache(
     companion object {
         private const val NAME = "LruDiskCache"
         const val DISK_CACHE_DIR_NAME = "sketch"
-        const val DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024
+        const val DISK_CACHE_MAX_SIZE = 512 * 1024 * 1024
         const val DISK_CACHE_RESERVED_SPACE_SIZE = 200 * 1024 * 1024
     }
 

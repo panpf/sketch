@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.load.transform
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.load.internal.LoadableRequest
 
 /**
@@ -23,5 +24,5 @@ interface Transformation {
      * @param input The input [Bitmap] to transform.
      * @return The transformed [Bitmap].
      */
-    suspend fun transform(request: LoadableRequest, input: Bitmap): Bitmap
+    suspend fun transform(sketch: Sketch, request: LoadableRequest, input: Bitmap): Bitmap
 }
