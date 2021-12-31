@@ -17,13 +17,16 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.decode.internal.ImageOrientationCorrector
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.util.SLog
+import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.toHexString
 
 /**
  * 引用 [Bitmap]，能够计算缓存引用、显示引用以及等待显示引用
  */
-class ReferenceCountBitmap(
+class SketchRefBitmap(
     initBitmap: Bitmap,
     val imageInfo: ImageInfo,
     val requestKey: String,
@@ -46,6 +49,22 @@ class ReferenceCountBitmap(
     @get:Synchronized
     val isRecycled: Boolean
         get() = bitmapHolder?.isRecycled ?: true
+
+    val byteCount: Int
+        get() = bitmap?.byteCountCompat ?: 0
+
+    val info: String =
+        "ReferenceCountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s%s)".format(
+            imageInfo.width,
+            imageInfo.height,
+            imageInfo.mimeType,
+            ImageOrientationCorrector.toName(imageInfo.exifOrientation),
+            initBitmap.width,
+            initBitmap.height,
+            initBitmap.config,
+            initBitmap.byteCountCompat,
+            initBitmap.toHexString(),
+        )
 
     /**
      * 设置显示引用

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.decode.internal.ImageOrientationCorrector
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -31,6 +32,14 @@ data class ImageInfo(
         put("height", height)
         put("exifOrientation", exifOrientation)
     }.toString()
+
+    override fun toString(): String {
+        return "ImageInfo(mimeType='$mimeType',width=$width,height=$height,exifOrientation=${
+            ImageOrientationCorrector.toName(
+                exifOrientation
+            )
+        })"
+    }
 
     companion object {
         @Throws(JSONException::class)

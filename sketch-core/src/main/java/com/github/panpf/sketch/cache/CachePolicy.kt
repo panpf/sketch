@@ -12,3 +12,9 @@ enum class CachePolicy(
     WRITE_ONLY(false, true),
     DISABLED(false, false)
 }
+
+val CachePolicy.isReadOrWrite: Boolean
+    get() = readEnabled || writeEnabled
+
+val CachePolicy.isReadAndWrite: Boolean
+    get() = readEnabled && writeEnabled

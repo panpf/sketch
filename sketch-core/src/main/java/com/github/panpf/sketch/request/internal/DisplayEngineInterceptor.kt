@@ -1,14 +1,24 @@
 package com.github.panpf.sketch.request.internal
 
+import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.isReadOrWrite
+import com.github.panpf.sketch.drawable.SketchBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchRefBitmap
+import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.util.SLog
 
 class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
+
+    companion object {
+        const val MODULE = "DisplayEngineInterceptor"
+    }
 
     @WorkerThread
     override suspend fun intercept(
@@ -17,25 +27,59 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
         httpFetchProgressListenerDelegate: ProgressListenerDelegate<DisplayRequest>?
     ): DisplayResult {
         val request = chain.request
+        val memoryCache = sketch.memoryCache
+        val memoryCacheKey = request.memoryCacheKey
+        val memoryCachePolicy = request.memoryCachePolicy
 
-//        val
-        // todo memory cache lock
-
-        val loadRequest = request.toLoadRequest()
-        val newProgressListenerDelegate = httpFetchProgressListenerDelegate?.let {
-            ProgressListenerDelegate<LoadRequest> { _, it2, it3 ->
-                it.progressListener.onUpdateProgress(request, it2, it3)
-            }
+        val memoryCacheEditLock = if (memoryCachePolicy.isReadOrWrite) {
+            memoryCache.getOrCreateEditMutexLock(memoryCacheKey)
+        } else {
+            null
         }
-        val loadResult: LoadResult = LoadInterceptorChain(
-            initialRequest = loadRequest,
-            interceptors = sketch.loadInterceptors,
-            index = 0,
-            request = loadRequest,
-        ).proceed(sketch, loadRequest, newProgressListenerDelegate)
+        memoryCacheEditLock?.lock()
+        try {
+            if (memoryCachePolicy.readEnabled) {
+                val cachedRefBitmap = memoryCache[memoryCacheKey]
+                if (cachedRefBitmap != null) {
+                    if (SLog.isLoggable(SLog.DEBUG)) {
+                        SLog.dmf(
+                            MODULE,
+                            "From memory get bitmap. bitmap=%s. %s",
+                            cachedRefBitmap.info, request.key
+                        )
+                    }
+                    cachedRefBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
+                    val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
+                    return DisplayResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
+                }
+            }
 
-        // todo memory cache
-        // todo load
-        TODO()
+            val loadRequest = request.toLoadRequest()
+            val newProgressListenerDelegate = httpFetchProgressListenerDelegate?.let {
+                ProgressListenerDelegate<LoadRequest> { _, it2, it3 ->
+                    it.progressListener.onUpdateProgress(request, it2, it3)
+                }
+            }
+            val loadResult: LoadResult = LoadInterceptorChain(
+                initialRequest = loadRequest,
+                interceptors = sketch.loadInterceptors,
+                index = 0,
+                request = loadRequest,
+            ).proceed(sketch, loadRequest, newProgressListenerDelegate)
+
+            val bitmap = loadResult.bitmap
+            val drawable = if (memoryCachePolicy.writeEnabled) {
+                val refBitmap =
+                    SketchRefBitmap(bitmap, loadResult.info, request.key, sketch.bitmapPoolHelper)
+                refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
+                memoryCache.put(memoryCacheKey, refBitmap)
+                SketchBitmapDrawable(refBitmap, loadResult.from)
+            } else {
+                BitmapDrawable(sketch.appContext.resources, bitmap)
+            }
+            return DisplayResult(drawable, loadResult.info, loadResult.from)
+        } finally {
+            memoryCacheEditLock?.unlock()
+        }
     }
 }

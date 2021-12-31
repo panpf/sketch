@@ -29,6 +29,33 @@ import java.io.OutputStream
 interface DiskCache {
 
     /**
+     * 获取缓存目录
+     *
+     * @return [File]
+     */
+    val cacheDir: File
+
+    /**
+     * 获取最大容量（默认为 100M）
+     */
+    val maxSize: Long
+
+    /**
+     * 获取已用容量
+     */
+    val size: Long
+
+    /**
+     * 是否已禁用
+     */
+    var isDisabled: Boolean
+
+    /**
+     * 是否已关闭
+     */
+    val isClosed: Boolean
+
+    /**
      * 是否存在指定 encodedKey 的缓存
      *
      * @param encodedKey 缓存 encodedKey
@@ -52,18 +79,6 @@ interface DiskCache {
     fun edit(encodedKey: String): Editor?
 
     /**
-     * 获取缓存目录
-     *
-     * @return [File]
-     */
-    val cacheDir: File
-
-    /**
-     * 获取最大容量（默认为 100M）
-     */
-    val maxSize: Long
-
-    /**
      * 将 key 进行转码
      *
      * @param key 缓存 key
@@ -72,40 +87,14 @@ interface DiskCache {
     fun encodeKey(key: String): String
 
     /**
-     * 获取已用容量
-     */
-    val size: Long
-
-    /**
-     * 是否已禁用
-     */
-    var isDisabled: Boolean
-
-    /**
      * 清除所有缓存
      */
     fun clear()
 
     /**
-     * 是否已关闭
-     */
-    val isClosed: Boolean
-
-    /**
      * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 [.setDisabled]
      */
     fun close()
-
-    fun putEdiTaskDeferred(encodedKey: String, deferred: Deferred<*>)
-
-    fun removeEdiTaskDeferred(encodedKey: String)
-
-    @Suppress("DeferredIsResult")
-    fun getActiveEdiTaskDeferred(encodedKey: String): Deferred<*>?
-
-    @Suppress("DeferredIsResult")
-    @Deprecated("This function is only used to test environment, production environment, please use getActiveHttpFetchTaskDeferred instead")
-    fun getEdiTaskDeferred(encodedKey: String): Deferred<*>?
 
     fun getOrCreateEditMutexLock(encodedKey: String): Mutex
 

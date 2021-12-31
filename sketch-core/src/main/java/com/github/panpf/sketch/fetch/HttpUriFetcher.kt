@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
@@ -36,7 +37,7 @@ class HttpUriFetcher(
         val encodedDiskCacheKey = diskCache.encodeKey(request.diskCacheKey)
         val diskCachePolicy = request.diskCachePolicy
 
-        val diskCacheEditLock = if (diskCachePolicy.readEnabled || diskCachePolicy.writeEnabled) {
+        val diskCacheEditLock = if (diskCachePolicy.isReadOrWrite) {
             diskCache.getOrCreateEditMutexLock(encodedDiskCacheKey)
         } else {
             null

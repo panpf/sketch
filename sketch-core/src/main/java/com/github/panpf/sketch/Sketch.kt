@@ -8,6 +8,8 @@ import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.LruBitmapPool
 import com.github.panpf.sketch.cache.LruDiskCache
+import com.github.panpf.sketch.cache.LruMemoryCache
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemorySizeCalculator
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -45,6 +47,7 @@ import java.io.File
 
 class Sketch constructor(
     context: Context,
+    memoryCache: MemoryCache? = null,
     diskCache: DiskCache? = null,
     bitmapPool: BitmapPool? = null,
     componentRegistry: ComponentRegistry? = null,
@@ -64,6 +67,7 @@ class Sketch constructor(
 
     val appContext: Context = context.applicationContext
     val httpStack = httpStack ?: HurlStack.new()
+    val memoryCache = memoryCache ?: LruMemoryCache(appContext, MemorySizeCalculator(appContext).memoryCacheSize)
     val diskCache = diskCache ?: LruDiskCache(appContext)
     val bitmapPoolHelper = BitmapPoolHelper(
         appContext,
@@ -77,6 +81,7 @@ class Sketch constructor(
     val downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
     val loadInterceptors = (loadInterceptors
         ?: listOf()) + LoadResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
+    // todo gif, svg, webpA
     val displayInterceptors = (displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
 
     val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
@@ -264,6 +269,7 @@ class Sketch constructor(
     class Builder(context: Context) {
 
         private val appContext: Context = context.applicationContext
+        private var memoryCache: MemoryCache? = null
         private var diskCache: DiskCache? = null
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
@@ -275,23 +281,27 @@ class Sketch constructor(
         private var displayInterceptors: MutableList<Interceptor<DisplayRequest, DisplayResult>>? =
             null
 
-        fun diskCache(diskCache: DiskCache): Builder = apply {
+        fun memoryCache(memoryCache: MemoryCache?): Builder = apply {
+            this.memoryCache = memoryCache
+        }
+
+        fun diskCache(diskCache: DiskCache?): Builder = apply {
             this.diskCache = diskCache
         }
 
-        fun bitmapPool(bitmapPool: BitmapPool): Builder = apply {
+        fun bitmapPool(bitmapPool: BitmapPool?): Builder = apply {
             this.bitmapPool = bitmapPool
         }
 
-        fun components(components: ComponentRegistry): Builder = apply {
+        fun components(components: ComponentRegistry?): Builder = apply {
             this.componentRegistry = components
         }
 
-        fun components(block: ComponentRegistry.Builder.() -> Unit): Builder = apply {
+        fun componentsWithBuilder(block: ComponentRegistry.Builder.() -> Unit): Builder = apply {
             this.componentRegistry = ComponentRegistry.Builder().apply(block).build()
         }
 
-        fun httpStack(httpStack: HttpStack): Builder = apply {
+        fun httpStack(httpStack: HttpStack?): Builder = apply {
             this.httpStack = httpStack
         }
 
@@ -318,6 +328,7 @@ class Sketch constructor(
 
         fun build(): Sketch = Sketch(
             context = appContext,
+            memoryCache = memoryCache,
             diskCache = diskCache,
             bitmapPool = bitmapPool,
             componentRegistry = componentRegistry,
