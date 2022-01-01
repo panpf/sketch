@@ -89,6 +89,7 @@ class Sketch constructor(
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
+        // todo 增加 defaultOptions
         if (diskCache is LruDiskCache) {
             val wrapperErrorCallback = diskCache.errorCallback
             diskCache.errorCallback =

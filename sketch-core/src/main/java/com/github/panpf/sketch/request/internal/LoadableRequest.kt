@@ -6,12 +6,24 @@ import android.graphics.ColorSpace
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.BitmapConfig
 import com.github.panpf.sketch.request.MaxSize
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.transform.Transformation
 
 interface LoadableRequest : DownloadableRequest {
+
+    /**
+     * What is resultDiskCache. To speed up image load, cache the final bitmap to disk if you set [maxSize], [resize], [transformations] parameters (see [newQualityKey]). So that it can be used directly after the next read
+     */
+    val resultDiskCacheKey: String
+
+    /**
+     * resultDiskCache policy configuration
+     * @see resultDiskCacheKey
+     */
+    val resultDiskCachePolicy: CachePolicy
 
     /**
      * Limit the maximum size of the bitmap on decode, default value is [MaxSize.SCREEN_SIZE]
@@ -60,11 +72,6 @@ interface LoadableRequest : DownloadableRequest {
      * Disabled reuse of Bitmap from [BitmapPool]
      */
     val disabledBitmapPool: Boolean?
-
-    /**
-     * Disabled to cache bitmaps affected by [resize] and [transformations] to disk
-     */
-    val disabledCacheResultInDisk: Boolean?
 
     /**
      * Disabled correcting the image orientation based on 'exifOrientation'

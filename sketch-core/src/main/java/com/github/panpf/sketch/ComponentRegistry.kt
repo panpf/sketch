@@ -26,7 +26,7 @@ class ComponentRegistry private constructor(
     fun newFetcher(
         sketch: Sketch,
         request: ImageRequest,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<in ImageRequest>?
+        httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
     ): Fetcher = fetcherFactoryList.firstNotNullOfOrNull {
         it.create(sketch, request, httpFetchProgressListenerDelegate)
     } ?: throw IllegalArgumentException(

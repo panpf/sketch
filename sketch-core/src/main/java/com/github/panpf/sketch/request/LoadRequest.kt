@@ -17,6 +17,8 @@ class LoadRequest private constructor(
     override val httpHeaders: Map<String, String>?,
     _diskCacheKey: String?,
     _diskCachePolicy: CachePolicy?,
+    _resultDiskCacheKey: String?,
+    _resultDiskCachePolicy: CachePolicy?,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
@@ -24,13 +26,18 @@ class LoadRequest private constructor(
     override val resize: Resize?,
     override val transformations: List<Transformation>?,
     override val disabledBitmapPool: Boolean?,
-    override val disabledCacheResultInDisk: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
 ) : LoadableRequest {
 
     override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+
+    override val resultDiskCacheKey: String by lazy {
+        _resultDiskCacheKey ?: "${uri}${qualityKey?.let { "_$it" } ?: ""}"
+    }
+
+    override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
 
     override val qualityKey: String? by lazy {
         LoadableRequest.newQualityKey(this)
@@ -87,6 +94,8 @@ class LoadRequest private constructor(
         private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
+        private var resultDiskCacheKey: String?
+        private var resultDiskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
         private var bitmapConfig: BitmapConfig?
         private var colorSpace: ColorSpace? = null
@@ -94,7 +103,6 @@ class LoadRequest private constructor(
         private var resize: Resize?
         private var transformations: List<Transformation>?
         private var disabledBitmapPool: Boolean?
-        private var disabledCacheResultInDisk: Boolean?
         private var disabledCorrectExifOrientation: Boolean?
 
         constructor(uri: Uri) {
@@ -103,6 +111,8 @@ class LoadRequest private constructor(
             this.httpHeaders = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
+            this.resultDiskCacheKey = null
+            this.resultDiskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
             this.bitmapConfig = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -112,7 +122,6 @@ class LoadRequest private constructor(
             this.resize = null
             this.transformations = null
             this.disabledBitmapPool = null
-            this.disabledCacheResultInDisk = null
             this.disabledCorrectExifOrientation = null
         }
 
@@ -124,6 +133,8 @@ class LoadRequest private constructor(
             this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
+            this.resultDiskCacheKey = request.resultDiskCacheKey
+            this.resultDiskCachePolicy = request.resultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -133,7 +144,6 @@ class LoadRequest private constructor(
             this.resize = request.resize
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
-            this.disabledCacheResultInDisk = request.disabledCacheResultInDisk
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
         }
 
@@ -151,6 +161,14 @@ class LoadRequest private constructor(
 
         fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
             this.diskCachePolicy = diskCachePolicy
+        }
+
+        fun resultDiskCacheKey(resultDiskCacheKey: String?): Builder = apply {
+            this.resultDiskCacheKey = resultDiskCacheKey
+        }
+
+        fun resultDiskCachePolicy(resultDiskCachePolicy: CachePolicy?): Builder = apply {
+            this.resultDiskCachePolicy = resultDiskCachePolicy
         }
 
         fun maxSize(maxSize: MaxSize?): Builder = apply {
@@ -229,10 +247,6 @@ class LoadRequest private constructor(
             this.disabledBitmapPool = disabledBitmapPool
         }
 
-        fun disabledCacheResultInDisk(cacheResultInDisk: Boolean? = true): Builder = apply {
-            this.disabledCacheResultInDisk = cacheResultInDisk
-        }
-
         fun disabledCorrectExifOrientation(disabledCorrectExifOrientation: Boolean? = true): Builder =
             apply {
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
@@ -244,6 +258,8 @@ class LoadRequest private constructor(
             httpHeaders = httpHeaders,
             _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
+            _resultDiskCacheKey = resultDiskCacheKey,
+            _resultDiskCachePolicy = resultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
@@ -251,7 +267,6 @@ class LoadRequest private constructor(
             resize = resize,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
-            disabledCacheResultInDisk = disabledCacheResultInDisk,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
         )
     }

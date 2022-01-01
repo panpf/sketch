@@ -25,18 +25,17 @@ class DisplayExecutor(private val sketch: Sketch) {
         }
 
         try {
-            // todo 过滤重复请求
             listenerDelegate?.onStart(request)
 
-            val result: DisplayResult = DisplayInterceptorChain(
+            val displayResult = DisplayInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.displayInterceptors,
                 index = 0,
                 request = request,
             ).proceed(sketch, request, progressListenerDelegate)
 
-            listenerDelegate?.onSuccess(request, result)
-            return ExecuteResult.Success(result)
+            listenerDelegate?.onSuccess(request, displayResult)
+            return ExecuteResult.Success(displayResult)
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 listenerDelegate?.onCancel(request)

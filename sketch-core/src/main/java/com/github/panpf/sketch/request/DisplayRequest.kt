@@ -6,8 +6,6 @@ import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
@@ -21,6 +19,8 @@ class DisplayRequest(
     override val httpHeaders: Map<String, String>?,
     _diskCacheKey: String?,
     _diskCachePolicy: CachePolicy?,
+    _resultDiskCacheKey: String?,
+    _resultDiskCachePolicy: CachePolicy?,
     override val maxSize: MaxSize?,
     override val bitmapConfig: BitmapConfig?,
     override val colorSpace: ColorSpace?,
@@ -28,7 +28,6 @@ class DisplayRequest(
     override val resize: Resize?,
     override val transformations: List<Transformation>?,
     override val disabledBitmapPool: Boolean?,
-    override val disabledCacheResultInDisk: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
     _memoryCacheKey: String?,
     _memoryCachePolicy: CachePolicy?,
@@ -41,6 +40,12 @@ class DisplayRequest(
     override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+
+    override val resultDiskCacheKey: String by lazy {
+        _resultDiskCacheKey ?: "${uri}${qualityKey?.let { "_$it" } ?: ""}"
+    }
+
+    override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
 
     override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
 
@@ -88,16 +93,17 @@ class DisplayRequest(
         httpHeaders(httpHeaders)
         diskCacheKey(diskCacheKey)
         diskCachePolicy(diskCachePolicy)
+        resultDiskCacheKey(resultDiskCacheKey)
+        resultDiskCachePolicy(resultDiskCachePolicy)
         maxSize(maxSize)
         bitmapConfig(bitmapConfig)
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             colorSpace(colorSpace)
         }
         preferQualityOverSpeed(preferQualityOverSpeed)
         resize(resize)
         transformations(transformations)
         disabledBitmapPool(disabledBitmapPool)
-        disabledCacheResultInDisk(disabledCacheResultInDisk)
         disabledCorrectExifOrientation(disabledCorrectExifOrientation)
     }
 
@@ -124,6 +130,8 @@ class DisplayRequest(
         private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
+        private var resultDiskCacheKey: String?
+        private var resultDiskCachePolicy: CachePolicy?
         private var maxSize: MaxSize?
         private var bitmapConfig: BitmapConfig?
         private var colorSpace: ColorSpace? = null
@@ -131,7 +139,6 @@ class DisplayRequest(
         private var resize: Resize?
         private var transformations: List<Transformation>?
         private var disabledBitmapPool: Boolean?
-        private var disabledCacheResultInDisk: Boolean?
         private var disabledCorrectExifOrientation: Boolean?
         private var memoryCacheKey: String?
         private var memoryCachePolicy: CachePolicy?
@@ -146,6 +153,8 @@ class DisplayRequest(
             this.httpHeaders = null
             this.diskCacheKey = null
             this.diskCachePolicy = null
+            this.resultDiskCacheKey = null
+            this.resultDiskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
             this.bitmapConfig = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -155,7 +164,6 @@ class DisplayRequest(
             this.resize = null
             this.transformations = null
             this.disabledBitmapPool = null
-            this.disabledCacheResultInDisk = null
             this.disabledCorrectExifOrientation = null
             this.memoryCacheKey = null
             this.memoryCachePolicy = null
@@ -173,6 +181,8 @@ class DisplayRequest(
             this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
+            this.resultDiskCacheKey = request.resultDiskCacheKey
+            this.resultDiskCachePolicy = request.resultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -182,7 +192,6 @@ class DisplayRequest(
             this.resize = request.resize
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
-            this.disabledCacheResultInDisk = request.disabledCacheResultInDisk
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
             this.memoryCacheKey = request.memoryCacheKey
             this.memoryCachePolicy = request.memoryCachePolicy
@@ -206,6 +215,14 @@ class DisplayRequest(
 
         fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
             this.diskCachePolicy = diskCachePolicy
+        }
+
+        fun resultDiskCacheKey(resultDiskCacheKey: String?): Builder = apply {
+            this.resultDiskCacheKey = resultDiskCacheKey
+        }
+
+        fun resultDiskCachePolicy(resultDiskCachePolicy: CachePolicy?): Builder = apply {
+            this.resultDiskCachePolicy = resultDiskCachePolicy
         }
 
         fun maxSize(maxSize: MaxSize?): Builder = apply {
@@ -292,10 +309,6 @@ class DisplayRequest(
             this.disabledBitmapPool = disabledBitmapPool
         }
 
-        fun disabledCacheResultInDisk(cacheResultInDisk: Boolean? = true): Builder = apply {
-            this.disabledCacheResultInDisk = cacheResultInDisk
-        }
-
         fun disabledCorrectExifOrientation(disabledCorrectExifOrientation: Boolean? = true): Builder =
             apply {
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
@@ -331,6 +344,8 @@ class DisplayRequest(
             httpHeaders = httpHeaders,
             _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
+            _resultDiskCacheKey = resultDiskCacheKey,
+            _resultDiskCachePolicy = resultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
@@ -338,7 +353,6 @@ class DisplayRequest(
             resize = resize,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
-            disabledCacheResultInDisk = disabledCacheResultInDisk,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
             _memoryCacheKey = memoryCacheKey,
             _memoryCachePolicy = memoryCachePolicy,

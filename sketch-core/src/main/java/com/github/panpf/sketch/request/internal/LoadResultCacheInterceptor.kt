@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Interceptor
@@ -30,7 +31,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         val mutex = resultCacheHelper?.getOrCreateEditMutexLock()
         mutex?.lock()
         try {
-            if (resultCacheHelper != null) {
+            if (resultCacheHelper != null && request.resultDiskCachePolicy.readEnabled) {
                 val cacheLoadResult = withContext(sketch.decodeTaskDispatcher) {
                     resultCacheHelper.readLoadResult()
                 }
@@ -41,7 +42,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
 
             val loadResult = chain.proceed(sketch, request, httpFetchProgressListenerDelegate)
 
-            if (resultCacheHelper != null) {
+            if (resultCacheHelper != null && request.resultDiskCachePolicy.writeEnabled) {
                 withContext(sketch.decodeTaskDispatcher) {
                     resultCacheHelper.writeLoadResult(loadResult)
                 }
@@ -63,6 +64,10 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
             diskCache.getOrCreateEditMutexLock(encodedBitmapDataDiskCacheKey)
 
         fun readLoadResult(): LoadResult? {
+            if (!request.resultDiskCachePolicy.readEnabled) {
+                return null
+            }
+
             val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
             val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
             try {
@@ -102,6 +107,10 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         }
 
         fun writeLoadResult(result: LoadResult) {
+            if (!request.resultDiskCachePolicy.writeEnabled) {
+                return
+            }
+
             val bitmapDataEditor = diskCache.edit(encodedBitmapDataDiskCacheKey) ?: return
             try {
                 bitmapDataEditor.newOutputStream().use {
@@ -129,11 +138,11 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         }
 
         companion object {
+
             @JvmStatic
             fun from(request: LoadRequest, diskCache: DiskCache): ResultCacheHelper? {
-                if (request.disabledCacheResultInDisk == true) return null
-                val qualityKey = request.qualityKey ?: return null
-                val bitmapDataDiskCacheKey = "${request.uri}_$qualityKey"
+                if (request.resultDiskCachePolicy.isReadOrWrite) return null
+                val bitmapDataDiskCacheKey = request.resultDiskCacheKey
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
                 val encodedBitmapDataDiskCacheKey = diskCache.encodeKey(bitmapDataDiskCacheKey)
                 val encodedMetaDataDiskCacheKey = diskCache.encodeKey(metaDataDiskCacheKey)

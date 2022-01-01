@@ -25,18 +25,17 @@ class LoadExecutor(private val sketch: Sketch) {
         }
 
         try {
-            // todo 过滤重复加载
             listenerDelegate?.onStart(request)
 
-            val result: LoadResult = LoadInterceptorChain(
+            val loadResult = LoadInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.loadInterceptors,
                 index = 0,
                 request = request,
             ).proceed(sketch, request, progressListenerDelegate)
 
-            listenerDelegate?.onSuccess(request, result)
-            return ExecuteResult.Success(result)
+            listenerDelegate?.onSuccess(request, loadResult)
+            return ExecuteResult.Success(loadResult)
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 listenerDelegate?.onCancel(request)
