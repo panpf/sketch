@@ -7,11 +7,13 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.request.DisplayException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.util.SLog
 
 class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
@@ -51,6 +53,8 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
                     cachedRefBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
                     val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
                     return DisplayResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
+                } else if (request.depth >= RequestDepth.MEMORY) {
+                    throw DisplayException("Request depth only to MEMORY")
                 }
             }
 

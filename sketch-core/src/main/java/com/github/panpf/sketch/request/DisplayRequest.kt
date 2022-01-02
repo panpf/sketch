@@ -9,12 +9,14 @@ import android.os.Build
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DisplayableRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
 
 class DisplayRequest(
     override val uri: Uri,
+    _depth: RequestDepth?,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
     _diskCacheKey: String?,
@@ -36,6 +38,8 @@ class DisplayRequest(
     override val errorDrawable: Drawable?,
     override val emptyDrawable: Drawable?,
 ) : DisplayableRequest {
+
+    override val depth: RequestDepth = _depth ?: NETWORK
 
     override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
@@ -89,6 +93,7 @@ class DisplayRequest(
     }.build()
 
     fun toLoadRequest(): LoadRequest = LoadRequest.new(uri) {
+        depth(depth)
         parameters(parameters)
         httpHeaders(httpHeaders)
         diskCacheKey(diskCacheKey)
@@ -126,6 +131,7 @@ class DisplayRequest(
     class Builder {
 
         private val uri: Uri
+        private var depth: RequestDepth?
         private var parameters: Parameters?
         private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
@@ -149,6 +155,7 @@ class DisplayRequest(
 
         constructor(uri: Uri) {
             this.uri = uri
+            this.depth = null
             this.parameters = null
             this.httpHeaders = null
             this.diskCacheKey = null
@@ -177,6 +184,7 @@ class DisplayRequest(
 
         internal constructor(request: DisplayRequest) {
             this.uri = request.uri
+            this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
@@ -199,6 +207,10 @@ class DisplayRequest(
             this.placeholderDrawable = request.placeholderDrawable
             this.errorDrawable = request.errorDrawable
             this.emptyDrawable = request.emptyDrawable
+        }
+
+        fun depth(depth: RequestDepth?): Builder = apply {
+            this.depth = depth
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {
@@ -340,6 +352,7 @@ class DisplayRequest(
 
         fun build(): DisplayRequest = DisplayRequest(
             uri = uri,
+            _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
             _diskCacheKey = diskCacheKey,

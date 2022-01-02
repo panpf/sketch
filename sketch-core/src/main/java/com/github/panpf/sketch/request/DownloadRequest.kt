@@ -2,15 +2,19 @@ package com.github.panpf.sketch.request
 
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DownloadableRequest
 
 class DownloadRequest private constructor(
     override val uri: Uri,
+    _depth: RequestDepth?,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
     _diskCacheKey: String?,
     _diskCachePolicy: CachePolicy?,
 ) : DownloadableRequest {
+
+    override val depth: RequestDepth = _depth ?: NETWORK
 
     override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
@@ -50,7 +54,9 @@ class DownloadRequest private constructor(
     }
 
     class Builder {
+
         private val uri: Uri
+        private var depth: RequestDepth?
         private var parameters: Parameters?
         private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
@@ -58,6 +64,7 @@ class DownloadRequest private constructor(
 
         constructor(uri: Uri) {
             this.uri = uri
+            this.depth = null
             this.parameters = null
             this.httpHeaders = null
             this.diskCacheKey = null
@@ -68,18 +75,23 @@ class DownloadRequest private constructor(
 
         internal constructor(request: DownloadRequest) {
             this.uri = request.uri
+            this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
         }
 
-        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
-            this.httpHeaders = httpHeaders
+        fun depth(depth: RequestDepth?): Builder = apply {
+            this.depth = depth
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {
             this.parameters = parameters
+        }
+
+        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
+            this.httpHeaders = httpHeaders
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -92,6 +104,7 @@ class DownloadRequest private constructor(
 
         fun build(): DownloadRequest = DownloadRequest(
             uri = uri,
+            _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
             _diskCacheKey = diskCacheKey,

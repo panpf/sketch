@@ -8,11 +8,13 @@ import android.os.Build
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
 
 class LoadRequest private constructor(
     override val uri: Uri,
+    _depth: RequestDepth?,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
     _diskCacheKey: String?,
@@ -28,6 +30,8 @@ class LoadRequest private constructor(
     override val disabledBitmapPool: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
 ) : LoadableRequest {
+
+    override val depth: RequestDepth = _depth ?: NETWORK
 
     override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
 
@@ -53,6 +57,7 @@ class LoadRequest private constructor(
         LoadableRequest.newDecodeOptionsByQualityParams(this, mimeType)
 
     fun toDownloadRequest(): DownloadRequest = DownloadRequest.new(uri) {
+        depth(depth)
         parameters(parameters)
         httpHeaders(httpHeaders)
         diskCacheKey(diskCacheKey)
@@ -90,6 +95,7 @@ class LoadRequest private constructor(
     class Builder {
 
         private val uri: Uri
+        private var depth: RequestDepth?
         private var parameters: Parameters?
         private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
@@ -107,6 +113,7 @@ class LoadRequest private constructor(
 
         constructor(uri: Uri) {
             this.uri = uri
+            this.depth = null
             this.parameters = null
             this.httpHeaders = null
             this.diskCacheKey = null
@@ -129,6 +136,7 @@ class LoadRequest private constructor(
 
         internal constructor(request: LoadRequest) {
             this.uri = request.uri
+            this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
@@ -145,6 +153,10 @@ class LoadRequest private constructor(
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+        }
+
+        fun depth(depth: RequestDepth?): Builder = apply {
+            this.depth = depth
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {
@@ -254,6 +266,7 @@ class LoadRequest private constructor(
 
         fun build(): LoadRequest = LoadRequest(
             uri = uri,
+            _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
             _diskCacheKey = diskCacheKey,

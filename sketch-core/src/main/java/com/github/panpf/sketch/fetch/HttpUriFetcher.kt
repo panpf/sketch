@@ -9,6 +9,8 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.DownloadException
+import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.DownloadableRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
@@ -47,9 +49,9 @@ class HttpUriFetcher(
             if (diskCachePolicy.readEnabled) {
                 val diskCacheEntry = diskCache[encodedDiskCacheKey]
                 if (diskCacheEntry != null) {
-                    return FetchResult(
-                        DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
-                    )
+                    return FetchResult(DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE))
+                } else if (request.depth >= RequestDepth.LOCAL) {
+                    throw DownloadException("Request depth only to LOCAL")
                 }
             }
 
