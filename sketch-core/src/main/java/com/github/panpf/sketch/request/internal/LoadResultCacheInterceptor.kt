@@ -142,7 +142,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
             @JvmStatic
             fun from(request: LoadRequest, diskCache: DiskCache): ResultCacheHelper? {
                 if (request.resultDiskCachePolicy.isReadOrWrite) return null
-                val bitmapDataDiskCacheKey = request.resultDiskCacheKey
+                val bitmapDataDiskCacheKey = request.resultDiskCacheKey ?: return null
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
                 val encodedBitmapDataDiskCacheKey = diskCache.encodeKey(bitmapDataDiskCacheKey)
                 val encodedMetaDataDiskCacheKey = diskCache.encodeKey(metaDataDiskCacheKey)

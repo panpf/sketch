@@ -17,7 +17,7 @@ interface LoadableRequest : DownloadableRequest {
     /**
      * What is resultDiskCache. To speed up image load, cache the final bitmap to disk if you set [maxSize], [resize], [transformations] parameters (see [newQualityKey]). So that it can be used directly after the next read
      */
-    val resultDiskCacheKey: String
+    val resultDiskCacheKey: String?
 
     /**
      * resultDiskCache policy configuration

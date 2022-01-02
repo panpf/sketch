@@ -41,8 +41,8 @@ class DisplayRequest(
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
-    override val resultDiskCacheKey: String by lazy {
-        _resultDiskCacheKey ?: "${uri}${qualityKey?.let { "_$it" } ?: ""}"
+    override val resultDiskCacheKey: String? by lazy {
+        _resultDiskCacheKey ?: qualityKey?.let { "${uri}_$it" }
     }
 
     override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
