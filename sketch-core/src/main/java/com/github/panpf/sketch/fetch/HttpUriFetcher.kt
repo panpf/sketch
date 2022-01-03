@@ -73,10 +73,10 @@ class HttpUriFetcher(
         encodedDiskCacheKey: String,
         coroutineScope: CoroutineScope,
     ): FetchResult? {
-        val response = httpStack.getResponse(sketch, request, request.uri.toString())
+        val response = httpStack.getResponse(sketch, request, request.url)
         val responseCode = response.code
         if (responseCode != 200) {
-            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uri}")
+            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.url}")
         }
 
         val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
@@ -211,9 +211,10 @@ class HttpUriFetcher(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
+            uri: Uri,
             httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
         ): HttpUriFetcher? =
-            if (request is DownloadableRequest && isApplicable(request.uri)) {
+            if (request is DownloadableRequest && isApplicable(uri)) {
                 HttpUriFetcher(sketch, request, httpFetchProgressListenerDelegate)
             } else {
                 null

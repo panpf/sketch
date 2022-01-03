@@ -35,11 +35,11 @@ interface HttpStack {
     /**
      * 发送请求并获取响应
      *
-     * @param uri http uri
+     * @param url http url
      * @return [Response]
      */
     @Throws(IOException::class)
-    fun getResponse(sketch: Sketch, request: DownloadableRequest, uri: String): Response
+    fun getResponse(sketch: Sketch, request: DownloadableRequest, url: String): Response
 
     /**
      * 是否可以重试

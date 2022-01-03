@@ -54,7 +54,7 @@ class SketchRefBitmap(
         get() = bitmap?.byteCountCompat ?: 0
 
     val info: String =
-        "ReferenceCountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s%s)".format(
+        "ReferenceCountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s)".format(
             imageInfo.width,
             imageInfo.height,
             imageInfo.mimeType,

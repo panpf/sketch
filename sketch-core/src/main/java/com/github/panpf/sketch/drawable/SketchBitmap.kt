@@ -4,7 +4,7 @@
 //import com.github.panpf.sketch.request.ImageInfo
 //
 //interface SketchBitmap {
-//    //    val uri: String
+//    //    val url: String
 ////    val key: String
 //    val bitmap: Bitmap
 //    val imageInfo: ImageInfo

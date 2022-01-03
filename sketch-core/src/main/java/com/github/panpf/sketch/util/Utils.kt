@@ -3,12 +3,13 @@ package com.github.panpf.sketch.util
 import android.annotation.TargetApi
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config
+import android.graphics.Point
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.GLES10
 import android.opengl.GLES20
 import android.os.Build
+import android.view.View
 import com.github.panpf.sketch.ImageType
 import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
@@ -32,8 +33,8 @@ val Bitmap.byteCountCompat: Int
         }
     }
 
-val Bitmap.safeConfig: Config
-    get() = config ?: Config.ARGB_8888
+val Bitmap.safeConfig: Bitmap.Config
+    get() = config ?: Bitmap.Config.ARGB_8888
 
 /**
  * 根据宽、高和配置计算所占用的字节数
@@ -164,6 +165,22 @@ fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
 fun Float.format(newScale: Int): Float {
     val b = BigDecimal(this.toDouble())
     return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+}
+
+internal fun View.calculateFixedSize(): Point? {
+    val layoutParams = layoutParams?.takeIf { it.width > 0 && it.height > 0 } ?: return null
+    var fixedWidth = layoutParams.width - paddingLeft - paddingRight
+    var fixedHeight = layoutParams.height - paddingTop - paddingBottom
+
+    // 限制不能超过 OpenGL 所允许的最大尺寸
+    val maxSize = openGLMaxTextureSize
+    if (fixedWidth > maxSize || fixedHeight > maxSize) {
+        val finalScale =
+            (fixedWidth.toFloat() / maxSize).coerceAtLeast(fixedHeight.toFloat() / maxSize)
+        fixedWidth /= finalScale.toInt()
+        fixedHeight /= finalScale.toInt()
+    }
+    return Point(fixedWidth, fixedHeight)
 }
 
 

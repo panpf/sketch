@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.test.util
 
 import android.content.Context
-import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.internal.DownloadableRequest
@@ -12,14 +11,14 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
     companion object {
         val urls = arrayOf(
             TestUri(
-                Uri.parse("http://5b0988e595225.cdn.sohucs.com/images/20171219/fd5717876ab046b8aa889c9aaac4b56c.jpeg"),
+                "http://5b0988e595225.cdn.sohucs.com/images/20171219/fd5717876ab046b8aa889c9aaac4b56c.jpeg",
                 540456
             )
         )
     }
 
-    override fun getResponse(sketch: Sketch, request: DownloadableRequest, uri: String): HttpStack.Response {
-        return TestResponse(context, uri.substring(uri.lastIndexOf("/") + 1), readDelayMillis)
+    override fun getResponse(sketch: Sketch, request: DownloadableRequest, url: String): HttpStack.Response {
+        return TestResponse(context, url.substring(url.lastIndexOf("/") + 1), readDelayMillis)
     }
 
     class TestResponse(
@@ -68,5 +67,5 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
         }
     }
 
-    class TestUri(val uri: Uri, val contentLength: Long)
+    class TestUri(val url: String, val contentLength: Long)
 }

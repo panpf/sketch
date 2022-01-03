@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.github.panpf.sketch.sample.ui.MainFragment"
+        android:label="MainFragment" />
+    <fragment
+        android:id="@+id/localPhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.LocalPhotosFragment"
+        android:label="LocalPhotosFragment" />
+    <fragment
+        android:id="@+id/onlinePhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.OnlinePhotosFragment"
+        android:label="OnlinePhotosFragment" />
+    <action
+        android:id="@+id/action_global_onlinePhotosFragment"
+        app:destination="@id/onlinePhotosFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_localPhotosFragment"
+        app:destination="@id/localPhotosFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+</navigation>

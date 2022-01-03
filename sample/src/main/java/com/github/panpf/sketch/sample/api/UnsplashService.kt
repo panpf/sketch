@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.net
+package com.github.panpf.sketch.sample.api
 
 import com.github.panpf.sketch.sample.bean.UnsplashImage
 import retrofit2.Response

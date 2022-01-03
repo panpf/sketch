@@ -86,8 +86,8 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                         bitmap.recycle()
                         SLog.emf(
                             MODULE,
-                            "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s",
-                            bitmap.width, bitmap.height, request.uri, encodedBitmapDataDiskCacheKey
+                            "Invalid image size in result cache. size=%dx%d, url=%s, diskCacheKey=%s",
+                            bitmap.width, bitmap.height, request.url, encodedBitmapDataDiskCacheKey
                         )
                         bitmapDataDiskCacheEntry.delete()
                         metaDataDiskCacheEntry.delete()

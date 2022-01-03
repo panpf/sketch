@@ -17,22 +17,26 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.request.Resize.Mode.EXACTLY_SAME
-import com.github.panpf.sketch.request.Resize.Mode.THUMBNAIL_MODE
 
 data class Resize constructor(
     val width: Int,
     val height: Int,
-    val mode: Mode = EXACTLY_SAME,
-    val scaleType: ScaleType = ScaleType.FIT_CENTER,
+    val mode: Mode = DEFAULT_MODE,
+    val scaleType: ScaleType = DEFAULT_SCALE_TYPE,
     /**
      * Only applies to [Resize.Mode.THUMBNAIL_MODE]
      */
-    val minAspectRatio: Float = 1.5f,
+    val minAspectRatio: Float = DEFAULT_MIN_ASPECT_RATIO,
 ) {
 
     val cacheKey: String =
-        "Resize(${width}x${height},${scaleType},${mode}${if (mode == THUMBNAIL_MODE) "-$minAspectRatio" else ""})"
+        "Resize(${width}x${height},${scaleType},${mode}${if (mode == Mode.THUMBNAIL_MODE) "-$minAspectRatio" else ""})"
+
+    companion object {
+        val DEFAULT_MODE: Mode = Mode.EXACTLY_SAME
+        val DEFAULT_SCALE_TYPE: ScaleType = ScaleType.FIT_CENTER
+        val DEFAULT_MIN_ASPECT_RATIO: Float = 1.5f
+    }
 
     enum class Mode {
         /**

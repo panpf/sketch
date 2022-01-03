@@ -27,7 +27,7 @@ class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
             httpFetchProgressListenerDelegate as ProgressListenerDelegate<ImageRequest>?
         )
         if (fetcher !is HttpUriFetcher) {
-            throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uri}")
+            throw IllegalArgumentException("Download only support HTTP and HTTPS url: ${request.url}")
         }
 
         val fetchResult = fetcher.fetch()

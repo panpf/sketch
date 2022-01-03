@@ -1,15 +1,14 @@
 package com.github.panpf.sketch.test.request.internal
 
-import android.net.Uri
 import android.os.Looper
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.test.util.TestHttpStack
 import kotlinx.coroutines.cancelAndJoin
@@ -35,7 +34,7 @@ class DownloadExecutorTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalListenerActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().uri)
+        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url)
         runBlocking {
             DownloadExecutor(normalSketch).execute(
                 normalRequest, normalDownloadListenerSupervisor, null
@@ -53,7 +52,7 @@ class DownloadExecutorTest {
         }
         val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
         val cancelListenerList = cancelDownloadListenerSupervisor.callbackActionList
-        val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().uri) {
+        val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().url) {
             diskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {
@@ -71,9 +70,9 @@ class DownloadExecutorTest {
          * error
          */
         val errorDownloadListenerSupervisor = DownloadListenerSupervisor()
-        val errorTestUri = TestHttpStack.TestUri(Uri.parse("http://fake.jpeg"), 43235)
+        val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val errorListenerActionList = errorDownloadListenerSupervisor.callbackActionList
-        val errorRequest = DownloadRequest.new(errorTestUri.uri) {
+        val errorRequest = DownloadRequest.new(errorTestUri.url) {
             diskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {

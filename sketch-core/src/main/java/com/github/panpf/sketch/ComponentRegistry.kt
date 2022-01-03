@@ -1,5 +1,6 @@
 package com.github.panpf.sketch
 
+import android.net.Uri
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
@@ -27,12 +28,15 @@ class ComponentRegistry private constructor(
         sketch: Sketch,
         request: ImageRequest,
         httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
-    ): Fetcher = fetcherFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, httpFetchProgressListenerDelegate)
-    } ?: throw IllegalArgumentException(
-        "No Fetcher can handle this uri: ${request.uri}, " +
-                "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
-    )
+    ): Fetcher {
+        val url = Uri.parse(request.url)
+        return fetcherFactoryList.firstNotNullOfOrNull {
+            it.create(sketch, request, url, httpFetchProgressListenerDelegate)
+        } ?: throw IllegalArgumentException(
+            "No Fetcher can handle this url: ${request.url}, " +
+                    "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
+        )
+    }
 
     fun newDecoder(
         sketch: Sketch,
@@ -41,7 +45,7 @@ class ComponentRegistry private constructor(
     ): Decoder = decoderFactoryList.firstNotNullOfOrNull {
         it.create(sketch, request, dataSource)
     } ?: throw IllegalArgumentException(
-        "No Decoder can handle this uri: ${request.uri}, " +
+        "No Decoder can handle this url: ${request.url}, " +
                 "please pass ComponentRegistry. Builder addDecoder () function to add a new Decoder to support it"
     )
 

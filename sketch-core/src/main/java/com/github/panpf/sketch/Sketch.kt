@@ -1,7 +1,6 @@
 package com.github.panpf.sketch
 
 import android.content.Context
-import android.net.Uri
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.BitmapPoolHelper
@@ -67,7 +66,8 @@ class Sketch constructor(
 
     val appContext: Context = context.applicationContext
     val httpStack = httpStack ?: HurlStack.new()
-    val memoryCache = memoryCache ?: LruMemoryCache(appContext, MemorySizeCalculator(appContext).memoryCacheSize)
+    val memoryCache =
+        memoryCache ?: LruMemoryCache(appContext, MemorySizeCalculator(appContext).memoryCacheSize)
     val diskCache = diskCache ?: LruDiskCache(appContext)
     val bitmapPoolHelper = BitmapPoolHelper(
         appContext,
@@ -81,6 +81,7 @@ class Sketch constructor(
     val downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
     val loadInterceptors = (loadInterceptors
         ?: listOf()) + LoadResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
+
     // todo gif, svg, webpA
     val displayInterceptors = (displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
 
@@ -118,22 +119,13 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueDisplay(
-        uri: Uri,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-        listener: Listener<DisplayRequest, DisplayResult>? = null,
-        httpFetchProgressListener: ProgressListener<DisplayRequest>? = null,
-    ): Disposable<ExecuteResult<DisplayResult>> =
-        enqueueDisplay(DisplayRequest.new(uri, configBlock), listener, httpFetchProgressListener)
-
-    @AnyThread
-    fun enqueueDisplay(
-        uriString: String,
+        url: String?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
         listener: Listener<DisplayRequest, DisplayResult>? = null,
         httpFetchProgressListener: ProgressListener<DisplayRequest>? = null,
     ): Disposable<ExecuteResult<DisplayResult>> =
         enqueueDisplay(
-            DisplayRequest.new(uriString, configBlock),
+            DisplayRequest.new(url, configBlock),
             listener,
             httpFetchProgressListener
         )
@@ -147,14 +139,9 @@ class Sketch constructor(
         }
 
     suspend fun executeDisplay(
-        uri: Uri,
+        url: String?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DisplayResult> = executeDisplay(DisplayRequest.new(uri, configBlock))
-
-    suspend fun executeDisplay(
-        uriString: String,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DisplayResult> = executeDisplay(DisplayRequest.new(uriString, configBlock))
+    ): ExecuteResult<DisplayResult> = executeDisplay(DisplayRequest.new(url, configBlock))
 
 
     /****************************************** Load **********************************************/
@@ -173,21 +160,12 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueLoad(
-        uri: Uri,
+        url: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
         listener: Listener<LoadRequest, LoadResult>? = null,
         httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
     ): Disposable<ExecuteResult<LoadResult>> =
-        enqueueLoad(LoadRequest.new(uri, configBlock), listener, httpFetchProgressListener)
-
-    @AnyThread
-    fun enqueueLoad(
-        uriString: String,
-        configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<LoadRequest, LoadResult>? = null,
-        httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
-    ): Disposable<ExecuteResult<LoadResult>> =
-        enqueueLoad(LoadRequest.new(uriString, configBlock), listener, httpFetchProgressListener)
+        enqueueLoad(LoadRequest.new(url, configBlock), listener, httpFetchProgressListener)
 
     suspend fun executeLoad(request: LoadRequest): ExecuteResult<LoadResult> = coroutineScope {
         val job = async(singleThreadTaskDispatcher) {
@@ -197,14 +175,9 @@ class Sketch constructor(
     }
 
     suspend fun executeLoad(
-        uri: Uri,
+        url: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(uri, configBlock))
-
-    suspend fun executeLoad(
-        uriString: String,
-        configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(uriString, configBlock))
+    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(url, configBlock))
 
 
     /**************************************** Download ********************************************/
@@ -223,21 +196,12 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueDownload(
-        uri: Uri,
-        configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<DownloadRequest, DownloadResult>? = null,
-        httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
-    ): Disposable<ExecuteResult<DownloadResult>> =
-        enqueueDownload(DownloadRequest.new(uri, configBlock), listener, httpFetchProgressListener)
-
-    @AnyThread
-    fun enqueueDownload(
-        uriString: String,
+        url: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
         listener: Listener<DownloadRequest, DownloadResult>? = null,
         httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
     ): Disposable<ExecuteResult<DownloadResult>> = enqueueDownload(
-        DownloadRequest.new(uriString, configBlock), listener, httpFetchProgressListener
+        DownloadRequest.new(url, configBlock), listener, httpFetchProgressListener
     )
 
     suspend fun executeDownload(request: DownloadRequest): ExecuteResult<DownloadResult> =
@@ -249,14 +213,9 @@ class Sketch constructor(
         }
 
     suspend fun executeDownload(
-        uri: Uri,
+        url: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadResult> = executeDownload(DownloadRequest.new(uri, configBlock))
-
-    suspend fun executeDownload(
-        uriString: String,
-        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadResult> = executeDownload(DownloadRequest.new(uriString, configBlock))
+    ): ExecuteResult<DownloadResult> = executeDownload(DownloadRequest.new(url, configBlock))
 
     companion object {
         fun new(

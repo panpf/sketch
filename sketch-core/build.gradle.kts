@@ -31,6 +31,7 @@ dependencies {
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     api("androidx.exifinterface:exifinterface:${property("ANDROIDX_EXIFINTERFACE")}")
+    api("androidx.appcompat:appcompat-resources:${property("ANDROIDX_APPCOMPAT")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")

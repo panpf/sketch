@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.util.DiskLruCache
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.io.IOException
@@ -71,7 +70,7 @@ interface DiskCache {
     operator fun get(encodedKey: String): Entry?
 
     /**
-     * 编辑指定 uri 的缓存
+     * 编辑指定 url 的缓存
      *
      * @param encodedKey 缓存 encodedKey
      * @return [Editor] 缓存编辑器

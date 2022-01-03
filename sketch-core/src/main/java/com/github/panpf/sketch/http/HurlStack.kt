@@ -30,12 +30,12 @@ class HurlStack(
     val userAgent: String?,
     val extraHeaders: Map<String, String>?,
     val addExtraHeaders: Map<String, String>?,
-    val processRequest: ((uri: String, connection: HttpURLConnection) -> Unit)?
+    val processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
 ) : HttpStack {
 
     @Throws(IOException::class)
-    override fun getResponse(sketch: Sketch, request: DownloadableRequest, uri: String): HttpStack.Response {
-        var newUri = uri
+    override fun getResponse(sketch: Sketch, request: DownloadableRequest, url: String): HttpStack.Response {
+        var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
                 connectTimeout = connectTimeout
@@ -57,7 +57,7 @@ class HurlStack(
                 request.httpHeaders?.forEach {
                     setRequestProperty(it.key, it.value)
                 }
-                processRequest?.invoke(uri, this)
+                processRequest?.invoke(url, this)
             }
             connection.connect()
             val code = connection.responseCode
@@ -173,7 +173,7 @@ class HurlStack(
         private var userAgent: String?
         private var extraHeaders: MutableMap<String, String>?
         private var addExtraHeaders: MutableMap<String, String>?
-        private var processRequest: ((uri: String, connection: HttpURLConnection) -> Unit)?
+        private var processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
 
         constructor() {
             this.readTimeout = HttpStack.DEFAULT_READ_TIMEOUT
@@ -235,7 +235,7 @@ class HurlStack(
             }
         }
 
-        fun processRequest(block: (uri: String, connection: HttpURLConnection) -> Unit): Builder =
+        fun processRequest(block: (url: String, connection: HttpURLConnection) -> Unit): Builder =
             apply {
                 this.processRequest = block
             }

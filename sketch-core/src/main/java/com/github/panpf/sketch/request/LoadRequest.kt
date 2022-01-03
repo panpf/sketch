@@ -3,7 +3,6 @@ package com.github.panpf.sketch.request
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
-import android.net.Uri
 import android.os.Build
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
@@ -13,7 +12,7 @@ import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
 
 class LoadRequest private constructor(
-    override val uri: Uri,
+    override val url: String,
     _depth: RequestDepth?,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
@@ -33,12 +32,12 @@ class LoadRequest private constructor(
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
-    override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: url.toString()
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
     override val resultDiskCacheKey: String? by lazy {
-        _resultDiskCacheKey ?: qualityKey?.let { "${uri}_$it" }
+        _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
     }
 
     override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
@@ -50,13 +49,13 @@ class LoadRequest private constructor(
     override val key: String by lazy {
         val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
         val qualityKey = qualityKey?.let { "_${it}" } ?: ""
-        "Load_${uri}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
+        "Load_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
     }
 
     override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
         LoadableRequest.newDecodeOptionsByQualityParams(this, mimeType)
 
-    fun toDownloadRequest(): DownloadRequest = DownloadRequest.new(uri) {
+    fun toDownloadRequest(): DownloadRequest = DownloadRequest.new(url) {
         depth(depth)
         parameters(parameters)
         httpHeaders(httpHeaders)
@@ -78,23 +77,23 @@ class LoadRequest private constructor(
 
     companion object {
         fun new(
-            uri: Uri,
+            url: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): LoadRequest = Builder(uri).apply {
+        ): LoadRequest = Builder(url).apply {
             configBlock?.invoke(this)
         }.build()
 
-        fun new(
-            uriString: String,
+        fun newBuilder(
+            url: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): LoadRequest = Builder(uriString).apply {
+        ): Builder = Builder(url).apply {
             configBlock?.invoke(this)
-        }.build()
+        }
     }
 
     class Builder {
 
-        private val uri: Uri
+        private val url: String
         private var depth: RequestDepth?
         private var parameters: Parameters?
         private var httpHeaders: Map<String, String>?
@@ -111,8 +110,8 @@ class LoadRequest private constructor(
         private var disabledBitmapPool: Boolean?
         private var disabledCorrectExifOrientation: Boolean?
 
-        constructor(uri: Uri) {
-            this.uri = uri
+        constructor(url: String) {
+            this.url = url
             this.depth = null
             this.parameters = null
             this.httpHeaders = null
@@ -132,10 +131,8 @@ class LoadRequest private constructor(
             this.disabledCorrectExifOrientation = null
         }
 
-        constructor(uriString: String) : this(Uri.parse(uriString))
-
         internal constructor(request: LoadRequest) {
-            this.uri = request.uri
+            this.url = request.url
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -265,7 +262,7 @@ class LoadRequest private constructor(
             }
 
         fun build(): LoadRequest = LoadRequest(
-            uri = uri,
+            url = url,
             _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,

@@ -39,10 +39,10 @@ class HttpUriFetcherTest {
         val contentDownloadRequest = DownloadRequest.new("content://sample.com.sample.jpg")
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
 
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpDownloadRequest, null))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpsDownloadRequest, null))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, ftpDownloadRequest, null))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, contentDownloadRequest, null))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpsDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, ftpDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, contentDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
     }
 
     @Test
@@ -58,9 +58,9 @@ class HttpUriFetcherTest {
         // Loop the test 50 times without making any mistakes
         repeat(50) {
             runBlocking {
-                val request = DownloadRequest.new(testUri.uri)
-                val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, null)!!
-                val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+                val request = DownloadRequest.new(testUri.url)
+                val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
+                val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
 
                 diskCache[encodedDiskCacheKey]?.delete()
                 Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -116,11 +116,11 @@ class HttpUriFetcherTest {
 
         // CachePolicy.ENABLED
         runBlocking {
-            val request = DownloadRequest.new(testUri.uri) {
+            val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.ENABLED)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -146,11 +146,11 @@ class HttpUriFetcherTest {
 
         // CachePolicy.DISABLED
         runBlocking {
-            val request = DownloadRequest.new(testUri.uri) {
+            val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.DISABLED)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -176,11 +176,11 @@ class HttpUriFetcherTest {
 
         // CachePolicy.READ_ONLY
         runBlocking {
-            val request = DownloadRequest.new(testUri.uri) {
+            val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.READ_ONLY)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -203,10 +203,10 @@ class HttpUriFetcherTest {
             }
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            val request2 = DownloadRequest.new(testUri.uri) {
+            val request2 = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.ENABLED)
             }
-            val httpUriFetcher2 = httpUriFetcherFactory.create(sketch, request2, null)!!
+            val httpUriFetcher2 = httpUriFetcherFactory.create(sketch, request2, Uri.parse(request2.url), null)!!
             httpUriFetcher2.fetch()
             Assert.assertNotNull(diskCache[encodedDiskCacheKey])
 
@@ -222,11 +222,11 @@ class HttpUriFetcherTest {
 
         // CachePolicy.WRITE_ONLY
         runBlocking {
-            val request = DownloadRequest.new(testUri.uri) {
+            val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.WRITE_ONLY)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -262,8 +262,8 @@ class HttpUriFetcherTest {
         val testUri = TestHttpStack.urls.first()
 
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.uri)
-        val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+        val request = DownloadRequest.new(testUri.url)
+        val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -272,6 +272,7 @@ class HttpUriFetcherTest {
             httpUriFetcherFactory.create(
                 sketch,
                 request,
+                Uri.parse(request.url),
                 ProgressListenerDelegate { _, _, completedLength ->
                     progressList.add(completedLength)
                 })!!
@@ -302,12 +303,13 @@ class HttpUriFetcherTest {
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.urls.first()
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.uri)
-        val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+        val request = DownloadRequest.new(testUri.url)
+        val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
         val httpUriFetcher =
             httpUriFetcherFactory.create(
                 sketch,
                 request,
+                Uri.parse(request.url),
                 ProgressListenerDelegate { _, _, completedLength ->
                     progressList.add(completedLength)
                 })!!
@@ -335,14 +337,15 @@ class HttpUriFetcherTest {
         }
         val diskCache = sketch.diskCache
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
-        val testUri = TestHttpStack.TestUri(Uri.parse("http://fake.jpeg"), 43235)
+        val testUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.uri)
-        val encodedDiskCacheKey = diskCache.encodeKey(request.uri.toString())
+        val request = DownloadRequest.new(testUri.url)
+        val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
         val httpUriFetcher =
             httpUriFetcherFactory.create(
                 sketch,
                 request,
+                Uri.parse(request.url),
                 ProgressListenerDelegate { _, _, completedLength ->
                     progressList.add(completedLength)
                 })!!

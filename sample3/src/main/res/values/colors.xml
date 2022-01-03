@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2E3440</color>
+    <color name="colorPrimaryDark">#2E3440</color>
+    <color name="colorAccent">#bf5660</color>
+    <color name="windowBackground">#2E3440</color>
+
+    <color name="text_normal">#FFFFFF</color>
+    <color name="text_title">#FFFFFF</color>
+    <color name="text_subtitle">#AEFFFFFF</color>
+
+    <color name="list_item_background_pressed">#33000000</color>
+</resources>

@@ -1,12 +1,11 @@
 package com.github.panpf.sketch.request
 
-import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DownloadableRequest
 
 class DownloadRequest private constructor(
-    override val uri: Uri,
+    override val url: String,
     _depth: RequestDepth?,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
@@ -16,13 +15,13 @@ class DownloadRequest private constructor(
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
-    override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: url.toString()
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
     override val key: String by lazy {
         val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-        "Download_${uri}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
+        "Download_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
     }
 
     fun newBuilder(
@@ -39,31 +38,31 @@ class DownloadRequest private constructor(
 
     companion object {
         fun new(
-            uri: Uri,
+            url: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): DownloadRequest = Builder(uri).apply {
+        ): DownloadRequest = Builder(url).apply {
             configBlock?.invoke(this)
         }.build()
 
-        fun new(
-            uriString: String,
+        fun newBuilder(
+            url: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): DownloadRequest = Builder(uriString).apply {
+        ): Builder = Builder(url).apply {
             configBlock?.invoke(this)
-        }.build()
+        }
     }
 
     class Builder {
 
-        private val uri: Uri
+        private val url: String
         private var depth: RequestDepth?
         private var parameters: Parameters?
         private var httpHeaders: Map<String, String>?
         private var diskCacheKey: String?
         private var diskCachePolicy: CachePolicy?
 
-        constructor(uri: Uri) {
-            this.uri = uri
+        constructor(url: String) {
+            this.url = url
             this.depth = null
             this.parameters = null
             this.httpHeaders = null
@@ -71,10 +70,8 @@ class DownloadRequest private constructor(
             this.diskCachePolicy = null
         }
 
-        constructor(uriString: String) : this(Uri.parse(uriString))
-
         internal constructor(request: DownloadRequest) {
-            this.uri = request.uri
+            this.url = request.url
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -103,7 +100,7 @@ class DownloadRequest private constructor(
         }
 
         fun build(): DownloadRequest = DownloadRequest(
-            uri = uri,
+            url = url,
             _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,

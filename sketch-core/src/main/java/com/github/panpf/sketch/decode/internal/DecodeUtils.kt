@@ -19,9 +19,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.byteCountCompat
 import java.io.IOException
 
@@ -119,7 +119,7 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
 //            cause, file!!.path, if (file.exists()) file.length() else -1, request.key
 //        )
 //    } else {
-//        SLog.emf(logName, "Decode failed. %s. %s", cause, request.uri)
+//        SLog.emf(logName, "Decode failed. %s. %s", cause, request.url)
 //    }
 //}
 

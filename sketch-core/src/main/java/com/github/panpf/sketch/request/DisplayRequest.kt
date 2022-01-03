@@ -3,19 +3,22 @@ package com.github.panpf.sketch.request
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
+import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DisplayableRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 
 class DisplayRequest(
-    override val uri: Uri,
+    override val url: String,
     _depth: RequestDepth?,
     override val parameters: Parameters?,
     override val httpHeaders: Map<String, String>?,
@@ -34,19 +37,20 @@ class DisplayRequest(
     _memoryCacheKey: String?,
     _memoryCachePolicy: CachePolicy?,
     override val disabledAnimationDrawable: Boolean?,
-    override val placeholderDrawable: Drawable?,
-    override val errorDrawable: Drawable?,
-    override val emptyDrawable: Drawable?,
+    override val loadingImage: StateImage?,
+    override val errorImage: StateImage?,
+    override val emptyImage: StateImage?,
+    override val target: Target?,
 ) : DisplayableRequest {
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
-    override val diskCacheKey: String = _diskCacheKey ?: uri.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: url
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
     override val resultDiskCacheKey: String? by lazy {
-        _resultDiskCacheKey ?: qualityKey?.let { "${uri}_$it" }
+        _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
     }
 
     override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
@@ -60,7 +64,7 @@ class DisplayRequest(
             val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
             val animationDrawablePart =
                 if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-            "${uri}${qualityKeyPart}${animationDrawablePart}"
+            "${url}${qualityKeyPart}${animationDrawablePart}"
         }
     }
 
@@ -73,7 +77,7 @@ class DisplayRequest(
         val qualityKey = qualityKey?.let { "_${it}" } ?: ""
         val animationDrawablePart =
             if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-        "Display_${uri}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
+        "Display_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
                 "${qualityKey}_memoryCacheKey($memoryCacheKey)_memoryCachePolicy($memoryCachePolicy)${animationDrawablePart}"
     }
 
@@ -92,7 +96,7 @@ class DisplayRequest(
         configBlock?.invoke(this)
     }.build()
 
-    fun toLoadRequest(): LoadRequest = LoadRequest.new(uri) {
+    fun toLoadRequest(): LoadRequest = LoadRequest.new(url) {
         depth(depth)
         parameters(parameters)
         httpHeaders(httpHeaders)
@@ -113,24 +117,26 @@ class DisplayRequest(
     }
 
     companion object {
+        internal const val SIZE_BY_VIEW_FIXED_SIZE: Int = -214238643
+
         fun new(
-            uri: Uri,
+            url: String?,
             configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uri).apply {
+        ): DisplayRequest = Builder(url).apply {
             configBlock?.invoke(this)
         }.build()
 
-        fun new(
-            uriString: String,
+        fun newBuilder(
+            url: String?,
             configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uriString).apply {
+        ): Builder = Builder(url).apply {
             configBlock?.invoke(this)
-        }.build()
+        }
     }
 
     class Builder {
 
-        private val uri: Uri
+        private val url: String
         private var depth: RequestDepth?
         private var parameters: Parameters?
         private var httpHeaders: Map<String, String>?
@@ -149,12 +155,13 @@ class DisplayRequest(
         private var memoryCacheKey: String?
         private var memoryCachePolicy: CachePolicy?
         private var disabledAnimationDrawable: Boolean?
-        private var placeholderDrawable: Drawable?
-        private var errorDrawable: Drawable?
-        private var emptyDrawable: Drawable?
+        private var loadingImage: StateImage?
+        private var errorImage: StateImage?
+        private var emptyImage: StateImage?
+        private var target: Target?
 
-        constructor(uri: Uri) {
-            this.uri = uri
+        constructor(url: String?) {
+            this.url = url ?: ""
             this.depth = null
             this.parameters = null
             this.httpHeaders = null
@@ -175,15 +182,14 @@ class DisplayRequest(
             this.memoryCacheKey = null
             this.memoryCachePolicy = null
             this.disabledAnimationDrawable = null
-            this.placeholderDrawable = null
-            this.errorDrawable = null
-            this.emptyDrawable = null
+            this.loadingImage = null
+            this.errorImage = null
+            this.emptyImage = null
+            this.target = null
         }
 
-        constructor(uriString: String) : this(Uri.parse(uriString))
-
         internal constructor(request: DisplayRequest) {
-            this.uri = request.uri
+            this.url = request.url
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -204,9 +210,10 @@ class DisplayRequest(
             this.memoryCacheKey = request.memoryCacheKey
             this.memoryCachePolicy = request.memoryCachePolicy
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
-            this.placeholderDrawable = request.placeholderDrawable
-            this.errorDrawable = request.errorDrawable
-            this.emptyDrawable = request.emptyDrawable
+            this.loadingImage = request.loadingImage
+            this.errorImage = request.errorImage
+            this.emptyImage = request.emptyImage
+            this.target = request.target
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -246,7 +253,7 @@ class DisplayRequest(
         }
 
         fun maxSizeByViewFixedSize(): Builder = apply {
-            TODO("Not yet implementation")
+            this.maxSize = MaxSize(SIZE_BY_VIEW_FIXED_SIZE, SIZE_BY_VIEW_FIXED_SIZE)
         }
 
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
@@ -305,8 +312,18 @@ class DisplayRequest(
             this.resize = Resize(width, height, mode)
         }
 
-        fun resizeByViewFixedSize(): Builder = apply {
-            TODO("Not yet implementation")
+        fun resizeByViewFixedSize(
+            mode: Resize.Mode = Resize.DEFAULT_MODE,
+            scaleType: ScaleType = Resize.DEFAULT_SCALE_TYPE,
+            minAspectRatio: Float = Resize.DEFAULT_MIN_ASPECT_RATIO
+        ): Builder = apply {
+            this.resize = Resize(
+                SIZE_BY_VIEW_FIXED_SIZE,
+                SIZE_BY_VIEW_FIXED_SIZE,
+                mode,
+                scaleType,
+                minAspectRatio
+            )
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -338,20 +355,28 @@ class DisplayRequest(
             this.disabledAnimationDrawable = disabledAnimationDrawable
         }
 
-        fun placeholderDrawable(placeholderDrawable: Drawable?): Builder = apply {
-            this.placeholderDrawable = placeholderDrawable
+        fun loadingImage(loadingImage: StateImage?): Builder = apply {
+            this.loadingImage = loadingImage
         }
 
-        fun errorDrawable(errorDrawable: Drawable?): Builder = apply {
-            this.errorDrawable = errorDrawable
+        fun errorImage(errorImage: StateImage?): Builder = apply {
+            this.errorImage = errorImage
         }
 
-        fun emptyDrawable(emptyDrawable: Drawable): Builder = apply {
-            this.emptyDrawable = emptyDrawable
+        fun emptyImage(emptyImage: StateImage?): Builder = apply {
+            this.emptyImage = emptyImage
+        }
+
+        fun target(target: Target?): Builder = apply {
+            this.target = target
+        }
+
+        fun target(imageView: ImageView): Builder = apply {
+            this.target = ImageViewTarget(imageView)
         }
 
         fun build(): DisplayRequest = DisplayRequest(
-            uri = uri,
+            url = url,
             _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
@@ -370,9 +395,10 @@ class DisplayRequest(
             _memoryCacheKey = memoryCacheKey,
             _memoryCachePolicy = memoryCachePolicy,
             disabledAnimationDrawable = disabledAnimationDrawable,
-            placeholderDrawable = placeholderDrawable,
-            errorDrawable = errorDrawable,
-            emptyDrawable = emptyDrawable,
+            loadingImage = loadingImage,
+            errorImage = errorImage,
+            emptyImage = emptyImage,
+            target = target,
         )
     }
 }
