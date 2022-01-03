@@ -7,7 +7,6 @@ import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ByteArrayDownloadResult
 import com.github.panpf.sketch.request.DiskCacheDownloadResult
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
@@ -19,27 +18,19 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<LoadRequest, LoadResult>,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<LoadRequest>?
     ): LoadResult {
         val request = chain.request
         val componentRegistry = sketch.componentRegistry
-        val httpFetchProgressListenerDelegate1 =
-            httpFetchProgressListenerDelegate as ProgressListenerDelegate<ImageRequest>?
         val fetcher =
-            componentRegistry.newFetcher(sketch, request, httpFetchProgressListenerDelegate1)
+            componentRegistry.newFetcher(sketch, request)
         val source = if (fetcher is HttpUriFetcher) {
             val downloadRequest = request.toDownloadRequest()
-            val downloadRequestProgressListenerDelegate = httpFetchProgressListenerDelegate?.let {
-                ProgressListenerDelegate<DownloadRequest> { _, it2, it3 ->
-                    it.progressListener.onUpdateProgress(request, it2, it3)
-                }
-            }
             val downloadResult = DownloadInterceptorChain(
                 initialRequest = downloadRequest,
                 interceptors = sketch.downloadInterceptors,
                 index = 0,
                 request = downloadRequest,
-            ).proceed(sketch, downloadRequest, downloadRequestProgressListenerDelegate)
+            ).proceed(sketch, downloadRequest)
             when (downloadResult) {
                 is ByteArrayDownloadResult -> ByteArrayDataSource(
                     downloadResult.data,

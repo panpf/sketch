@@ -5,7 +5,6 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 
 class ComponentRegistry private constructor(
     val fetcherFactoryList: List<Fetcher.Factory>,
@@ -24,14 +23,10 @@ class ComponentRegistry private constructor(
         configBlock?.invoke(this)
     }.build()
 
-    fun newFetcher(
-        sketch: Sketch,
-        request: ImageRequest,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
-    ): Fetcher {
+    fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
         val url = Uri.parse(request.url)
         return fetcherFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, request, url, httpFetchProgressListenerDelegate)
+            it.create(sketch, request, url)
         } ?: throw IllegalArgumentException(
             "No Fetcher can handle this url: ${request.url}, " +
                     "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"

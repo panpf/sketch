@@ -34,11 +34,11 @@ class DownloadExecutorTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalListenerActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url)
+        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url){
+            listener(normalDownloadListenerSupervisor)
+        }
         runBlocking {
-            DownloadExecutor(normalSketch).execute(
-                normalRequest, normalDownloadListenerSupervisor, null
-            )
+            DownloadExecutor(normalSketch).execute(normalRequest)
         }.apply {
             Assert.assertTrue(this is ExecuteResult.Success)
         }
@@ -54,12 +54,11 @@ class DownloadExecutorTest {
         val cancelListenerList = cancelDownloadListenerSupervisor.callbackActionList
         val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().url) {
             diskCachePolicy(CachePolicy.DISABLED)
+            listener(cancelDownloadListenerSupervisor)
         }
         runBlocking {
             val job = launch {
-                DownloadExecutor(slowSketch).execute(
-                    cancelRequest, cancelDownloadListenerSupervisor, null
-                )
+                DownloadExecutor(slowSketch).execute(cancelRequest)
             }
             delay(1000)
             job.cancelAndJoin()
@@ -74,11 +73,10 @@ class DownloadExecutorTest {
         val errorListenerActionList = errorDownloadListenerSupervisor.callbackActionList
         val errorRequest = DownloadRequest.new(errorTestUri.url) {
             diskCachePolicy(CachePolicy.DISABLED)
+            listener(errorDownloadListenerSupervisor)
         }
         runBlocking {
-            DownloadExecutor(slowSketch).execute(
-                errorRequest, errorDownloadListenerSupervisor, null
-            )
+            DownloadExecutor(slowSketch).execute(errorRequest)
         }.apply {
             Assert.assertTrue(this is ExecuteResult.Error)
         }

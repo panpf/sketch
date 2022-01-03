@@ -33,9 +33,11 @@ class SketchTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url)
+        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url){
+            listener(normalDownloadListenerSupervisor)
+        }
         val normalDisposable =
-            normalSketch.enqueueDownload(normalRequest, normalDownloadListenerSupervisor)
+            normalSketch.enqueueDownload(normalRequest)
         runBlocking {
             normalDisposable.job.await()
         }.apply {
@@ -53,9 +55,10 @@ class SketchTest {
         val cancelCallbackActionList = cancelDownloadListenerSupervisor.callbackActionList
         val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().url) {
             diskCachePolicy(CachePolicy.DISABLED)
+            listener(cancelDownloadListenerSupervisor)
         }
         val cancelDisposable =
-            slowSketch.enqueueDownload(cancelRequest, cancelDownloadListenerSupervisor)
+            slowSketch.enqueueDownload(cancelRequest)
         runBlocking {
             delay(1000)
             cancelDisposable.dispose()
@@ -71,9 +74,10 @@ class SketchTest {
         val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val errorRequest = DownloadRequest.new(errorTestUri.url) {
             diskCachePolicy(CachePolicy.DISABLED)
+            listener(errorDownloadListenerSupervisor)
         }
         val errorDisposable =
-            slowSketch.enqueueDownload(errorRequest, errorDownloadListenerSupervisor)
+            slowSketch.enqueueDownload(errorRequest)
         runBlocking {
             errorDisposable.job.await()
         }.apply {

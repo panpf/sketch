@@ -3,6 +3,7 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DownloadableRequest
+import com.github.panpf.sketch.request.internal.ListenerRequest
 
 class DownloadRequest private constructor(
     override val url: String,
@@ -11,7 +12,9 @@ class DownloadRequest private constructor(
     override val httpHeaders: Map<String, String>?,
     _diskCacheKey: String?,
     _diskCachePolicy: CachePolicy?,
-) : DownloadableRequest {
+    override val listener: Listener<DownloadRequest, DownloadResult>?,
+    override val networkProgressListener: ProgressListener<DownloadRequest>?,
+) : DownloadableRequest, ListenerRequest<DownloadRequest, DownloadResult> {
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
@@ -52,31 +55,24 @@ class DownloadRequest private constructor(
         }
     }
 
-    class Builder {
+    class Builder(private val url: String) {
 
-        private val url: String
-        private var depth: RequestDepth?
-        private var parameters: Parameters?
-        private var httpHeaders: Map<String, String>?
-        private var diskCacheKey: String?
-        private var diskCachePolicy: CachePolicy?
+        private var depth: RequestDepth? = null
+        private var parameters: Parameters? = null
+        private var httpHeaders: Map<String, String>? = null
+        private var diskCacheKey: String? = null
+        private var diskCachePolicy: CachePolicy? = null
+        private var listener: Listener<DownloadRequest, DownloadResult>? = null
+        private var networkProgressListener: ProgressListener<DownloadRequest>? = null
 
-        constructor(url: String) {
-            this.url = url
-            this.depth = null
-            this.parameters = null
-            this.httpHeaders = null
-            this.diskCacheKey = null
-            this.diskCachePolicy = null
-        }
-
-        internal constructor(request: DownloadRequest) {
-            this.url = request.url
+        internal constructor(request: DownloadRequest) : this(request.url) {
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
+            this.listener = request.listener
+            this.networkProgressListener = request.networkProgressListener
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -99,6 +95,15 @@ class DownloadRequest private constructor(
             this.diskCachePolicy = diskCachePolicy
         }
 
+        fun listener(listener: Listener<DownloadRequest, DownloadResult>?): Builder = apply {
+            this.listener = listener
+        }
+
+        fun networkProgressListener(networkProgressListener: ProgressListener<DownloadRequest>?): Builder =
+            apply {
+                this.networkProgressListener = networkProgressListener
+            }
+
         fun build(): DownloadRequest = DownloadRequest(
             url = url,
             _depth = depth,
@@ -106,6 +111,8 @@ class DownloadRequest private constructor(
             httpHeaders = httpHeaders,
             _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
+            listener = listener,
+            networkProgressListener = networkProgressListener,
         )
     }
 }

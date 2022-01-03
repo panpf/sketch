@@ -79,7 +79,7 @@ class DiskCacheDirCreator(private val context: Context) {
                             Formatter.formatFileSize(context, availableBytes)
                         val minSpaceFormatted = Formatter.formatFileSize(context, minSpaceSize)
                         noSpaceException =
-                            IOException("Not enough storage space. Need " + availableFormatted + ", with only " + minSpaceFormatted + " in " + diskCacheDir.path)
+                            IOException("Not enough storage space. Need " + minSpaceFormatted + ", with only " + availableFormatted + " in " + diskCacheDir.path)
                         break
                     }
                 }

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DisplayableRequest
+import com.github.panpf.sketch.request.internal.ListenerRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
@@ -41,7 +42,9 @@ class DisplayRequest(
     override val errorImage: StateImage?,
     override val emptyImage: StateImage?,
     override val target: Target?,
-) : DisplayableRequest {
+    override val listener: Listener<DisplayRequest, DisplayResult>?,
+    override val networkProgressListener: ProgressListener<DisplayRequest>?,
+) : DisplayableRequest, ListenerRequest<DisplayRequest, DisplayResult> {
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
@@ -114,6 +117,11 @@ class DisplayRequest(
         transformations(transformations)
         disabledBitmapPool(disabledBitmapPool)
         disabledCorrectExifOrientation(disabledCorrectExifOrientation)
+        networkProgressListener?.let {
+            networkProgressListener { _, totalLength, completedLength ->
+                it.onUpdateProgress(this@DisplayRequest, totalLength, completedLength)
+            }
+        }
     }
 
     companion object {
@@ -159,6 +167,8 @@ class DisplayRequest(
         private var errorImage: StateImage?
         private var emptyImage: StateImage?
         private var target: Target?
+        private var listener: Listener<DisplayRequest, DisplayResult>? = null
+        private var networkProgressListener: ProgressListener<DisplayRequest>? = null
 
         constructor(url: String?) {
             this.url = url ?: ""
@@ -214,6 +224,8 @@ class DisplayRequest(
             this.errorImage = request.errorImage
             this.emptyImage = request.emptyImage
             this.target = request.target
+            this.listener = request.listener
+            this.networkProgressListener = request.networkProgressListener
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -375,6 +387,15 @@ class DisplayRequest(
             this.target = ImageViewTarget(imageView)
         }
 
+        fun listener(listener: Listener<DisplayRequest, DisplayResult>?): Builder = apply {
+            this.listener = listener
+        }
+
+        fun networkProgressListener(networkProgressListener: ProgressListener<DisplayRequest>?): Builder =
+            apply {
+                this.networkProgressListener = networkProgressListener
+            }
+
         fun build(): DisplayRequest = DisplayRequest(
             url = url,
             _depth = depth,
@@ -399,6 +420,8 @@ class DisplayRequest(
             errorImage = errorImage,
             emptyImage = emptyImage,
             target = target,
+            listener = listener,
+            networkProgressListener = networkProgressListener,
         )
     }
 }

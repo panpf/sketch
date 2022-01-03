@@ -23,7 +23,6 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<LoadRequest, LoadResult>,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<LoadRequest>?
     ): LoadResult {
         val diskCache = sketch.diskCache
         val request = chain.request
@@ -40,7 +39,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                 }
             }
 
-            val loadResult = chain.proceed(sketch, request, httpFetchProgressListenerDelegate)
+            val loadResult = chain.proceed(sketch, request)
 
             if (resultCacheHelper != null && request.resultDiskCachePolicy.writeEnabled) {
                 withContext(sketch.decodeTaskDispatcher) {

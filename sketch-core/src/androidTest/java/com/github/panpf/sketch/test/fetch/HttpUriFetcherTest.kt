@@ -11,7 +11,6 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.test.util.TestHttpStack
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -39,10 +38,34 @@ class HttpUriFetcherTest {
         val contentDownloadRequest = DownloadRequest.new("content://sample.com.sample.jpg")
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
 
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpsDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, ftpDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, contentDownloadRequest, Uri.parse(httpDownloadRequest.url), null))
+        Assert.assertNotNull(
+            httpUriFetcherFactory.create(
+                sketch,
+                httpDownloadRequest,
+                Uri.parse(httpDownloadRequest.url)
+            )
+        )
+        Assert.assertNotNull(
+            httpUriFetcherFactory.create(
+                sketch,
+                httpsDownloadRequest,
+                Uri.parse(httpsDownloadRequest.url)
+            )
+        )
+        Assert.assertNull(
+            httpUriFetcherFactory.create(
+                sketch,
+                ftpDownloadRequest,
+                Uri.parse(ftpDownloadRequest.url)
+            )
+        )
+        Assert.assertNull(
+            httpUriFetcherFactory.create(
+                sketch,
+                contentDownloadRequest,
+                Uri.parse(contentDownloadRequest.url)
+            )
+        )
     }
 
     @Test
@@ -59,8 +82,9 @@ class HttpUriFetcherTest {
         repeat(50) {
             runBlocking {
                 val request = DownloadRequest.new(testUri.url)
-                val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
-                val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
+                val httpUriFetcher =
+                    httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
+                val encodedDiskCacheKey = diskCache.encodeKey(request.url)
 
                 diskCache[encodedDiskCacheKey]?.delete()
                 Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -119,13 +143,14 @@ class HttpUriFetcherTest {
             val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.ENABLED)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
+            val httpUriFetcher =
+                httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url)
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -134,7 +159,7 @@ class HttpUriFetcherTest {
             }
             Assert.assertNotNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.DISK_CACHE, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -149,13 +174,14 @@ class HttpUriFetcherTest {
             val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.DISABLED)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
+            val httpUriFetcher =
+                httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url)
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -164,7 +190,7 @@ class HttpUriFetcherTest {
             }
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -179,13 +205,14 @@ class HttpUriFetcherTest {
             val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.READ_ONLY)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
+            val httpUriFetcher =
+                httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url)
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -194,7 +221,7 @@ class HttpUriFetcherTest {
             }
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -206,11 +233,12 @@ class HttpUriFetcherTest {
             val request2 = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.ENABLED)
             }
-            val httpUriFetcher2 = httpUriFetcherFactory.create(sketch, request2, Uri.parse(request2.url), null)!!
+            val httpUriFetcher2 =
+                httpUriFetcherFactory.create(sketch, request2, Uri.parse(request2.url))!!
             httpUriFetcher2.fetch()
             Assert.assertNotNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.DISK_CACHE, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -225,13 +253,14 @@ class HttpUriFetcherTest {
             val request = DownloadRequest.new(testUri.url) {
                 diskCachePolicy(CachePolicy.WRITE_ONLY)
             }
-            val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url), null)!!
-            val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
+            val httpUriFetcher =
+                httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
+            val encodedDiskCacheKey = diskCache.encodeKey(request.url)
 
             diskCache[encodedDiskCacheKey]?.delete()
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -240,7 +269,7 @@ class HttpUriFetcherTest {
             }
             Assert.assertNotNull(diskCache[encodedDiskCacheKey])
 
-            httpUriFetcher.fetch()!!.apply {
+            httpUriFetcher.fetch().apply {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
@@ -262,20 +291,17 @@ class HttpUriFetcherTest {
         val testUri = TestHttpStack.urls.first()
 
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.url)
-        val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
+        val request = DownloadRequest.new(testUri.url) {
+            networkProgressListener { _, _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
+        val encodedDiskCacheKey = diskCache.encodeKey(request.url)
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-        val httpUriFetcher =
-            httpUriFetcherFactory.create(
-                sketch,
-                request,
-                Uri.parse(request.url),
-                ProgressListenerDelegate { _, _, completedLength ->
-                    progressList.add(completedLength)
-                })!!
+        val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
         runBlocking {
             httpUriFetcher.fetch()
             delay(1000)
@@ -303,16 +329,13 @@ class HttpUriFetcherTest {
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.urls.first()
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.url)
-        val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
-        val httpUriFetcher =
-            httpUriFetcherFactory.create(
-                sketch,
-                request,
-                Uri.parse(request.url),
-                ProgressListenerDelegate { _, _, completedLength ->
-                    progressList.add(completedLength)
-                })!!
+        val request = DownloadRequest.new(testUri.url) {
+            networkProgressListener { _, _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
+        val encodedDiskCacheKey = diskCache.encodeKey(request.url)
+        val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])
@@ -339,16 +362,13 @@ class HttpUriFetcherTest {
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.url)
-        val encodedDiskCacheKey = diskCache.encodeKey(request.url.toString())
-        val httpUriFetcher =
-            httpUriFetcherFactory.create(
-                sketch,
-                request,
-                Uri.parse(request.url),
-                ProgressListenerDelegate { _, _, completedLength ->
-                    progressList.add(completedLength)
-                })!!
+        val request = DownloadRequest.new(testUri.url) {
+            networkProgressListener { _, _, completedLength ->
+                progressList.add(completedLength)
+            }
+        }
+        val encodedDiskCacheKey = diskCache.encodeKey(request.url)
+        val httpUriFetcher = httpUriFetcherFactory.create(sketch, request, Uri.parse(request.url))!!
 
         diskCache[encodedDiskCacheKey]?.delete()
         Assert.assertNull(diskCache[encodedDiskCacheKey])

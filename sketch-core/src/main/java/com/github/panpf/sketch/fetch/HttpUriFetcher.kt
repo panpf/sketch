@@ -13,11 +13,11 @@ import com.github.panpf.sketch.request.DownloadException
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.DownloadableRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
+import com.github.panpf.sketch.request.internal.ListenerRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -28,7 +28,7 @@ import java.io.OutputStream
 class HttpUriFetcher(
     private val sketch: Sketch,
     private val request: DownloadableRequest,
-    private val httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
+    private val listenerRequest: ListenerRequest<ImageRequest, ImageResult>?,
 ) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
@@ -55,7 +55,7 @@ class HttpUriFetcher(
                 }
             }
 
-            return withContext(sketch.httpDownloadTaskDispatcher) {
+            return withContext(sketch.networkTaskDispatcher) {
                 executeHttpDownload(
                     httpStack, diskCachePolicy, diskCache, encodedDiskCacheKey, this
                 )
@@ -66,7 +66,7 @@ class HttpUriFetcher(
     }
 
     @Throws(IOException::class)
-    private suspend fun executeHttpDownload(
+    private fun executeHttpDownload(
         httpStack: HttpStack,
         diskCachePolicy: CachePolicy,
         diskCache: DiskCache,
@@ -104,7 +104,7 @@ class HttpUriFetcher(
     }
 
     @Throws(IOException::class)
-    private suspend fun writeToDiskCache(
+    private fun writeToDiskCache(
         response: HttpStack.Response,
         diskCacheEditor: DiskCache.Editor,
         diskCache: DiskCache,
@@ -143,7 +143,7 @@ class HttpUriFetcher(
         throw e
     }
 
-    private suspend fun writeToByteArray(
+    private fun writeToByteArray(
         response: HttpStack.Response,
         coroutineScope: CoroutineScope
     ): ByteArray? {
@@ -164,7 +164,7 @@ class HttpUriFetcher(
         }
     }
 
-    private suspend fun InputStream.copyToWithActive(
+    private fun InputStream.copyToWithActive(
         out: OutputStream,
         bufferSize: Int = DEFAULT_BUFFER_SIZE,
         coroutineScope: CoroutineScope,
@@ -174,19 +174,20 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListener = httpFetchProgressListenerDelegate
+        val progressListenerDelegate = listenerRequest?.networkProgressListener?.let {
+            ProgressListenerDelegate(coroutineScope, it)
+        }
         var lastUpdateProgressBytesCopied = 0L
         while (bytes >= 0 && coroutineScope.isActive) {
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
-            if (progressListener != null && contentLength > 0) {
+            if (progressListenerDelegate != null && contentLength > 0) {
                 val currentTime = System.currentTimeMillis()
                 if ((currentTime - lastNotifyTime) > 1000) {
                     lastNotifyTime = currentTime
                     val currentBytesCopied = bytesCopied
                     lastUpdateProgressBytesCopied = currentBytesCopied
-                    @Suppress("DeferredResultUnused")
-                    progressListener.onUpdateProgress(
+                    progressListenerDelegate.onUpdateProgress(
                         request, contentLength, currentBytesCopied
                     )
                 }
@@ -194,28 +195,24 @@ class HttpUriFetcher(
             bytes = read(buffer)
         }
         if (coroutineScope.isActive
-            && progressListener != null
+            && progressListenerDelegate != null
             && contentLength > 0
             && bytesCopied > 0
             && lastUpdateProgressBytesCopied != bytesCopied
         ) {
-            @Suppress("DeferredResultUnused")
-            coroutineScope.async(Dispatchers.Main) {
-                progressListener.onUpdateProgress(request, contentLength, bytesCopied)
-            }
+            progressListenerDelegate.onUpdateProgress(request, contentLength, bytesCopied)
         }
         return bytesCopied
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(
-            sketch: Sketch,
-            request: ImageRequest,
-            uri: Uri,
-            httpFetchProgressListenerDelegate: ProgressListenerDelegate<ImageRequest>?
-        ): HttpUriFetcher? =
+        override fun create(sketch: Sketch, request: ImageRequest, uri: Uri): HttpUriFetcher? =
             if (request is DownloadableRequest && isApplicable(uri)) {
-                HttpUriFetcher(sketch, request, httpFetchProgressListenerDelegate)
+                HttpUriFetcher(
+                    sketch,
+                    request,
+                    request as ListenerRequest<ImageRequest, ImageResult>?
+                )
             } else {
                 null
             }

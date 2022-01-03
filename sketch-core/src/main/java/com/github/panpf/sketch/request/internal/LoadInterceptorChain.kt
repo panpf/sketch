@@ -17,11 +17,10 @@ internal class LoadInterceptorChain(
     override suspend fun proceed(
         sketch: Sketch,
         request: LoadRequest,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<LoadRequest>?
     ): LoadResult {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)
-        return interceptor.intercept(sketch, next, httpFetchProgressListenerDelegate)
+        return interceptor.intercept(sketch, next)
     }
 
     private fun copy(

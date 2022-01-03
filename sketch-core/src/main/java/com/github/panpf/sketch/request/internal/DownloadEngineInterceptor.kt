@@ -17,15 +17,10 @@ class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
     override suspend fun intercept(
         sketch: Sketch,
         chain: Interceptor.Chain<DownloadRequest, DownloadResult>,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<DownloadRequest>?
     ): DownloadResult {
         val request = chain.request
 
-        val fetcher = sketch.componentRegistry.newFetcher(
-            sketch,
-            request,
-            httpFetchProgressListenerDelegate as ProgressListenerDelegate<ImageRequest>?
-        )
+        val fetcher = sketch.componentRegistry.newFetcher(sketch, request)
         if (fetcher !is HttpUriFetcher) {
             throw IllegalArgumentException("Download only support HTTP and HTTPS url: ${request.url}")
         }

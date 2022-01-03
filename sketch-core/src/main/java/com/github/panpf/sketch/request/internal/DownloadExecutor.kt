@@ -5,23 +5,14 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ExecuteResult
-import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.ProgressListener
 import kotlinx.coroutines.CancellationException
 
 class DownloadExecutor(private val sketch: Sketch) {
 
     @WorkerThread
-    suspend fun execute(
-        request: DownloadRequest,
-        lifecycleListener: Listener<DownloadRequest, DownloadResult>?,
-        httpFetchProgressListener: ProgressListener<DownloadRequest>?,
-    ): ExecuteResult<DownloadResult> {
-        val listenerDelegate = lifecycleListener?.run {
+    suspend fun execute(request: DownloadRequest): ExecuteResult<DownloadResult> {
+        val listenerDelegate = request.listener?.run {
             ListenerDelegate(this)
-        }
-        val progressListenerDelegate = httpFetchProgressListener?.run {
-            ProgressListenerDelegate(this)
         }
 
         try {
@@ -32,7 +23,7 @@ class DownloadExecutor(private val sketch: Sketch) {
                 interceptors = sketch.downloadInterceptors,
                 index = 0,
                 request = request,
-            ).proceed(sketch, request, progressListenerDelegate)
+            ).proceed(sketch, request)
 
             listenerDelegate?.onSuccess(request, downloadResult)
             return ExecuteResult.Success(downloadResult)

@@ -6,9 +6,7 @@ import com.github.panpf.sketch.request.DisplayException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ExecuteResult
-import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.MaxSize
-import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.calculateFixedSize
@@ -21,14 +19,9 @@ class DisplayExecutor(private val sketch: Sketch) {
     @WorkerThread
     suspend fun execute(
         request: DisplayRequest,
-        lifecycleListener: Listener<DisplayRequest, DisplayResult>?,
-        httpFetchProgressListener: ProgressListener<DisplayRequest>?,
     ): ExecuteResult<DisplayResult> {
-        val listenerDelegate = lifecycleListener?.run {
+        val listenerDelegate = request.listener?.run {
             ListenerDelegate(this)
-        }
-        val progressListenerDelegate = httpFetchProgressListener?.run {
-            ProgressListenerDelegate(this)
         }
         val newRequest = withContext(Dispatchers.Main) {
             convertFixedSize(request)
@@ -70,7 +63,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                     interceptors = sketch.displayInterceptors,
                     index = 0,
                     request = newRequest,
-                ).proceed(sketch, newRequest, progressListenerDelegate)
+                ).proceed(sketch, newRequest)
 
                 withContext(Dispatchers.Main) {
                     target?.onSuccess(displayResult.drawable)

@@ -17,11 +17,10 @@ internal class DisplayInterceptorChain(
     override suspend fun proceed(
         sketch: Sketch,
         request: DisplayRequest,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<DisplayRequest>?
     ): DisplayResult {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)
-        return interceptor.intercept(sketch, next, httpFetchProgressListenerDelegate)
+        return interceptor.intercept(sketch, next)
     }
 
     private fun copy(

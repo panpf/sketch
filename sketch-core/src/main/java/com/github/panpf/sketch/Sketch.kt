@@ -86,7 +86,7 @@ class Sketch constructor(
     val displayInterceptors = (displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
 
     val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
-    val httpDownloadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
@@ -106,13 +106,9 @@ class Sketch constructor(
     /***************************************** Display ********************************************/
 
     @AnyThread
-    fun enqueueDisplay(
-        request: DisplayRequest,
-        listener: Listener<DisplayRequest, DisplayResult>? = null,
-        httpFetchProgressListener: ProgressListener<DisplayRequest>? = null,
-    ): Disposable<ExecuteResult<DisplayResult>> {
+    fun enqueueDisplay(request: DisplayRequest): Disposable<ExecuteResult<DisplayResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
-            displayExecutor.execute(request, listener, httpFetchProgressListener)
+            displayExecutor.execute(request)
         }
         return OneShotDisposable(job)
     }
@@ -121,19 +117,13 @@ class Sketch constructor(
     fun enqueueDisplay(
         url: String?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-        listener: Listener<DisplayRequest, DisplayResult>? = null,
-        httpFetchProgressListener: ProgressListener<DisplayRequest>? = null,
     ): Disposable<ExecuteResult<DisplayResult>> =
-        enqueueDisplay(
-            DisplayRequest.new(url, configBlock),
-            listener,
-            httpFetchProgressListener
-        )
+        enqueueDisplay(DisplayRequest.new(url, configBlock))
 
     suspend fun executeDisplay(request: DisplayRequest): ExecuteResult<DisplayResult> =
         coroutineScope {
             val job = async(singleThreadTaskDispatcher) {
-                displayExecutor.execute(request, null, null)
+                displayExecutor.execute(request)
             }
             job.await()
         }
@@ -147,13 +137,9 @@ class Sketch constructor(
     /****************************************** Load **********************************************/
 
     @AnyThread
-    fun enqueueLoad(
-        request: LoadRequest,
-        listener: Listener<LoadRequest, LoadResult>? = null,
-        httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
-    ): Disposable<ExecuteResult<LoadResult>> {
+    fun enqueueLoad(request: LoadRequest): Disposable<ExecuteResult<LoadResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
-            loadExecutor.execute(request, listener, httpFetchProgressListener)
+            loadExecutor.execute(request)
         }
         return OneShotDisposable(job)
     }
@@ -162,14 +148,11 @@ class Sketch constructor(
     fun enqueueLoad(
         url: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-        listener: Listener<LoadRequest, LoadResult>? = null,
-        httpFetchProgressListener: ProgressListener<LoadRequest>? = null,
-    ): Disposable<ExecuteResult<LoadResult>> =
-        enqueueLoad(LoadRequest.new(url, configBlock), listener, httpFetchProgressListener)
+    ): Disposable<ExecuteResult<LoadResult>> = enqueueLoad(LoadRequest.new(url, configBlock))
 
     suspend fun executeLoad(request: LoadRequest): ExecuteResult<LoadResult> = coroutineScope {
         val job = async(singleThreadTaskDispatcher) {
-            loadExecutor.execute(request, null, null)
+            loadExecutor.execute(request)
         }
         job.await()
     }
@@ -183,13 +166,9 @@ class Sketch constructor(
     /**************************************** Download ********************************************/
 
     @AnyThread
-    fun enqueueDownload(
-        request: DownloadRequest,
-        listener: Listener<DownloadRequest, DownloadResult>? = null,
-        httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
-    ): Disposable<ExecuteResult<DownloadResult>> {
+    fun enqueueDownload(request: DownloadRequest): Disposable<ExecuteResult<DownloadResult>> {
         val job = scope.async(singleThreadTaskDispatcher) {
-            downloadExecutor.execute(request, listener, httpFetchProgressListener)
+            downloadExecutor.execute(request)
         }
         return OneShotDisposable(job)
     }
@@ -200,14 +179,13 @@ class Sketch constructor(
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
         listener: Listener<DownloadRequest, DownloadResult>? = null,
         httpFetchProgressListener: ProgressListener<DownloadRequest>? = null,
-    ): Disposable<ExecuteResult<DownloadResult>> = enqueueDownload(
-        DownloadRequest.new(url, configBlock), listener, httpFetchProgressListener
-    )
+    ): Disposable<ExecuteResult<DownloadResult>> =
+        enqueueDownload(DownloadRequest.new(url, configBlock))
 
     suspend fun executeDownload(request: DownloadRequest): ExecuteResult<DownloadResult> =
         coroutineScope {
             val job = async(singleThreadTaskDispatcher) {
-                downloadExecutor.execute(request, null, null)
+                downloadExecutor.execute(request)
             }
             job.await()
         }

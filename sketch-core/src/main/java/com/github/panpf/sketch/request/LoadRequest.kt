@@ -8,6 +8,7 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.internal.ListenerRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
 
@@ -28,11 +29,13 @@ class LoadRequest private constructor(
     override val transformations: List<Transformation>?,
     override val disabledBitmapPool: Boolean?,
     override val disabledCorrectExifOrientation: Boolean?,
-) : LoadableRequest {
+    override val listener: Listener<LoadRequest, LoadResult>?,
+    override val networkProgressListener: ProgressListener<LoadRequest>?,
+) : LoadableRequest, ListenerRequest<LoadRequest, LoadResult> {
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
-    override val diskCacheKey: String = _diskCacheKey ?: url.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: url
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
@@ -61,6 +64,11 @@ class LoadRequest private constructor(
         httpHeaders(httpHeaders)
         diskCacheKey(diskCacheKey)
         diskCachePolicy(diskCachePolicy)
+        networkProgressListener?.let {
+            networkProgressListener { _, totalLength, completedLength ->
+                it.onUpdateProgress(this@LoadRequest, totalLength, completedLength)
+            }
+        }
     }
 
     fun newBuilder(
@@ -91,48 +99,27 @@ class LoadRequest private constructor(
         }
     }
 
-    class Builder {
+    class Builder(private val url: String) {
 
-        private val url: String
-        private var depth: RequestDepth?
-        private var parameters: Parameters?
-        private var httpHeaders: Map<String, String>?
-        private var diskCacheKey: String?
-        private var diskCachePolicy: CachePolicy?
-        private var resultDiskCacheKey: String?
-        private var resultDiskCachePolicy: CachePolicy?
-        private var maxSize: MaxSize?
-        private var bitmapConfig: BitmapConfig?
+        private var depth: RequestDepth? = null
+        private var parameters: Parameters? = null
+        private var httpHeaders: Map<String, String>? = null
+        private var diskCacheKey: String? = null
+        private var diskCachePolicy: CachePolicy? = null
+        private var resultDiskCacheKey: String? = null
+        private var resultDiskCachePolicy: CachePolicy? = null
+        private var maxSize: MaxSize? = null
+        private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
-        private var preferQualityOverSpeed: Boolean?
-        private var resize: Resize?
-        private var transformations: List<Transformation>?
-        private var disabledBitmapPool: Boolean?
-        private var disabledCorrectExifOrientation: Boolean?
+        private var preferQualityOverSpeed: Boolean? = null
+        private var resize: Resize? = null
+        private var transformations: List<Transformation>? = null
+        private var disabledBitmapPool: Boolean? = null
+        private var disabledCorrectExifOrientation: Boolean? = null
+        private var listener: Listener<LoadRequest, LoadResult>? = null
+        private var networkProgressListener: ProgressListener<LoadRequest>? = null
 
-        constructor(url: String) {
-            this.url = url
-            this.depth = null
-            this.parameters = null
-            this.httpHeaders = null
-            this.diskCacheKey = null
-            this.diskCachePolicy = null
-            this.resultDiskCacheKey = null
-            this.resultDiskCachePolicy = null
-            this.maxSize = MaxSize.SCREEN_SIZE
-            this.bitmapConfig = null
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                this.colorSpace = null
-            }
-            this.preferQualityOverSpeed = null
-            this.resize = null
-            this.transformations = null
-            this.disabledBitmapPool = null
-            this.disabledCorrectExifOrientation = null
-        }
-
-        internal constructor(request: LoadRequest) {
-            this.url = request.url
+        internal constructor(request: LoadRequest) : this(request.url) {
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -150,6 +137,8 @@ class LoadRequest private constructor(
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+            this.listener = request.listener
+            this.networkProgressListener = request.networkProgressListener
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -261,6 +250,16 @@ class LoadRequest private constructor(
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
             }
 
+        fun listener(listener: Listener<LoadRequest, LoadResult>?): Builder =
+            apply {
+                this.listener = listener
+            }
+
+        fun networkProgressListener(networkProgressListener: ProgressListener<LoadRequest>?): Builder =
+            apply {
+                this.networkProgressListener = networkProgressListener
+            }
+
         fun build(): LoadRequest = LoadRequest(
             url = url,
             _depth = depth,
@@ -278,6 +277,8 @@ class LoadRequest private constructor(
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+            listener = listener,
+            networkProgressListener = networkProgressListener,
         )
     }
 }

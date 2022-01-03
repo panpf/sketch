@@ -2,9 +2,9 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.Interceptor
 
 internal class DownloadInterceptorChain(
     val initialRequest: DownloadRequest,
@@ -14,18 +14,12 @@ internal class DownloadInterceptorChain(
 ) : Interceptor.Chain<DownloadRequest, DownloadResult> {
 
     @WorkerThread
-    override suspend fun proceed(
-        sketch: Sketch,
-        request: DownloadRequest,
-        httpFetchProgressListenerDelegate: ProgressListenerDelegate<DownloadRequest>?
-    ): DownloadResult {
+    override suspend fun proceed(sketch: Sketch, request: DownloadRequest): DownloadResult {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)
-        return interceptor.intercept(sketch, next, httpFetchProgressListenerDelegate)
+        return interceptor.intercept(sketch, next)
     }
 
-    private fun copy(
-        index: Int = this.index,
-        request: DownloadRequest = this.request,
-    ) = DownloadInterceptorChain(initialRequest, interceptors, index, request)
+    private fun copy(index: Int = this.index, request: DownloadRequest = this.request) =
+        DownloadInterceptorChain(initialRequest, interceptors, index, request)
 }
