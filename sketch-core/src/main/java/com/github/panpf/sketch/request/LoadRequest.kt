@@ -8,6 +8,7 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.internal.DownloadableRequest
 import com.github.panpf.sketch.request.internal.ListenerRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.transform.Transformation
@@ -31,7 +32,7 @@ class LoadRequest private constructor(
     override val disabledCorrectExifOrientation: Boolean?,
     override val listener: Listener<LoadRequest, LoadResult>?,
     override val networkProgressListener: ProgressListener<LoadRequest>?,
-) : LoadableRequest, ListenerRequest<LoadRequest, LoadResult> {
+) : LoadableRequest, DownloadableRequest, ListenerRequest<LoadRequest, LoadResult> {
 
     override val depth: RequestDepth = _depth ?: NETWORK
 

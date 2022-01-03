@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.DisplayableRequest
+import com.github.panpf.sketch.request.internal.DownloadableRequest
 import com.github.panpf.sketch.request.internal.ListenerRequest
 import com.github.panpf.sketch.request.internal.LoadableRequest
 import com.github.panpf.sketch.stateimage.StateImage
@@ -44,7 +45,7 @@ class DisplayRequest(
     override val target: Target?,
     override val listener: Listener<DisplayRequest, DisplayResult>?,
     override val networkProgressListener: ProgressListener<DisplayRequest>?,
-) : DisplayableRequest, ListenerRequest<DisplayRequest, DisplayResult> {
+) : DisplayableRequest, LoadableRequest, DownloadableRequest, ListenerRequest<DisplayRequest, DisplayResult> {
 
     override val depth: RequestDepth = _depth ?: NETWORK
 

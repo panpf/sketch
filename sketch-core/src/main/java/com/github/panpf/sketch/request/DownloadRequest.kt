@@ -18,7 +18,7 @@ class DownloadRequest private constructor(
 
     override val depth: RequestDepth = _depth ?: NETWORK
 
-    override val diskCacheKey: String = _diskCacheKey ?: url.toString()
+    override val diskCacheKey: String = _diskCacheKey ?: url
 
     override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
