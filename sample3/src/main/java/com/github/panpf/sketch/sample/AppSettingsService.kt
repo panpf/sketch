@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.lifecycle.MutableLiveData
-import com.github.panpf.sketch.util.SLog
 
 class AppSettingsService(val context: Context) {
 
@@ -38,9 +37,9 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "scrollingPauseLoadEnabled", false)
     }
 
-    val logLevel by lazy {
-        IntPrefsData(context, "logLevel", SLog.getLevel())
-    }
+//    val logLevel by lazy {
+//        IntPrefsData(context, "logLevel", Logger.Level.INFO)
+//    }
     val outLog2SdcardLevel by lazy {
         BooleanPrefsData(context, "outLog2SdcardLevel", false)
     }

@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Resources.NotFoundException
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
@@ -18,6 +17,7 @@ import android.os.Build
 import android.view.View
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.request.LoadException
 import java.io.File
 import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
@@ -224,32 +224,21 @@ fun createFileUriDiskCacheKey(uri: String, filePath: String): String {
  * @param logName         Print log is used identify log type
  * @param bitmapPool      Try to find Reusable bitmap from bitmapPool
  */
+@Throws(LoadException::class)
 fun readApkIcon(
     context: Context,
     apkFilePath: String,
     lowQualityImage: Boolean,
-    logName: String,
-    bitmapPool: BitmapPool?
-): Bitmap? {
+    bitmapPool: BitmapPool
+): Bitmap {
     val packageManager = context.packageManager
     val packageInfo =
         packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES)
-    if (packageInfo == null) {
-        SLog.wmf(logName, "get packageInfo is null. %s", apkFilePath)
-        return null
-    }
+            ?: throw LoadException("get packageInfo is null. $apkFilePath")
     packageInfo.applicationInfo.sourceDir = apkFilePath
     packageInfo.applicationInfo.publicSourceDir = apkFilePath
-    var drawable: Drawable? = null
-    try {
-        drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-    } catch (e: NotFoundException) {
-        e.printStackTrace()
-    }
-    if (drawable == null) {
-        SLog.wmf(logName, "app icon is null. %s", apkFilePath)
-        return null
-    }
+    val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
+        ?: throw LoadException("app icon is null. $apkFilePath")
     return drawableToBitmap(drawable, lowQualityImage, bitmapPool)
 }
 
@@ -257,22 +246,14 @@ fun readApkIcon(
  * Drawable into Bitmap. Each time a new bitmap is drawn
  */
 fun drawableToBitmap(
-    drawable: Drawable?,
+    drawable: Drawable,
     lowQualityImage: Boolean,
-    bitmapPool: BitmapPool?
-): Bitmap? {
-    if (drawable == null || drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
-        return null
-    }
+    bitmapPool: BitmapPool
+): Bitmap {
     drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
     val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
     val bitmap: Bitmap =
-        bitmapPool?.getOrMake(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
-            ?: Bitmap.createBitmap(
-                drawable.intrinsicWidth,
-                drawable.intrinsicHeight,
-                config
-            )
+        bitmapPool.getOrMake(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
     val canvas = Canvas(bitmap)
     drawable.draw(canvas)
     return bitmap

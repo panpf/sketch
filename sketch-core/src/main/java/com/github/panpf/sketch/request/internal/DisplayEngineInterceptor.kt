@@ -8,12 +8,11 @@ import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayException
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.RequestDepth
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.util.SLog
 
 class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
 
@@ -41,10 +40,8 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
             if (memoryCachePolicy.readEnabled) {
                 val cachedRefBitmap = memoryCache[memoryCacheKey]
                 if (cachedRefBitmap != null) {
-                    if (SLog.isLoggable(SLog.DEBUG)) {
-                        SLog.dmf(
-                            MODULE,
-                            "From memory get bitmap. bitmap=%s. %s",
+                    sketch.logger.d(MODULE) {
+                        "From memory get bitmap. bitmap=%s. %s".format(
                             cachedRefBitmap.info, request.key
                         )
                     }

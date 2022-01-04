@@ -11,11 +11,10 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.DecodeException
 import com.github.panpf.sketch.request.ImageInfo
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -27,6 +26,7 @@ class BitmapFactoryDecoder(
 ) : Decoder {
 
     private val bitmapPoolHelper = sketch.bitmapPoolHelper
+    private val logger = sketch.logger
 
     companion object {
         const val MODULE = "BitmapFactoryDecoder"
@@ -66,10 +66,10 @@ class BitmapFactoryDecoder(
         boundOptions.inJustDecodeBounds = true
         dataSource.decodeBitmap(boundOptions)
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            val message = "Invalid image size. size=%dx%d, uri=%s"
-                .format(boundOptions.outWidth, boundOptions.outHeight, request.uriString)
-            SLog.em(MODULE, message)
-            throw DecodeException(message)
+            throw DecodeException(
+                "Invalid image size. size=%dx%d, uri=%s"
+                    .format(boundOptions.outWidth, boundOptions.outHeight, request.uriString)
+            )
         }
 
         val exifOrientation: Int =
@@ -147,46 +147,43 @@ class BitmapFactoryDecoder(
                 inBitmap != null && isInBitmapError(throwable, true) -> {
                     val message = "Bitmap region decode error. Because inBitmap. uri=%s"
                         .format(request.uriString)
-                    SLog.emt(MODULE, throwable, message)
+                    logger.e(MODULE, throwable, message)
 
                     decodeOptions.inBitmap = null
                     bitmapPoolHelper.freeBitmapToPool(inBitmap)
                     try {
                         dataSource.decodeRegionBitmap(resizeMapping.srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
-                        val message2 = "Bitmap region decode error. uri=%s".format(request.uriString)
-                        SLog.emt(MODULE, throwable2, message2)
-                        throw DecodeException(message2, throwable2)
+                        throw DecodeException(
+                            "Bitmap region decode error. uri=%s".format(request.uriString),
+                            throwable2
+                        )
                     }
                 }
                 isSrcRectError(throwable, imageSize.x, imageSize.y, resizeMapping.srcRect) -> {
-                    val message =
+                    throw DecodeException(
                         "Bitmap region decode error. Because srcRect. imageInfo=%s, resize=%s, srcRect=%s, uri=%s"
                             .format(
-                                imageInfo,
-                                request.resize, resizeMapping.srcRect, request.uriString
-                            )
-                    SLog.emt(MODULE, throwable, message)
-                    throw DecodeException(message, throwable)
+                                imageInfo, request.resize, resizeMapping.srcRect, request.uriString
+                            ),
+                        throwable
+                    )
                 }
                 else -> {
-                    val message = "Bitmap region decode error. uri=%s".format(request.uriString)
-                    SLog.emt(MODULE, throwable, message)
-                    throw DecodeException(message, throwable)
+                    throw DecodeException(
+                        "Bitmap region decode error. uri=%s".format(request.uriString),
+                        throwable
+                    )
                 }
             }
         }
-        if (bitmap == null) {
-            val message = "Bitmap region decode return null. uri=%s".format(request.uriString)
-            SLog.em(MODULE, message)
-            throw DecodeException(message)
-        }
+            ?: throw DecodeException("Bitmap region decode return null. uri=%s".format(request.uriString))
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            val message = "Invalid image size. size=%dx%d, uri=%s"
-                .format(bitmap.width, bitmap.height, request.uriString)
-            SLog.em(MODULE, message)
-            throw DecodeException(message)
+            throw DecodeException(
+                "Invalid image size. size=%dx%d, uri=%s"
+                    .format(bitmap.width, bitmap.height, request.uriString)
+            )
         }
         return bitmap
     }
@@ -214,41 +211,38 @@ class BitmapFactoryDecoder(
             )
         }
 
-        val bitmap: Bitmap? = try {
+        val bitmap: Bitmap = try {
             dataSource.decodeBitmap(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable, false)) {
                 val message = "Bitmap decode error. Because inBitmap. uri=%s"
                     .format(request.uriString)
-                SLog.emt(MODULE, throwable, message)
+                logger.e(MODULE, throwable, message)
 
                 decodeOptions.inBitmap = null
                 bitmapPoolHelper.freeBitmapToPool(inBitmap)
                 try {
                     dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
-                    val message2 = "Bitmap decode error. uri=%s".format(request.uriString)
-                    SLog.emt(MODULE, throwable2, message2)
-                    throw DecodeException(message2, throwable2)
+                    throw DecodeException(
+                        "Bitmap decode error. uri=%s".format(request.uriString),
+                        throwable2
+                    )
                 }
             } else {
-                val message = "Bitmap decode error. uri=%s".format(request.uriString)
-                SLog.emt(MODULE, throwable, message)
-                throw DecodeException(message, throwable)
+                throw DecodeException(
+                    "Bitmap decode error. uri=%s".format(request.uriString),
+                    throwable
+                )
             }
-        }
-        if (bitmap == null) {
-            val message = "Bitmap decode return null. uri=%s".format(request.uriString)
-            SLog.em(MODULE, message)
-            throw DecodeException(message)
-        }
+        } ?: throw DecodeException("Bitmap decode return null. uri=%s".format(request.uriString))
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            val message = "Invalid image size. size=%dx%d, uri=%s"
-                .format(bitmap.width, bitmap.height, request.uriString)
-            SLog.em(MODULE, message)
-            throw DecodeException(message)
+            throw DecodeException(
+                "Invalid image size. size=%dx%d, uri=%s"
+                    .format(bitmap.width, bitmap.height, request.uriString)
+            )
         }
         return bitmap
     }

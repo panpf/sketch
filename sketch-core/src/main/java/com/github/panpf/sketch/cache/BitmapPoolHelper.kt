@@ -8,21 +8,21 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.text.TextUtils
 import com.github.panpf.sketch.ImageType
-import com.github.panpf.sketch.util.SLog
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.calculateSamplingSize
 import com.github.panpf.sketch.util.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.util.computeByteCount
 import com.github.panpf.sketch.util.toHexString
 
-class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
+class BitmapPoolHelper(context: Context, val logger: Logger, val bitmapPool: BitmapPool) {
 
     companion object {
         const val MODULE = "BitmapPoolHelper"
     }
 
     init {
-        context.registerComponentCallbacks(object : ComponentCallbacks2 {
+        context.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
             override fun onConfigurationChanged(newConfig: Configuration?) {
             }
 
@@ -36,7 +36,7 @@ class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
         })
     }
 
-    fun getOrMake(width: Int, height: Int, config: Bitmap.Config): Bitmap{
+    fun getOrMake(width: Int, height: Int, config: Bitmap.Config): Bitmap {
         return bitmapPool.getOrMake(width, height, config)
     }
 
@@ -53,11 +53,11 @@ class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
         options: BitmapFactory.Options, outWidth: Int, outHeight: Int, outMimeType: String?,
     ): Boolean {
         if (outWidth == 0 || outHeight == 0) {
-            SLog.em(MODULE, "outWidth or ourHeight is 0")
+            logger.e(MODULE, "outWidth or ourHeight is 0")
             return false
         }
         if (TextUtils.isEmpty(outMimeType)) {
-            SLog.em(MODULE, "outMimeType is empty")
+            logger.e(MODULE, "outMimeType is empty")
             return false
         }
 
@@ -88,13 +88,14 @@ class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
         } else if (inSampleSize == 1 && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
             inBitmap = bitmapPool[outWidth, outHeight, options.inPreferredConfig]
         }
-        if (inBitmap != null && SLog.isLoggable(SLog.DEBUG)) {
-            val sizeInBytes = computeByteCount(outWidth, outHeight, options.inPreferredConfig)
-            SLog.dmf(
-                MODULE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
-                outWidth, outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
-                Integer.toHexString(inBitmap.hashCode()), inBitmap.byteCountCompat
-            )
+        if (inBitmap != null) {
+            logger.d(MODULE) {
+                "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d".format(
+                    outWidth, outHeight, options.inPreferredConfig, inSampleSize,
+                    computeByteCount(outWidth, outHeight, options.inPreferredConfig),
+                    Integer.toHexString(inBitmap.hashCode()), inBitmap.byteCountCompat
+                )
+            }
         }
         options.inBitmap = inBitmap
         options.inMutable = true
@@ -129,18 +130,11 @@ class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
         }
         var inBitmap = bitmapPool[finalWidth, finalHeight, config]
         if (inBitmap != null) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
-                val sizeInBytes = computeByteCount(finalWidth, finalHeight, config)
-                SLog.dmf(
-                    MODULE,
-                    "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
-                    finalWidth,
-                    finalHeight,
-                    config,
-                    inSampleSize,
-                    sizeInBytes,
-                    Integer.toHexString(inBitmap.hashCode()),
-                    inBitmap.byteCountCompat
+            logger.d(MODULE) {
+                "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d".format(
+                    finalWidth, finalHeight, config, inSampleSize,
+                    computeByteCount(finalWidth, finalHeight, config),
+                    Integer.toHexString(inBitmap.hashCode()), inBitmap!!.byteCountCompat
                 )
             }
         } else {
@@ -163,21 +157,19 @@ class BitmapPoolHelper(context: Context, val bitmapPool: BitmapPool) {
         }
         val success = bitmapPool.put(bitmap)
         if (success) {
-            if (SLog.isLoggable(SLog.DEBUG)) {
+            logger.d(MODULE) {
                 val elements = Exception().stackTrace
                 val element = if (elements.size > 1) elements[1] else elements[0]
-                SLog.dmf(
-                    MODULE, "Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                "Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d".format(
                     bitmap.width, bitmap.height, bitmap.config, bitmap.toHexString(),
                     element.className, element.methodName, element.lineNumber
                 )
             }
         } else {
-            if (SLog.isLoggable(SLog.DEBUG)) {
+            logger.d(MODULE) {
                 val elements = Exception().stackTrace
                 val element = if (elements.size > 1) elements[1] else elements[0]
-                SLog.dmf(
-                    MODULE, "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                "Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d".format(
                     bitmap.width, bitmap.height, bitmap.config, bitmap.toHexString(),
                     element.className, element.methodName, element.lineNumber
                 )

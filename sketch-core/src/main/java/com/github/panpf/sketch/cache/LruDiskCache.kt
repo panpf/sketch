@@ -21,14 +21,15 @@ import android.text.format.Formatter
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Entry
 import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MD5Utils
-import com.github.panpf.sketch.util.SLog
 import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.*
+import java.util.Locale
+import java.util.WeakHashMap
 
 /**
  * Create a disk cache manager that releases the cache according to the least used rule
@@ -39,6 +40,7 @@ import java.util.*
  */
 class LruDiskCache(
     context: Context,
+    val logger: Logger,
     private val versionCode: Int = 1,
     maxSize: Int = DISK_CACHE_MAX_SIZE,
 ) : DiskCache {
@@ -74,7 +76,7 @@ class LruDiskCache(
         set(value) {
             if (field != value) {
                 field = value
-                SLog.wmf(MODULE, "setDisabled. %s", value)
+                logger.w(MODULE, "setDisabled. $value")
             }
         }
 
@@ -95,11 +97,11 @@ class LruDiskCache(
     // 这个方法性能优先，因此不加synchronized
     override fun exist(encodedKey: String): Boolean {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable judge exist, key=%s", encodedKey)
+            logger.e(MODULE, "Closed. Unable judge exist, key=$encodedKey")
             return false
         }
         if (isDisabled) {
-            SLog.wmf(MODULE, "Disabled. Unable judge exist, key=%s", encodedKey)
+            logger.w(MODULE, "Disabled. Unable judge exist, key=$encodedKey")
             return false
         }
 
@@ -124,11 +126,11 @@ class LruDiskCache(
     @Synchronized
     override fun get(encodedKey: String): Entry? {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable get, key=%s", encodedKey)
+            logger.e(MODULE, "Closed. Unable get, key=$encodedKey")
             return null
         }
         if (isDisabled) {
-            SLog.wmf(MODULE, "Disabled. Unable get, key=%s", encodedKey)
+            logger.w(MODULE, "Disabled. Unable get, key=$encodedKey")
             return null
         }
         if (!checkDiskCache() || !checkCacheDir()) {
@@ -151,11 +153,11 @@ class LruDiskCache(
     @Synchronized
     override fun edit(encodedKey: String): Editor? {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable edit, key=%s", encodedKey)
+            logger.e(MODULE, "Closed. Unable edit, key=$encodedKey")
             return null
         }
         if (isDisabled) {
-            SLog.wmf(MODULE, "Disabled. Unable edit, key=%s", encodedKey)
+            logger.w(MODULE, "Disabled. Unable edit, key=$encodedKey")
             return null
         }
         if (!checkDiskCache() || !checkCacheDir()) {
@@ -207,12 +209,14 @@ class LruDiskCache(
 
     @get:Synchronized
     override val size: Long
-        get() = if (isClosed) 0 else { if (checkDiskCache()) cache!!.size() else 0 }
+        get() = if (isClosed) 0 else {
+            if (checkDiskCache()) cache!!.size() else 0
+        }
 
     @Synchronized
     override fun clear() {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable clear")
+            logger.e(MODULE, "Closed. Unable clear")
             return
         }
         if (cache != null) {
@@ -229,7 +233,7 @@ class LruDiskCache(
     @Synchronized
     override fun close() {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable close")
+            logger.e(MODULE, "Closed. Unable close")
             return
         }
         isClosed = true
@@ -292,31 +296,33 @@ class LruDiskCache(
             )
         } catch (e: IOException) {
             e.printStackTrace()
-            SLog.emf(
+            logger.e(
                 MODULE,
-                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
-                e.javaClass.simpleName,
-                e.message ?: "",
-                Environment.getExternalStorageState(),
-                cacheDir.path
+                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s".format(
+                    e.javaClass.simpleName,
+                    e.message ?: "",
+                    Environment.getExternalStorageState(),
+                    cacheDir.path
+                )
             )
             errorCallback?.onInstallDiskCacheError(cacheDir, e)
             return
         }
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(MODULE, "diskCacheDir: %s", cacheDir.path)
+        logger.d(MODULE) {
+            "diskCacheDir: %s".format(cacheDir.path)
         }
         try {
             cache = DiskLruCache.open(cacheDir, versionCode, 1, maxSize)
         } catch (e: IOException) {
             e.printStackTrace()
-            SLog.emf(
+            logger.e(
                 MODULE,
-                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s",
-                e.javaClass.simpleName,
-                e.message ?: "",
-                Environment.getExternalStorageState(),
-                cacheDir.path
+                "Install disk cache error. %s: %s. SDCardState: %s. cacheDir: %s".format(
+                    e.javaClass.simpleName,
+                    e.message ?: "",
+                    Environment.getExternalStorageState(),
+                    cacheDir.path
+                )
             )
             errorCallback?.onInstallDiskCacheError(cacheDir, e)
         }

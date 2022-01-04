@@ -41,7 +41,7 @@ import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.LoadResultCacheInterceptor
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
-import com.github.panpf.sketch.util.SLog
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -52,36 +52,52 @@ import kotlinx.coroutines.coroutineScope
 import java.io.File
 
 class Sketch constructor(
-    context: Context,
-    memoryCache: MemoryCache? = null,
-    diskCache: DiskCache? = null,
-    bitmapPool: BitmapPool? = null,
-    componentRegistry: ComponentRegistry? = null,
-    httpStack: HttpStack? = null,
-    downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>? = null,
-    loadInterceptors: List<Interceptor<LoadRequest, LoadResult>>? = null,
-    displayInterceptors: List<Interceptor<DisplayRequest, DisplayResult>>? = null,
+    _context: Context,
+    _logger: Logger?,
+    _memoryCache: MemoryCache? = null,
+    _diskCache: DiskCache? = null,
+    _bitmapPool: BitmapPool? = null,
+    _componentRegistry: ComponentRegistry? = null,
+    _httpStack: HttpStack? = null,
+    _downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>? = null,
+    _loadInterceptors: List<Interceptor<LoadRequest, LoadResult>>? = null,
+    _displayInterceptors: List<Interceptor<DisplayRequest, DisplayResult>>? = null,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
-            SLog.wmt("scope", throwable, "exception")
+            logger.e("scope", throwable, "exception")
         }
     )
     private val downloadExecutor = DownloadExecutor(this)
     private val loadExecutor = LoadExecutor(this)
     private val displayExecutor = DisplayExecutor(this)
 
-    val appContext: Context = context.applicationContext
-    val httpStack = httpStack ?: HurlStack.new()
-    val memoryCache =
-        memoryCache ?: LruMemoryCache(appContext, MemorySizeCalculator(appContext).memoryCacheSize)
-    val diskCache = diskCache ?: LruDiskCache(appContext)
-    val bitmapPoolHelper = BitmapPoolHelper(
-        appContext,
-        bitmapPool ?: LruBitmapPool(appContext, MemorySizeCalculator(appContext).bitmapPoolSize)
-    )
-    val componentRegistry: ComponentRegistry =
-        (componentRegistry?.newBuilder() ?: ComponentRegistry.Builder()).apply {
+    val appContext: Context = _context.applicationContext
+    val logger = _logger ?: Logger()
+    val httpStack = _httpStack ?: HurlStack.new()
+
+    val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
+    val memoryCache: MemoryCache
+    val bitmapPoolHelper: BitmapPoolHelper
+
+    val componentRegistry: ComponentRegistry
+    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>
+    val loadInterceptors: List<Interceptor<LoadRequest, LoadResult>>
+    val displayInterceptors: List<Interceptor<DisplayRequest, DisplayResult>>   // todo gif, svg, webpA
+
+    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
+    val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
+
+    init {
+        val memorySizeCalculator = MemorySizeCalculator(appContext, logger)
+        memoryCache = _memoryCache
+            ?: LruMemoryCache(appContext, memorySizeCalculator.memoryCacheSize, logger)
+        val bitmapPool = _bitmapPool
+            ?: LruBitmapPool(appContext, memorySizeCalculator.bitmapPoolSize, logger)
+        bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)
+
+        componentRegistry = (_componentRegistry ?: ComponentRegistry.new()).newBuilder().apply {
             addFetcher(HttpUriFetcher.Factory())
             addFetcher(FileUriFetcher.Factory())
             addFetcher(ContentUriFetcher.Factory())
@@ -93,18 +109,12 @@ class Sketch constructor(
             addFetcher(Base64UriFetcher.Factory())
             addDecoder(BitmapFactoryDecoder.Factory())
         }.build()
-    val downloadInterceptors = (downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
-    val loadInterceptors = (loadInterceptors
-        ?: listOf()) + LoadResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
 
-    // todo gif, svg, webpA
-    val displayInterceptors = (displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
+        downloadInterceptors = (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
+        loadInterceptors = (_loadInterceptors
+            ?: listOf()) + LoadResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
+        displayInterceptors = (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
 
-    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
-    val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
-
-    init {
         // todo 增加 defaultOptions
         if (diskCache is LruDiskCache) {
             val wrapperErrorCallback = diskCache.errorCallback
@@ -263,6 +273,7 @@ class Sketch constructor(
     class Builder(context: Context) {
 
         private val appContext: Context = context.applicationContext
+        private var logger: Logger? = null
         private var memoryCache: MemoryCache? = null
         private var diskCache: DiskCache? = null
         private var bitmapPool: BitmapPool? = null
@@ -274,6 +285,10 @@ class Sketch constructor(
             null
         private var displayInterceptors: MutableList<Interceptor<DisplayRequest, DisplayResult>>? =
             null
+
+        fun logger(logger: Logger?): Builder = apply {
+            this.logger = logger
+        }
 
         fun memoryCache(memoryCache: MemoryCache?): Builder = apply {
             this.memoryCache = memoryCache
@@ -321,15 +336,16 @@ class Sketch constructor(
             }
 
         fun build(): Sketch = Sketch(
-            context = appContext,
-            memoryCache = memoryCache,
-            diskCache = diskCache,
-            bitmapPool = bitmapPool,
-            componentRegistry = componentRegistry,
-            httpStack = httpStack,
-            downloadInterceptors = downloadInterceptors,
-            loadInterceptors = loadInterceptors,
-            displayInterceptors = displayInterceptors,
+            _context = appContext,
+            _logger = logger,
+            _memoryCache = memoryCache,
+            _diskCache = diskCache,
+            _bitmapPool = bitmapPool,
+            _componentRegistry = componentRegistry,
+            _httpStack = httpStack,
+            _downloadInterceptors = downloadInterceptors,
+            _loadInterceptors = loadInterceptors,
+            _displayInterceptors = displayInterceptors,
         )
     }
 }

@@ -19,7 +19,6 @@ import android.graphics.Bitmap
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.decode.internal.ImageOrientationCorrector
 import com.github.panpf.sketch.request.ImageInfo
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.toHexString
 
@@ -123,23 +122,26 @@ class SketchRefBitmap(
      * @param callingStation 调用位置
      */
     private fun referenceChanged(callingStation: String) {
+        val logger = bitmapPoolHelper.logger
         val bitmapHolder = this.bitmapHolder
         if (bitmapHolder == null || isRecycled) {
-            SLog.emf(MODULE, "Recycled. %s. %s", callingStation, requestKey)
+            logger.e(MODULE, "Recycled. $callingStation. $requestKey")
         } else if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             bitmapPoolHelper.freeBitmapToPool(bitmapHolder)
             this.bitmapHolder = null
-            SLog.dmf(MODULE, "Free. %s. %s", callingStation, requestKey)
+            logger.d(MODULE) {
+                "Free. %s. %s".format(callingStation, requestKey)
+            }
         } else {
-            SLog.dmf(
-                MODULE,
-                "Can't free. %s. references(%d,%d,%d). %s",
-                callingStation,
-                memoryCacheRefCount,
-                displayRefCount,
-                waitingUseRefCount,
-                requestKey
-            )
+            logger.d(MODULE) {
+                "Can't free. %s. references(%d,%d,%d). %s".format(
+                    callingStation,
+                    memoryCacheRefCount,
+                    displayRefCount,
+                    waitingUseRefCount,
+                    requestKey
+                )
+            }
         }
     }
 }

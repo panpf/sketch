@@ -3,10 +3,8 @@ package com.github.panpf.sketch.fetch
 import android.graphics.Bitmap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
-import com.github.panpf.sketch.request.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.createFileUriDiskCacheKey
 import com.github.panpf.sketch.util.readApkIcon
 
@@ -29,17 +27,12 @@ class ApkIconUriFetcher(
         }
     }
 
-    override fun getBitmap(): Bitmap {
-        val bitmapPoolHelper = sketch.bitmapPoolHelper
-        val iconBitmap =
-            readApkIcon(sketch.appContext, apkFilePath, false, MODULE, bitmapPoolHelper.bitmapPool)
-        if (iconBitmap == null || iconBitmap.isRecycled) {
-            val cause = "Apk icon bitmap invalid. ${request.uriString}"
-            SLog.em(MODULE, cause)
-            throw LoadException(cause)
-        }
-        return iconBitmap
-    }
+    override fun getBitmap(): Bitmap = readApkIcon(
+        sketch.appContext,
+        apkFilePath,
+        false,
+        sketch.bitmapPoolHelper.bitmapPool
+    )
 
     override fun getDiskCacheKey(): String =
         createFileUriDiskCacheKey(request.uriString, apkFilePath)

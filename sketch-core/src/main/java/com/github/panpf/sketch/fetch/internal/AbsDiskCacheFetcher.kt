@@ -24,14 +24,9 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadException
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.util.DiskLruCache
-import com.github.panpf.sketch.util.DiskLruCache.EditorChangedException
-import com.github.panpf.sketch.util.DiskLruCache.FileNotExistException
-import com.github.panpf.sketch.util.SLog
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedOutputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.io.OutputStream
 
 /**
@@ -80,33 +75,14 @@ abstract class AbsDiskCacheFetcher(val sketch: Sketch, val request: LoadRequest)
             }
         } catch (throwable: Throwable) {
             diskCacheEditor?.abort()
-            val message = "Open output stream exception. ${request.uriString}"
-            SLog.emt(MODULE, throwable, message)
-            throw LoadException(message, throwable)
+            throw LoadException("Open output stream exception. ${request.uriString}", throwable)
         }
         if (diskCacheEditor != null) {
             try {
                 diskCacheEditor.commit()
-            } catch (e: IOException) {
+            } catch (e: Throwable) {
                 diskCacheEditor.abort()
-                val cause = "Commit disk cache exception. ${request.uriString}"
-                SLog.emt(MODULE, e, cause)
-                throw LoadException(cause, e)
-            } catch (e: EditorChangedException) {
-                diskCacheEditor.abort()
-                val cause = "Commit disk cache exception. ${request.uriString}"
-                SLog.emt(MODULE, e, cause)
-                throw LoadException(cause, e)
-            } catch (e: DiskLruCache.ClosedException) {
-                diskCacheEditor.abort()
-                val cause = "Commit disk cache exception. ${request.uriString}"
-                SLog.emt(MODULE, e, cause)
-                throw LoadException(cause, e)
-            } catch (e: FileNotExistException) {
-                diskCacheEditor.abort()
-                val cause = "Commit disk cache exception. ${request.uriString}"
-                SLog.emt(MODULE, e, cause)
-                throw LoadException(cause, e)
+                throw LoadException("Commit disk cache exception. ${request.uriString}", e)
             }
         }
         return if (diskCacheEditor != null) {
@@ -114,9 +90,7 @@ abstract class AbsDiskCacheFetcher(val sketch: Sketch, val request: LoadRequest)
             if (cacheEntry != null) {
                 DiskCacheDataSource(cacheEntry, DataFrom.LOCAL)
             } else {
-                val cause = "Not found disk cache after save. ${request.uriString}"
-                SLog.em(MODULE, cause)
-                throw LoadException(cause)
+                throw LoadException("Not found disk cache after save. ${request.uriString}")
             }
         } else {
             ByteArrayDataSource(

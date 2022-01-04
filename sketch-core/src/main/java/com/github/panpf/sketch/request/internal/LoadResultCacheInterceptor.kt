@@ -11,7 +11,7 @@ import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
-import com.github.panpf.sketch.util.SLog
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
@@ -27,7 +27,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
     ): LoadResult {
         val diskCache = sketch.diskCache
         val request = chain.request
-        val resultCacheHelper = ResultCacheHelper.from(request, diskCache)
+        val resultCacheHelper = ResultCacheHelper.from(request, diskCache, sketch.logger)
         val mutex = resultCacheHelper?.getOrCreateEditMutexLock()
         mutex?.lock()
         try {
@@ -56,6 +56,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
     private class ResultCacheHelper(
         private val request: LoadRequest,
         private val diskCache: DiskCache,
+        private val logger: Logger,
         val encodedBitmapDataDiskCacheKey: String,
         val encodedMetaDataDiskCacheKey: String,
     ) {
@@ -84,13 +85,14 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                         LoadResult(bitmap, imageInfo, DISK_CACHE)
                     } else {
                         bitmap.recycle()
-                        SLog.emf(
+                        logger.e(
                             MODULE,
-                            "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s",
-                            bitmap.width,
-                            bitmap.height,
-                            request.uriString,
-                            encodedBitmapDataDiskCacheKey
+                            "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s".format(
+                                bitmap.width,
+                                bitmap.height,
+                                request.uriString,
+                                encodedBitmapDataDiskCacheKey
+                            )
                         )
                         bitmapDataDiskCacheEntry.delete()
                         metaDataDiskCacheEntry.delete()
@@ -143,7 +145,11 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         companion object {
 
             @JvmStatic
-            fun from(request: LoadRequest, diskCache: DiskCache): ResultCacheHelper? {
+            fun from(
+                request: LoadRequest,
+                diskCache: DiskCache,
+                logger: Logger
+            ): ResultCacheHelper? {
                 if (request.resultDiskCachePolicy.isReadOrWrite) return null
                 val bitmapDataDiskCacheKey = request.resultDiskCacheKey ?: return null
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
@@ -152,6 +158,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                 return ResultCacheHelper(
                     request,
                     diskCache,
+                    logger,
                     encodedBitmapDataDiskCacheKey,
                     encodedMetaDataDiskCacheKey
                 )

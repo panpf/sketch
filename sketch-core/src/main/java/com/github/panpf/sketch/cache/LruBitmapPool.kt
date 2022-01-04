@@ -7,13 +7,13 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
 import android.text.format.Formatter
-import com.github.panpf.sketch.util.SLog
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.recycle.AttributeStrategy
 import com.github.panpf.sketch.util.recycle.LruPoolStrategy
 import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
 import com.github.panpf.sketch.util.toHexString
-import java.util.*
+import java.util.Collections
 
 /**
  * 创建根据最少使用规则释放缓存的 [Bitmap] 复用池，使用默认的 [Bitmap] 匹配策略和 [Bitmap.Config] 白名单
@@ -23,12 +23,12 @@ import java.util.*
 class LruBitmapPool @JvmOverloads constructor(
     context: Context,
     maxSize: Int,
+    val logger: Logger,
     private val strategy: LruPoolStrategy = defaultStrategy,
     private val allowedConfigs: Set<Bitmap.Config?> = defaultAllowedConfigs
 ) : BitmapPool {
 
     companion object {
-        private val DEFAULT_CONFIG = Bitmap.Config.ARGB_8888
         private const val MODULE = "LruBitmapPool"
         private val defaultStrategy: LruPoolStrategy
             get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -67,7 +67,7 @@ class LruBitmapPool @JvmOverloads constructor(
         set(value) {
             if (field != value) {
                 field = value
-                SLog.wmf(MODULE, "setDisabled. %s", value)
+                logger.w(MODULE, "setDisabled. $value")
             }
         }
 
@@ -77,11 +77,9 @@ class LruBitmapPool @JvmOverloads constructor(
             return false
         }
         if (isDisabled) {
-            SLog.dmf(
+            logger.w(
                 MODULE,
-                "Disabled. Unable put, bitmap=%s,%s",
-                strategy.logBitmap(bitmap),
-                bitmap.toHexString()!!
+                "Disabled. Unable put, bitmap=${strategy.logBitmap(bitmap)},${bitmap.toHexString()}",
             )
             return false
         }
@@ -91,14 +89,15 @@ class LruBitmapPool @JvmOverloads constructor(
             || strategy.getSize(bitmap) > maxSize
             || !allowedConfigs.contains(bitmap.config)
         ) {
-            SLog.wmf(
+            logger.w(
                 MODULE,
-                "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s",
-                strategy.logBitmap(bitmap),
-                bitmap.isRecycled,
-                bitmap.isMutable,
-                allowedConfigs.contains(bitmap.config),
-                bitmap.toHexString()!!
+                "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s".format(
+                    strategy.logBitmap(bitmap),
+                    bitmap.isRecycled,
+                    bitmap.isMutable,
+                    allowedConfigs.contains(bitmap.config),
+                    bitmap.toHexString()
+                )
             )
             return false
         }
@@ -107,12 +106,9 @@ class LruBitmapPool @JvmOverloads constructor(
         tracker.add(bitmap)
         puts++
         this.size += size
-        SLog.dmf(
-            MODULE,
-            "Put bitmap in pool=%s,%s",
-            strategy.logBitmap(bitmap),
-            bitmap.toHexString()!!
-        )
+        logger.d(MODULE) {
+            "Put bitmap in pool=%s,%s".format(strategy.logBitmap(bitmap), bitmap.toHexString())
+        }
         dump()
         evict()
         return true
@@ -124,10 +120,9 @@ class LruBitmapPool @JvmOverloads constructor(
             return null
         }
         if (isDisabled) {
-            SLog.dmf(
+            logger.w(
                 MODULE,
-                "Disabled. Unable get, bitmap=%s,%s",
-                strategy.logBitmap(width, height, config)
+                "Disabled. Unable get, bitmap=${strategy.logBitmap(width, height, config)}",
             )
             return null
         }
@@ -136,15 +131,17 @@ class LruBitmapPool @JvmOverloads constructor(
         // null as the requested config here. See issue #194.
         val result = strategy[width, height, config]
         if (result == null) {
-            SLog.dmf(MODULE, "Missing bitmap=%s", strategy.logBitmap(width, height, config))
+            logger.d(MODULE) {
+                "Missing bitmap=%s".format(strategy.logBitmap(width, height, config))
+            }
             misses++
         } else {
-            SLog.dmf(
-                MODULE,
-                "Get bitmap=%s,%s",
-                strategy.logBitmap(width, height, config),
-                result.toHexString()!!
-            )
+            logger.d(MODULE) {
+                "Get bitmap=%s,%s".format(
+                    strategy.logBitmap(width, height, config),
+                    result.toHexString()
+                )
+            }
             hits++
             size -= strategy.getSize(result)
             tracker.remove(result)
@@ -167,11 +164,12 @@ class LruBitmapPool @JvmOverloads constructor(
             result = Bitmap.createBitmap(width, height, config)
             val elements = Exception().stackTrace
             val element = if (elements.size > 1) elements[1] else elements[0]
-            SLog.dmf(
-                MODULE, "Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
-                result.width, result.height, result.config, result.toHexString(),
-                element.className, element.methodName, element.lineNumber
-            )
+            logger.d(MODULE) {
+                "Make bitmap. info:%dx%d,%s,%s - %s.%s:%d".format(
+                    result.width, result.height, result.config, result.toHexString(),
+                    element.className, element.methodName, element.lineNumber
+                )
+            }
         }
         return result!!
     }
@@ -202,20 +200,17 @@ class LruBitmapPool @JvmOverloads constructor(
             trimToSize(maxSize / 2)
         }
         val releasedSize = Formatter.formatFileSize(appContext, size - size)
-        SLog.wmf(
+        logger.w(
             MODULE,
-            "trimMemory. level=%s, released: %s",
-            getTrimLevelName(level),
-            releasedSize
+            "trimMemory. level=%s, released: %s".format(getTrimLevelName(level), releasedSize)
         )
     }
 
     @Synchronized
     override fun clear() {
-        SLog.wmf(
+        logger.w(
             MODULE,
-            "clear. before size %s",
-            Formatter.formatFileSize(appContext, size.toLong())
+            "clear. before size ${Formatter.formatFileSize(appContext, size.toLong())}",
         )
         trimToSize(0)
     }
@@ -234,17 +229,14 @@ class LruBitmapPool @JvmOverloads constructor(
         while (this.size > size) {
             val removed = strategy.removeLast()
             if (removed == null) {
-                SLog.wm(MODULE, "Size mismatch, resetting")
+                logger.w(MODULE, "Size mismatch, resetting")
                 dumpUnchecked()
                 this.size = 0
                 return
             }
-            SLog.dmf(
-                MODULE,
-                "Evicting bitmap=%s,%s",
-                strategy.logBitmap(removed),
-                removed.toHexString()
-            )
+            logger.d(MODULE) {
+                "Evicting bitmap=%s,%s".format(strategy.logBitmap(removed), removed.toHexString())
+            }
             tracker.remove(removed)
             this.size -= strategy.getSize(removed)
             removed.recycle()
@@ -258,25 +250,18 @@ class LruBitmapPool @JvmOverloads constructor(
     }
 
     private fun dumpUnchecked() {
-        SLog.dmf(
-            MODULE,
-            "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
-            hits,
-            misses,
-            puts,
-            evictions,
-            size,
-            maxSize,
-            strategy
-        )
+        logger.d(MODULE) {
+            "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s".format(
+                hits, misses, puts, evictions, size, maxSize, strategy
+            )
+        }
     }
 
     override fun toString(): String {
-        return String.format(
-            "%s(maxSize=%s,strategy=%s,allowedConfigs=%s)",
+        return "%s(maxSize=%s,strategy=%s,allowedConfigs=%s)".format(
             MODULE,
             Formatter.formatFileSize(appContext, maxSize.toLong()),
-            if(strategy is SizeConfigStrategy) "SizeConfigStrategy" else "AttributeStrategy",
+            if (strategy is SizeConfigStrategy) "SizeConfigStrategy" else "AttributeStrategy",
             allowedConfigs.toString()
         )
     }

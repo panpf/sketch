@@ -19,8 +19,8 @@ import android.content.ComponentCallbacks2
 import android.content.Context
 import android.text.format.Formatter
 import com.github.panpf.sketch.drawable.SketchRefBitmap
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.getTrimLevelName
 import kotlinx.coroutines.sync.Mutex
 import java.util.WeakHashMap
@@ -31,7 +31,7 @@ import java.util.WeakHashMap
  * @param context [Context]
  * @param maxSize 最大容量
  */
-class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
+class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
@@ -56,32 +56,28 @@ class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
         set(value) {
             if (field != value) {
                 field = value
-                SLog.wmf(MODULE, "setDisabled. %s", value)
+                logger.w(MODULE, "setDisabled. $value")
             }
         }
 
     @Synchronized
     override fun put(key: String, refBitmap: SketchRefBitmap) {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable put, key=%s", key)
+            logger.e(MODULE, "Closed. Unable put, key=$key")
             return
         }
         if (isDisabled) {
-            SLog.wmf(MODULE, "Disabled. Unable put, key=%s", key)
+            logger.w(MODULE, "Disabled. Unable put, key=$key")
             return
         }
         if (cache[key] != null) {
-            SLog.wm(MODULE, String.format("Exist. key=%s", key))
+            logger.w(MODULE, String.format("Exist. key=$key"))
             return
         }
-        var oldCacheSize = 0
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            oldCacheSize = cache.size()
-        }
+        val oldCacheSize = cache.size()
         cache.put(key, refBitmap)
-        if (SLog.isLoggable(SLog.DEBUG)) {
-            SLog.dmf(
-                MODULE, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+        logger.d(MODULE) {
+            "put. beforeCacheSize=%s. %s. afterCacheSize=%s".format(
                 Formatter.formatFileSize(appContext, oldCacheSize.toLong()),
                 refBitmap.requestKey,
                 Formatter.formatFileSize(appContext, cache.size().toLong())
@@ -92,11 +88,11 @@ class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
     @Synchronized
     override fun get(key: String): SketchRefBitmap? {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable get, key=%s", key)
+            logger.e(MODULE, "Closed. Unable get, key=$key")
             return null
         }
         if (isDisabled) {
-            SLog.wmf(MODULE, "Disabled. Unable get, key=%s", key)
+            logger.w(MODULE, "Disabled. Unable get, key=$key")
             return null
         }
         val refBitmap = cache[key]
@@ -111,18 +107,19 @@ class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
     @Synchronized
     override fun remove(key: String): SketchRefBitmap? {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable remove, key=%s", key)
+            logger.e(MODULE, "Closed. Unable remove, key=$key")
             return null
         }
         if (isDisabled) {
-            SLog.wmf(MODULE, "Disabled. Unable remove, key=%s", key)
+            logger.w(MODULE, "Disabled. Unable remove, key=$key")
             return null
         }
         val refBitmap = cache.remove(key)
-        SLog.dmf(
-            MODULE, "remove. memoryCacheSize: %s",
-            Formatter.formatFileSize(appContext, cache.size().toLong())
-        )
+        logger.d(MODULE) {
+            "remove. memoryCacheSize: %s".format(
+                Formatter.formatFileSize(appContext, cache.size().toLong())
+            )
+        }
         return refBitmap
     }
 
@@ -138,22 +135,23 @@ class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
             cache.trimToSize(cache.maxSize() / 2)
         }
         val releasedSize = memoryCacheSize - size
-        SLog.wmf(
-            MODULE, "trimMemory. level=%s, released: %s",
-            getTrimLevelName(level), Formatter.formatFileSize(appContext, releasedSize)
+        logger.w(
+            MODULE, "trimMemory. level=%s, released: %s".format(
+                getTrimLevelName(level),
+                Formatter.formatFileSize(appContext, releasedSize)
+            )
         )
     }
 
     @Synchronized
     override fun clear() {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable clear")
+            logger.e(MODULE, "Closed. Unable clear")
             return
         }
-        SLog.wmf(
+        logger.w(
             MODULE,
-            "clear. before size: %s",
-            Formatter.formatFileSize(appContext, cache.size().toLong())
+            "clear. before size: ${Formatter.formatFileSize(appContext, cache.size().toLong())}",
         )
         cache.evictAll()
     }
@@ -161,20 +159,15 @@ class LruMemoryCache(context: Context, maxSize: Int) : MemoryCache {
     @Synchronized
     override fun close() {
         if (isClosed) {
-            SLog.emf(MODULE, "Closed. Unable close")
+            logger.e(MODULE, "Closed. Unable close")
             return
         }
         isClosed = true
         cache.evictAll()
     }
 
-    override fun toString(): String {
-        return String.format(
-            "%s(maxSize=%s)",
-            MODULE,
-            Formatter.formatFileSize(appContext, maxSize)
-        )
-    }
+    override fun toString(): String =
+        "%s(maxSize=%s)".format(MODULE, Formatter.formatFileSize(appContext, maxSize))
 
     @Synchronized
     override fun getOrCreateEditMutexLock(key: String): Mutex {

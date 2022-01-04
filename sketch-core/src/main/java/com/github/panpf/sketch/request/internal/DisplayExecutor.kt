@@ -4,18 +4,22 @@ import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayException
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.MaxSize
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.util.calculateFixedSize
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DisplayExecutor(private val sketch: Sketch) {
+
+    companion object {
+        const val MODULE = "DisplayExecutor"
+    }
 
     @WorkerThread
     suspend fun execute(
@@ -51,6 +55,9 @@ class DisplayExecutor(private val sketch: Sketch) {
 //                    throw DisplayException("Request depth only to MEMORY")
 //                }
 //            }
+            sketch.logger.d(MODULE) {
+                "Request started. ${request.uriString}"
+            }
             listenerDelegate?.onStart(newRequest)
             val loadingDrawable =
                 newRequest.loadingImage?.getDrawable(sketch.appContext, sketch, request)
@@ -70,6 +77,9 @@ class DisplayExecutor(private val sketch: Sketch) {
                     target?.onSuccess(displayResult.drawable)
                 }
                 listenerDelegate?.onSuccess(newRequest, displayResult)
+                sketch.logger.d(MODULE) {
+                    "Request Successful. ${request.uriString}"
+                }
                 return ExecuteResult.Success(displayResult)
             } else {
                 val emptyDrawable = (newRequest.emptyImage ?: newRequest.errorImage)?.getDrawable(
@@ -82,14 +92,19 @@ class DisplayExecutor(private val sketch: Sketch) {
                 }
                 val throwable = DisplayException("Request uri is empty or blank")
                 listenerDelegate?.onError(newRequest, throwable)
+                sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
                 return ExecuteResult.Error(throwable)
             }
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
+                sketch.logger.d(MODULE) {
+                    "Request canceled. ${request.uriString}"
+                }
                 listenerDelegate?.onCancel(newRequest)
                 throw throwable
             } else {
                 throwable.printStackTrace()
+                sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
                 val errorDrawable =
                     newRequest.errorImage?.getDrawable(sketch.appContext, sketch, request)
                 withContext(Dispatchers.Main) {

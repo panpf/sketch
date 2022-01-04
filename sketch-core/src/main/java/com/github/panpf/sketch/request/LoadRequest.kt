@@ -411,9 +411,7 @@ interface LoadRequest : DownloadRequest {
     }
 }
 
-fun LoadRequest.newDecodeOptionsByQualityParams(
-    mimeType: String
-): BitmapFactory.Options =
+fun LoadRequest.newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
     BitmapFactory.Options().apply {
         if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {
             inPreferQualityOverSpeed = true

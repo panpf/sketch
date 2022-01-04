@@ -5,16 +5,14 @@ import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 import android.text.format.Formatter
-import com.github.panpf.sketch.util.SLog
-import com.github.panpf.sketch.util.SLog.Companion.dmf
-import com.github.panpf.sketch.util.SLog.Companion.isLoggable
+import com.github.panpf.sketch.util.Logger
 import kotlin.math.roundToInt
 
 /**
  * A calculator that tries to intelligently determine cache sizes for a given device based on some constants and the
  * devices screen density, width, and height.
  */
-class MemorySizeCalculator(context: Context) {
+class MemorySizeCalculator(context: Context, val logger: Logger) {
     /**
      * Returns the recommended bitmap pool size for the device it is run on in bytes.
      */
@@ -45,14 +43,12 @@ class MemorySizeCalculator(context: Context) {
             memoryCacheSize = part * MEMORY_CACHE_TARGET_SCREENS
             bitmapPoolSize = part * BITMAP_POOL_TARGET_SCREENS
         }
-        if (isLoggable(SLog.DEBUG)) {
-            dmf(
-                NAME,
-                "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
-                toMb(appContext, memoryCacheSize),
-                toMb(appContext, bitmapPoolSize),
+        logger.d("MemorySizeCalculator") {
+            "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s".format(
+                Formatter.formatFileSize(appContext, memoryCacheSize.toLong()),
+                Formatter.formatFileSize(appContext, bitmapPoolSize.toLong()),
                 targetMemoryCacheSize + targetPoolSize > maxSize,
-                toMb(appContext, maxSize),
+                Formatter.formatFileSize(appContext, maxSize.toLong()),
                 activityManager.memoryClass,
                 isLowMemoryDevice(activityManager)
             )
@@ -73,10 +69,6 @@ class MemorySizeCalculator(context: Context) {
             val isLowMemoryDevice = isLowMemoryDevice(activityManager)
             return (memoryClassBytes
                     * if (isLowMemoryDevice) LOW_MEMORY_MAX_SIZE_MULTIPLIER else MAX_SIZE_MULTIPLIER).roundToInt()
-        }
-
-        private fun toMb(context: Context, bytes: Int): String {
-            return Formatter.formatFileSize(context, bytes.toLong())
         }
 
         @TargetApi(Build.VERSION_CODES.KITKAT)

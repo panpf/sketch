@@ -19,10 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
-import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.util.SLog
-import com.github.panpf.sketch.util.byteCountCompat
 import java.io.IOException
 
 @Throws(IOException::class)
@@ -138,48 +135,48 @@ fun isInBitmapError(
     return false
 }
 
-/**
- * 反馈 inBitmap 解码失败，并回收 inBitmap
- */
-fun recycleInBitmapOnDecodeError(
-    bitmapPoolHelper: BitmapPoolHelper,
-    imageUri: String,
-    imageWidth: Int,
-    imageHeight: Int,
-    imageMimeType: String,
-    throwable: Throwable,
-    decodeOptions: BitmapFactory.Options,
-    fromBitmapRegionDecoder: Boolean
-) {
-    if (fromBitmapRegionDecoder) {
-        return
-    }
-    SLog.emf(
-        "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
-                "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-        imageUri,
-        imageWidth,
-        imageHeight,
-        imageMimeType,
-        decodeOptions.inSampleSize,
-        decodeOptions.inBitmap.width,
-        decodeOptions.inBitmap.height,
-        decodeOptions.inBitmap.byteCountCompat
-    )
-//    callback.onError(
-//        InBitmapDecodeException(
-//            throwable,
-//            imageUri,
-//            imageWidth,
-//            imageHeight,
-//            imageMimeType,
-//            decodeOptions.inSampleSize,
-//            decodeOptions.inBitmap
-//        )
+///**
+// * 反馈 inBitmap 解码失败，并回收 inBitmap
+// */
+//fun recycleInBitmapOnDecodeError(
+//    bitmapPoolHelper: BitmapPoolHelper,
+//    imageUri: String,
+//    imageWidth: Int,
+//    imageHeight: Int,
+//    imageMimeType: String,
+//    throwable: Throwable,
+//    decodeOptions: BitmapFactory.Options,
+//    fromBitmapRegionDecoder: Boolean
+//) {
+//    if (fromBitmapRegionDecoder) {
+//        return
+//    }
+//    SLog.emf(
+//        "onInBitmapException. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, " +
+//                "inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+//        imageUri,
+//        imageWidth,
+//        imageHeight,
+//        imageMimeType,
+//        decodeOptions.inSampleSize,
+//        decodeOptions.inBitmap.width,
+//        decodeOptions.inBitmap.height,
+//        decodeOptions.inBitmap.byteCountCompat
 //    )
-    bitmapPoolHelper.freeBitmapToPool(decodeOptions.inBitmap)
-    decodeOptions.inBitmap = null
-}
+////    callback.onError(
+////        InBitmapDecodeException(
+////            throwable,
+////            imageUri,
+////            imageWidth,
+////            imageHeight,
+////            imageMimeType,
+////            decodeOptions.inSampleSize,
+////            decodeOptions.inBitmap
+////        )
+////    )
+//    bitmapPoolHelper.freeBitmapToPool(decodeOptions.inBitmap)
+//    decodeOptions.inBitmap = null
+//}
 
 /**
  * 通过异常类型以及 message 确定是不是由 srcRect 导致的解码失败

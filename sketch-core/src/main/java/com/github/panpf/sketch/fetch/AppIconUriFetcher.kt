@@ -8,7 +8,6 @@ import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
 import com.github.panpf.sketch.request.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.readApkIcon
 
 /**
@@ -35,25 +34,14 @@ class AppIconUriFetcher(
         val packageInfo: PackageInfo = try {
             sketch.appContext.packageManager.getPackageInfo(packageName, 0)
         } catch (e: PackageManager.NameNotFoundException) {
-            val cause = "Not found PackageInfo by '$packageName'. ${request.uriString}"
-            SLog.emt(MODULE, e, cause)
-            throw LoadException(cause, e)
+            throw LoadException("Not found PackageInfo by '$packageName'. ${request.uriString}", e)
         }
         if (packageInfo.versionCode != versionCode) {
-            val cause =
-                "App versionCode mismatch, ${packageInfo.versionCode} != ${versionCode}. ${request.uriString}"
-            SLog.em(MODULE, cause)
-            throw LoadException(cause)
+            throw LoadException("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode. ${request.uriString}")
         }
         val apkFilePath = packageInfo.applicationInfo.sourceDir
         val bitmapPool = sketch.bitmapPoolHelper.bitmapPool
-        val iconBitmap = readApkIcon(sketch.appContext, apkFilePath, false, MODULE, bitmapPool)
-        if (iconBitmap == null || iconBitmap.isRecycled) {
-            val cause = "App icon bitmap invalid. ${request.uriString}"
-            SLog.em(MODULE, cause)
-            throw LoadException(cause)
-        }
-        return iconBitmap
+        return readApkIcon(sketch.appContext, apkFilePath, false, bitmapPool)
     }
 
     override fun getDiskCacheKey(): String = request.uriString
