@@ -22,7 +22,7 @@ class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadResult> {
 
         val fetcher = sketch.componentRegistry.newFetcher(sketch, request)
         if (fetcher !is HttpUriFetcher) {
-            throw IllegalArgumentException("Download only support HTTP and HTTPS url: ${request.url}")
+            throw IllegalArgumentException("Download only support HTTP and HTTPS uri: ${request.uriString}")
         }
 
         val fetchResult = fetcher.fetch()

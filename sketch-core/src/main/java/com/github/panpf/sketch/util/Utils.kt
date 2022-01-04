@@ -2,8 +2,14 @@ package com.github.panpf.sketch.util
 
 import android.annotation.TargetApi
 import android.content.ComponentCallbacks2
+import android.content.Context
+import android.content.pm.PackageManager
+import android.content.res.Resources.NotFoundException
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
+import android.graphics.Canvas
 import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.GLES10
@@ -11,6 +17,8 @@ import android.opengl.GLES20
 import android.os.Build
 import android.view.View
 import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.cache.BitmapPool
+import java.io.File
 import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
@@ -57,6 +65,12 @@ fun Bitmap.Config?.getBytesPerPixel(): Int {
         else -> 4
     }
 }
+
+/**
+ * 根据指定的 [Bitmap] 配置获取合适的压缩格式
+ */
+val Bitmap.Config?.getCompressFormat: CompressFormat
+    get() = if (this == Bitmap.Config.RGB_565) CompressFormat.JPEG else CompressFormat.PNG
 
 /**
  * 获取修剪级别的名称
@@ -181,6 +195,87 @@ internal fun View.calculateFixedSize(): Point? {
         fixedHeight /= finalScale.toInt()
     }
     return Point(fixedWidth, fixedHeight)
+}
+
+/**
+ * 生成文件 uri 的磁盘缓存 key，关键在于要在 uri 的后面加上文件的修改时间来作为缓存 key，这样当文件发生变化时能及时更新缓存
+ *
+ * @param uri      文件 uri
+ * @param filePath 文件路径，要获取文件的修改时间
+ * @return 文件 uri 的磁盘缓存 key
+ */
+fun createFileUriDiskCacheKey(uri: String, filePath: String): String {
+    val file = File(filePath)
+    return if (file.exists()) {
+        val lastModifyTime = file.lastModified()
+        // 这里必须用 uri 连接修改时间，不能用 filePath，因为使用 filePath 的话当同一个文件可以用于多种 uri 时会导致磁盘缓存错乱
+        "$uri.$lastModifyTime"
+    } else {
+        uri
+    }
+}
+
+/**
+ * Read apk file icon. Although the PackageManager will cache the icon, the bitmap returned by this method every time
+ *
+ * @param context         [Context]
+ * @param apkFilePath     Apk file path
+ * @param lowQualityImage If set true use ARGB_4444 create bitmap, KITKAT is above is invalid
+ * @param logName         Print log is used identify log type
+ * @param bitmapPool      Try to find Reusable bitmap from bitmapPool
+ */
+fun readApkIcon(
+    context: Context,
+    apkFilePath: String,
+    lowQualityImage: Boolean,
+    logName: String,
+    bitmapPool: BitmapPool?
+): Bitmap? {
+    val packageManager = context.packageManager
+    val packageInfo =
+        packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES)
+    if (packageInfo == null) {
+        SLog.wmf(logName, "get packageInfo is null. %s", apkFilePath)
+        return null
+    }
+    packageInfo.applicationInfo.sourceDir = apkFilePath
+    packageInfo.applicationInfo.publicSourceDir = apkFilePath
+    var drawable: Drawable? = null
+    try {
+        drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
+    } catch (e: NotFoundException) {
+        e.printStackTrace()
+    }
+    if (drawable == null) {
+        SLog.wmf(logName, "app icon is null. %s", apkFilePath)
+        return null
+    }
+    return drawableToBitmap(drawable, lowQualityImage, bitmapPool)
+}
+
+/**
+ * Drawable into Bitmap. Each time a new bitmap is drawn
+ */
+fun drawableToBitmap(
+    drawable: Drawable?,
+    lowQualityImage: Boolean,
+    bitmapPool: BitmapPool?
+): Bitmap? {
+    if (drawable == null || drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+        return null
+    }
+    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+    val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
+    val bitmap: Bitmap =
+        bitmapPool?.getOrMake(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
+            ?: Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+                config
+            )
+    val canvas = Canvas(bitmap)
+    drawable.draw(canvas)
+    return bitmap
 }
 
 

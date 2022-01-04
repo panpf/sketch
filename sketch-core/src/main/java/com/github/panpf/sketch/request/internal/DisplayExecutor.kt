@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayException
@@ -57,7 +58,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                 target?.onStart(loadingDrawable)
             }
 
-            if (request.url.isNotEmpty() && request.url.isNotBlank()) {
+            if (request.uri !== Uri.EMPTY && request.uriString.isNotEmpty() && request.uriString.isNotBlank()) {
                 val displayResult = DisplayInterceptorChain(
                     initialRequest = newRequest,
                     interceptors = sketch.displayInterceptors,
@@ -79,7 +80,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                 withContext(Dispatchers.Main) {
                     target?.onError(emptyDrawable)
                 }
-                val throwable = DisplayException("Request url is empty or blank")
+                val throwable = DisplayException("Request uri is empty or blank")
                 listenerDelegate?.onError(newRequest, throwable)
                 return ExecuteResult.Error(throwable)
             }

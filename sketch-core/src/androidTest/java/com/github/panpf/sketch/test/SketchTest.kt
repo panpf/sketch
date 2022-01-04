@@ -33,7 +33,7 @@ class SketchTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url){
+        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString){
             listener(normalDownloadListenerSupervisor)
         }
         val normalDisposable =
@@ -53,7 +53,7 @@ class SketchTest {
         }
         val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
         val cancelCallbackActionList = cancelDownloadListenerSupervisor.callbackActionList
-        val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().url) {
+        val cancelRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString) {
             diskCachePolicy(CachePolicy.DISABLED)
             listener(cancelDownloadListenerSupervisor)
         }
@@ -72,7 +72,7 @@ class SketchTest {
         val errorDownloadListenerSupervisor = DownloadListenerSupervisor()
         val errorCallbackActionList = errorDownloadListenerSupervisor.callbackActionList
         val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
-        val errorRequest = DownloadRequest.new(errorTestUri.url) {
+        val errorRequest = DownloadRequest.new(errorTestUri.uriString) {
             diskCachePolicy(CachePolicy.DISABLED)
             listener(errorDownloadListenerSupervisor)
         }
@@ -96,7 +96,7 @@ class SketchTest {
         val normalSketch = Sketch.new(context) {
             httpStack(TestHttpStack(context))
         }
-        val normalRequest = DownloadRequest.new(TestHttpStack.urls.first().url)
+        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString)
         runBlocking {
             normalSketch.executeDownload(normalRequest)
         }.apply {
@@ -109,7 +109,7 @@ class SketchTest {
         val slowSketch = Sketch.new(context) {
             httpStack(TestHttpStack(context, readDelayMillis = 1000))
         }
-        val cancelRequest = DownloadRequest.new(TestHttpStack.urls.first().url) {
+        val cancelRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString) {
             diskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {
@@ -124,7 +124,7 @@ class SketchTest {
          * error
          */
         val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
-        val errorRequest = DownloadRequest.new(errorTestUri.url) {
+        val errorRequest = DownloadRequest.new(errorTestUri.uriString) {
             diskCachePolicy(CachePolicy.DISABLED)
         }
         runBlocking {

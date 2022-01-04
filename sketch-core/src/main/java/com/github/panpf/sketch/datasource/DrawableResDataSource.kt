@@ -16,6 +16,8 @@
 package com.github.panpf.sketch.datasource
 
 import android.content.Context
+import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.util.MD5Utils
 import java.io.File
@@ -23,7 +25,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 
-class DrawableDataSource(val context: Context, val drawableId: Int) : DataSource {
+class DrawableResDataSource(val context: Context, @RawRes @DrawableRes val drawableId: Int) : DataSource {
 
     override val from: DataFrom
         get() = DataFrom.LOCAL

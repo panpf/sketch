@@ -119,7 +119,7 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
 //            cause, file!!.path, if (file.exists()) file.length() else -1, request.key
 //        )
 //    } else {
-//        SLog.emf(logName, "Decode failed. %s. %s", cause, request.url)
+//        SLog.emf(logName, "Decode failed. %s. %s", cause, request.uri)
 //    }
 //}
 

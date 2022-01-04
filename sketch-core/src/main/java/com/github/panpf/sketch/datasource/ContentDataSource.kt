@@ -27,7 +27,7 @@ import java.io.InputStream
 
 /**
  * 用于读取来自 [android.content.ContentProvider] 的图片，使用 [ContentResolver.openInputStream] 方法读取数据，
- * 支持 content://、file://、android.resource:// 格式的 url
+ * 支持 content://、file://、android.resource:// 格式的 uri
  */
 class ContentDataSource(
     val context: Context,
@@ -47,7 +47,7 @@ class ContentDataSource(
     @Throws(IOException::class)
     override fun newInputStream(): InputStream {
         return context.contentResolver.openInputStream(contentUri)
-            ?: throw IOException("Invalid content url: $contentUri")
+            ?: throw IOException("Invalid content uri: $contentUri")
     }
 
     @Throws(IOException::class)

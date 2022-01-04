@@ -9,7 +9,7 @@ import java.io.InputStream
 class TestHttpStack(private val context: Context, val readDelayMillis: Long? = null) : HttpStack {
 
     companion object {
-        val urls = arrayOf(
+        val testUris = arrayOf(
             TestUri(
                 "http://5b0988e595225.cdn.sohucs.com/images/20171219/fd5717876ab046b8aa889c9aaac4b56c.jpeg",
                 540456
@@ -67,5 +67,5 @@ class TestHttpStack(private val context: Context, val readDelayMillis: Long? = n
         }
     }
 
-    class TestUri(val url: String, val contentLength: Long)
+    class TestUri(val uriString: String, val contentLength: Long)
 }

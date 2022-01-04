@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
@@ -26,21 +27,35 @@ interface DownloadRequest : ImageRequest {
 
     companion object {
         fun new(
-            url: String,
+            uriString: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): DownloadRequest = Builder(url).apply {
+        ): DownloadRequest = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }.build()
+
+        fun new(
+            uri: Uri,
+            configBlock: (Builder.() -> Unit)? = null
+        ): DownloadRequest = Builder(uri).apply {
             configBlock?.invoke(this)
         }.build()
 
         fun newBuilder(
-            url: String,
+            uriString: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(url).apply {
+        ): Builder = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }
+
+        fun newBuilder(
+            uri: Uri,
+            configBlock: (Builder.() -> Unit)? = null
+        ): Builder = Builder(uri).apply {
             configBlock?.invoke(this)
         }
     }
 
-    open class Builder(private val url: String) {
+    open class Builder(private val uri: Uri) {
 
         private var depth: RequestDepth? = null
         private var parameters: Parameters? = null
@@ -50,7 +65,9 @@ interface DownloadRequest : ImageRequest {
         private var listener: Listener<ImageRequest, ImageResult>? = null
         private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
-        internal constructor(request: DownloadRequest) : this(request.url) {
+        constructor(uriString: String) : this(Uri.parse(uriString))
+
+        internal constructor(request: DownloadRequest) : this(request.uri) {
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -93,7 +110,7 @@ interface DownloadRequest : ImageRequest {
             }
 
         fun build(): DownloadRequest = DownloadRequestImpl(
-            url = url,
+            uri = uri,
             _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
@@ -105,7 +122,7 @@ interface DownloadRequest : ImageRequest {
     }
 
     private class DownloadRequestImpl(
-        override val url: String,
+        override val uri: Uri,
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
@@ -115,15 +132,17 @@ interface DownloadRequest : ImageRequest {
         override val networkProgressListener: ProgressListener<ImageRequest>?,
     ) : DownloadRequest {
 
+        override val uriString: String by lazy { uri.toString() }
+
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = _diskCacheKey ?: url
+        override val diskCacheKey: String = _diskCacheKey ?: uriString
 
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
         override val key: String by lazy {
             val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-            "Download_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
+            "Download_${uriString}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
         }
     }
 }

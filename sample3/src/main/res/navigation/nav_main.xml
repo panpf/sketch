@@ -16,6 +16,21 @@
         android:id="@+id/onlinePhotosFragment"
         android:name="com.github.panpf.sketch.sample.ui.OnlinePhotosFragment"
         android:label="OnlinePhotosFragment" />
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageFragment"
+        android:label="ImageFragment">
+        <argument
+            android:name="url"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fetcherFragment"
+        android:name="com.github.panpf.sketch.sample.ui.FetcherFragment"
+        android:label="FetcherFragment" />
+
     <action
         android:id="@+id/action_global_onlinePhotosFragment"
         app:destination="@id/onlinePhotosFragment"
@@ -26,6 +41,20 @@
     <action
         android:id="@+id/action_global_localPhotosFragment"
         app:destination="@id/localPhotosFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_imageFragment"
+        app:destination="@id/imageFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_fetcherFragment"
+        app:destination="@id/fetcherFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

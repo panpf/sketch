@@ -70,7 +70,7 @@ interface DiskCache {
     operator fun get(encodedKey: String): Entry?
 
     /**
-     * 编辑指定 url 的缓存
+     * 编辑指定 key 的缓存
      *
      * @param encodedKey 缓存 encodedKey
      * @return [Editor] 缓存编辑器

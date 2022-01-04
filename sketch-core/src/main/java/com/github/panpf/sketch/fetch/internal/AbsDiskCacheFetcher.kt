@@ -1,0 +1,128 @@
+/*
+ * Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.github.panpf.sketch.fetch.internal
+
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.LoadException
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.DiskLruCache.EditorChangedException
+import com.github.panpf.sketch.util.DiskLruCache.FileNotExistException
+import com.github.panpf.sketch.util.SLog
+import kotlinx.coroutines.sync.withLock
+import java.io.BufferedOutputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.OutputStream
+
+/**
+ * Wrap the disk cache part for Fetcher that needs disk cache
+ */
+abstract class AbsDiskCacheFetcher(val sketch: Sketch, val request: LoadRequest) : Fetcher {
+
+    companion object {
+        private const val MODULE = "AbsDiskCacheFetcher"
+    }
+
+    override suspend fun fetch(): FetchResult {
+        return FetchResult(getDataSource())
+    }
+
+    protected abstract fun getDiskCacheKey(): String
+
+    @Throws(Exception::class)
+    protected abstract fun outContent(outputStream: OutputStream)
+
+    private suspend fun getDataSource(): DataSource {
+        val diskCache = sketch.diskCache
+        val encodedDiskCacheKey = diskCache.encodeKey(getDiskCacheKey())
+        diskCache.getOrCreateEditMutexLock(encodedDiskCacheKey).withLock {
+            val diskCacheEntry = diskCache[encodedDiskCacheKey]
+            return if (diskCacheEntry != null) {
+                DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
+            } else {
+                readContent(encodedDiskCacheKey)
+            }
+        }
+    }
+
+    private fun readContent(encodedDiskCacheKey: String): DataSource {
+        val diskCache = sketch.diskCache
+        val diskCacheEditor = diskCache.edit(encodedDiskCacheKey)
+        val outputStream: OutputStream
+        try {
+            outputStream = if (diskCacheEditor != null) {
+                BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024)
+            } else {
+                ByteArrayOutputStream()
+            }
+            outputStream.use {
+                outContent(it)
+            }
+        } catch (throwable: Throwable) {
+            diskCacheEditor?.abort()
+            val message = "Open output stream exception. ${request.uriString}"
+            SLog.emt(MODULE, throwable, message)
+            throw LoadException(message, throwable)
+        }
+        if (diskCacheEditor != null) {
+            try {
+                diskCacheEditor.commit()
+            } catch (e: IOException) {
+                diskCacheEditor.abort()
+                val cause = "Commit disk cache exception. ${request.uriString}"
+                SLog.emt(MODULE, e, cause)
+                throw LoadException(cause, e)
+            } catch (e: EditorChangedException) {
+                diskCacheEditor.abort()
+                val cause = "Commit disk cache exception. ${request.uriString}"
+                SLog.emt(MODULE, e, cause)
+                throw LoadException(cause, e)
+            } catch (e: DiskLruCache.ClosedException) {
+                diskCacheEditor.abort()
+                val cause = "Commit disk cache exception. ${request.uriString}"
+                SLog.emt(MODULE, e, cause)
+                throw LoadException(cause, e)
+            } catch (e: FileNotExistException) {
+                diskCacheEditor.abort()
+                val cause = "Commit disk cache exception. ${request.uriString}"
+                SLog.emt(MODULE, e, cause)
+                throw LoadException(cause, e)
+            }
+        }
+        return if (diskCacheEditor != null) {
+            val cacheEntry = diskCache[encodedDiskCacheKey]
+            if (cacheEntry != null) {
+                DiskCacheDataSource(cacheEntry, DataFrom.LOCAL)
+            } else {
+                val cause = "Not found disk cache after save. ${request.uriString}"
+                SLog.em(MODULE, cause)
+                throw LoadException(cause)
+            }
+        } else {
+            ByteArrayDataSource(
+                (outputStream as ByteArrayOutputStream).toByteArray(),
+                DataFrom.LOCAL
+            )
+        }
+    }
+}

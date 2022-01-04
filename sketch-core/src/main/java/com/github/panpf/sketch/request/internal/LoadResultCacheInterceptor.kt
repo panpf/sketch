@@ -8,8 +8,8 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
 import com.github.panpf.sketch.util.SLog
 import kotlinx.coroutines.sync.Mutex
@@ -86,8 +86,11 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                         bitmap.recycle()
                         SLog.emf(
                             MODULE,
-                            "Invalid image size in result cache. size=%dx%d, url=%s, diskCacheKey=%s",
-                            bitmap.width, bitmap.height, request.url, encodedBitmapDataDiskCacheKey
+                            "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s",
+                            bitmap.width,
+                            bitmap.height,
+                            request.uriString,
+                            encodedBitmapDataDiskCacheKey
                         )
                         bitmapDataDiskCacheEntry.delete()
                         metaDataDiskCacheEntry.delete()

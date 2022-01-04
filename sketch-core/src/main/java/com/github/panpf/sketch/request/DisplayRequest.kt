@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
-import android.os.Build
+import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
@@ -44,78 +44,70 @@ interface DisplayRequest : LoadRequest {
         internal const val SIZE_BY_VIEW_FIXED_SIZE: Int = -214238643
 
         fun new(
-            url: String?,
+            uriString: String?,
             configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(url).apply {
+        ): DisplayRequest = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }.build()
+
+        fun new(
+            uri: Uri?,
+            configBlock: (Builder.() -> Unit)? = null
+        ): DisplayRequest = Builder(uri ?: Uri.EMPTY).apply {
             configBlock?.invoke(this)
         }.build()
 
         fun newBuilder(
-            url: String?,
+            uriString: String?,
             configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(url).apply {
+        ): Builder = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }
+
+        fun newBuilder(
+            uri: Uri?,
+            configBlock: (Builder.() -> Unit)? = null
+        ): Builder = Builder(uri ?: Uri.EMPTY).apply {
             configBlock?.invoke(this)
         }
     }
 
-    class Builder {
+    class Builder(private val uri: Uri) {
 
-        private val url: String
-        private var depth: RequestDepth?
-        private var parameters: Parameters?
-        private var httpHeaders: Map<String, String>?
-        private var diskCacheKey: String?
-        private var diskCachePolicy: CachePolicy?
-        private var resultDiskCacheKey: String?
-        private var resultDiskCachePolicy: CachePolicy?
-        private var maxSize: MaxSize?
-        private var bitmapConfig: BitmapConfig?
+        private var depth: RequestDepth? = null
+        private var parameters: Parameters? = null
+        private var httpHeaders: Map<String, String>? = null
+        private var diskCacheKey: String? = null
+        private var diskCachePolicy: CachePolicy? = null
+        private var resultDiskCacheKey: String? = null
+        private var resultDiskCachePolicy: CachePolicy? = null
+        private var maxSize: MaxSize? = null
+        private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
-        private var preferQualityOverSpeed: Boolean?
-        private var resize: Resize?
-        private var transformations: List<Transformation>?
-        private var disabledBitmapPool: Boolean?
-        private var disabledCorrectExifOrientation: Boolean?
-        private var memoryCacheKey: String?
-        private var memoryCachePolicy: CachePolicy?
-        private var disabledAnimationDrawable: Boolean?
-        private var loadingImage: StateImage?
-        private var errorImage: StateImage?
-        private var emptyImage: StateImage?
-        private var target: Target?
+        private var preferQualityOverSpeed: Boolean? = null
+        private var resize: Resize? = null
+        private var transformations: List<Transformation>? = null
+        private var disabledBitmapPool: Boolean? = null
+        private var disabledCorrectExifOrientation: Boolean? = null
+        private var memoryCacheKey: String? = null
+        private var memoryCachePolicy: CachePolicy? = null
+        private var disabledAnimationDrawable: Boolean? = null
+        private var loadingImage: StateImage? = null
+        private var errorImage: StateImage? = null
+        private var emptyImage: StateImage? = null
+        private var target: Target? = null
         private var listener: Listener<ImageRequest, ImageResult>? = null
         private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
-        constructor(url: String?) {
-            this.url = url ?: ""
-            this.depth = null
-            this.parameters = null
-            this.httpHeaders = null
-            this.diskCacheKey = null
-            this.diskCachePolicy = null
-            this.resultDiskCacheKey = null
-            this.resultDiskCachePolicy = null
-            this.maxSize = MaxSize.SCREEN_SIZE
-            this.bitmapConfig = null
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                this.colorSpace = null
+        constructor(uriString: String?) : this(
+            if (uriString != null && uriString.isNotEmpty() && uriString.isNotBlank()) {
+                Uri.parse(uriString)
+            } else {
+                Uri.EMPTY
             }
-            this.preferQualityOverSpeed = null
-            this.resize = null
-            this.transformations = null
-            this.disabledBitmapPool = null
-            this.disabledCorrectExifOrientation = null
-            this.memoryCacheKey = null
-            this.memoryCachePolicy = null
-            this.disabledAnimationDrawable = null
-            this.loadingImage = null
-            this.errorImage = null
-            this.emptyImage = null
-            this.target = null
-        }
+        )
 
-        internal constructor(request: DisplayRequest) {
-            this.url = request.url
+        internal constructor(request: DisplayRequest) : this(request.uri) {
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -316,7 +308,7 @@ interface DisplayRequest : LoadRequest {
             }
 
         fun build(): DisplayRequest = DisplayRequestImpl(
-            url = url,
+            uri = uri,
             _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
@@ -345,7 +337,7 @@ interface DisplayRequest : LoadRequest {
     }
 
     private class DisplayRequestImpl(
-        override val url: String,
+        override val uri: Uri,
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
@@ -372,14 +364,16 @@ interface DisplayRequest : LoadRequest {
         override val networkProgressListener: ProgressListener<ImageRequest>?,
     ) : DisplayRequest {
 
+        override val uriString: String by lazy { uri.toString() }
+
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = _diskCacheKey ?: url
+        override val diskCacheKey: String = _diskCacheKey ?: uriString
 
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
         override val resultDiskCacheKey: String? by lazy {
-            _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
+            _resultDiskCacheKey ?: qualityKey?.let { "${uriString}_$it" }
         }
 
         override val resultDiskCachePolicy: CachePolicy =
@@ -394,7 +388,7 @@ interface DisplayRequest : LoadRequest {
                 val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
                 val animationDrawablePart =
                     if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-                "${url}${qualityKeyPart}${animationDrawablePart}"
+                "${uriString}${qualityKeyPart}${animationDrawablePart}"
             }
         }
 
@@ -407,7 +401,7 @@ interface DisplayRequest : LoadRequest {
             val qualityKey = qualityKey?.let { "_${it}" } ?: ""
             val animationDrawablePart =
                 if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-            "Display_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
+            "Display_${uriString}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
                     "${qualityKey}_memoryCacheKey($memoryCacheKey)_memoryCachePolicy($memoryCachePolicy)${animationDrawablePart}"
         }
     }

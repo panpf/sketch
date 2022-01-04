@@ -3,6 +3,7 @@ package com.github.panpf.sketch.request
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
+import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
@@ -94,16 +95,30 @@ interface LoadRequest : DownloadRequest {
 
     companion object {
         fun new(
-            url: String,
+            uriString: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): LoadRequest = Builder(url).apply {
+        ): LoadRequest = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }.build()
+
+        fun new(
+            uri: Uri,
+            configBlock: (Builder.() -> Unit)? = null
+        ): LoadRequest = Builder(uri).apply {
             configBlock?.invoke(this)
         }.build()
 
         fun newBuilder(
-            url: String,
+            uriString: String,
             configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(url).apply {
+        ): Builder = Builder(uriString).apply {
+            configBlock?.invoke(this)
+        }
+
+        fun newBuilder(
+            uri: Uri,
+            configBlock: (Builder.() -> Unit)? = null
+        ): Builder = Builder(uri).apply {
             configBlock?.invoke(this)
         }
 
@@ -160,7 +175,7 @@ interface LoadRequest : DownloadRequest {
         }.takeIf { it.isNotEmpty() }
     }
 
-    class Builder(private val url: String) {
+    class Builder(private val uri: Uri) {
 
         private var depth: RequestDepth? = null
         private var parameters: Parameters? = null
@@ -180,7 +195,9 @@ interface LoadRequest : DownloadRequest {
         private var listener: Listener<ImageRequest, ImageResult>? = null
         private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
-        internal constructor(request: LoadRequest) : this(request.url) {
+        constructor(uriString: String) : this(Uri.parse(uriString))
+
+        internal constructor(request: LoadRequest) : this(request.uri) {
             this.depth = request.depth
             this.parameters = request.parameters
             this.httpHeaders = request.httpHeaders
@@ -325,7 +342,7 @@ interface LoadRequest : DownloadRequest {
             }
 
         fun build(): LoadRequest = LoadRequestImpl(
-            url = url,
+            uri = uri,
             _depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
@@ -347,7 +364,7 @@ interface LoadRequest : DownloadRequest {
     }
 
     private class LoadRequestImpl(
-        override val url: String,
+        override val uri: Uri,
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
@@ -367,14 +384,16 @@ interface LoadRequest : DownloadRequest {
         override val networkProgressListener: ProgressListener<ImageRequest>?,
     ) : LoadRequest {
 
+        override val uriString: String by lazy { uri.toString() }
+
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = _diskCacheKey ?: url
+        override val diskCacheKey: String = _diskCacheKey ?: uriString
 
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
         override val resultDiskCacheKey: String? by lazy {
-            _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
+            _resultDiskCacheKey ?: qualityKey?.let { "${uriString}_$it" }
         }
 
         override val resultDiskCachePolicy: CachePolicy =
@@ -383,7 +402,7 @@ interface LoadRequest : DownloadRequest {
         override val key: String by lazy {
             val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
             val qualityKey = qualityKey?.let { "_${it}" } ?: ""
-            "Load_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
+            "Load_${uriString}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
         }
 
         private val qualityKey: String? by lazy {

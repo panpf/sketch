@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
@@ -10,10 +9,10 @@ import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DownloadException
+import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
-import com.github.panpf.sketch.request.DownloadRequest
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -23,7 +22,10 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-class HttpUriFetcher(private val sketch: Sketch, private val request: DownloadRequest) : Fetcher {
+/**
+ * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpgg' uri
+ */
+class HttpUriFetcher(val sketch: Sketch, val request: DownloadRequest) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
@@ -67,10 +69,10 @@ class HttpUriFetcher(private val sketch: Sketch, private val request: DownloadRe
         encodedDiskCacheKey: String,
         coroutineScope: CoroutineScope,
     ): FetchResult? {
-        val response = httpStack.getResponse(sketch, request, request.url)
+        val response = httpStack.getResponse(sketch, request, request.uriString)
         val responseCode = response.code
         if (responseCode != 200) {
-            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.url}")
+            throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}")
         }
 
         val diskCacheEditor = if (diskCachePolicy.writeEnabled) {
@@ -200,14 +202,13 @@ class HttpUriFetcher(private val sketch: Sketch, private val request: DownloadRe
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(sketch: Sketch, request: ImageRequest, uri: Uri): HttpUriFetcher? =
-            if (request is DownloadRequest && isApplicable(uri)) {
+        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
+            if (request is DownloadRequest
+                && (request.uri.scheme == "http" || request.uri.scheme == "https")
+            ) {
                 HttpUriFetcher(sketch, request)
             } else {
                 null
             }
-
-        private fun isApplicable(data: Uri): Boolean =
-            data.scheme == "http" || data.scheme == "https"
     }
 }
