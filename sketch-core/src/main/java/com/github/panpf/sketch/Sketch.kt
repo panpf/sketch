@@ -122,7 +122,7 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueDisplay(request: DisplayRequest): Disposable<ExecuteResult<DisplayResult>> {
-        // todo ViewTarget bind RequestManager
+        // todo ViewTarget bind RequestManager，方尺重复加载，图片错乱、自动取消、自动重新请求，监听 lifecycler，延迟到确定了大小之后再发起请求
         val job = scope.async(singleThreadTaskDispatcher) {
             displayExecutor.execute(request)
         }
