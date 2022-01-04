@@ -11,11 +11,9 @@ import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DownloadException
 import com.github.panpf.sketch.request.RequestDepth
-import com.github.panpf.sketch.request.internal.DownloadableRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.request.internal.ListenerRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.request.DownloadRequest
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -25,11 +23,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-class HttpUriFetcher(
-    private val sketch: Sketch,
-    private val request: DownloadableRequest,
-    private val listenerRequest: ListenerRequest<ImageRequest, ImageResult>?,
-) : Fetcher {
+class HttpUriFetcher(private val sketch: Sketch, private val request: DownloadRequest) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
@@ -174,7 +168,7 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListenerDelegate = listenerRequest?.networkProgressListener?.let {
+        val progressListenerDelegate = request.networkProgressListener?.let {
             ProgressListenerDelegate(coroutineScope, it)
         }
         var lastUpdateProgressBytesCopied = 0L
@@ -207,12 +201,8 @@ class HttpUriFetcher(
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest, uri: Uri): HttpUriFetcher? =
-            if (request is DownloadableRequest && isApplicable(uri)) {
-                HttpUriFetcher(
-                    sketch,
-                    request,
-                    request as ListenerRequest<ImageRequest, ImageResult>?
-                )
+            if (request is DownloadRequest && isApplicable(uri)) {
+                HttpUriFetcher(sketch, request)
             } else {
                 null
             }

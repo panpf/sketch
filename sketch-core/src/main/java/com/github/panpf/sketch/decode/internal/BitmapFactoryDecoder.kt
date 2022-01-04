@@ -13,7 +13,8 @@ import com.github.panpf.sketch.request.DecodeException
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
 import com.github.panpf.sketch.util.SLog
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.format
@@ -21,7 +22,7 @@ import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
 class BitmapFactoryDecoder(
     private val sketch: Sketch,
-    private val request: LoadableRequest,
+    private val request: LoadRequest,
     private val dataSource: DataSource,
 ) : Decoder {
 
@@ -303,7 +304,7 @@ class BitmapFactoryDecoder(
             sketch: Sketch,
             request: ImageRequest,
             dataSource: DataSource,
-        ): Decoder? = if (request is LoadableRequest) {
+        ): Decoder? = if (request is LoadRequest) {
             BitmapFactoryDecoder(sketch, request, dataSource)
         } else {
             null

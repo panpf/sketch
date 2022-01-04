@@ -3,12 +3,12 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayException
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.MaxSize
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.util.calculateFixedSize
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -140,7 +140,7 @@ class DisplayExecutor(private val sketch: Sketch) {
             }
 
         return if (newMaxSize != null || newResize != null) {
-            request.newBuilder {
+            request.newDisplayRequestBuilder() {
                 if (newMaxSize != null) {
                     maxSize(newMaxSize)
                 }

@@ -2,42 +2,27 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.DownloadableRequest
-import com.github.panpf.sketch.request.internal.ListenerRequest
+import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
 
-class DownloadRequest private constructor(
-    override val url: String,
-    _depth: RequestDepth?,
-    override val parameters: Parameters?,
-    override val httpHeaders: Map<String, String>?,
-    _diskCacheKey: String?,
-    _diskCachePolicy: CachePolicy?,
-    override val listener: Listener<DownloadRequest, DownloadResult>?,
-    override val networkProgressListener: ProgressListener<DownloadRequest>?,
-) : DownloadableRequest, ListenerRequest<DownloadRequest, DownloadResult> {
+interface DownloadRequest : ImageRequest {
 
-    override val depth: RequestDepth = _depth ?: NETWORK
+    val httpHeaders: Map<String, String>?
+    val diskCacheKey: String
+    val diskCachePolicy: CachePolicy
+    val networkProgressListener: ProgressListener<ImageRequest>?
 
-    override val diskCacheKey: String = _diskCacheKey ?: url
-
-    override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
-
-    override val key: String by lazy {
-        val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-        "Download_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
-    }
-
-    fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
-    }
-
-    fun new(
+    fun newDownloadRequest(
         configBlock: (Builder.() -> Unit)? = null
     ): DownloadRequest = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
+
+    fun newDownloadRequestBuilder(
+        configBlock: (Builder.() -> Unit)? = null
+    ): Builder = Builder(this).apply {
+        configBlock?.invoke(this)
+    }
 
     companion object {
         fun new(
@@ -55,15 +40,15 @@ class DownloadRequest private constructor(
         }
     }
 
-    class Builder(private val url: String) {
+    open class Builder(private val url: String) {
 
         private var depth: RequestDepth? = null
         private var parameters: Parameters? = null
         private var httpHeaders: Map<String, String>? = null
         private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
-        private var listener: Listener<DownloadRequest, DownloadResult>? = null
-        private var networkProgressListener: ProgressListener<DownloadRequest>? = null
+        private var listener: Listener<ImageRequest, ImageResult>? = null
+        private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
         internal constructor(request: DownloadRequest) : this(request.url) {
             this.depth = request.depth
@@ -96,15 +81,18 @@ class DownloadRequest private constructor(
         }
 
         fun listener(listener: Listener<DownloadRequest, DownloadResult>?): Builder = apply {
-            this.listener = listener
+            @Suppress("UNCHECKED_CAST")
+            this.listener = listener as Listener<ImageRequest, ImageResult>?
         }
 
         fun networkProgressListener(networkProgressListener: ProgressListener<DownloadRequest>?): Builder =
             apply {
-                this.networkProgressListener = networkProgressListener
+                @Suppress("UNCHECKED_CAST")
+                this.networkProgressListener =
+                    networkProgressListener as ProgressListener<ImageRequest>?
             }
 
-        fun build(): DownloadRequest = DownloadRequest(
+        fun build(): DownloadRequest = DownloadRequestImpl(
             url = url,
             _depth = depth,
             parameters = parameters,
@@ -114,5 +102,28 @@ class DownloadRequest private constructor(
             listener = listener,
             networkProgressListener = networkProgressListener,
         )
+    }
+
+    private class DownloadRequestImpl(
+        override val url: String,
+        _depth: RequestDepth?,
+        override val parameters: Parameters?,
+        override val httpHeaders: Map<String, String>?,
+        _diskCacheKey: String?,
+        _diskCachePolicy: CachePolicy?,
+        override val listener: Listener<ImageRequest, ImageResult>?,
+        override val networkProgressListener: ProgressListener<ImageRequest>?,
+    ) : DownloadRequest {
+
+        override val depth: RequestDepth = _depth ?: NETWORK
+
+        override val diskCacheKey: String = _diskCacheKey ?: url
+
+        override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+
+        override val key: String by lazy {
+            val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
+            "Download_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
+        }
     }
 }

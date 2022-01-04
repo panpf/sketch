@@ -8,18 +8,14 @@ import android.graphics.PorterDuffXfermode
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.ResizeMapping
-import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.safeConfig
 
 class CircleCropTransformation(val scaleType: ScaleType = ScaleType.FIT_CENTER) : Transformation {
 
     override val cacheKey: String = "CircleCrop($scaleType)"
 
-    override suspend fun transform(
-        sketch: Sketch,
-        request: LoadableRequest,
-        input: Bitmap
-    ): Bitmap {
+    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
         val newSize = input.width.coerceAtMost(input.height)
         val resizeMapping = ResizeMapping.calculator(
             input.width, input.height, newSize, newSize, scaleType, true

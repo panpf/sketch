@@ -1,10 +1,10 @@
 package com.github.panpf.sketch
 
 import android.widget.ImageView
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ExecuteResult
+import com.github.panpf.sketch.request.DisplayRequest
 
 fun ImageView.displayImage(
     url: String?,

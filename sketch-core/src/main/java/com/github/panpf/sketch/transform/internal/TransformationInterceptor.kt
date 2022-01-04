@@ -2,8 +2,8 @@ package com.github.panpf.sketch.transform.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.withContext
 
 class TransformationInterceptor : Interceptor<LoadRequest, LoadResult> {

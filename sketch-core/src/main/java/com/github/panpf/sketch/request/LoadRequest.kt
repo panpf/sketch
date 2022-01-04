@@ -3,82 +3,90 @@ package com.github.panpf.sketch.request
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.DownloadableRequest
-import com.github.panpf.sketch.request.internal.ListenerRequest
-import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.transform.Transformation
 
-class LoadRequest private constructor(
-    override val url: String,
-    _depth: RequestDepth?,
-    override val parameters: Parameters?,
-    override val httpHeaders: Map<String, String>?,
-    _diskCacheKey: String?,
-    _diskCachePolicy: CachePolicy?,
-    _resultDiskCacheKey: String?,
-    _resultDiskCachePolicy: CachePolicy?,
-    override val maxSize: MaxSize?,
-    override val bitmapConfig: BitmapConfig?,
-    override val colorSpace: ColorSpace?,
-    override val preferQualityOverSpeed: Boolean?,
-    override val resize: Resize?,
-    override val transformations: List<Transformation>?,
-    override val disabledBitmapPool: Boolean?,
-    override val disabledCorrectExifOrientation: Boolean?,
-    override val listener: Listener<LoadRequest, LoadResult>?,
-    override val networkProgressListener: ProgressListener<LoadRequest>?,
-) : LoadableRequest, DownloadableRequest, ListenerRequest<LoadRequest, LoadResult> {
+interface LoadRequest : DownloadRequest {
 
-    override val depth: RequestDepth = _depth ?: NETWORK
+    /**
+     * What is resultDiskCache. To speed up image load, cache the final bitmap to disk if you set [maxSize], [resize], [transformations] parameters (see [newQualityKey]). So that it can be used directly after the next read
+     */
+    val resultDiskCacheKey: String?
 
-    override val diskCacheKey: String = _diskCacheKey ?: url
+    /**
+     * resultDiskCache policy configuration
+     * @see resultDiskCacheKey
+     */
+    val resultDiskCachePolicy: CachePolicy
 
-    override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+    /**
+     * Limit the maximum size of the bitmap on decode, default value is [MaxSize.SCREEN_SIZE]
+     *
+     * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
+     */
+    val maxSize: MaxSize?
 
-    override val resultDiskCacheKey: String? by lazy {
-        _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
-    }
+    /**
+     * Specify [Bitmap.Config] to use when creating the bitmap.
+     * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+     *
+     * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
+     */
+    val bitmapConfig: BitmapConfig?
 
-    override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
+    @get:RequiresApi(26)
+    val colorSpace: ColorSpace?
 
-    override val qualityKey: String? by lazy {
-        LoadableRequest.newQualityKey(this)
-    }
+    /**
+     * From Android N (API 24), this is ignored.  The output will always be high quality.
+     *
+     * In {@link android.os.Build.VERSION_CODES#M} and below, if
+     * inPreferQualityOverSpeed is set to true, the decoder will try to
+     * decode the reconstructed image to a higher quality even at the
+     * expense of the decoding speed. Currently the field only affects JPEG
+     * decode, in the case of which a more accurate, but slightly slower,
+     * IDCT method will be used instead.
+     *
+     * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+     */
+    @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
+    val preferQualityOverSpeed: Boolean?
 
-    override val key: String by lazy {
-        val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-        val qualityKey = qualityKey?.let { "_${it}" } ?: ""
-        "Load_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
-    }
+    /**
+     * The size of the desired bitmap
+     */
+    val resize: Resize?
 
-    override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
-        LoadableRequest.newDecodeOptionsByQualityParams(this, mimeType)
+    /**
+     * The list of [Transformation]s to be applied to this request.
+     */
+    val transformations: List<Transformation>?
 
-    fun toDownloadRequest(): DownloadRequest = DownloadRequest.new(url) {
-        depth(depth)
-        parameters(parameters)
-        httpHeaders(httpHeaders)
-        diskCacheKey(diskCacheKey)
-        diskCachePolicy(diskCachePolicy)
-        networkProgressListener?.let {
-            networkProgressListener { _, totalLength, completedLength ->
-                it.onUpdateProgress(this@LoadRequest, totalLength, completedLength)
-            }
-        }
-    }
+    /**
+     * Disabled reuse of Bitmap from [BitmapPool]
+     */
+    val disabledBitmapPool: Boolean?
 
-    fun newBuilder(
+    /**
+     * Disabled correcting the image orientation based on 'exifOrientation'
+     */
+    val disabledCorrectExifOrientation: Boolean?
+
+    fun newLoadRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
-    fun new(
+    fun newLoadRequest(
         configBlock: (Builder.() -> Unit)? = null
     ): LoadRequest = Builder(this).apply {
         configBlock?.invoke(this)
@@ -98,6 +106,58 @@ class LoadRequest private constructor(
         ): Builder = Builder(url).apply {
             configBlock?.invoke(this)
         }
+
+        fun newQualityKey(request: LoadRequest): String? = buildString {
+            val parameters = request.parameters
+            if (parameters != null) {
+                if (length > 0) append("_")
+                append(parameters.cacheKey)
+            }
+
+            val maxSize = request.maxSize
+            if (maxSize != null) {
+                if (length > 0) append("_")
+                append(maxSize.cacheKey)
+            }
+
+            val bitmapConfig = request.bitmapConfig
+            if (bitmapConfig != null) {
+                if (length > 0) append("_")
+                append(bitmapConfig.cacheKey)
+            }
+
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                val colorSpace = request.colorSpace
+                if (colorSpace != null) {
+                    if (length > 0) append("_")
+                    append("ColorSpace(${colorSpace.name.replace(" ", "")}")
+                }
+            }
+
+            val preferQualityOverSpeed = request.preferQualityOverSpeed
+            if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+                if (length > 0) append("_")
+                append("PreferQualityOverSpeed")
+            }
+
+            val resize = request.resize
+            if (resize != null) {
+                if (length > 0) append("_")
+                append(resize.cacheKey)
+            }
+
+            val transformations = request.transformations
+            if (transformations?.isNotEmpty() == true) {
+                if (length > 0) append("_")
+                append("Transformations(${transformations.joinToString(separator = ",")})")
+            }
+
+            val disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+            if (disabledCorrectExifOrientation != true) {
+                if (length > 0) append("_")
+                append("CorrectExifOrientation")
+            }
+        }.takeIf { it.isNotEmpty() }
     }
 
     class Builder(private val url: String) {
@@ -117,8 +177,8 @@ class LoadRequest private constructor(
         private var transformations: List<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
-        private var listener: Listener<LoadRequest, LoadResult>? = null
-        private var networkProgressListener: ProgressListener<LoadRequest>? = null
+        private var listener: Listener<ImageRequest, ImageResult>? = null
+        private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
         internal constructor(request: LoadRequest) : this(request.url) {
             this.depth = request.depth
@@ -130,7 +190,7 @@ class LoadRequest private constructor(
             this.resultDiskCachePolicy = request.resultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
             }
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
@@ -217,7 +277,7 @@ class LoadRequest private constructor(
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            if (VERSION.SDK_INT < VERSION_CODES.N) {
                 this.preferQualityOverSpeed = inPreferQualityOverSpeed
             }
         }
@@ -253,15 +313,18 @@ class LoadRequest private constructor(
 
         fun listener(listener: Listener<LoadRequest, LoadResult>?): Builder =
             apply {
-                this.listener = listener
+                @Suppress("UNCHECKED_CAST")
+                this.listener = listener as Listener<ImageRequest, ImageResult>?
             }
 
         fun networkProgressListener(networkProgressListener: ProgressListener<LoadRequest>?): Builder =
             apply {
-                this.networkProgressListener = networkProgressListener
+                @Suppress("UNCHECKED_CAST")
+                this.networkProgressListener =
+                    networkProgressListener as ProgressListener<ImageRequest>?
             }
 
-        fun build(): LoadRequest = LoadRequest(
+        fun build(): LoadRequest = LoadRequestImpl(
             url = url,
             _depth = depth,
             parameters = parameters,
@@ -272,7 +335,7 @@ class LoadRequest private constructor(
             _resultDiskCachePolicy = resultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
-            colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
+            colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resize = resize,
             transformations = transformations,
@@ -282,4 +345,67 @@ class LoadRequest private constructor(
             networkProgressListener = networkProgressListener,
         )
     }
+
+    private class LoadRequestImpl(
+        override val url: String,
+        _depth: RequestDepth?,
+        override val parameters: Parameters?,
+        override val httpHeaders: Map<String, String>?,
+        _diskCacheKey: String?,
+        _diskCachePolicy: CachePolicy?,
+        _resultDiskCacheKey: String?,
+        _resultDiskCachePolicy: CachePolicy?,
+        override val maxSize: MaxSize?,
+        override val bitmapConfig: BitmapConfig?,
+        override val colorSpace: ColorSpace?,
+        override val preferQualityOverSpeed: Boolean?,
+        override val resize: Resize?,
+        override val transformations: List<Transformation>?,
+        override val disabledBitmapPool: Boolean?,
+        override val disabledCorrectExifOrientation: Boolean?,
+        override val listener: Listener<ImageRequest, ImageResult>?,
+        override val networkProgressListener: ProgressListener<ImageRequest>?,
+    ) : LoadRequest {
+
+        override val depth: RequestDepth = _depth ?: NETWORK
+
+        override val diskCacheKey: String = _diskCacheKey ?: url
+
+        override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+
+        override val resultDiskCacheKey: String? by lazy {
+            _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
+        }
+
+        override val resultDiskCachePolicy: CachePolicy =
+            _resultDiskCachePolicy ?: CachePolicy.ENABLED
+
+        override val key: String by lazy {
+            val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
+            val qualityKey = qualityKey?.let { "_${it}" } ?: ""
+            "Load_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
+        }
+
+        private val qualityKey: String? by lazy {
+            newQualityKey(this)
+        }
+    }
 }
+
+fun LoadRequest.newDecodeOptionsByQualityParams(
+    mimeType: String
+): BitmapFactory.Options =
+    BitmapFactory.Options().apply {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {
+            inPreferQualityOverSpeed = true
+        }
+
+        val newConfig = bitmapConfig?.getConfigByMimeType(mimeType)
+        if (newConfig != null) {
+            inPreferredConfig = newConfig
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != null) {
+            inPreferredColorSpace = colorSpace
+        }
+    }

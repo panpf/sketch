@@ -8,11 +8,11 @@ import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayException
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.RequestDepth
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.util.SLog
 
 class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
@@ -56,7 +56,7 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
                 }
             }
 
-            val loadRequest = request.toLoadRequest()
+            val loadRequest = request.newLoadRequest()
             val loadResult: LoadResult = LoadInterceptorChain(
                 initialRequest = loadRequest,
                 interceptors = sketch.loadInterceptors,

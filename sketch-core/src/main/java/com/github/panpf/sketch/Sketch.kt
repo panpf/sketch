@@ -14,15 +14,12 @@ import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.ProgressListener
@@ -34,6 +31,9 @@ import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.LoadResultCacheInterceptor
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.SLog
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -131,7 +131,8 @@ class Sketch constructor(
     suspend fun executeDisplay(
         url: String?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DisplayResult> = executeDisplay(DisplayRequest.new(url, configBlock))
+    ): ExecuteResult<DisplayResult> =
+        executeDisplay(DisplayRequest.new(url, configBlock))
 
 
     /****************************************** Load **********************************************/
@@ -148,7 +149,8 @@ class Sketch constructor(
     fun enqueueLoad(
         url: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<LoadResult>> = enqueueLoad(LoadRequest.new(url, configBlock))
+    ): Disposable<ExecuteResult<LoadResult>> =
+        enqueueLoad(LoadRequest.new(url, configBlock))
 
     suspend fun executeLoad(request: LoadRequest): ExecuteResult<LoadResult> = coroutineScope {
         val job = async(singleThreadTaskDispatcher) {
@@ -193,7 +195,8 @@ class Sketch constructor(
     suspend fun executeDownload(
         url: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadResult> = executeDownload(DownloadRequest.new(url, configBlock))
+    ): ExecuteResult<DownloadResult> =
+        executeDownload(DownloadRequest.new(url, configBlock))
 
     companion object {
         fun new(

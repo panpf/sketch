@@ -1,129 +1,44 @@
 package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.DisplayableRequest
-import com.github.panpf.sketch.request.internal.DownloadableRequest
-import com.github.panpf.sketch.request.internal.ListenerRequest
-import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 
-class DisplayRequest(
-    override val url: String,
-    _depth: RequestDepth?,
-    override val parameters: Parameters?,
-    override val httpHeaders: Map<String, String>?,
-    _diskCacheKey: String?,
-    _diskCachePolicy: CachePolicy?,
-    _resultDiskCacheKey: String?,
-    _resultDiskCachePolicy: CachePolicy?,
-    override val maxSize: MaxSize?,
-    override val bitmapConfig: BitmapConfig?,
-    override val colorSpace: ColorSpace?,
-    override val preferQualityOverSpeed: Boolean?,
-    override val resize: Resize?,
-    override val transformations: List<Transformation>?,
-    override val disabledBitmapPool: Boolean?,
-    override val disabledCorrectExifOrientation: Boolean?,
-    _memoryCacheKey: String?,
-    _memoryCachePolicy: CachePolicy?,
-    override val disabledAnimationDrawable: Boolean?,
-    override val loadingImage: StateImage?,
-    override val errorImage: StateImage?,
-    override val emptyImage: StateImage?,
-    override val target: Target?,
-    override val listener: Listener<DisplayRequest, DisplayResult>?,
-    override val networkProgressListener: ProgressListener<DisplayRequest>?,
-) : DisplayableRequest, LoadableRequest, DownloadableRequest, ListenerRequest<DisplayRequest, DisplayResult> {
+interface DisplayRequest : LoadRequest {
 
-    override val depth: RequestDepth = _depth ?: NETWORK
+    val memoryCacheKey: String
+    val memoryCachePolicy: CachePolicy
+    val disabledAnimationDrawable: Boolean?
+    val loadingImage: StateImage?
+    val errorImage: StateImage?    // todo error 可根据异常决定显示什么样的 error，这样就能很容易实现暂停下载的时候显示特定的错误图片，或者添加专门的移动网络暂停下载功能
+    val emptyImage: StateImage?
+    val target: Target?
 
-    override val diskCacheKey: String = _diskCacheKey ?: url
-
-    override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
-
-    override val resultDiskCacheKey: String? by lazy {
-        _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
-    }
-
-    override val resultDiskCachePolicy: CachePolicy = _resultDiskCachePolicy ?: CachePolicy.ENABLED
-
-    override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
-
-    override val memoryCacheKey: String by lazy {
-        if (_memoryCacheKey != null) {
-            _memoryCacheKey
-        } else {
-            val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
-            val animationDrawablePart =
-                if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-            "${url}${qualityKeyPart}${animationDrawablePart}"
-        }
-    }
-
-    override val qualityKey: String? by lazy {
-        LoadableRequest.newQualityKey(this)
-    }
-
-    override val key: String by lazy {
-        val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-        val qualityKey = qualityKey?.let { "_${it}" } ?: ""
-        val animationDrawablePart =
-            if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-        "Display_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
-                "${qualityKey}_memoryCacheKey($memoryCacheKey)_memoryCachePolicy($memoryCachePolicy)${animationDrawablePart}"
-    }
-
-    override fun newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
-        LoadableRequest.newDecodeOptionsByQualityParams(this, mimeType)
-
-    fun newBuilder(
+    fun newDisplayRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
-    fun new(
+    fun newDisplayRequest(
         configBlock: (Builder.() -> Unit)? = null
     ): DisplayRequest = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
-
-    fun toLoadRequest(): LoadRequest = LoadRequest.new(url) {
-        depth(depth)
-        parameters(parameters)
-        httpHeaders(httpHeaders)
-        diskCacheKey(diskCacheKey)
-        diskCachePolicy(diskCachePolicy)
-        resultDiskCacheKey(resultDiskCacheKey)
-        resultDiskCachePolicy(resultDiskCachePolicy)
-        maxSize(maxSize)
-        bitmapConfig(bitmapConfig)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            colorSpace(colorSpace)
-        }
-        preferQualityOverSpeed(preferQualityOverSpeed)
-        resize(resize)
-        transformations(transformations)
-        disabledBitmapPool(disabledBitmapPool)
-        disabledCorrectExifOrientation(disabledCorrectExifOrientation)
-        networkProgressListener?.let {
-            networkProgressListener { _, totalLength, completedLength ->
-                it.onUpdateProgress(this@DisplayRequest, totalLength, completedLength)
-            }
-        }
-    }
 
     companion object {
         internal const val SIZE_BY_VIEW_FIXED_SIZE: Int = -214238643
@@ -168,8 +83,8 @@ class DisplayRequest(
         private var errorImage: StateImage?
         private var emptyImage: StateImage?
         private var target: Target?
-        private var listener: Listener<DisplayRequest, DisplayResult>? = null
-        private var networkProgressListener: ProgressListener<DisplayRequest>? = null
+        private var listener: Listener<ImageRequest, ImageResult>? = null
+        private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
         constructor(url: String?) {
             this.url = url ?: ""
@@ -182,7 +97,7 @@ class DisplayRequest(
             this.resultDiskCachePolicy = null
             this.maxSize = MaxSize.SCREEN_SIZE
             this.bitmapConfig = null
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = null
             }
             this.preferQualityOverSpeed = null
@@ -210,7 +125,7 @@ class DisplayRequest(
             this.resultDiskCachePolicy = request.resultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
             }
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
@@ -308,7 +223,7 @@ class DisplayRequest(
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
         fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean?): Builder = apply {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            if (VERSION.SDK_INT < VERSION_CODES.N) {
                 this.preferQualityOverSpeed = inPreferQualityOverSpeed
             }
         }
@@ -389,15 +304,18 @@ class DisplayRequest(
         }
 
         fun listener(listener: Listener<DisplayRequest, DisplayResult>?): Builder = apply {
-            this.listener = listener
+            @Suppress("UNCHECKED_CAST")
+            this.listener = listener as Listener<ImageRequest, ImageResult>?
         }
 
         fun networkProgressListener(networkProgressListener: ProgressListener<DisplayRequest>?): Builder =
             apply {
-                this.networkProgressListener = networkProgressListener
+                @Suppress("UNCHECKED_CAST")
+                this.networkProgressListener =
+                    networkProgressListener as ProgressListener<ImageRequest>?
             }
 
-        fun build(): DisplayRequest = DisplayRequest(
+        fun build(): DisplayRequest = DisplayRequestImpl(
             url = url,
             _depth = depth,
             parameters = parameters,
@@ -408,7 +326,7 @@ class DisplayRequest(
             _resultDiskCachePolicy = resultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
-            colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) colorSpace else null,
+            colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resize = resize,
             transformations = transformations,
@@ -424,5 +342,73 @@ class DisplayRequest(
             listener = listener,
             networkProgressListener = networkProgressListener,
         )
+    }
+
+    private class DisplayRequestImpl(
+        override val url: String,
+        _depth: RequestDepth?,
+        override val parameters: Parameters?,
+        override val httpHeaders: Map<String, String>?,
+        _diskCacheKey: String?,
+        _diskCachePolicy: CachePolicy?,
+        _resultDiskCacheKey: String?,
+        _resultDiskCachePolicy: CachePolicy?,
+        override val maxSize: MaxSize?,
+        override val bitmapConfig: BitmapConfig?,
+        override val colorSpace: ColorSpace?,
+        override val preferQualityOverSpeed: Boolean?,
+        override val resize: Resize?,
+        override val transformations: List<Transformation>?,
+        override val disabledBitmapPool: Boolean?,
+        override val disabledCorrectExifOrientation: Boolean?,
+        _memoryCacheKey: String?,
+        _memoryCachePolicy: CachePolicy?,
+        override val disabledAnimationDrawable: Boolean?,
+        override val loadingImage: StateImage?,
+        override val errorImage: StateImage?,
+        override val emptyImage: StateImage?,
+        override val target: Target?,
+        override val listener: Listener<ImageRequest, ImageResult>?,
+        override val networkProgressListener: ProgressListener<ImageRequest>?,
+    ) : DisplayRequest {
+
+        override val depth: RequestDepth = _depth ?: NETWORK
+
+        override val diskCacheKey: String = _diskCacheKey ?: url
+
+        override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+
+        override val resultDiskCacheKey: String? by lazy {
+            _resultDiskCacheKey ?: qualityKey?.let { "${url}_$it" }
+        }
+
+        override val resultDiskCachePolicy: CachePolicy =
+            _resultDiskCachePolicy ?: CachePolicy.ENABLED
+
+        override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
+
+        override val memoryCacheKey: String by lazy {
+            if (_memoryCacheKey != null) {
+                _memoryCacheKey
+            } else {
+                val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
+                val animationDrawablePart =
+                    if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
+                "${url}${qualityKeyPart}${animationDrawablePart}"
+            }
+        }
+
+        private val qualityKey: String? by lazy {
+            LoadRequest.newQualityKey(this)
+        }
+
+        override val key: String by lazy {
+            val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
+            val qualityKey = qualityKey?.let { "_${it}" } ?: ""
+            val animationDrawablePart =
+                if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
+            "Display_${url}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
+                    "${qualityKey}_memoryCacheKey($memoryCacheKey)_memoryCachePolicy($memoryCachePolicy)${animationDrawablePart}"
+        }
     }
 }

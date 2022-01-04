@@ -8,8 +8,8 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ByteArrayDownloadResult
 import com.github.panpf.sketch.request.DiskCacheDownloadResult
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.withContext
 
 class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
@@ -24,7 +24,7 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
         val fetcher =
             componentRegistry.newFetcher(sketch, request)
         val source = if (fetcher is HttpUriFetcher) {
-            val downloadRequest = request.toDownloadRequest()
+            val downloadRequest = request.newDownloadRequest()
             val downloadResult = DownloadInterceptorChain(
                 initialRequest = downloadRequest,
                 interceptors = sketch.downloadInterceptors,

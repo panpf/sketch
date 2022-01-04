@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.LoadRequest
 
 class BlurTransformation(
     /**
@@ -30,11 +30,7 @@ class BlurTransformation(
     override val cacheKey: String =
         "Blur(${radius}${if (maskColor != null) ",$maskColor" else ""})"
 
-    override suspend fun transform(
-        sketch: Sketch,
-        request: LoadableRequest,
-        input: Bitmap
-    ): Bitmap {
+    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
         // blur handle
         val canReuseInBitmap = input.config != null && input.isMutable
         val blurBitmap = fastGaussianBlur(input, radius, canReuseInBitmap) ?: return input

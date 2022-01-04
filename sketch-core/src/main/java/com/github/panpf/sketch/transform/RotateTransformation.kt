@@ -7,17 +7,13 @@ import android.graphics.Paint
 import android.graphics.RectF
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPoolHelper
-import com.github.panpf.sketch.request.internal.LoadableRequest
+import com.github.panpf.sketch.request.LoadRequest
 
 class RotateTransformation(val degrees: Int) : Transformation {
 
     override val cacheKey: String = "Rotate($degrees)"
 
-    override suspend fun transform(
-        sketch: Sketch,
-        request: LoadableRequest,
-        input: Bitmap
-    ): Bitmap {
+    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
         if (degrees % 360 == 0) return input
         return rotate(input, degrees, sketch.bitmapPoolHelper)
     }

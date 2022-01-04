@@ -2,9 +2,9 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ExecuteResult
+import com.github.panpf.sketch.request.DownloadRequest
 import kotlinx.coroutines.CancellationException
 
 class DownloadExecutor(private val sketch: Sketch) {

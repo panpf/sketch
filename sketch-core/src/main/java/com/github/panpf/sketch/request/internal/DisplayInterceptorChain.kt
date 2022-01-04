@@ -2,9 +2,9 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.DisplayRequest
 
 internal class DisplayInterceptorChain(
     val initialRequest: DisplayRequest,
