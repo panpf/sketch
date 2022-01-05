@@ -64,7 +64,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":sketch3"))
+    implementation(project(":sketch"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
