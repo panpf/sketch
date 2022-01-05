@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.fetch.internal
 
+import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataSource
@@ -22,7 +23,6 @@ import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedOutputStream
@@ -32,17 +32,17 @@ import java.io.OutputStream
 /**
  * Wrap the disk cache part for Fetcher that needs disk cache
  */
-abstract class AbsDiskCacheFetcher(val sketch: Sketch, val request: LoadRequest) : Fetcher {
-
-    companion object {
-        private const val MODULE = "AbsDiskCacheFetcher"
-    }
+abstract class AbsDiskCacheFetcher(
+    val sketch: Sketch,
+    val request: LoadRequest,
+    val dataFrom: DataFrom
+) : Fetcher {
 
     override suspend fun fetch(): FetchResult {
         return FetchResult(getDataSource())
     }
 
-    protected abstract fun getDiskCacheKey(): String
+    abstract fun getDiskCacheKey(): String
 
     @Throws(Exception::class)
     protected abstract fun outContent(outputStream: OutputStream)
@@ -88,14 +88,14 @@ abstract class AbsDiskCacheFetcher(val sketch: Sketch, val request: LoadRequest)
         return if (diskCacheEditor != null) {
             val cacheEntry = diskCache[encodedDiskCacheKey]
             if (cacheEntry != null) {
-                DiskCacheDataSource(cacheEntry, DataFrom.LOCAL)
+                DiskCacheDataSource(cacheEntry, dataFrom)
             } else {
                 throw LoadException("Not found disk cache after save. ${request.uriString}")
             }
         } else {
             ByteArrayDataSource(
                 (outputStream as ByteArrayOutputStream).toByteArray(),
-                DataFrom.LOCAL
+                dataFrom
             )
         }
     }

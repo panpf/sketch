@@ -15,13 +15,13 @@
  */
 package com.github.panpf.sketch.datasource
 
-import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.request.DataFrom
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
-class DiskCacheDataSource(
+class DiskCacheDataSource constructor(
     val diskCacheEntry: DiskCache.Entry,
     override val from: DataFrom
 ) : DataSource {

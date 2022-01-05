@@ -16,12 +16,16 @@
 package com.github.panpf.sketch.fetch.internal
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import java.io.InputStream
 import java.io.OutputStream
 
-abstract class AbsStreamDiskCacheFetcher(sketch: Sketch, request: LoadRequest) :
-    AbsDiskCacheFetcher(sketch, request) {
+abstract class AbsStreamDiskCacheFetcher(
+    sketch: Sketch,
+    request: LoadRequest,
+    dataFrom: DataFrom
+) : AbsDiskCacheFetcher(sketch, request, dataFrom) {
 
     abstract fun openInputStream(): InputStream
 

@@ -1,12 +1,16 @@
 package com.github.panpf.sketch.fetch
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
+import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.util.createFileUriDiskCacheKey
 import com.github.panpf.sketch.util.readApkIcon
+
+fun newApkIconUri(filePath: String): Uri = ApkIconUriFetcher.newUri(filePath)
 
 /**
  * Support 'apk.icon:///sdcard/test.apk' uri
@@ -15,16 +19,13 @@ class ApkIconUriFetcher(
     sketch: Sketch,
     request: LoadRequest,
     val apkFilePath: String,
-) : AbsBitmapDiskCacheFetcher(sketch, request) {
+) : AbsBitmapDiskCacheFetcher(sketch, request, LOCAL) {
 
     companion object {
-        const val MODULE = "ApkIconUriFetcher"
         const val SCHEME = "apk.icon"
 
         @JvmStatic
-        fun makeUri(filePath: String): String {
-            return "$SCHEME://$filePath"
-        }
+        fun newUri(filePath: String): Uri = Uri.parse("$SCHEME://$filePath")
     }
 
     override fun getBitmap(): Bitmap = readApkIcon(

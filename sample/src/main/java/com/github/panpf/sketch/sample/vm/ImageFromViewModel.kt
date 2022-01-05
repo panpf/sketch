@@ -45,21 +45,21 @@ class ImageFromViewModel(application1: Application) : LifecycleAndroidViewModel(
                     add("FILE" to localFirstPhotoPath)
                 }
                 add("ASSET" to AssetImage.MEI_NV)
-                add("DRAWABLE" to DrawableResUriFetcher.makeUri(R.drawable.image_loading))
+                add("DRAWABLE" to DrawableResUriFetcher.newUri(R.drawable.image_loading).toString())
                 add(
-                    "ANDROID_RES" to AndroidResUriFetcher.makeUriByName(
+                    "ANDROID_RES" to AndroidResUriFetcher.newUriByName(
                         BuildConfig.APPLICATION_ID,
                         "mipmap",
                         "ic_launcher"
-                    )
+                    ).toString()
                 )
                 add(
-                    "APP" to AppIconUriFetcher.makeUri(
+                    "APP" to AppIconUriFetcher.newUri(
                         headerUserPackageInfo.packageName,
                         headerUserPackageInfo.versionCode
-                    )
+                    ).toString()
                 )
-                add("APK" to ApkIconUriFetcher.makeUri(footerUserPackageInfo.applicationInfo.publicSourceDir))
+                add("APK" to ApkIconUriFetcher.newUri(footerUserPackageInfo.applicationInfo.publicSourceDir).toString())
                 add("BASE64" to BASE64_IMAGE)
             }
             val uris = datas.map { it.second }.toTypedArray()

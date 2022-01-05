@@ -37,6 +37,6 @@ class FileDataSource(val file: File) : DataSource {
     override fun getFile(outDir: File?, outName: String?): File = file
 
     override fun toString(): String {
-        return "DiskCacheDataSource(from=$from, file=${file.path})"
+        return "FileDataSource(from=$from, file=${file.path})"
     }
 }

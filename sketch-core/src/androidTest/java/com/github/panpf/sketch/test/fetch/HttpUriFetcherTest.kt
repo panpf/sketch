@@ -9,7 +9,9 @@ import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.util.TestHttpStack
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -31,16 +33,20 @@ class HttpUriFetcherTest {
         val sketch = Sketch.new(context) {
             httpStack(TestHttpStack(context))
         }
-        val httpDownloadRequest = DownloadRequest.new("http://sample.com.sample.jpg")
-        val httpsDownloadRequest = DownloadRequest.new("https://sample.com.sample.jpg")
-        val ftpDownloadRequest = DownloadRequest.new("ftp://sample.com.sample.jpg")
-        val contentDownloadRequest = DownloadRequest.new("content://sample.com.sample.jpg")
-        val httpUriFetcherFactory = HttpUriFetcher.Factory()
+        val httpUri = "http://sample.com/sample.jpg"
+        val httpsUri = "https://sample.com/sample.jpg"
+        val ftpUri = "ftp://sample.com/sample.jpg"
+        val contentUri = "content://sample_app/sample"
 
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpDownloadRequest))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, httpsDownloadRequest))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, ftpDownloadRequest))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, contentDownloadRequest))
+        val httpUriFetcherFactory = HttpUriFetcher.Factory()
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(httpsUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest.new(httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest.new(httpsUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest.new(httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest.new(httpsUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(ftpUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(contentUri)))
     }
 
     @Test

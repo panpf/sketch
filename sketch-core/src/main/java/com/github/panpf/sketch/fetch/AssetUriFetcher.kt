@@ -1,9 +1,12 @@
 package com.github.panpf.sketch.fetch
 
+import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetsDataSource
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+
+fun newAssetUri(assetFilePath: String): Uri = AssetUriFetcher.newUri(assetFilePath)
 
 /**
  * Support 'asset://test.png' uri
@@ -18,7 +21,7 @@ class AssetUriFetcher(
         const val SCHEME = "asset"
 
         @JvmStatic
-        fun makeUri(assetFilePath: String): String = "$SCHEME://$assetFilePath"
+        fun newUri(assetFilePath: String): Uri = Uri.parse("$SCHEME://$assetFilePath")
     }
 
     override suspend fun fetch(): FetchResult =

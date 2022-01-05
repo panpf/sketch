@@ -1,9 +1,16 @@
 package com.github.panpf.sketch.fetch
 
+import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+
+fun newAndroidResUriByName(packageName: String, resType: String, drawableResName: String): Uri =
+    AndroidResUriFetcher.newUriByName(packageName, resType, drawableResName)
+
+fun newAndroidResUriById(packageName: String, drawableResId: Int): Uri =
+    AndroidResUriFetcher.newUriById(packageName, drawableResId)
 
 /**
  * Support 'android.resource://com.github.panpf.sketch.sample/mipmap/ic_launch' uri
@@ -11,6 +18,7 @@ import com.github.panpf.sketch.request.internal.ImageRequest
 class AndroidResUriFetcher(
     val sketch: Sketch,
     val request: LoadRequest,
+    val contentUri: Uri,
 ) : Fetcher {
 
     companion object {
@@ -21,28 +29,27 @@ class AndroidResUriFetcher(
          * Sample: 'android.resource://com.github.panpf.sketch.sample/mipmap/ic_launch'
          */
         @JvmStatic
-        fun makeUriByName(packageName: String, resType: String, drawableResName: String): String {
-            return "$SCHEME://$packageName/$resType/$drawableResName"
-        }
+        fun newUriByName(packageName: String, resType: String, drawableResName: String): Uri =
+            Uri.parse("$SCHEME://$packageName/$resType/$drawableResName")
 
         /**
          * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
          */
         @JvmStatic
-        fun makeUriById(packageName: String, drawableResId: Int): String {
-            return "$SCHEME://$packageName/$drawableResId"
+        fun newUriById(packageName: String, drawableResId: Int): Uri {
+            return Uri.parse("$SCHEME://$packageName/$drawableResId")
         }
     }
 
     override suspend fun fetch(): FetchResult =
-        FetchResult(ContentDataSource(sketch.appContext, request.uri))
+        FetchResult(ContentDataSource(sketch.appContext, contentUri))
 
     class Factory : Fetcher.Factory {
         override fun create(
             sketch: Sketch, request: ImageRequest
         ): AndroidResUriFetcher? =
             if (request is LoadRequest && request.uri.scheme == SCHEME) {
-                AndroidResUriFetcher(sketch, request)
+                AndroidResUriFetcher(sketch, request, request.uri)
             } else {
                 null
             }

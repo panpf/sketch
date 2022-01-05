@@ -18,12 +18,16 @@ package com.github.panpf.sketch.fetch.internal
 import android.graphics.Bitmap
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.getCompressFormat
 import java.io.OutputStream
 
-abstract class AbsBitmapDiskCacheFetcher(sketch: Sketch, request: LoadRequest) :
-    AbsDiskCacheFetcher(sketch, request) {
+abstract class AbsBitmapDiskCacheFetcher(
+    sketch: Sketch,
+    request: LoadRequest,
+    dataFrom: DataFrom
+) : AbsDiskCacheFetcher(sketch, request, dataFrom) {
 
     @WorkerThread
     abstract fun getBitmap(): Bitmap

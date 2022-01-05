@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import com.github.panpf.sketch.DownloadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
@@ -8,7 +9,6 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.DownloadException
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
@@ -25,7 +25,11 @@ import java.io.OutputStream
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpgg' uri
  */
-class HttpUriFetcher(val sketch: Sketch, val request: DownloadRequest) : Fetcher {
+class HttpUriFetcher(
+    val sketch: Sketch,
+    val request: DownloadRequest,
+    val url: String
+) : Fetcher {
 
     // To avoid the possibility of repeated downloads or repeated edits to the disk cache due to multithreaded concurrency,
     // these operations need to be performed in a single thread 'singleThreadTaskDispatcher'
@@ -69,7 +73,7 @@ class HttpUriFetcher(val sketch: Sketch, val request: DownloadRequest) : Fetcher
         encodedDiskCacheKey: String,
         coroutineScope: CoroutineScope,
     ): FetchResult? {
-        val response = httpStack.getResponse(sketch, request, request.uriString)
+        val response = httpStack.getResponse(sketch, request, url)
         val responseCode = response.code
         if (responseCode != 200) {
             throw IOException("HTTP code error. code=$responseCode, message=${response.message}. ${request.uriString}")
@@ -206,7 +210,7 @@ class HttpUriFetcher(val sketch: Sketch, val request: DownloadRequest) : Fetcher
             if (request is DownloadRequest
                 && (request.uri.scheme == "http" || request.uri.scheme == "https")
             ) {
-                HttpUriFetcher(sketch, request)
+                HttpUriFetcher(sketch, request, request.uriString)
             } else {
                 null
             }

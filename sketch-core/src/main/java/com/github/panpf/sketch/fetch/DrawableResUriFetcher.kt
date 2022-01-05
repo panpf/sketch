@@ -1,12 +1,16 @@
 package com.github.panpf.sketch.fetch
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
+import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DrawableResDataSource
-import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+
+fun newDrawableResUri(@DrawableRes drawableResId: Int): Uri =
+    DrawableResUriFetcher.newUri(drawableResId)
 
 /**
  * Support 'drawable.resource://5353453' uri
@@ -14,14 +18,14 @@ import com.github.panpf.sketch.request.internal.ImageRequest
 class DrawableResUriFetcher(
     val sketch: Sketch,
     val request: LoadRequest,
-    @RawRes @DrawableRes private val drawableResId: Int
+    @RawRes @DrawableRes val drawableResId: Int
 ) : Fetcher {
 
     companion object {
         const val SCHEME = "drawable.resource"
 
         @JvmStatic
-        fun makeUri(@DrawableRes drawableResId: Int): String = "$SCHEME://$drawableResId"
+        fun newUri(@DrawableRes drawableResId: Int): Uri = Uri.parse("$SCHEME://$drawableResId")
     }
 
     override suspend fun fetch(): FetchResult =
