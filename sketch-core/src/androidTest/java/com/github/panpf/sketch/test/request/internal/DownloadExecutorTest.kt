@@ -5,9 +5,9 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.test.util.TestHttpStack
@@ -34,13 +34,13 @@ class DownloadExecutorTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalListenerActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString){
+        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString) {
             listener(normalDownloadListenerSupervisor)
         }
         runBlocking {
             DownloadExecutor(normalSketch).execute(normalRequest)
         }.apply {
-            Assert.assertTrue(this is ExecuteResult.Success)
+            Assert.assertTrue(this is DownloadResult.Success)
         }
         Assert.assertEquals("onStart, onSuccess", normalListenerActionList.joinToString())
 
@@ -78,12 +78,12 @@ class DownloadExecutorTest {
         runBlocking {
             DownloadExecutor(slowSketch).execute(errorRequest)
         }.apply {
-            Assert.assertTrue(this is ExecuteResult.Error)
+            Assert.assertTrue(this is DownloadResult.Error)
         }
         Assert.assertEquals("onStart, onError", errorListenerActionList.joinToString())
     }
 
-    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadResult> {
+    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadData> {
 
         val callbackActionList = mutableListOf<String>()
 
@@ -105,8 +105,8 @@ class DownloadExecutorTest {
             callbackActionList.add("onError")
         }
 
-        override fun onSuccess(request: DownloadRequest, result: DownloadResult) {
-            super.onSuccess(request, result)
+        override fun onSuccess(request: DownloadRequest, data: DownloadData) {
+            super.onSuccess(request, data)
             check(Looper.getMainLooper() === Looper.myLooper())
             callbackActionList.add("onSuccess")
         }

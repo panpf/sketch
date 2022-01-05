@@ -22,7 +22,7 @@ import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.LoadException
+import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedOutputStream

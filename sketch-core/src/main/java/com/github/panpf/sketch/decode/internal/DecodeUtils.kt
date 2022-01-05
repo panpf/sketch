@@ -34,9 +34,9 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
     return newInputStream().use {
         val regionDecoder = BitmapRegionDecoder.newInstance(it, false)
         try {
-            regionDecoder.decodeRegion(srcRect, options)
+            regionDecoder?.decodeRegion(srcRect, options)
         } finally {
-            regionDecoder.recycle()
+            regionDecoder?.recycle()
         }
     }
 }

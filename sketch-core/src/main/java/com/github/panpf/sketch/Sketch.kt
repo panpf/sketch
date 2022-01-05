@@ -23,13 +23,15 @@ import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
+import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
@@ -40,6 +42,8 @@ import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.LoadResultCacheInterceptor
+import com.github.panpf.sketch.request.internal.requestManager
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
@@ -59,9 +63,9 @@ class Sketch constructor(
     _bitmapPool: BitmapPool? = null,
     _componentRegistry: ComponentRegistry? = null,
     _httpStack: HttpStack? = null,
-    _downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>? = null,
-    _loadInterceptors: List<Interceptor<LoadRequest, LoadResult>>? = null,
-    _displayInterceptors: List<Interceptor<DisplayRequest, DisplayResult>>? = null,
+    _downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>? = null,
+    _loadInterceptors: List<Interceptor<LoadRequest, LoadData>>? = null,
+    _displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>? = null,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
@@ -81,9 +85,9 @@ class Sketch constructor(
     val bitmapPoolHelper: BitmapPoolHelper
 
     val componentRegistry: ComponentRegistry
-    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadResult>>
-    val loadInterceptors: List<Interceptor<LoadRequest, LoadResult>>
-    val displayInterceptors: List<Interceptor<DisplayRequest, DisplayResult>>   // todo gif, svg, webpA
+    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>
+    val loadInterceptors: List<Interceptor<LoadRequest, LoadData>>
+    val displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>   // todo gif, svg, webpA
 
     val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
@@ -131,32 +135,38 @@ class Sketch constructor(
     /***************************************** Display ********************************************/
 
     @AnyThread
-    fun enqueueDisplay(request: DisplayRequest): Disposable<ExecuteResult<DisplayResult>> {
+    fun enqueueDisplay(request: DisplayRequest): Disposable<DisplayResult> {
         // todo ViewTarget bind RequestManager，方尺重复加载，图片错乱、自动取消、自动重新请求，监听 lifecycler，延迟到确定了大小之后再发起请求
         val job = scope.async(singleThreadTaskDispatcher) {
             displayExecutor.execute(request)
         }
-        return OneShotDisposable(job)
+        return if (request.target is ViewTarget<*>) {
+            (request.target as ViewTarget<*>).view.requestManager.getDisposable(job)
+        } else {
+            OneShotDisposable(job)
+        }
     }
 
     @AnyThread
     fun enqueueDisplay(
         uriString: String?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<DisplayResult>> =
-        enqueueDisplay(DisplayRequest.new(uriString, configBlock))
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uriString, configBlock))
 
     @AnyThread
     fun enqueueDisplay(
         uri: Uri?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<DisplayResult>> =
-        enqueueDisplay(DisplayRequest.new(uri, configBlock))
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uri, configBlock))
 
-    suspend fun executeDisplay(request: DisplayRequest): ExecuteResult<DisplayResult> =
+    suspend fun executeDisplay(request: DisplayRequest): DisplayResult =
         coroutineScope {
             val job = async(singleThreadTaskDispatcher) {
                 displayExecutor.execute(request)
+            }
+            // Update the current request attached to the view and await the result.
+            if (request.target is ViewTarget<*>) {
+                (request.target as ViewTarget<*>).view.requestManager.getDisposable(job)
             }
             job.await()
         }
@@ -164,20 +174,18 @@ class Sketch constructor(
     suspend fun executeDisplay(
         uriString: String?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DisplayResult> =
-        executeDisplay(DisplayRequest.new(uriString, configBlock))
+    ): DisplayResult = executeDisplay(DisplayRequest.new(uriString, configBlock))
 
     suspend fun executeDisplay(
         uri: Uri?,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DisplayResult> =
-        executeDisplay(DisplayRequest.new(uri, configBlock))
+    ): DisplayResult = executeDisplay(DisplayRequest.new(uri, configBlock))
 
 
     /****************************************** Load **********************************************/
 
     @AnyThread
-    fun enqueueLoad(request: LoadRequest): Disposable<ExecuteResult<LoadResult>> {
+    fun enqueueLoad(request: LoadRequest): Disposable<LoadResult> {
         val job = scope.async(singleThreadTaskDispatcher) {
             loadExecutor.execute(request)
         }
@@ -188,17 +196,15 @@ class Sketch constructor(
     fun enqueueLoad(
         uriString: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<LoadResult>> =
-        enqueueLoad(LoadRequest.new(uriString, configBlock))
+    ): Disposable<LoadResult> = enqueueLoad(LoadRequest.new(uriString, configBlock))
 
     @AnyThread
     fun enqueueLoad(
         uri: Uri,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<LoadResult>> =
-        enqueueLoad(LoadRequest.new(uri, configBlock))
+    ): Disposable<LoadResult> = enqueueLoad(LoadRequest.new(uri, configBlock))
 
-    suspend fun executeLoad(request: LoadRequest): ExecuteResult<LoadResult> = coroutineScope {
+    suspend fun executeLoad(request: LoadRequest): LoadResult = coroutineScope {
         val job = async(singleThreadTaskDispatcher) {
             loadExecutor.execute(request)
         }
@@ -208,18 +214,18 @@ class Sketch constructor(
     suspend fun executeLoad(
         uriString: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(uriString, configBlock))
+    ): LoadResult = executeLoad(LoadRequest.new(uriString, configBlock))
 
     suspend fun executeLoad(
         uri: Uri,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<LoadResult> = executeLoad(LoadRequest.new(uri, configBlock))
+    ): LoadResult = executeLoad(LoadRequest.new(uri, configBlock))
 
 
     /**************************************** Download ********************************************/
 
     @AnyThread
-    fun enqueueDownload(request: DownloadRequest): Disposable<ExecuteResult<DownloadResult>> {
+    fun enqueueDownload(request: DownloadRequest): Disposable<DownloadResult> {
         val job = scope.async(singleThreadTaskDispatcher) {
             downloadExecutor.execute(request)
         }
@@ -230,17 +236,15 @@ class Sketch constructor(
     fun enqueueDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<DownloadResult>> =
-        enqueueDownload(DownloadRequest.new(uriString, configBlock))
+    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uriString, configBlock))
 
     @AnyThread
     fun enqueueDownload(
         uri: Uri,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<ExecuteResult<DownloadResult>> =
-        enqueueDownload(DownloadRequest.new(uri, configBlock))
+    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uri, configBlock))
 
-    suspend fun executeDownload(request: DownloadRequest): ExecuteResult<DownloadResult> =
+    suspend fun executeDownload(request: DownloadRequest): DownloadResult =
         coroutineScope {
             val job = async(singleThreadTaskDispatcher) {
                 downloadExecutor.execute(request)
@@ -251,14 +255,12 @@ class Sketch constructor(
     suspend fun executeDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadResult> =
-        executeDownload(DownloadRequest.new(uriString, configBlock))
+    ): DownloadResult = executeDownload(DownloadRequest.new(uriString, configBlock))
 
     suspend fun executeDownload(
         uri: Uri,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): ExecuteResult<DownloadResult> =
-        executeDownload(DownloadRequest.new(uri, configBlock))
+    ): DownloadResult = executeDownload(DownloadRequest.new(uri, configBlock))
 
 
     companion object {
@@ -279,11 +281,11 @@ class Sketch constructor(
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
-        private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadResult>>? =
+        private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadData>>? =
             null
-        private var loadInterceptors: MutableList<Interceptor<LoadRequest, LoadResult>>? =
+        private var loadInterceptors: MutableList<Interceptor<LoadRequest, LoadData>>? =
             null
-        private var displayInterceptors: MutableList<Interceptor<DisplayRequest, DisplayResult>>? =
+        private var displayInterceptors: MutableList<Interceptor<DisplayRequest, DisplayData>>? =
             null
 
         fun logger(logger: Logger?): Builder = apply {
@@ -314,21 +316,21 @@ class Sketch constructor(
             this.httpStack = httpStack
         }
 
-        fun addDownloadInterceptor(interceptor: Interceptor<DownloadRequest, DownloadResult>): Builder =
+        fun addDownloadInterceptor(interceptor: Interceptor<DownloadRequest, DownloadData>): Builder =
             apply {
                 this.downloadInterceptors = (downloadInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addLoadInterceptor(interceptor: Interceptor<LoadRequest, LoadResult>): Builder =
+        fun addLoadInterceptor(interceptor: Interceptor<LoadRequest, LoadData>): Builder =
             apply {
                 this.loadInterceptors = (loadInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addDisplayInterceptor(interceptor: Interceptor<DisplayRequest, DisplayResult>): Builder =
+        fun addDisplayInterceptor(interceptor: Interceptor<DisplayRequest, DisplayData>): Builder =
             apply {
                 this.displayInterceptors = (displayInterceptors ?: mutableListOf()).apply {
                     add(interceptor)

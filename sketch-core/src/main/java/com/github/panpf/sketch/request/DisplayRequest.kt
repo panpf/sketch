@@ -11,8 +11,8 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
@@ -96,7 +96,7 @@ interface DisplayRequest : LoadRequest {
         private var errorImage: StateImage? = null
         private var emptyImage: StateImage? = null
         private var target: Target? = null
-        private var listener: Listener<ImageRequest, ImageResult>? = null
+        private var listener: Listener<ImageRequest, ImageData>? = null
         private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
         constructor(uriString: String?) : this(
@@ -295,9 +295,9 @@ interface DisplayRequest : LoadRequest {
             this.target = ImageViewTarget(imageView)
         }
 
-        fun listener(listener: Listener<DisplayRequest, DisplayResult>?): Builder = apply {
+        fun listener(listener: Listener<DisplayRequest, DisplayData>?): Builder = apply {
             @Suppress("UNCHECKED_CAST")
-            this.listener = listener as Listener<ImageRequest, ImageResult>?
+            this.listener = listener as Listener<ImageRequest, ImageData>?
         }
 
         fun networkProgressListener(networkProgressListener: ProgressListener<DisplayRequest>?): Builder =
@@ -360,7 +360,7 @@ interface DisplayRequest : LoadRequest {
         override val errorImage: StateImage?,
         override val emptyImage: StateImage?,
         override val target: Target?,
-        override val listener: Listener<ImageRequest, ImageResult>?,
+        override val listener: Listener<ImageRequest, ImageData>?,
         override val networkProgressListener: ProgressListener<ImageRequest>?,
     ) : DisplayRequest {
 

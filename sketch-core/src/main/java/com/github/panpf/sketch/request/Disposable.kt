@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.request
 
+import android.view.View
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.internal.requestManager
 import kotlinx.coroutines.Deferred
 
 /**
@@ -41,25 +43,26 @@ internal class OneShotDisposable<T>(
     }
 }
 
-///**
-// * A disposable for requests that are attached to a [View].
-// *
-// * [ViewTarget] requests are automatically cancelled in when the view is detached
-// * and are restarted when the view is attached.
-// *
-// * [isDisposed] only returns 'true' when this disposable's request is cleared (due to
-// * [DefaultLifecycleObserver.onDestroy]) or replaced by a new request attached to the view.
-// */
-//internal class ViewTargetDisposable<T>(
-//    private val view: View,
-//    @Volatile override var job: Deferred<T>
-//) : Disposable<T> {
-//
-//    override val isDisposed: Boolean
-//        get() = view.requestManager.isDisposed(this)
-//
-//    override fun dispose() {
-//        if (isDisposed) return
-//        view.requestManager.dispose()
-//    }
-//}
+/**
+ * A disposable for requests that are attached to a [View].
+ *
+ * [com.github.panpf.sketch.target.ViewTarget] requests are automatically cancelled in when the view is detached
+ * and are restarted when the view is attached.
+ *
+ * [isDisposed] only returns 'true' when this disposable's request is cleared (due to
+ * [DefaultLifecycleObserver.onDestroy]) or replaced by a new request attached to the view.
+ */
+internal class ViewTargetDisposable(
+    private val view: View,
+    @Volatile override var job: Deferred<DisplayResult>
+) : Disposable<DisplayResult> {
+
+    override val isDisposed: Boolean
+        get() = view.requestManager.isDisposed(this)
+
+    override fun dispose() {
+        if (!isDisposed){
+            view.requestManager.dispose()
+        }
+    }
+}

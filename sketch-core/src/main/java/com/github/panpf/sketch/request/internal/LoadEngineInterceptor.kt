@@ -5,20 +5,19 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.request.ByteArrayDownloadResult
-import com.github.panpf.sketch.request.DiskCacheDownloadResult
+import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.withContext
 
-class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
+class LoadEngineInterceptor : Interceptor<LoadRequest, LoadData> {
 
     @WorkerThread
     override suspend fun intercept(
         sketch: Sketch,
-        chain: Interceptor.Chain<LoadRequest, LoadResult>,
-    ): LoadResult {
+        chain: Interceptor.Chain<LoadRequest, LoadData>,
+    ): LoadData {
         val request = chain.request
         val componentRegistry = sketch.componentRegistry
         val fetcher =
@@ -32,11 +31,11 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
                 request = downloadRequest,
             ).proceed(sketch, downloadRequest)
             when (downloadResult) {
-                is ByteArrayDownloadResult -> ByteArrayDataSource(
+                is DownloadData.Bytes -> ByteArrayDataSource(
                     downloadResult.data,
                     downloadResult.from
                 )
-                is DiskCacheDownloadResult -> DiskCacheDataSource(
+                is DownloadData.Cache -> DiskCacheDataSource(
                     downloadResult.diskCacheEntry,
                     downloadResult.from
                 )
@@ -49,7 +48,7 @@ class LoadEngineInterceptor : Interceptor<LoadRequest, LoadResult> {
         return withContext(sketch.decodeTaskDispatcher) {
             val decoder = componentRegistry.newDecoder(sketch, request, source)
             val decodeResult = decoder.decode()
-            LoadResult(decodeResult.bitmap, decodeResult.info, source.from)
+            LoadData(decodeResult.bitmap, decodeResult.info, source.from)
         }
     }
 }

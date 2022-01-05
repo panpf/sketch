@@ -7,14 +7,14 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.request.DisplayException
+import com.github.panpf.sketch.DisplayException
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.LoadData
+import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.RequestDepth
 
-class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
+class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayData> {
 
     companion object {
         const val MODULE = "DisplayEngineInterceptor"
@@ -23,8 +23,8 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
     @WorkerThread
     override suspend fun intercept(
         sketch: Sketch,
-        chain: Interceptor.Chain<DisplayRequest, DisplayResult>,
-    ): DisplayResult {
+        chain: Interceptor.Chain<DisplayRequest, DisplayData>,
+    ): DisplayData {
         val request = chain.request
         val memoryCache = sketch.memoryCache
         val memoryCacheKey = request.memoryCacheKey
@@ -47,31 +47,31 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayResult> {
                     }
                     cachedRefBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
                     val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
-                    return DisplayResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
+                    return DisplayData(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
                 } else if (request.depth >= RequestDepth.MEMORY) {
                     throw DisplayException("Request depth only to MEMORY")
                 }
             }
 
             val loadRequest = request.newLoadRequest()
-            val loadResult: LoadResult = LoadInterceptorChain(
+            val loadData: LoadData = LoadInterceptorChain(
                 initialRequest = loadRequest,
                 interceptors = sketch.loadInterceptors,
                 index = 0,
                 request = loadRequest,
             ).proceed(sketch, loadRequest)
 
-            val bitmap = loadResult.bitmap
+            val bitmap = loadData.bitmap
             val drawable = if (memoryCachePolicy.writeEnabled) {
                 val refBitmap =
-                    SketchRefBitmap(bitmap, loadResult.info, request.key, sketch.bitmapPoolHelper)
+                    SketchRefBitmap(bitmap, loadData.info, request.key, sketch.bitmapPoolHelper)
                 refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
                 memoryCache.put(memoryCacheKey, refBitmap)
-                SketchBitmapDrawable(refBitmap, loadResult.from)
+                SketchBitmapDrawable(refBitmap, loadData.from)
             } else {
                 BitmapDrawable(sketch.appContext.resources, bitmap)
             }
-            return DisplayResult(drawable, loadResult.info, loadResult.from)
+            return DisplayData(drawable, loadData.info, loadData.from)
         } finally {
             memoryCacheEditLock?.unlock()
         }

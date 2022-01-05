@@ -5,9 +5,9 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.test.util.TestHttpStack
 import kotlinx.coroutines.cancelAndJoin
@@ -33,7 +33,7 @@ class SketchTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalCallbackActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString){
+        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString) {
             listener(normalDownloadListenerSupervisor)
         }
         val normalDisposable =
@@ -41,7 +41,7 @@ class SketchTest {
         runBlocking {
             normalDisposable.job.await()
         }.apply {
-            Assert.assertTrue(this is ExecuteResult.Success)
+            Assert.assertTrue(this is DownloadResult.Success)
         }
         Assert.assertEquals("onStart, onSuccess", normalCallbackActionList.joinToString())
 
@@ -81,7 +81,7 @@ class SketchTest {
         runBlocking {
             errorDisposable.job.await()
         }.apply {
-            Assert.assertTrue(this is ExecuteResult.Error)
+            Assert.assertTrue(this is DownloadResult.Error)
         }
         Assert.assertEquals("onStart, onError", errorCallbackActionList.joinToString())
     }
@@ -100,7 +100,7 @@ class SketchTest {
         runBlocking {
             normalSketch.executeDownload(normalRequest)
         }.apply {
-            Assert.assertTrue(this is ExecuteResult.Success)
+            Assert.assertTrue(this is DownloadResult.Success)
         }
 
         /*
@@ -130,11 +130,11 @@ class SketchTest {
         runBlocking {
             slowSketch.executeDownload(errorRequest)
         }.apply {
-            Assert.assertTrue(this is ExecuteResult.Error)
+            Assert.assertTrue(this is DownloadResult.Error)
         }
     }
 
-    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadResult> {
+    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadData> {
 
         val callbackActionList = mutableListOf<String>()
 
@@ -156,8 +156,8 @@ class SketchTest {
             callbackActionList.add("onError")
         }
 
-        override fun onSuccess(request: DownloadRequest, result: DownloadResult) {
-            super.onSuccess(request, result)
+        override fun onSuccess(request: DownloadRequest, data: DownloadData) {
+            super.onSuccess(request, data)
             check(Looper.getMainLooper() === Looper.myLooper())
             callbackActionList.add("onSuccess")
         }

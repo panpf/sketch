@@ -3,10 +3,9 @@ package com.github.panpf.sketch.request.internal
 import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DisplayException
+import com.github.panpf.sketch.DisplayException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.MaxSize
 import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.target.ViewTarget
@@ -22,9 +21,7 @@ class DisplayExecutor(private val sketch: Sketch) {
     }
 
     @WorkerThread
-    suspend fun execute(
-        request: DisplayRequest,
-    ): ExecuteResult<DisplayResult> {
+    suspend fun execute(request: DisplayRequest): DisplayResult {
         val listenerDelegate = request.listener?.run {
             ListenerDelegate(this)
         }
@@ -55,6 +52,8 @@ class DisplayExecutor(private val sketch: Sketch) {
 //                    throw DisplayException("Request depth only to MEMORY")
 //                }
 //            }
+            // todo RequestDelegate
+                // todo 不用 LifecycleOwner
             sketch.logger.d(MODULE) {
                 "Request started. ${request.uriString}"
             }
@@ -66,7 +65,7 @@ class DisplayExecutor(private val sketch: Sketch) {
             }
 
             if (request.uri !== Uri.EMPTY && request.uriString.isNotEmpty() && request.uriString.isNotBlank()) {
-                val displayResult = DisplayInterceptorChain(
+                val displayData = DisplayInterceptorChain(
                     initialRequest = newRequest,
                     interceptors = sketch.displayInterceptors,
                     index = 0,
@@ -74,13 +73,19 @@ class DisplayExecutor(private val sketch: Sketch) {
                 ).proceed(sketch, newRequest)
 
                 withContext(Dispatchers.Main) {
-                    target?.onSuccess(displayResult.drawable)
+                    target?.onSuccess(displayData.drawable)
                 }
-                listenerDelegate?.onSuccess(newRequest, displayResult)
+                val displayResult = DisplayResult.Success(
+                    request,
+                    displayData.drawable,
+                    displayData.info,
+                    displayData.from
+                )
+                listenerDelegate?.onSuccess(newRequest, displayData)
                 sketch.logger.d(MODULE) {
                     "Request Successful. ${request.uriString}"
                 }
-                return ExecuteResult.Success(displayResult)
+                return displayResult
             } else {
                 val emptyDrawable = (newRequest.emptyImage ?: newRequest.errorImage)?.getDrawable(
                     sketch.appContext,
@@ -93,7 +98,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                 val throwable = DisplayException("Request uri is empty or blank")
                 listenerDelegate?.onError(newRequest, throwable)
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                return ExecuteResult.Error(throwable)
+                return DisplayResult.Error(request, throwable, emptyDrawable)
             }
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
@@ -111,7 +116,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                     target?.onError(errorDrawable)
                 }
                 listenerDelegate?.onError(newRequest, throwable)
-                return ExecuteResult.Error(throwable)
+                return DisplayResult.Error(request, throwable, errorDrawable)
             }
         }
     }

@@ -11,5 +11,5 @@ interface ImageRequest {
     val key: String
     val depth: RequestDepth
     val parameters: Parameters?
-    val listener: Listener<ImageRequest, ImageResult>?
+    val listener: Listener<ImageRequest, ImageData>?
 }

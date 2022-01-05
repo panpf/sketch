@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
-import com.github.panpf.sketch.request.LoadException
+import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.util.readApkIcon

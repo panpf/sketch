@@ -3,7 +3,7 @@ package com.github.panpf.sketch.fetch
 import android.util.Base64
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.internal.AbsStreamDiskCacheFetcher
-import com.github.panpf.sketch.request.LoadException
+import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import java.io.ByteArrayInputStream

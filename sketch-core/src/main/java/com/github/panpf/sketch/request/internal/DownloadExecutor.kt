@@ -4,7 +4,6 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.ExecuteResult
 import kotlinx.coroutines.CancellationException
 
 class DownloadExecutor(private val sketch: Sketch) {
@@ -14,7 +13,7 @@ class DownloadExecutor(private val sketch: Sketch) {
     }
 
     @WorkerThread
-    suspend fun execute(request: DownloadRequest): ExecuteResult<DownloadResult> {
+    suspend fun execute(request: DownloadRequest): DownloadResult {
         val listenerDelegate = request.listener?.run {
             ListenerDelegate(this)
         }
@@ -25,18 +24,18 @@ class DownloadExecutor(private val sketch: Sketch) {
             }
             listenerDelegate?.onStart(request)
 
-            val downloadResult = DownloadInterceptorChain(
+            val downloadData = DownloadInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.downloadInterceptors,
                 index = 0,
                 request = request,
             ).proceed(sketch, request)
 
-            listenerDelegate?.onSuccess(request, downloadResult)
+            listenerDelegate?.onSuccess(request, downloadData)
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
-            return ExecuteResult.Success(downloadResult)
+            return DownloadResult.Success(request, downloadData, downloadData.from)
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 sketch.logger.d(MODULE) {
@@ -48,7 +47,7 @@ class DownloadExecutor(private val sketch: Sketch) {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
                 listenerDelegate?.onError(request, throwable)
-                return ExecuteResult.Error(throwable)
+                return DownloadResult.Error(request, throwable)
             }
         }
     }

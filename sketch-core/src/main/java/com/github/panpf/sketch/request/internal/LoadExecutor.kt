@@ -2,7 +2,6 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ExecuteResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import kotlinx.coroutines.CancellationException
@@ -14,7 +13,7 @@ class LoadExecutor(private val sketch: Sketch) {
     }
 
     @WorkerThread
-    suspend fun execute(request: LoadRequest): ExecuteResult<LoadResult> {
+    suspend fun execute(request: LoadRequest): LoadResult {
         val listenerDelegate = request.listener?.run {
             ListenerDelegate(this)
         }
@@ -25,18 +24,23 @@ class LoadExecutor(private val sketch: Sketch) {
             }
             listenerDelegate?.onStart(request)
 
-            val loadResult = LoadInterceptorChain(
+            val loadData = LoadInterceptorChain(
                 initialRequest = request,
                 interceptors = sketch.loadInterceptors,
                 index = 0,
                 request = request,
             ).proceed(sketch, request)
 
-            listenerDelegate?.onSuccess(request, loadResult)
+            listenerDelegate?.onSuccess(request, loadData)
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
-            return ExecuteResult.Success(loadResult)
+            return LoadResult.Success(
+                request,
+                loadData.bitmap,
+                loadData.info,
+                loadData.from
+            )
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 listenerDelegate?.onCancel(request)
@@ -48,7 +52,7 @@ class LoadExecutor(private val sketch: Sketch) {
                 throwable.printStackTrace()
                 listenerDelegate?.onError(request, throwable)
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                return ExecuteResult.Error(throwable)
+                return LoadResult.Error(request, throwable)
             }
         }
     }

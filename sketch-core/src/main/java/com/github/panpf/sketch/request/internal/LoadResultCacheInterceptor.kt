@@ -9,13 +9,13 @@ import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
-class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
+class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
 
     companion object {
         const val MODULE = "LoadResultCacheInterceptor"
@@ -23,8 +23,8 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
 
     override suspend fun intercept(
         sketch: Sketch,
-        chain: Interceptor.Chain<LoadRequest, LoadResult>,
-    ): LoadResult {
+        chain: Interceptor.Chain<LoadRequest, LoadData>,
+    ): LoadData {
         val diskCache = sketch.diskCache
         val request = chain.request
         val resultCacheHelper = ResultCacheHelper.from(request, diskCache, sketch.logger)
@@ -64,7 +64,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
         fun getOrCreateEditMutexLock(): Mutex =
             diskCache.getOrCreateEditMutexLock(encodedBitmapDataDiskCacheKey)
 
-        fun readLoadResult(): LoadResult? {
+        fun readLoadResult(): LoadData? {
             if (!request.resultDiskCachePolicy.readEnabled) {
                 return null
             }
@@ -82,7 +82,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
                         request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
                     )
                     if (bitmap.width > 1 && bitmap.height > 1) {
-                        LoadResult(bitmap, imageInfo, DISK_CACHE)
+                        LoadData(bitmap, imageInfo, DISK_CACHE)
                     } else {
                         bitmap.recycle()
                         logger.e(
@@ -111,7 +111,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadResult> {
             }
         }
 
-        fun writeLoadResult(result: LoadResult) {
+        fun writeLoadResult(result: LoadData) {
             if (!request.resultDiskCachePolicy.writeEnabled) {
                 return
             }

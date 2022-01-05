@@ -1,13 +1,14 @@
 package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 
 /**
  * A set of callbacks for an [ImageRequest].
  */
-interface Listener<REQUEST : ImageRequest, RESULT : ImageResult> {
+interface Listener<REQUEST : ImageRequest, DATA : ImageData> {
 
     /**
      * Called if the request is started.
@@ -34,6 +35,6 @@ interface Listener<REQUEST : ImageRequest, RESULT : ImageResult> {
      * Called if the request completes successfully.
      */
     @MainThread
-    fun onSuccess(request: REQUEST, result: RESULT) {
+    fun onSuccess(request: REQUEST, data: DATA) {
     }
 }

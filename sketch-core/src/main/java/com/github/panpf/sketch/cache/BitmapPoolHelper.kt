@@ -23,7 +23,7 @@ class BitmapPoolHelper(context: Context, val logger: Logger, val bitmapPool: Bit
 
     init {
         context.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
-            override fun onConfigurationChanged(newConfig: Configuration?) {
+            override fun onConfigurationChanged(newConfig: Configuration) {
             }
 
             override fun onLowMemory() {

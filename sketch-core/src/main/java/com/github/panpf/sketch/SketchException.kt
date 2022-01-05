@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch
 
 sealed class SketchException(
     message: String,

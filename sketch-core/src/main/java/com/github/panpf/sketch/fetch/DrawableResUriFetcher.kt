@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DrawableResDataSource
-import com.github.panpf.sketch.request.LoadException
+import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 

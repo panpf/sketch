@@ -11,8 +11,8 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.transform.Transformation
 
 interface LoadRequest : DownloadRequest {
@@ -192,7 +192,7 @@ interface LoadRequest : DownloadRequest {
         private var transformations: List<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
-        private var listener: Listener<ImageRequest, ImageResult>? = null
+        private var listener: Listener<ImageRequest, ImageData>? = null
         private var networkProgressListener: ProgressListener<ImageRequest>? = null
 
         constructor(uriString: String) : this(Uri.parse(uriString))
@@ -328,10 +328,10 @@ interface LoadRequest : DownloadRequest {
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
             }
 
-        fun listener(listener: Listener<LoadRequest, LoadResult>?): Builder =
+        fun listener(listener: Listener<LoadRequest, LoadData>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
-                this.listener = listener as Listener<ImageRequest, ImageResult>?
+                this.listener = listener as Listener<ImageRequest, ImageData>?
             }
 
         fun networkProgressListener(networkProgressListener: ProgressListener<LoadRequest>?): Builder =
@@ -380,7 +380,7 @@ interface LoadRequest : DownloadRequest {
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val disabledCorrectExifOrientation: Boolean?,
-        override val listener: Listener<ImageRequest, ImageResult>?,
+        override val listener: Listener<ImageRequest, ImageData>?,
         override val networkProgressListener: ProgressListener<ImageRequest>?,
     ) : LoadRequest {
 

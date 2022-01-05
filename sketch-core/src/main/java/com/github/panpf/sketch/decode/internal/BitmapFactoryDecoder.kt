@@ -9,7 +9,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.request.DecodeException
+import com.github.panpf.sketch.DecodeException
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.Resize

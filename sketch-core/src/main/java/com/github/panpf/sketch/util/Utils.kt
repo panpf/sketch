@@ -14,16 +14,44 @@ import android.opengl.EGLConfig
 import android.opengl.GLES10
 import android.opengl.GLES20
 import android.os.Build
+import android.os.Looper
 import android.view.View
+import androidx.annotation.MainThread
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.request.LoadException
+import com.github.panpf.sketch.LoadException
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 import kotlin.math.ceil
 import kotlin.math.floor
+
+internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
+
+@OptIn(ExperimentalCoroutinesApi::class)
+internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
+    return try {
+        getCompleted()
+    } catch (_: Throwable) {
+        null
+    }
+}
+
+val View.isAttachedToWindowCompat: Boolean
+    get() = ViewCompat.isAttachedToWindow(this)
+
+/** Remove and re-add the observer to ensure all its lifecycle callbacks are invoked. */
+@MainThread
+internal fun Lifecycle.removeAndAddObserver(observer: LifecycleObserver) {
+    removeObserver(observer)
+    addObserver(observer)
+}
 
 fun ImageType.supportBitmapRegionDecoder(): Boolean =
     this == ImageType.JPEG || this == ImageType.PNG || this == ImageType.WEBP
