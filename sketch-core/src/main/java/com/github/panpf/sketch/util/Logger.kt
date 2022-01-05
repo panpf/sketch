@@ -19,7 +19,7 @@ import android.util.Log
 
 class Logger(
     private var _level: Level = Level.INFO,
-    private val target: Target = LogTarget()
+    private val proxy: Proxy = LogProxy()
 ) {
 
     companion object {
@@ -42,95 +42,95 @@ class Logger(
 
     fun v(module: String, lazyMessage: () -> String) {
         if (isLoggable(Level.VERBOSE)) {
-            target.v(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+            proxy.v(TAG, joinModuleAndMsg(module, lazyMessage()), null)
         }
     }
 
     fun v(module: String, throwable: Throwable, lazyMessage: () -> String) {
         if (isLoggable(Level.VERBOSE)) {
-            target.v(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+            proxy.v(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
     }
 
 
     fun d(module: String, lazyMessage: () -> String) {
         if (isLoggable(Level.DEBUG)) {
-            target.d(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+            proxy.d(TAG, joinModuleAndMsg(module, lazyMessage()), null)
         }
     }
 
     fun d(module: String, throwable: Throwable, lazyMessage: () -> String) {
         if (isLoggable(Level.DEBUG)) {
-            target.d(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+            proxy.d(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
     }
 
 
     fun i(module: String, lazyMessage: () -> String) {
         if (isLoggable(Level.INFO)) {
-            target.i(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+            proxy.i(TAG, joinModuleAndMsg(module, lazyMessage()), null)
         }
     }
 
     fun i(module: String, throwable: Throwable, lazyMessage: () -> String) {
         if (isLoggable(Level.INFO)) {
-            target.i(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+            proxy.i(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
     }
 
 
     fun w(module: String, msg: String) {
         if (isLoggable(Level.WARNING)) {
-            target.w(TAG, joinModuleAndMsg(module, msg), null)
+            proxy.w(TAG, joinModuleAndMsg(module, msg), null)
         }
     }
 
     fun w(module: String, tr: Throwable, msg: String) {
         if (isLoggable(Level.WARNING)) {
-            target.w(TAG, joinModuleAndMsg(module, msg), tr)
+            proxy.w(TAG, joinModuleAndMsg(module, msg), tr)
         }
     }
 
     fun w(module: String, lazyMessage: () -> String) {
         if (isLoggable(Level.WARNING)) {
-            target.w(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+            proxy.w(TAG, joinModuleAndMsg(module, lazyMessage()), null)
         }
     }
 
     fun w(module: String, throwable: Throwable, lazyMessage: () -> String) {
         if (isLoggable(Level.WARNING)) {
-            target.w(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+            proxy.w(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
     }
 
 
     fun e(module: String, msg: String) {
         if (isLoggable(Level.ERROR)) {
-            target.e(TAG, joinModuleAndMsg(module, msg), null)
+            proxy.e(TAG, joinModuleAndMsg(module, msg), null)
         }
     }
 
     fun e(module: String, tr: Throwable, msg: String) {
         if (isLoggable(Level.ERROR)) {
-            target.e(TAG, joinModuleAndMsg(module, msg), tr)
+            proxy.e(TAG, joinModuleAndMsg(module, msg), tr)
         }
     }
 
     fun e(module: String, lazyMessage: () -> String) {
         if (isLoggable(Level.ERROR)) {
-            target.e(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+            proxy.e(TAG, joinModuleAndMsg(module, lazyMessage()), null)
         }
     }
 
     fun e(module: String, throwable: Throwable, lazyMessage: () -> String) {
         if (isLoggable(Level.ERROR)) {
-            target.e(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+            proxy.e(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
         }
     }
 
 
     fun flush() {
-        target.flush()
+        proxy.flush()
     }
 
     private fun joinModuleAndMsg(module: String?, msg: String): String =
@@ -145,7 +145,7 @@ class Logger(
         NONE,
     }
 
-    interface Target {
+    interface Proxy {
         fun v(tag: String, msg: String, tr: Throwable?)
         fun d(tag: String, msg: String, tr: Throwable?)
         fun i(tag: String, msg: String, tr: Throwable?)
@@ -154,7 +154,7 @@ class Logger(
         fun flush()
     }
 
-    class LogTarget : Target {
+    class LogProxy : Proxy {
         override fun v(tag: String, msg: String, tr: Throwable?) {
             Log.v(tag, msg, tr)
         }

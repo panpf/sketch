@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.fetch
 
-import android.net.Uri
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch

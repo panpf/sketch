@@ -53,7 +53,7 @@ import java.io.File
 
 class Sketch constructor(
     _context: Context,
-    _logger: Logger?,
+    _logger: Logger? = null,
     _memoryCache: MemoryCache? = null,
     _diskCache: DiskCache? = null,
     _bitmapPool: BitmapPool? = null,
