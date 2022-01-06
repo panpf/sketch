@@ -11,8 +11,8 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.transform.Transformation
 
 interface LoadRequest : DownloadRequest {
@@ -192,8 +192,8 @@ interface LoadRequest : DownloadRequest {
         private var transformations: List<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
-        private var listener: Listener<ImageRequest, ImageData>? = null
-        private var networkProgressListener: ProgressListener<ImageRequest>? = null
+        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
+        private var progressListener: ProgressListener<ImageRequest>? = null
 
         constructor(uriString: String) : this(Uri.parse(uriString))
 
@@ -216,7 +216,7 @@ interface LoadRequest : DownloadRequest {
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
             this.listener = request.listener
-            this.networkProgressListener = request.networkProgressListener
+            this.progressListener = request.progressListener
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -328,17 +328,35 @@ interface LoadRequest : DownloadRequest {
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
             }
 
-        fun listener(listener: Listener<LoadRequest, LoadData>?): Builder =
+        fun listener(listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
-                this.listener = listener as Listener<ImageRequest, ImageData>?
+                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
             }
 
-        fun networkProgressListener(networkProgressListener: ProgressListener<LoadRequest>?): Builder =
+        /**
+         * Convenience function to create and set the [Listener].
+         */
+        inline fun listener(
+            crossinline onStart: (request: LoadRequest) -> Unit = {},
+            crossinline onCancel: (request: LoadRequest) -> Unit = {},
+            crossinline onError: (request: LoadRequest, result: LoadResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: LoadRequest, result: LoadResult.Success) -> Unit = { _, _ -> }
+        ) = listener(object : Listener<LoadRequest, LoadResult.Success, LoadResult.Error> {
+            override fun onStart(request: LoadRequest) = onStart(request)
+            override fun onCancel(request: LoadRequest) = onCancel(request)
+            override fun onError(request: LoadRequest, result: LoadResult.Error) =
+                onError(request, result)
+
+            override fun onSuccess(request: LoadRequest, result: LoadResult.Success) =
+                onSuccess(request, result)
+        })
+
+        fun progressListener(progressListener: ProgressListener<LoadRequest>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
-                this.networkProgressListener =
-                    networkProgressListener as ProgressListener<ImageRequest>?
+                this.progressListener =
+                    progressListener as ProgressListener<ImageRequest>?
             }
 
         fun build(): LoadRequest = LoadRequestImpl(
@@ -359,7 +377,7 @@ interface LoadRequest : DownloadRequest {
             disabledBitmapPool = disabledBitmapPool,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
             listener = listener,
-            networkProgressListener = networkProgressListener,
+            progressListener = progressListener,
         )
     }
 
@@ -380,8 +398,8 @@ interface LoadRequest : DownloadRequest {
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val disabledCorrectExifOrientation: Boolean?,
-        override val listener: Listener<ImageRequest, ImageData>?,
-        override val networkProgressListener: ProgressListener<ImageRequest>?,
+        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
+        override val progressListener: ProgressListener<ImageRequest>?,
     ) : LoadRequest {
 
         override val uriString: String by lazy { uri.toString() }

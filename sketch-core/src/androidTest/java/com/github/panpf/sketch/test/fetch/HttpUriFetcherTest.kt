@@ -273,7 +273,7 @@ class HttpUriFetcherTest {
 
         val progressList = mutableListOf<Long>()
         val request = DownloadRequest.new(testUri.uriString) {
-            networkProgressListener { _, _, completedLength ->
+            progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }
         }
@@ -311,7 +311,7 @@ class HttpUriFetcherTest {
         val testUri = TestHttpStack.testUris.first()
         val progressList = mutableListOf<Long>()
         val request = DownloadRequest.new(testUri.uriString) {
-            networkProgressListener { _, _, completedLength ->
+            progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }
         }
@@ -344,7 +344,7 @@ class HttpUriFetcherTest {
         val testUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val progressList = mutableListOf<Long>()
         val request = DownloadRequest.new(testUri.uriString) {
-            networkProgressListener { _, _, completedLength ->
+            progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }
         }

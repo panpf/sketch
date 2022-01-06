@@ -8,7 +8,7 @@ import com.github.panpf.sketch.request.internal.ImageResult
 /**
  * A set of callbacks for an [ImageRequest].
  */
-interface Listener<REQUEST : ImageRequest, DATA : ImageData> {
+interface Listener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult, ERROR_RESULT: ImageResult> {
 
     /**
      * Called if the request is started.
@@ -28,13 +28,13 @@ interface Listener<REQUEST : ImageRequest, DATA : ImageData> {
      * Called if an error occurs while executing the request.
      */
     @MainThread
-    fun onError(request: REQUEST, throwable: Throwable) {
+    fun onError(request: REQUEST, result: ERROR_RESULT) {
     }
 
     /**
      * Called if the request completes successfully.
      */
     @MainThread
-    fun onSuccess(request: REQUEST, data: DATA) {
+    fun onSuccess(request: REQUEST, result: SUCCESS_RESULT) {
     }
 }

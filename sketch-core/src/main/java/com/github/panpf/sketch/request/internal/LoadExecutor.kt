@@ -31,16 +31,17 @@ class LoadExecutor(private val sketch: Sketch) {
                 request = request,
             ).proceed(sketch, request)
 
-            listenerDelegate?.onSuccess(request, loadData)
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
-            return LoadResult.Success(
+            val successResult = LoadResult.Success(
                 request,
                 loadData.bitmap,
                 loadData.info,
                 loadData.from
             )
+            listenerDelegate?.onSuccess(request, successResult)
+            return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 listenerDelegate?.onCancel(request)
@@ -50,9 +51,10 @@ class LoadExecutor(private val sketch: Sketch) {
                 throw throwable
             } else {
                 throwable.printStackTrace()
-                listenerDelegate?.onError(request, throwable)
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                return LoadResult.Error(request, throwable)
+                val errorResult = LoadResult.Error(request, throwable)
+                listenerDelegate?.onError(request, errorResult)
+                return errorResult
             }
         }
     }

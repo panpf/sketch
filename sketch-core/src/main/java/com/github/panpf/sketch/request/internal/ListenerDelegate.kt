@@ -5,8 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
-class ListenerDelegate<REQUEST : ImageRequest, DATA : ImageData>(
-    private val listener: Listener<REQUEST, DATA>
+class ListenerDelegate<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult, ERROR_RESULT: ImageResult>(
+    private val listener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>
 ) {
 
     suspend fun onStart(request: REQUEST) {
@@ -22,15 +22,15 @@ class ListenerDelegate<REQUEST : ImageRequest, DATA : ImageData>(
         }
     }
 
-    suspend fun onError(request: REQUEST, throwable: Throwable) {
+    suspend fun onError(request: REQUEST, result: ERROR_RESULT) {
         withContext(Dispatchers.Main) {
-            listener.onError(request, throwable)
+            listener.onError(request, result)
         }
     }
 
-    suspend fun onSuccess(request: REQUEST, data: DATA) {
+    suspend fun onSuccess(request: REQUEST, result: SUCCESS_RESULT) {
         withContext(Dispatchers.Main) {
-            listener.onSuccess(request, data)
+            listener.onSuccess(request, result)
         }
     }
 }

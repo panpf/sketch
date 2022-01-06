@@ -75,30 +75,31 @@ class DisplayExecutor(private val sketch: Sketch) {
                 withContext(Dispatchers.Main) {
                     target?.onSuccess(displayData.drawable)
                 }
-                val displayResult = DisplayResult.Success(
+                val successResult = DisplayResult.Success(
                     request,
                     displayData.drawable,
                     displayData.info,
                     displayData.from
                 )
-                listenerDelegate?.onSuccess(newRequest, displayData)
+                listenerDelegate?.onSuccess(newRequest, successResult)
                 sketch.logger.d(MODULE) {
                     "Request Successful. ${request.uriString}"
                 }
-                return displayResult
+                return successResult
             } else {
                 val emptyDrawable = (newRequest.emptyImage ?: newRequest.errorImage)?.getDrawable(
                     sketch.appContext,
                     sketch,
                     request
                 )
+                val throwable = DisplayException("Request uri is empty or blank")
+                sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
                 withContext(Dispatchers.Main) {
                     target?.onError(emptyDrawable)
                 }
-                val throwable = DisplayException("Request uri is empty or blank")
-                listenerDelegate?.onError(newRequest, throwable)
-                sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                return DisplayResult.Error(request, throwable, emptyDrawable)
+                val errorResult = DisplayResult.Error(request, throwable, emptyDrawable)
+                listenerDelegate?.onError(newRequest, errorResult)
+                return errorResult
             }
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
@@ -112,11 +113,12 @@ class DisplayExecutor(private val sketch: Sketch) {
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
                 val errorDrawable =
                     newRequest.errorImage?.getDrawable(sketch.appContext, sketch, request)
+                val errorResult = DisplayResult.Error(request, throwable, errorDrawable)
                 withContext(Dispatchers.Main) {
                     target?.onError(errorDrawable)
                 }
-                listenerDelegate?.onError(newRequest, throwable)
-                return DisplayResult.Error(request, throwable, errorDrawable)
+                listenerDelegate?.onError(newRequest, errorResult)
+                return errorResult
             }
         }
     }

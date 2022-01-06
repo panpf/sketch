@@ -31,11 +31,12 @@ class DownloadExecutor(private val sketch: Sketch) {
                 request = request,
             ).proceed(sketch, request)
 
-            listenerDelegate?.onSuccess(request, downloadData)
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
-            return DownloadResult.Success(request, downloadData, downloadData.from)
+            val successResult = DownloadResult.Success(request, downloadData, downloadData.from)
+            listenerDelegate?.onSuccess(request, successResult)
+            return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 sketch.logger.d(MODULE) {
@@ -46,8 +47,9 @@ class DownloadExecutor(private val sketch: Sketch) {
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                listenerDelegate?.onError(request, throwable)
-                return DownloadResult.Error(request, throwable)
+                val errorResult = DownloadResult.Error(request, throwable)
+                listenerDelegate?.onError(request, errorResult)
+                return errorResult
             }
         }
     }

@@ -3,15 +3,15 @@ package com.github.panpf.sketch.request
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
 
 interface DownloadRequest : ImageRequest {
 
     val httpHeaders: Map<String, String>?
     val diskCacheKey: String
     val diskCachePolicy: CachePolicy
-    val networkProgressListener: ProgressListener<ImageRequest>?
+    val progressListener: ProgressListener<ImageRequest>?
 
     fun newDownloadRequest(
         configBlock: (Builder.() -> Unit)? = null
@@ -62,8 +62,8 @@ interface DownloadRequest : ImageRequest {
         private var httpHeaders: Map<String, String>? = null
         private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
-        private var listener: Listener<ImageRequest, ImageData>? = null
-        private var networkProgressListener: ProgressListener<ImageRequest>? = null
+        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
+        private var progressListener: ProgressListener<ImageRequest>? = null
 
         constructor(uriString: String) : this(Uri.parse(uriString))
 
@@ -74,7 +74,7 @@ interface DownloadRequest : ImageRequest {
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.listener = request.listener
-            this.networkProgressListener = request.networkProgressListener
+            this.progressListener = request.progressListener
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -97,16 +97,36 @@ interface DownloadRequest : ImageRequest {
             this.diskCachePolicy = diskCachePolicy
         }
 
-        fun listener(listener: Listener<DownloadRequest, DownloadData>?): Builder = apply {
-            @Suppress("UNCHECKED_CAST")
-            this.listener = listener as Listener<ImageRequest, ImageData>?
-        }
-
-        fun networkProgressListener(networkProgressListener: ProgressListener<DownloadRequest>?): Builder =
+        fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
-                this.networkProgressListener =
-                    networkProgressListener as ProgressListener<ImageRequest>?
+                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
+            }
+
+        /**
+         * Convenience function to create and set the [Listener].
+         */
+        inline fun listener(
+            crossinline onStart: (request: DownloadRequest) -> Unit = {},
+            crossinline onCancel: (request: DownloadRequest) -> Unit = {},
+            crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
+        ) = listener(object :
+            Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+            override fun onStart(request: DownloadRequest) = onStart(request)
+            override fun onCancel(request: DownloadRequest) = onCancel(request)
+            override fun onError(request: DownloadRequest, result: DownloadResult.Error) =
+                onError(request, result)
+
+            override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) =
+                onSuccess(request, result)
+        })
+
+        fun progressListener(progressListener: ProgressListener<DownloadRequest>?): Builder =
+            apply {
+                @Suppress("UNCHECKED_CAST")
+                this.progressListener =
+                    progressListener as ProgressListener<ImageRequest>?
             }
 
         fun build(): DownloadRequest = DownloadRequestImpl(
@@ -117,7 +137,7 @@ interface DownloadRequest : ImageRequest {
             _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
             listener = listener,
-            networkProgressListener = networkProgressListener,
+            progressListener = progressListener,
         )
     }
 
@@ -128,8 +148,8 @@ interface DownloadRequest : ImageRequest {
         override val httpHeaders: Map<String, String>?,
         _diskCacheKey: String?,
         _diskCachePolicy: CachePolicy?,
-        override val listener: Listener<ImageRequest, ImageData>?,
-        override val networkProgressListener: ProgressListener<ImageRequest>?,
+        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
+        override val progressListener: ProgressListener<ImageRequest>?,
     ) : DownloadRequest {
 
         override val uriString: String by lazy { uri.toString() }

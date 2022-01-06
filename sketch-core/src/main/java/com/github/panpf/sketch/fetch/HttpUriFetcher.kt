@@ -174,7 +174,7 @@ class HttpUriFetcher(
         val buffer = ByteArray(bufferSize)
         var bytes = read(buffer)
         var lastNotifyTime = 0L
-        val progressListenerDelegate = request.networkProgressListener?.let {
+        val progressListenerDelegate = request.progressListener?.let {
             ProgressListenerDelegate(coroutineScope, it)
         }
         var lastUpdateProgressBytesCopied = 0L

@@ -11,8 +11,8 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
@@ -96,8 +96,8 @@ interface DisplayRequest : LoadRequest {
         private var errorImage: StateImage? = null
         private var emptyImage: StateImage? = null
         private var target: Target? = null
-        private var listener: Listener<ImageRequest, ImageData>? = null
-        private var networkProgressListener: ProgressListener<ImageRequest>? = null
+        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
+        private var progressListener: ProgressListener<ImageRequest>? = null
 
         constructor(uriString: String?) : this(
             if (uriString != null && uriString.isNotEmpty() && uriString.isNotBlank()) {
@@ -133,7 +133,7 @@ interface DisplayRequest : LoadRequest {
             this.emptyImage = request.emptyImage
             this.target = request.target
             this.listener = request.listener
-            this.networkProgressListener = request.networkProgressListener
+            this.progressListener = request.progressListener
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -295,16 +295,34 @@ interface DisplayRequest : LoadRequest {
             this.target = ImageViewTarget(imageView)
         }
 
-        fun listener(listener: Listener<DisplayRequest, DisplayData>?): Builder = apply {
-            @Suppress("UNCHECKED_CAST")
-            this.listener = listener as Listener<ImageRequest, ImageData>?
-        }
-
-        fun networkProgressListener(networkProgressListener: ProgressListener<DisplayRequest>?): Builder =
+        fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
-                this.networkProgressListener =
-                    networkProgressListener as ProgressListener<ImageRequest>?
+                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
+            }
+
+        /**
+         * Convenience function to create and set the [Listener].
+         */
+        inline fun listener(
+            crossinline onStart: (request: DisplayRequest) -> Unit = {},
+            crossinline onCancel: (request: DisplayRequest) -> Unit = {},
+            crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
+        ) = listener(object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
+            override fun onStart(request: DisplayRequest) = onStart(request)
+            override fun onCancel(request: DisplayRequest) = onCancel(request)
+            override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
+                onError(request, result)
+
+            override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
+                onSuccess(request, result)
+        })
+
+        fun progressListener(progressListener: ProgressListener<DisplayRequest>?): Builder =
+            apply {
+                @Suppress("UNCHECKED_CAST")
+                this.progressListener = progressListener as ProgressListener<ImageRequest>?
             }
 
         fun build(): DisplayRequest = DisplayRequestImpl(
@@ -332,7 +350,7 @@ interface DisplayRequest : LoadRequest {
             emptyImage = emptyImage,
             target = target,
             listener = listener,
-            networkProgressListener = networkProgressListener,
+            progressListener = progressListener,
         )
     }
 
@@ -360,8 +378,8 @@ interface DisplayRequest : LoadRequest {
         override val errorImage: StateImage?,
         override val emptyImage: StateImage?,
         override val target: Target?,
-        override val listener: Listener<ImageRequest, ImageData>?,
-        override val networkProgressListener: ProgressListener<ImageRequest>?,
+        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
+        override val progressListener: ProgressListener<ImageRequest>?,
     ) : DisplayRequest {
 
         override val uriString: String by lazy { uri.toString() }
