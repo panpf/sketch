@@ -262,11 +262,10 @@ fun readApkIcon(
     val packageManager = context.packageManager
     val packageInfo =
         packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES)
-            ?: throw LoadException("get packageInfo is null. $apkFilePath")
+            ?: throw LoadException("getPackageArchiveInfo return null. $apkFilePath")
     packageInfo.applicationInfo.sourceDir = apkFilePath
     packageInfo.applicationInfo.publicSourceDir = apkFilePath
     val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-        ?: throw LoadException("app icon is null. $apkFilePath")
     return drawableToBitmap(drawable, lowQualityImage, bitmapPool)
 }
 
