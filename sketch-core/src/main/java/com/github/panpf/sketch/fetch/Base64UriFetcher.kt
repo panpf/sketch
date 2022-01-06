@@ -2,12 +2,12 @@ package com.github.panpf.sketch.fetch
 
 import android.net.Uri
 import android.util.Base64
-import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.internal.AbsStreamDiskCacheFetcher
 import com.github.panpf.sketch.request.DataFrom.MEMORY
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.UriInvalidException
 import com.github.panpf.sketch.util.MD5Utils
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -56,7 +56,7 @@ class Base64UriFetcher(
                         base64ImageString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
                     })
                 } else {
-                    throw LoadException("Base64 image invalid. ${request.uriString}")
+                    throw UriInvalidException(request, "Base64 image invalid. ${request.uriString}")
                 }
             } else {
                 null

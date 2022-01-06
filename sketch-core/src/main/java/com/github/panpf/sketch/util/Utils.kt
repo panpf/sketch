@@ -26,6 +26,7 @@ import com.github.panpf.sketch.LoadException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
+import java.io.IOException
 import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
@@ -252,7 +253,7 @@ fun createFileUriDiskCacheKey(uri: String, filePath: String): String {
  * @param logName         Print log is used identify log type
  * @param bitmapPool      Try to find Reusable bitmap from bitmapPool
  */
-@Throws(LoadException::class)
+@Throws(IOException::class)
 fun readApkIcon(
     context: Context,
     apkFilePath: String,
@@ -262,7 +263,7 @@ fun readApkIcon(
     val packageManager = context.packageManager
     val packageInfo =
         packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES)
-            ?: throw LoadException("getPackageArchiveInfo return null. $apkFilePath")
+            ?: throw IOException("getPackageArchiveInfo return null. $apkFilePath")
     packageInfo.applicationInfo.sourceDir = apkFilePath
     packageInfo.applicationInfo.publicSourceDir = apkFilePath
     val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)

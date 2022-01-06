@@ -9,7 +9,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.DecodeException
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.Resize
@@ -66,7 +65,8 @@ class BitmapFactoryDecoder(
         boundOptions.inJustDecodeBounds = true
         dataSource.decodeBitmap(boundOptions)
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            throw DecodeException(
+            throw DecodeBitmapException(
+                request,
                 "Invalid image size. size=%dx%d, uri=%s"
                     .format(boundOptions.outWidth, boundOptions.outHeight, request.uriString)
             )
@@ -154,14 +154,16 @@ class BitmapFactoryDecoder(
                     try {
                         dataSource.decodeRegionBitmap(resizeMapping.srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
-                        throw DecodeException(
+                        throw DecodeBitmapException(
+                            request,
                             "Bitmap region decode error. uri=%s".format(request.uriString),
                             throwable2
                         )
                     }
                 }
                 isSrcRectError(throwable, imageSize.x, imageSize.y, resizeMapping.srcRect) -> {
-                    throw DecodeException(
+                    throw DecodeBitmapException(
+                        request,
                         "Bitmap region decode error. Because srcRect. imageInfo=%s, resize=%s, srcRect=%s, uri=%s"
                             .format(
                                 imageInfo, request.resize, resizeMapping.srcRect, request.uriString
@@ -170,17 +172,21 @@ class BitmapFactoryDecoder(
                     )
                 }
                 else -> {
-                    throw DecodeException(
+                    throw DecodeBitmapException(
+                        request,
                         "Bitmap region decode error. uri=%s".format(request.uriString),
                         throwable
                     )
                 }
             }
         }
-            ?: throw DecodeException("Bitmap region decode return null. uri=%s".format(request.uriString))
+            ?: throw DecodeBitmapException(
+                request, "Bitmap region decode return null. uri=%s".format(request.uriString)
+            )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            throw DecodeException(
+            throw DecodeBitmapException(
+                request,
                 "Invalid image size. size=%dx%d, uri=%s"
                     .format(bitmap.width, bitmap.height, request.uriString)
             )
@@ -225,21 +231,26 @@ class BitmapFactoryDecoder(
                 try {
                     dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
-                    throw DecodeException(
+                    throw DecodeBitmapException(
+                        request,
                         "Bitmap decode error. uri=%s".format(request.uriString),
                         throwable2
                     )
                 }
             } else {
-                throw DecodeException(
+                throw DecodeBitmapException(
+                    request,
                     "Bitmap decode error. uri=%s".format(request.uriString),
                     throwable
                 )
             }
-        } ?: throw DecodeException("Bitmap decode return null. uri=%s".format(request.uriString))
+        } ?: throw DecodeBitmapException(
+            request, "Bitmap decode return null. uri=%s".format(request.uriString)
+        )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            throw DecodeException(
+            throw DecodeBitmapException(
+                request,
                 "Invalid image size. size=%dx%d, uri=%s"
                     .format(bitmap.width, bitmap.height, request.uriString)
             )

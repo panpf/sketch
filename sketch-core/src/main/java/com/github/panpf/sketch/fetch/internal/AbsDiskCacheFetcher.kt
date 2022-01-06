@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.fetch.internal
 
-import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataSource
@@ -27,6 +26,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedOutputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.OutputStream
 
 /**
@@ -60,6 +60,7 @@ abstract class AbsDiskCacheFetcher(
         }
     }
 
+    @Throws(IOException::class)
     private fun readContent(encodedDiskCacheKey: String): DataSource {
         val diskCache = sketch.diskCache
         val diskCacheEditor = diskCache.edit(encodedDiskCacheKey)
@@ -75,14 +76,14 @@ abstract class AbsDiskCacheFetcher(
             }
         } catch (throwable: Throwable) {
             diskCacheEditor?.abort()
-            throw LoadException("Open output stream exception. ${request.uriString}", throwable)
+            throw IOException("Open output stream exception. ${request.uriString}", throwable)
         }
         if (diskCacheEditor != null) {
             try {
                 diskCacheEditor.commit()
             } catch (e: Throwable) {
                 diskCacheEditor.abort()
-                throw LoadException("Commit disk cache exception. ${request.uriString}", e)
+                throw IOException("Commit disk cache exception. ${request.uriString}", e)
             }
         }
         return if (diskCacheEditor != null) {
@@ -90,7 +91,7 @@ abstract class AbsDiskCacheFetcher(
             if (cacheEntry != null) {
                 DiskCacheDataSource(cacheEntry, dataFrom)
             } else {
-                throw LoadException("Not found disk cache after save. ${request.uriString}")
+                throw IOException("Not found disk cache after save. ${request.uriString}")
             }
         } else {
             ByteArrayDataSource(

@@ -27,13 +27,15 @@ class MemoryCacheStateImage(
     private val whenEmptyImage: StateImage?
 ) : StateImage {
 
-    override fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest): Drawable? {
+    override fun getDrawable(
+        context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
+    ): Drawable? {
         val memoryCache = sketch.memoryCache
         val cachedRefBitmap = memoryCache[memoryCacheKey]
         return if (cachedRefBitmap != null) {
             SketchBitmapDrawable(cachedRefBitmap, DataFrom.MEMORY_CACHE)
         } else {
-            whenEmptyImage?.getDrawable(context, sketch, request)
+            whenEmptyImage?.getDrawable(context, sketch, request, error)
         }
     }
 }

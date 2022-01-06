@@ -3,11 +3,11 @@ package com.github.panpf.sketch.fetch
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
-import com.github.panpf.sketch.LoadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DrawableResDataSource
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.UriInvalidException
 
 fun newDrawableResUri(@DrawableRes drawableResId: Int): Uri =
     DrawableResUriFetcher.newUri(drawableResId)
@@ -36,7 +36,7 @@ class DrawableResUriFetcher(
             val uri = request.uri
             return if (request is LoadRequest && uri.scheme == SCHEME) {
                 val drawableResId = uri.authority?.toIntOrNull()
-                    ?: throw LoadException("Drawable resource uri 'drawableResId' part invalid. ${request.uriString}")
+                    ?: throw UriInvalidException(request, "Drawable resource uri 'drawableResId' part invalid. ${request.uriString}")
                 DrawableResUriFetcher(sketch, request, drawableResId)
             } else {
                 null

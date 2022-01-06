@@ -13,6 +13,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
+import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
@@ -24,8 +25,7 @@ interface DisplayRequest : LoadRequest {
     val memoryCachePolicy: CachePolicy
     val disabledAnimationDrawable: Boolean?
     val loadingImage: StateImage?
-    val errorImage: StateImage?    // todo error 可根据异常决定显示什么样的 error，这样就能很容易实现暂停下载的时候显示特定的错误图片，或者添加专门的移动网络暂停下载功能
-    val emptyImage: StateImage?
+    val errorImage: ErrorStateImage?
     val target: Target?
 
     fun newDisplayRequestBuilder(
@@ -93,8 +93,7 @@ interface DisplayRequest : LoadRequest {
         private var memoryCachePolicy: CachePolicy? = null
         private var disabledAnimationDrawable: Boolean? = null
         private var loadingImage: StateImage? = null
-        private var errorImage: StateImage? = null
-        private var emptyImage: StateImage? = null
+        private var errorImage: ErrorStateImage? = null
         private var target: Target? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
@@ -130,7 +129,6 @@ interface DisplayRequest : LoadRequest {
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.loadingImage = request.loadingImage
             this.errorImage = request.errorImage
-            this.emptyImage = request.emptyImage
             this.target = request.target
             this.listener = request.listener
             this.progressListener = request.progressListener
@@ -279,12 +277,8 @@ interface DisplayRequest : LoadRequest {
             this.loadingImage = loadingImage
         }
 
-        fun errorImage(errorImage: StateImage?): Builder = apply {
+        fun errorImage(errorImage: ErrorStateImage?): Builder = apply {
             this.errorImage = errorImage
-        }
-
-        fun emptyImage(emptyImage: StateImage?): Builder = apply {
-            this.emptyImage = emptyImage
         }
 
         fun target(target: Target?): Builder = apply {
@@ -347,7 +341,6 @@ interface DisplayRequest : LoadRequest {
             disabledAnimationDrawable = disabledAnimationDrawable,
             loadingImage = loadingImage,
             errorImage = errorImage,
-            emptyImage = emptyImage,
             target = target,
             listener = listener,
             progressListener = progressListener,
@@ -375,8 +368,7 @@ interface DisplayRequest : LoadRequest {
         _memoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
         override val loadingImage: StateImage?,
-        override val errorImage: StateImage?,
-        override val emptyImage: StateImage?,
+        override val errorImage: ErrorStateImage?,
         override val target: Target?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,

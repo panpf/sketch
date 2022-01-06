@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 
 interface StateImage {
 
-    fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest): Drawable?
+    fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?): Drawable?
 
     companion object {
 

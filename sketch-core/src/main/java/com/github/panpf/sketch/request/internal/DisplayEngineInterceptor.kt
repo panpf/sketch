@@ -7,7 +7,6 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.DisplayException
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadData
@@ -49,7 +48,7 @@ class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayData> {
                     val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
                     return DisplayData(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
                 } else if (request.depth >= RequestDepth.MEMORY) {
-                    throw DisplayException("Request depth only to MEMORY")
+                    throw RequestDepthException(request, request.depth)
                 }
             }
 

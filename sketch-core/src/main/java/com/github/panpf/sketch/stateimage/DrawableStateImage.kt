@@ -22,7 +22,9 @@ import com.github.panpf.sketch.request.DisplayRequest
 
 class DrawableStateImage(private val drawable: Drawable) : StateImage {
 
-    override fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest): Drawable {
+    override fun getDrawable(
+        context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
+    ): Drawable {
         return drawable
     }
 }

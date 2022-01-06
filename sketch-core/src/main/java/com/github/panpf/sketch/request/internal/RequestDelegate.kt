@@ -13,6 +13,18 @@ import com.github.panpf.sketch.util.removeAndAddObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 
+/**
+ * Wrap [initialRequest] to automatically dispose and/or restart the [ImageRequest]
+ * based on its lifecycle.
+ */
+internal fun requestDelegate(sketch: Sketch, initialRequest: DisplayRequest, job: Job): RequestDelegate {
+    val lifecycle = initialRequest.lifecycle
+    return when (val target = initialRequest.target) {
+        is ViewTarget<*> -> ViewTargetRequestDelegate(sketch, initialRequest, target, lifecycle, job)
+        else -> BaseRequestDelegate(lifecycle, job)
+    }
+}
+
 internal sealed class RequestDelegate : DefaultLifecycleObserver {
 
     /** Throw a [CancellationException] if this request should be cancelled before starting. */
@@ -34,16 +46,16 @@ internal sealed class RequestDelegate : DefaultLifecycleObserver {
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
 internal class BaseRequestDelegate(
-    private val lifecycle: Lifecycle,
+    private val lifecycle: Lifecycle?,
     private val job: Job
 ) : RequestDelegate() {
 
     override fun start() {
-        lifecycle.addObserver(this)
+        lifecycle?.addObserver(this)
     }
 
     override fun complete() {
-        lifecycle.removeObserver(this)
+        lifecycle?.removeObserver(this)
     }
 
     override fun dispose() {
@@ -58,7 +70,7 @@ internal class ViewTargetRequestDelegate(
     private val sketch: Sketch,
     private val initialRequest: DisplayRequest,
     private val target: ViewTarget<*>,
-    private val lifecycle: Lifecycle,
+    private val lifecycle: Lifecycle?,
     private val job: Job
 ) : RequestDelegate() {
 
@@ -76,15 +88,19 @@ internal class ViewTargetRequestDelegate(
     }
 
     override fun start() {
-        lifecycle.addObserver(this)
-        if (target is LifecycleObserver) lifecycle.removeAndAddObserver(target)
+        lifecycle?.addObserver(this)
+        if (target is LifecycleObserver) {
+            lifecycle?.removeAndAddObserver(target)
+        }
         target.view.requestManager.setRequest(this)
     }
 
     override fun dispose() {
         job.cancel()
-        if (target is LifecycleObserver) lifecycle.removeObserver(target)
-        lifecycle.removeObserver(this)
+        if (target is LifecycleObserver) {
+            lifecycle?.removeObserver(target)
+        }
+        lifecycle?.removeObserver(this)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {

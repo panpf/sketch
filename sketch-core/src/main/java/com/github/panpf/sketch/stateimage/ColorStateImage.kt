@@ -24,7 +24,9 @@ import com.github.panpf.sketch.request.DisplayRequest
 
 class ColorStateImage(@ColorInt private val color: Int) : StateImage {
 
-    override fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest): Drawable {
+    override fun getDrawable(
+        context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
+    ): Drawable {
         return ColorDrawable(color)
     }
 }

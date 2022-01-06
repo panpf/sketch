@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.DownloadException
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
@@ -13,6 +12,7 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.request.internal.RequestDepthException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -51,7 +51,7 @@ class HttpUriFetcher(
                 if (diskCacheEntry != null) {
                     return FetchResult(DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE))
                 } else if (request.depth >= RequestDepth.LOCAL) {
-                    throw DownloadException("Request depth only to LOCAL")
+                    throw RequestDepthException(request, request.depth)
                 }
             }
 
