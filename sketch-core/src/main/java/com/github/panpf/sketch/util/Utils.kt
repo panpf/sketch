@@ -3,6 +3,7 @@ package com.github.panpf.sketch.util
 import android.annotation.TargetApi
 import android.content.ComponentCallbacks2
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -20,9 +21,9 @@ import androidx.annotation.MainThread
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.LoadException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
@@ -34,6 +35,17 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
+
+internal fun Context?.getLifecycle(): Lifecycle? {
+    var context: Context? = this
+    while (true) {
+        when (context) {
+            is LifecycleOwner -> return context.lifecycle
+            !is ContextWrapper -> return null
+            else -> context = context.baseContext
+        }
+    }
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal fun <T> Deferred<T>.getCompletedOrNull(): T? {

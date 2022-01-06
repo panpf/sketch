@@ -23,59 +23,47 @@ class DisplayExecutor(private val sketch: Sketch) {
 
     @MainThread
     suspend fun execute(request: DisplayRequest): DisplayResult {
+        // Wrap the request to manage its lifecycle.
+        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        requestDelegate.assertActive()
+        val target = request.target
         val listenerDelegate = request.listener?.run {
             ListenerDelegate(this)
         }
-        val newRequest = withContext(Dispatchers.Main) {
-            convertFixedSize(request)
-        }
-        val target = newRequest.target
-//        val memoryCache = sketch.memoryCache
-//        val memoryCacheKey = newRequest.memoryCacheKey
-//        val memoryCachePolicy = newRequest.memoryCachePolicy
 
         try {
-//            todo read memory cache
-//            if (memoryCachePolicy.readEnabled) {
-//                val cachedRefBitmap = memoryCache[memoryCacheKey]
-//                if (cachedRefBitmap != null) {
-//                    if (SLog.isLoggable(SLog.DEBUG)) {
-//                        SLog.dmf(
-//                            DisplayEngineInterceptor.MODULE,
-//                            "From memory get bitmap. bitmap=%s. %s",
-//                            cachedRefBitmap.info, request.key
-//                        )
-//                    }
-//                    cachedRefBitmap.setIsWaitingUse("${DisplayEngineInterceptor.MODULE}:waitingUse:fromMemory", true)
-//                    val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
-//                    return DisplayResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
-//                } else if (request.depth >= RequestDepth.MEMORY) {
-//                    throw DisplayException("Request depth only to MEMORY")
-//                }
-//            }
-            // todo RequestDelegate
-            // todo 不用 LifecycleOwner
-            sketch.logger.d(MODULE) {
-                "Request started. ${request.uriString}"
-            }
-            listenerDelegate?.onStart(newRequest)
-            val loadingDrawable =
-                newRequest.loadingImage?.getDrawable(sketch.appContext, sketch, request, null)
-            withContext(Dispatchers.Main) {
-                target?.onStart(loadingDrawable)
-            }
-
             if (request.uri === Uri.EMPTY || request.uriString.isEmpty() || request.uriString.isBlank()) {
                 throw UriEmptyException(request)
             }
 
+            // todo onLayout restart
+            val fixedSizeRequest = withContext(Dispatchers.Main) {
+                convertFixedSize(request)
+            }
+
+            // Set up the request's lifecycle observers.
+            requestDelegate.start()
+
+            // todo readMemoryCache
+//            readMemoryCache()
+
+            sketch.logger.d(MODULE) {
+                "Request started. ${request.uriString}"
+            }
+            listenerDelegate?.onStart(request)
+            val loadingDrawable =
+                request.loadingImage?.getDrawable(sketch.appContext, sketch, request, null)
+            withContext(Dispatchers.Main) {
+                target?.onStart(loadingDrawable)
+            }
+
             val displayData = withContext(sketch.decodeTaskDispatcher) {
                 DisplayInterceptorChain(
-                    initialRequest = newRequest,
+                    initialRequest = fixedSizeRequest,
                     interceptors = sketch.displayInterceptors,
                     index = 0,
-                    request = newRequest,
-                ).proceed(sketch, newRequest)
+                    request = fixedSizeRequest,
+                ).proceed(sketch, fixedSizeRequest)
             }
 
             withContext(Dispatchers.Main) {
@@ -87,7 +75,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                 displayData.info,
                 displayData.from
             )
-            listenerDelegate?.onSuccess(newRequest, successResult)
+            listenerDelegate?.onSuccess(request, successResult)
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
@@ -97,20 +85,22 @@ class DisplayExecutor(private val sketch: Sketch) {
                 sketch.logger.d(MODULE) {
                     "Request canceled. ${request.uriString}"
                 }
-                listenerDelegate?.onCancel(newRequest)
+                listenerDelegate?.onCancel(request)
                 throw throwable
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
                 val errorDrawable =
-                    newRequest.errorImage?.getDrawable(sketch.appContext, sketch, request, throwable)
+                    request.errorImage?.getDrawable(sketch.appContext, sketch, request, throwable)
                 val errorResult = DisplayResult.Error(request, throwable, errorDrawable)
                 withContext(Dispatchers.Main) {
                     target?.onError(errorDrawable)
                 }
-                listenerDelegate?.onError(newRequest, errorResult)
+                listenerDelegate?.onError(request, errorResult)
                 return errorResult
             }
+        } finally {
+            requestDelegate.complete()
         }
     }
 
@@ -119,7 +109,10 @@ class DisplayExecutor(private val sketch: Sketch) {
         val view = (request.target as ViewTarget<*>?)?.view
         val viewFixedSizeLazy by lazy {
             if (view == null) {
-                throw FixedSizeException(request, "target cannot be null and must be ViewTarget because you are using *FixedSize")
+                throw FixedSizeException(
+                    request,
+                    "target cannot be null and must be ViewTarget because you are using *FixedSize"
+                )
             }
             view.calculateFixedSize()
         }
@@ -129,7 +122,10 @@ class DisplayExecutor(private val sketch: Sketch) {
             maxSize != null && (maxSize.width == fixedSizeFlag || maxSize.height == fixedSizeFlag)
         ) {
             val viewFixedSize = viewFixedSizeLazy
-                ?: throw FixedSizeException(request, "View's width and height are not fixed, can not be applied with the maxSizeByViewFixedSize() function")
+                ?: throw FixedSizeException(
+                    request,
+                    "View's width and height are not fixed, can not be applied with the maxSizeByViewFixedSize() function"
+                )
             MaxSize(
                 maxSize.width.takeIf { it != fixedSizeFlag } ?: viewFixedSize.x,
                 maxSize.height.takeIf { it != fixedSizeFlag } ?: viewFixedSize.y
@@ -142,7 +138,10 @@ class DisplayExecutor(private val sketch: Sketch) {
         val newResize =
             if (resize != null && (resize.width == fixedSizeFlag || resize.height == fixedSizeFlag)) {
                 val viewFixedSize = viewFixedSizeLazy
-                    ?: throw FixedSizeException(request, "View's width and height are not fixed, can not be applied with the resizeByViewFixedSize() function")
+                    ?: throw FixedSizeException(
+                        request,
+                        "View's width and height are not fixed, can not be applied with the resizeByViewFixedSize() function"
+                    )
                 Resize(
                     width = resize.width.takeIf { it != fixedSizeFlag } ?: viewFixedSize.x,
                     height = resize.height.takeIf { it != fixedSizeFlag } ?: viewFixedSize.y,
@@ -166,5 +165,30 @@ class DisplayExecutor(private val sketch: Sketch) {
         } else {
             request
         }
+    }
+
+    private fun readMemoryCache() {
+
+//        val memoryCache = sketch.memoryCache
+//        val memoryCacheKey = newRequest.memoryCacheKey
+//        val memoryCachePolicy = newRequest.memoryCachePolicy
+//            todo read memory cache
+//            if (memoryCachePolicy.readEnabled) {
+//                val cachedRefBitmap = memoryCache[memoryCacheKey]
+//                if (cachedRefBitmap != null) {
+//                    if (SLog.isLoggable(SLog.DEBUG)) {
+//                        SLog.dmf(
+//                            DisplayEngineInterceptor.MODULE,
+//                            "From memory get bitmap. bitmap=%s. %s",
+//                            cachedRefBitmap.info, request.key
+//                        )
+//                    }
+//                    cachedRefBitmap.setIsWaitingUse("${DisplayEngineInterceptor.MODULE}:waitingUse:fromMemory", true)
+//                    val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
+//                    return DisplayResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
+//                } else if (request.depth >= RequestDepth.MEMORY) {
+//                    throw DisplayException("Request depth only to MEMORY")
+//                }
+//            }
     }
 }

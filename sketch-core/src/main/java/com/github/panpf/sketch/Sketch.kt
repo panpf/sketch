@@ -89,7 +89,7 @@ class Sketch constructor(
     val loadInterceptors: List<Interceptor<LoadRequest, LoadData>>
     val displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>   // todo gif, svg, webpA
 
-    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
+//    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
 
@@ -136,8 +136,7 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueDisplay(request: DisplayRequest): Disposable<DisplayResult> {
-        // todo ViewTarget bind RequestManager，方尺重复加载，图片错乱、自动取消、自动重新请求，监听 lifecycler，延迟到确定了大小之后再发起请求
-        val job = scope.async(singleThreadTaskDispatcher) {
+        val job = scope.async(Dispatchers.Main.immediate) {
             displayExecutor.execute(request)
         }
         return if (request.target is ViewTarget<*>) {
@@ -161,7 +160,7 @@ class Sketch constructor(
 
     suspend fun executeDisplay(request: DisplayRequest): DisplayResult =
         coroutineScope {
-            val job = async(singleThreadTaskDispatcher) {
+            val job = async(Dispatchers.Main.immediate) {
                 displayExecutor.execute(request)
             }
             // Update the current request attached to the view and await the result.
@@ -186,7 +185,7 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueLoad(request: LoadRequest): Disposable<LoadResult> {
-        val job = scope.async(singleThreadTaskDispatcher) {
+        val job = scope.async(decodeTaskDispatcher) {
             loadExecutor.execute(request)
         }
         return OneShotDisposable(job)
@@ -205,7 +204,7 @@ class Sketch constructor(
     ): Disposable<LoadResult> = enqueueLoad(LoadRequest.new(uri, configBlock))
 
     suspend fun executeLoad(request: LoadRequest): LoadResult = coroutineScope {
-        val job = async(singleThreadTaskDispatcher) {
+        val job = async(decodeTaskDispatcher) {
             loadExecutor.execute(request)
         }
         job.await()
@@ -226,7 +225,7 @@ class Sketch constructor(
 
     @AnyThread
     fun enqueueDownload(request: DownloadRequest): Disposable<DownloadResult> {
-        val job = scope.async(singleThreadTaskDispatcher) {
+        val job = scope.async(decodeTaskDispatcher) {
             downloadExecutor.execute(request)
         }
         return OneShotDisposable(job)
@@ -246,7 +245,7 @@ class Sketch constructor(
 
     suspend fun executeDownload(request: DownloadRequest): DownloadResult =
         coroutineScope {
-            val job = async(singleThreadTaskDispatcher) {
+            val job = async(decodeTaskDispatcher) {
                 downloadExecutor.execute(request)
             }
             job.await()

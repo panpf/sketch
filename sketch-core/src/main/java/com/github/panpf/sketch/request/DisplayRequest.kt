@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
@@ -17,7 +18,9 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.util.getLifecycle
 
 interface DisplayRequest : LoadRequest {
 
@@ -27,6 +30,7 @@ interface DisplayRequest : LoadRequest {
     val loadingImage: StateImage?
     val errorImage: ErrorStateImage?
     val target: Target?
+    val lifecycle: Lifecycle?
 
     fun newDisplayRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -95,6 +99,7 @@ interface DisplayRequest : LoadRequest {
         private var loadingImage: StateImage? = null
         private var errorImage: ErrorStateImage? = null
         private var target: Target? = null
+        private var lifecycle: Lifecycle? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
@@ -130,6 +135,7 @@ interface DisplayRequest : LoadRequest {
             this.loadingImage = request.loadingImage
             this.errorImage = request.errorImage
             this.target = request.target
+            this.lifecycle = request.lifecycle
             this.listener = request.listener
             this.progressListener = request.progressListener
         }
@@ -289,6 +295,10 @@ interface DisplayRequest : LoadRequest {
             this.target = ImageViewTarget(imageView)
         }
 
+        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
+            this.lifecycle = lifecycle
+        }
+
         fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
             apply {
                 @Suppress("UNCHECKED_CAST")
@@ -342,9 +352,16 @@ interface DisplayRequest : LoadRequest {
             loadingImage = loadingImage,
             errorImage = errorImage,
             target = target,
+            lifecycle = lifecycle ?: resolveLifecycle(),
             listener = listener,
             progressListener = progressListener,
         )
+
+        private fun resolveLifecycle(): Lifecycle? {
+            val target = target
+            val context = if (target is ViewTarget<*>) target.view.context else null
+            return context.getLifecycle()
+        }
     }
 
     private class DisplayRequestImpl(
@@ -370,6 +387,7 @@ interface DisplayRequest : LoadRequest {
         override val loadingImage: StateImage?,
         override val errorImage: ErrorStateImage?,
         override val target: Target?,
+        override val lifecycle: Lifecycle?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : DisplayRequest {

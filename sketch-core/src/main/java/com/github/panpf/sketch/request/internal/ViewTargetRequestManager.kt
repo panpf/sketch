@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 internal class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChangeListener {
 
+    // todo ViewTarget bind RequestManager，方尺重复加载，图片错乱、自动取消、自动重新请求，监听 lifecycler
     // The disposable for the current request attached to this view.
     private var currentDisposable: ViewTargetDisposable? = null
 
