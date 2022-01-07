@@ -8,12 +8,13 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadData
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
 
@@ -25,31 +26,16 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
         sketch: Sketch,
         chain: Interceptor.Chain<LoadRequest, LoadData>,
     ): LoadData {
-        val diskCache = sketch.diskCache
         val request = chain.request
-        val resultCacheHelper = ResultCacheHelper.from(request, diskCache, sketch.logger)
-        val mutex = resultCacheHelper?.getOrCreateEditMutexLock()
-        mutex?.lock()
+        val resultCacheHelper = ResultCacheHelper.from(sketch, request)
+        resultCacheHelper?.lock?.lock()
         try {
-            if (resultCacheHelper != null && request.resultDiskCachePolicy.readEnabled) {
-                val cacheLoadResult = withContext(sketch.decodeTaskDispatcher) {
-                    resultCacheHelper.readLoadResult()
+            return resultCacheHelper?.read(sketch.decodeTaskDispatcher)
+                ?: chain.proceed(sketch, request).apply {
+                    resultCacheHelper?.write(this, sketch.decodeTaskDispatcher)
                 }
-                if (cacheLoadResult != null) {
-                    return cacheLoadResult
-                }
-            }
-
-            val loadResult = chain.proceed(sketch, request)
-
-            if (resultCacheHelper != null && request.resultDiskCachePolicy.writeEnabled) {
-                withContext(sketch.decodeTaskDispatcher) {
-                    resultCacheHelper.writeLoadResult(loadResult)
-                }
-            }
-            return loadResult
         } finally {
-            mutex?.unlock()
+            resultCacheHelper?.lock?.unlock()
         }
     }
 
@@ -61,104 +47,106 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
         val encodedMetaDataDiskCacheKey: String,
     ) {
 
-        fun getOrCreateEditMutexLock(): Mutex =
+        val lock: Mutex by lazy {
             diskCache.getOrCreateEditMutexLock(encodedBitmapDataDiskCacheKey)
+        }
 
-        fun readLoadResult(): LoadData? {
-            if (!request.resultDiskCachePolicy.readEnabled) {
-                return null
-            }
-
-            val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
-            val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
-            try {
-                return if (bitmapDataDiskCacheEntry != null && metaDataDiskCacheEntry != null) {
-                    val jsonString = metaDataDiskCacheEntry.newInputStream().use {
-                        it.bufferedReader().readText()
-                    }
-                    val imageInfo = ImageInfo.fromJsonString(jsonString)
-                    val bitmap = BitmapFactory.decodeFile(
-                        bitmapDataDiskCacheEntry.file.path,
-                        request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
-                    )
-                    if (bitmap.width > 1 && bitmap.height > 1) {
-                        LoadData(bitmap, imageInfo, DISK_CACHE)
-                    } else {
-                        bitmap.recycle()
-                        logger.e(
-                            MODULE,
-                            "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s".format(
-                                bitmap.width,
-                                bitmap.height,
-                                request.uriString,
-                                encodedBitmapDataDiskCacheKey
-                            )
+        @Suppress("BlockingMethodInNonBlockingContext")
+        suspend fun read(context: CoroutineContext): LoadData? = withContext(context) {
+            if (request.resultDiskCachePolicy.readEnabled) {
+                val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
+                val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
+                try {
+                    if (bitmapDataDiskCacheEntry != null && metaDataDiskCacheEntry != null) {
+                        val jsonString = metaDataDiskCacheEntry.newInputStream().use {
+                            it.bufferedReader().readText()
+                        }
+                        val imageInfo = ImageInfo.fromJsonString(jsonString)
+                        val bitmap = BitmapFactory.decodeFile(
+                            bitmapDataDiskCacheEntry.file.path,
+                            request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
                         )
-                        bitmapDataDiskCacheEntry.delete()
-                        metaDataDiskCacheEntry.delete()
+                        if (bitmap.width > 1 && bitmap.height > 1) {
+                            LoadData(bitmap, imageInfo, DISK_CACHE)
+                        } else {
+                            bitmap.recycle()
+                            logger.e(
+                                MODULE,
+                                "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s".format(
+                                    bitmap.width,
+                                    bitmap.height,
+                                    request.uriString,
+                                    encodedBitmapDataDiskCacheKey
+                                )
+                            )
+                            bitmapDataDiskCacheEntry.delete()
+                            metaDataDiskCacheEntry.delete()
+                            null
+                        }
+                    } else {
+                        bitmapDataDiskCacheEntry?.delete()
+                        metaDataDiskCacheEntry?.delete()
                         null
                     }
-                } else {
+                } catch (e: Throwable) {
+                    e.printStackTrace()
                     bitmapDataDiskCacheEntry?.delete()
                     metaDataDiskCacheEntry?.delete()
                     null
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                bitmapDataDiskCacheEntry?.delete()
-                metaDataDiskCacheEntry?.delete()
-                throw e
+            } else {
+                null
             }
         }
 
-        fun writeLoadResult(result: LoadData) {
-            if (!request.resultDiskCachePolicy.writeEnabled) {
-                return
-            }
+        @Suppress("BlockingMethodInNonBlockingContext")
+        suspend fun write(result: LoadData, context: CoroutineContext) {
+            withContext(context) {
+                if (request.resultDiskCachePolicy.writeEnabled) {
+                    val bitmapDataEditor =
+                        diskCache.edit(encodedBitmapDataDiskCacheKey) ?: return@withContext
+                    try {
+                        bitmapDataEditor.newOutputStream().use {
+                            result.bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                        }
+                        bitmapDataEditor.commit()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        bitmapDataEditor.abort()
+                        return@withContext
+                    }
 
-            val bitmapDataEditor = diskCache.edit(encodedBitmapDataDiskCacheKey) ?: return
-            try {
-                bitmapDataEditor.newOutputStream().use {
-                    result.bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                    val metaDataEditor =
+                        diskCache.edit(encodedMetaDataDiskCacheKey) ?: return@withContext
+                    try {
+                        metaDataEditor.newOutputStream().use {
+                            it.bufferedWriter().write(result.info.toJsonString())
+                        }
+                        metaDataEditor.commit()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        metaDataEditor.abort()
+                        diskCache[encodedBitmapDataDiskCacheKey]?.delete()
+                        return@withContext
+                    }
                 }
-                bitmapDataEditor.commit()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                bitmapDataEditor.abort()
-                return
-            }
-
-            val metaDataEditor = diskCache.edit(encodedMetaDataDiskCacheKey) ?: return
-            try {
-                metaDataEditor.newOutputStream().use {
-                    it.bufferedWriter().write(result.info.toJsonString())
-                }
-                metaDataEditor.commit()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                metaDataEditor.abort()
-                diskCache[encodedBitmapDataDiskCacheKey]?.delete()
-                return
             }
         }
 
         companion object {
 
             @JvmStatic
-            fun from(
-                request: LoadRequest,
-                diskCache: DiskCache,
-                logger: Logger
-            ): ResultCacheHelper? {
-                if (request.resultDiskCachePolicy.isReadOrWrite) return null
+            fun from(sketch: Sketch, request: LoadRequest): ResultCacheHelper? {
+                if (!request.resultDiskCachePolicy.isReadOrWrite) return null
                 val bitmapDataDiskCacheKey = request.resultDiskCacheKey ?: return null
+                val diskCache: DiskCache = sketch.diskCache
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
                 val encodedBitmapDataDiskCacheKey = diskCache.encodeKey(bitmapDataDiskCacheKey)
                 val encodedMetaDataDiskCacheKey = diskCache.encodeKey(metaDataDiskCacheKey)
                 return ResultCacheHelper(
                     request,
                     diskCache,
-                    logger,
+                    sketch.logger,
                     encodedBitmapDataDiskCacheKey,
                     encodedMetaDataDiskCacheKey
                 )

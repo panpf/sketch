@@ -5,7 +5,6 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
@@ -134,7 +133,7 @@ class SketchTest {
         }
     }
 
-    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadData> {
+    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
 
         val callbackActionList = mutableListOf<String>()
 
@@ -150,14 +149,14 @@ class SketchTest {
             callbackActionList.add("onCancel")
         }
 
-        override fun onError(request: DownloadRequest, throwable: Throwable) {
-            super.onError(request, throwable)
+        override fun onError(request: DownloadRequest, result: DownloadResult.Error) {
+            super.onError(request, result)
             check(Looper.getMainLooper() === Looper.myLooper())
             callbackActionList.add("onError")
         }
 
-        override fun onSuccess(request: DownloadRequest, data: DownloadData) {
-            super.onSuccess(request, data)
+        override fun onSuccess(request: DownloadRequest, result: DownloadResult.Success) {
+            super.onSuccess(request, result)
             check(Looper.getMainLooper() === Looper.myLooper())
             callbackActionList.add("onSuccess")
         }
