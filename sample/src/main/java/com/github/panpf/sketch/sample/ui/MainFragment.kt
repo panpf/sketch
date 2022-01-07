@@ -31,17 +31,17 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                 listOf(
                     ListSeparator("Samples"),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
-//                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
                     Link(
-                        "Online Photos - Unsplash",
+                        "Online Photos",
                         NavMainDirections.actionGlobalOnlinePhotosFragment()
                     ),
 //                    Link("Online GIF - Giphy", NavMainDirections.actionGlobalOnlineGifFragment()),
-//                    Link("Image Format", NavMainDirections.actionGlobalImageFormatFragment()),
-                    Link("Fetcher", NavMainDirections.actionGlobalFetcherFragment()),
 //                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),
+//                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
 //
-//                    ListSeparator("Test"),
+                    ListSeparator("Test"),
+                    Link("Image Format", NavMainDirections.actionGlobalImageFormatFragment()),
+                    Link("Fetcher", NavMainDirections.actionGlobalFetcherFragment()),
 //                    Link(
 //                        "ImageProcessor Test",
 //                        NavMainDirections.actionGlobalImageProcessorTestFragment()
