@@ -33,8 +33,6 @@ class ErrorStateImage(
 
     val d = ErrorStateImage(StateImage.color(Color.BLACK))
 
-    // todo error 支持移动网络暂停下载功能，抛出特定的异常，这里判断并增加对应的 Image
-    // todo 搞一个专门的拦截器，移动网络下将所有请求的 depth 改为 local，并添加标记，这里根据异常和标记过滤
     override fun getDrawable(
         context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
     ): Drawable? = when {

@@ -4,36 +4,49 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.bean.PexelsPhoto
 import com.github.panpf.sketch.sample.databinding.ItemPexelsImageBinding
 import com.github.panpf.sketch.sample.widget.MyImageView
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.tools4a.display.Displayx
-import com.github.panpf.tools4a.display.ktx.isOrientationPortrait
+import com.github.panpf.tools4a.display.ktx.getScreenWidth
 
 class PexelsImageItemFactory(
     activity: Activity,
     private val onClickPhoto: (view: MyImageView, position: Int, data: PexelsPhoto) -> Unit
 ) : BindingItemFactory<PexelsPhoto, ItemPexelsImageBinding>(PexelsPhoto::class) {
 
-    // + DeviceUtils.getNavigationBarHeight(requireActivity()) for MIX 2
-    private val windowHeightSupplement =
-        if (activity.window.decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) {
-            Displayx.getNavigationBarHeight(activity)
-        } else {
-            0
-        }
+    private var itemSize: Int = 0
 
     override fun createItemViewBinding(
         context: Context,
         inflater: LayoutInflater,
         parent: ViewGroup
-    ) = ItemPexelsImageBinding.inflate(inflater, parent, false)
+    ): ItemPexelsImageBinding {
+        if (itemSize == 0) {
+            itemSize = -1
+            if (parent is RecyclerView) {
+                val spanCount = when (val layoutManager = parent.layoutManager) {
+                    is GridLayoutManager -> layoutManager.spanCount
+                    is StaggeredGridLayoutManager -> layoutManager.spanCount
+                    else -> 1
+                }
+                if (spanCount > 1) {
+                    val screenWidth = context.getScreenWidth()
+                    val gridDivider = context.resources.getDimensionPixelSize(R.dimen.grid_divider)
+                    itemSize = (screenWidth - (gridDivider * (spanCount + 1))) / spanCount
+                }
+            }
+        }
+        return ItemPexelsImageBinding.inflate(inflater, parent, false)
+    }
 
     override fun initItem(
         context: Context,
@@ -41,15 +54,21 @@ class PexelsImageItemFactory(
         item: BindingItem<PexelsPhoto, ItemPexelsImageBinding>
     ) {
         binding.pexelsImageItemImageView.apply {
+            if (itemSize > 0) {
+                updateLayoutParams<ViewGroup.LayoutParams> {
+                    width = itemSize
+                    height = itemSize
+                }
+            }
 //            setShowGifFlagEnabled(R.drawable.ic_gif)
 //            setOptions(ImageOptions.LIST_FULL)
-//            setOnClickListener {
-//                onClickPhoto(
-//                    binding.imageUnsplashImageItem,
-//                    item.absoluteAdapterPosition,
-//                    item.dataOrThrow
-//                )
-//            }
+            setOnClickListener {
+                onClickPhoto(
+                    binding.pexelsImageItemImageView,
+                    item.absoluteAdapterPosition,
+                    item.dataOrThrow
+                )
+            }
 //
 //            appSettingsService.showPressedStatusInListEnabled.observeFromViewAndInit(this) {
 //                isShowPressedStatusEnabled = it == true
@@ -69,27 +88,8 @@ class PexelsImageItemFactory(
         absoluteAdapterPosition: Int,
         data: PexelsPhoto
     ) {
-        val itemWidth = context.resources.displayMetrics.widthPixels
-
-        binding.root.updateLayoutParams<ViewGroup.LayoutParams> {
-            width = itemWidth
-            if (!context.isOrientationPortrait()) {
-                width += windowHeightSupplement
-            }
-            height = (width / (data.width / data.height.toFloat())).toInt()
-        }
-
-        binding.pexelsImageItemImageView.apply {
-            updateLayoutParams<ViewGroup.LayoutParams> {
-                width = itemWidth
-                if (!context.isOrientationPortrait()) {
-                    width += windowHeightSupplement
-                }
-                height = (width / (data.width / data.height.toFloat())).toInt()
-            }
-            displayImage(data.src.large) {
-                loadingImage(StateImage.color(Color.parseColor(data.avgColor)))
-            }
+        binding.pexelsImageItemImageView.displayImage(data.src.large) {
+            placeholderImage(StateImage.color(Color.parseColor(data.avgColor)))
         }
     }
 }

@@ -23,19 +23,19 @@ import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DisplayRequest
 
 class MemoryCacheStateImage(
-    private val memoryCacheKey: String,
-    private val whenEmptyImage: StateImage?
+    private val memoryCacheKey: String?,
+    private val defaultImage: StateImage?
 ) : StateImage {
 
     override fun getDrawable(
         context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
     ): Drawable? {
         val memoryCache = sketch.memoryCache
-        val cachedRefBitmap = memoryCache[memoryCacheKey]
+        val cachedRefBitmap = memoryCacheKey?.let { memoryCache[it] }
         return if (cachedRefBitmap != null) {
             SketchBitmapDrawable(cachedRefBitmap, DataFrom.MEMORY_CACHE)
         } else {
-            whenEmptyImage?.getDrawable(context, sketch, request, error)
+            defaultImage?.getDrawable(context, sketch, request, error)
         }
     }
 }

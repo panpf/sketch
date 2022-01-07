@@ -27,7 +27,7 @@ interface DisplayRequest : LoadRequest {
     val memoryCacheKey: String
     val memoryCachePolicy: CachePolicy
     val disabledAnimationDrawable: Boolean?
-    val loadingImage: StateImage?
+    val placeholderImage: StateImage?
     val errorImage: ErrorStateImage?
     val target: Target?
     val lifecycle: Lifecycle?
@@ -96,7 +96,7 @@ interface DisplayRequest : LoadRequest {
         private var memoryCacheKey: String? = null
         private var memoryCachePolicy: CachePolicy? = null
         private var disabledAnimationDrawable: Boolean? = null
-        private var loadingImage: StateImage? = null
+        private var placeholderImage: StateImage? = null
         private var errorImage: ErrorStateImage? = null
         private var target: Target? = null
         private var lifecycle: Lifecycle? = null
@@ -132,7 +132,7 @@ interface DisplayRequest : LoadRequest {
             this.memoryCacheKey = request.memoryCacheKey
             this.memoryCachePolicy = request.memoryCachePolicy
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
-            this.loadingImage = request.loadingImage
+            this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.target = request.target
             this.lifecycle = request.lifecycle
@@ -279,8 +279,8 @@ interface DisplayRequest : LoadRequest {
             this.disabledAnimationDrawable = disabledAnimationDrawable
         }
 
-        fun loadingImage(loadingImage: StateImage?): Builder = apply {
-            this.loadingImage = loadingImage
+        fun placeholderImage(placeholderImage: StateImage?): Builder = apply {
+            this.placeholderImage = placeholderImage
         }
 
         fun errorImage(errorImage: ErrorStateImage?): Builder = apply {
@@ -349,7 +349,7 @@ interface DisplayRequest : LoadRequest {
             _memoryCacheKey = memoryCacheKey,
             _memoryCachePolicy = memoryCachePolicy,
             disabledAnimationDrawable = disabledAnimationDrawable,
-            loadingImage = loadingImage,
+            placeholderImage = placeholderImage,
             errorImage = errorImage,
             target = target,
             lifecycle = lifecycle ?: resolveLifecycle(),
@@ -384,7 +384,7 @@ interface DisplayRequest : LoadRequest {
         _memoryCacheKey: String?,
         _memoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
-        override val loadingImage: StateImage?,
+        override val placeholderImage: StateImage?,
         override val errorImage: ErrorStateImage?,
         override val target: Target?,
         override val lifecycle: Lifecycle?,
@@ -409,28 +409,40 @@ interface DisplayRequest : LoadRequest {
 
         override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
 
-        override val memoryCacheKey: String by lazy {
-            if (_memoryCacheKey != null) {
-                _memoryCacheKey
-            } else {
-                val qualityKeyPart = qualityKey?.let { "_$it" } ?: ""
-                val animationDrawablePart =
-                    if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-                "${uriString}${qualityKeyPart}${animationDrawablePart}"
-            }
-        }
-
         private val qualityKey: String? by lazy {
             LoadRequest.newQualityKey(this)
         }
 
+        override val memoryCacheKey: String by lazy {
+            _memoryCacheKey ?: buildString {
+                append(uriString)
+                qualityKey?.let {
+                    append("_").append(it)
+                }
+                if (disabledAnimationDrawable == true) {
+                    append("_").append("DisabledAnimationDrawable")
+                }
+            }
+        }
+
         override val key: String by lazy {
-            val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-            val qualityKey = qualityKey?.let { "_${it}" } ?: ""
-            val animationDrawablePart =
-                if (disabledAnimationDrawable != true) "_AnimationDrawable" else ""
-            "Display_${uriString}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)" +
-                    "${qualityKey}_memoryCacheKey($memoryCacheKey)_memoryCachePolicy($memoryCachePolicy)${animationDrawablePart}"
+            buildString {
+                append("Display")
+                append("_").append(uriString)
+                qualityKey?.let {
+                    append("_").append(it)
+                }
+                if (disabledAnimationDrawable == true) {
+                    append("_").append("DisabledAnimationDrawable")
+                }
+                parameters?.let {
+                    append("_").append(it.key)
+                }
+                append("_").append("diskCacheKey($diskCacheKey)")
+                append("_").append("diskCachePolicy($diskCachePolicy)")
+                append("_").append("memoryCacheKey($memoryCacheKey)")
+                append("_").append("memoryCachePolicy($memoryCachePolicy)")
+            }
         }
     }
 }

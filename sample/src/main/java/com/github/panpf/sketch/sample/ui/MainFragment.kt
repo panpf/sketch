@@ -30,14 +30,14 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                 listOf(LinkItemFactory(), ListSeparatorItemFactory()),
                 listOf(
                     ListSeparator("Samples"),
-                    Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
                     Link(
-                        "Online Photos",
-                        NavMainDirections.actionGlobalOnlinePhotosFragment()
+                        "Pexels Photos",
+                        NavMainDirections.actionGlobalPexelsPhotosFragment()
                     ),
-//                    Link("Online GIF - Giphy", NavMainDirections.actionGlobalOnlineGifFragment()),
-//                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),
+//                    Link("Giphy GIF - Giphy", NavMainDirections.actionGlobalOnlineGifFragment()),
+                    Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
 //                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
+//                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),
 //
                     ListSeparator("Test"),
                     Link("Image Format", NavMainDirections.actionGlobalImageFormatFragment()),

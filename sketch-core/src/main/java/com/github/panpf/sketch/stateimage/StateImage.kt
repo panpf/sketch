@@ -37,7 +37,7 @@ interface StateImage {
 
         fun colorRes(@ColorRes colorResId: Int): StateImage = ColorResStateImage(colorResId)
 
-        fun memoryCache(memoryCacheKey: String, whenEmptyImage: StateImage?): StateImage =
-            MemoryCacheStateImage(memoryCacheKey, whenEmptyImage)
+        fun memoryCache(memoryCacheKey: String?, defaultImage: StateImage?): StateImage =
+            MemoryCacheStateImage(memoryCacheKey, defaultImage)
     }
 }

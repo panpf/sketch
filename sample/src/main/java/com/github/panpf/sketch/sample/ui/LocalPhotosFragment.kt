@@ -23,22 +23,30 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
+import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.bean.Image
+import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.bean.ImageInfo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
 import com.github.panpf.sketch.sample.item.LocalPhotoItemFactory
 import com.github.panpf.sketch.sample.vm.LocalPhotoListViewModel
+import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
@@ -59,8 +67,8 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         toolbar.title = "Local Photos"
 
         val pagingAdapter = AssemblyPagingDataAdapter<ImageInfo>(listOf(
-            LocalPhotoItemFactory { view, position, _ ->
-//                startImageDetail(view, binding, position)
+            LocalPhotoItemFactory { _, position, _ ->
+                startImageDetail(binding, position)
             }
         ))
 
@@ -176,32 +184,19 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
     }
 
-//    private fun startImageDetail(
-//        view: SampleImageView,
-//        binding: FragmentRecyclerBinding,
-//        position: Int
-//    ) {
-//        var finalOptionsKey: String? = view.optionsKey
-//        // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-//        if (finalOptionsKey!!.contains("Resize")
-//            || finalOptionsKey.contains("ImageProcessor")
-//            || finalOptionsKey.contains("thumbnailMode")
-//        ) {
-//            finalOptionsKey = null
-//        }
-//
-//        val imageList = binding.recyclerRecyclerFragmentContent
-//            .adapter!!.asOrThrow<ConcatAdapter>()
-//            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<ImageInfo>>()
-//            .currentList.map {
-//                Image(it!!.path, it.path)
-//            }
-//        findNavController().navigate(
-//            NavMainDirections.actionGlobalImageViewerFragment(
-//                Json.encodeToString(imageList),
-//                position,
-//                finalOptionsKey
-//            )
-//        )
-//    }
+    private fun startImageDetail(binding: FragmentRecyclerBinding, position: Int) {
+        val imageList = binding.recyclerRecyclerFragmentContent
+            .adapter!!.asOrThrow<ConcatAdapter>()
+            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<ImageInfo>>()
+            .currentList.map {
+                ImageDetail(it!!.path, it.path, null)
+            }
+        findNavController().navigate(
+            NavMainDirections.actionGlobalImageViewerFragment(
+                Json.encodeToString(imageList),
+                null,
+                position,
+            )
+        )
+    }
 }

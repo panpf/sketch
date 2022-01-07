@@ -13,9 +13,9 @@
         android:name="com.github.panpf.sketch.sample.ui.LocalPhotosFragment"
         android:label="LocalPhotosFragment" />
     <fragment
-        android:id="@+id/onlinePhotosFragment"
-        android:name="com.github.panpf.sketch.sample.ui.OnlinePhotosFragment"
-        android:label="OnlinePhotosFragment" />
+        android:id="@+id/pexelsPhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.PexelsPhotosFragment"
+        android:label="PexelsPhotosFragment" />
     <fragment
         android:id="@+id/imageFragment"
         android:name="com.github.panpf.sketch.sample.ui.ImageFragment"
@@ -34,10 +34,37 @@
         android:id="@+id/imageFormatFragment"
         android:name="com.github.panpf.sketch.sample.ui.ImageFormatFragment"
         android:label="ImageFormatFragment" />
+    <fragment
+        android:id="@+id/imageViewerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageViewerFragment"
+        android:label="ImageViewerFragment">
+        <argument
+            android:name="imageDetailJsonArray"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="placeholderImageMemoryKeyJsonArray"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="defaultPosition"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageDetailFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ImageDetailFragment"
+        android:label="ImageDetailFragment">
+        <argument
+            android:name="imageDetailJson"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
 
     <action
-        android:id="@+id/action_global_onlinePhotosFragment"
-        app:destination="@id/onlinePhotosFragment"
+        android:id="@+id/action_global_pexelsPhotosFragment"
+        app:destination="@id/pexelsPhotosFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -66,6 +93,21 @@
     <action
         android:id="@+id/action_global_fetcherFragment"
         app:destination="@id/fetcherFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_imageViewerFragment"
+        app:destination="@id/imageViewerFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <action
+        android:id="@+id/action_global_imageDetailFragment"
+        app:destination="@id/imageDetailFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

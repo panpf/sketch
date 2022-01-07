@@ -161,8 +161,15 @@ interface DownloadRequest : ImageRequest {
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
         override val key: String by lazy {
-            val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-            "Download_${uriString}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)"
+            buildString {
+                append("Download")
+                append("_").append(uriString)
+                parameters?.let {
+                    append("_").append(it.key)
+                }
+                append("_").append("diskCacheKey($diskCacheKey)")
+                append("_").append("diskCachePolicy($diskCachePolicy)")
+            }
         }
     }
 }

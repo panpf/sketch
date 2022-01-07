@@ -52,7 +52,7 @@ class DisplayExecutor(private val sketch: Sketch) {
             }
             listenerDelegate?.onStart(request)
             val loadingDrawable =
-                request.loadingImage?.getDrawable(sketch.appContext, sketch, request, null)
+                request.placeholderImage?.getDrawable(sketch.appContext, sketch, request, null)
             withContext(Dispatchers.Main) {
                 target?.onStart(loadingDrawable)
             }

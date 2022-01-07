@@ -417,14 +417,23 @@ interface LoadRequest : DownloadRequest {
         override val resultDiskCachePolicy: CachePolicy =
             _resultDiskCachePolicy ?: CachePolicy.ENABLED
 
-        override val key: String by lazy {
-            val parametersInfo = parameters?.let { "_${it.key}" } ?: ""
-            val qualityKey = qualityKey?.let { "_${it}" } ?: ""
-            "Load_${uriString}${parametersInfo})_diskCacheKey($diskCacheKey)_diskCachePolicy($diskCachePolicy)${qualityKey}"
-        }
-
         private val qualityKey: String? by lazy {
             newQualityKey(this)
+        }
+
+        override val key: String by lazy {
+            buildString {
+                append("Load")
+                append("_").append(uriString)
+                qualityKey?.let {
+                    append("_").append(it)
+                }
+                parameters?.let {
+                    append("_").append(it.key)
+                }
+                append("_").append("diskCacheKey($diskCacheKey)")
+                append("_").append("diskCachePolicy($diskCachePolicy)")
+            }
         }
     }
 }

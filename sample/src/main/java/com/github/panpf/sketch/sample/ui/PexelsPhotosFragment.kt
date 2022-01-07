@@ -6,19 +6,32 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ConcatAdapter
+import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
+import com.github.panpf.sketch.sample.NavMainDirections
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.bean.Image
+import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.bean.PexelsPhoto
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
+import com.github.panpf.sketch.sample.item.LoadStateItemFactory
 import com.github.panpf.sketch.sample.item.PexelsImageItemFactory
 import com.github.panpf.sketch.sample.vm.PexelsImageListViewModel
+import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 
-class OnlinePhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val pexelsImageListViewModel by viewModels<PexelsImageListViewModel>()
 
@@ -34,11 +47,11 @@ class OnlinePhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
     ) {
         showMenu(toolbar)
 
-        toolbar.title = "Online Photos - Unsplash"
+        toolbar.title = "Pexels Photos"
 
         val pagingAdapter = AssemblyPagingDataAdapter<PexelsPhoto>(listOf(
             PexelsImageItemFactory(requireActivity()) { view, position, _ ->
-//                startImageDetail(view, binding, position)
+                startImageDetail(binding, position)
             }
         ))
 
@@ -47,10 +60,24 @@ class OnlinePhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
 
         binding.recyclerRecyclerFragmentContent.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = AssemblyGridLayoutManager(
+                requireActivity(),
+                3,
+                mapOf(LoadStateItemFactory::class to ItemSpan.fullSpan())
+            )
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
+
+            val gridDivider = requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+            addGridDividerItemDecoration {
+                divider(Divider.space(gridDivider))
+                sideDivider(Divider.space(gridDivider))
+                useDividerAsHeaderAndFooterDivider()
+                useSideDividerAsSideHeaderAndFooterDivider()
+            }
+
+            // todo 支持滚动中停止加载
 //            addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
         }
 
@@ -124,32 +151,19 @@ class OnlinePhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
     }
 
-//    private fun startImageDetail(
-//        view: SampleImageView,
-//        binding: FragmentRecyclerBinding,
-//        position: Int
-//    ) {
-//        var finalOptionsKey: String? = view.optionsKey
-//        // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
-//        if (finalOptionsKey!!.contains("Resize")
-//            || finalOptionsKey.contains("ImageProcessor")
-//            || finalOptionsKey.contains("thumbnailMode")
-//        ) {
-//            finalOptionsKey = null
-//        }
-//
-//        val imageList = binding.recyclerRecyclerFragmentContent
-//            .adapter!!.asOrThrow<ConcatAdapter>()
-//            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<UnsplashImage>>()
-//            .currentList.map {
-//                Image(it!!.urls!!.regular!!, it.urls!!.raw!!)
-//            }
-//        findNavController().navigate(
-//            NavMainDirections.actionGlobalImageViewerFragment(
-//                Json.encodeToString(imageList),
-//                position,
-//                finalOptionsKey
-//            )
-//        )
-//    }
+    private fun startImageDetail(binding: FragmentRecyclerBinding, position: Int) {
+        val imageList = binding.recyclerRecyclerFragmentContent
+            .adapter!!.asOrThrow<ConcatAdapter>()
+            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<PexelsPhoto>>()
+            .currentList.map {
+                ImageDetail(it!!.src.medium, it.url, null)
+            }
+        findNavController().navigate(
+            NavMainDirections.actionGlobalImageViewerFragment(
+                Json.encodeToString(imageList),
+                null,
+                position,
+            )
+        )
+    }
 }
