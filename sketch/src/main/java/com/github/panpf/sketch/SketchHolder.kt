@@ -14,14 +14,8 @@ internal object SketchHolder {
             }
         }
 
-    private fun newSketch(context: Context): Sketch {
-        val appContext = context.applicationContext
-        return if (appContext is SketchFactory) {
-            appContext.newSketch()
-        } else {
-            Sketch.new(context)
-        }
-    }
+    private fun newSketch(context: Context): Sketch =
+        (context.applicationContext as SketchFactory?)?.newSketch() ?: Sketch.new(context)
 }
 
 val Context.sketch: Sketch

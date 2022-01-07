@@ -26,15 +26,21 @@ import java.net.URL
 class HurlStack(
     val readTimeout: Int,
     val connectTimeout: Int,
-    val maxRetryCount: Int,
     val userAgent: String?,
     val extraHeaders: Map<String, String>?,
     val addExtraHeaders: Map<String, String>?,
     val processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
 ) : HttpStack {
 
+    override fun toString(): String =
+        "HurlStack(connectTimeout=${connectTimeout},readTimeout=${readTimeout},userAgent=${userAgent})"
+
     @Throws(IOException::class)
-    override fun getResponse(sketch: Sketch, request: DownloadRequest, url: String): HttpStack.Response {
+    override fun getResponse(
+        sketch: Sketch,
+        request: DownloadRequest,
+        url: String
+    ): HttpStack.Response {
         var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
@@ -68,11 +74,6 @@ class HurlStack(
             }
         }
         throw IOException("Unable to get response")
-    }
-
-    override fun toString(): String {
-        return "%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)"
-            .format(KEY, maxRetryCount, connectTimeout, readTimeout, userAgent)
     }
 
     private class HurlResponse(private val connection: HttpURLConnection) : HttpStack.Response {
@@ -157,7 +158,6 @@ class HurlStack(
     }.build()
 
     companion object {
-        private const val KEY = "HurlStack"
 
         fun new(
             configBlock: (Builder.() -> Unit)? = null
@@ -169,7 +169,6 @@ class HurlStack(
     class Builder {
         private var readTimeout: Int
         private var connectTimeout: Int
-        private var maxRetryCount: Int
         private var userAgent: String?
         private var extraHeaders: MutableMap<String, String>?
         private var addExtraHeaders: MutableMap<String, String>?
@@ -178,7 +177,6 @@ class HurlStack(
         constructor() {
             this.readTimeout = HttpStack.DEFAULT_READ_TIMEOUT
             this.connectTimeout = HttpStack.DEFAULT_CONNECT_TIMEOUT
-            this.maxRetryCount = HttpStack.DEFAULT_MAX_RETRY_COUNT
             this.userAgent = null
             this.extraHeaders = null
             this.addExtraHeaders = null
@@ -188,7 +186,6 @@ class HurlStack(
         constructor(hurlStack: HurlStack) {
             this.readTimeout = hurlStack.readTimeout
             this.connectTimeout = hurlStack.connectTimeout
-            this.maxRetryCount = hurlStack.maxRetryCount
             this.userAgent = hurlStack.userAgent
             this.extraHeaders = hurlStack.extraHeaders?.toMutableMap()
             this.addExtraHeaders = hurlStack.addExtraHeaders?.toMutableMap()
@@ -201,10 +198,6 @@ class HurlStack(
 
         fun readTimeout(readTimeout: Int): Builder = apply {
             this.readTimeout = readTimeout
-        }
-
-        fun maxRetryCount(maxRetryCount: Int): Builder = apply {
-            this.maxRetryCount = maxRetryCount
         }
 
         fun userAgent(userAgent: String?): Builder = apply {
@@ -243,7 +236,6 @@ class HurlStack(
         fun build(): HurlStack = HurlStack(
             readTimeout = readTimeout,
             connectTimeout = connectTimeout,
-            maxRetryCount = maxRetryCount,
             userAgent = userAgent,
             extraHeaders = extraHeaders,
             addExtraHeaders = addExtraHeaders,

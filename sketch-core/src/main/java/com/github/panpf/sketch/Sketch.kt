@@ -55,7 +55,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.io.File
 
-class Sketch constructor(
+class Sketch private constructor(
     _context: Context,
     _logger: Logger? = null,
     _memoryCache: MemoryCache? = null,

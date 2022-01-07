@@ -65,6 +65,7 @@ android {
 
 dependencies {
     implementation(project(":sketch"))
+    implementation(project(":sketch-okhttp"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
