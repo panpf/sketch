@@ -12,9 +12,7 @@ class PexelsImageListViewModel(application: Application) : AndroidViewModel(appl
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 20,
-            prefetchDistance = 10,
             enablePlaceholders = false,
-            initialLoadSize = 20
         ),
         initialKey = 0,
         pagingSourceFactory = {
