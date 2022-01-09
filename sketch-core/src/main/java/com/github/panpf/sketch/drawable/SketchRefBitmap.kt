@@ -17,8 +17,8 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
-import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.toHexString
 
@@ -27,6 +27,7 @@ import com.github.panpf.sketch.util.toHexString
  */
 class SketchRefBitmap(
     initBitmap: Bitmap,
+    val imageUri: String,
     val imageInfo: ImageInfo,
     val requestKey: String,
     private val bitmapPoolHelper: BitmapPoolHelper
@@ -52,7 +53,7 @@ class SketchRefBitmap(
     val byteCount: Int
         get() = bitmap?.byteCountCompat ?: 0
 
-    val info: String =
+    val info: String by lazy {
         "ReferenceCountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s)".format(
             imageInfo.width,
             imageInfo.height,
@@ -64,6 +65,7 @@ class SketchRefBitmap(
             initBitmap.byteCountCompat,
             initBitmap.toHexString(),
         )
+    }
 
     /**
      * 设置显示引用

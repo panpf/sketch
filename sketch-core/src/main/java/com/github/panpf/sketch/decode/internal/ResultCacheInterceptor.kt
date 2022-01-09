@@ -7,8 +7,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
-import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
 import com.github.panpf.sketch.util.Logger

@@ -1,7 +1,7 @@
 //package com.github.panpf.sketch.drawable
 //
 //import android.graphics.Bitmap
-//import com.github.panpf.sketch.request.ImageInfo
+//import com.github.panpf.sketch.decode.ImageInfo
 //
 //interface SketchBitmap {
 //    //    val uri: String

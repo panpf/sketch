@@ -7,11 +7,11 @@ import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.request.ImageInfo
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
-class BitmapFactoryDecoder(
+open class BitmapFactoryDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource
@@ -25,7 +25,7 @@ class BitmapFactoryDecoder(
         val boundOptions = Options().apply {
             inJustDecodeBounds = true
         }
-        dataSource.decodeBitmap(boundOptions)
+        source.decodeBitmap(boundOptions)
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             throw DecodeBitmapException(
                 request,
@@ -34,7 +34,7 @@ class BitmapFactoryDecoder(
         }
 
         val exifOrientation: Int =
-            ExifOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource)
+            ExifOrientationCorrector.readExifOrientation(boundOptions.outMimeType, source)
         return ImageInfo(
             boundOptions.outMimeType,
             boundOptions.outWidth,
@@ -57,7 +57,7 @@ class BitmapFactoryDecoder(
         }
 
         val bitmap = try {
-            dataSource.decodeRegionBitmap(srcRect, decodeOptions)
+            source.decodeRegionBitmap(srcRect, decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             when {
@@ -69,7 +69,7 @@ class BitmapFactoryDecoder(
                     decodeOptions.inBitmap = null
                     bitmapPoolHelper.freeBitmapToPool(inBitmap)
                     try {
-                        dataSource.decodeRegionBitmap(srcRect, decodeOptions)
+                        source.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
                         throw DecodeBitmapException(
                             request,
@@ -115,7 +115,7 @@ class BitmapFactoryDecoder(
         }
 
         val bitmap: Bitmap = try {
-            dataSource.decodeBitmap(decodeOptions)
+            source.decodeBitmap(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable, false)) {
@@ -126,7 +126,7 @@ class BitmapFactoryDecoder(
                 decodeOptions.inBitmap = null
                 bitmapPoolHelper.freeBitmapToPool(inBitmap)
                 try {
-                    dataSource.decodeBitmap(decodeOptions)
+                    source.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
                     throw DecodeBitmapException(
                         request,

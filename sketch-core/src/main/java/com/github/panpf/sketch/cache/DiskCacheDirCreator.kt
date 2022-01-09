@@ -8,6 +8,7 @@ import android.os.Process
 import android.os.StatFs
 import android.text.format.Formatter
 import com.github.panpf.sketch.util.DiskLruCache
+import com.github.panpf.sketch.util.asOrNull
 import java.io.File
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -128,7 +129,7 @@ class DiskCacheDirCreator(private val context: Context) {
     private fun getProcessName(context: Context): String? {
         val pid = Process.myPid()
         val runningApps =
-            ((context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?)?.runningAppProcesses)
+            (context.getSystemService(Context.ACTIVITY_SERVICE).asOrNull<ActivityManager>()?.runningAppProcesses)
                 ?: return null
         for (procInfo in runningApps) {
             if (procInfo.pid == pid) {

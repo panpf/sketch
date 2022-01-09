@@ -15,6 +15,7 @@ import android.view.animation.Animation.AnimationListener
 import android.widget.LinearLayout
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.ViewHintBinding
+import com.github.panpf.tools4k.lang.asOrNull
 import org.apache.http.conn.ConnectTimeoutException
 import java.io.FileNotFoundException
 import java.net.SocketTimeoutException
@@ -435,7 +436,7 @@ class HintView : LinearLayout {
 
         fun isConnectedByState(context: Context): Boolean {
             val networkInfo =
-                (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
+                context.getSystemService(Context.CONNECTIVITY_SERVICE).asOrNull<ConnectivityManager>()?.activeNetworkInfo
             return networkInfo != null && networkInfo.state == NetworkInfo.State.CONNECTED
         }
 

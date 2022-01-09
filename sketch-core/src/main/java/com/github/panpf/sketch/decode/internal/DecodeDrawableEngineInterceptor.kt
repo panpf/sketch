@@ -19,6 +19,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 
@@ -49,16 +50,12 @@ class DecodeDrawableEngineInterceptor : Interceptor<DisplayRequest, DrawableDeco
             }.source
             val decoder = componentRegistry.newDecoder(sketch, request, source)
 
-            if (decoder is DrawableDecoder) {
-                decoder.decodeDrawable()
-            } else {
-                val bitmapDecodeResult: BitmapDecodeResult = decoder.decodeBitmap()
-                val drawable = memoryCacheHelper?.write(bitmapDecodeResult) ?: BitmapDrawable(
-                    sketch.appContext.resources,
-                    bitmapDecodeResult.bitmap
-                )
-                DrawableDecodeResult(drawable, bitmapDecodeResult.info, source.from)
-            }
+            decoder.asOrNull<DrawableDecoder>()?.decodeDrawable()
+                ?: decoder.decodeBitmap().run {
+                    val drawable = memoryCacheHelper?.write(this)
+                        ?: BitmapDrawable(sketch.appContext.resources, this.bitmap)
+                    DrawableDecodeResult(drawable, this.info, source.from)
+                }
         } finally {
             memoryCacheHelper?.lock?.unlock()
         }
@@ -108,13 +105,13 @@ class DecodeDrawableEngineInterceptor : Interceptor<DisplayRequest, DrawableDeco
 
         fun write(bitmapDecodeResult: BitmapDecodeResult): Drawable? =
             if (memoryCachePolicy.writeEnabled) {
-                val refBitmap =
-                    SketchRefBitmap(
-                        bitmapDecodeResult.bitmap,
-                        bitmapDecodeResult.info,
-                        request.key,
-                        bitmapPoolHelper
-                    )
+                val refBitmap = SketchRefBitmap(
+                    bitmapDecodeResult.bitmap,
+                    request.uriString,
+                    bitmapDecodeResult.info,
+                    request.key,
+                    bitmapPoolHelper
+                )
                 refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
                 memoryCache.put(memoryCacheKey, refBitmap)
                 SketchBitmapDrawable(refBitmap, bitmapDecodeResult.from)

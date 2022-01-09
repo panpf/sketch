@@ -24,8 +24,8 @@ import java.io.IOException
 import java.io.InputStream
 
 class AssetsDataSource(
-    private val context: Context,
-    private val assetsFilePath: String
+    val context: Context,
+    val assetsFilePath: String
 ) : DataSource {
 
     override val from: DataFrom

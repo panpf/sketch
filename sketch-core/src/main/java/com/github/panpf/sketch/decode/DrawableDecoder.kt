@@ -2,5 +2,5 @@ package com.github.panpf.sketch.decode
 
 interface DrawableDecoder {
 
-    suspend fun decodeDrawable(): DrawableDecodeResult
+    suspend fun decodeDrawable(): DrawableDecodeResult?
 }

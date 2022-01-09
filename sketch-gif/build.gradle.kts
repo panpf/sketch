@@ -1,4 +1,7 @@
-plugins { id("com.android.library") }
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+}
 
 android {
     compileSdk = property("COMPILE_SDK").toString().toInt()
@@ -10,6 +13,9 @@ android {
         consumerProguardFiles("proguard-rules.pro")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "VERSION_NAME", "\"${property("VERSION_NAME")}\"")
+        buildConfigField("int", "VERSION_CODE", "${property("VERSION_CODE")}")
     }
 
     buildTypes {
@@ -21,8 +27,10 @@ android {
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
-    implementation("pl.droidsonroids:relinker:${property("RELINKER")}")
+    api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
+    api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
+    api("pl.droidsonroids:relinker:${property("RELINKER")}")
+    api(project(":sketch-core"))
 }
 
 /**

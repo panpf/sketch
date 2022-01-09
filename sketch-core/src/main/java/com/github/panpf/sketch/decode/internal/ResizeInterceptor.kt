@@ -8,7 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.Resize
+import com.github.panpf.sketch.decode.Resize
 
 // todo 融合 ResizeInterceptor 和 ExifOrientationCorrectInterceptor
 class ResizeInterceptor : Interceptor<LoadRequest, BitmapDecodeResult> {

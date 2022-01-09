@@ -11,6 +11,9 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.MaxSize
+import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult

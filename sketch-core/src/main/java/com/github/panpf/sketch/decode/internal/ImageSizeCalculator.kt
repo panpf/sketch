@@ -18,7 +18,7 @@ package com.github.panpf.sketch.decode.internal
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.github.panpf.sketch.request.MaxSize
+import com.github.panpf.sketch.decode.MaxSize
 
 /**
  * 和图片尺寸相关的需求的计算器

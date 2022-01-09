@@ -4,6 +4,9 @@ import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+
 //import androidx.lifecycle.DefaultLifecycleObserver
 //import androidx.lifecycle.LifecycleOwner
 //import com.github.panpf.sketch.transition.TransitionTarget
@@ -17,7 +20,7 @@ import android.widget.ImageView
  */
 abstract class GenericViewTarget<T : View> : ViewTarget<T>
 //    TransitionTarget,
-//    DefaultLifecycleObserver
+    , DefaultLifecycleObserver
 {
 
     private var isStarted = false
@@ -33,15 +36,15 @@ abstract class GenericViewTarget<T : View> : ViewTarget<T>
 
     override fun onSuccess(result: Drawable) = updateDrawable(result)
 
-//    override fun onStart(owner: LifecycleOwner) {
-//        isStarted = true
-//        updateAnimation()
-//    }
+    override fun onStart(owner: LifecycleOwner) {
+        isStarted = true
+        updateAnimation()
+    }
 
-//    override fun onStop(owner: LifecycleOwner) {
-//        isStarted = false
-//        updateAnimation()
-//    }
+    override fun onStop(owner: LifecycleOwner) {
+        isStarted = false
+        updateAnimation()
+    }
 
     /** Replace the [ImageView]'s current drawable with [drawable]. */
     private fun updateDrawable(drawable: Drawable?) {

@@ -20,6 +20,7 @@ import androidx.multidex.MultiDexApplication
 import com.github.panpf.sketch.BuildConfig
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
+import com.github.panpf.sketch.gif.GifDecoder
 import com.github.panpf.sketch.http.OkHttpStack
 import com.tencent.bugly.crashreport.CrashReport
 
@@ -32,5 +33,8 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 
     override fun newSketch(): Sketch = Sketch.new(this) {
         httpStack(OkHttpStack.Builder().build())
+        components {
+            addDecoder(GifDecoder.Factory())
+        }
     }
 }

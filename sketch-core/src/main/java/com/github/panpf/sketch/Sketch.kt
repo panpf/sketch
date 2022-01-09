@@ -3,6 +3,7 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.AnyThread
+import com.github.panpf.sketch.ComponentRegistry.Builder
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.DiskCache
@@ -325,8 +326,8 @@ class Sketch private constructor(
             this.componentRegistry = components
         }
 
-        fun componentsWithBuilder(block: ComponentRegistry.Builder.() -> Unit): Builder = apply {
-            this.componentRegistry = ComponentRegistry.Builder().apply(block).build()
+        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+            this.componentRegistry = ComponentRegistry.new(configBlock)
         }
 
         fun httpStack(httpStack: HttpStack?): Builder = apply {

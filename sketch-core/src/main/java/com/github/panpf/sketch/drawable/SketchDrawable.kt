@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import com.github.panpf.sketch.request.DataFrom
 
 interface SketchDrawable {
+    val uri: String
     /**
      * 获取图片 ID
      */

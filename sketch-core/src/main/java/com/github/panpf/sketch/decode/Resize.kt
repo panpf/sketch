@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.decode.Resize.Mode.EXACTLY_SAME
+import com.github.panpf.sketch.decode.Resize.Mode.THUMBNAIL_MODE
 
 data class Resize constructor(
     val width: Int,
@@ -30,10 +32,10 @@ data class Resize constructor(
 ) {
 
     val cacheKey: String =
-        "Resize(${width}x${height},${scaleType},${mode}${if (mode == Mode.THUMBNAIL_MODE) "-$minAspectRatio" else ""})"
+        "Resize(${width}x${height},${scaleType},${mode}${if (mode == THUMBNAIL_MODE) "-$minAspectRatio" else ""})"
 
     companion object {
-        val DEFAULT_MODE: Mode = Mode.EXACTLY_SAME
+        val DEFAULT_MODE: Mode = EXACTLY_SAME
         val DEFAULT_SCALE_TYPE: ScaleType = ScaleType.FIT_CENTER
         val DEFAULT_MIN_ASPECT_RATIO: Float = 1.5f
     }

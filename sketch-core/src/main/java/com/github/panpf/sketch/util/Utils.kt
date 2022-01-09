@@ -34,6 +34,14 @@ import javax.microedition.khronos.egl.EGLContext
 import kotlin.math.ceil
 import kotlin.math.floor
 
+/**
+ * Convert to the type specified by the generic, if this is null or cannot be converted return null
+ */
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun <reified R> Any?.asOrNull(): R? {
+    return if (this != null && this is R) this else null
+}
+
 internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
 internal fun Context?.getLifecycle(): Lifecycle? {

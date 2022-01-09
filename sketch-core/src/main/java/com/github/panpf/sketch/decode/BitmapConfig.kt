@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888

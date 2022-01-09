@@ -20,12 +20,12 @@ import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.request.DataFrom
 
 class SketchBitmapDrawable(
-    refBitmap: SketchRefBitmap,
-    dataFrom: DataFrom
+    private val refBitmap: SketchRefBitmap,
+    override val dataFrom: DataFrom
 ) : BitmapDrawable(null, refBitmap.bitmap), SketchRefDrawable {
 
-    private val refBitmap: SketchRefBitmap
-    override val dataFrom: DataFrom
+    override val uri: String
+        get() = refBitmap.imageUri
     override val key: String
         get() = refBitmap.requestKey
     override val originWidth: Int
@@ -48,8 +48,6 @@ class SketchBitmapDrawable(
 
     init {
         require(!refBitmap.isRecycled) { "refBitmap recycled. " + refBitmap.info }
-        this.refBitmap = refBitmap
-        this.dataFrom = dataFrom
 
         // 这一步很重要，让 BitmapDrawable 的 density 和 Bitmap 的 density 保持一致
         // 这样 getIntrinsicWidth() 和 getIntrinsicHeight() 方法得到的就是 bitmap的 真实的（未经过缩放）尺寸

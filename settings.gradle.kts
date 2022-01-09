@@ -1,7 +1,7 @@
 include(":sketch")
 include(":sketch-core")
 //include(":sketch-zoom")
-//include(":sketch-gif")
+include(":sketch-gif")
 //include(":sketch-video")
 //include(":sketch-svg")
 include(":sketch-okhttp")

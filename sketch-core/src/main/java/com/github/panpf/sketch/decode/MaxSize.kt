@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch.decode
 
 data class MaxSize(val width: Int, val height: Int) {
 

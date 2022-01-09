@@ -3,11 +3,12 @@ package com.github.panpf.sketch.request.internal
 import android.net.Uri
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.MaxSize
+import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.MaxSize
-import com.github.panpf.sketch.request.Resize
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.calculateFixedSize
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -101,7 +102,7 @@ class DisplayExecutor(private val sketch: Sketch) {
 
     private fun convertFixedSize(request: DisplayRequest): DisplayRequest {
         // todo 有 byFixedSize 时可延迟到 layout 时再发起请求，这样可以解决有时 imageview 的大小受限于父 view 的动态分配
-        val view = (request.target as ViewTarget<*>?)?.view
+        val view = request.target.asOrNull<ViewTarget<*>>()?.view
         val viewFixedSizeLazy by lazy {
             if (view == null) {
                 throw FixedSizeException(

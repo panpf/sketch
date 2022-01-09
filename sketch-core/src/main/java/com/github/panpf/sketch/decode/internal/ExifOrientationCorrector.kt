@@ -26,7 +26,7 @@ import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.request.ImageInfo
+import com.github.panpf.sketch.decode.ImageInfo
 import java.io.IOException
 import java.io.InputStream
 
