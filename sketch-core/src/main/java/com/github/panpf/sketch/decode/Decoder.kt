@@ -6,13 +6,15 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.request.internal.ImageRequest
 
 /**
- * A [Decoder] converts a [DataSource] into a [Bitmap].
+ * A [Decoder] converts a [DataSource] into a [Bitmap] or [android.graphics.drawable.Drawable].
  */
-fun interface Decoder {
+interface Decoder {
 
     // todo 抽象解码器，支持视频和 svg，以及 gif
 
-    suspend fun decode(): DecodeResult
+    suspend fun decodeBitmap(): BitmapDecodeResult
+
+    suspend fun decodeDrawable(): DrawableDecodeResult?
 
     fun interface Factory {
 

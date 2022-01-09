@@ -1,17 +1,17 @@
 package com.github.panpf.sketch.transform.internal
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadData
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.withContext
 
-class TransformationInterceptor : Interceptor<LoadRequest, LoadData> {
+class TransformationInterceptor : Interceptor<LoadRequest, BitmapDecodeResult> {
 
     override suspend fun intercept(
         sketch: Sketch,
-        chain: Interceptor.Chain<LoadRequest, LoadData>,
-    ): LoadData {
+        chain: Interceptor.Chain<LoadRequest, BitmapDecodeResult>,
+    ): BitmapDecodeResult {
         val request = chain.request
         val result = chain.proceed(sketch, request)
         val transformations = request.transformations
@@ -28,7 +28,7 @@ class TransformationInterceptor : Interceptor<LoadRequest, LoadData> {
                 }
                 currentBitmap
             }
-            LoadData(bitmap, result.info, result.from)
+            BitmapDecodeResult(bitmap, result.info, result.from)
         } else {
             result
         }

@@ -3,7 +3,7 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.request.DownloadRequest
 
 internal class DownloadInterceptorChain(

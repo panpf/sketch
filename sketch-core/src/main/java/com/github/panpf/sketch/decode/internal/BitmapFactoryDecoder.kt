@@ -7,8 +7,9 @@ import android.graphics.Point
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.Resize
@@ -31,7 +32,9 @@ class BitmapFactoryDecoder(
         const val MODULE = "BitmapFactoryDecoder"
     }
 
-    override suspend fun decode(): DecodeResult {
+    override suspend fun decodeDrawable(): DrawableDecodeResult? = null
+
+    override suspend fun decodeBitmap(): BitmapDecodeResult {
         val imageInfo = readImageInfo()
 
         val resize = request.resize
@@ -57,7 +60,7 @@ class BitmapFactoryDecoder(
             bitmapPoolHelper.freeBitmapToPool(correctedOrientationBitmap)
         }
 
-        return DecodeResult(resizeBitmap, imageInfo, decodeOptions)
+        return BitmapDecodeResult(resizeBitmap, imageInfo, dataSource.from)
     }
 
     private fun readImageInfo(): ImageInfo {

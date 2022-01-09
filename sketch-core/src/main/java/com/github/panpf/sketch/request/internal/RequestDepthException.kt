@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.SketchException
 import com.github.panpf.sketch.request.RequestDepth
+import com.github.panpf.sketch.util.SketchException
 
 class RequestDepthException(
     thenRequest: ImageRequest,

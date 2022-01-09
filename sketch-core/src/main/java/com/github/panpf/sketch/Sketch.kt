@@ -11,7 +11,11 @@ import com.github.panpf.sketch.cache.LruDiskCache
 import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemorySizeCalculator
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.decode.internal.DecodeBitmapEngineInterceptor
+import com.github.panpf.sketch.decode.internal.DecodeDrawableEngineInterceptor
 import com.github.panpf.sketch.fetch.AndroidResUriFetcher
 import com.github.panpf.sketch.fetch.ApkIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
@@ -30,7 +34,6 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
-import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
@@ -41,7 +44,7 @@ import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
-import com.github.panpf.sketch.request.internal.LoadResultCacheInterceptor
+import com.github.panpf.sketch.request.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
@@ -57,15 +60,17 @@ import java.io.File
 
 class Sketch private constructor(
     _context: Context,
-    _logger: Logger? = null,
-    _memoryCache: MemoryCache? = null,
-    _diskCache: DiskCache? = null,
-    _bitmapPool: BitmapPool? = null,
-    _componentRegistry: ComponentRegistry? = null,
-    _httpStack: HttpStack? = null,
-    _downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>? = null,
-    _loadInterceptors: List<Interceptor<LoadRequest, LoadData>>? = null,
-    _displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>? = null,
+    _logger: Logger?,
+    _memoryCache: MemoryCache?,
+    _diskCache: DiskCache?,
+    _bitmapPool: BitmapPool?,
+    _componentRegistry: ComponentRegistry?,
+    _httpStack: HttpStack?,
+    _downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>?,
+    _loadInterceptors: List<Interceptor<LoadRequest, LoadData>>?,
+    _displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>?,
+    _decodeBitmapInterceptors: List<Interceptor<LoadRequest, BitmapDecodeResult>>?,
+    _decodeDrawableInterceptors: List<Interceptor<DisplayRequest, DrawableDecodeResult>>?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
@@ -84,24 +89,8 @@ class Sketch private constructor(
     val memoryCache: MemoryCache
     val bitmapPoolHelper: BitmapPoolHelper
 
-    val componentRegistry: ComponentRegistry
-    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>
-    val loadInterceptors: List<Interceptor<LoadRequest, LoadData>>
-    val displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>   // todo gif, svg, webpA
-
-//    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
-    val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
-
-    init {
-        val memorySizeCalculator = MemorySizeCalculator(appContext, logger)
-        memoryCache = _memoryCache
-            ?: LruMemoryCache(appContext, memorySizeCalculator.memoryCacheSize, logger)
-        val bitmapPool = _bitmapPool
-            ?: LruBitmapPool(appContext, memorySizeCalculator.bitmapPoolSize, logger)
-        bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)
-
-        componentRegistry = (_componentRegistry ?: ComponentRegistry.new()).newBuilder().apply {
+    val componentRegistry: ComponentRegistry = (_componentRegistry ?: ComponentRegistry.new())
+        .newBuilder().apply {
             addFetcher(HttpUriFetcher.Factory())
             addFetcher(FileUriFetcher.Factory())
             addFetcher(ContentUriFetcher.Factory())
@@ -113,11 +102,29 @@ class Sketch private constructor(
             addFetcher(Base64UriFetcher.Factory())
             addDecoder(BitmapFactoryDecoder.Factory())
         }.build()
+    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>> =
+        (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
+    val loadInterceptors: List<Interceptor<LoadRequest, LoadData>> =
+        (_loadInterceptors ?: listOf()) + LoadEngineInterceptor()
+    val displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>> =
+        (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
+    val decodeBitmapInterceptors: List<Interceptor<LoadRequest, BitmapDecodeResult>> =
+        (_decodeBitmapInterceptors ?: listOf()) +
+                ResultCacheInterceptor() + TransformationInterceptor() + DecodeBitmapEngineInterceptor()
+    val decodeDrawableInterceptors: List<Interceptor<DisplayRequest, DrawableDecodeResult>> =
+        (_decodeDrawableInterceptors ?: listOf()) + DecodeDrawableEngineInterceptor()
 
-        downloadInterceptors = (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
-        loadInterceptors = (_loadInterceptors
-            ?: listOf()) + LoadResultCacheInterceptor() + TransformationInterceptor() + LoadEngineInterceptor()
-        displayInterceptors = (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
+    //    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
+    val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
+
+    init {
+        val memorySizeCalculator = MemorySizeCalculator(appContext, logger)
+        memoryCache = _memoryCache
+            ?: LruMemoryCache(appContext, memorySizeCalculator.memoryCacheSize, logger)
+        val bitmapPool = _bitmapPool
+            ?: LruBitmapPool(appContext, memorySizeCalculator.bitmapPoolSize, logger)
+        bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)
 
         // todo 增加 defaultOptions
         if (diskCache is LruDiskCache) {
@@ -286,6 +293,10 @@ class Sketch private constructor(
             null
         private var displayInterceptors: MutableList<Interceptor<DisplayRequest, DisplayData>>? =
             null
+        private var decodeBitmapInterceptors: MutableList<Interceptor<LoadRequest, BitmapDecodeResult>>? =
+            null
+        private var decodeDrawableInterceptors: MutableList<Interceptor<DisplayRequest, DrawableDecodeResult>>? =
+            null
 
         fun logger(logger: Logger?): Builder = apply {
             this.logger = logger
@@ -336,6 +347,22 @@ class Sketch private constructor(
                 }
             }
 
+        fun addDecodeBitmapInterceptor(decodeBitmapInterceptor: Interceptor<LoadRequest, BitmapDecodeResult>): Builder =
+            apply {
+                this.decodeBitmapInterceptors =
+                    (decodeBitmapInterceptors ?: mutableListOf()).apply {
+                        add(decodeBitmapInterceptor)
+                    }
+            }
+
+        fun addDecodeDrawableInterceptor(decodeDrawableInterceptor: Interceptor<DisplayRequest, DrawableDecodeResult>): Builder =
+            apply {
+                this.decodeDrawableInterceptors =
+                    (decodeDrawableInterceptors ?: mutableListOf()).apply {
+                        add(decodeDrawableInterceptor)
+                    }
+            }
+
         fun build(): Sketch = Sketch(
             _context = appContext,
             _logger = logger,
@@ -347,6 +374,8 @@ class Sketch private constructor(
             _downloadInterceptors = downloadInterceptors,
             _loadInterceptors = loadInterceptors,
             _displayInterceptors = displayInterceptors,
+            _decodeBitmapInterceptors = decodeBitmapInterceptors,
+            _decodeDrawableInterceptors = decodeDrawableInterceptors,
         )
     }
 }

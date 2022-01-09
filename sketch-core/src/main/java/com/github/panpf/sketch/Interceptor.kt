@@ -1,6 +1,5 @@
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.ImageRequest
 
 interface Interceptor<REQUEST : ImageRequest, RESULT> {

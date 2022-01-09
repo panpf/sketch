@@ -1,8 +1,9 @@
 package com.github.panpf.sketch.request
 
 import android.content.Context
+import com.github.panpf.sketch.Interceptor
+import com.github.panpf.sketch.Interceptor.Chain
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Interceptor.Chain
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 

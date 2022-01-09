@@ -34,12 +34,7 @@ class LoadExecutor(private val sketch: Sketch) {
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
-            val successResult = LoadResult.Success(
-                request,
-                loadData.bitmap,
-                loadData.info,
-                loadData.from
-            )
+            val successResult = LoadResult.Success(request, loadData)
             listenerDelegate?.onSuccess(request, successResult)
             return successResult
         } catch (throwable: Throwable) {

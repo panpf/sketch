@@ -2,13 +2,13 @@ package com.github.panpf.sketch.request.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
+import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.ImageInfo
-import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
 import com.github.panpf.sketch.util.Logger
@@ -16,7 +16,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
+class ResultCacheInterceptor : Interceptor<LoadRequest, BitmapDecodeResult> {
 
     companion object {
         const val MODULE = "LoadResultCacheInterceptor"
@@ -24,8 +24,8 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
 
     override suspend fun intercept(
         sketch: Sketch,
-        chain: Interceptor.Chain<LoadRequest, LoadData>,
-    ): LoadData {
+        chain: Interceptor.Chain<LoadRequest, BitmapDecodeResult>,
+    ): BitmapDecodeResult {
         val request = chain.request
         val resultCacheHelper = ResultCacheHelper.from(sketch, request)
         resultCacheHelper?.lock?.lock()
@@ -52,7 +52,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
         }
 
         @Suppress("BlockingMethodInNonBlockingContext")
-        suspend fun read(context: CoroutineContext): LoadData? = withContext(context) {
+        suspend fun read(context: CoroutineContext): BitmapDecodeResult? = withContext(context) {
             if (request.resultDiskCachePolicy.readEnabled) {
                 val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
                 val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
@@ -67,7 +67,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
                             request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
                         )
                         if (bitmap.width > 1 && bitmap.height > 1) {
-                            LoadData(bitmap, imageInfo, DISK_CACHE)
+                            BitmapDecodeResult(bitmap, imageInfo, DISK_CACHE)
                         } else {
                             bitmap.recycle()
                             logger.e(
@@ -100,7 +100,7 @@ class LoadResultCacheInterceptor : Interceptor<LoadRequest, LoadData> {
         }
 
         @Suppress("BlockingMethodInNonBlockingContext")
-        suspend fun write(result: LoadData, context: CoroutineContext) {
+        suspend fun write(result: BitmapDecodeResult, context: CoroutineContext) {
             withContext(context) {
                 if (request.resultDiskCachePolicy.writeEnabled) {
                     val bitmapDataEditor =

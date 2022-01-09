@@ -1,4 +1,4 @@
-package com.github.panpf.sketch
+package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.request.internal.ImageRequest
 

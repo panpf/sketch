@@ -69,12 +69,7 @@ class DisplayExecutor(private val sketch: Sketch) {
             withContext(Dispatchers.Main) {
                 target?.onSuccess(displayData.drawable)
             }
-            val successResult = DisplayResult.Success(
-                request,
-                displayData.drawable,
-                displayData.info,
-                displayData.from
-            )
+            val successResult = DisplayResult.Success(request, displayData)
             listenerDelegate?.onSuccess(request, successResult)
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"

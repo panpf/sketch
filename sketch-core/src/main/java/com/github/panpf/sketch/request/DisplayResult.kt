@@ -8,9 +8,7 @@ sealed interface DisplayResult : ImageResult {
 
     class Success(
         override val request: DisplayRequest,
-        val drawable: Drawable,
-        val info: ImageInfo,
-        val from: DataFrom
+        val data: DisplayData
     ) : DisplayResult
 
     class Error(

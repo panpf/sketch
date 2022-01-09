@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.request
 
-import android.graphics.Bitmap
 import com.github.panpf.sketch.request.internal.ImageResult
 
 sealed interface LoadResult : ImageResult {
@@ -8,9 +7,7 @@ sealed interface LoadResult : ImageResult {
 
     class Success(
         override val request: LoadRequest,
-        val bitmap: Bitmap,
-        val info: ImageInfo,
-        val from: DataFrom
+        val data: LoadData,
     ) : LoadResult
 
     class Error(

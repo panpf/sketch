@@ -6,7 +6,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.request.DownloadRequest
 
 class DownloadEngineInterceptor : Interceptor<DownloadRequest, DownloadData> {
