@@ -16,6 +16,10 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DecodeBitmapEngineInterceptor
 import com.github.panpf.sketch.decode.internal.DecodeDrawableEngineInterceptor
+import com.github.panpf.sketch.decode.internal.ExifOrientationCorrectInterceptor
+import com.github.panpf.sketch.decode.internal.ResizeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheInterceptor
+import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.fetch.AndroidResUriFetcher
 import com.github.panpf.sketch.fetch.ApkIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
@@ -44,10 +48,8 @@ import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
-import com.github.panpf.sketch.request.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -101,6 +103,7 @@ class Sketch private constructor(
             addFetcher(AppIconUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
             addDecoder(BitmapFactoryDecoder.Factory())
+            // todo 抽象解码器，支持视频和 svg，以及 gif
         }.build()
     val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>> =
         (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
@@ -110,7 +113,11 @@ class Sketch private constructor(
         (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
     val decodeBitmapInterceptors: List<Interceptor<LoadRequest, BitmapDecodeResult>> =
         (_decodeBitmapInterceptors ?: listOf()) +
-                ResultCacheInterceptor() + TransformationInterceptor() + DecodeBitmapEngineInterceptor()
+                ResultCacheInterceptor() +
+                TransformationInterceptor() +
+                ResizeInterceptor() +
+                ExifOrientationCorrectInterceptor() +
+                DecodeBitmapEngineInterceptor()
     val decodeDrawableInterceptors: List<Interceptor<DisplayRequest, DrawableDecodeResult>> =
         (_decodeDrawableInterceptors ?: listOf()) + DecodeDrawableEngineInterceptor()
 

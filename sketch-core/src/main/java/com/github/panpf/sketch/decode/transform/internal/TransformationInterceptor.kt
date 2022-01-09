@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.transform.internal
+package com.github.panpf.sketch.decode.transform.internal
 
+import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.withContext
 

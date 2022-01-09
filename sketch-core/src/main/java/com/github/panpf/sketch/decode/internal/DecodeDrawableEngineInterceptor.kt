@@ -3,18 +3,19 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DrawableDecodeResult
+import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.Logger
@@ -48,9 +49,8 @@ class DecodeDrawableEngineInterceptor : Interceptor<DisplayRequest, DrawableDeco
             }.source
             val decoder = componentRegistry.newDecoder(sketch, request, source)
 
-            val drawableData = decoder.decodeDrawable()
-            if (drawableData != null) {
-                drawableData
+            if (decoder is DrawableDecoder) {
+                decoder.decodeDrawable()
             } else {
                 val bitmapDecodeResult: BitmapDecodeResult = decoder.decodeBitmap()
                 val drawable = memoryCacheHelper?.write(bitmapDecodeResult) ?: BitmapDrawable(
@@ -109,7 +109,12 @@ class DecodeDrawableEngineInterceptor : Interceptor<DisplayRequest, DrawableDeco
         fun write(bitmapDecodeResult: BitmapDecodeResult): Drawable? =
             if (memoryCachePolicy.writeEnabled) {
                 val refBitmap =
-                    SketchRefBitmap(bitmapDecodeResult.bitmap, bitmapDecodeResult.info, request.key, bitmapPoolHelper)
+                    SketchRefBitmap(
+                        bitmapDecodeResult.bitmap,
+                        bitmapDecodeResult.info,
+                        request.key,
+                        bitmapPoolHelper
+                    )
                 refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
                 memoryCache.put(memoryCacheKey, refBitmap)
                 SketchBitmapDrawable(refBitmap, bitmapDecodeResult.from)

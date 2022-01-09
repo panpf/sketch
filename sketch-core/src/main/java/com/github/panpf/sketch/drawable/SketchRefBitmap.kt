@@ -17,7 +17,7 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.cache.BitmapPoolHelper
-import com.github.panpf.sketch.decode.internal.ImageOrientationCorrector
+import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.toHexString
@@ -57,7 +57,7 @@ class SketchRefBitmap(
             imageInfo.width,
             imageInfo.height,
             imageInfo.mimeType,
-            ImageOrientationCorrector.toName(imageInfo.exifOrientation),
+            ExifOrientationCorrector.toName(imageInfo.exifOrientation),
             initBitmap.width,
             initBitmap.height,
             initBitmap.config,

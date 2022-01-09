@@ -13,7 +13,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.decode.transform.Transformation
 
 interface LoadRequest : DownloadRequest {
 

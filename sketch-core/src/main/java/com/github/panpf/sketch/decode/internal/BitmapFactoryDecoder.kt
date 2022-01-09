@@ -2,81 +2,39 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory.Options
-import android.graphics.Canvas
-import android.graphics.Point
+import android.graphics.Rect
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.request.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.Resize
-import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
-import com.github.panpf.sketch.util.calculateInSampleSize
-import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
 class BitmapFactoryDecoder(
-    private val sketch: Sketch,
-    private val request: LoadRequest,
-    private val dataSource: DataSource,
-) : Decoder {
-
-    private val bitmapPoolHelper = sketch.bitmapPoolHelper
-    private val logger = sketch.logger
+    sketch: Sketch,
+    request: LoadRequest,
+    dataSource: DataSource
+) : AbsBitmapDecoder(sketch, request, dataSource) {
 
     companion object {
         const val MODULE = "BitmapFactoryDecoder"
     }
 
-    override suspend fun decodeDrawable(): DrawableDecodeResult? = null
-
-    override suspend fun decodeBitmap(): BitmapDecodeResult {
-        val imageInfo = readImageInfo()
-
-        val resize = request.resize
-        val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
-        val decodeOptions = request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
-        val imageOrientationCorrector =
-            ImageOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
-
-        val bitmap = if (resize != null && shouldUseRegionDecoder(resize, imageInfo, imageType)) {
-            decodeUseRegion(resize, imageInfo, decodeOptions, imageOrientationCorrector)
-        } else {
-            decodeUseBitmapFactory(imageInfo, decodeOptions, imageOrientationCorrector)
+    override fun readImageInfo(): ImageInfo {
+        val boundOptions = Options().apply {
+            inJustDecodeBounds = true
         }
-
-        val correctedOrientationBitmap =
-            imageOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper) ?: bitmap
-        if (correctedOrientationBitmap !== bitmap) {
-            bitmapPoolHelper.freeBitmapToPool(bitmap)
-        }
-
-        val resizeBitmap = tryResize(correctedOrientationBitmap, resize)
-        if (resizeBitmap !== correctedOrientationBitmap) {
-            bitmapPoolHelper.freeBitmapToPool(correctedOrientationBitmap)
-        }
-
-        return BitmapDecodeResult(resizeBitmap, imageInfo, dataSource.from)
-    }
-
-    private fun readImageInfo(): ImageInfo {
-        val boundOptions = Options()
-        boundOptions.inJustDecodeBounds = true
         dataSource.decodeBitmap(boundOptions)
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             throw DecodeBitmapException(
                 request,
-                "Invalid image size. size=%dx%d, uri=%s"
-                    .format(boundOptions.outWidth, boundOptions.outHeight, request.uriString)
+                "Invalid image size. size=${boundOptions.outWidth}x${boundOptions.outHeight}, uri=${request.uriString}"
             )
         }
 
         val exifOrientation: Int =
-            ImageOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource)
+            ExifOrientationCorrector.readExifOrientation(boundOptions.outMimeType, dataSource)
         return ImageInfo(
             boundOptions.outMimeType,
             boundOptions.outWidth,
@@ -85,138 +43,74 @@ class BitmapFactoryDecoder(
         )
     }
 
-    private fun shouldUseRegionDecoder(
-        resize: Resize, imageInfo: ImageInfo, imageType: ImageType?
-    ): Boolean {
-        if (imageType?.supportBitmapRegionDecoder() == true) {
-            val resizeAspectRatio = (resize.width.toFloat() / resize.height.toFloat()).format(1)
-            val imageAspectRatio =
-                (imageInfo.width.toFloat() / imageInfo.height.toFloat()).format(1)
-            return if (resize.mode == Resize.Mode.THUMBNAIL_MODE) {
-                val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
-                val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
-                maxAspectRatio > minAspectRatio * resize.minAspectRatio
-            } else {
-                resizeAspectRatio != imageAspectRatio
-            }
-        }
-        return false
-    }
+    override fun canDecodeRegion(imageInfo: ImageInfo, imageType: ImageType?): Boolean =
+        imageType?.supportBitmapRegionDecoder() == true
 
-    private fun decodeUseRegion(
-        resize: Resize,
-        imageInfo: ImageInfo,
-        decodeOptions: Options,
-        imageOrientationCorrector: ImageOrientationCorrector?
-    ): Bitmap {
-        val imageSize = Point(imageInfo.width, imageInfo.height)
-
-//        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
-//            decodeOptions.inPreferQualityOverSpeed = true
-//        }
-
-        imageOrientationCorrector?.rotateSize(imageSize)
-
-        val resizeMapping = ResizeMapping.calculator(
-            imageWidth = imageSize.x,
-            imageHeight = imageSize.y,
-            resizeWidth = resize.width,
-            resizeHeight = resize.height,
-            scaleType = resize.scaleType,
-            exactlySame = false
-        )
-        val resizeMappingSrcWidth = resizeMapping.srcRect.width()
-        val resizeMappingSrcHeight = resizeMapping.srcRect.height()
-
-        val resizeInSampleSize = calculateInSampleSize(
-            resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
-        )
-        decodeOptions.inSampleSize = resizeInSampleSize
-
-        imageOrientationCorrector
-            ?.reverseRotateRect(resizeMapping.srcRect, imageSize.x, imageSize.y)
-
+    override fun decodeRegion(imageInfo: ImageInfo, srcRect: Rect, decodeOptions: Options): Bitmap {
         if (request.disabledBitmapPool != true) {
+            // todo 这里的宽高，貌似有问题，需要验证一下
             bitmapPoolHelper.setInBitmapForRegionDecoder(
-                decodeOptions, resizeMappingSrcWidth, resizeMappingSrcHeight
+                width = srcRect.width(),
+                height = srcRect.height(),
+                options = decodeOptions,
             )
         }
 
         val bitmap = try {
-            dataSource.decodeRegionBitmap(resizeMapping.srcRect, decodeOptions)
+            dataSource.decodeRegionBitmap(srcRect, decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             when {
                 inBitmap != null && isInBitmapError(throwable, true) -> {
-                    val message = "Bitmap region decode error. Because inBitmap. uri=%s"
-                        .format(request.uriString)
+                    val message =
+                        "Bitmap region decode error. Because inBitmap. uri=${request.uriString}"
                     logger.e(MODULE, throwable, message)
 
                     decodeOptions.inBitmap = null
                     bitmapPoolHelper.freeBitmapToPool(inBitmap)
                     try {
-                        dataSource.decodeRegionBitmap(resizeMapping.srcRect, decodeOptions)
+                        dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
                         throw DecodeBitmapException(
                             request,
-                            "Bitmap region decode error. uri=%s".format(request.uriString),
+                            "Bitmap region decode error. uri=${request.uriString}",
                             throwable2
                         )
                     }
                 }
-                isSrcRectError(throwable, imageSize.x, imageSize.y, resizeMapping.srcRect) -> {
+                isSrcRectError(throwable, imageInfo.width, imageInfo.height, srcRect) -> {
                     throw DecodeBitmapException(
                         request,
-                        "Bitmap region decode error. Because srcRect. imageInfo=%s, resize=%s, srcRect=%s, uri=%s"
-                            .format(
-                                imageInfo, request.resize, resizeMapping.srcRect, request.uriString
-                            ),
+                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}, uri=${request.uriString}",
                         throwable
                     )
                 }
                 else -> {
                     throw DecodeBitmapException(
                         request,
-                        "Bitmap region decode error. uri=%s".format(request.uriString),
+                        "Bitmap region decode error. uri=${request.uriString}",
                         throwable
                     )
                 }
             }
-        }
-            ?: throw DecodeBitmapException(
-                request, "Bitmap region decode return null. uri=%s".format(request.uriString)
-            )
+        } ?: throw DecodeBitmapException(
+            request, "Bitmap region decode return null. uri=${request.uriString}"
+        )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
             throw DecodeBitmapException(
                 request,
-                "Invalid image size. size=%dx%d, uri=%s"
-                    .format(bitmap.width, bitmap.height, request.uriString)
+                "Invalid image size. size=${bitmap.width}x${bitmap.height}, uri=${request.uriString}"
             )
         }
         return bitmap
     }
 
-    private fun decodeUseBitmapFactory(
-        imageInfo: ImageInfo,
-        decodeOptions: Options,
-        imageOrientationCorrector: ImageOrientationCorrector?
-    ): Bitmap {
-        val imageSize = Point(imageInfo.width, imageInfo.height)
-        imageOrientationCorrector?.rotateSize(imageSize)
-
-        val maxSizeInSampleSize = request.maxSize?.let {
-            calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
-        } ?: 1
-        val resizeInSampleSize = request.resize?.let {
-            calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
-        } ?: 1
-        decodeOptions.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
-
+    override fun decode(imageInfo: ImageInfo, decodeOptions: Options): Bitmap {
         // Set inBitmap from bitmap pool
         if (request.disabledBitmapPool != true) {
             bitmapPoolHelper.setInBitmap(
-                decodeOptions, imageSize.x, imageSize.y, imageInfo.mimeType
+                decodeOptions, imageInfo.width, imageInfo.height, imageInfo.mimeType
             )
         }
 
@@ -261,61 +155,12 @@ class BitmapFactoryDecoder(
         return bitmap
     }
 
-    private fun tryResize(bitmap: Bitmap, resize: Resize?): Bitmap = when (resize?.mode) {
-        Resize.Mode.EXACTLY_SAME -> {
-            if (resize.width != bitmap.width || resize.height != bitmap.height) {
-                resize(bitmap, resize)
-            } else {
-                bitmap
-            }
-        }
-        Resize.Mode.ASPECT_RATIO_SAME -> {
-            val resizeAspectRatio =
-                "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
-            val bitmapAspectRatio =
-                "%.1f".format((bitmap.width.toFloat() / bitmap.height.toFloat()))
-            if (resizeAspectRatio != bitmapAspectRatio) {
-                resize(bitmap, resize)
-            } else {
-                bitmap
-            }
-        }
-        Resize.Mode.THUMBNAIL_MODE -> {
-            bitmap
-        }
-        else -> {
-            bitmap
-        }
-    }
-
-    // todo Try resize and rotateBitmap together
-    private fun resize(bitmap: Bitmap, resize: Resize): Bitmap {
-        val mapping = ResizeMapping.calculator(
-            imageWidth = bitmap.width,
-            imageHeight = bitmap.height,
-            resizeWidth = resize.width,
-            resizeHeight = resize.height,
-            scaleType = resize.scaleType,
-            exactlySame = resize.mode == Resize.Mode.EXACTLY_SAME
-        )
-        val config = bitmap.config ?: Bitmap.Config.ARGB_8888
-        val resizeBitmap =
-            sketch.bitmapPoolHelper.getOrMake(mapping.newWidth, mapping.newHeight, config)
-        val canvas = Canvas(resizeBitmap)
-        canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
-        return resizeBitmap
-    }
-
     class Factory : Decoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: ImageRequest,
-            dataSource: DataSource,
-        ): Decoder? = if (request is LoadRequest) {
-            BitmapFactoryDecoder(sketch, request, dataSource)
-        } else {
-            null
-        }
+            request: LoadRequest,
+            dataSource: DataSource
+        ): Decoder = BitmapFactoryDecoder(sketch, request, dataSource)
     }
 }

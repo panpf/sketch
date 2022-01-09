@@ -3,24 +3,20 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.LoadRequest
 
 /**
- * A [Decoder] converts a [DataSource] into a [Bitmap] or [android.graphics.drawable.Drawable].
+ * A [Decoder] converts a [DataSource] into a [Bitmap].
  */
 interface Decoder {
 
-    // todo 抽象解码器，支持视频和 svg，以及 gif
-
     suspend fun decodeBitmap(): BitmapDecodeResult
-
-    suspend fun decodeDrawable(): DrawableDecodeResult?
 
     fun interface Factory {
 
         fun create(
             sketch: Sketch,
-            request: ImageRequest,
+            request: LoadRequest,
             dataSource: DataSource,
         ): Decoder?
     }

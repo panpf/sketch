@@ -109,7 +109,9 @@ class BitmapPoolHelper(context: Context, val logger: Logger, val bitmapPool: Bit
      * @return true：找到了可复用的 Bitmap
      */
     fun setInBitmapForRegionDecoder(
-        options: BitmapFactory.Options, width: Int, height: Int
+        width: Int,
+        height: Int,
+        options: BitmapFactory.Options
     ): Boolean {
         var inSampleSize = if (options.inSampleSize >= 1) options.inSampleSize else 1
         val config = options.inPreferredConfig

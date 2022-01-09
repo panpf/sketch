@@ -19,7 +19,7 @@ import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.util.getLifecycle
 
 interface DisplayRequest : LoadRequest {

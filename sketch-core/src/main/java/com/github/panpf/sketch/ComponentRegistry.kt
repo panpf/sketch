@@ -3,6 +3,7 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 
 class ComponentRegistry private constructor(
@@ -33,7 +34,7 @@ class ComponentRegistry private constructor(
 
     fun newDecoder(
         sketch: Sketch,
-        request: ImageRequest,
+        request: LoadRequest,
         dataSource: DataSource,
     ): Decoder = decoderFactoryList.firstNotNullOfOrNull {
         it.create(sketch, request, dataSource)

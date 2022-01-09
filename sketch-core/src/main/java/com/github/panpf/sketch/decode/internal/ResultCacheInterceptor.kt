@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.request.internal
+package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

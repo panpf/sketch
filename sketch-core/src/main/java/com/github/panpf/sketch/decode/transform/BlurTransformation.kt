@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.transform
+package com.github.panpf.sketch.decode.transform
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
