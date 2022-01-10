@@ -2,11 +2,13 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
@@ -14,6 +16,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
@@ -22,7 +25,6 @@ import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.util.getLifecycle
 
 interface DisplayRequest : LoadRequest {
@@ -31,7 +33,7 @@ interface DisplayRequest : LoadRequest {
     val memoryCachePolicy: CachePolicy
     val disabledAnimationDrawable: Boolean?
     val placeholderImage: StateImage?
-    val errorImage: ErrorStateImage?
+    val errorImage: StateImage?
     val target: Target?
     val lifecycle: Lifecycle?
 
@@ -100,7 +102,7 @@ interface DisplayRequest : LoadRequest {
         private var memoryCachePolicy: CachePolicy? = null
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
-        private var errorImage: ErrorStateImage? = null
+        private var errorImage: StateImage? = null
         private var target: Target? = null
         private var lifecycle: Lifecycle? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
@@ -286,8 +288,68 @@ interface DisplayRequest : LoadRequest {
             this.placeholderImage = placeholderImage
         }
 
-        fun errorImage(errorImage: ErrorStateImage?): Builder = apply {
+        fun placeholderImage(placeholderDrawable: Drawable?): Builder = apply {
+            this.placeholderImage =
+                if (placeholderDrawable != null) StateImage.drawable(placeholderDrawable) else null
+        }
+
+        fun placeholderImage(@DrawableRes placeholderDrawableResId: Int?): Builder = apply {
+            this.placeholderImage = if (placeholderDrawableResId != null) {
+                StateImage.drawableRes(placeholderDrawableResId)
+            } else null
+        }
+
+        fun errorImage(errorImage: StateImage?): Builder = apply {
             this.errorImage = errorImage
+        }
+
+        fun errorImage(errorDrawable: Drawable?): Builder = apply {
+            this.errorImage =
+                if (errorDrawable != null) StateImage.drawable(errorDrawable) else null
+        }
+
+        fun errorImage(@DrawableRes errorDrawableResId: Int?): Builder = apply {
+            this.errorImage = if (errorDrawableResId != null) {
+                StateImage.drawableRes(errorDrawableResId)
+            } else null
+        }
+
+        fun errorImage(
+            defaultErrorImage: StateImage?,
+            emptyImage: StateImage? = null,
+            saveCellularTrafficImage: StateImage? = null
+        ): Builder = apply {
+            this.errorImage = if (defaultErrorImage != null) {
+                ErrorStateImage(defaultErrorImage, emptyImage, saveCellularTrafficImage)
+            } else null
+        }
+
+        fun errorImage(
+            defaultErrorDrawable: Drawable?,
+            emptyDrawable: Drawable? = null,
+            saveCellularTrafficDrawable: Drawable? = null
+        ): Builder = apply {
+            this.errorImage = if (defaultErrorDrawable != null) {
+                ErrorStateImage(
+                    StateImage.drawable(defaultErrorDrawable),
+                    emptyDrawable?.run { StateImage.drawable(this) },
+                    saveCellularTrafficDrawable?.run { StateImage.drawable(this) }
+                )
+            } else null
+        }
+
+        fun errorImage(
+            defaultErrorDrawableResId: Int?,
+            emptyDrawableResId: Int? = null,
+            saveCellularTrafficDrawableResId: Int? = null
+        ): Builder = apply {
+            this.errorImage = if (defaultErrorDrawableResId != null) {
+                ErrorStateImage(
+                    StateImage.drawableRes(defaultErrorDrawableResId),
+                    emptyDrawableResId?.run { StateImage.drawableRes(this) },
+                    saveCellularTrafficDrawableResId?.run { StateImage.drawableRes(this) }
+                )
+            } else null
         }
 
         fun target(target: Target?): Builder = apply {
@@ -388,7 +450,7 @@ interface DisplayRequest : LoadRequest {
         _memoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
-        override val errorImage: ErrorStateImage?,
+        override val errorImage: StateImage?,
         override val target: Target?,
         override val lifecycle: Lifecycle?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,

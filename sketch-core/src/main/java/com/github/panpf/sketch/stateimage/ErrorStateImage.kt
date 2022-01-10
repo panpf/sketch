@@ -31,8 +31,6 @@ class ErrorStateImage(
     val saveCellularTrafficImage: StateImage? = null,
 ) : StateImage {
 
-    val d = ErrorStateImage(StateImage.color(Color.BLACK))
-
     override fun getDrawable(
         context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
     ): Drawable? = when {
