@@ -18,13 +18,17 @@ import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
+import com.github.panpf.sketch.request.internal.CombinedListener
+import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
 
 interface DisplayRequest : LoadRequest {
@@ -394,33 +398,55 @@ interface DisplayRequest : LoadRequest {
                 this.progressListener = progressListener as ProgressListener<ImageRequest>?
             }
 
-        fun build(): DisplayRequest = DisplayRequestImpl(
-            uri = uri,
-            _depth = depth,
-            parameters = parameters,
-            httpHeaders = httpHeaders,
-            _diskCacheKey = diskCacheKey,
-            _diskCachePolicy = diskCachePolicy,
-            _resultDiskCacheKey = resultDiskCacheKey,
-            _resultDiskCachePolicy = resultDiskCachePolicy,
-            maxSize = maxSize,
-            bitmapConfig = bitmapConfig,
-            colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-            preferQualityOverSpeed = preferQualityOverSpeed,
-            resize = resize,
-            transformations = transformations,
-            disabledBitmapPool = disabledBitmapPool,
-            disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-            _memoryCacheKey = memoryCacheKey,
-            _memoryCachePolicy = memoryCachePolicy,
-            disabledAnimationDrawable = disabledAnimationDrawable,
-            placeholderImage = placeholderImage,
-            errorImage = errorImage,
-            target = target,
-            lifecycle = lifecycle ?: resolveLifecycle(),
-            listener = listener,
-            progressListener = progressListener,
-        )
+        fun build(): DisplayRequest {
+            val target = target
+            val listener = listener
+            val progressListener = progressListener
+            val viewListenerProvider =
+                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
+            @Suppress("UNCHECKED_CAST") val viewListener =
+                viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult, ImageResult>?
+            @Suppress("UNCHECKED_CAST") val viewProgressListener =
+                viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
+            val finalListener = if (listener != null && viewListener != null) {
+                CombinedListener(listOf(listener, viewListener))
+            } else {
+                listener ?: viewListener
+            }
+            val finalProgressListener =
+                if (progressListener != null && viewProgressListener != null) {
+                    CombinedProgressListener(listOf(progressListener, viewProgressListener))
+                } else {
+                    progressListener ?: viewProgressListener
+                }
+            return DisplayRequestImpl(
+                uri = uri,
+                _depth = depth,
+                parameters = parameters,
+                httpHeaders = httpHeaders,
+                _diskCacheKey = diskCacheKey,
+                _diskCachePolicy = diskCachePolicy,
+                _resultDiskCacheKey = resultDiskCacheKey,
+                _resultDiskCachePolicy = resultDiskCachePolicy,
+                maxSize = maxSize,
+                bitmapConfig = bitmapConfig,
+                colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
+                preferQualityOverSpeed = preferQualityOverSpeed,
+                resize = resize,
+                transformations = transformations,
+                disabledBitmapPool = disabledBitmapPool,
+                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                _memoryCacheKey = memoryCacheKey,
+                _memoryCachePolicy = memoryCachePolicy,
+                disabledAnimationDrawable = disabledAnimationDrawable,
+                placeholderImage = placeholderImage,
+                errorImage = errorImage,
+                target = target,
+                lifecycle = lifecycle ?: resolveLifecycle(),
+                listener = finalListener,
+                progressListener = finalProgressListener,
+            )
+        }
 
         private fun resolveLifecycle(): Lifecycle? {
             val target = target
