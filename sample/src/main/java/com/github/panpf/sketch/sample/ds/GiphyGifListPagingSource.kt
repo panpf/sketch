@@ -24,7 +24,7 @@ class GiphyGifListPagingSource(private val context: Context) :
         return if (response.isSuccessful) {
             val dataList = response.body()?.dataList?.map {
                 Photo(
-                    url = it.images.original.url,
+                    originalUrl = it.images.original.url,
                     thumbnailUrl = it.images.previewGif.url,
                     middenUrl = null,
                     width = it.images.original.width.toInt(),

@@ -23,7 +23,7 @@ class PexelsImageListPagingSource(private val context: Context) :
         return if (response.isSuccessful) {
             val dataList = (response.body()?.photos?.map {
                 Photo(
-                    url = it.url,
+                    originalUrl = it.src.original,
                     thumbnailUrl = it.src.medium,
                     middenUrl = it.src.large,
                     width = it.width,

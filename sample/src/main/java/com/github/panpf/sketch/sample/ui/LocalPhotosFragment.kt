@@ -195,7 +195,7 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
             .currentList.map {
                 ImageDetail(
-                    url = it!!.url,
+                    url = it!!.originalUrl,
                     middenUrl = it.middenUrl,
                     placeholderImageMemoryKey = null
                 )

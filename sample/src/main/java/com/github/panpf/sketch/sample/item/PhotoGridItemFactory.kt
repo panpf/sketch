@@ -104,6 +104,8 @@ class PhotoGridItemFactory : BindingItemFactory<Photo, ItemGridImageBinding>(Pho
                 }
             }
 
+            showMaskProgressIndicator()
+
             displayImage(data.firstThumbnailUrl) {
                 placeholderImage(R.drawable.image_loading)
                 errorImage(

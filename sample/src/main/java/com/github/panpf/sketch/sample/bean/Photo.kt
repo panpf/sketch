@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Parcelize
 @Serializable
 data class Photo constructor(
-    @SerialName("url") val url: String,
+    @SerialName("originalUrl") val originalUrl: String,
     @SerialName("thumbnailUrl") val thumbnailUrl: String?,
     @SerialName("middenUrl") val middenUrl: String?,
     @SerialName("width") val width: Int?,
@@ -17,7 +17,7 @@ data class Photo constructor(
 ) : Parcelable, DiffKey {
     override val diffKey: String = toString()
 
-    val firstThumbnailUrl: String = thumbnailUrl ?: middenUrl ?: url
+    val firstThumbnailUrl: String = thumbnailUrl ?: middenUrl ?: originalUrl
 
-    val firstMiddenUrl: String = middenUrl ?: url
+    val firstMiddenUrl: String = middenUrl ?: originalUrl
 }

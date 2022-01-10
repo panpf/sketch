@@ -33,7 +33,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 while (cursor.moveToNext()) {
                     add(
                         Photo(
-                            url = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
+                            originalUrl = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
                             thumbnailUrl = null,
                             middenUrl = null,
                             width = null,
