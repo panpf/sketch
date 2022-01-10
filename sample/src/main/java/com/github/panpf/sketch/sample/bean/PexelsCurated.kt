@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.bean
 
-import com.github.panpf.assemblyadapter.recycler.DiffKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,9 +21,7 @@ class PexelsPhoto(
     @SerialName("photographer_id") val photographerId: Int,
     @SerialName("avg_color") val avgColor: String,
     @SerialName("src") val src: PexelsPhotoSrc,
-): DiffKey {
-    override val diffKey = "PexelsPhoto:$id"
-}
+)
 
 @Serializable
 class PexelsPhotoSrc(

@@ -4,14 +4,14 @@ import android.content.Context
 import android.provider.MediaStore
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.bean.ImageInfo
+import com.github.panpf.sketch.sample.bean.Photo
 
 class LocalPhotoListPagingSource(private val context: Context) :
-    PagingSource<Int, ImageInfo>() {
+    PagingSource<Int, Photo>() {
 
-    override fun getRefreshKey(state: PagingState<Int, ImageInfo>): Int = 0
+    override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageInfo> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val startPosition = params.key ?: 0
         val pageSize = params.loadSize
 
@@ -28,16 +28,16 @@ class LocalPhotoListPagingSource(private val context: Context) :
             null,
             MediaStore.Images.Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize
         )
-        val dataList = ArrayList<ImageInfo>(cursor?.count ?: 0).apply {
+        val dataList = ArrayList<Photo>(cursor?.count ?: 0).apply {
             cursor?.use {
                 while (cursor.moveToNext()) {
                     add(
-                        ImageInfo(
-                            title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE)),
-                            path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
-                            mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)),
-                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)),
-                            date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN))
+                        Photo(
+                            url = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
+                            thumbnailUrl = null,
+                            middenUrl = null,
+                            width = null,
+                            height = null,
                         )
                     )
                 }

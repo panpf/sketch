@@ -7,8 +7,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.bean.Image
+import com.github.panpf.sketch.sample.bean.ImageDetail
+import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
+import com.github.panpf.sketch.sample.item.ImageDetailFragmentItemFactory
 import com.github.panpf.sketch.sample.item.ImageFragmentItemFactory
 import com.github.panpf.sketch.sample.vm.ImageFromViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -32,7 +34,7 @@ class FetcherFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
         viewModel.data.observe(viewLifecycleOwner) { data ->
             val imageFromData = data ?: return@observe
             val images = imageFromData.uris.map {
-                Image(it, it)
+                ImageDetail(it, it, null)
             }
             val titles = imageFromData.titles
 

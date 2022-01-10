@@ -4,14 +4,14 @@ import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.panpf.sketch.sample.apiService
-import com.github.panpf.sketch.sample.bean.GiphyGif
+import com.github.panpf.sketch.sample.bean.Photo
 
 class GiphyGifListPagingSource(private val context: Context) :
-    PagingSource<Int, GiphyGif>() {
+    PagingSource<Int, Photo>() {
 
-    override fun getRefreshKey(state: PagingState<Int, GiphyGif>): Int = 0
+    override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GiphyGif> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
@@ -22,7 +22,15 @@ class GiphyGifListPagingSource(private val context: Context) :
         }
 
         return if (response.isSuccessful) {
-            val dataList = response.body()?.dataList ?: emptyList()
+            val dataList = response.body()?.dataList?.map {
+                Photo(
+                    url = it.images.original.url,
+                    thumbnailUrl = it.images.previewGif.url,
+                    middenUrl = null,
+                    width = it.images.original.width.toInt(),
+                    height = it.images.original.height.toInt()
+                )
+            } ?: emptyList()
             val nextKey = if (dataList.isNotEmpty()) {
                 pageStart + pageSize
             } else {

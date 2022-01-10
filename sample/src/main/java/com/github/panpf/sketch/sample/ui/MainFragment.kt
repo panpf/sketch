@@ -34,7 +34,7 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                         "Pexels Photos",
                         NavMainDirections.actionGlobalPexelsPhotosFragment()
                     ),
-//                    Link("Giphy GIF - Giphy", NavMainDirections.actionGlobalOnlineGifFragment()),
+                    Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifsFragment()),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
 //                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
 //                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),

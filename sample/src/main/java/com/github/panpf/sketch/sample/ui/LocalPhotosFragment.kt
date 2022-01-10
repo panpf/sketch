@@ -19,6 +19,7 @@ package com.github.panpf.sketch.sample.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -26,23 +27,29 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
-import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
-import com.github.panpf.assemblyadapter.recycler.divider.addGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyStaggeredGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
-import com.github.panpf.sketch.sample.bean.Image
 import com.github.panpf.sketch.sample.bean.ImageDetail
-import com.github.panpf.sketch.sample.bean.ImageInfo
+import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
-import com.github.panpf.sketch.sample.item.LocalPhotoItemFactory
+import com.github.panpf.sketch.sample.item.PhotoGridItemFactory
 import com.github.panpf.sketch.sample.vm.LocalPhotoListViewModel
+import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel
+import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel.LayoutMode.GRID
+import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel.LayoutMode.STAGGERED_GRID
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -50,11 +57,36 @@ import kotlinx.serialization.json.Json
 
 class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
-    private val photoListViewModel by viewModels<LocalPhotoListViewModel>()
+    private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
+    private val sampleMenuListViewModel by viewModels<SampleMenuListViewModel>()
 
     override fun createViewBinding(
-        inflater: LayoutInflater, parent: ViewGroup?
+        inflater: LayoutInflater,
+        parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
+
+    override fun onInitViews(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        super.onInitViews(toolbar, binding, savedInstanceState)
+        sampleMenuListViewModel.menuList.observe(viewLifecycleOwner) {
+            toolbar.menu.clear()
+            it?.forEachIndexed { index, menuItemInfo ->
+                toolbar.menu.add(menuItemInfo.groupId, index, index, menuItemInfo.title).apply {
+                    menuItemInfo.iconResId?.let { iconResId ->
+                        setIcon(iconResId)
+                    }
+                    setOnMenuItemClickListener {
+                        menuItemInfo.click()
+                        true
+                    }
+                    setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                }
+            }
+        }
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onInitData(
@@ -62,134 +94,111 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        showMenu(toolbar)
-
         toolbar.title = "Local Photos"
 
-        val pagingAdapter = AssemblyPagingDataAdapter<ImageInfo>(listOf(
-            LocalPhotoItemFactory { _, position, _ ->
-                startImageDetail(binding, position)
-            }
-        ))
-
-        binding.refreshRecyclerFragment.setOnRefreshListener {
-            pagingAdapter.refresh()
-        }
-
         binding.recyclerRecyclerFragmentContent.apply {
-            layoutManager = AssemblyGridLayoutManager(
-                requireActivity(),
-                3,
-                mapOf(LoadStateItemFactory::class to ItemSpan.fullSpan())
-            )
-            adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
-                noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
-            })
-//            addOnScrollListener(ScrollingPauseLoadManager(requireContext()))
-
-            val gridDivider = requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
-            addGridDividerItemDecoration {
-                divider(Divider.space(gridDivider))
-                sideDivider(Divider.space(gridDivider))
-                useDividerAsHeaderAndFooterDivider()
-                useSideDividerAsSideHeaderAndFooterDivider()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            pagingAdapter.loadStateFlow.collect {
-                when (val refreshState = it.refresh) {
-                    is LoadState.Loading -> {
-                        binding.hintRecyclerFragment.hidden()
-                        binding.refreshRecyclerFragment.isRefreshing = true
-                    }
-                    is LoadState.Error -> {
-                        binding.refreshRecyclerFragment.isRefreshing = false
-                        binding.hintRecyclerFragment.failed(refreshState.error) {
-                            pagingAdapter.refresh()
+            sampleMenuListViewModel.layoutMode.observe(viewLifecycleOwner) {
+                (0 until itemDecorationCount).forEach { index ->
+                    removeItemDecorationAt(index)
+                }
+                when (it) {
+                    GRID -> {
+                        layoutManager =
+                            newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
+                                itemSpanByItemFactory(
+                                    LoadStateItemFactory::class,
+                                    ItemSpan.fullSpan()
+                                )
+                            }
+                        addAssemblyGridDividerItemDecoration {
+                            val gridDivider =
+                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                            divider(Divider.space(gridDivider))
+                            sideDivider(Divider.space(gridDivider))
+                            useDividerAsHeaderAndFooterDivider()
+                            useSideDividerAsSideHeaderAndFooterDivider()
                         }
                     }
-                    is LoadState.NotLoading -> {
-                        binding.refreshRecyclerFragment.isRefreshing = false
-                        if (pagingAdapter.itemCount <= 0) {
-                            binding.hintRecyclerFragment.empty("No photos")
-                        } else {
-                            binding.hintRecyclerFragment.hidden()
+                    STAGGERED_GRID -> {
+                        layoutManager = newAssemblyStaggeredGridLayoutManager(
+                            2,
+                            StaggeredGridLayoutManager.VERTICAL
+                        ) {
+                            fullSpanByItemFactory(LoadStateItemFactory::class)
+                        }
+                        addAssemblyStaggeredGridDividerItemDecoration {
+                            val gridDivider =
+                                requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                            divider(Divider.space(gridDivider))
+                            sideDivider(Divider.space(gridDivider))
+                            useDividerAsHeaderAndFooterDivider()
+                            useSideDividerAsSideHeaderAndFooterDivider()
+                        }
+                    }
+                    else -> {
+                        layoutManager = LinearLayoutManager(requireContext())
+                    }
+                }
+
+
+                val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
+                    PhotoGridItemFactory().setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
+                        startImageDetail(binding, absoluteAdapterPosition)
+                    }
+                ))
+
+                binding.refreshRecyclerFragment.setOnRefreshListener {
+                    pagingAdapter.refresh()
+                }
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    pagingAdapter.loadStateFlow.collect { loadStates ->
+                        when (val refreshState = loadStates.refresh) {
+                            is LoadState.Loading -> {
+                                binding.hintRecyclerFragment.hidden()
+                                binding.refreshRecyclerFragment.isRefreshing = true
+                            }
+                            is LoadState.Error -> {
+                                binding.refreshRecyclerFragment.isRefreshing = false
+                                binding.hintRecyclerFragment.failed(refreshState.error) {
+                                    pagingAdapter.refresh()
+                                }
+                            }
+                            is LoadState.NotLoading -> {
+                                binding.refreshRecyclerFragment.isRefreshing = false
+                                if (pagingAdapter.itemCount <= 0) {
+                                    binding.hintRecyclerFragment.empty("No gifs")
+                                } else {
+                                    binding.hintRecyclerFragment.hidden()
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            photoListViewModel.pagingFlow.collect {
-                pagingAdapter.submitData(it)
-            }
-        }
-    }
+                viewLifecycleOwner.lifecycleScope.launch {
+                    localPhotoListViewModel.pagingFlow.collect { pagingData ->
+                        pagingAdapter.submitData(pagingData)
+                    }
+                }
 
-    private fun showMenu(toolbar: Toolbar) {
-        val showRoundedInPhotoListEnabled = appSettingsService.showRoundedInPhotoListEnabled
-        toolbar.menu.add(
-            0, 0, 0, if (showRoundedInPhotoListEnabled.value == true) {
-                "Hidden rounded"
-            } else {
-                "Show rounded"
+                adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
+                    noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
+                })
             }
-        ).setOnMenuItemClickListener {
-            val newValue = !(showRoundedInPhotoListEnabled.value ?: false)
-            showRoundedInPhotoListEnabled.postValue(newValue)
-            it.title = if (newValue) {
-                "Hidden rounded"
-            } else {
-                "Show rounded"
-            }
-            true
-        }
-
-        val showPressedStatusInListEnabled = appSettingsService.showPressedStatusInListEnabled
-        toolbar.menu.add(
-            0, 1, 1, if (showPressedStatusInListEnabled.value == true) {
-                "Hidden press status"
-            } else {
-                "Show press status"
-            }
-        ).setOnMenuItemClickListener {
-            val newValue = !(showPressedStatusInListEnabled.value ?: false)
-            showPressedStatusInListEnabled.postValue(newValue)
-            it.title = if (newValue) {
-                "Hidden press status"
-            } else {
-                "Show press status"
-            }
-            true
-        }
-
-        val thumbnailModeEnabled = appSettingsService.thumbnailModeEnabled
-        toolbar.menu.add(
-            0, 2, 2, if (thumbnailModeEnabled.value == true) {
-                "Disable thumbnail mode"
-            } else {
-                "Enable thumbnail mode"
-            }
-        ).setOnMenuItemClickListener {
-            val newValue = !(thumbnailModeEnabled.value ?: false)
-            thumbnailModeEnabled.postValue(newValue)
-            it.title = if (newValue) {
-                "Disable thumbnail mode"
-            } else {
-                "Enable thumbnail mode"
-            }
-            true
         }
     }
 
     private fun startImageDetail(binding: FragmentRecyclerBinding, position: Int) {
         val imageList = binding.recyclerRecyclerFragmentContent
             .adapter!!.asOrThrow<ConcatAdapter>()
-            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<ImageInfo>>()
+            .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
             .currentList.map {
-                ImageDetail(it!!.path, it.path, null)
+                ImageDetail(
+                    url = it!!.url,
+                    middenUrl = it.middenUrl,
+                    placeholderImageMemoryKey = null
+                )
             }
         findNavController().navigate(
             NavMainDirections.actionGlobalImageViewerFragment(

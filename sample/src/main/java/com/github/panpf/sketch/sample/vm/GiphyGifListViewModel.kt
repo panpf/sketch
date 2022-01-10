@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.github.panpf.sketch.sample.ds.LocalPhotoListPagingSource
+import com.github.panpf.sketch.sample.ds.GiphyGifListPagingSource
 
-class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
+class GiphyGifListViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 20,
@@ -16,7 +16,7 @@ class LocalPhotoListViewModel(application: Application) : AndroidViewModel(appli
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            LocalPhotoListPagingSource(application)
+            GiphyGifListPagingSource(application)
         }
     ).flow.cachedIn(viewModelScope)
 }

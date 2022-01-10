@@ -61,6 +61,10 @@
             app:argType="string"
             app:nullable="false" />
     </fragment>
+    <fragment
+        android:id="@+id/giphyGifsFragment"
+        android:name="com.github.panpf.sketch.sample.ui.GiphyGifsFragment"
+        android:label="GiphyGifsFragment" />
 
     <action
         android:id="@+id/action_global_pexelsPhotosFragment"
@@ -104,10 +108,16 @@
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
-
     <action
         android:id="@+id/action_global_imageDetailFragment"
         app:destination="@id/imageDetailFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_giphyGifsFragment"
+        app:destination="@id/giphyGifsFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

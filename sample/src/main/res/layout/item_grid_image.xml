@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><!-- 需要包一层，要不然在代码里改ImageView的高度总会有偏差 -->
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <!-- 需要包一层，要不然在 StaggeredGridLayoutManager 里尺寸会有偏差 -->
+
     <com.github.panpf.sketch.sample.widget.MyImageView
-        android:id="@+id/pexelsImageItemImageView"
+        android:id="@+id/imageGridItemImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
 </FrameLayout>

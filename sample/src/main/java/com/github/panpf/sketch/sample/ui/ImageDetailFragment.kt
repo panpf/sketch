@@ -21,7 +21,7 @@ class ImageDetailFragment : BindingFragment<FragmentImageBinding>() {
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         val imageDetail = Json.decodeFromString<ImageDetail>(args.imageDetailJson)
-        binding.imageFragmentImageView.displayImage(imageDetail.normalQualityUrl) {
+        binding.imageFragmentImageView.displayImage(imageDetail.firstMiddenUrl) {
             placeholderImage(StateImage.memoryCache(imageDetail.placeholderImageMemoryKey, null))
         }
     }

@@ -29,7 +29,7 @@ import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
 import com.github.panpf.sketch.sample.item.PhotoGridItemFactory
-import com.github.panpf.sketch.sample.vm.PexelsImageListViewModel
+import com.github.panpf.sketch.sample.vm.GiphyGifListViewModel
 import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel
 import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel.LayoutMode.GRID
 import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel.LayoutMode.STAGGERED_GRID
@@ -38,9 +38,9 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
-    private val pexelsImageListViewModel by viewModels<PexelsImageListViewModel>()
+    private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val sampleMenuListViewModel by viewModels<SampleMenuListViewModel>()
 
     override fun createViewBinding(
@@ -76,7 +76,7 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Pexels Photos"
+        toolbar.title = "Giphy Gifs"
 
         binding.recyclerRecyclerFragmentContent.apply {
             sampleMenuListViewModel.layoutMode.observe(viewLifecycleOwner) {
@@ -159,7 +159,7 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                 }
 
                 viewLifecycleOwner.lifecycleScope.launch {
-                    pexelsImageListViewModel.pagingFlow.collect { pagingData ->
+                    giphyGifListViewModel.pagingFlow.collect { pagingData ->
                         pagingAdapter.submitData(pagingData)
                     }
                 }
@@ -171,7 +171,11 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
     }
 
-    private fun startImageDetail(binding: FragmentRecyclerBinding, position: Int) {
+    private fun startImageDetail(
+        binding: FragmentRecyclerBinding,
+        position: Int
+    ) {
+        @Suppress("UNCHECKED_CAST")
         val imageList = binding.recyclerRecyclerFragmentContent
             .adapter!!.asOrThrow<ConcatAdapter>()
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()

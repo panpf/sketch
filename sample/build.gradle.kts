@@ -85,7 +85,6 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:${property("ANDROIDX_SWIPEREFRESHLAYOUT")}")
 
-    implementation("com.google.android:flexbox:${property("FLEXBOX")}")
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
     implementation("io.github.panpf.assemblyadapter:assemblyadapter:${property("ASSEMBLY_ADAPTER")}")
     implementation("io.github.panpf.assemblyadapter:assemblyadapter-ktx:${property("ASSEMBLY_ADAPTER")}")

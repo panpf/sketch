@@ -1,9 +1,7 @@
 package com.github.panpf.sketch.sample.bean
 
-import com.github.panpf.assemblyadapter.recycler.DiffKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
 class GiphySearchResponse(
@@ -13,10 +11,7 @@ class GiphySearchResponse(
 @Serializable
 class GiphyGif(
     @SerialName("images") val images: GiphyImages
-) : DiffKey {
-    @Transient
-    override val diffKey: String = "GiphyGif-${images.original.url}"
-}
+)
 
 @Serializable
 class GiphyImages(

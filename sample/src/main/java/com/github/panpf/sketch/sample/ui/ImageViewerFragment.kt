@@ -25,7 +25,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.base.BindingFragment
-import com.github.panpf.sketch.sample.bean.Image
 import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.item.ImageDetailFragmentItemFactory

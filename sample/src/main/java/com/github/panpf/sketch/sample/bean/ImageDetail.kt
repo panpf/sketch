@@ -8,7 +8,9 @@ import kotlinx.serialization.Serializable
 @Parcelize
 @Serializable
 class ImageDetail(
-    @SerialName("normalQualityUrl") val normalQualityUrl: String,
-    @SerialName("rawQualityUrl") val rawQualityUrl: String,
+    @SerialName("url") val url: String,
+    @SerialName("middenUrl") val middenUrl: String?,
     @SerialName("placeholderImageMemoryKey") val placeholderImageMemoryKey: String?,
-) : Parcelable
+) : Parcelable {
+    val firstMiddenUrl: String = middenUrl ?: url
+}
