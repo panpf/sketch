@@ -44,11 +44,11 @@ class HurlStack(
         var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
-                connectTimeout = connectTimeout
-                readTimeout = readTimeout
+                this@apply.connectTimeout = this@HurlStack.connectTimeout
+                this@apply.readTimeout = this@HurlStack.readTimeout
                 doInput = true
-                if (userAgent != null) {
-                    setRequestProperty("User-Agent", userAgent)
+                if (this@HurlStack.userAgent != null) {
+                    setRequestProperty("User-Agent", this@HurlStack.userAgent)
                 }
                 if (addExtraHeaders != null && addExtraHeaders.isNotEmpty()) {
                     for ((key, value) in addExtraHeaders) {
@@ -175,7 +175,7 @@ class HurlStack(
         private var processRequest: ((url: String, connection: HttpURLConnection) -> Unit)?
 
         constructor() {
-            this.readTimeout = HttpStack.DEFAULT_READ_TIMEOUT
+            this.readTimeout = 0
             this.connectTimeout = HttpStack.DEFAULT_CONNECT_TIMEOUT
             this.userAgent = null
             this.extraHeaders = null

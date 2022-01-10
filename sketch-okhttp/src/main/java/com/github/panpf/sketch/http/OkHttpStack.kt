@@ -74,7 +74,7 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
     }
 
     class Builder {
-        private var readTimeout: Int = HttpStack.DEFAULT_READ_TIMEOUT
+        private var readTimeout: Int = 0
         private var connectTimeout: Int = HttpStack.DEFAULT_CONNECT_TIMEOUT
         private var userAgent: String? = null
         private var extraHeaders: MutableMap<String, String>? = null

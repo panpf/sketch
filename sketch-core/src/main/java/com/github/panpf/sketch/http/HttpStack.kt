@@ -27,7 +27,6 @@ import java.net.SocketTimeoutException
 interface HttpStack {
 
     companion object {
-        const val DEFAULT_READ_TIMEOUT = 3 * 1000 // 默认读取超时时间
         const val DEFAULT_CONNECT_TIMEOUT = 3 * 1000 // 默认连接超时时间
     }
 
