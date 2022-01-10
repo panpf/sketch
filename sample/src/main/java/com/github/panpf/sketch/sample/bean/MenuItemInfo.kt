@@ -5,7 +5,8 @@ class MenuItemInfo<T>(
     private val values: Array<T>,
     private val titles: Array<String>?,
     private val iconResIds: Array<Int>?,
-    private val onChangedListener: (oldValue: T, newValue: T) -> Unit
+    val showAsAction: Int,
+    private val onChangedListener: (oldValue: T, newValue: T) -> Unit,
 ) {
     private var currentIndex = 0
     private val nextIndex: Int

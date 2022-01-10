@@ -2,7 +2,6 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -43,6 +42,11 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val sampleMenuListViewModel by viewModels<SampleMenuListViewModel>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sampleMenuListViewModel.showPlayMenu = true
+    }
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
@@ -65,7 +69,7 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                         menuItemInfo.click()
                         true
                     }
-                    setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                    setShowAsAction(menuItemInfo.showAsAction)
                 }
             }
         }
@@ -124,10 +128,15 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
 
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    PhotoGridItemFactory().setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
-                        startImageDetail(binding, absoluteAdapterPosition)
-                    }
+                    PhotoGridItemFactory(sampleMenuListViewModel)
+                        .setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
+                            startImageDetail(binding, absoluteAdapterPosition)
+                        }
                 ))
+
+                sampleMenuListViewModel.playAnimatableDrawable.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
 
                 binding.refreshRecyclerFragment.setOnRefreshListener {
                     pagingAdapter.refresh()

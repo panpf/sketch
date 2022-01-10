@@ -15,10 +15,12 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
         FragmentImageBinding.inflate(inflater, parent, false)
 
+    override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
+        super.onInitViews(binding, savedInstanceState)
+        binding.imageFragmentImageView.showCircleProgressIndicator()
+    }
+
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
-        binding.imageFragmentImageView.apply {
-            showCircleProgressIndicator()
-            displayImage(args.url)
-        }
+        binding.imageFragmentImageView.displayImage(args.url)
     }
 }

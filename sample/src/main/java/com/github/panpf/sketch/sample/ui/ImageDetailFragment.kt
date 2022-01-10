@@ -19,18 +19,20 @@ class ImageDetailFragment : BindingFragment<FragmentImageBinding>() {
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
         FragmentImageBinding.inflate(inflater, parent, false)
 
+    override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
+        super.onInitViews(binding, savedInstanceState)
+        binding.imageFragmentImageView.showCircleProgressIndicator()
+    }
+
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         val imageDetail = Json.decodeFromString<ImageDetail>(args.imageDetailJson)
-        binding.imageFragmentImageView.apply {
-            showCircleProgressIndicator()
-            displayImage(imageDetail.firstMiddenUrl) {
-                placeholderImage(
-                    StateImage.memoryCache(
-                        imageDetail.placeholderImageMemoryKey,
-                        null
-                    )
+        binding.imageFragmentImageView.displayImage(imageDetail.firstMiddenUrl) {
+            placeholderImage(
+                StateImage.memoryCache(
+                    imageDetail.placeholderImageMemoryKey,
+                    null
                 )
-            }
+            )
         }
     }
 }

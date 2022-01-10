@@ -10,13 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.internal.MimeTypeLogo
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemGridImageBinding
+import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class PhotoGridItemFactory : BindingItemFactory<Photo, ItemGridImageBinding>(Photo::class) {
+class PhotoGridItemFactory(val sampleMenuListViewModel: SampleMenuListViewModel) :
+    BindingItemFactory<Photo, ItemGridImageBinding>(Photo::class) {
 
     private var itemSize: Point? = null
 
@@ -52,29 +55,10 @@ class PhotoGridItemFactory : BindingItemFactory<Photo, ItemGridImageBinding>(Pho
         binding: ItemGridImageBinding,
         item: BindingItem<Photo, ItemGridImageBinding>
     ) {
-
-//            appSettingsService.showPressedStatusInListEnabled.observeFromViewAndInit(this) {
-//                isShowPressedStatusEnabled = it == true
-//            }
-//
-//            appSettingsService.showImageDownloadProgressEnabled.observeFromViewAndInit(this) {
-//                isShowDownloadProgressEnabled = it == true
-//            }
-//
-//            appSettingsService.playGifInListEnabled.observeFromViewAndInit(this) {
-//                options.isDecodeGifImage = it == true
-//                val data = item.dataOrNull
-//                if (data != null) {
-//                    bindItemData(
-//                        context, binding, item,
-//                        item.bindingAdapterPosition, item.absoluteAdapterPosition, data
-//                    )
-//                }
-//            }
-//
-//            appSettingsService.clickPlayGifEnabled.observeFromViewAndInit(this) {
-//                setClickPlayGifEnabled(if (it == true) R.drawable.ic_play else 0)
-//            }
+        binding.imageGridItemImageView.apply {
+            showMaskProgressIndicator()
+            setMimeTypeLogo(mapOf("image/gif" to MimeTypeLogo(R.drawable.ic_gif, true)))
+        }
     }
 
     override fun bindItemData(
@@ -104,9 +88,8 @@ class PhotoGridItemFactory : BindingItemFactory<Photo, ItemGridImageBinding>(Pho
                 }
             }
 
-            showMaskProgressIndicator()
-
             displayImage(data.firstThumbnailUrl) {
+                disabledAnimationDrawable(sampleMenuListViewModel.playAnimatableDrawable.value == false)
                 placeholderImage(R.drawable.image_loading)
                 errorImage(
                     defaultErrorDrawableResId = R.drawable.image_error,

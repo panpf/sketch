@@ -19,7 +19,6 @@ package com.github.panpf.sketch.sample.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -82,7 +81,7 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                         menuItemInfo.click()
                         true
                     }
-                    setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                    setShowAsAction(menuItemInfo.showAsAction)
                 }
             }
         }
@@ -142,10 +141,15 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
 
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    PhotoGridItemFactory().setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
+                    PhotoGridItemFactory(sampleMenuListViewModel)
+                        .setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
                         startImageDetail(binding, absoluteAdapterPosition)
                     }
                 ))
+
+                sampleMenuListViewModel.playAnimatableDrawable.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
 
                 binding.refreshRecyclerFragment.setOnRefreshListener {
                     pagingAdapter.refresh()
@@ -167,7 +171,7 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                             is LoadState.NotLoading -> {
                                 binding.refreshRecyclerFragment.isRefreshing = false
                                 if (pagingAdapter.itemCount <= 0) {
-                                    binding.hintRecyclerFragment.empty("No gifs")
+                                    binding.hintRecyclerFragment.empty("No Photos")
                                 } else {
                                     binding.hintRecyclerFragment.hidden()
                                 }
