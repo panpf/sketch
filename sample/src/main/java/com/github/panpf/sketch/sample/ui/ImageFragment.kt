@@ -18,6 +18,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
     override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         super.onInitViews(binding, savedInstanceState)
         binding.imageFragmentImageView.showCircleProgressIndicator()
+        binding.imageFragmentImageView.showDataFrom()
     }
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {

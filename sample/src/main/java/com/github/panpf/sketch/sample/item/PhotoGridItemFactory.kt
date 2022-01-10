@@ -3,8 +3,11 @@ package com.github.panpf.sketch.sample.item
 import android.content.Context
 import android.graphics.Point
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -55,9 +58,39 @@ class PhotoGridItemFactory(val sampleMenuListViewModel: SampleMenuListViewModel)
         binding: ItemGridImageBinding,
         item: BindingItem<Photo, ItemGridImageBinding>
     ) {
+
+        val progressIndicatorObserver = Observer<Boolean> {
+            binding.imageGridItemImageView.showMaskProgressIndicator(it == true)
+        }
+        val mimeTypeLogoObserver = Observer<Boolean> {
+            binding.imageGridItemImageView.setMimeTypeLogo(
+                if (it == true)
+                    mapOf("image/gif" to MimeTypeLogo(R.drawable.ic_gif, true))
+                else null
+            )
+        }
+        val dataFromObserver = Observer<Boolean> {
+            binding.imageGridItemImageView.showDataFrom(it == true)
+        }
+
         binding.imageGridItemImageView.apply {
-            showMaskProgressIndicator()
-            setMimeTypeLogo(mapOf("image/gif" to MimeTypeLogo(R.drawable.ic_gif, true)))
+            addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+                    sampleMenuListViewModel.showProgressIndicator.observeForever(
+                        progressIndicatorObserver
+                    )
+                    sampleMenuListViewModel.showMimeTypeLogo.observeForever(mimeTypeLogoObserver)
+                    sampleMenuListViewModel.showDataFrom.observeForever(dataFromObserver)
+                }
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    sampleMenuListViewModel.showProgressIndicator.removeObserver(
+                        progressIndicatorObserver
+                    )
+                    sampleMenuListViewModel.showMimeTypeLogo.removeObserver(mimeTypeLogoObserver)
+                    sampleMenuListViewModel.showDataFrom.removeObserver(dataFromObserver)
+                }
+            })
         }
     }
 

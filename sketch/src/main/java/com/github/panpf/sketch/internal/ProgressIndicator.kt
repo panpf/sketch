@@ -9,31 +9,17 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 interface ProgressIndicator {
     val key: String
 
+    var view: View?
+
     fun onDraw(canvas: Canvas)
 
-    fun onLayout(view: View)
+    fun onLayout()
 
-    fun onProgressChanged(
-        view: View,
-        request: DisplayRequest,
-        totalLength: Long,
-        completedLength: Long
-    )
+    fun onProgressChanged(request: DisplayRequest, totalLength: Long, completedLength: Long)
 
-    fun onRequestStart(
-        view: View,
-        request: DisplayRequest,
-    )
+    fun onRequestStart(request: DisplayRequest)
 
-    fun onRequestError(
-        view: View,
-        request: DisplayRequest,
-        result: Error,
-    )
+    fun onRequestError(request: DisplayRequest, result: Error)
 
-    fun onRequestSuccess(
-        view: View,
-        request: DisplayRequest,
-        result: Success,
-    )
+    fun onRequestSuccess(request: DisplayRequest, result: Success)
 }

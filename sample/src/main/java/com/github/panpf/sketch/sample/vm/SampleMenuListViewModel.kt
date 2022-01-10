@@ -12,6 +12,9 @@ class SampleMenuListViewModel(application1: Application) : LifecycleAndroidViewM
     val menuList = MutableLiveData<List<MenuItemInfo<*>>>()
     val layoutMode = MutableLiveData(LayoutMode.STAGGERED_GRID)
     val playAnimatableDrawable = MutableLiveData(true)
+    val showDataFrom = MutableLiveData(false)
+    val showMimeTypeLogo = MutableLiveData(true)
+    val showProgressIndicator = MutableLiveData(true)
 
     init {
         menuList.postValue(assembleMenuList())
@@ -54,6 +57,39 @@ class SampleMenuListViewModel(application1: Application) : LifecycleAndroidViewM
                 menuList.postValue(menuList.value)
             })
         }
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(false, true),
+            titles = arrayOf("Hidden Data From", "Show Data From"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            showDataFrom.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            titles = arrayOf("Show MimeType Logo", "Hidden MimeType Logo"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            showMimeTypeLogo.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            titles = arrayOf("Show Progress Indicator", "Hidden Progress Indicator"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            showProgressIndicator.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
     }
 
     enum class LayoutMode {

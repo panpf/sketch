@@ -10,6 +10,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.GLES10
@@ -228,6 +229,19 @@ fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
 fun Float.format(newScale: Int): Float {
     val b = BigDecimal(this.toDouble())
     return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
+}
+
+fun Drawable.getLastDrawable(): Drawable? {
+    val drawable = this
+    if (drawable is LayerDrawable) {
+        val layerCount = drawable.numberOfLayers
+        return if (layerCount > 0) {
+            drawable.getDrawable(layerCount - 1).getLastDrawable()
+        } else {
+            null
+        }
+    }
+    return drawable
 }
 
 internal fun View.calculateFixedSize(): Point? {

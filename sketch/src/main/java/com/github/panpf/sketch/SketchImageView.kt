@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageView
 import com.github.panpf.sketch.internal.CircleProgressIndicator
+import com.github.panpf.sketch.internal.DataFromHelper
 import com.github.panpf.sketch.internal.MaskProgressIndicator
 import com.github.panpf.sketch.internal.MimeTypeLogo
 import com.github.panpf.sketch.internal.MimeTypeLogoHelper
@@ -25,14 +26,15 @@ open class SketchImageView @JvmOverloads constructor(
 
     // todo 待实现、图片来源
 
-    private var progressIndicator: ProgressIndicator? = null
+    private var dataFromHelper: DataFromHelper? = null
     private var mimeTypeLogoHelper: MimeTypeLogoHelper? = null
+    private var progressIndicator: ProgressIndicator? = null
 
     private val displayRequestListener: DisplayRequestListener by lazy {
         DisplayRequestListener(WeakReference(this@SketchImageView))
     }
     private val needListener: Boolean
-        get() = progressIndicator != null || mimeTypeLogoHelper != null
+        get() = progressIndicator != null || mimeTypeLogoHelper != null || dataFromHelper != null
 
     override fun getListener(): Listener<DisplayRequest, Success, Error>? =
         if (needListener) displayRequestListener else null
@@ -42,41 +44,65 @@ open class SketchImageView @JvmOverloads constructor(
 
     override fun onDrawForeground(canvas: Canvas) {
         super.onDrawForeground(canvas)
+        dataFromHelper?.onDraw(canvas)
         mimeTypeLogoHelper?.onDraw(canvas)
         progressIndicator?.onDraw(canvas)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        mimeTypeLogoHelper?.onLayout(this)
-        progressIndicator?.onLayout(this)
+        dataFromHelper?.onLayout()
+        progressIndicator?.onLayout()
     }
 
-    fun getProgressIndicator(): ProgressIndicator? = progressIndicator
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        dataFromHelper?.view = this
+        mimeTypeLogoHelper?.view = this
+        progressIndicator?.view = this
+        postInvalidate()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        dataFromHelper?.view = null
+        mimeTypeLogoHelper?.view = null
+        progressIndicator?.view = null
+    }
 
     fun setProgressIndicator(progressIndicator: ProgressIndicator?) {
-        if (progressIndicator?.key != this.progressIndicator?.key) {
-            this.progressIndicator = progressIndicator
-            postInvalidate()
-        }
+        this.progressIndicator = progressIndicator
+        this.progressIndicator?.view = this
+        postInvalidate()
     }
 
-    fun showMaskProgressIndicator(@ColorInt maskColor: Int = MaskProgressIndicator.DEFAULT_MASK_COLOR) {
-        val progressIndicator = progressIndicator
-        if (progressIndicator !is MaskProgressIndicator || progressIndicator.maskColor != maskColor) {
-            setProgressIndicator(MaskProgressIndicator(maskColor))
-        }
+    fun showMaskProgressIndicator(
+        showProgressIndicator: Boolean = true,
+        @ColorInt maskColor: Int = MaskProgressIndicator.DEFAULT_MASK_COLOR
+    ) {
+        setProgressIndicator(if (showProgressIndicator) MaskProgressIndicator(maskColor) else null)
     }
 
-    fun showCircleProgressIndicator(sizeDp: Float = CircleProgressIndicator.DEFAULT_SIZE_DP) {
-        val progressIndicator = progressIndicator
-        if (progressIndicator !is CircleProgressIndicator || progressIndicator.sizeDp != sizeDp) {
-            setProgressIndicator(CircleProgressIndicator(sizeDp))
-        }
+    fun showCircleProgressIndicator(
+        showProgressIndicator: Boolean = true,
+        sizeDp: Float = CircleProgressIndicator.DEFAULT_SIZE_DP,
+        backgroundColor: Int = CircleProgressIndicator.BACKGROUND_COLOR,
+        strokeColor: Int = CircleProgressIndicator.STROKE_COLOR,
+        progressColor: Int = CircleProgressIndicator.PROGRESS_COLOR
+    ) {
+        setProgressIndicator(
+            if (showProgressIndicator) CircleProgressIndicator(
+                sizeDp,
+                backgroundColor,
+                strokeColor,
+                progressColor
+            ) else null
+        )
     }
 
     fun setMimeTypeLogo(mimeTypeLogoHelper: MimeTypeLogoHelper?) {
         this.mimeTypeLogoHelper = mimeTypeLogoHelper
+        this.mimeTypeLogoHelper?.view = this
         postInvalidate()
     }
 
@@ -116,6 +142,12 @@ open class SketchImageView @JvmOverloads constructor(
         )
     }
 
+    fun showDataFrom(showDataFrom: Boolean = true, sizeDp: Float = DataFromHelper.DEFAULT_SIZE_DP) {
+        this.dataFromHelper = if (showDataFrom) DataFromHelper(sizeDp) else null
+        this.dataFromHelper?.view = this
+        postInvalidate()
+    }
+
     private class DisplayRequestListener(private val view: WeakReference<SketchImageView>) :
         Listener<DisplayRequest, Success, Error>,
         ProgressListener<DisplayRequest> {
@@ -123,22 +155,25 @@ open class SketchImageView @JvmOverloads constructor(
         override fun onStart(request: DisplayRequest) {
             super.onStart(request)
             val view = view.get() ?: return
-            view.mimeTypeLogoHelper?.onRequestStart(view, request)
-            view.progressIndicator?.onRequestStart(view, request)
+            view.dataFromHelper?.onRequestStart(request)
+            view.mimeTypeLogoHelper?.onRequestStart(request)
+            view.progressIndicator?.onRequestStart(request)
         }
 
         override fun onError(request: DisplayRequest, result: Error) {
             super.onError(request, result)
             val view = view.get() ?: return
-            view.mimeTypeLogoHelper?.onRequestError(view, request, result)
-            view.progressIndicator?.onRequestError(view, request, result)
+            view.dataFromHelper?.onRequestError(request, result)
+            view.mimeTypeLogoHelper?.onRequestError(request, result)
+            view.progressIndicator?.onRequestError(request, result)
         }
 
         override fun onSuccess(request: DisplayRequest, result: Success) {
             super.onSuccess(request, result)
             val view = view.get() ?: return
-            view.mimeTypeLogoHelper?.onRequestSuccess(view, request, result)
-            view.progressIndicator?.onRequestSuccess(view, request, result)
+            view.dataFromHelper?.onRequestSuccess(request, result)
+            view.mimeTypeLogoHelper?.onRequestSuccess(request, result)
+            view.progressIndicator?.onRequestSuccess(request, result)
         }
 
         override fun onUpdateProgress(
@@ -147,7 +182,7 @@ open class SketchImageView @JvmOverloads constructor(
             completedLength: Long
         ) {
             val view = view.get() ?: return
-            view.progressIndicator?.onProgressChanged(view, request, totalLength, completedLength)
+            view.progressIndicator?.onProgressChanged(request, totalLength, completedLength)
         }
     }
 }

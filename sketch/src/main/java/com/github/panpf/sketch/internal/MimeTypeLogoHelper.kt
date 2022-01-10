@@ -2,64 +2,40 @@ package com.github.panpf.sketch.internal
 
 import android.graphics.Canvas
 import android.graphics.drawable.Animatable
-import android.view.View
+import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.util.getLastDrawable
 
 open class MimeTypeLogoHelper(val mimeTypeIconMap: Map<String, MimeTypeLogo>, val margin: Int = 0) {
 
-    private var view: View? = null
-    private var show: Boolean = false
-    private var mimeTypeLogo: MimeTypeLogo? = null
+    var view: SketchImageView? = null
 
     open val key: String by lazy {
         "MimeTypeLogoHelper(mimeTypes=${mimeTypeIconMap.keys.joinToString(separator = ",")}, margin=$margin)"
     }
 
-    open fun onLayout(view: View) {
-
+    open fun onRequestStart(request: DisplayRequest) {
+        view?.postInvalidate()
     }
 
-    open fun onRequestStart(
-        view: View,
-        request: DisplayRequest,
-    ) {
-        this.view = view
-        show = false
-        mimeTypeLogo = null
-        view.postInvalidate()
+    open fun onRequestError(request: DisplayRequest, result: Error) {
+        view?.postInvalidate()
     }
 
-    open fun onRequestError(
-        view: View,
-        request: DisplayRequest,
-        result: Error,
-    ) {
-        this.view = view
-        show = false
-        mimeTypeLogo = null
-        view.postInvalidate()
-    }
-
-    open fun onRequestSuccess(
-        view: View,
-        request: DisplayRequest,
-        result: Success,
-    ) {
-        this.view = view
-        val mimeTypeLogo = mimeTypeIconMap[result.data.info.mimeType]
-        this.mimeTypeLogo = mimeTypeLogo
-        show =
-            mimeTypeLogo != null && (!mimeTypeLogo.hiddenWhenAnimatable || result.data.drawable !is Animatable)
-
-        view.postInvalidate()
+    open fun onRequestSuccess(request: DisplayRequest, result: Success) {
+        view?.postInvalidate()
     }
 
     open fun onDraw(canvas: Canvas) {
-        if (!show) return
         val view = view ?: return
-        val mimeTypeLogo = mimeTypeLogo ?: return
+        val lastDrawable = view.drawable?.getLastDrawable() ?: return
+        if (lastDrawable !is SketchDrawable) return
+        val mimeType = lastDrawable.mimeType ?: return
+        val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
+        if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return
         val logoDrawable = mimeTypeLogo.getDrawable(view.context)
         logoDrawable.setBounds(
             view.right - view.paddingRight - logoDrawable.intrinsicWidth,

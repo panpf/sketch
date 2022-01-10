@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.util
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.github.panpf.sketch.util.isAttachedToWindowCompat
 
 fun <T> safeRun(block: () -> T): T? {
     return try {
@@ -14,7 +15,7 @@ fun <T> safeRun(block: () -> T): T? {
 }
 
 fun <T> LiveData<T>.observeFromView(view: View, observer: Observer<T>) {
-    if (view.isAttachedToWindow) {
+    if (view.isAttachedToWindowCompat) {
         observeForever(observer)
     }
     view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -32,7 +33,7 @@ fun <T> LiveData<T>.observeFromView(view: View, observer: Observer<T>) {
 }
 
 fun <T> LiveData<T>.observeFromViewAndInit(view: View, observer: Observer<T>) {
-    if (view.isAttachedToWindow) {
+    if (view.isAttachedToWindowCompat) {
         observeForever(observer)
     } else {
         observer.onChanged(value)
