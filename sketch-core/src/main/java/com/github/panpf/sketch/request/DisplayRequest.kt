@@ -284,7 +284,7 @@ interface DisplayRequest : LoadRequest {
             this.memoryCachePolicy = memoryCachePolicy
         }
 
-        fun disabledAnimationDrawable(disabledAnimationDrawable: Boolean?): Builder = apply {
+        fun disabledAnimationDrawable(disabledAnimationDrawable: Boolean? = true): Builder = apply {
             this.disabledAnimationDrawable = disabledAnimationDrawable
         }
 
