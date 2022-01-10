@@ -16,6 +16,9 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
         FragmentImageBinding.inflate(inflater, parent, false)
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
-        binding.imageFragmentImageView.displayImage(args.url)
+        binding.imageFragmentImageView.apply {
+            showCircleProgressIndicator()
+            displayImage(args.url)
+        }
     }
 }

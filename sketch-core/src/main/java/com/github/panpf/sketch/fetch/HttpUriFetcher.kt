@@ -105,7 +105,7 @@ class HttpUriFetcher(
             bytesCopied += bytes
             if (progressListenerDelegate != null && contentLength > 0) {
                 val currentTime = System.currentTimeMillis()
-                if ((currentTime - lastNotifyTime) > 1000) {
+                if ((currentTime - lastNotifyTime) > 300) {
                     lastNotifyTime = currentTime
                     val currentBytesCopied = bytesCopied
                     lastUpdateProgressBytesCopied = currentBytesCopied
