@@ -21,17 +21,18 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutM
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.bean.ImageDetail
+import com.github.panpf.sketch.sample.bean.LayoutMode.GRID
+import com.github.panpf.sketch.sample.bean.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
-import com.github.panpf.sketch.sample.item.PhotoGridItemFactory
+import com.github.panpf.sketch.sample.item.PhotoItemFactory
 import com.github.panpf.sketch.sample.vm.GiphyGifListViewModel
 import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel
-import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel.LayoutMode.GRID
-import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel.LayoutMode.STAGGERED_GRID
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -83,7 +84,7 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         toolbar.title = "Giphy Gifs"
 
         binding.recyclerRecyclerFragmentContent.apply {
-            sampleMenuListViewModel.layoutMode.observe(viewLifecycleOwner) {
+            appSettingsService.photoListLayoutMode.observe(viewLifecycleOwner) {
                 (0 until itemDecorationCount).forEach { index ->
                     removeItemDecorationAt(index)
                 }
@@ -128,13 +129,12 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
 
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    PhotoGridItemFactory(sampleMenuListViewModel)
-                        .setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
-                            startImageDetail(binding, absoluteAdapterPosition)
-                        }
+                    PhotoItemFactory().setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
+                        startImageDetail(binding, absoluteAdapterPosition)
+                    }
                 ))
 
-                sampleMenuListViewModel.playAnimatableDrawable.observe(viewLifecycleOwner) {
+                appSettingsService.disabledAnimatableDrawableInList.observe(viewLifecycleOwner) {
                     pagingAdapter.notifyDataSetChanged()
                 }
 

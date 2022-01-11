@@ -24,8 +24,6 @@ open class SketchImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : AppCompatImageView(context, attrs), ListenerProvider {
 
-    // todo 待实现、图片来源
-
     private var dataFromHelper: DataFromHelper? = null
     private var mimeTypeLogoHelper: MimeTypeLogoHelper? = null
     private var progressIndicator: ProgressIndicator? = null

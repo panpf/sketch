@@ -4,8 +4,35 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.lifecycle.MutableLiveData
+import com.github.panpf.sketch.sample.bean.LayoutMode
 
 class AppSettingsService(val context: Context) {
+
+    val photoListLayoutMode by lazy {
+        EnumPrefsData(
+            context,
+            "photoListLayoutMode",
+            LayoutMode.STAGGERED_GRID,
+            { LayoutMode.valueOf(it) },
+            { it.name }
+        )
+    }
+
+    val disabledAnimatableDrawableInList by lazy {
+        BooleanPrefsData(context, "disabledAnimatableDrawableInList", false)
+    }
+
+    val showMimeTypeLogoInLIst by lazy {
+        BooleanPrefsData(context, "showMimeTypeLogoInLIst", true)
+    }
+
+    val showProgressIndicatorInList by lazy {
+        BooleanPrefsData(context, "showProgressIndicatorInList", true)
+    }
+
+    val showDataFrom by lazy {
+        BooleanPrefsData(context, "showDataFrom", true)
+    }
 
     val memoryCacheDisabled by lazy {
         BooleanPrefsData(context, "memoryCacheDisabled", false)
@@ -37,7 +64,7 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "scrollingPauseLoadEnabled", false)
     }
 
-//    val logLevel by lazy {
+    //    val logLevel by lazy {
 //        IntPrefsData(context, "logLevel", Logger.Level.INFO)
 //    }
     val outLog2SdcardLevel by lazy {
@@ -180,7 +207,7 @@ class BooleanNullablePrefsData(
         } else {
             result
         }
-        postValue(result1)
+        setValue(result1)
     }
 
     override fun postValue(value: Boolean?) {
@@ -220,7 +247,7 @@ class StringPrefsData(
     }
 
     init {
-        postValue(preference.getString(key, defaultValue))
+        setValue(preference.getString(key, defaultValue))
     }
 
     override fun postValue(value: String?) {
@@ -259,7 +286,7 @@ class StringNullablePrefsData(
     }
 
     init {
-        postValue(preference.getString(key, null))
+        setValue(preference.getString(key, null))
     }
 
     override fun postValue(value: String?) {
@@ -299,7 +326,7 @@ class IntPrefsData(
     }
 
     init {
-        postValue(preference.getInt(key, defaultValue))
+        setValue(preference.getInt(key, defaultValue))
     }
 
     override fun postValue(value: Int?) {
@@ -347,7 +374,7 @@ class IntNullablePrefsData(
         } else {
             result
         }
-        postValue(result1)
+        setValue(result1)
     }
 
     override fun postValue(value: Int?) {
@@ -370,5 +397,47 @@ class IntNullablePrefsData(
             }
         }.apply()
         super.setValue(value)
+    }
+}
+
+class EnumPrefsData<T : Enum<T>>(
+    context: Context,
+    private val key: String,
+    private val defaultValue: T,
+    parse: (String) -> T,
+    private val toStringValue: (T) -> String,
+    prefsName: String? = null,
+) : MutableLiveData<T>() {
+
+    private val preference: SharedPreferences = if (prefsName != null) {
+        context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+    } else {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    init {
+        value = parse(preference.getString(key, null) ?: defaultValue.name)
+    }
+
+    override fun postValue(value: T?) {
+        preference.edit().apply {
+            if (value != null) {
+                putString(key, toStringValue(value))
+            } else {
+                remove(key)
+            }
+        }.apply()
+        super.postValue(value ?: defaultValue)
+    }
+
+    override fun setValue(value: T?) {
+        preference.edit().apply {
+            if (value != null) {
+                putString(key, toStringValue(value))
+            } else {
+                remove(key)
+            }
+        }.apply()
+        super.setValue(value ?: defaultValue)
     }
 }

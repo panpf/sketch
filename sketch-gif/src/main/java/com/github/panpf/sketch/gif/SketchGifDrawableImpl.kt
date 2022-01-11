@@ -48,7 +48,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
         private set
     override var uri: String
         private set
-    private var imageAttrs: ImageInfo
+    private var imageInfo: ImageInfo
     override var dataFrom: DataFrom
         private set
     private var bitmapPoolHelper: BitmapPoolHelper?
@@ -56,13 +56,13 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
         null
 
     override val originWidth: Int
-        get() = imageAttrs.width
+        get() = imageInfo.width
     override val originHeight: Int
-        get() = imageAttrs.height
+        get() = imageInfo.height
     override val mimeType: String
-        get() = imageAttrs.mimeType
+        get() = imageInfo.mimeType
     override val exifOrientation: Int
-        get() = imageAttrs.exifOrientation
+        get() = imageInfo.exifOrientation
     override val info: String by lazy {
         "${NAME}(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s)".format(
             originWidth,
@@ -84,14 +84,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         afd: AssetFileDescriptor
     ) : super(afd) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -99,7 +99,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         assets: AssetManager,
@@ -107,7 +107,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     ) : super(assets, assetName) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -115,14 +115,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         buffer: ByteBuffer
     ) : super(buffer) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -130,14 +130,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         bytes: ByteArray
     ) : super(bytes) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -145,14 +145,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         fd: FileDescriptor
     ) : super(fd) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -160,14 +160,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         file: File
     ) : super(file) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -175,14 +175,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         filePath: String
     ) : super(filePath) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -190,7 +190,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         res: Resources,
@@ -198,7 +198,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     ) : super(res, id) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -206,7 +206,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         imageUri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         resolver: ContentResolver?,
@@ -214,7 +214,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     ) : super(resolver, uri) {
         this.key = key
         this.uri = imageUri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }
@@ -222,14 +222,14 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     internal constructor(
         key: String,
         uri: String,
-        imageAttrs: ImageInfo,
+        imageInfo: ImageInfo,
         dataFrom: DataFrom,
         bitmapPoolHelper: BitmapPoolHelper?,
         stream: InputStream
     ) : super(stream) {
         this.key = key
         this.uri = uri
-        this.imageAttrs = imageAttrs
+        this.imageInfo = imageInfo
         this.dataFrom = dataFrom
         this.bitmapPoolHelper = bitmapPoolHelper
     }

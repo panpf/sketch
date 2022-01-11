@@ -16,38 +16,82 @@ import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.LoadRequest
-import pl.droidsonroids.gif.GifDrawable
 
 class GifDecoder(sketch: Sketch, request: LoadRequest, dataSource: DataSource) :
     BitmapFactoryDecoder(sketch, request, dataSource), DrawableDecoder {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun decodeDrawable(): DrawableDecodeResult? {
-        val request1 = request
-        if (request1 !is DisplayRequest) return null
-        if (request1.disabledAnimationDrawable == true) return null
+        val request = request
+        if (request !is DisplayRequest) return null
+        if (request.disabledAnimationDrawable == true) return null
         val imageInfo = readImageInfo()
-        val gifDrawable = when (val source1 = source) {
+        val gifDrawable = when (val source = source) {
             is ByteArrayDataSource -> {
-                GifDrawable(source1.data)
+                SketchGifDrawableImpl(
+                    request.key,
+                    request.uriString,
+                    imageInfo,
+                    source.from,
+                    sketch.bitmapPoolHelper,
+                    source.data
+                )
             }
             is DiskCacheDataSource -> {
-                GifDrawable(source1.diskCacheEntry.file)
+                SketchGifDrawableImpl(
+                    request.key,
+                    request.uriString,
+                    imageInfo,
+                    source.from,
+                    sketch.bitmapPoolHelper,
+                    source.diskCacheEntry.file
+                )
             }
             is DrawableResDataSource -> {
-                GifDrawable(source1.context.resources, source1.drawableId)
+                SketchGifDrawableImpl(
+                    request.key,
+                    request.uriString,
+                    imageInfo,
+                    source.from,
+                    sketch.bitmapPoolHelper,
+                    source.context.resources,
+                    source.drawableId
+                )
             }
             is ContentDataSource -> {
-                GifDrawable(source1.context.contentResolver, source1.contentUri)
+                SketchGifDrawableImpl(
+                    request.key,
+                    request.uriString,
+                    imageInfo,
+                    source.from,
+                    sketch.bitmapPoolHelper,
+                    source.context.contentResolver,
+                    source.contentUri
+                )
             }
             is FileDataSource -> {
-                GifDrawable(source1.file)
+                SketchGifDrawableImpl(
+                    request.key,
+                    request.uriString,
+                    imageInfo,
+                    source.from,
+                    sketch.bitmapPoolHelper,
+                    source.file
+                )
             }
             is AssetsDataSource -> {
-                GifDrawable(source1.context.assets, source1.assetsFilePath)
+                SketchGifDrawableImpl(
+                    request.key,
+                    request.uriString,
+                    imageInfo,
+                    source.from,
+                    sketch.bitmapPoolHelper,
+                    source.context.assets,
+                    source.assetsFilePath
+                )
             }
             else -> {
-                throw Exception("Unsupported DataSource: ${source1::class.qualifiedName}")
+                throw Exception("Unsupported DataSource: ${source::class.qualifiedName}")
             }
         }
         return DrawableDecodeResult(gifDrawable, imageInfo, source.from)

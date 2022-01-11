@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.sample.ds
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.provider.MediaStore
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -31,13 +33,22 @@ class LocalPhotoListPagingSource(private val context: Context) :
         val dataList = ArrayList<Photo>(cursor?.count ?: 0).apply {
             cursor?.use {
                 while (cursor.moveToNext()) {
+                    val uri =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                    val options =
+                        context.contentResolver.openInputStream(Uri.parse("file://$uri")).use {
+                            BitmapFactory.Options().apply {
+                                inJustDecodeBounds = true
+                                BitmapFactory.decodeStream(it, null, this)
+                            }
+                        }
                     add(
                         Photo(
-                            originalUrl = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
+                            originalUrl = uri,
                             thumbnailUrl = null,
                             middenUrl = null,
-                            width = null,
-                            height = null,
+                            width = options.outWidth,
+                            height = options.outHeight,
                         )
                     )
                 }
