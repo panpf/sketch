@@ -87,9 +87,11 @@ class DisplayExecutor(private val sketch: Sketch) {
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                val exception = SketchException(request, null, throwable)
+                val exception = throwable.asOrNull<SketchException>()
+                    ?: SketchException(request, null, throwable)
                 val errorDrawable =
                     request.errorImage?.getDrawable(sketch.appContext, sketch, request, exception)
+                        ?: request.placeholderImage?.getDrawable(sketch.appContext, sketch, request, null)
                 val errorResult = DisplayResult.Error(request, exception, errorDrawable)
                 withContext(Dispatchers.Main) {
                     target?.onError(errorDrawable)

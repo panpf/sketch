@@ -5,6 +5,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.util.SketchException
+import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.CancellationException
 
 class DownloadExecutor(private val sketch: Sketch) {
@@ -48,7 +49,9 @@ class DownloadExecutor(private val sketch: Sketch) {
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                val errorResult = DownloadResult.Error(request, SketchException(request, null, throwable))
+                val exception = throwable.asOrNull<SketchException>()
+                    ?: SketchException(request, null, throwable)
+                val errorResult = DownloadResult.Error(request, SketchException(request, null, exception))
                 listenerDelegate?.onError(request, errorResult)
                 return errorResult
             }
