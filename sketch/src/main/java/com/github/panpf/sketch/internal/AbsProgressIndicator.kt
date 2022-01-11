@@ -26,7 +26,7 @@ abstract class AbsProgressIndicator : ProgressIndicator {
 
     override fun onRequestStart(request: DisplayRequest) {
         this.show = request.uriString.startsWith("http")
-        this.progress = 0f
+        this.progress = -1f
         this.progressAnimator?.cancel()
     }
 
