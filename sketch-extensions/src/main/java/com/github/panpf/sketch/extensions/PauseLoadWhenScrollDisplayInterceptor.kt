@@ -14,7 +14,7 @@ class PauseLoadWhenScrollDisplayInterceptor : Interceptor<DisplayRequest, Displa
 
     companion object {
         const val KEY = "sketch#PauseLoadWhenScroll"
-        const val ENABLED_KEY = "sketch#enabledSaveCellularTraffic"
+        const val ENABLED_KEY = "sketch#enabledPauseLoadWhenScroll"
         const val IGNORE_KEY = "sketch#ignorePauseLoadWhenScroll"
         var scrolling = false
     }
