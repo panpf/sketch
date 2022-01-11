@@ -18,10 +18,6 @@ class AppSettingsService(val context: Context) {
         )
     }
 
-    val disabledAnimatableDrawableInList by lazy {
-        BooleanPrefsData(context, "disabledAnimatableDrawableInList", false)
-    }
-
     val showMimeTypeLogoInLIst by lazy {
         BooleanPrefsData(context, "showMimeTypeLogoInLIst", true)
     }
@@ -34,8 +30,16 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "showDataFrom", true)
     }
 
+    val disabledAnimatableDrawableInList by lazy {
+        BooleanPrefsData(context, "disabledAnimatableDrawableInList", false)
+    }
+
     val saveCellularTrafficInList by lazy {
         BooleanPrefsData(context, "saveCellularTrafficInList", false)
+    }
+
+    val pauseLoadWhenScrollInList by lazy {
+        BooleanPrefsData(context, "pauseLoadWhenScrollInList", false)
     }
 
     val memoryCacheDisabled by lazy {

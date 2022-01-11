@@ -83,7 +83,7 @@ open class SketchImageView @JvmOverloads constructor(
         val clickSkipSaveCellularTrafficHelper = ignoreSaveCellularTrafficHelper
         if (clickListenerWrapper != null || clickSkipSaveCellularTrafficHelper?.canIntercept == true) {
             super.setOnClickListener {
-                if (clickSkipSaveCellularTrafficHelper?.onIntercept() != true) {
+                if (clickSkipSaveCellularTrafficHelper?.onInterceptClick() != true) {
                     clickListenerWrapper?.onClick(it)
                 }
             }

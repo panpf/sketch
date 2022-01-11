@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.util.SketchException
 import kotlinx.coroutines.CancellationException
 
 class DownloadExecutor(private val sketch: Sketch) {
@@ -47,7 +48,7 @@ class DownloadExecutor(private val sketch: Sketch) {
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                val errorResult = DownloadResult.Error(request, throwable)
+                val errorResult = DownloadResult.Error(request, SketchException(request, null, throwable))
                 listenerDelegate?.onError(request, errorResult)
                 return errorResult
             }

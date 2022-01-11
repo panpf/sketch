@@ -17,6 +17,7 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.request.DownloadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -153,6 +154,14 @@ interface DisplayRequest : LoadRequest {
             this.depth = depth
         }
 
+        fun depthFrom(from: String?): Builder = apply {
+            if (from != null) {
+                setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
+            } else {
+                removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
+            }
+        }
+
         fun parameters(parameters: Parameters?): Builder = apply {
             this.parametersBuilder = parameters?.newBuilder()
         }
@@ -163,9 +172,16 @@ interface DisplayRequest : LoadRequest {
          * @see Parameters.Builder.set
          */
         @JvmOverloads
-        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder = apply {
-            this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply { set(key, value, cacheKey) }
-        }
+        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder =
+            apply {
+                this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
+                    set(
+                        key,
+                        value,
+                        cacheKey
+                    )
+                }
+            }
 
         /**
          * Remove a parameter from this request.
@@ -347,57 +363,43 @@ interface DisplayRequest : LoadRequest {
             } else null
         }
 
-        fun errorImage(errorImage: StateImage?): Builder = apply {
-            this.errorImage = errorImage
-        }
-
-        fun errorImage(errorDrawable: Drawable?): Builder = apply {
-            this.errorImage =
-                if (errorDrawable != null) StateImage.drawable(errorDrawable) else null
-        }
-
-        fun errorImage(@DrawableRes errorDrawableResId: Int?): Builder = apply {
-            this.errorImage = if (errorDrawableResId != null) {
-                StateImage.drawableRes(errorDrawableResId)
-            } else null
+        fun errorImage(
+            errorImage: StateImage?,
+            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+        ): Builder = apply {
+            this.errorImage = errorImage?.let {
+                if (configBlock != null) {
+                    ErrorStateImage.new(it, configBlock)
+                } else {
+                    it
+                }
+            }
         }
 
         fun errorImage(
-            defaultErrorImage: StateImage?,
-            emptyImage: StateImage? = null,
-            saveCellularTrafficImage: StateImage? = null
+            errorDrawable: Drawable?,
+            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.errorImage = if (defaultErrorImage != null) {
-                ErrorStateImage(defaultErrorImage, emptyImage, saveCellularTrafficImage)
-            } else null
+            this.errorImage = errorDrawable?.let {
+                if (configBlock != null) {
+                    ErrorStateImage.new(StateImage.drawable(it), configBlock)
+                } else {
+                    StateImage.drawable(it)
+                }
+            }
         }
 
         fun errorImage(
-            defaultErrorDrawable: Drawable?,
-            emptyDrawable: Drawable? = null,
-            saveCellularTrafficDrawable: Drawable? = null
+            errorDrawableResId: Int?,
+            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.errorImage = if (defaultErrorDrawable != null) {
-                ErrorStateImage(
-                    StateImage.drawable(defaultErrorDrawable),
-                    emptyDrawable?.run { StateImage.drawable(this) },
-                    saveCellularTrafficDrawable?.run { StateImage.drawable(this) }
-                )
-            } else null
-        }
-
-        fun errorImage(
-            defaultErrorDrawableResId: Int?,
-            emptyDrawableResId: Int? = null,
-            saveCellularTrafficDrawableResId: Int? = null
-        ): Builder = apply {
-            this.errorImage = if (defaultErrorDrawableResId != null) {
-                ErrorStateImage(
-                    StateImage.drawableRes(defaultErrorDrawableResId),
-                    emptyDrawableResId?.run { StateImage.drawableRes(this) },
-                    saveCellularTrafficDrawableResId?.run { StateImage.drawableRes(this) }
-                )
-            } else null
+            this.errorImage = errorDrawableResId?.let {
+                if (configBlock != null) {
+                    ErrorStateImage.new(StateImage.drawableRes(it), configBlock)
+                } else {
+                    StateImage.drawableRes(it)
+                }
+            }
         }
 
         fun target(target: Target?): Builder = apply {
@@ -426,15 +428,16 @@ interface DisplayRequest : LoadRequest {
             crossinline onCancel: (request: DisplayRequest) -> Unit = {},
             crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
-        ): Builder = listener(object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
-            override fun onStart(request: DisplayRequest) = onStart(request)
-            override fun onCancel(request: DisplayRequest) = onCancel(request)
-            override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
-                onError(request, result)
+        ): Builder =
+            listener(object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
+                override fun onStart(request: DisplayRequest) = onStart(request)
+                override fun onCancel(request: DisplayRequest) = onCancel(request)
+                override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
+                    onError(request, result)
 
-            override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
-                onSuccess(request, result)
-        })
+                override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
+                    onSuccess(request, result)
+            })
 
         fun progressListener(progressListener: ProgressListener<DisplayRequest>?): Builder =
             apply {

@@ -81,6 +81,14 @@ interface DownloadRequest : ImageRequest {
             this.depth = depth
         }
 
+        fun depthFrom(from: String?): Builder = apply {
+            if (from != null) {
+                setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
+            } else {
+                removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
+            }
+        }
+
         fun parameters(parameters: Parameters?): Builder = apply {
             this.parametersBuilder = parameters?.newBuilder()
         }
@@ -91,9 +99,16 @@ interface DownloadRequest : ImageRequest {
          * @see Parameters.Builder.set
          */
         @JvmOverloads
-        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder = apply {
-            this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply { set(key, value, cacheKey) }
-        }
+        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder =
+            apply {
+                this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
+                    set(
+                        key,
+                        value,
+                        cacheKey
+                    )
+                }
+            }
 
         /**
          * Remove a parameter from this request.

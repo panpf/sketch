@@ -95,7 +95,7 @@ class DecodeDrawableEngineInterceptor : Interceptor<DisplayRequest, DrawableDeco
                     DrawableDecodeResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
                 }
                 request.depth >= RequestDepth.MEMORY -> {
-                    throw RequestDepthException(request, request.depth)
+                    throw RequestDepthException(request, request.depth, request.depthFrom)
                 }
                 else -> {
                     null

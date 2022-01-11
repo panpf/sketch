@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.util.SketchException
 import kotlinx.coroutines.CancellationException
 
 class LoadExecutor(private val sketch: Sketch) {
@@ -47,7 +48,7 @@ class LoadExecutor(private val sketch: Sketch) {
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
-                val errorResult = LoadResult.Error(request, throwable)
+                val errorResult = LoadResult.Error(request, SketchException(request, null, throwable))
                 listenerDelegate?.onError(request, errorResult)
                 return errorResult
             }

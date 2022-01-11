@@ -8,6 +8,7 @@ import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.calculateFixedSize
 import kotlinx.coroutines.CancellationException
@@ -86,9 +87,10 @@ class DisplayExecutor(private val sketch: Sketch) {
             } else {
                 throwable.printStackTrace()
                 sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
+                val exception = SketchException(request, null, throwable)
                 val errorDrawable =
-                    request.errorImage?.getDrawable(sketch.appContext, sketch, request, throwable)
-                val errorResult = DisplayResult.Error(request, throwable, errorDrawable)
+                    request.errorImage?.getDrawable(sketch.appContext, sketch, request, exception)
+                val errorResult = DisplayResult.Error(request, exception, errorDrawable)
                 withContext(Dispatchers.Main) {
                     target?.onError(errorDrawable)
                 }

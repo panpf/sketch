@@ -12,4 +12,11 @@ interface ImageRequest {
     val depth: RequestDepth
     val parameters: Parameters?
     val listener: Listener<ImageRequest, ImageResult, ImageResult>?
+
+    val depthFrom: String?
+        get() = parameters?.value(REQUEST_DEPTH_FROM)
+
+    companion object {
+        const val REQUEST_DEPTH_FROM = "REQUEST_DEPTH_FROM"
+    }
 }

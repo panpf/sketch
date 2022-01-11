@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -71,6 +72,7 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onInitData(
         toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
@@ -130,6 +132,14 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                 ))
 
                 appSettingsService.disabledAnimatableDrawableInList.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
+
+                appSettingsService.saveCellularTrafficInList.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
+
+                appSettingsService.pauseLoadWhenScrollInList.observe(viewLifecycleOwner) {
                     pagingAdapter.notifyDataSetChanged()
                 }
 

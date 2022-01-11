@@ -25,7 +25,7 @@ internal fun requestDelegate(sketch: Sketch, initialRequest: DisplayRequest, job
     }
 }
 
-internal sealed class RequestDelegate : DefaultLifecycleObserver {
+sealed class RequestDelegate : DefaultLifecycleObserver {
 
     /** Throw a [CancellationException] if this request should be cancelled before starting. */
     @MainThread
@@ -66,7 +66,7 @@ internal class BaseRequestDelegate(
 }
 
 /** A request delegate for restartable requests with a [ViewTarget]. */
-internal class ViewTargetRequestDelegate(
+class ViewTargetRequestDelegate(
     private val sketch: Sketch,
     private val initialRequest: DisplayRequest,
     private val target: ViewTarget<*>,

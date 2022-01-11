@@ -4,10 +4,8 @@ import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.request.RequestDepth.LOCAL
-import com.github.panpf.sketch.request.internal.RequestDepthException
-import com.github.panpf.sketch.request.isLocalDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
+import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.sketch
 
 class IgnoreSaveCellularTrafficHelper {
@@ -24,7 +22,7 @@ class IgnoreSaveCellularTrafficHelper {
     private var errorFromSaveCellularTraffic = false
     private var request: DisplayRequest? = null
 
-    fun onIntercept(): Boolean {
+    fun onInterceptClick(): Boolean {
         if (!canIntercept) return false
         val view = view ?: return false
         val request = request ?: return false
@@ -42,9 +40,7 @@ class IgnoreSaveCellularTrafficHelper {
     }
 
     fun onRequestError(request: DisplayRequest, result: Error) {
-        val error = result.throwable
-        errorFromSaveCellularTraffic = error is RequestDepthException && error.depth == LOCAL
-                && error.thenRequest.isLocalDepthFromSaveCellularTraffic
+        errorFromSaveCellularTraffic = result.exception.isCausedBySaveCellularTraffic
         if (errorFromSaveCellularTraffic) {
             this.request = request
         } else {

@@ -30,7 +30,7 @@ interface Disposable<T> {
 /**
  * A disposable for one-shot image requests.
  */
-internal class OneShotDisposable<T>(
+class OneShotDisposable<T>(
     override val job: Deferred<T>
 ) : Disposable<T> {
 
@@ -52,7 +52,7 @@ internal class OneShotDisposable<T>(
  * [isDisposed] only returns 'true' when this disposable's request is cleared (due to
  * [DefaultLifecycleObserver.onDestroy]) or replaced by a new request attached to the view.
  */
-internal class ViewTargetDisposable(
+class ViewTargetDisposable(
     private val view: View,
     @Volatile override var job: Deferred<DisplayResult>
 ) : Disposable<DisplayResult> {

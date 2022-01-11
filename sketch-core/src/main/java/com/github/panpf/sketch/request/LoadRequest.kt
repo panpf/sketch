@@ -14,6 +14,7 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.request.DownloadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
@@ -224,6 +225,14 @@ interface LoadRequest : DownloadRequest {
 
         fun depth(depth: RequestDepth?): Builder = apply {
             this.depth = depth
+        }
+
+        fun depthFrom(from: String?): Builder = apply {
+            if (from != null) {
+                setParameter(ImageRequest.REQUEST_DEPTH_FROM, from, null)
+            } else {
+                removeParameter(ImageRequest.REQUEST_DEPTH_FROM)
+            }
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {

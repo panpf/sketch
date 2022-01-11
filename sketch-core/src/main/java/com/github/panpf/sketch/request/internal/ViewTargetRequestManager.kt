@@ -14,7 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-internal class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChangeListener {
+class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChangeListener {
 
     // todo ViewTarget bind RequestManager，方尺重复加载，图片错乱、自动取消、自动重新请求，监听 lifecycler
     // The disposable for the current request attached to this view.
@@ -37,7 +37,7 @@ internal class ViewTargetRequestManager(private val view: View) : View.OnAttachS
      * Create and return a new disposable unless this is a restarted request.
      */
     @Synchronized
-    fun getDisposable(job: Deferred<DisplayResult>): ViewTargetDisposable {
+    internal fun getDisposable(job: Deferred<DisplayResult>): ViewTargetDisposable {
         // If this is a restarted request, update the current disposable and return it.
         val disposable = currentDisposable
         if (disposable != null && isMainThread() && isRestart) {
@@ -75,24 +75,28 @@ internal class ViewTargetRequestManager(private val view: View) : View.OnAttachS
 
     /** Attach [request] to this view and cancel the old request. */
     @MainThread
-    fun setRequest(request: ViewTargetRequestDelegate?) {
+    internal fun setRequest(request: ViewTargetRequestDelegate?) {
         currentRequest?.dispose()
         currentRequest = request
     }
 
     @MainThread
     override fun onViewAttachedToWindow(v: View) {
+        restart()
+    }
+
+    @MainThread
+    override fun onViewDetachedFromWindow(v: View) {
+        currentRequest?.dispose()
+    }
+
+    fun restart() {
         val request = currentRequest ?: return
 
         // As this is called from the main thread, isRestart will
         // be cleared synchronously as part of request.restart().
         isRestart = true
         request.restart()
-    }
-
-    @MainThread
-    override fun onViewDetachedFromWindow(v: View) {
-        currentRequest?.dispose()
     }
 }
 
@@ -111,3 +115,6 @@ internal val View.requestManager: ViewTargetRequestManager
                 }
         }
     }
+
+val View.requestManagerOrNull: ViewTargetRequestManager?
+    get() = getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?

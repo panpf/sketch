@@ -106,5 +106,17 @@ class SampleMenuListViewModel(application1: Application) : LifecycleAndroidViewM
             application1.appSettingsService.saveCellularTrafficInList.postValue(newValue)
             menuList.postValue(menuList.value)
         })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.pauseLoadWhenScrollInList.value!!,
+            titles = arrayOf("Enabled Pause Load When Scroll", "Disabled Pause Load When Scroll"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.pauseLoadWhenScrollInList.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
     }
 }

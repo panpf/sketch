@@ -151,6 +151,14 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                     pagingAdapter.notifyDataSetChanged()
                 }
 
+                appSettingsService.saveCellularTrafficInList.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
+
+                appSettingsService.pauseLoadWhenScrollInList.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
+
                 binding.refreshRecyclerFragment.setOnRefreshListener {
                     pagingAdapter.refresh()
                 }

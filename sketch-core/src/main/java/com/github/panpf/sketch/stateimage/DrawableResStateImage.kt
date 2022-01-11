@@ -21,11 +21,12 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.util.SketchException
 
 class DrawableResStateImage(@DrawableRes private val resId: Int) : StateImage {
 
     override fun getDrawable(
-        context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
+        context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable? {
         return AppCompatResources.getDrawable(context, resId)
     }

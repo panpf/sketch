@@ -22,11 +22,12 @@ import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.util.SketchException
 
 class ColorResStateImage(@ColorRes private val colorRes: Int) : StateImage {
 
     override fun getDrawable(
-        context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?
+        context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable {
         return ColorDrawable(ResourcesCompat.getColor(context.resources, colorRes, null))
     }

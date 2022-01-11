@@ -22,10 +22,11 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.util.SketchException
 
 interface StateImage {
 
-    fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest, error: Throwable?): Drawable?
+    fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?): Drawable?
 
     companion object {
 

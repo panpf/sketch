@@ -1,17 +1,18 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.request.internal.ImageResult
+import com.github.panpf.sketch.util.SketchException
 
 sealed interface LoadResult : ImageResult {
     val request: LoadRequest
 
-    class Success(
+    class Success constructor(
         override val request: LoadRequest,
         val data: LoadData,
     ) : LoadResult
 
-    class Error(
+    class Error constructor(
         override val request: LoadRequest,
-        val throwable: Throwable,
+        val exception: SketchException,
     ) : LoadResult
 }

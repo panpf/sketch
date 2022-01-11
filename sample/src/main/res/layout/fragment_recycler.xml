@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.github.panpf.sketch.sample.widget.MyRecyclerView
             android:id="@+id/recycler_recyclerFragment_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

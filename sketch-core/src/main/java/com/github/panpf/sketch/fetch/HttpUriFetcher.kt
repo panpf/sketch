@@ -155,7 +155,7 @@ class HttpUriFetcher(
                 if (diskCacheEntry != null) {
                     return FetchResult(DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE))
                 } else if (request.depth >= RequestDepth.LOCAL) {
-                    throw RequestDepthException(request, request.depth)
+                    throw RequestDepthException(request, request.depth, request.depthFrom)
                 }
             }
             return null

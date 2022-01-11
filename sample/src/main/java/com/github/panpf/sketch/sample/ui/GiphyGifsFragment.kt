@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -76,6 +77,7 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onInitData(
         toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
@@ -134,7 +136,11 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                     }
                 ))
 
-                appSettingsService.disabledAnimatableDrawableInList.observe(viewLifecycleOwner) {
+                appSettingsService.saveCellularTrafficInList.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
+
+                appSettingsService.pauseLoadWhenScrollInList.observe(viewLifecycleOwner) {
                     pagingAdapter.notifyDataSetChanged()
                 }
 
