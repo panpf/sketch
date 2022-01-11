@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageView
 import com.github.panpf.sketch.internal.CircleProgressIndicator
+import com.github.panpf.sketch.internal.IgnoreSaveCellularTrafficHelper
 import com.github.panpf.sketch.internal.DataFromHelper
 import com.github.panpf.sketch.internal.MaskProgressIndicator
 import com.github.panpf.sketch.internal.MimeTypeLogo
@@ -27,12 +28,16 @@ open class SketchImageView @JvmOverloads constructor(
     private var dataFromHelper: DataFromHelper? = null
     private var mimeTypeLogoHelper: MimeTypeLogoHelper? = null
     private var progressIndicator: ProgressIndicator? = null
+    private var ignoreSaveCellularTrafficHelper: IgnoreSaveCellularTrafficHelper? = null
 
+    private var clickListenerWrapper: OnClickListener? = null
+
+    // todo 滑动中暂停加载
     private val displayRequestListener: DisplayRequestListener by lazy {
         DisplayRequestListener(WeakReference(this@SketchImageView))
     }
     private val needListener: Boolean
-        get() = progressIndicator != null || mimeTypeLogoHelper != null || dataFromHelper != null
+        get() = progressIndicator != null || mimeTypeLogoHelper != null || dataFromHelper != null || ignoreSaveCellularTrafficHelper != null
 
     override fun getListener(): Listener<DisplayRequest, Success, Error>? =
         if (needListener) displayRequestListener else null
@@ -66,6 +71,26 @@ open class SketchImageView @JvmOverloads constructor(
         dataFromHelper?.view = null
         mimeTypeLogoHelper?.view = null
         progressIndicator?.view = null
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        this.clickListenerWrapper = l
+        refreshOnClickListener()
+    }
+
+    private fun refreshOnClickListener() {
+        val clickListenerWrapper = clickListenerWrapper
+        val clickSkipSaveCellularTrafficHelper = ignoreSaveCellularTrafficHelper
+        if (clickListenerWrapper != null || clickSkipSaveCellularTrafficHelper?.canIntercept == true) {
+            super.setOnClickListener {
+                if (clickSkipSaveCellularTrafficHelper?.onIntercept() != true) {
+                    clickListenerWrapper?.onClick(it)
+                }
+            }
+        } else {
+            super.setOnClickListener(null)
+            isClickable = false
+        }
     }
 
     fun setProgressIndicator(progressIndicator: ProgressIndicator?) {
@@ -146,6 +171,13 @@ open class SketchImageView @JvmOverloads constructor(
         postInvalidate()
     }
 
+    fun setClickRedisplayAndIgnoreSaveCellularTraffic(ignore: Boolean) {
+        this.ignoreSaveCellularTrafficHelper =
+            if (ignore) IgnoreSaveCellularTrafficHelper() else null
+        this.ignoreSaveCellularTrafficHelper?.view = this
+        refreshOnClickListener()
+    }
+
     private class DisplayRequestListener(private val view: WeakReference<SketchImageView>) :
         Listener<DisplayRequest, Success, Error>,
         ProgressListener<DisplayRequest> {
@@ -156,6 +188,8 @@ open class SketchImageView @JvmOverloads constructor(
             view.dataFromHelper?.onRequestStart(request)
             view.mimeTypeLogoHelper?.onRequestStart(request)
             view.progressIndicator?.onRequestStart(request)
+            view.ignoreSaveCellularTrafficHelper?.onRequestStart(request)
+            view.refreshOnClickListener()
         }
 
         override fun onError(request: DisplayRequest, result: Error) {
@@ -164,6 +198,8 @@ open class SketchImageView @JvmOverloads constructor(
             view.dataFromHelper?.onRequestError(request, result)
             view.mimeTypeLogoHelper?.onRequestError(request, result)
             view.progressIndicator?.onRequestError(request, result)
+            view.ignoreSaveCellularTrafficHelper?.onRequestError(request, result)
+            view.refreshOnClickListener()
         }
 
         override fun onSuccess(request: DisplayRequest, result: Success) {
@@ -172,6 +208,8 @@ open class SketchImageView @JvmOverloads constructor(
             view.dataFromHelper?.onRequestSuccess(request, result)
             view.mimeTypeLogoHelper?.onRequestSuccess(request, result)
             view.progressIndicator?.onRequestSuccess(request, result)
+            view.ignoreSaveCellularTrafficHelper?.onRequestSuccess(request, result)
+            view.refreshOnClickListener()
         }
 
         override fun onUpdateProgress(

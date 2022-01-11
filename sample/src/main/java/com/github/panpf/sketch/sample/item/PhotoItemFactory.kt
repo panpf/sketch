@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
@@ -54,6 +55,9 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
         binding: ItemImageBinding,
         item: BindingItem<Photo, ItemImageBinding>
     ) {
+        binding.imageItemImageView.apply {
+            setClickRedisplayAndIgnoreSaveCellularTraffic(true)
+        }
     }
 
     override fun bindItemData(
@@ -85,6 +89,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
 
             displayImage(data.firstThumbnailUrl) {
                 disabledAnimationDrawable(context.appSettingsService.disabledAnimatableDrawableInList.value == true)
+                saveCellularTraffic(context.appSettingsService.saveCellularTrafficInList.value == true)
                 placeholderImage(R.drawable.image_loading)
                 errorImage(
                     defaultErrorDrawableResId = R.drawable.image_error,

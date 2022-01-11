@@ -58,8 +58,8 @@ interface DownloadRequest : ImageRequest {
     open class Builder(private val uri: Uri) {
 
         private var depth: RequestDepth? = null
-        private var parameters: Parameters? = null
-        private var httpHeaders: Map<String, String>? = null
+        private var parametersBuilder: Parameters.Builder? = null
+        private var httpHeaders: MutableMap<String, String>? = null
         private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
@@ -69,8 +69,8 @@ interface DownloadRequest : ImageRequest {
 
         internal constructor(request: DownloadRequest) : this(request.uri) {
             this.depth = request.depth
-            this.parameters = request.parameters
-            this.httpHeaders = request.httpHeaders
+            this.parametersBuilder = request.parameters?.newBuilder()
+            this.httpHeaders = request.httpHeaders?.toMutableMap()
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.listener = request.listener
@@ -82,11 +82,55 @@ interface DownloadRequest : ImageRequest {
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {
-            this.parameters = parameters
+            this.parametersBuilder = parameters?.newBuilder()
+        }
+
+        /**
+         * Set a parameter for this request.
+         *
+         * @see Parameters.Builder.set
+         */
+        @JvmOverloads
+        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder = apply {
+            this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply { set(key, value, cacheKey) }
+        }
+
+        /**
+         * Remove a parameter from this request.
+         *
+         * @see Parameters.Builder.remove
+         */
+        fun removeParameter(key: String): Builder = apply {
+            this.parametersBuilder?.remove(key)
         }
 
         fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
-            this.httpHeaders = httpHeaders
+            this.httpHeaders = httpHeaders?.toMutableMap()
+        }
+
+        /**
+         * Add a header for any network operations performed by this request.
+         */
+        fun addHttpHeader(name: String, value: String): Builder = apply {
+            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+                put(name, value)
+            }
+        }
+
+        /**
+         * Set a header for any network operations performed by this request.
+         */
+        fun setHttpHeader(name: String, value: String): Builder = apply {
+            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+                set(name, value)
+            }
+        }
+
+        /**
+         * Remove all network headers with the key [name].
+         */
+        fun removeHttpHeader(name: String): Builder = apply {
+            this.httpHeaders?.remove(name)
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -111,7 +155,7 @@ interface DownloadRequest : ImageRequest {
             crossinline onCancel: (request: DownloadRequest) -> Unit = {},
             crossinline onError: (request: DownloadRequest, result: DownloadResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: DownloadRequest, result: DownloadResult.Success) -> Unit = { _, _ -> }
-        ) = listener(object :
+        ): Builder = listener(object :
             Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
             override fun onStart(request: DownloadRequest) = onStart(request)
             override fun onCancel(request: DownloadRequest) = onCancel(request)
@@ -132,8 +176,8 @@ interface DownloadRequest : ImageRequest {
         fun build(): DownloadRequest = DownloadRequestImpl(
             uri = uri,
             _depth = depth,
-            parameters = parameters,
-            httpHeaders = httpHeaders,
+            parameters = parametersBuilder?.build(),
+            httpHeaders = httpHeaders?.toMap(),
             _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
             listener = listener,

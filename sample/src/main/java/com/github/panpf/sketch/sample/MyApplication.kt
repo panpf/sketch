@@ -22,6 +22,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.gif.GifDecoder
 import com.github.panpf.sketch.http.OkHttpStack
+import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.tencent.bugly.crashreport.CrashReport
 
 class MyApplication : MultiDexApplication(), SketchFactory {
@@ -33,6 +34,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 
     override fun newSketch(): Sketch = Sketch.new(this) {
         httpStack(OkHttpStack.Builder().build())
+        addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         components {
             addDecoder(GifDecoder.Factory())
         }

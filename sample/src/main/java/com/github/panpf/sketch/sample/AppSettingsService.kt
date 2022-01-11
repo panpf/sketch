@@ -34,6 +34,10 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "showDataFrom", true)
     }
 
+    val saveCellularTrafficInList by lazy {
+        BooleanPrefsData(context, "saveCellularTrafficInList", false)
+    }
+
     val memoryCacheDisabled by lazy {
         BooleanPrefsData(context, "memoryCacheDisabled", false)
     }

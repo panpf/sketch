@@ -94,5 +94,17 @@ class SampleMenuListViewModel(application1: Application) : LifecycleAndroidViewM
             application1.appSettingsService.showProgressIndicatorInList.postValue(newValue)
             menuList.postValue(menuList.value)
         })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.saveCellularTrafficInList.value!!,
+            titles = arrayOf("Enabled Save Cellular Traffic", "Disabled Save Cellular Traffic"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.saveCellularTrafficInList.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
     }
 }

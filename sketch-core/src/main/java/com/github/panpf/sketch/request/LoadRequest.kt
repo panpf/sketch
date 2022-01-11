@@ -181,8 +181,8 @@ interface LoadRequest : DownloadRequest {
     class Builder(private val uri: Uri) {
 
         private var depth: RequestDepth? = null
-        private var parameters: Parameters? = null
-        private var httpHeaders: Map<String, String>? = null
+        private var parametersBuilder: Parameters.Builder? = null
+        private var httpHeaders: MutableMap<String, String>? = null
         private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
         private var resultDiskCacheKey: String? = null
@@ -202,8 +202,8 @@ interface LoadRequest : DownloadRequest {
 
         internal constructor(request: LoadRequest) : this(request.uri) {
             this.depth = request.depth
-            this.parameters = request.parameters
-            this.httpHeaders = request.httpHeaders
+            this.parametersBuilder = request.parameters?.newBuilder()
+            this.httpHeaders = request.httpHeaders?.toMutableMap()
             this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.resultDiskCacheKey = request.resultDiskCacheKey
@@ -227,11 +227,58 @@ interface LoadRequest : DownloadRequest {
         }
 
         fun parameters(parameters: Parameters?): Builder = apply {
-            this.parameters = parameters
+            this.parametersBuilder = parameters?.newBuilder()
+        }
+
+        /**
+         * Set a parameter for this request.
+         *
+         * @see Parameters.Builder.set
+         */
+        @JvmOverloads
+        fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder =
+            apply {
+                this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
+                    set(key, value, cacheKey)
+                }
+            }
+
+        /**
+         * Remove a parameter from this request.
+         *
+         * @see Parameters.Builder.remove
+         */
+        fun removeParameter(key: String): Builder = apply {
+            this.parametersBuilder?.remove(key)
         }
 
         fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
-            this.httpHeaders = httpHeaders
+            this.httpHeaders = httpHeaders?.toMutableMap()
+        }
+
+        /**
+         * Add a header for any network operations performed by this request.
+         */
+        fun addHttpHeader(name: String, value: String): Builder = apply {
+            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+                put(name, value)
+            }
+        }
+
+        /**
+         * Set a header for any network operations performed by this request.
+         */
+        fun setHttpHeader(name: String, value: String): Builder = apply {
+            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+                set(name, value)
+            }
+        }
+
+        /**
+         * Remove all network headers with the key [name].
+         */
+        fun removeHttpHeader(name: String): Builder = apply {
+            this.httpHeaders?.remove(name)
         }
 
         fun diskCacheKey(diskCacheKey: String?): Builder = apply {
@@ -345,7 +392,7 @@ interface LoadRequest : DownloadRequest {
             crossinline onCancel: (request: LoadRequest) -> Unit = {},
             crossinline onError: (request: LoadRequest, result: LoadResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: LoadRequest, result: LoadResult.Success) -> Unit = { _, _ -> }
-        ) = listener(object : Listener<LoadRequest, LoadResult.Success, LoadResult.Error> {
+        ): Builder = listener(object : Listener<LoadRequest, LoadResult.Success, LoadResult.Error> {
             override fun onStart(request: LoadRequest) = onStart(request)
             override fun onCancel(request: LoadRequest) = onCancel(request)
             override fun onError(request: LoadRequest, result: LoadResult.Error) =
@@ -355,18 +402,16 @@ interface LoadRequest : DownloadRequest {
                 onSuccess(request, result)
         })
 
-        fun progressListener(progressListener: ProgressListener<LoadRequest>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.progressListener =
-                    progressListener as ProgressListener<ImageRequest>?
-            }
+        fun progressListener(progressListener: ProgressListener<LoadRequest>?): Builder = apply {
+            @Suppress("UNCHECKED_CAST")
+            this.progressListener = progressListener as ProgressListener<ImageRequest>?
+        }
 
         fun build(): LoadRequest = LoadRequestImpl(
             uri = uri,
             _depth = depth,
-            parameters = parameters,
-            httpHeaders = httpHeaders,
+            parameters = parametersBuilder?.build(),
+            httpHeaders = httpHeaders?.toMap(),
             _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
             _resultDiskCacheKey = resultDiskCacheKey,

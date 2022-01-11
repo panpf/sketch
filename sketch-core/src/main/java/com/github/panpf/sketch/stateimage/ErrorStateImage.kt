@@ -16,14 +16,13 @@
 package com.github.panpf.sketch.stateimage
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth.LOCAL
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.request.internal.UriEmptyException
-import com.github.panpf.sketch.request.isDepthFromSaveCellularTrafficDisplayInterceptor
+import com.github.panpf.sketch.request.isLocalDepthFromSaveCellularTraffic
 
 class ErrorStateImage(
     val defaultErrorImage: StateImage,
@@ -38,7 +37,7 @@ class ErrorStateImage(
             emptyImage.getDrawable(context, sketch, request, error)
         }
         saveCellularTrafficImage != null && error is RequestDepthException && error.depth == LOCAL
-                && error.thenRequest.isDepthFromSaveCellularTrafficDisplayInterceptor() -> {
+                && error.thenRequest.isLocalDepthFromSaveCellularTraffic -> {
             saveCellularTrafficImage.getDrawable(context, sketch, request, error)
         }
         else -> {
