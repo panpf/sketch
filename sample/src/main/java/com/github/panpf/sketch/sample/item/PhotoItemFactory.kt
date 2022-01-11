@@ -18,6 +18,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
+import com.github.panpf.sketch.viewability.extensions.setClickRedisplayAndIgnoreSaveCellularTraffic
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 

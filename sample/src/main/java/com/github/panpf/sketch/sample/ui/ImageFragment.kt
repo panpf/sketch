@@ -7,6 +7,8 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
+import com.github.panpf.sketch.viewability.extensions.showCircleProgressIndicator
+import com.github.panpf.sketch.viewability.extensions.showDataFrom
 
 class ImageFragment : BindingFragment<FragmentImageBinding>() {
 

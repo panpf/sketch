@@ -1,18 +1,25 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.viewability.extensions
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Canvas
 import android.view.View
+import android.widget.ImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.viewability.DrawAbility
+import com.github.panpf.sketch.viewability.LayoutAbility
+import com.github.panpf.sketch.viewability.RequestListenerAbility
+import com.github.panpf.sketch.viewability.RequestProgressListenerAbility
+import com.github.panpf.sketch.viewability.ViewAbility
 
-abstract class AbsProgressIndicator : ProgressIndicator {
+abstract class AbsProgressViewAbility : ViewAbility, LayoutAbility, RequestListenerAbility,
+    RequestProgressListenerAbility, DrawAbility {
 
     private var show: Boolean = false
-    override var view: View? = null
+    override var view: ImageView? = null
     private var progress: Float = -1F
         set(value) {
             field = value
@@ -20,7 +27,7 @@ abstract class AbsProgressIndicator : ProgressIndicator {
         }
     private var progressAnimator: ValueAnimator? = null
 
-    override fun onLayout() {
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         this.progress = progress
     }
 
@@ -40,7 +47,7 @@ abstract class AbsProgressIndicator : ProgressIndicator {
         if (progressAnimator?.isRunning == true) {
             progressAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
-                    this@AbsProgressIndicator.progress = -1f
+                    this@AbsProgressViewAbility.progress = -1f
                 }
             })
         } else {
@@ -48,10 +55,8 @@ abstract class AbsProgressIndicator : ProgressIndicator {
         }
     }
 
-    override fun onProgressChanged(
-        request: DisplayRequest,
-        totalLength: Long,
-        completedLength: Long
+    override fun onUpdateRequestProgress(
+        request: DisplayRequest, totalLength: Long, completedLength: Long
     ) {
         val lastProgress = progress.takeIf { it > 0 } ?: 0f
         val newProgress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
@@ -65,6 +70,10 @@ abstract class AbsProgressIndicator : ProgressIndicator {
         progressAnimator?.start()
     }
 
+    override fun onDrawBefore(canvas: Canvas) {
+
+    }
+
     override fun onDraw(canvas: Canvas) {
         if (!show) return
         val view = view ?: return
@@ -72,6 +81,14 @@ abstract class AbsProgressIndicator : ProgressIndicator {
         canvas.save()
         drawIndicator(canvas, view, progress)
         canvas.restore()
+    }
+
+    override fun onDrawForegroundBefore(canvas: Canvas) {
+
+    }
+
+    override fun onDrawForeground(canvas: Canvas) {
+
     }
 
     abstract fun drawIndicator(canvas: Canvas, view: View, progress: Float)

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.lifecycle.Observer
 import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.viewability.extensions.showDataFrom
 
 class MyImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null

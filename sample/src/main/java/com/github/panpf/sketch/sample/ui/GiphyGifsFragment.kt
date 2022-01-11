@@ -136,6 +136,10 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                     }
                 ))
 
+                appSettingsService.disabledAnimatableDrawableInList.observe(viewLifecycleOwner) {
+                    pagingAdapter.notifyDataSetChanged()
+                }
+
                 appSettingsService.saveCellularTrafficInList.observe(viewLifecycleOwner) {
                     pagingAdapter.notifyDataSetChanged()
                 }

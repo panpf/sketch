@@ -1,18 +1,25 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.viewability.extensions
 
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import com.github.panpf.sketch.SketchImageView
+import android.widget.ImageView
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.viewability.DrawAbility
+import com.github.panpf.sketch.viewability.LayoutAbility
+import com.github.panpf.sketch.viewability.RequestListenerAbility
+import com.github.panpf.sketch.viewability.ViewAbility
+import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
 
-open class DataFromHelper(val sizeDp: Float = DEFAULT_SIZE_DP) {
+class DataFromViewAbility(
+    sizeDp: Float = DEFAULT_SIZE_DP
+) : ViewAbility, RequestListenerAbility, DrawAbility, LayoutAbility {
 
     companion object {
         const val DEFAULT_SIZE_DP = 20f
@@ -24,25 +31,14 @@ open class DataFromHelper(val sizeDp: Float = DEFAULT_SIZE_DP) {
     }
 
     private var path: Path = Path()
-    private val paint = Paint().apply {
-        isAntiAlias = true
-    }
+    private val paint = Paint().apply { isAntiAlias = true }
+    private val realSize = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f)
 
-    var view: SketchImageView? = null
+    override var view: ImageView? = null
         set(value) {
             field = value
             initImageFromPath()
         }
-    private var show: Boolean = false
-    private val realSize = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f)
-
-    open val key: String by lazy {
-        "DataFromHelper(sizeDp=${sizeDp})"
-    }
-
-    open fun onLayout() {
-        initImageFromPath()
-    }
 
     private fun initImageFromPath() {
         path.reset()
@@ -64,31 +60,27 @@ open class DataFromHelper(val sizeDp: Float = DEFAULT_SIZE_DP) {
         }
     }
 
-    open fun onRequestStart(
-        request: DisplayRequest,
-    ) {
-        show = false
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        initImageFromPath()
+    }
+
+    override fun onRequestStart(request: DisplayRequest) {
         view?.postInvalidate()
     }
 
-    open fun onRequestError(
-        request: DisplayRequest,
-        result: Error,
-    ) {
-        show = false
+    override fun onRequestError(request: DisplayRequest, result: Error) {
         view?.postInvalidate()
     }
 
-    open fun onRequestSuccess(
-        request: DisplayRequest,
-        result: Success,
-    ) {
-        show = true
+    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
         view?.postInvalidate()
     }
 
-    open fun onDraw(canvas: Canvas) {
-//        if (!show) return
+    override fun onDrawBefore(canvas: Canvas) {
+
+    }
+
+    override fun onDraw(canvas: Canvas) {
         val lastDrawable = view?.drawable?.getLastDrawable() ?: return
         if (lastDrawable !is SketchDrawable) return
         val dataFrom = lastDrawable.dataFrom ?: return
@@ -102,5 +94,24 @@ open class DataFromHelper(val sizeDp: Float = DEFAULT_SIZE_DP) {
             else -> return
         }
         canvas.drawPath(path, paint)
+    }
+
+    override fun onDrawForegroundBefore(canvas: Canvas) {
+    }
+
+    override fun onDrawForeground(canvas: Canvas) {
+    }
+}
+
+fun ViewAbilityContainerOwner.showDataFrom(
+    showDataFrom: Boolean = true,
+    sizeDp: Float = DataFromViewAbility.DEFAULT_SIZE_DP
+) {
+    val viewAbilityContainer = viewAbilityContainer
+    viewAbilityContainer.viewAbilityList
+        .find { it is DataFromViewAbility }
+        ?.let { viewAbilityContainer.removeViewAbility(it) }
+    if (showDataFrom) {
+        viewAbilityContainer.addViewAbility(DataFromViewAbility(sizeDp))
     }
 }
