@@ -25,6 +25,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import com.github.panpf.sketch.sample.base.BaseActivity
 import com.github.panpf.sketch.sample.databinding.ActivityMainBinding
 import com.github.panpf.sketch.sample.service.NotificationService
@@ -49,7 +50,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun startMultiProcess() {
-        startService(Intent(this, NotificationService::class.java))
+        lifecycleScope.launchWhenResumed {
+            startService(Intent(this@MainActivity, NotificationService::class.java))
+        }
     }
 
     private fun requestPermission() {
