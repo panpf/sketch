@@ -3,11 +3,11 @@
     <color name="colorPrimary">#2E3440</color>
     <color name="colorPrimaryDark">#2E3440</color>
     <color name="colorAccent">#bf5660</color>
-    <color name="windowBackground">#2E3440</color>
+    <color name="windowBackground">#121212</color>
 
-    <color name="text_normal">#FFFFFF</color>
-    <color name="text_title">#FFFFFF</color>
-    <color name="text_subtitle">#AEFFFFFF</color>
+    <color name="text_normal">#DDFFFFFF</color>
+    <color name="text_title">#DDFFFFFF</color>
+    <color name="text_subtitle">#99FFFFFF</color>
 
     <color name="list_item_background_pressed">#33000000</color>
     <color name="placeholder_bg">#22FFFFFF</color>
