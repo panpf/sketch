@@ -24,6 +24,8 @@ import com.github.panpf.sketch.extensions.PauseLoadWhenScrollingDisplayIntercept
 import com.github.panpf.sketch.extensions.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.gif.GifDecoder
 import com.github.panpf.sketch.http.OkHttpStack
+import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.tencent.bugly.crashreport.CrashReport
 
 class MyApplication : MultiDexApplication(), SketchFactory {
@@ -34,6 +36,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
     }
 
     override fun newSketch(): Sketch = Sketch.new(this) {
+        logger(Logger(DEBUG))
         httpStack(OkHttpStack.Builder().build())
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
