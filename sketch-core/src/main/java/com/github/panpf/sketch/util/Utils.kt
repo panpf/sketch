@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
-import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.opengl.EGL14
@@ -152,41 +151,31 @@ fun calculateInSampleSize(
     imageWidth: Int,
     imageHeight: Int,
     targetWidth: Int,
-    targetHeight: Int,
+    targetHeight: Int
 ): Int {
+    // OpenGL 所允许的最大尺寸
+    val maxSize = openGLMaxTextureSize
+
     // 计算 inSampleSize 的时候将 target size 稍微放大一点儿，这样能避免尺寸很接近的图片读取时尺寸被缩小
     val targetSizeScale = 1.1f
-    var newTargetWidth = (targetWidth * targetSizeScale).toInt()
-    var newTargetHeight = (targetHeight * targetSizeScale).toInt()
+    val newTargetWidth = (targetWidth * targetSizeScale).toInt().coerceAtMost(maxSize)
+    val newTargetHeight = (targetHeight * targetSizeScale).toInt().coerceAtMost(maxSize)
 
-    // 限制target宽高不能大于OpenGL所允许的最大尺寸
-    val maxSize = openGLMaxTextureSize
-    if (newTargetWidth > maxSize) {
-        newTargetWidth = maxSize
+    // 如果目标宽高都小于等于 0 或目标宽高都大于等于原始尺寸，就别计算了
+    if ((newTargetWidth <= 0 && newTargetHeight <= 0) || (newTargetWidth >= imageWidth && newTargetHeight >= imageHeight)) {
+        return 1
     }
-    if (newTargetHeight > maxSize) {
-        newTargetHeight = maxSize
-    }
+
     var inSampleSize = 1
-
-    // 如果目标宽高都小于等于0，就别计算了
-    if (newTargetWidth <= 0 && newTargetHeight <= 0) {
-        return inSampleSize
-    }
-
-    // 如果目标宽高都大于等于原始尺寸，也别计算了
-    if (newTargetWidth >= imageWidth && newTargetHeight >= imageHeight) {
-        return inSampleSize
-    }
     when {
         newTargetWidth <= 0 -> {
-            // 目标宽小于等于0时，只要高度满足要求即可
+            // 目标宽小于等于 0 时，只要高度满足要求即可
             while (calculateSamplingSize(imageHeight, inSampleSize) > newTargetHeight) {
                 inSampleSize *= 2
             }
         }
         newTargetHeight <= 0 -> {
-            // 目标高小于等于0时，只要宽度满足要求即可
+            // 目标高小于等于 0 时，只要宽度满足要求即可
             while (calculateSamplingSize(imageWidth, inSampleSize) > newTargetWidth) {
                 inSampleSize *= 2
             }
@@ -194,22 +183,16 @@ fun calculateInSampleSize(
         else -> {
             // 首先限制像素数不能超过目标宽高的像素数
             val maxPixels = (newTargetWidth * newTargetHeight).toLong()
-            while (calculateSamplingSize(imageWidth, inSampleSize) * calculateSamplingSize(
-                    imageHeight,
-                    inSampleSize
-                ) > maxPixels
+            while (
+                calculateSamplingSize(imageWidth, inSampleSize)
+                * calculateSamplingSize(imageHeight, inSampleSize) > maxPixels
             ) {
                 inSampleSize *= 2
             }
 
-            // 然后限制宽高不能大于OpenGL所允许的最大尺寸
-            while (calculateSamplingSize(
-                    imageWidth,
-                    inSampleSize
-                ) > maxSize || calculateSamplingSize(
-                    imageHeight,
-                    inSampleSize
-                ) > maxSize
+            // 然后限制宽高不能大于 OpenGL 所允许的最大尺寸
+            while ((calculateSamplingSize(imageWidth, inSampleSize) > maxSize)
+                || (calculateSamplingSize(imageHeight, inSampleSize) > maxSize)
             ) {
                 inSampleSize *= 2
             }
@@ -244,20 +227,16 @@ fun Drawable.getLastDrawable(): Drawable? {
     return drawable
 }
 
-internal fun View.calculateFixedSize(): Point? {
-    val layoutParams = layoutParams?.takeIf { it.width > 0 && it.height > 0 } ?: return null
-    var fixedWidth = layoutParams.width - paddingLeft - paddingRight
-    var fixedHeight = layoutParams.height - paddingTop - paddingBottom
+internal fun View.fixedWidth(): Int? {
+    val layoutParams = layoutParams?.takeIf { it.width > 0 } ?: return null
+    return (layoutParams.width - paddingLeft - paddingRight).takeIf { it > 0 }
+        ?: throw IllegalArgumentException("Invalid view width. Because 'layoutParams.width - paddingLeft - paddingRight' execute result is less than or equal to zero")
+}
 
-    // 限制不能超过 OpenGL 所允许的最大尺寸
-    val maxSize = openGLMaxTextureSize
-    if (fixedWidth > maxSize || fixedHeight > maxSize) {
-        val finalScale =
-            (fixedWidth.toFloat() / maxSize).coerceAtLeast(fixedHeight.toFloat() / maxSize)
-        fixedWidth /= finalScale.toInt()
-        fixedHeight /= finalScale.toInt()
-    }
-    return Point(fixedWidth, fixedHeight)
+internal fun View.fixedHeight(): Int? {
+    val layoutParams = layoutParams?.takeIf { it.height > 0 } ?: return null
+    return (layoutParams.height - paddingTop - paddingBottom).takeIf { it > 0 }
+        ?: throw IllegalArgumentException("Invalid view height. Because 'layoutParams.height - paddingTop - paddingBottom' execute result is less than or equal to zero")
 }
 
 /**

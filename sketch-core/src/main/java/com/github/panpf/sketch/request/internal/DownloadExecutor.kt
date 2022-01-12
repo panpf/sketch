@@ -48,7 +48,7 @@ class DownloadExecutor(private val sketch: Sketch) {
                 throw throwable
             } else {
                 throwable.printStackTrace()
-                sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
+                sketch.logger.e(MODULE, throwable, "Request error. ${throwable.message} .${request.key}")
                 val exception = throwable.asOrNull<SketchException>()
                     ?: SketchException(request, null, throwable)
                 val errorResult = DownloadResult.Error(request, SketchException(request, null, exception))

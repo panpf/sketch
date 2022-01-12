@@ -29,6 +29,9 @@ class Parameters private constructor(
     /** Returns 'true' if this object has no parameters. */
     fun isEmpty(): Boolean = map.isEmpty()
 
+    /** Returns 'true' if this object has no parameters. */
+    fun isCacheKeyEmpty(): Boolean = map.all { it.value.cacheKey == null }
+
     /** Returns a map of keys to values. */
     fun values(): Map<String, Any?> {
         return if (isEmpty()) {

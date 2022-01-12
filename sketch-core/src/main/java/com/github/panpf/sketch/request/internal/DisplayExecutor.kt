@@ -10,7 +10,8 @@ import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.calculateFixedSize
+import com.github.panpf.sketch.util.fixedHeight
+import com.github.panpf.sketch.util.fixedWidth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.job
@@ -50,7 +51,7 @@ class DisplayExecutor(private val sketch: Sketch) {
 //            readMemoryCache()
 
             sketch.logger.d(MODULE) {
-                "Request started. ${request.uriString}"
+                "Request started. ${request.key}"
             }
             listenerDelegate?.onStart(request)
             val loadingDrawable =
@@ -74,24 +75,33 @@ class DisplayExecutor(private val sketch: Sketch) {
             val successResult = DisplayResult.Success(request, displayData)
             listenerDelegate?.onSuccess(request, successResult)
             sketch.logger.d(MODULE) {
-                "Request Successful. ${request.uriString}"
+                "Request Successful. ${request.key}"
             }
             return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
                 sketch.logger.d(MODULE) {
-                    "Request canceled. ${request.uriString}"
+                    "Request canceled. ${request.key}"
                 }
                 listenerDelegate?.onCancel(request)
                 throw throwable
             } else {
                 throwable.printStackTrace()
-                sketch.logger.e(MODULE, throwable, throwable.message.orEmpty())
+                sketch.logger.e(
+                    MODULE,
+                    throwable,
+                    "Request error. ${throwable.message} .${request.key}"
+                )
                 val exception = throwable.asOrNull<SketchException>()
                     ?: SketchException(request, null, throwable)
                 val errorDrawable =
                     request.errorImage?.getDrawable(sketch.appContext, sketch, request, exception)
-                        ?: request.placeholderImage?.getDrawable(sketch.appContext, sketch, request, null)
+                        ?: request.placeholderImage?.getDrawable(
+                            sketch.appContext,
+                            sketch,
+                            request,
+                            null
+                        )
                 val errorResult = DisplayResult.Error(request, exception, errorDrawable)
                 withContext(Dispatchers.Main) {
                     target?.onError(errorDrawable)
@@ -107,58 +117,73 @@ class DisplayExecutor(private val sketch: Sketch) {
     private fun convertFixedSize(request: DisplayRequest): DisplayRequest {
         // todo 有 byFixedSize 时可延迟到 layout 时再发起请求，这样可以解决有时 imageview 的大小受限于父 view 的动态分配
         val view = request.target.asOrNull<ViewTarget<*>>()?.view
-        val viewFixedSizeLazy by lazy {
-            if (view == null) {
-                throw FixedSizeException(
-                    request,
-                    "target cannot be null and must be ViewTarget because you are using *FixedSize"
-                )
+        val createErrorMessage: (widthOrHeight: String, funName: String) -> String =
+            { widthOrHeight, funName ->
+                "View's $widthOrHeight are not fixed, can not be applied with the $funName function"
             }
-            view.calculateFixedSize()
-        }
+
         val maxSize = request.maxSize
         val fixedSizeFlag = DisplayRequest.SIZE_BY_VIEW_FIXED_SIZE
-        val newMaxSize = if (
-            maxSize != null && (maxSize.width == fixedSizeFlag || maxSize.height == fixedSizeFlag)
-        ) {
-            val viewFixedSize = viewFixedSizeLazy
-                ?: throw FixedSizeException(
-                    request,
-                    "View's width and height are not fixed, can not be applied with the maxSizeByViewFixedSize() function"
+        val newMaxSize = if (maxSize != null) {
+            if (maxSize.width == fixedSizeFlag || maxSize.height == fixedSizeFlag) {
+                require(view != null) {
+                    val message =
+                        "target cannot be null and must be ViewTarget because you are using maxsizeByViewFixedSize()"
+                    throw FixedSizeException(request, message)
+                }
+                MaxSize(
+                    maxSize.width.takeIf { it != fixedSizeFlag }
+                        ?: view.fixedWidth()
+                        ?: throw FixedSizeException(
+                            request, createErrorMessage("width", "maxsizeByViewFixedSize()")
+                        ),
+                    maxSize.height.takeIf { it != fixedSizeFlag }
+                        ?: view.fixedHeight()
+                        ?: throw FixedSizeException(
+                            request, createErrorMessage("height", "maxsizeByViewFixedSize()")
+                        )
                 )
-            MaxSize(
-                maxSize.width.takeIf { it != fixedSizeFlag } ?: viewFixedSize.x,
-                maxSize.height.takeIf { it != fixedSizeFlag } ?: viewFixedSize.y
-            )
+            } else {
+                maxSize
+            }
         } else {
-            null
+            val displayMetrics = sketch.appContext.resources.displayMetrics
+            MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
         }
 
         val resize = request.resize
         val newResize =
             if (resize != null && (resize.width == fixedSizeFlag || resize.height == fixedSizeFlag)) {
-                val viewFixedSize = viewFixedSizeLazy
-                    ?: throw FixedSizeException(
-                        request,
-                        "View's width and height are not fixed, can not be applied with the resizeByViewFixedSize() function"
-                    )
+                require(view != null) {
+                    val message =
+                        "target cannot be null and must be ViewTarget because you are using resizeByViewFixedSize()"
+                    throw FixedSizeException(request, message)
+                }
                 Resize(
-                    width = resize.width.takeIf { it != fixedSizeFlag } ?: viewFixedSize.x,
-                    height = resize.height.takeIf { it != fixedSizeFlag } ?: viewFixedSize.y,
+                    width = resize.width.takeIf { it != fixedSizeFlag }
+                        ?: view.fixedWidth()
+                        ?: throw FixedSizeException(
+                            request, createErrorMessage("width", "resizeByViewFixedSize()")
+                        ),
+                    height = resize.height.takeIf { it != fixedSizeFlag }
+                        ?: view.fixedWidth()
+                        ?: throw FixedSizeException(
+                            request, createErrorMessage("height", "resizeByViewFixedSize()")
+                        ),
                     mode = resize.mode,
                     scaleType = resize.scaleType,
                     minAspectRatio = resize.minAspectRatio
                 )
             } else {
-                null
+                resize
             }
 
-        return if (newMaxSize != null || newResize != null) {
+        return if (newMaxSize != maxSize || newResize != resize) {
             request.newDisplayRequestBuilder() {
-                if (newMaxSize != null) {
+                if (newMaxSize != maxSize) {
                     maxSize(newMaxSize)
                 }
-                if (newResize != null) {
+                if (newResize != resize) {
                     resize(newResize)
                 }
             }.build()

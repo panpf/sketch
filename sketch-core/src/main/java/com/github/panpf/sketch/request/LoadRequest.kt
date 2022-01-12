@@ -14,7 +14,6 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
-import com.github.panpf.sketch.request.DownloadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
@@ -128,7 +127,7 @@ interface LoadRequest : DownloadRequest {
 
         fun newQualityKey(request: LoadRequest): String? = buildString {
             val parameters = request.parameters
-            if (parameters != null) {
+            if (parameters != null && !parameters.isCacheKeyEmpty()) {
                 if (length > 0) append("_")
                 append(parameters.cacheKey)
             }
