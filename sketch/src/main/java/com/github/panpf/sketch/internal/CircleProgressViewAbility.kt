@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.internal
 
 import android.content.res.Resources
 import android.graphics.Canvas
@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.graphics.RectF
-import android.view.View
+import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
 
 class CircleProgressViewAbility constructor(
@@ -41,14 +41,16 @@ class CircleProgressViewAbility constructor(
     private val progressOval = RectF()
     private val realSize = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f)
 
-    override fun drawIndicator(canvas: Canvas, view: View, progress: Float) {
-        val availableWidth = view.width - view.paddingLeft - view.paddingRight.toFloat()
-        val availableHeight = view.height - view.paddingTop - view.paddingBottom.toFloat()
+    override fun drawIndicator(canvas: Canvas, host: Host, progress: Float) {
+        val layoutRect = host.layoutRect
+        val paddingRect = host.paddingRect
+        val availableWidth = layoutRect.width() - paddingRect.left - paddingRect.right.toFloat()
+        val availableHeight = layoutRect.height() - paddingRect.top - paddingRect.bottom.toFloat()
 
         // background
         val radius = realSize / 2f
-        val cx = view.left + view.paddingLeft + (availableWidth / 2f)
-        val cy = view.top + view.paddingTop + (availableHeight / 2f)
+        val cx = layoutRect.left + paddingRect.left + (availableWidth / 2f)
+        val cy = layoutRect.top + paddingRect.top + (availableHeight / 2f)
         canvas.drawCircle(cx, cy, radius, backgroundPaint)
 
         // stroke
@@ -80,7 +82,8 @@ fun ViewAbilityContainerOwner.showCircleProgressIndicator(
         .find { it is CircleProgressViewAbility }
         ?.let { viewAbilityContainer.removeViewAbility(it) }
     if (showProgressIndicator) {
-        val indicator = CircleProgressViewAbility(sizeDp, backgroundColor, strokeColor, progressColor)
+        val indicator =
+            CircleProgressViewAbility(sizeDp, backgroundColor, strokeColor, progressColor)
         viewAbilityContainer.addViewAbility(indicator)
     }
 }

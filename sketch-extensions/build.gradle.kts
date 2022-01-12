@@ -28,8 +28,10 @@ android {
 
 dependencies {
     api(project(":sketch-core"))
-    implementation("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
-    implementation("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")
+    api(project(":sketch-viewability"))
+    api("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
+    api("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")
+    api("io.github.panpf.tools4a:tools4a-network-ktx:${property("TOOLS4A")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")

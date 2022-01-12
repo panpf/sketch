@@ -1,36 +1,40 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.internal
 
 import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import android.widget.ImageView
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.DrawAbility
-import com.github.panpf.sketch.viewability.RequestListenerAbility
+import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbility
+import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
 
 class MimeTypeLogoViewAbility(
     private val mimeTypeIconMap: Map<String, MimeTypeLogo>,
     private val margin: Int = 0
-) : ViewAbility, RequestListenerAbility, DrawAbility {
+) : ViewAbility, RequestListenerObserver, DrawObserver {
 
-    override var view: ImageView? = null
+    override var host: Host? = null
+        set(value) {
+            field = value
+            value?.postInvalidate()
+        }
 
     override fun onRequestStart(request: DisplayRequest) {
-        view?.postInvalidate()
+        host?.postInvalidate()
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {
-        view?.postInvalidate()
+        host?.postInvalidate()
     }
 
     override fun onRequestSuccess(request: DisplayRequest, result: Success) {
-        view?.postInvalidate()
+        host?.postInvalidate()
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -38,18 +42,20 @@ class MimeTypeLogoViewAbility(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val view = view ?: return
-        val lastDrawable = view.drawable?.getLastDrawable() ?: return
+        val host = host ?: return
+        val lastDrawable = host.drawable?.getLastDrawable() ?: return
         if (lastDrawable !is SketchDrawable) return
         val mimeType = lastDrawable.mimeType ?: return
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
         if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return
-        val logoDrawable = mimeTypeLogo.getDrawable(view.context)
+        val layoutRect = host.layoutRect
+        val paddingRect = host.paddingRect
+        val logoDrawable = mimeTypeLogo.getDrawable(host.context)
         logoDrawable.setBounds(
-            view.right - view.paddingRight - margin - logoDrawable.intrinsicWidth,
-            view.bottom - view.paddingBottom - margin - logoDrawable.intrinsicHeight,
-            view.right - view.paddingRight - margin,
-            view.bottom - view.paddingBottom - margin
+            layoutRect.right - paddingRect.right - margin - logoDrawable.intrinsicWidth,
+            layoutRect.bottom - paddingRect.bottom - margin - logoDrawable.intrinsicHeight,
+            layoutRect.right - paddingRect.right - margin,
+            layoutRect.bottom - paddingRect.bottom - margin
         )
         logoDrawable.draw(canvas)
     }

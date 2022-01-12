@@ -10,15 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.internal.requestManagerOrNull
 
-class PauseLoadScrollListener : RecyclerView.OnScrollListener(), AbsListView.OnScrollListener {
+class PauseLoadWhenScrollingMixedScrollListener : RecyclerView.OnScrollListener(), AbsListView.OnScrollListener {
 
     companion object {
         fun attach(recyclerView: RecyclerView) {
-            recyclerView.addOnScrollListener(PauseLoadScrollListener())
+            recyclerView.addOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
         }
 
         fun attach(view: AbsListView) {
-            view.setOnScrollListener(PauseLoadScrollListener())
+            view.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
         }
     }
 
@@ -29,7 +29,7 @@ class PauseLoadScrollListener : RecyclerView.OnScrollListener(), AbsListView.OnS
             val requestManager = it.requestManagerOrNull
             if (requestManager != null) {
                 val result = requestManager.getResult()
-                if (result is DisplayResult.Error && result.exception.isCausedByPauseLoadWhenScroll) {
+                if (result is DisplayResult.Error && result.exception.isCausedByPauseLoadWhenScrolling) {
                     requestManager.restart()
                 }
             }
@@ -42,10 +42,10 @@ class PauseLoadScrollListener : RecyclerView.OnScrollListener(), AbsListView.OnS
         val adapter = recyclerView.adapter
         if (adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                PauseLoadWhenScrollDisplayInterceptor.scrolling = true
+                PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollDisplayInterceptor.scrolling) {
-                    PauseLoadWhenScrollDisplayInterceptor.scrolling = false
+                if (PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
                     restart(recyclerView)
                 }
             }
@@ -60,10 +60,10 @@ class PauseLoadScrollListener : RecyclerView.OnScrollListener(), AbsListView.OnS
             }
             if (listAdapter is BaseAdapter) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    PauseLoadWhenScrollDisplayInterceptor.scrolling = true
+                    PauseLoadWhenScrollingDisplayInterceptor.scrolling = true
                 } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (PauseLoadWhenScrollDisplayInterceptor.scrolling) {
-                        PauseLoadWhenScrollDisplayInterceptor.scrolling = false
+                    if (PauseLoadWhenScrollingDisplayInterceptor.scrolling) {
+                        PauseLoadWhenScrollingDisplayInterceptor.scrolling = false
                         restart(view)
                     }
                 }

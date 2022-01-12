@@ -19,14 +19,11 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayRequest.Builder
 import com.github.panpf.sketch.request.internal.UriEmptyException
-import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.util.SketchException
 import java.util.LinkedList
-import java.util.regex.Matcher
 
-class ErrorStateImage(val matcherList: List<Matcher>) : StateImage {
+class ErrorStateImage(private val matcherList: List<Matcher>) : StateImage {
 
     override fun getDrawable(
         context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?
@@ -58,34 +55,18 @@ class ErrorStateImage(val matcherList: List<Matcher>) : StateImage {
         }
 
         fun emptyErrorImage(emptyImage: StateImage): Builder = apply {
-            addMatcher(EmptyMatcherImpl(emptyImage))
+            addMatcher(EmptyMatcher(emptyImage))
         }
 
         fun emptyErrorImage(emptyDrawable: Drawable): Builder = apply {
-            addMatcher(EmptyMatcherImpl(StateImage.drawable(emptyDrawable)))
+            addMatcher(EmptyMatcher(StateImage.drawable(emptyDrawable)))
         }
 
         fun emptyErrorImage(emptyImageResId: Int): Builder = apply {
-            addMatcher(EmptyMatcherImpl(StateImage.drawableRes(emptyImageResId)))
+            addMatcher(EmptyMatcher(StateImage.drawableRes(emptyImageResId)))
         }
 
-        fun saveCellularTrafficErrorImage(saveCellularTrafficImage: StateImage): Builder = apply {
-            addMatcher(SaveCellularTrafficMatcherImpl(saveCellularTrafficImage))
-        }
-
-        fun saveCellularTrafficErrorImage(saveCellularTrafficDrawable: Drawable): Builder = apply {
-            addMatcher(
-                SaveCellularTrafficMatcherImpl(StateImage.drawable(saveCellularTrafficDrawable))
-            )
-        }
-
-        fun saveCellularTrafficErrorImage(saveCellularTrafficImageResId: Int): Builder = apply {
-            addMatcher(
-                SaveCellularTrafficMatcherImpl(StateImage.drawableRes(saveCellularTrafficImageResId))
-            )
-        }
-
-        fun build(): ErrorStateImage = ErrorStateImage(matcherList.plus(MatcherImpl(errorImage)))
+        fun build(): ErrorStateImage = ErrorStateImage(matcherList.plus(DefaultMatcher(errorImage)))
     }
 
     interface Matcher {
@@ -104,7 +85,7 @@ class ErrorStateImage(val matcherList: List<Matcher>) : StateImage {
         ): Drawable?
     }
 
-    private class MatcherImpl(val errorImage: StateImage) : Matcher {
+    private class DefaultMatcher(val errorImage: StateImage) : Matcher {
         override fun match(
             context: Context,
             sketch: Sketch,
@@ -120,7 +101,7 @@ class ErrorStateImage(val matcherList: List<Matcher>) : StateImage {
         ): Drawable? = errorImage.getDrawable(context, sketch, request, throwable)
     }
 
-    private class EmptyMatcherImpl(val emptyImage: StateImage) : Matcher {
+    private class EmptyMatcher(val emptyImage: StateImage) : Matcher {
         override fun match(
             context: Context,
             sketch: Sketch,
@@ -134,24 +115,5 @@ class ErrorStateImage(val matcherList: List<Matcher>) : StateImage {
             request: DisplayRequest,
             throwable: SketchException?
         ): Drawable? = emptyImage.getDrawable(context, sketch, request, throwable)
-    }
-
-    private class SaveCellularTrafficMatcherImpl(
-        val saveCellularTrafficImage: StateImage
-    ) : Matcher {
-
-        override fun match(
-            context: Context,
-            sketch: Sketch,
-            request: DisplayRequest,
-            throwable: SketchException?
-        ): Boolean = throwable?.isCausedBySaveCellularTraffic == true
-
-        override fun getDrawable(
-            context: Context,
-            sketch: Sketch,
-            request: DisplayRequest,
-            throwable: SketchException?
-        ): Drawable? = saveCellularTrafficImage.getDrawable(context, sketch, request, throwable)
     }
 }

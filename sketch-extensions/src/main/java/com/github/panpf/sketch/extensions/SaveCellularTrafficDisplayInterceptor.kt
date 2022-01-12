@@ -1,16 +1,18 @@
-package com.github.panpf.sketch.request
+package com.github.panpf.sketch.extensions
 
 import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.Interceptor.Chain
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.RequestDepth.LOCAL
+import com.github.panpf.sketch.request.DisplayData
+import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 
 /**
- * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular, Then can also cooperate with [com.github.panpf.sketch.stateimage.ErrorStateImage.saveCellularTrafficImage] custom error image display
+ * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular, Then can also cooperate with [saveCellularTrafficErrorImage] custom error image display
  */
 class SaveCellularTrafficDisplayInterceptor : Interceptor<DisplayRequest, DisplayData> {
 
@@ -73,4 +75,6 @@ val ImageRequest.isDepthFromSaveCellularTraffic: Boolean
     get() = depthFrom == SaveCellularTrafficDisplayInterceptor.KEY
 
 val SketchException.isCausedBySaveCellularTraffic: Boolean
-    get() = this is RequestDepthException && depth == LOCAL && depthFrom == SaveCellularTrafficDisplayInterceptor.KEY
+    get() = this is RequestDepthException
+            && depth == RequestDepth.LOCAL
+            && depthFrom == SaveCellularTrafficDisplayInterceptor.KEY

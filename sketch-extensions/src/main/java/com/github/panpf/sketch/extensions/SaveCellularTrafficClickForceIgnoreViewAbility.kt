@@ -1,38 +1,34 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.extensions
 
 import android.view.View
-import android.widget.ImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
-import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
-import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.viewability.ClickAbility
-import com.github.panpf.sketch.viewability.RequestListenerAbility
+import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbility
+import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
 
-// todo 移到 extensions 模块
-class IgnoreSaveCellularTrafficViewAbility : ViewAbility, ClickAbility, RequestListenerAbility {
+class SaveCellularTrafficClickForceIgnoreViewAbility
+    : ViewAbility, ClickObserver, RequestListenerObserver {
 
     private var errorFromSaveCellularTraffic = false
     private var request: DisplayRequest? = null
 
-    override var view: ImageView? = null
+    override var host: Host? = null
 
     override val canIntercept: Boolean
-        get() = view != null && errorFromSaveCellularTraffic && request != null
+        get() = host != null && errorFromSaveCellularTraffic && request != null
 
     override fun onClick(v: View): Boolean {
         if (!canIntercept) return false
-        val view = view ?: return false
+        val host = host ?: return false
         val request = request ?: return false
         val newRequest = request.newDisplayRequest {
             ignoreSaveCellularTraffic(true)
-            target(view)
         }
-        view.context.sketch.enqueueDisplay(newRequest)
+        host.submitRequest(newRequest)
         return true
     }
 
@@ -59,9 +55,9 @@ class IgnoreSaveCellularTrafficViewAbility : ViewAbility, ClickAbility, RequestL
 fun ViewAbilityContainerOwner.setClickRedisplayAndIgnoreSaveCellularTraffic(enabled: Boolean) {
     val viewAbilityContainer = viewAbilityContainer
     viewAbilityContainer.viewAbilityList
-        .find { it is IgnoreSaveCellularTrafficViewAbility }
+        .find { it is SaveCellularTrafficClickForceIgnoreViewAbility }
         ?.let { viewAbilityContainer.removeViewAbility(it) }
     if (enabled) {
-        viewAbilityContainer.addViewAbility(IgnoreSaveCellularTrafficViewAbility())
+        viewAbilityContainer.addViewAbility(SaveCellularTrafficClickForceIgnoreViewAbility())
     }
 }

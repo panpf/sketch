@@ -4,12 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.lifecycle.Observer
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.internal.MimeTypeLogo
+import com.github.panpf.sketch.internal.setMimeTypeLogoWith
+import com.github.panpf.sketch.internal.showDataFrom
+import com.github.panpf.sketch.internal.showMaskProgressIndicator
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.viewability.extensions.MimeTypeLogo
-import com.github.panpf.sketch.viewability.extensions.setMimeTypeLogoWith
-import com.github.panpf.sketch.viewability.extensions.showDataFrom
-import com.github.panpf.sketch.viewability.extensions.showMaskProgressIndicator
 
 class MyListImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null

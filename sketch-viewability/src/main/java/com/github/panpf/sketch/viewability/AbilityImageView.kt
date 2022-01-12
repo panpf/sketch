@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
-open class AbilityImageView @JvmOverloads constructor(
+abstract class AbilityImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : AppCompatImageView(context, attrs), ViewAbilityContainerOwner {
 
@@ -36,11 +36,11 @@ open class AbilityImageView @JvmOverloads constructor(
     }
 
     override fun getListener(): Listener<DisplayRequest, Success, Error>? {
-        return _viewAbilityContainer.getListener()
+        return _viewAbilityContainer.getRequestListener()
     }
 
     override fun getProgressListener(): ProgressListener<DisplayRequest>? {
-        return _viewAbilityContainer.getProgressListener()
+        return _viewAbilityContainer.getRequestProgressListener()
     }
 
     override fun onAttachedToWindow() {

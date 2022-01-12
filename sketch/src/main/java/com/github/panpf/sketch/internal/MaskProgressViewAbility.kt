@@ -1,9 +1,9 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.internal
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.view.View
 import androidx.annotation.ColorInt
+import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
 
 class MaskProgressViewAbility(
@@ -19,12 +19,14 @@ class MaskProgressViewAbility(
         isAntiAlias = true
     }
 
-    override fun drawIndicator(canvas: Canvas, view: View, progress: Float) {
+    override fun drawIndicator(canvas: Canvas, host: Host, progress: Float) {
+        val layoutRect = host.layoutRect
+        val paddingRect = host.paddingRect
         canvas.drawRect(
-            view.left + view.paddingLeft.toFloat(),
-            view.top + view.paddingTop + ((progress * (view.height - view.paddingTop - view.paddingBottom))),
-            view.right - view.paddingRight.toFloat(),
-            view.bottom - view.paddingTop.toFloat(),
+            layoutRect.left + paddingRect.left.toFloat(),
+            layoutRect.top + paddingRect.top + ((progress * (layoutRect.height() - paddingRect.top - paddingRect.bottom))),
+            layoutRect.right - paddingRect.right.toFloat(),
+            layoutRect.bottom - paddingRect.top.toFloat(),
             paint
         )
     }

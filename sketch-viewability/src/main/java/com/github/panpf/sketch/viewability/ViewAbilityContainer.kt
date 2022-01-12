@@ -17,9 +17,9 @@ interface ViewAbilityContainer {
 
     val viewAbilityList: List<ViewAbility>
 
-    fun getListener(): Listener<DisplayRequest, Success, Error>?
+    fun getRequestListener(): Listener<DisplayRequest, Success, Error>?
 
-    fun getProgressListener(): ProgressListener<DisplayRequest>?
+    fun getRequestProgressListener(): ProgressListener<DisplayRequest>?
 
     fun onAttachedToWindow()
 

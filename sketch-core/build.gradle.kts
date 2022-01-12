@@ -33,7 +33,6 @@ dependencies {
     api("androidx.appcompat:appcompat-resources:${property("ANDROIDX_APPCOMPAT")}")
     api("androidx.exifinterface:exifinterface:${property("ANDROIDX_EXIFINTERFACE")}")
     api("androidx.lifecycle:lifecycle-runtime:${property("ANDROIDX_LIFECYCLE")}")
-    api("io.github.panpf.tools4a:tools4a-network-ktx:${property("TOOLS4A")}")
 //    api("com.squareup.okio:okio:${property("OKIO")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")

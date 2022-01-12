@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.extensions.pauseLoadWhenScroll
-import com.github.panpf.sketch.extensions.pauseLoadWhenScrollErrorImage
-import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.extensions.pauseLoadWhenScrolling
+import com.github.panpf.sketch.extensions.pauseLoadWhenScrollingErrorImage
+import com.github.panpf.sketch.extensions.saveCellularTraffic
+import com.github.panpf.sketch.extensions.saveCellularTrafficErrorImage
+import com.github.panpf.sketch.extensions.setClickRedisplayAndIgnoreSaveCellularTraffic
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
-import com.github.panpf.sketch.viewability.extensions.setClickRedisplayAndIgnoreSaveCellularTraffic
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
@@ -92,12 +93,12 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
 
             displayImage(data.firstThumbnailUrl) {
                 disabledAnimationDrawable(context.appSettingsService.disabledAnimatableDrawableInList.value == true)
-                pauseLoadWhenScroll(context.appSettingsService.pauseLoadWhenScrollInList.value == true)
+                pauseLoadWhenScrolling(context.appSettingsService.pauseLoadWhenScrollInList.value == true)
                 saveCellularTraffic(context.appSettingsService.saveCellularTrafficInList.value == true)
                 placeholderImage(R.drawable.image_loading)
                 errorImage(R.drawable.image_error) {
                     saveCellularTrafficErrorImage(R.drawable.image_pause_download)
-                    pauseLoadWhenScrollErrorImage()
+                    pauseLoadWhenScrollingErrorImage()
                 }
             }
         }

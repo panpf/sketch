@@ -1,57 +1,63 @@
 package com.github.panpf.sketch.viewability
 
 import android.graphics.Canvas
+import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
-import android.widget.ImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
+import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
+import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
+import com.github.panpf.sketch.viewability.ViewAbility.LongClickObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
 import java.lang.ref.WeakReference
 
 class ViewAbilityContainerImpl(
     private val owner: ViewAbilityContainerOwner,
-    private val imageView: ImageView
-) :
-    ViewAbilityContainer {
+    view: View
+) : ViewAbilityContainer {
+
+    private val displayRequestListener: DisplayRequestListener by lazy {
+        DisplayRequestListener(WeakReference(this@ViewAbilityContainerImpl))
+    }
+    private val host = Host(view, owner)
 
     private var clickListenerWrapper: OnClickListener? = null
     private var longClickListenerWrapper: OnLongClickListener? = null
 
     private val _viewAbilityList = LinkedHashSet<ViewAbility>()
     private var _viewAbilityImmutableList: List<ViewAbility> = _viewAbilityList.toList()
-    private var clickAbilityList: List<ClickAbility>? = null
-    private var drawAbilityList: List<DrawAbility>? = null
-    private var layoutAbilityList: List<LayoutAbility>? = null
-    private var attachAbilityList: List<AttachAbility>? = null
-    private var longClickAbilityList: List<LongClickAbility>? = null
-    private var requestListenerAbilityList: List<RequestListenerAbility>? = null
-    private var requestProgressListenerAbilityList: List<RequestProgressListenerAbility>? = null
-
-    private val displayRequestListener: DisplayRequestListener by lazy {
-        DisplayRequestListener(WeakReference(this@ViewAbilityContainerImpl))
-    }
+    private var clickObserverList: List<ClickObserver>? = null
+    private var drawObserverList: List<DrawObserver>? = null
+    private var layoutAbilityList: List<LayoutObserver>? = null
+    private var attachObserverList: List<AttachObserver>? = null
+    private var longClickAbilityList: List<LongClickObserver>? = null
+    private var requestListenerAbilityList: List<RequestListenerObserver>? = null
+    private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
 
     private fun onAbilityListChanged() {
-        clickAbilityList = _viewAbilityList.mapNotNull { if (it is ClickAbility) it else null }
-        drawAbilityList = _viewAbilityList.mapNotNull { if (it is DrawAbility) it else null }
-        layoutAbilityList = _viewAbilityList.mapNotNull { if (it is LayoutAbility) it else null }
-        attachAbilityList = _viewAbilityList.mapNotNull { if (it is AttachAbility) it else null }
+        clickObserverList = _viewAbilityList.mapNotNull { if (it is ClickObserver) it else null }
+        drawObserverList = _viewAbilityList.mapNotNull { if (it is DrawObserver) it else null }
+        layoutAbilityList = _viewAbilityList.mapNotNull { if (it is LayoutObserver) it else null }
+        attachObserverList = _viewAbilityList.mapNotNull { if (it is AttachObserver) it else null }
         longClickAbilityList =
-            _viewAbilityList.mapNotNull { if (it is LongClickAbility) it else null }
+            _viewAbilityList.mapNotNull { if (it is LongClickObserver) it else null }
         requestListenerAbilityList =
-            _viewAbilityList.mapNotNull { if (it is RequestListenerAbility) it else null }
+            _viewAbilityList.mapNotNull { if (it is RequestListenerObserver) it else null }
         requestProgressListenerAbilityList =
-            _viewAbilityList.mapNotNull { if (it is RequestProgressListenerAbility) it else null }
+            _viewAbilityList.mapNotNull { if (it is RequestProgressListenerObserver) it else null }
         _viewAbilityImmutableList = _viewAbilityList.toList()
         _viewAbilityList.forEach {
-            it.view = imageView
+            it.host = host
         }
         refreshOnClickListener()
         refreshOnLongClickListener()
-        imageView.postInvalidate()
     }
 
     override fun addViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
@@ -67,7 +73,7 @@ class ViewAbilityContainerImpl(
     override val viewAbilityList: List<ViewAbility>
         get() = _viewAbilityImmutableList
 
-    override fun getListener(): Listener<DisplayRequest, Success, Error>? {
+    override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
         return if (requestListenerAbilityList?.isNotEmpty() == true) {
             displayRequestListener
         } else {
@@ -75,7 +81,7 @@ class ViewAbilityContainerImpl(
         }
     }
 
-    override fun getProgressListener(): ProgressListener<DisplayRequest>? {
+    override fun getRequestProgressListener(): ProgressListener<DisplayRequest>? {
         return if (requestProgressListenerAbilityList?.isNotEmpty() == true) {
             displayRequestListener
         } else {
@@ -85,18 +91,18 @@ class ViewAbilityContainerImpl(
 
     override fun onAttachedToWindow() {
         _viewAbilityList.forEach {
-            it.view = imageView
+            it.host = host
         }
-        attachAbilityList?.forEach {
+        attachObserverList?.forEach {
             it.onAttachedToWindow()
         }
     }
 
     override fun onDetachedFromWindow() {
         _viewAbilityList.forEach {
-            it.view = null
+            it.host = null
         }
-        attachAbilityList?.forEach {
+        attachObserverList?.forEach {
             it.onDetachedFromWindow()
         }
     }
@@ -108,25 +114,25 @@ class ViewAbilityContainerImpl(
     }
 
     override fun onDrawBefore(canvas: Canvas) {
-        drawAbilityList?.forEach {
+        drawObserverList?.forEach {
             it.onDrawBefore(canvas)
         }
     }
 
     override fun onDraw(canvas: Canvas) {
-        drawAbilityList?.forEach {
+        drawObserverList?.forEach {
             it.onDraw(canvas)
         }
     }
 
     override fun onDrawForegroundBefore(canvas: Canvas) {
-        drawAbilityList?.forEach {
+        drawObserverList?.forEach {
             it.onDrawForegroundBefore(canvas)
         }
     }
 
     override fun onDrawForeground(canvas: Canvas) {
-        drawAbilityList?.forEach {
+        drawObserverList?.forEach {
             it.onDrawForeground(canvas)
         }
     }
@@ -175,7 +181,7 @@ class ViewAbilityContainerImpl(
 
     private fun refreshOnClickListener() {
         val clickListenerWrapper = clickListenerWrapper
-        val clickAbilityList = clickAbilityList
+        val clickAbilityList = clickObserverList
         if (clickListenerWrapper != null || clickAbilityList?.any { it.canIntercept } == true) {
             owner.superSetOnClickListener { view ->
                 if (clickAbilityList != null) {

@@ -1,31 +1,35 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.internal
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Canvas
-import android.view.View
-import android.widget.ImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.viewability.DrawAbility
-import com.github.panpf.sketch.viewability.LayoutAbility
-import com.github.panpf.sketch.viewability.RequestListenerAbility
-import com.github.panpf.sketch.viewability.RequestProgressListenerAbility
+import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbility
+import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
 
-abstract class AbsProgressViewAbility : ViewAbility, LayoutAbility, RequestListenerAbility,
-    RequestProgressListenerAbility, DrawAbility {
+abstract class AbsProgressViewAbility : ViewAbility, LayoutObserver, RequestListenerObserver,
+    RequestProgressListenerObserver, DrawObserver {
 
     private var show: Boolean = false
-    override var view: ImageView? = null
     private var progress: Float = -1F
         set(value) {
             field = value
-            view?.postInvalidate()
+            host?.postInvalidate()
         }
     private var progressAnimator: ValueAnimator? = null
+
+    override var host: Host? = null
+        set(value) {
+            field = value
+            value?.postInvalidate()
+        }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         this.progress = progress
@@ -76,10 +80,10 @@ abstract class AbsProgressViewAbility : ViewAbility, LayoutAbility, RequestListe
 
     override fun onDraw(canvas: Canvas) {
         if (!show) return
-        val view = view ?: return
+        val host = host ?: return
         val progress = progress.takeIf { it >= 0f } ?: return
         canvas.save()
-        drawIndicator(canvas, view, progress)
+        drawIndicator(canvas, host, progress)
         canvas.restore()
     }
 
@@ -91,5 +95,5 @@ abstract class AbsProgressViewAbility : ViewAbility, LayoutAbility, RequestListe
 
     }
 
-    abstract fun drawIndicator(canvas: Canvas, view: View, progress: Float)
+    abstract fun drawIndicator(canvas: Canvas, host: Host, progress: Float)
 }

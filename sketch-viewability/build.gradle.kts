@@ -28,7 +28,7 @@ android {
 
 dependencies {
     api(project(":sketch-core"))
-    api(project(":sketch-viewability"))
+    api("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")

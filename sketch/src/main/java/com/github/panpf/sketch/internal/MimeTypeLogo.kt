@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.internal
 
 import android.content.Context
 import android.graphics.drawable.Drawable

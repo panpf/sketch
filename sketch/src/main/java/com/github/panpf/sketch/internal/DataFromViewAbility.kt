@@ -1,25 +1,25 @@
-package com.github.panpf.sketch.viewability.extensions
+package com.github.panpf.sketch.internal
 
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.widget.ImageView
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.DrawAbility
-import com.github.panpf.sketch.viewability.LayoutAbility
-import com.github.panpf.sketch.viewability.RequestListenerAbility
+import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ViewAbility
+import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
 
 class DataFromViewAbility(
     sizeDp: Float = DEFAULT_SIZE_DP
-) : ViewAbility, RequestListenerAbility, DrawAbility, LayoutAbility {
+) : ViewAbility, RequestListenerObserver, DrawObserver, LayoutObserver {
 
     companion object {
         const val DEFAULT_SIZE_DP = 20f
@@ -34,27 +34,30 @@ class DataFromViewAbility(
     private val paint = Paint().apply { isAntiAlias = true }
     private val realSize = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f)
 
-    override var view: ImageView? = null
+    override var host: Host? = null
         set(value) {
             field = value
             initImageFromPath()
+            value?.postInvalidate()
         }
 
     private fun initImageFromPath() {
         path.reset()
-        val view = view ?: return
+        val host = host ?: return
+        val layoutRect = host.layoutRect
+        val paddingRect = host.paddingRect
         path.apply {
             moveTo(
-                view.right - view.paddingRight - realSize,
-                view.top + view.paddingTop.toFloat()
+                layoutRect.right - paddingRect.right - realSize,
+                layoutRect.top + paddingRect.top.toFloat()
             )
             lineTo(
-                view.right - view.paddingRight.toFloat(),
-                view.top + view.paddingTop.toFloat()
+                layoutRect.right - paddingRect.right.toFloat(),
+                layoutRect.top + paddingRect.top.toFloat()
             )
             lineTo(
-                view.right - view.paddingRight.toFloat(),
-                view.top - view.paddingTop.toFloat() + realSize
+                layoutRect.right - paddingRect.right.toFloat(),
+                layoutRect.top - paddingRect.top.toFloat() + realSize
             )
             close()
         }
@@ -65,15 +68,15 @@ class DataFromViewAbility(
     }
 
     override fun onRequestStart(request: DisplayRequest) {
-        view?.postInvalidate()
+        host?.postInvalidate()
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {
-        view?.postInvalidate()
+        host?.postInvalidate()
     }
 
     override fun onRequestSuccess(request: DisplayRequest, result: Success) {
-        view?.postInvalidate()
+        host?.postInvalidate()
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -81,7 +84,8 @@ class DataFromViewAbility(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val lastDrawable = view?.drawable?.getLastDrawable() ?: return
+        val host = host ?: return
+        val lastDrawable = host.drawable?.getLastDrawable() ?: return
         if (lastDrawable !is SketchDrawable) return
         val dataFrom = lastDrawable.dataFrom ?: return
         val path = path.takeIf { !it.isEmpty } ?: return
