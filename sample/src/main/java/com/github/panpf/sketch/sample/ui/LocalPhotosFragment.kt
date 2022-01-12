@@ -60,6 +60,11 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
     private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
     private val sampleMenuListViewModel by viewModels<SampleMenuListViewModel>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sampleMenuListViewModel.showPlayMenu = true
+    }
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
