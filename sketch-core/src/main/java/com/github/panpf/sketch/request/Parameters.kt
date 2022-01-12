@@ -3,11 +3,11 @@
 
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.Parameters.Entry
 
-/** A map of generic values that can be used to pass custom data to [Fetcher]s and [Decoder]s. */
+/** A map of generic values that can be used to pass custom data to [Fetcher]s and [BitmapDecoder]s. */
 class Parameters private constructor(
     private val map: Map<String, Entry>
 ) : Iterable<Pair<String, Entry>> {

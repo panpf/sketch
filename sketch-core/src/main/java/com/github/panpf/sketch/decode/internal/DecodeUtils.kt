@@ -17,12 +17,37 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.BitmapFactory.Options
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.LoadRequest
 import java.io.IOException
+
+fun DataSource.readImageInfo(request: LoadRequest): ImageInfo {
+    val boundOptions = Options().apply {
+        inJustDecodeBounds = true
+    }
+    decodeBitmap(boundOptions)
+    if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
+        throw BitmapDecodeException(
+            request,
+            "Invalid image size. size=${boundOptions.outWidth}x${boundOptions.outHeight}, uri=${request.uriString}"
+        )
+    }
+
+    val exifOrientation: Int = ExifOrientationCorrector
+        .readExifOrientation(boundOptions.outMimeType, this)
+    return ImageInfo(
+        boundOptions.outMimeType,
+        boundOptions.outWidth,
+        boundOptions.outHeight,
+        exifOrientation
+    )
+}
 
 @Throws(IOException::class)
 fun DataSource.decodeBitmap(options: BitmapFactory.Options): Bitmap? =

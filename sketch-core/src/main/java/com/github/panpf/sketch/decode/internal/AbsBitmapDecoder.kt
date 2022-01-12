@@ -8,7 +8,7 @@ import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
@@ -19,8 +19,8 @@ import com.github.panpf.sketch.util.format
 abstract class AbsBitmapDecoder(
     protected val sketch: Sketch,
     protected val request: LoadRequest,
-    protected val source: DataSource,
-) : Decoder {
+    protected val dataSource: DataSource,
+) : BitmapDecoder {
 
     protected val bitmapPoolHelper = sketch.bitmapPoolHelper
     protected val logger = sketch.logger
@@ -52,7 +52,7 @@ abstract class AbsBitmapDecoder(
             decodeWrapper(imageInfo, decodeOptions, imageOrientationCorrector)
         }
 
-        return BitmapDecodeResult(bitmap, imageInfo, source.from)
+        return BitmapDecodeResult(bitmap, imageInfo, dataSource.from)
     }
 
     private fun shouldUseRegionDecoder(

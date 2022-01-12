@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.github.panpf.sketch.Interceptor
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -16,22 +15,22 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class ResultCacheInterceptor : Interceptor<LoadRequest, BitmapDecodeResult> {
+class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
     companion object {
         const val MODULE = "LoadResultCacheInterceptor"
     }
 
     override suspend fun intercept(
-        sketch: Sketch,
-        chain: Interceptor.Chain<LoadRequest, BitmapDecodeResult>,
+        chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>,
     ): BitmapDecodeResult {
         val request = chain.request
+        val sketch = chain.sketch
         val resultCacheHelper = ResultCacheHelper.from(sketch, request)
         resultCacheHelper?.lock?.lock()
         try {
             return resultCacheHelper?.read(sketch.decodeTaskDispatcher)
-                ?: chain.proceed(sketch, request).apply {
+                ?: chain.proceed(request).apply {
                     resultCacheHelper?.write(this, sketch.decodeTaskDispatcher)
                 }
         } finally {

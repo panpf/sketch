@@ -1,26 +1,25 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Interceptor
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.DecodeDrawableInterceptorChain
+import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.RequestInterceptor
 
-class DisplayEngineInterceptor : Interceptor<DisplayRequest, DisplayData> {
+class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
 
     @WorkerThread
-    override suspend fun intercept(
-        sketch: Sketch,
-        chain: Interceptor.Chain<DisplayRequest, DisplayData>,
-    ): DisplayData {
+    override suspend fun intercept(chain: RequestInterceptor.Chain<DisplayRequest, DisplayData>): DisplayData {
+        val sketch = chain.sketch
         val request = chain.request
-        val drawableData = DecodeDrawableInterceptorChain(
+        val drawableDecodeResult = DrawableDecodeInterceptorChain(
             initialRequest = request,
-            interceptors = sketch.decodeDrawableInterceptors,
+            interceptors = sketch.drawableDecodeInterceptors,
             index = 0,
+            sketch = sketch,
             request = request,
-        ).proceed(sketch, request)
-        return DisplayData(drawableData.drawable, drawableData.info, drawableData.from)
+            dataSource = null,
+        ).proceed(request)
+        return DisplayData(drawableDecodeResult.drawable, drawableDecodeResult.info, drawableDecodeResult.from)
     }
 }

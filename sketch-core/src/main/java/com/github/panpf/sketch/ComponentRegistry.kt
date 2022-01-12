@@ -1,14 +1,17 @@
 package com.github.panpf.sketch
 
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.BitmapDecoder
+import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 
 class ComponentRegistry private constructor(
     val fetcherFactoryList: List<Fetcher.Factory>,
-    val decoderFactoryList: List<Decoder.Factory>,
+    val bitmapDecoderFactoryList: List<BitmapDecoder.Factory>,
+    val drawableDecoderFactoryList: List<DrawableDecoder.Factory>,
 ) {
 
     fun newBuilder(
@@ -32,15 +35,26 @@ class ComponentRegistry private constructor(
         )
     }
 
-    fun newDecoder(
+    fun newBitmapDecoder(
         sketch: Sketch,
         request: LoadRequest,
         dataSource: DataSource,
-    ): Decoder = decoderFactoryList.firstNotNullOfOrNull {
+    ): BitmapDecoder = bitmapDecoderFactoryList.firstNotNullOfOrNull {
         it.create(sketch, request, dataSource)
     } ?: throw IllegalArgumentException(
-        "No Decoder can handle this uri: ${request.uriString}, " +
-                "please pass ComponentRegistry. Builder addDecoder () function to add a new Decoder to support it"
+        "No BitmapDecoder can handle this uri: ${request.uriString}, " +
+                "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
+    )
+
+    fun newDrawableDecoder(
+        sketch: Sketch,
+        request: DisplayRequest,
+        dataSource: DataSource,
+    ): DrawableDecoder = drawableDecoderFactoryList.firstNotNullOfOrNull {
+        it.create(sketch, request, dataSource)
+    } ?: throw IllegalArgumentException(
+        "No DrawableDecoder can handle this uri: ${request.uriString}, " +
+                "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
     )
 
     companion object {
@@ -49,33 +63,49 @@ class ComponentRegistry private constructor(
         ): ComponentRegistry = Builder().apply {
             configBlock?.invoke(this)
         }.build()
+
+        fun newBuilder(
+            configBlock: (Builder.() -> Unit)? = null
+        ): Builder = Builder().apply {
+            configBlock?.invoke(this)
+        }
     }
 
     class Builder {
         private val fetcherFactoryList: MutableList<Fetcher.Factory>
-        private val decoderFactoryList: MutableList<Decoder.Factory>
+        private val bitmapDecoderFactoryList: MutableList<BitmapDecoder.Factory>
+        private val drawableDecoderFactoryList: MutableList<DrawableDecoder.Factory>
 
         constructor() {
             this.fetcherFactoryList = mutableListOf()
-            this.decoderFactoryList = mutableListOf()
+            this.bitmapDecoderFactoryList = mutableListOf()
+            this.drawableDecoderFactoryList = mutableListOf()
         }
 
         constructor(componentRegistry: ComponentRegistry) {
             this.fetcherFactoryList = componentRegistry.fetcherFactoryList.toMutableList()
-            this.decoderFactoryList = componentRegistry.decoderFactoryList.toMutableList()
+            this.bitmapDecoderFactoryList =
+                componentRegistry.bitmapDecoderFactoryList.toMutableList()
+            this.drawableDecoderFactoryList =
+                componentRegistry.drawableDecoderFactoryList.toMutableList()
         }
 
-        fun addFetcher(factory: Fetcher.Factory) {
-            fetcherFactoryList.add(factory)
+        fun addFetcher(fetchFactory: Fetcher.Factory) {
+            fetcherFactoryList.add(fetchFactory)
         }
 
-        fun addDecoder(decoder: Decoder.Factory) {
-            decoderFactoryList.add(decoder)
+        fun addBitmapDecoder(bitmapDecoderFactory: BitmapDecoder.Factory) {
+            bitmapDecoderFactoryList.add(bitmapDecoderFactory)
+        }
+
+        fun addDrawableDecoder(drawableDecoderFactory: DrawableDecoder.Factory) {
+            drawableDecoderFactoryList.add(drawableDecoderFactory)
         }
 
         fun build(): ComponentRegistry = ComponentRegistry(
-            fetcherFactoryList.toList(),
-            decoderFactoryList.toList(),
+            fetcherFactoryList = fetcherFactoryList.toList(),
+            bitmapDecoderFactoryList = bitmapDecoderFactoryList.toList(),
+            drawableDecoderFactoryList = drawableDecoderFactoryList.toList(),
         )
     }
 }

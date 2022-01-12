@@ -58,7 +58,7 @@ class AssetUriFetcherTest {
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest.new(assetUri))!!
         val source = runBlocking {
-            fetcher.fetch().source
+            fetcher.fetch().dataSource
         }
         Assert.assertTrue(source is AssetsDataSource)
     }

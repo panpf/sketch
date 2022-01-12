@@ -65,8 +65,9 @@ class DisplayExecutor(private val sketch: Sketch) {
                     initialRequest = fixedSizeRequest,
                     interceptors = sketch.displayInterceptors,
                     index = 0,
+                    sketch = sketch,
                     request = fixedSizeRequest,
-                ).proceed(sketch, fixedSizeRequest)
+                ).proceed(fixedSizeRequest)
             }
 
             withContext(Dispatchers.Main) {

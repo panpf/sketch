@@ -6,7 +6,7 @@ import com.github.panpf.sketch.util.SketchException
 /**
  * Image decoding related exception
  */
-class DecodeBitmapException(
+class BitmapDecodeException(
     thenRequest: ImageRequest,
     message: String,
     cause: Throwable? = null

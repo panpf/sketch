@@ -2,25 +2,21 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.github.panpf.sketch.Interceptor
-import com.github.panpf.sketch.Interceptor.Chain
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.request.LoadRequest
 
 // todo 融合 ResizeInterceptor 和 ExifOrientationCorrectInterceptor
-class ResizeInterceptor : Interceptor<LoadRequest, BitmapDecodeResult> {
+class ResizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
     override suspend fun intercept(
-        sketch: Sketch,
-        chain: Chain<LoadRequest, BitmapDecodeResult>
+        chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>
     ): BitmapDecodeResult {
-        val bitmapResult = chain.proceed(sketch, chain.request)
+        val bitmapResult = chain.proceed(chain.request)
         val bitmap = bitmapResult.bitmap
         val resize = chain.request.resize
-        val bitmapPoolHelper = sketch.bitmapPoolHelper
+        val bitmapPoolHelper = chain.sketch.bitmapPoolHelper
         return if (resize != null && needResize(bitmap, resize)) {
             val newBitmap = resize(bitmap, resize, bitmapPoolHelper)
             if (newBitmap !== bitmap) {

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.extensions.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.extensions.SaveCellularTrafficDisplayInterceptor
-import com.github.panpf.sketch.gif.GifDecoder
+import com.github.panpf.sketch.gif.GifDrawableDecoder
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
@@ -41,7 +41,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
-            addDecoder(GifDecoder.Factory())
+            addDrawableDecoder(GifDrawableDecoder.Factory())
         }
     }
 }

@@ -58,7 +58,7 @@ class DrawableResUriFetcherTest {
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest.new(drawableResUri))!!
         val source = runBlocking {
-            fetcher.fetch().source
+            fetcher.fetch().dataSource
         }
         Assert.assertTrue(source is DrawableResDataSource)
     }

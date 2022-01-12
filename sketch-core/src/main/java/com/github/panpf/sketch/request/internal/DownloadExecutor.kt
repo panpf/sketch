@@ -30,8 +30,9 @@ class DownloadExecutor(private val sketch: Sketch) {
                 initialRequest = request,
                 interceptors = sketch.downloadInterceptors,
                 index = 0,
+                sketch = sketch,
                 request = request,
-            ).proceed(sketch, request)
+            ).proceed(request)
 
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"

@@ -61,7 +61,7 @@ class AppIconUriFetcherTest {
         val diskCache = sketch.diskCache
         val existDiskCacheEntry = diskCache.exist(diskCache.encodeKey(fetcher.getDiskCacheKey()))
         val source = runBlocking {
-            fetcher.fetch().source
+            fetcher.fetch().dataSource
         }
         Assert.assertEquals(
             if (existDiskCacheEntry) DataFrom.DISK_CACHE else DataFrom.LOCAL,

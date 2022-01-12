@@ -4,7 +4,6 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
-import com.github.panpf.sketch.request.internal.DisplayExecutor.Companion
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.CancellationException
@@ -31,8 +30,9 @@ class LoadExecutor(private val sketch: Sketch) {
                 initialRequest = request,
                 interceptors = sketch.loadInterceptors,
                 index = 0,
+                sketch = sketch,
                 request = request,
-            ).proceed(sketch, request)
+            ).proceed(request)
 
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"

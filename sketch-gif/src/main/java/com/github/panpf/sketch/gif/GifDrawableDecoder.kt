@@ -9,24 +9,25 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.DrawableResDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.decodeBitmap
+import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.LoadRequest
 
-class GifDecoder(sketch: Sketch, request: LoadRequest, dataSource: DataSource) :
-    BitmapFactoryDecoder(sketch, request, dataSource), DrawableDecoder {
+class GifDrawableDecoder(
+    private val sketch: Sketch,
+    private val request: DisplayRequest,
+    private val dataSource: DataSource
+) : DrawableDecoder {
+
+    // todo 参考 coil 的 gif 实现
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun decodeDrawable(): DrawableDecodeResult? {
+    override suspend fun decodeDrawable(): DrawableDecodeResult {
         val request = request
-        if (request !is DisplayRequest) return null
-        if (request.disabledAnimationDrawable == true) return null
-        val imageInfo = readImageInfo()
-        val gifDrawable = when (val source = source) {
+        val imageInfo = dataSource.readImageInfo(request)
+        val gifDrawable = when (val source = dataSource) {
             is ByteArrayDataSource -> {
                 SketchGifDrawableImpl(
                     request.key,
@@ -94,23 +95,26 @@ class GifDecoder(sketch: Sketch, request: LoadRequest, dataSource: DataSource) :
                 throw Exception("Unsupported DataSource: ${source::class.qualifiedName}")
             }
         }
-        return DrawableDecodeResult(gifDrawable, imageInfo, source.from)
+        return DrawableDecodeResult(gifDrawable, imageInfo, dataSource.from)
     }
 
-    class Factory : Decoder.Factory {
+    class Factory : DrawableDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
-            request: LoadRequest,
+            request: DisplayRequest,
             dataSource: DataSource
-        ): Decoder? {
+        ): GifDrawableDecoder? {
+            if (request.disabledAnimationDrawable == true) {
+                return null
+            }
             // todo 改进判断方式，参考 coil 改成 BufferedSource
             val mimeType = BitmapFactory.Options().apply {
                 inJustDecodeBounds = true
                 dataSource.decodeBitmap(this)
             }.outMimeType.orEmpty()
             return if (mimeType == "image/gif") {
-                GifDecoder(sketch, request, dataSource)
+                GifDrawableDecoder(sketch, request, dataSource)
             } else {
                 null
             }

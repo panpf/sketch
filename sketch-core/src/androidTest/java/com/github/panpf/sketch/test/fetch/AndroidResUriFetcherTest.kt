@@ -80,13 +80,13 @@ class AndroidResUriFetcherTest {
 
         val fetcherByName = fetcherFactory.create(sketch, LoadRequest.new(androidResUriByName))!!
         val sourceByName = runBlocking {
-            fetcherByName.fetch().source
+            fetcherByName.fetch().dataSource
         }
         Assert.assertTrue(sourceByName is ContentDataSource)
 
         val fetcherById = fetcherFactory.create(sketch, LoadRequest.new(androidResUriById))!!
         val sourceById = runBlocking {
-            fetcherById.fetch().source
+            fetcherById.fetch().dataSource
         }
         Assert.assertTrue(sourceById is ContentDataSource)
     }

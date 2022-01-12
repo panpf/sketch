@@ -6,42 +6,22 @@ import android.graphics.Rect
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
-open class BitmapFactoryDecoder(
+open class DefaultBitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
     companion object {
-        const val MODULE = "BitmapFactoryDecoder"
+        const val MODULE = "DefaultBitmapDecoder"
     }
 
-    override fun readImageInfo(): ImageInfo {
-        val boundOptions = Options().apply {
-            inJustDecodeBounds = true
-        }
-        source.decodeBitmap(boundOptions)
-        if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            throw DecodeBitmapException(
-                request,
-                "Invalid image size. size=${boundOptions.outWidth}x${boundOptions.outHeight}, uri=${request.uriString}"
-            )
-        }
-
-        val exifOrientation: Int =
-            ExifOrientationCorrector.readExifOrientation(boundOptions.outMimeType, source)
-        return ImageInfo(
-            boundOptions.outMimeType,
-            boundOptions.outWidth,
-            boundOptions.outHeight,
-            exifOrientation
-        )
-    }
+    override fun readImageInfo(): ImageInfo = dataSource.readImageInfo(request)
 
     override fun canDecodeRegion(imageInfo: ImageInfo, imageType: ImageType?): Boolean =
         imageType?.supportBitmapRegionDecoder() == true
@@ -57,7 +37,7 @@ open class BitmapFactoryDecoder(
         }
 
         val bitmap = try {
-            source.decodeRegionBitmap(srcRect, decodeOptions)
+            dataSource.decodeRegionBitmap(srcRect, decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             when {
@@ -69,9 +49,9 @@ open class BitmapFactoryDecoder(
                     decodeOptions.inBitmap = null
                     bitmapPoolHelper.freeBitmapToPool(inBitmap)
                     try {
-                        source.decodeRegionBitmap(srcRect, decodeOptions)
+                        dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
-                        throw DecodeBitmapException(
+                        throw BitmapDecodeException(
                             request,
                             "Bitmap region decode error. uri=${request.uriString}",
                             throwable2
@@ -79,26 +59,26 @@ open class BitmapFactoryDecoder(
                     }
                 }
                 isSrcRectError(throwable, imageInfo.width, imageInfo.height, srcRect) -> {
-                    throw DecodeBitmapException(
+                    throw BitmapDecodeException(
                         request,
                         "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}, uri=${request.uriString}",
                         throwable
                     )
                 }
                 else -> {
-                    throw DecodeBitmapException(
+                    throw BitmapDecodeException(
                         request,
                         "Bitmap region decode error. uri=${request.uriString}",
                         throwable
                     )
                 }
             }
-        } ?: throw DecodeBitmapException(
+        } ?: throw BitmapDecodeException(
             request, "Bitmap region decode return null. uri=${request.uriString}"
         )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            throw DecodeBitmapException(
+            throw BitmapDecodeException(
                 request,
                 "Invalid image size. size=${bitmap.width}x${bitmap.height}, uri=${request.uriString}"
             )
@@ -115,7 +95,7 @@ open class BitmapFactoryDecoder(
         }
 
         val bitmap: Bitmap = try {
-            source.decodeBitmap(decodeOptions)
+            dataSource.decodeBitmap(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable, false)) {
@@ -126,27 +106,27 @@ open class BitmapFactoryDecoder(
                 decodeOptions.inBitmap = null
                 bitmapPoolHelper.freeBitmapToPool(inBitmap)
                 try {
-                    source.decodeBitmap(decodeOptions)
+                    dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
-                    throw DecodeBitmapException(
+                    throw BitmapDecodeException(
                         request,
                         "Bitmap decode error. uri=%s".format(request.uriString),
                         throwable2
                     )
                 }
             } else {
-                throw DecodeBitmapException(
+                throw BitmapDecodeException(
                     request,
                     "Bitmap decode error. uri=%s".format(request.uriString),
                     throwable
                 )
             }
-        } ?: throw DecodeBitmapException(
+        } ?: throw BitmapDecodeException(
             request, "Bitmap decode return null. uri=%s".format(request.uriString)
         )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            throw DecodeBitmapException(
+            throw BitmapDecodeException(
                 request,
                 "Invalid image size. size=%dx%d, uri=%s"
                     .format(bitmap.width, bitmap.height, request.uriString)
@@ -155,12 +135,12 @@ open class BitmapFactoryDecoder(
         return bitmap
     }
 
-    class Factory : Decoder.Factory {
+    class Factory : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
             request: LoadRequest,
             dataSource: DataSource
-        ): Decoder = BitmapFactoryDecoder(sketch, request, dataSource)
+        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, dataSource)
     }
 }

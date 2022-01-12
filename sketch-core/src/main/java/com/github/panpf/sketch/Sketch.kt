@@ -3,7 +3,6 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.AnyThread
-import com.github.panpf.sketch.ComponentRegistry.Builder
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.DiskCache
@@ -14,9 +13,11 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemorySizeCalculator
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
-import com.github.panpf.sketch.decode.internal.DecodeBitmapEngineInterceptor
-import com.github.panpf.sketch.decode.internal.DecodeDrawableEngineInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
+import com.github.panpf.sketch.decode.internal.DecodeInterceptor
+import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrectInterceptor
 import com.github.panpf.sketch.decode.internal.ResizeInterceptor
 import com.github.panpf.sketch.decode.internal.ResultCacheInterceptor
@@ -43,6 +44,7 @@ import com.github.panpf.sketch.request.LoadData
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
+import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.DisplayEngineInterceptor
 import com.github.panpf.sketch.request.internal.DisplayExecutor
 import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
@@ -69,11 +71,11 @@ class Sketch private constructor(
     _bitmapPool: BitmapPool?,
     _componentRegistry: ComponentRegistry?,
     _httpStack: HttpStack?,
-    _downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>>?,
-    _loadInterceptors: List<Interceptor<LoadRequest, LoadData>>?,
-    _displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>>?,
-    _decodeBitmapInterceptors: List<Interceptor<LoadRequest, BitmapDecodeResult>>?,
-    _decodeDrawableInterceptors: List<Interceptor<DisplayRequest, DrawableDecodeResult>>?,
+    _downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>>?,
+    _loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>>?,
+    _displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>>?,
+    _bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>?,
+    _drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
@@ -103,24 +105,25 @@ class Sketch private constructor(
             addFetcher(ApkIconUriFetcher.Factory())
             addFetcher(AppIconUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
-            addDecoder(BitmapFactoryDecoder.Factory())
-            // todo 抽象解码器，支持视频和 svg，以及 gif
+            addBitmapDecoder(DefaultBitmapDecoder.Factory())
+            addDrawableDecoder(DefaultDrawableDecoder.Factory())
+            // todo 抽象解码器，支持视频和 svg
         }.build()
-    val downloadInterceptors: List<Interceptor<DownloadRequest, DownloadData>> =
+    val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>> =
         (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
-    val loadInterceptors: List<Interceptor<LoadRequest, LoadData>> =
+    val loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>> =
         (_loadInterceptors ?: listOf()) + LoadEngineInterceptor()
-    val displayInterceptors: List<Interceptor<DisplayRequest, DisplayData>> =
+    val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
         (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
-    val decodeBitmapInterceptors: List<Interceptor<LoadRequest, BitmapDecodeResult>> =
-        (_decodeBitmapInterceptors ?: listOf()) +
+    val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =
+        (_bitmapDecodeInterceptors ?: listOf()) +
                 ResultCacheInterceptor() +
                 TransformationInterceptor() +
                 ResizeInterceptor() +
                 ExifOrientationCorrectInterceptor() +
-                DecodeBitmapEngineInterceptor()
-    val decodeDrawableInterceptors: List<Interceptor<DisplayRequest, DrawableDecodeResult>> =
-        (_decodeDrawableInterceptors ?: listOf()) + DecodeDrawableEngineInterceptor()
+                BitmapDecodeEngineInterceptor()
+    val drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>> =
+        (_drawableDecodeInterceptors ?: listOf()) + DrawableDecodeEngineInterceptor()
 
     //    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
@@ -295,15 +298,15 @@ class Sketch private constructor(
         private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
-        private var downloadInterceptors: MutableList<Interceptor<DownloadRequest, DownloadData>>? =
+        private var downloadInterceptors: MutableList<RequestInterceptor<DownloadRequest, DownloadData>>? =
             null
-        private var loadInterceptors: MutableList<Interceptor<LoadRequest, LoadData>>? =
+        private var loadInterceptors: MutableList<RequestInterceptor<LoadRequest, LoadData>>? =
             null
-        private var displayInterceptors: MutableList<Interceptor<DisplayRequest, DisplayData>>? =
+        private var displayInterceptors: MutableList<RequestInterceptor<DisplayRequest, DisplayData>>? =
             null
-        private var decodeBitmapInterceptors: MutableList<Interceptor<LoadRequest, BitmapDecodeResult>>? =
+        private var bitmapDecodeInterceptors: MutableList<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>? =
             null
-        private var decodeDrawableInterceptors: MutableList<Interceptor<DisplayRequest, DrawableDecodeResult>>? =
+        private var drawableDecodeInterceptors: MutableList<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>? =
             null
 
         fun logger(logger: Logger?): Builder = apply {
@@ -334,40 +337,40 @@ class Sketch private constructor(
             this.httpStack = httpStack
         }
 
-        fun addDownloadInterceptor(interceptor: Interceptor<DownloadRequest, DownloadData>): Builder =
+        fun addDownloadInterceptor(interceptor: RequestInterceptor<DownloadRequest, DownloadData>): Builder =
             apply {
                 this.downloadInterceptors = (downloadInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addLoadInterceptor(interceptor: Interceptor<LoadRequest, LoadData>): Builder =
+        fun addLoadInterceptor(interceptor: RequestInterceptor<LoadRequest, LoadData>): Builder =
             apply {
                 this.loadInterceptors = (loadInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addDisplayInterceptor(interceptor: Interceptor<DisplayRequest, DisplayData>): Builder =
+        fun addDisplayInterceptor(interceptor: RequestInterceptor<DisplayRequest, DisplayData>): Builder =
             apply {
                 this.displayInterceptors = (displayInterceptors ?: mutableListOf()).apply {
                     add(interceptor)
                 }
             }
 
-        fun addDecodeBitmapInterceptor(decodeBitmapInterceptor: Interceptor<LoadRequest, BitmapDecodeResult>): Builder =
+        fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: DecodeInterceptor<LoadRequest, BitmapDecodeResult>): Builder =
             apply {
-                this.decodeBitmapInterceptors =
-                    (decodeBitmapInterceptors ?: mutableListOf()).apply {
-                        add(decodeBitmapInterceptor)
+                this.bitmapDecodeInterceptors =
+                    (bitmapDecodeInterceptors ?: mutableListOf()).apply {
+                        add(bitmapDecodeInterceptor)
                     }
             }
 
-        fun addDecodeDrawableInterceptor(decodeDrawableInterceptor: Interceptor<DisplayRequest, DrawableDecodeResult>): Builder =
+        fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DecodeInterceptor<DisplayRequest, DrawableDecodeResult>): Builder =
             apply {
-                this.decodeDrawableInterceptors =
-                    (decodeDrawableInterceptors ?: mutableListOf()).apply {
-                        add(decodeDrawableInterceptor)
+                this.drawableDecodeInterceptors =
+                    (drawableDecodeInterceptors ?: mutableListOf()).apply {
+                        add(drawableDecodeInterceptor)
                     }
             }
 
@@ -382,8 +385,8 @@ class Sketch private constructor(
             _downloadInterceptors = downloadInterceptors,
             _loadInterceptors = loadInterceptors,
             _displayInterceptors = displayInterceptors,
-            _decodeBitmapInterceptors = decodeBitmapInterceptors,
-            _decodeDrawableInterceptors = decodeDrawableInterceptors,
+            _bitmapDecodeInterceptors = bitmapDecodeInterceptors,
+            _drawableDecodeInterceptors = drawableDecodeInterceptors,
         )
     }
 }
