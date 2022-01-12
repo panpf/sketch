@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
+class GiphyGIFFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val giphyGifListViewModel by viewModels<GiphyGifListViewModel>()
     private val sampleMenuListViewModel by viewModels<SampleMenuListViewModel>()
@@ -83,7 +83,7 @@ class GiphyGifsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Giphy Gifs"
+        toolbar.title = "Giphy GIF"
 
         binding.recyclerRecyclerFragmentContent.apply {
             appSettingsService.photoListLayoutMode.observe(viewLifecycleOwner) {

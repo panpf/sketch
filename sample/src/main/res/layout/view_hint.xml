@@ -58,7 +58,7 @@
                 android:layout_gravity="center"
                 android:textColor="@color/text_normal"
                 android:drawablePadding="@dimen/padding_specialLarge"
-                android:drawableTop="@drawable/ic_error"
+                android:drawableTop="@drawable/ic_error_outline"
                 android:gravity="center" />
         </ViewSwitcher>
 

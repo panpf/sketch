@@ -228,7 +228,7 @@ class HintView : LinearLayout {
      */
     fun failed(exception: Throwable, reloadButtonClickListener: OnClickListener) {
         hint(
-            R.drawable.ic_error,
+            R.drawable.ic_error_outline,
             getCauseByException(context, exception),
             "重试",
             reloadButtonClickListener,
@@ -242,7 +242,7 @@ class HintView : LinearLayout {
      * @param message
      */
     fun empty(message: String) {
-        hint(R.drawable.ic_error, message, null, null, false)
+        hint(R.drawable.ic_error_outline, message, null, null, false)
     }
 
     /**

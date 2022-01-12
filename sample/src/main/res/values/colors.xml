@@ -10,4 +10,6 @@
     <color name="text_subtitle">#AEFFFFFF</color>
 
     <color name="list_item_background_pressed">#33000000</color>
+    <color name="placeholder_bg">#22FFFFFF</color>
+    <color name="placeholder_icon">#55FFFFFF</color>
 </resources>

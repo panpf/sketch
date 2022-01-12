@@ -63,7 +63,7 @@
     </fragment>
     <fragment
         android:id="@+id/giphyGifsFragment"
-        android:name="com.github.panpf.sketch.sample.ui.GiphyGifsFragment"
+        android:name="com.github.panpf.sketch.sample.ui.GiphyGIFFragment"
         android:label="GiphyGifsFragment" />
 
     <action

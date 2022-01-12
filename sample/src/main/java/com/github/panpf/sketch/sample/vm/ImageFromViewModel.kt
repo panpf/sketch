@@ -45,7 +45,7 @@ class ImageFromViewModel(application1: Application) : LifecycleAndroidViewModel(
                     add("FILE" to localFirstPhotoPath)
                 }
                 add("ASSET" to AssetImage.MEI_NV)
-                add("DRAWABLE" to DrawableResUriFetcher.newUri(R.drawable.image_loading).toString())
+                add("DRAWABLE" to DrawableResUriFetcher.newUri(R.drawable.im_placeholder).toString())
                 add(
                     "ANDROID_RES" to AndroidResUriFetcher.newUriByName(
                         BuildConfig.APPLICATION_ID,

@@ -95,9 +95,9 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                 disabledAnimationDrawable(context.appSettingsService.disabledAnimatableDrawableInList.value == true)
                 pauseLoadWhenScrolling(context.appSettingsService.pauseLoadWhenScrollInList.value == true)
                 saveCellularTraffic(context.appSettingsService.saveCellularTrafficInList.value == true)
-                placeholderImage(R.drawable.image_loading)
-                errorImage(R.drawable.image_error) {
-                    saveCellularTrafficErrorImage(R.drawable.image_pause_download)
+                placeholderImage(R.drawable.im_placeholder)
+                errorImage(R.drawable.im_error) {
+                    saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
                     pauseLoadWhenScrollingErrorImage()
                 }
             }
