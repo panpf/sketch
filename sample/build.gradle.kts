@@ -69,6 +69,7 @@ dependencies {
     implementation(project(":sketch-gif"))
     implementation(project(":sketch-extensions"))
     implementation(project(":sketch-video"))
+    implementation(project(":sketch-video-ffmpeg"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
