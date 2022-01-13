@@ -5,6 +5,7 @@ import android.text.format.Formatter
 import com.github.panpf.assemblyadapter.recycler.DiffKey
 import com.github.panpf.tools4j.date.Datex
 import com.github.panpf.tools4j.date.ktx.format
+import com.github.panpf.tools4j.date.ktx.formatDuration
 import com.github.panpf.tools4j.date.ktx.toDate
 
 class VideoInfo(
@@ -21,23 +22,7 @@ class VideoInfo(
     private var tempFormattedSize: String? = null
 
     val tempFormattedDuration: String by lazy {
-        val second = duration / 1000
-        val secondsRemaining = second % 60
-        val minute = second / 60
-        val builder = StringBuilder()
-        when {
-            minute <= 0 -> builder.append("00")
-            minute < 10 -> builder.append("0$minute")
-            else -> builder.append(minute)
-        }
-
-        builder.append(":")
-        when {
-            secondsRemaining <= 0 -> builder.append("00")
-            secondsRemaining < 10 -> builder.append("0$secondsRemaining")
-            else -> builder.append(secondsRemaining)
-        }
-        builder.toString()
+        duration.formatDuration("%h?:%M:%S")
     }
 
     val tempFormattedDate: String by lazy {

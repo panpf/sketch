@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.decode
+package com.github.panpf.sketch.decode.video
 
 import android.graphics.Bitmap
 import android.graphics.Rect
@@ -10,7 +10,11 @@ import android.webkit.MimeTypeMap
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.BitmapDecoder
+import com.github.panpf.sketch.decode.DecodeConfig
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.request.LoadRequest
@@ -18,22 +22,23 @@ import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
+/**
+ * Notes: Android 26 and before versions do not support scale to read frames,
+ * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
+ *
+ * Notes：LoadRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
+ * The bitmapConfig attribute takes effect only on Android 30 or later
+ */
 class VideoFrameDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
-    companion object {
-        const val VIDEO_FRAME_MICROS_KEY = "coil#video_frame_micros"
-        const val VIDEO_FRAME_OPTION_KEY = "coil#video_frame_option"
-    }
-
     private val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
         MediaMetadataRetriever().apply {
-            val fileDescriptor = dataSource.newFileDescriptor()
-            if (fileDescriptor != null) {
-                setDataSource(fileDescriptor)
+            if (dataSource is ContentDataSource) {
+                setDataSource(dataSource.context, dataSource.contentUri)
             } else {
                 val file = runBlocking {
                     dataSource.file()
@@ -61,7 +66,7 @@ class VideoFrameDecoder(
         if (srcWidth <= 1 || srcHeight <= 1) {
             throw BitmapDecodeException(
                 request,
-                "Invalid video size. size=${srcWidth}x${srcHeight}, uri=${request.uriString}"
+                "Invalid video size. size=${srcWidth}x${srcHeight}"
             )
         }
         val exifOrientation =
@@ -85,7 +90,15 @@ class VideoFrameDecoder(
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         val option = request.videoFrameOption() ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
-        val frameMicros = request.videoFrameMicros() ?: 0L
+        val frameMicros = request.videoFrameMicros()
+            ?: request.videoFramePercentDuration()?.let { percentDuration ->
+                val duration =
+                    mediaMetadataRetriever
+                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                        ?.toLongOrNull() ?: 0L
+                (duration * percentDuration * 1000).toLong()
+            }
+            ?: 0L
 
         val inSampleSize = decodeConfig.inSampleSize?.toFloat()
         val dstWidth = if (inSampleSize != null) {
