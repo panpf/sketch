@@ -36,7 +36,7 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
                     ),
                     Link("Giphy GIF", NavMainDirections.actionGlobalGiphyGifsFragment()),
                     Link("Local Photos", NavMainDirections.actionGlobalLocalPhotosFragment()),
-//                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoFragment()),
+                    Link("Local Video", NavMainDirections.actionGlobalLocalVideoListFragment()),
 //                    Link("Huge Image", NavMainDirections.actionGlobalHugeImageFragment()),
 //
                     ListSeparator("Test"),

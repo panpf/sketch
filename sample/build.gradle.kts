@@ -68,6 +68,7 @@ dependencies {
     implementation(project(":sketch-okhttp"))
     implementation(project(":sketch-gif"))
     implementation(project(":sketch-extensions"))
+    implementation(project(":sketch-video"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
