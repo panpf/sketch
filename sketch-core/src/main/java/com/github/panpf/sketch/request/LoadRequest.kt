@@ -481,20 +481,19 @@ interface LoadRequest : DownloadRequest {
             buildString {
                 append("Load")
                 append("_").append(uriString)
-                qualityKey?.let {
+                qualityKey?.let {   // todo 替换成每一项属性
                     append("_").append(it)
                 }
-                parameters?.let {
+                parameters?.takeIf { it.isNotEmpty() }?.let {   // todo 替换成每一项属性
                     append("_").append(it.key)
                 }
-                append("_").append("diskCacheKey($diskCacheKey)")
                 append("_").append("diskCachePolicy($diskCachePolicy)")
             }
         }
     }
 }
 
-fun LoadRequest.newDecodeOptionsByQualityParams(mimeType: String): DecodeConfig =
+fun LoadRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {
         @Suppress("DEPRECATION")
         if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {

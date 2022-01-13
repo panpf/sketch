@@ -9,7 +9,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
+import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
@@ -63,7 +63,7 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
                         val imageInfo = ImageInfo.fromJsonString(jsonString)
                         val bitmap = BitmapFactory.decodeFile(
                             bitmapDataDiskCacheEntry.file.path,
-                            request.newDecodeOptionsByQualityParams(imageInfo.mimeType).toBitmapOptions()
+                            request.newDecodeConfigByQualityParams(imageInfo.mimeType).toBitmapOptions()
                         )
                         if (bitmap.width > 1 && bitmap.height > 1) {
                             BitmapDecodeResult(bitmap, imageInfo, DISK_CACHE)
@@ -100,6 +100,7 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
 
         @Suppress("BlockingMethodInNonBlockingContext")
         suspend fun write(result: BitmapDecodeResult, context: CoroutineContext) {
+            // todo BitmapDecodeResult 增加是否需要缓存标记，这样更准确
             withContext(context) {
                 if (request.resultDiskCachePolicy.writeEnabled) {
                     val bitmapDataEditor =

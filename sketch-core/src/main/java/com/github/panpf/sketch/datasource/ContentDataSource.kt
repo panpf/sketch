@@ -59,15 +59,12 @@ class ContentDataSource constructor(
             ?: throw IOException("Invalid content uri: $contentUri")
 
     @Throws(IOException::class)
-    override suspend fun file(): File {
-        return if (contentUri.scheme.equals("file", ignoreCase = true)) {
+    override suspend fun file(): File =
+        if (contentUri.scheme.equals("file", ignoreCase = true)) {
             File(contentUri.toString().substring("file://".length))
         } else {
             super.file()
         }
-    }
 
-    override fun toString(): String {
-        return "ContentDataSource(from=$from, contentUri=$contentUri)"
-    }
+    override fun toString(): String = "ContentDataSource(from=$from, contentUri=$contentUri)"
 }

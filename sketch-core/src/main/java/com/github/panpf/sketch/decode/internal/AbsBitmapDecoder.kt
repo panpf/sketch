@@ -12,7 +12,7 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.newDecodeOptionsByQualityParams
+import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.util.format
 
@@ -42,7 +42,7 @@ abstract class AbsBitmapDecoder(
 
         val resize = request.resize
         val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
-        val decodeOptions = request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
+        val decodeOptions = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val imageOrientationCorrector =
             ExifOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
 

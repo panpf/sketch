@@ -91,7 +91,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                 sketch.logger.e(
                     MODULE,
                     throwable,
-                    "Request error. ${throwable.message} .${request.key}"
+                    "Request error. ${throwable.message}. ${request.key}"
                 )
                 val exception = throwable.asOrNull<SketchException>()
                     ?: SketchException(request, null, throwable)

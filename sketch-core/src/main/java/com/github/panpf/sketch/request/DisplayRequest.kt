@@ -567,18 +567,16 @@ interface DisplayRequest : LoadRequest {
             buildString {
                 append("Display")
                 append("_").append(uriString)
-                qualityKey?.let {
+                qualityKey?.let {   // todo 替换成每一项属性
                     append("_").append(it)
+                }
+                parameters?.takeIf { it.isNotEmpty() }?.let {   // todo 替换成每一项属性
+                    append("_").append(it.key)
                 }
                 if (disabledAnimationDrawable == true) {
                     append("_").append("DisabledAnimationDrawable")
                 }
-                parameters?.let {
-                    append("_").append(it.key)
-                }
-                append("_").append("diskCacheKey($diskCacheKey)")
                 append("_").append("diskCachePolicy($diskCachePolicy)")
-                append("_").append("memoryCacheKey($memoryCacheKey)")
                 append("_").append("memoryCachePolicy($memoryCachePolicy)")
             }
         }

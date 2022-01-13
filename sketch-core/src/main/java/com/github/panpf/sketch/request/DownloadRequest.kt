@@ -223,10 +223,9 @@ interface DownloadRequest : ImageRequest {
             buildString {
                 append("Download")
                 append("_").append(uriString)
-                parameters?.let {
+                parameters?.takeIf { it.isNotEmpty() }?.let {   // todo 替换成每一项属性
                     append("_").append(it.key)
                 }
-                append("_").append("diskCacheKey($diskCacheKey)")
                 append("_").append("diskCachePolicy($diskCachePolicy)")
             }
         }
