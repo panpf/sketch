@@ -1,12 +1,12 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory.Options
 import android.graphics.Rect
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecoder
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -26,7 +26,12 @@ open class DefaultBitmapDecoder(
     override fun canDecodeRegion(imageInfo: ImageInfo, imageType: ImageType?): Boolean =
         imageType?.supportBitmapRegionDecoder() == true
 
-    override fun decodeRegion(imageInfo: ImageInfo, srcRect: Rect, decodeOptions: Options): Bitmap {
+    override fun decodeRegion(
+        imageInfo: ImageInfo,
+        srcRect: Rect,
+        decodeConfig: DecodeConfig
+    ): Bitmap {
+        val decodeOptions = decodeConfig.toBitmapOptions()
         if (request.disabledBitmapPool != true) {
             // todo 这里的宽高，貌似有问题，需要验证一下
             bitmapPoolHelper.setInBitmapForRegionDecoder(
@@ -86,7 +91,8 @@ open class DefaultBitmapDecoder(
         return bitmap
     }
 
-    override fun decode(imageInfo: ImageInfo, decodeOptions: Options): Bitmap {
+    override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+        val decodeOptions = decodeConfig.toBitmapOptions()
         // Set inBitmap from bitmap pool
         if (request.disabledBitmapPool != true) {
             bitmapPoolHelper.setInBitmap(
@@ -133,6 +139,10 @@ open class DefaultBitmapDecoder(
             )
         }
         return bitmap
+    }
+
+    override fun close() {
+
     }
 
     class Factory : BitmapDecoder.Factory {

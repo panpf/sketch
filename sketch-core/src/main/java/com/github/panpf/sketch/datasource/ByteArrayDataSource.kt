@@ -15,36 +15,29 @@
  */
 package com.github.panpf.sketch.datasource
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.util.MD5Utils
-import java.io.*
+import com.github.panpf.sketch.request.internal.ImageRequest
+import java.io.ByteArrayInputStream
+import java.io.FileDescriptor
+import java.io.IOException
+import java.io.InputStream
 
-class ByteArrayDataSource(
-    val data: ByteArray, override val from: DataFrom
+class ByteArrayDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    override val from: DataFrom,
+    val data: ByteArray,
 ) : DataSource {
+
+    @Throws(IOException::class)
+    override fun length(): Long = data.size.toLong()
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = ByteArrayInputStream(data)
 
-    @get:Throws(IOException::class)
-    override val length: Long by lazy { data.size.toLong() }
+    override fun newFileDescriptor(): FileDescriptor? = null
 
-    @Throws(IOException::class)
-    override fun getFile(outDir: File?, outName: String?): File? {
-        if (outDir == null || (!outDir.exists() && !outDir.parentFile.mkdirs())) {
-            return null
-        }
-
-        val outFile = File(outDir, outName ?: MD5Utils.md5(System.currentTimeMillis().toString()))
-        newInputStream().use { inputStream ->
-            FileOutputStream(outFile).use { outputStream ->
-                inputStream.copyTo(outputStream)
-            }
-        }
-        return outFile
-    }
-
-    override fun toString(): String {
-        return "ByteArrayDataSource(from=$from, length=$length)"
-    }
+    override fun toString(): String =
+        "ByteArrayDataSource(from=$from, length=${data.size.toLong()})"
 }

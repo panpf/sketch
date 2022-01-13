@@ -149,7 +149,10 @@ class DisplayExecutor(private val sketch: Sketch) {
             }
         } else {
             val displayMetrics = sketch.appContext.resources.displayMetrics
-            MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
+            MaxSize(
+                view?.fixedWidth() ?: displayMetrics.widthPixels,
+                view?.fixedHeight() ?: displayMetrics.heightPixels
+            )
         }
 
         val resize = request.resize

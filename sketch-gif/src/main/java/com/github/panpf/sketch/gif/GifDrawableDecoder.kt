@@ -98,6 +98,10 @@ class GifDrawableDecoder(
         return DrawableDecodeResult(gifDrawable, imageInfo, dataSource.from)
     }
 
+    override fun close() {
+
+    }
+
     class Factory : DrawableDecoder.Factory {
 
         override fun create(

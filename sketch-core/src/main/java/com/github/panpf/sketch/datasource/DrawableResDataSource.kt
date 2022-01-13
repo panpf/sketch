@@ -15,45 +15,42 @@
  */
 package com.github.panpf.sketch.datasource
 
-import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.util.MD5Utils
-import java.io.File
-import java.io.FileOutputStream
+import com.github.panpf.sketch.request.internal.ImageRequest
+import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
-class DrawableResDataSource(val context: Context, @RawRes @DrawableRes val drawableId: Int) : DataSource {
+class DrawableResDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    @RawRes @DrawableRes val drawableId: Int
+) : DataSource {
 
     override val from: DataFrom
         get() = DataFrom.LOCAL
 
-    @get:Throws(IOException::class)
-    override val length: Long by lazy {
-        context.resources.openRawResourceFd(drawableId)?.use {
-            it.length
-        } ?: 0
-    }
+    private var _length = -1L
 
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = context.resources.openRawResource(drawableId)
-
-    @Throws(IOException::class)
-    override fun getFile(outDir: File?, outName: String?): File? {
-        if (outDir == null || (!outDir.exists() && !outDir.parentFile.mkdirs())) {
-            return null
-        }
-
-        val outFile = File(outDir, outName ?: MD5Utils.md5(drawableId.toString()))
-        newInputStream().use { inputStream ->
-            FileOutputStream(outFile).use { outputStream ->
-                inputStream.copyTo(outputStream)
+    override fun length(): Long =
+        _length.takeIf { it != -1L }
+            ?: (context.resources.openRawResourceFd(drawableId)?.use {
+                it.length
+            } ?: throw IOException("Invalid drawable res id: $drawableId")).apply {
+                this@DrawableResDataSource._length = this
             }
-        }
-        return outFile
-    }
+
+    override fun newFileDescriptor(): FileDescriptor =
+        context.resources.openRawResourceFd(drawableId)?.fileDescriptor
+            ?: throw IOException("Invalid drawable res id: $drawableId")
+
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream =
+        context.resources.openRawResource(drawableId)
 
     override fun toString(): String {
         return "DrawableDataSource(from=$from, drawableId=$drawableId)"

@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory.Options
 import android.graphics.Point
 import android.graphics.Rect
 import com.github.panpf.sketch.ImageType
@@ -9,6 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
@@ -32,10 +32,10 @@ abstract class AbsBitmapDecoder(
     protected abstract fun decodeRegion(
         imageInfo: ImageInfo,
         srcRect: Rect,
-        decodeOptions: Options,
+        decodeConfig: DecodeConfig,
     ): Bitmap
 
-    protected abstract fun decode(imageInfo: ImageInfo, decodeOptions: Options): Bitmap
+    protected abstract fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
 
     override suspend fun decodeBitmap(): BitmapDecodeResult {
         val imageInfo = readImageInfo()
@@ -76,13 +76,13 @@ abstract class AbsBitmapDecoder(
     private fun decodeRegionWrapper(
         imageInfo: ImageInfo,
         resize: Resize,
-        decodeOptions: Options,
+        decodeConfig: DecodeConfig,
         exifOrientationCorrector: ExifOrientationCorrector?
     ): Bitmap {
         val imageSize = Point(imageInfo.width, imageInfo.height)
 
 //        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
-//            decodeOptions.inPreferQualityOverSpeed = true
+//            decodeConfig.inPreferQualityOverSpeed = true
 //        }
 
         exifOrientationCorrector?.rotateSize(imageSize)
@@ -101,17 +101,17 @@ abstract class AbsBitmapDecoder(
         val resizeInSampleSize = calculateInSampleSize(
             resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
         )
-        decodeOptions.inSampleSize = resizeInSampleSize
+        decodeConfig.inSampleSize = resizeInSampleSize
 
         exifOrientationCorrector
             ?.reverseRotateRect(resizeMapping.srcRect, imageSize.x, imageSize.y)
 
-        return decodeRegion(imageInfo, resizeMapping.srcRect, decodeOptions)
+        return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
     }
 
     private fun decodeWrapper(
         imageInfo: ImageInfo,
-        decodeOptions: Options,
+        decodeConfig: DecodeConfig,
         exifOrientationCorrector: ExifOrientationCorrector?
     ): Bitmap {
         val imageSize = Point(imageInfo.width, imageInfo.height)
@@ -123,7 +123,7 @@ abstract class AbsBitmapDecoder(
         val resizeInSampleSize = request.resize?.let {
             calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
         } ?: 1
-        decodeOptions.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
-        return decode(imageInfo, decodeOptions)
+        decodeConfig.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
+        return decode(imageInfo, decodeConfig)
     }
 }

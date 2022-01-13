@@ -17,8 +17,9 @@ class BitmapDecodeEngineInterceptor : DecodeInterceptor<LoadRequest, BitmapDecod
             val componentRegistry = sketch.componentRegistry
             val fetcher = componentRegistry.newFetcher(sketch, request)
             val dataSource = chain.dataSource ?: fetcher.fetch().dataSource
-            val bitmapDecoder = componentRegistry.newBitmapDecoder(sketch, request, dataSource)
-            bitmapDecoder.decodeBitmap()
+            componentRegistry.newBitmapDecoder(sketch, request, dataSource).use {
+                it.decodeBitmap()
+            }
         }
     }
 }

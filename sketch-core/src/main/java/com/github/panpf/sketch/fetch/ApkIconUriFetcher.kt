@@ -40,7 +40,7 @@ class ApkIconUriFetcher(
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): ApkIconUriFetcher? =
-            if (request is LoadRequest && request.uri.scheme == SCHEME) {
+            if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 val apkFilePath = request.uriString.substring(("${SCHEME}://").length)
                 ApkIconUriFetcher(sketch, request, apkFilePath)
             } else {

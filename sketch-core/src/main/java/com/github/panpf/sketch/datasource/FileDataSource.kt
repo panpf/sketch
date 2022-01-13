@@ -15,26 +15,39 @@
  */
 package com.github.panpf.sketch.datasource
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.internal.ImageRequest
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 
-class FileDataSource(val file: File) : DataSource {
+class FileDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    val file: File
+) : DataSource {
 
     override val from: DataFrom
         get() = DataFrom.LOCAL
 
-    @get:Throws(IOException::class)
-    override val length: Long by lazy {
-        file.length()
-    }
+    private var _length = -1L
+
+    @Throws(IOException::class)
+    override fun length(): Long =
+        _length.takeIf { it != -1L }
+            ?: file.length().apply {
+                this@FileDataSource._length = this
+            }
+
+    override fun newFileDescriptor(): FileDescriptor? = null
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = FileInputStream(file)
 
-    override fun getFile(outDir: File?, outName: String?): File = file
+    override suspend fun file(): File = file
 
     override fun toString(): String {
         return "FileDataSource(from=$from, file=${file.path})"

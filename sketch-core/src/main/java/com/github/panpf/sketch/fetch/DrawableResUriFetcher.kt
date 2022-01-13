@@ -29,12 +29,12 @@ class DrawableResUriFetcher(
     }
 
     override suspend fun fetch(): FetchResult =
-        FetchResult(DrawableResDataSource(sketch.appContext, drawableResId))
+        FetchResult(DrawableResDataSource(sketch, request, drawableResId))
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): DrawableResUriFetcher? {
             val uri = request.uri
-            return if (request is LoadRequest && uri.scheme == SCHEME) {
+            return if (request is LoadRequest && SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val drawableResId = uri.authority?.toIntOrNull()
                     ?: throw UriInvalidException(request, "Drawable resource uri 'drawableResId' part invalid. ${request.uriString}")
                 DrawableResUriFetcher(sketch, request, drawableResId)

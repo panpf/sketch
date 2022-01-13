@@ -54,6 +54,10 @@ class DefaultDrawableDecoder(
             }
         }
 
+    override fun close() {
+
+    }
+
     class Factory : DrawableDecoder.Factory {
         override fun create(
             sketch: Sketch,

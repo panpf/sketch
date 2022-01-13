@@ -63,7 +63,7 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
                         val imageInfo = ImageInfo.fromJsonString(jsonString)
                         val bitmap = BitmapFactory.decodeFile(
                             bitmapDataDiskCacheEntry.file.path,
-                            request.newDecodeOptionsByQualityParams(imageInfo.mimeType)
+                            request.newDecodeOptionsByQualityParams(imageInfo.mimeType).toBitmapOptions()
                         )
                         if (bitmap.width > 1 && bitmap.height > 1) {
                             BitmapDecodeResult(bitmap, imageInfo, DISK_CACHE)

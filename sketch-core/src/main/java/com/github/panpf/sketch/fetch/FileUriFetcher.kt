@@ -25,13 +25,13 @@ class FileUriFetcher(
     }
 
     override suspend fun fetch(): FetchResult =
-        FetchResult(ContentDataSource(sketch.appContext, fileUri))
+        FetchResult(ContentDataSource(sketch, request, fileUri))
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
             val uri = request.uri
             return when {
-                request is LoadRequest && uri.scheme == SCHEME -> {
+                request is LoadRequest && SCHEME.equals(uri.scheme, ignoreCase = true) -> {
                     FileUriFetcher(sketch, request, uri)
                 }
                 request is LoadRequest && uri.scheme == null

@@ -15,51 +15,42 @@
  */
 package com.github.panpf.sketch.datasource
 
-import android.content.Context
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.util.MD5Utils
-import java.io.File
-import java.io.FileOutputStream
+import com.github.panpf.sketch.request.internal.ImageRequest
+import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
-class AssetsDataSource(
-    val context: Context,
+class AssetsDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
     val assetsFilePath: String
 ) : DataSource {
 
     override val from: DataFrom
         get() = DataFrom.LOCAL
 
-    @get:Throws(IOException::class)
-    @get:Synchronized
-    override val length: Long by lazy {
-        context.assets.openFd(assetsFilePath).use {
-            it.length
-        }
-    }
+    private var _length = -1L
 
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream {
-        return context.assets.open(assetsFilePath)
-    }
-
-    @Throws(IOException::class)
-    override fun getFile(outDir: File?, outName: String?): File? {
-        if (outDir == null || (!outDir.exists() && !outDir.parentFile.mkdirs())) {
-            return null
-        }
-
-        val outFile = File(outDir, outName ?: MD5Utils.md5(assetsFilePath))
-        newInputStream().use { inputStream ->
-            FileOutputStream(outFile).use { outputStream ->
-                inputStream.copyTo(outputStream)
+    override fun length(): Long =
+        _length.takeIf { it != -1L }
+            ?: context.assets.openFd(assetsFilePath).use {
+                it.length
+            }.apply {
+                this@AssetsDataSource._length = this
             }
-        }
-        return outFile
-    }
+
+    @Throws(IOException::class)
+    override fun newFileDescriptor(): FileDescriptor =
+        context.assets.openFd(assetsFilePath).fileDescriptor
+
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream = context.assets.open(assetsFilePath)
 
     override fun toString(): String {
         return "AssetsDataSource(from=$from, assetsFilePath='$assetsFilePath')"
     }
 }
+

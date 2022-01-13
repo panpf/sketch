@@ -15,42 +15,38 @@
  */
 package com.github.panpf.sketch.datasource
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.internal.ImageRequest
 import java.io.File
+import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
 class DiskCacheDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    override val from: DataFrom,
     val diskCacheEntry: DiskCache.Entry,
-    override val from: DataFrom
 ) : DataSource {
 
-    @get:Throws(IOException::class)
-    override var length: Long = -1
-        get() {
-            if (field >= 0) {
-                return field
-            }
-            field = diskCacheEntry.file.length()
-            return field
-        }
-        private set
-    var isFromProcessedCache = false // 标识是否来自已处理缓存，后续对已处理缓存的图片会有额外处理
-        private set
+    private var _length = -1L
 
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream {
-        return diskCacheEntry.newInputStream()
-    }
+    override fun length(): Long =
+        _length.takeIf { it != -1L }
+            ?: diskCacheEntry.file.length().apply {
+                this@DiskCacheDataSource._length = this
+            }
 
-    override fun getFile(outDir: File?, outName: String?): File {
+    @Throws(IOException::class)
+    override fun newInputStream(): InputStream = diskCacheEntry.newInputStream()
+
+    override fun newFileDescriptor(): FileDescriptor? = null
+
+    override suspend fun file(): File {
         return diskCacheEntry.file
-    }
-
-    fun setFromProcessedCache(fromProcessedCache: Boolean): DiskCacheDataSource {
-        isFromProcessedCache = fromProcessedCache
-        return this
     }
 
     override fun toString(): String {

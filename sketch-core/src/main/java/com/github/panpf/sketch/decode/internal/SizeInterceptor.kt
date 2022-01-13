@@ -8,7 +8,7 @@ import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
 
 // todo 融合 ResizeInterceptor 和 ExifOrientationCorrectInterceptor
-class ResizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
+class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>
@@ -16,6 +16,7 @@ class ResizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         val bitmapResult = chain.proceed(chain.request)
         val bitmap = bitmapResult.bitmap
         val resize = chain.request.resize
+//        val maxSize = chain.request.maxSize
         val bitmapPoolHelper = chain.sketch.bitmapPoolHelper
         return if (resize != null && needResize(bitmap, resize)) {
             val newBitmap = resize(bitmap, resize, bitmapPoolHelper)
@@ -25,6 +26,8 @@ class ResizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
             } else {
                 bitmapResult
             }
+//        } else if(maxSize != null && bitmap.width * bitmap.height > maxSize.width * maxSize.height){
+            // todo 限制不超过 maxSize
         } else {
             bitmapResult
         }
@@ -55,6 +58,7 @@ class ResizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
             scaleType = resize.scaleType,
             exactlySame = resize.mode == Resize.Mode.EXACTLY_SAME
         )
+        // todo 限制不超过 maxSize
         val config = bitmap.config ?: Bitmap.Config.ARGB_8888
         val resizeBitmap =
             bitmapPoolHelper.getOrMake(mapping.newWidth, mapping.newHeight, config)

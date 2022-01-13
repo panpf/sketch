@@ -32,6 +32,11 @@ class HttpUriFetcher(
     val url: String
 ) : Fetcher {
 
+    companion object {
+        const val SCHEME = "http"
+        const val SCHEME1 = "https"
+    }
+
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun fetch(): FetchResult {
         val diskCacheHelper = HttpDiskCacheHelper.from(sketch, request)
@@ -78,7 +83,11 @@ class HttpUriFetcher(
             }
         }
         return if (coroutineScope.isActive) {
-            FetchResult(ByteArrayDataSource(byteArrayOutputStream.toByteArray(), DataFrom.NETWORK))
+            FetchResult(
+                ByteArrayDataSource(
+                    sketch, request, DataFrom.NETWORK, byteArrayOutputStream.toByteArray()
+                )
+            )
         } else {
             throw CancellationException()
         }
@@ -130,7 +139,10 @@ class HttpUriFetcher(
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
             if (request is DownloadRequest
-                && (request.uri.scheme == "http" || request.uri.scheme == "https")
+                && (SCHEME.equals(
+                    request.uri.scheme,
+                    ignoreCase = true
+                ) || SCHEME1.equals(request.uri.scheme, ignoreCase = true))
             ) {
                 HttpUriFetcher(sketch, request, request.uriString)
             } else {
@@ -139,10 +151,11 @@ class HttpUriFetcher(
     }
 
     private class HttpDiskCacheHelper(
+        val sketch: Sketch,
+        val request: DownloadRequest,
         val diskCache: DiskCache,
         val encodedDiskCacheKey: String,
         val diskCachePolicy: CachePolicy,
-        val request: DownloadRequest,
     ) {
 
         val lock: Mutex by lazy {
@@ -153,7 +166,11 @@ class HttpUriFetcher(
             if (diskCachePolicy.readEnabled) {
                 val diskCacheEntry = diskCache[encodedDiskCacheKey]
                 if (diskCacheEntry != null) {
-                    return FetchResult(DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE))
+                    return FetchResult(
+                        DiskCacheDataSource(
+                            sketch, request, DataFrom.DISK_CACHE, diskCacheEntry
+                        )
+                    )
                 } else if (request.depth >= RequestDepth.LOCAL) {
                     throw RequestDepthException(request, request.depth, request.depthFrom)
                 }
@@ -195,11 +212,27 @@ class HttpUriFetcher(
                 val diskCacheEntry = diskCache[encodedDiskCacheKey]
                     ?: throw IOException("Disk cache loss after write. key: ${request.diskCacheKey}")
                 if (diskCachePolicy.readEnabled) {
-                    FetchResult(DiskCacheDataSource(diskCacheEntry, DataFrom.NETWORK))
+                    FetchResult(
+                        DiskCacheDataSource(
+                            sketch,
+                            request,
+                            DataFrom.NETWORK,
+                            diskCacheEntry
+                        )
+                    )
                 } else {
                     diskCacheEntry.newInputStream()
                         .use { it.readBytes() }
-                        .run { FetchResult(ByteArrayDataSource(this, DataFrom.NETWORK)) }
+                        .run {
+                            FetchResult(
+                                ByteArrayDataSource(
+                                    sketch,
+                                    request,
+                                    DataFrom.NETWORK,
+                                    this
+                                )
+                            )
+                        }
                 }
             } else {
                 throw CancellationException()
@@ -216,10 +249,11 @@ class HttpUriFetcher(
                     val encodedDiskCacheKey = diskCache.encodeKey(request.diskCacheKey)
                     val diskCachePolicy = request.diskCachePolicy
                     HttpDiskCacheHelper(
+                        sketch,
+                        request,
                         diskCache,
                         encodedDiskCacheKey,
                         diskCachePolicy,
-                        request
                     )
                 } else {
                     null

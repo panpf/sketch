@@ -15,8 +15,16 @@
  */
 package com.github.panpf.sketch.datasource
 
+import android.content.Context
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.ImageRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
@@ -25,38 +33,49 @@ import java.io.InputStream
  */
 interface DataSource {
 
-    /**
-     * 获取数据长度
-     *
-     * @return 数据长度
-     * @throws IOException 数据源异常
-     */
-    @get:Throws(IOException::class)
-    val length: Long
+    val sketch: Sketch
 
-    /**
-     * 获取图片来源
-     *
-     * @return [DataFrom]
-     */
+    val request: ImageRequest
+
+    val context: Context
+        get() = sketch.appContext
+
     val from: DataFrom
 
-    /**
-     * 获取输入流
-     *
-     * @return [InputStream]
-     * @throws IOException 数据源异常
-     */
+    @Throws(IOException::class)
+    fun length(): Long
+
+    @Throws(IOException::class)
+    fun newFileDescriptor(): FileDescriptor?
+
     @Throws(IOException::class)
     fun newInputStream(): InputStream
 
-    /**
-     * 获取可用的文件
-     *
-     * @param outDir  如果当前数据源无法直接返回一个可用的文件，就将内容输出到指定文件夹中
-     * @param outName 输出文件的名字
-     * @return null：无可用文件
-     */
     @Throws(IOException::class)
-    fun getFile(outDir: File?, outName: String?): File?
+    suspend fun file(): File = withContext(Dispatchers.IO) {
+        val diskCache = sketch.diskCache
+        val encodedKey = sketch.diskCache.encodeKey(request.uriString + "_data_source")
+        sketch.diskCache.getOrCreateEditMutexLock(encodedKey).withLock {
+            val entry = diskCache[encodedKey]
+            if (entry != null) {
+                entry
+            } else {
+                val editor = diskCache.edit(encodedKey)
+                    ?: throw IllegalArgumentException("Disk cache cannot be used")
+                try {
+                    newInputStream().use { inputStream ->
+                        editor.newOutputStream().use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
+                    editor.commit()
+                } catch (e: Throwable) {
+                    editor.abort()
+                    throw e
+                }
+                diskCache[encodedKey]
+                    ?: throw IllegalArgumentException("Disk cache cannot be used after edit")
+            }
+        }.file
+    }
 }

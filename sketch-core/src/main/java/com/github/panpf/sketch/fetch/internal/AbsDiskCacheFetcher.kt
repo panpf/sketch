@@ -53,7 +53,7 @@ abstract class AbsDiskCacheFetcher(
         diskCache.getOrCreateEditMutexLock(encodedDiskCacheKey).withLock {
             val diskCacheEntry = diskCache[encodedDiskCacheKey]
             return if (diskCacheEntry != null) {
-                DiskCacheDataSource(diskCacheEntry, DataFrom.DISK_CACHE)
+                DiskCacheDataSource(sketch, request, DataFrom.DISK_CACHE, diskCacheEntry)
             } else {
                 readContent(encodedDiskCacheKey)
             }
@@ -89,14 +89,16 @@ abstract class AbsDiskCacheFetcher(
         return if (diskCacheEditor != null) {
             val cacheEntry = diskCache[encodedDiskCacheKey]
             if (cacheEntry != null) {
-                DiskCacheDataSource(cacheEntry, dataFrom)
+                DiskCacheDataSource(sketch, request, dataFrom, cacheEntry)
             } else {
                 throw IOException("Not found disk cache after save. ${request.uriString}")
             }
         } else {
             ByteArrayDataSource(
-                (outputStream as ByteArrayOutputStream).toByteArray(),
-                dataFrom
+                sketch,
+                request,
+                dataFrom,
+                (outputStream as ByteArrayOutputStream).toByteArray()
             )
         }
     }

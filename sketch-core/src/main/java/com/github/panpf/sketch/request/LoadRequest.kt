@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.net.Uri
 import android.os.Build.VERSION
@@ -11,6 +10,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
@@ -494,8 +494,9 @@ interface LoadRequest : DownloadRequest {
     }
 }
 
-fun LoadRequest.newDecodeOptionsByQualityParams(mimeType: String): BitmapFactory.Options =
-    BitmapFactory.Options().apply {
+fun LoadRequest.newDecodeOptionsByQualityParams(mimeType: String): DecodeConfig =
+    DecodeConfig().apply {
+        @Suppress("DEPRECATION")
         if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {
             inPreferQualityOverSpeed = true
         }
