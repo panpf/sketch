@@ -547,9 +547,7 @@ interface DisplayRequest : LoadRequest {
 
         override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
 
-        private val qualityKey: String? by lazy {
-            LoadRequest.newQualityKey(this)
-        }
+        private val qualityKey: String? by lazy { newQualityKey() }
 
         override val memoryCacheKey: String by lazy {
             _memoryCacheKey ?: buildString {
@@ -567,17 +565,45 @@ interface DisplayRequest : LoadRequest {
             buildString {
                 append("Display")
                 append("_").append(uriString)
-                qualityKey?.let {   // todo 替换成每一项属性
+                parameters?.key?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append(it)
                 }
-                parameters?.takeIf { it.isNotEmpty() }?.let {   // todo 替换成每一项属性
-                    append("_").append(it.key)
-                }
-                if (disabledAnimationDrawable == true) {
-                    append("_").append("DisabledAnimationDrawable")
+                httpHeaders?.takeIf { it.isNotEmpty() }?.let {
+                    append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
                 append("_").append("diskCachePolicy($diskCachePolicy)")
+                append("_").append("resultDiskCachePolicy($resultDiskCachePolicy)")
+                maxSize?.let {
+                    append("_").append(it.cacheKey)
+                }
+                bitmapConfig?.let {
+                    append("_").append(it.cacheKey)
+                }
+                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    colorSpace?.let {
+                        append("_").append("colorSpace(${it.name.replace(" ", "")}")
+                    }
+                }
+                @Suppress("DEPRECATION")
+                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+                    append("_").append("preferQualityOverSpeed")
+                }
+                resize?.let {
+                    append("_").append(it.cacheKey)
+                }
+                transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+                    append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+                }
+                if (disabledBitmapPool == true) {
+                    append("_").append("disabledBitmapPool")
+                }
+                if (disabledCorrectExifOrientation == true) {
+                    append("_").append("disabledCorrectExifOrientation")
+                }
                 append("_").append("memoryCachePolicy($memoryCachePolicy)")
+                if (disabledAnimationDrawable == true) {
+                    append("_").append("disabledAnimationDrawable")
+                }
             }
         }
     }

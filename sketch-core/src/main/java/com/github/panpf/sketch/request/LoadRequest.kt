@@ -124,58 +124,6 @@ interface LoadRequest : DownloadRequest {
         ): Builder = Builder(uri).apply {
             configBlock?.invoke(this)
         }
-
-        fun newQualityKey(request: LoadRequest): String? = buildString {
-            val parameters = request.parameters
-            if (parameters != null && !parameters.isCacheKeyEmpty()) {
-                if (length > 0) append("_")
-                append(parameters.cacheKey)
-            }
-
-            val maxSize = request.maxSize
-            if (maxSize != null) {
-                if (length > 0) append("_")
-                append(maxSize.cacheKey)
-            }
-
-            val bitmapConfig = request.bitmapConfig
-            if (bitmapConfig != null) {
-                if (length > 0) append("_")
-                append(bitmapConfig.cacheKey)
-            }
-
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                val colorSpace = request.colorSpace
-                if (colorSpace != null) {
-                    if (length > 0) append("_")
-                    append("ColorSpace(${colorSpace.name.replace(" ", "")}")
-                }
-            }
-
-            val preferQualityOverSpeed = request.preferQualityOverSpeed
-            if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
-                if (length > 0) append("_")
-                append("PreferQualityOverSpeed")
-            }
-
-            val resize = request.resize
-            if (resize != null) {
-                if (length > 0) append("_")
-                append(resize.cacheKey)
-            }
-
-            val transformations = request.transformations
-            if (transformations?.isNotEmpty() == true) {
-                if (length > 0) append("_")
-                append("Transformations(${transformations.joinToString(separator = ",")})")
-            }
-
-            val disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
-            if (disabledCorrectExifOrientation != true) {
-                if (length > 0) append("_")
-                append("CorrectExifOrientation")
-            }
-        }.takeIf { it.isNotEmpty() }
     }
 
     class Builder(private val uri: Uri) {
@@ -464,8 +412,10 @@ interface LoadRequest : DownloadRequest {
 
         override val diskCacheKey: String = _diskCacheKey ?: uriString
 
+        // todo 改为 networkContentDiskCachePolicy
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
+        // todo 不需要外部定义结果缓存 key 和其 policy
         override val resultDiskCacheKey: String? by lazy {
             _resultDiskCacheKey ?: qualityKey?.let { "${uriString}_$it" }
         }
@@ -473,21 +423,47 @@ interface LoadRequest : DownloadRequest {
         override val resultDiskCachePolicy: CachePolicy =
             _resultDiskCachePolicy ?: CachePolicy.ENABLED
 
-        private val qualityKey: String? by lazy {
-            newQualityKey(this)
-        }
+        private val qualityKey: String? by lazy { newQualityKey() }
 
         override val key: String by lazy {
             buildString {
                 append("Load")
                 append("_").append(uriString)
-                qualityKey?.let {   // todo 替换成每一项属性
+                parameters?.key?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append(it)
                 }
-                parameters?.takeIf { it.isNotEmpty() }?.let {   // todo 替换成每一项属性
-                    append("_").append(it.key)
+                httpHeaders?.takeIf { it.isNotEmpty() }?.let {
+                    append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
                 append("_").append("diskCachePolicy($diskCachePolicy)")
+                append("_").append("resultDiskCachePolicy($resultDiskCachePolicy)")
+                maxSize?.let {
+                    append("_").append(it.cacheKey)
+                }
+                bitmapConfig?.let {
+                    append("_").append(it.cacheKey)
+                }
+                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    colorSpace?.let {
+                        append("_").append("colorSpace(${it.name.replace(" ", "")}")
+                    }
+                }
+                @Suppress("DEPRECATION")
+                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+                    append("_").append("preferQualityOverSpeed")
+                }
+                resize?.let {
+                    append("_").append(it.cacheKey)
+                }
+                transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+                    append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+                }
+                if (disabledBitmapPool == true) {
+                    append("_").append("disabledBitmapPool")
+                }
+                if (disabledCorrectExifOrientation == true) {
+                    append("_").append("disabledCorrectExifOrientation")
+                }
             }
         }
     }
@@ -509,3 +485,44 @@ fun LoadRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
             inPreferredColorSpace = colorSpace
         }
     }
+
+internal fun LoadRequest.newQualityKey(): String? = buildString {
+    val prefix = "Quality("
+    append(prefix)
+    parameters?.cacheKey?.let {
+        if (length > prefix.length) append(",")
+        append(it)
+    }
+    maxSize?.let {
+        if (length > prefix.length) append(",")
+        append(it.cacheKey)
+    }
+    bitmapConfig?.let {
+        if (length > prefix.length) append(",")
+        append(it.cacheKey)
+    }
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        colorSpace?.let {
+            if (length > prefix.length) append(",")
+            append("colorSpace(${it.name.replace(" ", "")}")
+        }
+    }
+    @Suppress("DEPRECATION")
+    if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+        if (length > prefix.length) append(",")
+        append("preferQualityOverSpeed")
+    }
+    resize?.let {
+        if (length > prefix.length) append(",")
+        append(it.cacheKey)
+    }
+    transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+        if (length > prefix.length) append(",")
+        append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+    }
+    if (disabledCorrectExifOrientation == true) {
+        if (length > prefix.length) append(",")
+        append("disabledCorrectExifOrientation")
+    }
+    append(")")
+}.takeIf { it.isNotEmpty() }

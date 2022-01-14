@@ -223,8 +223,11 @@ interface DownloadRequest : ImageRequest {
             buildString {
                 append("Download")
                 append("_").append(uriString)
-                parameters?.takeIf { it.isNotEmpty() }?.let {   // todo 替换成每一项属性
-                    append("_").append(it.key)
+                parameters?.key?.takeIf { it.isNotEmpty() }?.let {
+                    append("_").append(it)
+                }
+                httpHeaders?.takeIf { it.isNotEmpty() }?.let {
+                    append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
                 append("_").append("diskCachePolicy($diskCachePolicy)")
             }

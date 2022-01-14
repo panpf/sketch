@@ -29,9 +29,6 @@ class Parameters private constructor(
     /** Returns 'true' if this object has no parameters. */
     fun isEmpty(): Boolean = map.isEmpty()
 
-    /** Returns 'true' if this object has no parameters. */
-    fun isCacheKeyEmpty(): Boolean = map.all { it.value.cacheKey == null }
-
     /** Returns a map of keys to values. */
     fun values(): Map<String, Any?> {
         return if (isEmpty()) {
@@ -54,22 +51,30 @@ class Parameters private constructor(
         }
     }
 
-    val key: String by lazy {
+    val key: String? by lazy {
         val keys = map.mapNotNull {
             it.value.value?.let { value ->
                 "${it.key}:$value"
             }
         }.sorted().joinToString(separator = ",")
-        "Parameters($keys)"
+        if(keys.isNotEmpty()) {
+            "Parameters($keys)"
+        } else {
+            null
+        }
     }
 
-    val cacheKey: String by lazy {
+    val cacheKey: String? by lazy {
         val keys = map.mapNotNull {
             it.value.cacheKey?.let { cacheKey ->
                 "${it.key}:$cacheKey"
             }
         }.sorted().joinToString(separator = ",")
-        "Parameters($keys)"
+        if(keys.isNotEmpty()) {
+            "Parameters($keys)"
+        } else {
+            null
+        }
     }
 
     /** Returns an [Iterator] over the entries in the [Parameters]. */
