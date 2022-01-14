@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.viewability
+package com.github.panpf.sketch.viewability.internal
 
 import android.graphics.Canvas
 import android.view.View
@@ -9,13 +9,13 @@ import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
-import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LongClickObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.AttachObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.ClickObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.LayoutObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.LongClickObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestProgressListenerObserver
 import java.lang.ref.WeakReference
 
 class ViewAbilityContainerImpl(

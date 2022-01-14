@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.viewability
 
 import android.content.res.Resources
 import android.graphics.Canvas
@@ -7,8 +7,9 @@ import android.graphics.Paint
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.graphics.RectF
-import com.github.panpf.sketch.viewability.Host
-import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
+import com.github.panpf.sketch.viewability.internal.AbsProgressViewAbility
+import com.github.panpf.sketch.viewability.internal.Host
+import com.github.panpf.sketch.viewability.internal.ViewAbilityContainerOwner
 
 class CircleProgressViewAbility constructor(
     sizeDp: Float = DEFAULT_SIZE_DP,

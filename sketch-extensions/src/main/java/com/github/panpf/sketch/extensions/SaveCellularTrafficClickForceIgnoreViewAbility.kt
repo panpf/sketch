@@ -4,11 +4,11 @@ import android.view.View
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.viewability.Host
-import com.github.panpf.sketch.viewability.ViewAbility
-import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
+import com.github.panpf.sketch.viewability.internal.Host
+import com.github.panpf.sketch.viewability.internal.ViewAbility
+import com.github.panpf.sketch.viewability.internal.ViewAbility.ClickObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbilityContainerOwner
 
 class SaveCellularTrafficClickForceIgnoreViewAbility
     : ViewAbility, ClickObserver, RequestListenerObserver {

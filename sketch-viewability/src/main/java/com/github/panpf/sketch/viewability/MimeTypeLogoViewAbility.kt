@@ -1,18 +1,20 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.viewability
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.Host
-import com.github.panpf.sketch.viewability.ViewAbility
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
+import com.github.panpf.sketch.viewability.internal.Host
+import com.github.panpf.sketch.viewability.internal.ViewAbility
+import com.github.panpf.sketch.viewability.internal.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbilityContainerOwner
 
 class MimeTypeLogoViewAbility(
     private val mimeTypeIconMap: Map<String, MimeTypeLogo>,
@@ -120,4 +122,34 @@ fun ViewAbilityContainerOwner.setMimeTypeLogoWithResId(
         null
     }
     setMimeTypeLogo(mimeTypeLogoViewAbility)
+}
+
+class MimeTypeLogo {
+
+    private val data: Any
+    private var _drawable: Drawable? = null
+
+    val hiddenWhenAnimatable: Boolean
+
+    constructor(drawable: Drawable, hiddenWhenAnimatable: Boolean = false) {
+        this.data = drawable
+        this.hiddenWhenAnimatable = hiddenWhenAnimatable
+    }
+
+    constructor(drawableResId: Int, hiddenWhenAnimatable: Boolean = false) {
+        this.data = drawableResId
+        this.hiddenWhenAnimatable = hiddenWhenAnimatable
+    }
+
+    fun getDrawable(context: Context): Drawable {
+        return _drawable ?: if (data is Drawable) {
+            _drawable = data
+            data
+        } else {
+            val drawableResId = data as Int
+            val newDrawable = ResourcesCompat.getDrawable(context.resources, drawableResId, null)!!
+            _drawable = newDrawable
+            newDrawable
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.viewability.internal
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -7,12 +7,10 @@ import android.graphics.Canvas
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.viewability.Host
-import com.github.panpf.sketch.viewability.ViewAbility
-import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestProgressListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.LayoutObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestProgressListenerObserver
 
 abstract class AbsProgressViewAbility : ViewAbility, LayoutObserver, RequestListenerObserver,
     RequestProgressListenerObserver, DrawObserver {

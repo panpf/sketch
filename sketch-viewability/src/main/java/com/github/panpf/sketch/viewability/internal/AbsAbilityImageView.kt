@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.viewability
+package com.github.panpf.sketch.viewability.internal
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
-abstract class AbilityImageView @JvmOverloads constructor(
+abstract class AbsAbilityImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : AppCompatImageView(context, attrs), ViewAbilityContainerOwner {
 

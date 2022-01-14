@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.viewability
+package com.github.panpf.sketch.viewability.internal
 
 import android.graphics.Canvas
 import android.view.View.OnClickListener

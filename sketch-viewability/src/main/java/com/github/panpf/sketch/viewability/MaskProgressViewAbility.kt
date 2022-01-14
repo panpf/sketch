@@ -1,10 +1,11 @@
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.viewability
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import androidx.annotation.ColorInt
-import com.github.panpf.sketch.viewability.Host
-import com.github.panpf.sketch.viewability.ViewAbilityContainerOwner
+import com.github.panpf.sketch.viewability.internal.AbsProgressViewAbility
+import com.github.panpf.sketch.viewability.internal.Host
+import com.github.panpf.sketch.viewability.internal.ViewAbilityContainerOwner
 
 class MaskProgressViewAbility(
     @ColorInt private val maskColor: Int = DEFAULT_MASK_COLOR,

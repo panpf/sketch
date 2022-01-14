@@ -9,7 +9,7 @@ import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.internal.showCircleProgressIndicator
+import com.github.panpf.sketch.viewability.showCircleProgressIndicator
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
