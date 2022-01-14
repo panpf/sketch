@@ -543,7 +543,9 @@ interface DisplayRequest : LoadRequest {
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                if (networkContentDiskCachePolicy != CachePolicy.ENABLED) {
+                    append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                }
                 maxSize?.let {
                     append("_").append(it.cacheKey)
                 }
@@ -571,11 +573,15 @@ interface DisplayRequest : LoadRequest {
                 if (disabledCorrectExifOrientation == true) {
                     append("_").append("disabledCorrectExifOrientation")
                 }
-                append("_").append("resultDiskCachePolicy($bitmapResultDiskCachePolicy)")
+                if (bitmapResultDiskCachePolicy != CachePolicy.ENABLED) {
+                    append("_").append("bitmapResultDiskCachePolicy($bitmapResultDiskCachePolicy)")
+                }
                 if (disabledAnimationDrawable == true) {
                     append("_").append("disabledAnimationDrawable")
                 }
-                append("_").append("bitmapMemoryCachePolicy($bitmapMemoryCachePolicy)")
+                if (bitmapMemoryCachePolicy != CachePolicy.ENABLED) {
+                    append("_").append("bitmapMemoryCachePolicy($bitmapMemoryCachePolicy)")
+                }
             }
         }
     }

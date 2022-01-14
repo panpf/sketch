@@ -237,9 +237,10 @@ interface LoadRequest : DownloadRequest {
                 this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
             }
 
-        fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder = apply {
-            this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
-        }
+        fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder =
+            apply {
+                this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
+            }
 
         fun maxSize(maxSize: MaxSize?): Builder = apply {
             this.maxSize = maxSize
@@ -423,7 +424,9 @@ interface LoadRequest : DownloadRequest {
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                if (networkContentDiskCachePolicy != CachePolicy.ENABLED) {
+                    append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                }
                 maxSize?.let {
                     append("_").append(it.cacheKey)
                 }
@@ -451,7 +454,9 @@ interface LoadRequest : DownloadRequest {
                 if (disabledCorrectExifOrientation == true) {
                     append("_").append("disabledCorrectExifOrientation")
                 }
-                append("_").append("bitmapResultDiskCachePolicy($bitmapResultDiskCachePolicy)")
+                if (bitmapResultDiskCachePolicy != CachePolicy.ENABLED) {
+                    append("_").append("bitmapResultDiskCachePolicy($bitmapResultDiskCachePolicy)")
+                }
             }
         }
     }

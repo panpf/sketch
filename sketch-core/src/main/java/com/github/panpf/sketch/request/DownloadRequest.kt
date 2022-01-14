@@ -223,7 +223,9 @@ interface DownloadRequest : ImageRequest {
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                if (networkContentDiskCachePolicy != CachePolicy.ENABLED) {
+                    append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                }
             }
         }
     }
