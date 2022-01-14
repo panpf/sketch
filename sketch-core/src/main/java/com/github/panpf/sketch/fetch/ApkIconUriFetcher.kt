@@ -31,12 +31,8 @@ class ApkIconUriFetcher(
     override val mimeType: String
         get() = "application/vnd.android.package-archive"
 
-    override fun getBitmap(): Bitmap = readApkIcon(
-        sketch.appContext,
-        apkFilePath,
-        false,
-        sketch.bitmapPoolHelper.bitmapPool
-    )
+    override fun getBitmap(): Bitmap =
+        readApkIcon(sketch.appContext, apkFilePath, false, sketch.bitmapPoolHelper)
 
     override fun getDiskCacheKey(): String =
         createFileUriDiskCacheKey(request.uriString, apkFilePath)

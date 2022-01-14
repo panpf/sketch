@@ -33,11 +33,13 @@ class DrawableResUriFetcher(
 
     override suspend fun fetch(): FetchResult {
         val resources = sketch.appContext.resources
-        val path = TypedValue().apply { resources.getValue(drawableResId, this, true) }.string
-        val entryName = path.substring(path.lastIndexOf('/'))
+        val path = TypedValue().apply { resources.getValue(drawableResId, this, true) }.string ?: ""
+        val entryName = path.lastIndexOf('/')
+            .takeIf { it != -1 }
+            ?.let { path.substring(it + 1) }
+            ?: path.toString()
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(entryName)
-        // todo 如果图片是 xml 的这里就会返回 text/xml 的 mimeType，并且后续解码时失败，应该新搞一个专门解码 xml drawable 的解码器，先读取 drawable 然后转成 bitmap
-        return FetchResult(DrawableResDataSource(sketch, request, drawableResId), mimeType)
+        return FetchResult(DrawableResDataSource(sketch, request, resources, drawableResId), mimeType)
     }
 
     class Factory : Fetcher.Factory {

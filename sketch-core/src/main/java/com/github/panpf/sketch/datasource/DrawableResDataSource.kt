@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.datasource
 
+import android.content.res.Resources
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import com.github.panpf.sketch.Sketch
@@ -27,6 +28,7 @@ import java.io.InputStream
 class DrawableResDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
+    val resources: Resources,
     @RawRes @DrawableRes val drawableId: Int
 ) : DataSource {
 
@@ -38,19 +40,19 @@ class DrawableResDataSource constructor(
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
-            ?: (context.resources.openRawResourceFd(drawableId)?.use {
+            ?: (resources.openRawResourceFd(drawableId)?.use {
                 it.length
             } ?: throw IOException("Invalid drawable res id: $drawableId")).apply {
                 this@DrawableResDataSource._length = this
             }
 
     override fun newFileDescriptor(): FileDescriptor =
-        context.resources.openRawResourceFd(drawableId)?.fileDescriptor
+        resources.openRawResourceFd(drawableId)?.fileDescriptor
             ?: throw IOException("Invalid drawable res id: $drawableId")
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =
-        context.resources.openRawResource(drawableId)
+        resources.openRawResource(drawableId)
 
     override fun toString(): String {
         return "DrawableDataSource(from=$from, drawableId=$drawableId)"

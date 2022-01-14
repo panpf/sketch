@@ -16,4 +16,6 @@ interface ViewTarget<T : View> : Target {
      * The [View] used by this [Target]. This field should be immutable.
      */
     val view: T
+
+    // todo support view background
 }

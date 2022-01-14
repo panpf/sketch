@@ -14,13 +14,14 @@ import com.github.panpf.sketch.cache.MemorySizeCalculator
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
 import com.github.panpf.sketch.decode.internal.DecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrectInterceptor
 import com.github.panpf.sketch.decode.internal.SizeInterceptor
-import com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
+import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.fetch.AndroidResUriFetcher
 import com.github.panpf.sketch.fetch.ApkIconUriFetcher
@@ -105,9 +106,10 @@ class Sketch private constructor(
             addFetcher(ApkIconUriFetcher.Factory())
             addFetcher(AppIconUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
+            addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
-            // todo 抽象解码器，支持视频和 svg
+            // todo 支持 svg
         }.build()
     val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>> =
         (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()

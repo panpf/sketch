@@ -8,16 +8,14 @@ import androidx.fragment.app.viewModels
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.bean.ImageDetail
-import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.FragmentPager2TabBinding
-import com.github.panpf.sketch.sample.item.ImageDetailFragmentItemFactory
 import com.github.panpf.sketch.sample.item.ImageFragmentItemFactory
-import com.github.panpf.sketch.sample.vm.ImageFromViewModel
+import com.github.panpf.sketch.sample.vm.FetcherViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class FetcherFragment : ToolbarBindingFragment<FragmentPager2TabBinding>() {
 
-    private val viewModel by viewModels<ImageFromViewModel>()
+    private val viewModel by viewModels<FetcherViewModel>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,

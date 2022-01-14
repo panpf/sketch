@@ -46,8 +46,7 @@ class AppIconUriFetcher(
             throw Exception("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode. ${request.uriString}")
         }
         val apkFilePath = packageInfo.applicationInfo.sourceDir
-        val bitmapPool = sketch.bitmapPoolHelper.bitmapPool
-        return readApkIcon(sketch.appContext, apkFilePath, false, bitmapPool)
+        return readApkIcon(sketch.appContext, apkFilePath, false, sketch.bitmapPoolHelper)
     }
 
     override fun getDiskCacheKey(): String = request.uriString

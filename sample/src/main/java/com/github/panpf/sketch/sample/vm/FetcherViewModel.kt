@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ImageFromViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
+class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
     val data = MutableLiveData<ImageFromData>()
 
@@ -45,13 +45,13 @@ class ImageFromViewModel(application1: Application) : LifecycleAndroidViewModel(
                     add("FILE" to localFirstPhotoPath)
                 }
                 add("ASSET" to AssetImage.MEI_NV)
-                add("DRAWABLE" to DrawableResUriFetcher.newUri(R.drawable.im_placeholder).toString())
                 add(
-                    "ANDROID_RES" to AndroidResUriFetcher.newUriByName(
-                        BuildConfig.APPLICATION_ID,
-                        "mipmap",
-                        "ic_launcher"
-                    ).toString()
+                    "DRAWABLE" to DrawableResUriFetcher.newUri(R.mipmap.ic_launcher).toString()
+                )
+                add(
+                    "ANDROID_RES" to AndroidResUriFetcher
+                        .newUriByName(BuildConfig.APPLICATION_ID, "mipmap", "ic_launcher")
+                        .toString()
                 )
                 add(
                     "APP" to AppIconUriFetcher.newUri(
@@ -59,7 +59,10 @@ class ImageFromViewModel(application1: Application) : LifecycleAndroidViewModel(
                         headerUserPackageInfo.versionCode
                     ).toString()
                 )
-                add("APK" to ApkIconUriFetcher.newUri(footerUserPackageInfo.applicationInfo.publicSourceDir).toString())
+                add(
+                    "APK" to ApkIconUriFetcher.newUri(footerUserPackageInfo.applicationInfo.publicSourceDir)
+                        .toString()
+                )
                 add("BASE64" to BASE64_IMAGE)
             }
             val uris = datas.map { it.second }.toTypedArray()
