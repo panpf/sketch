@@ -57,37 +57,26 @@ open class DefaultBitmapDecoder(
                     try {
                         dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
-                        throw BitmapDecodeException(
-                            request,
-                            "Bitmap region decode error. uri=${request.uriString}",
-                            throwable2
-                        )
+                        val message2 = "Bitmap region decode error"
+                        throw BitmapDecodeException(request, message2, throwable2)
                     }
                 }
                 isSrcRectError(throwable, imageInfo.width, imageInfo.height, srcRect) -> {
-                    throw BitmapDecodeException(
-                        request,
-                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}, uri=${request.uriString}",
-                        throwable
-                    )
+                    val message =
+                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}"
+                    throw BitmapDecodeException(request, message, throwable)
                 }
                 else -> {
-                    throw BitmapDecodeException(
-                        request,
-                        "Bitmap region decode error. uri=${request.uriString}",
-                        throwable
-                    )
+                    throw BitmapDecodeException(request, "Bitmap region decode error", throwable)
                 }
             }
         } ?: throw BitmapDecodeException(
-            request, "Bitmap region decode return null. uri=${request.uriString}"
+            request, "Bitmap region decode return null"
         )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            throw BitmapDecodeException(
-                request,
-                "Invalid image size. size=${bitmap.width}x${bitmap.height}, uri=${request.uriString}"
-            )
+            val message = "Invalid image size. size=${bitmap.width}x${bitmap.height}"
+            throw BitmapDecodeException(request, message)
         }
         return bitmap
     }
@@ -115,29 +104,16 @@ open class DefaultBitmapDecoder(
                 try {
                     dataSource.decodeBitmap(decodeOptions)
                 } catch (throwable2: Throwable) {
-                    throw BitmapDecodeException(
-                        request,
-                        "Bitmap decode error. uri=%s".format(request.uriString),
-                        throwable2
-                    )
+                    throw BitmapDecodeException(request, "Bitmap decode error", throwable2)
                 }
             } else {
-                throw BitmapDecodeException(
-                    request,
-                    "Bitmap decode error. uri=%s".format(request.uriString),
-                    throwable
-                )
+                throw BitmapDecodeException(request, "Bitmap decode error", throwable)
             }
-        } ?: throw BitmapDecodeException(
-            request, "Bitmap decode return null. uri=%s".format(request.uriString)
-        )
+        } ?: throw BitmapDecodeException(request, "Bitmap decode return null")
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            throw BitmapDecodeException(
-                request,
-                "Invalid image size. size=%dx%d, uri=%s"
-                    .format(bitmap.width, bitmap.height, request.uriString)
-            )
+            val message = "Invalid image size. ${bitmap.width}x${bitmap.height}"
+            throw BitmapDecodeException(request, message)
         }
         return bitmap
     }

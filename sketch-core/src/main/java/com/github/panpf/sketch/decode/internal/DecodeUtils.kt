@@ -33,10 +33,8 @@ fun DataSource.readImageInfo(request: LoadRequest): ImageInfo {
     }
     decodeBitmap(boundOptions)
     if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-        throw BitmapDecodeException(
-            request,
-            "Invalid image size. size=${boundOptions.outWidth}x${boundOptions.outHeight}, uri=${request.uriString}"
-        )
+        val message = "Invalid image size. ${boundOptions.outWidth}x${boundOptions.outHeight}"
+        throw BitmapDecodeException(request, message)
     }
 
     val exifOrientation: Int = ExifOrientationCorrector

@@ -46,8 +46,7 @@ class DrawableResUriFetcher(
             return if (request is LoadRequest && SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val drawableResId = uri.authority?.toIntOrNull()
                     ?: throw UriInvalidException(
-                        request,
-                        "Drawable resource uri 'drawableResId' part invalid. ${request.uriString}"
+                        request, "Drawable resource uri 'drawableResId' part invalid"
                     )
                 DrawableResUriFetcher(sketch, request, drawableResId)
             } else {

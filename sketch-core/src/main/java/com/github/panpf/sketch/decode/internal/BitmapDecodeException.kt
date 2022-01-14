@@ -4,10 +4,9 @@ import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.util.SketchException
 
 /**
- * Image decoding related exception
+ * Bitmap decode related exception
  */
-// todo 异常 message 中不再包含 uri 信息
-class BitmapDecodeException(
+class BitmapDecodeException constructor(
     thenRequest: ImageRequest,
     message: String,
     cause: Throwable? = null

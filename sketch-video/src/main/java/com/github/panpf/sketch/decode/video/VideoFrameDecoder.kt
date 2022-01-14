@@ -57,22 +57,20 @@ class VideoFrameDecoder(
     }
 
     override fun readImageInfo(): ImageInfo {
-        val srcWidth =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                ?.toIntOrNull() ?: 0
-        val srcHeight =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                ?.toIntOrNull() ?: 0
+        val srcWidth = mediaMetadataRetriever
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
+        val srcHeight = mediaMetadataRetriever
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
         if (srcWidth <= 1 || srcHeight <= 1) {
-            throw BitmapDecodeException(
-                request,
-                "Invalid video size. size=${srcWidth}x${srcHeight}"
-            )
+            val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
+            throw BitmapDecodeException(request, message)
         }
         val exifOrientation =
             if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-                (mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-                    ?.toIntOrNull() ?: 0).run {
+                val videoRotation = mediaMetadataRetriever
+                    .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+                    ?.toIntOrNull() ?: 0
+                videoRotation.run {
                     when (this) {
                         0 -> ExifInterface.ORIENTATION_UNDEFINED
                         90 -> ExifInterface.ORIENTATION_ROTATE_90
@@ -129,8 +127,7 @@ class VideoFrameDecoder(
                 mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
             }
         } ?: throw BitmapDecodeException(
-            request,
-            "Failed to decode frame at $frameMicros microseconds."
+            request, "Failed to decode frame at $frameMicros microseconds."
         )
     }
 

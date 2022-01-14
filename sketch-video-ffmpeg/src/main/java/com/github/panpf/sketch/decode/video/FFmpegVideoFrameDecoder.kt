@@ -56,10 +56,8 @@ class FFmpegVideoFrameDecoder(
             mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
                 ?.toIntOrNull() ?: 0
         if (srcWidth <= 1 || srcHeight <= 1) {
-            throw BitmapDecodeException(
-                request,
-                "Invalid video size. size=${srcWidth}x${srcHeight}"
-            )
+            val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
+            throw BitmapDecodeException(request, message)
         }
         val exifOrientation =
             if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
@@ -84,10 +82,9 @@ class FFmpegVideoFrameDecoder(
             request.videoFrameOption() ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros()
             ?: request.videoFramePercentDuration()?.let { percentDuration ->
-                val duration =
-                    mediaMetadataRetriever
-                        .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
-                        ?.toLongOrNull() ?: 0L
+                val duration = mediaMetadataRetriever
+                    .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
+                    ?.toLongOrNull() ?: 0L
                 (duration * percentDuration * 1000).toLong()
             }
             ?: 0L
@@ -103,11 +100,9 @@ class FFmpegVideoFrameDecoder(
         } else {
             imageInfo.height
         }
-        return mediaMetadataRetriever
-            .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
+        return mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
             ?: throw BitmapDecodeException(
-                request,
-                "Failed to decode frame at $frameMicros microseconds."
+                request, "Failed to decode frame at $frameMicros microseconds."
             )
     }
 
@@ -117,7 +112,8 @@ class FFmpegVideoFrameDecoder(
         imageInfo: ImageInfo,
         srcRect: Rect,
         decodeConfig: DecodeConfig
-    ): Bitmap = throw UnsupportedOperationException("FFmpegVideoFrameDecoder not support decode region")
+    ): Bitmap =
+        throw UnsupportedOperationException("FFmpegVideoFrameDecoder not support decode region")
 
     class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
         override fun create(
