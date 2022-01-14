@@ -23,15 +23,11 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.panpf.sketch.ImageType
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.datasource.DataSource
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.sync.withLock
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.math.BigDecimal
 import javax.microedition.khronos.egl.EGL10
@@ -79,8 +75,8 @@ internal fun Lifecycle.removeAndAddObserver(observer: LifecycleObserver) {
     addObserver(observer)
 }
 
-fun ImageType.supportBitmapRegionDecoder(): Boolean =
-    this == ImageType.JPEG || this == ImageType.PNG || this == ImageType.WEBP
+fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
+    this == ImageFormat.JPEG || this == ImageFormat.PNG || this == ImageFormat.WEBP
 
 /**
  * 获取 [Bitmap] 占用内存大小，单位字节

@@ -3,7 +3,7 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -11,7 +11,6 @@ import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Resize
-import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.calculateInSampleSize
@@ -28,7 +27,7 @@ abstract class AbsBitmapDecoder(
 
     protected abstract fun readImageInfo(): ImageInfo
 
-    protected abstract fun canDecodeRegion(imageInfo: ImageInfo, imageType: ImageType?): Boolean
+    protected abstract fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean
 
     protected abstract fun decodeRegion(
         imageInfo: ImageInfo,
@@ -42,7 +41,7 @@ abstract class AbsBitmapDecoder(
         val imageInfo = readImageInfo()
 
         val resize = request.resize
-        val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
+        val imageType = ImageFormat.valueOfMimeType(imageInfo.mimeType)
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val imageOrientationCorrector =
             ExifOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
@@ -57,9 +56,9 @@ abstract class AbsBitmapDecoder(
     }
 
     private fun shouldUseRegionDecoder(
-        resize: Resize, imageInfo: ImageInfo, imageType: ImageType?
+        resize: Resize, imageInfo: ImageInfo, imageFormat: ImageFormat?
     ): Boolean {
-        if (canDecodeRegion(imageInfo, imageType)) {
+        if (canDecodeRegion(imageInfo, imageFormat)) {
             val resizeAspectRatio = (resize.width.toFloat() / resize.height.toFloat()).format(1)
             val imageAspectRatio =
                 (imageInfo.width.toFloat() / imageInfo.height.toFloat()).format(1)

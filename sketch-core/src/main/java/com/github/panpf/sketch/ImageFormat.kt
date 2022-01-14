@@ -1,6 +1,6 @@
 package com.github.panpf.sketch
 
-enum class ImageType(val mimeType: String) {
+enum class ImageFormat(val mimeType: String) {
     JPEG("image/jpeg"),
     PNG("image/png"),
     WEBP("image/webp"),
@@ -11,7 +11,7 @@ enum class ImageType(val mimeType: String) {
 
     companion object {
         @JvmStatic
-        fun valueOfMimeType(mimeType: String?): ImageType? = when {
+        fun valueOfMimeType(mimeType: String?): ImageFormat? = when {
             JPEG.mimeType.equals(mimeType, ignoreCase = true) -> JPEG
             PNG.mimeType.equals(mimeType, ignoreCase = true) -> PNG
             WEBP.mimeType.equals(mimeType, ignoreCase = true) -> WEBP

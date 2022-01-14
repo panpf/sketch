@@ -2,7 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecoder
@@ -24,8 +24,8 @@ open class DefaultBitmapDecoder(
 
     override fun readImageInfo(): ImageInfo = dataSource.readImageInfo(request)
 
-    override fun canDecodeRegion(imageInfo: ImageInfo, imageType: ImageType?): Boolean =
-        imageType?.supportBitmapRegionDecoder() == true
+    override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean =
+        imageFormat?.supportBitmapRegionDecoder() == true
 
     override fun decodeRegion(
         imageInfo: ImageInfo,

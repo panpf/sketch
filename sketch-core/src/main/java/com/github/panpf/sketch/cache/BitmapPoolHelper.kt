@@ -7,7 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.text.TextUtils
-import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.calculateSamplingSize
@@ -66,7 +66,7 @@ class BitmapPoolHelper(context: Context, val logger: Logger, val bitmapPool: Bit
             options.inSampleSize = 1
         }
         var inSampleSize = options.inSampleSize
-        val imageType = ImageType.valueOfMimeType(outMimeType)
+        val imageType = ImageFormat.valueOfMimeType(outMimeType)
         var inBitmap: Bitmap? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             var finalWidth = calculateSamplingSize(outWidth, inSampleSize)
@@ -85,7 +85,7 @@ class BitmapPoolHelper(context: Context, val logger: Logger, val bitmapPool: Bit
                 options.inSampleSize = inSampleSize
             }
             inBitmap = bitmapPool[finalWidth, finalHeight, options.inPreferredConfig]
-        } else if (inSampleSize == 1 && (imageType == ImageType.JPEG || imageType == ImageType.PNG)) {
+        } else if (inSampleSize == 1 && (imageType == ImageFormat.JPEG || imageType == ImageFormat.PNG)) {
             inBitmap = bitmapPool[outWidth, outHeight, options.inPreferredConfig]
         }
         if (inBitmap != null) {

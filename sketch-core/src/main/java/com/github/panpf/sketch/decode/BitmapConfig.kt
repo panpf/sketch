@@ -1,11 +1,8 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Bitmap.Config.RGBA_F16
-import android.graphics.Bitmap.Config.RGB_565
 import android.os.Build
-import com.github.panpf.sketch.ImageType
+import com.github.panpf.sketch.ImageFormat
 
 class BitmapConfig(private val config: Bitmap.Config) {
 
@@ -21,7 +18,7 @@ class BitmapConfig(private val config: Bitmap.Config) {
     fun getConfigByMimeType(mimeType: String?): Bitmap.Config = when {
         this === LOW_QUALITY -> {
             when {
-                ImageType.valueOfMimeType(mimeType) == ImageType.JPEG -> {
+                ImageFormat.valueOfMimeType(mimeType) == ImageFormat.JPEG -> {
                     Bitmap.Config.RGB_565
                 }
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT -> {
@@ -52,22 +49,22 @@ class BitmapConfig(private val config: Bitmap.Config) {
          * 优先使用较低质量额图片配置。如果图片格式是 jpeg 格式就使用 [Bitmap.Config.RGB_565]，否则 JELLY_BEAN_MR2 及以下版本使用 [Bitmap.Config.ARGB_4444]，KITKAT 及以上版本使用 [Bitmap.Config.ARGB_8888]
          */
         @JvmStatic
-        val LOW_QUALITY = BitmapConfig(RGB_565)
+        val LOW_QUALITY = BitmapConfig(Bitmap.Config.RGB_565)
 
         /**
          * 始终使用 [Bitmap.Config.ARGB_8888]
          */
         @JvmStatic
-        val MIDDEN_QUALITY = BitmapConfig(ARGB_8888)
+        val MIDDEN_QUALITY = BitmapConfig(Bitmap.Config.ARGB_8888)
 
         /**
          * 优先使用 [Bitmap.Config.RGBA_F16]，否则使用 [Bitmap.Config.ARGB_8888]
          */
         @JvmStatic
         val HIGH_QUALITY = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            BitmapConfig(RGBA_F16)
+            BitmapConfig(Bitmap.Config.RGBA_F16)
         } else {
-            BitmapConfig(ARGB_8888)
+            BitmapConfig(Bitmap.Config.ARGB_8888)
         }
     }
 }
