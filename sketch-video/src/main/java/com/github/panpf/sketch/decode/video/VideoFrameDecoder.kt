@@ -31,7 +31,8 @@ import kotlin.math.roundToInt
 class VideoFrameDecoder(
     sketch: Sketch,
     request: LoadRequest,
-    dataSource: DataSource
+    dataSource: DataSource,
+    val mimeType: String,
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
     private val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
@@ -83,8 +84,7 @@ class VideoFrameDecoder(
             } else {
                 ExifInterface.ORIENTATION_UNDEFINED
             }
-        // todo mimeType 从 fetchResult 中来
-        return ImageInfo("video/mp4", srcWidth, srcHeight, exifOrientation)
+        return ImageInfo(mimeType, srcWidth, srcHeight, exifOrientation)
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
@@ -148,8 +148,9 @@ class VideoFrameDecoder(
             request: LoadRequest,
             fetchResult: FetchResult
         ): VideoFrameDecoder? {
-            if (fetchResult.mimeType?.startsWith("video/") != true) return null
-            return VideoFrameDecoder(sketch, request, fetchResult.dataSource)
+            val mimeType = fetchResult.mimeType
+            if (mimeType?.startsWith("video/") != true) return null
+            return VideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
         }
     }
 }

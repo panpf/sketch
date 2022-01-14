@@ -27,7 +27,8 @@ import kotlin.math.roundToInt
 class FFmpegVideoFrameDecoder(
     sketch: Sketch,
     request: LoadRequest,
-    dataSource: DataSource
+    dataSource: DataSource,
+    val mimeType: String,
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
     private val mediaMetadataRetriever: FFmpegMediaMetadataRetriever by lazy {
@@ -75,8 +76,7 @@ class FFmpegVideoFrameDecoder(
             } else {
                 ExifInterface.ORIENTATION_UNDEFINED
             }
-        // todo mimeType 从 fetchResult 中来
-        return ImageInfo("video/mp4", srcWidth, srcHeight, exifOrientation)
+        return ImageInfo(mimeType, srcWidth, srcHeight, exifOrientation)
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
@@ -117,7 +117,7 @@ class FFmpegVideoFrameDecoder(
         imageInfo: ImageInfo,
         srcRect: Rect,
         decodeConfig: DecodeConfig
-    ): Bitmap = throw UnsupportedOperationException("VideoFrameDecoder not support decode region")
+    ): Bitmap = throw UnsupportedOperationException("FFmpegVideoFrameDecoder not support decode region")
 
     class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
         override fun create(
@@ -125,8 +125,9 @@ class FFmpegVideoFrameDecoder(
             request: LoadRequest,
             fetchResult: FetchResult
         ): FFmpegVideoFrameDecoder? {
-            if (fetchResult.mimeType?.startsWith("video/") != true) return null
-            return FFmpegVideoFrameDecoder(sketch, request, fetchResult.dataSource)
+            val mimeType = fetchResult.mimeType
+            if (mimeType?.startsWith("video/") != true) return null
+            return FFmpegVideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
         }
     }
 }
