@@ -68,23 +68,23 @@ class DefaultDrawableDecoder(
 
     private class BitmapMemoryCacheHelper(
         private val memoryCache: MemoryCache,
-        private val memoryCachePolicy: CachePolicy,
-        private val memoryCacheKey: String,
+        private val bitmapMemoryCachePolicy: CachePolicy,
+        private val bitmapMemoryCacheKey: String,
         private val logger: Logger,
         private val request: DisplayRequest,
         private val bitmapPoolHelper: BitmapPoolHelper,
     ) {
 
         val lock: Mutex by lazy {
-            memoryCache.getOrCreateEditMutexLock(memoryCacheKey)
+            memoryCache.getOrCreateEditMutexLock(bitmapMemoryCacheKey)
         }
 
         fun read(): DrawableDecodeResult? {
-            if (!memoryCachePolicy.readEnabled) {
+            if (!bitmapMemoryCachePolicy.readEnabled) {
                 return null
             }
 
-            val cachedRefBitmap = memoryCache[memoryCacheKey]
+            val cachedRefBitmap = memoryCache[bitmapMemoryCacheKey]
             return when {
                 cachedRefBitmap != null -> {
                     logger.d(MODULE) {
@@ -105,7 +105,7 @@ class DefaultDrawableDecoder(
         }
 
         fun write(bitmapDecodeResult: BitmapDecodeResult): Drawable? =
-            if (memoryCachePolicy.writeEnabled) {
+            if (bitmapMemoryCachePolicy.writeEnabled) {
                 val refBitmap = SketchRefBitmap(
                     bitmapDecodeResult.bitmap,
                     request.uriString,
@@ -114,7 +114,7 @@ class DefaultDrawableDecoder(
                     bitmapPoolHelper
                 )
                 refBitmap.setIsWaitingUse("${MODULE}:waitingUse:new", true)
-                memoryCache.put(memoryCacheKey, refBitmap)
+                memoryCache.put(bitmapMemoryCacheKey, refBitmap)
                 SketchBitmapDrawable(refBitmap, bitmapDecodeResult.from)
             } else {
                 null
@@ -124,11 +124,11 @@ class DefaultDrawableDecoder(
 
             @JvmStatic
             fun from(sketch: Sketch, request: DisplayRequest): BitmapMemoryCacheHelper? {
-                return if (request.memoryCachePolicy.isReadOrWrite) {
+                return if (request.bitmapMemoryCachePolicy.isReadOrWrite) {
                     BitmapMemoryCacheHelper(
                         sketch.memoryCache,
-                        request.memoryCachePolicy,
-                        request.memoryCacheKey,
+                        request.bitmapMemoryCachePolicy,
+                        request.cacheKey,
                         sketch.logger,
                         request,
                         sketch.bitmapPoolHelper,

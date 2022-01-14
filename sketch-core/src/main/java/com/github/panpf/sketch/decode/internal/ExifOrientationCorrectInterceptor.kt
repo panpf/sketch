@@ -17,7 +17,7 @@ class ExifOrientationCorrectInterceptor : DecodeInterceptor<LoadRequest, BitmapD
             val newBitmap = imageOrientationCorrector.rotateBitmap(bitmap, bitmapPoolHelper)
             if (newBitmap !== bitmap) {
                 bitmapPoolHelper.freeBitmapToPool(bitmap)
-                BitmapDecodeResult(newBitmap, bitmapResult.info, bitmapResult.from)
+                BitmapDecodeResult(newBitmap, bitmapResult.info, bitmapResult.from, true)
             } else {
                 bitmapResult
             }

@@ -9,8 +9,8 @@ import com.github.panpf.sketch.request.internal.ImageResult
 interface DownloadRequest : ImageRequest {
 
     val httpHeaders: Map<String, String>?
-    val diskCacheKey: String
-    val diskCachePolicy: CachePolicy
+    val networkContentDiskCacheKey: String
+    val networkContentDiskCachePolicy: CachePolicy
     val progressListener: ProgressListener<ImageRequest>?
 
     fun newDownloadRequest(
@@ -60,7 +60,7 @@ interface DownloadRequest : ImageRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: MutableMap<String, String>? = null
-        private var diskCachePolicy: CachePolicy? = null
+        private var networkContentDiskCachePolicy: CachePolicy? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
@@ -70,7 +70,7 @@ interface DownloadRequest : ImageRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.toMutableMap()
-            this.diskCachePolicy = request.diskCachePolicy
+            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
             this.listener = request.listener
             this.progressListener = request.progressListener
         }
@@ -146,9 +146,10 @@ interface DownloadRequest : ImageRequest {
             this.httpHeaders?.remove(name)
         }
 
-        fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
-            this.diskCachePolicy = diskCachePolicy
-        }
+        fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+            apply {
+                this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
+            }
 
         fun listener(listener: Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error>?): Builder =
             apply {
@@ -187,7 +188,7 @@ interface DownloadRequest : ImageRequest {
             _depth = depth,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.toMap(),
-            _diskCachePolicy = diskCachePolicy,
+            _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
             listener = listener,
             progressListener = progressListener,
         )
@@ -198,7 +199,7 @@ interface DownloadRequest : ImageRequest {
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _diskCachePolicy: CachePolicy?,
+        _networkContentDiskCachePolicy: CachePolicy?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : DownloadRequest {
@@ -207,9 +208,10 @@ interface DownloadRequest : ImageRequest {
 
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = uriString
+        override val networkContentDiskCacheKey: String = uriString
 
-        override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+        override val networkContentDiskCachePolicy: CachePolicy =
+            _networkContentDiskCachePolicy ?: CachePolicy.ENABLED
 
         override val key: String by lazy {
             buildString {
@@ -221,7 +223,7 @@ interface DownloadRequest : ImageRequest {
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                append("_").append("diskCachePolicy($diskCachePolicy)")
+                append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
             }
         }
     }

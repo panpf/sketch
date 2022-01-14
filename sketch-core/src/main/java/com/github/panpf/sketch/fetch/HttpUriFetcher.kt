@@ -210,7 +210,7 @@ class HttpUriFetcher(
 
             if (coroutineScope.isActive) {
                 val diskCacheEntry = diskCache[encodedDiskCacheKey]
-                    ?: throw IOException("Disk cache loss after write. key: ${request.diskCacheKey}")
+                    ?: throw IOException("Disk cache loss after write. key: ${request.networkContentDiskCacheKey}")
                 if (diskCachePolicy.readEnabled) {
                     FetchResult(
                         DiskCacheDataSource(
@@ -244,10 +244,10 @@ class HttpUriFetcher(
 
         companion object {
             fun from(sketch: Sketch, request: DownloadRequest): HttpDiskCacheHelper? =
-                if (request.diskCachePolicy.isReadOrWrite) {
+                if (request.networkContentDiskCachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
-                    val encodedDiskCacheKey = diskCache.encodeKey(request.diskCacheKey)
-                    val diskCachePolicy = request.diskCachePolicy
+                    val encodedDiskCacheKey = diskCache.encodeKey(request.networkContentDiskCacheKey)
+                    val diskCachePolicy = request.networkContentDiskCachePolicy
                     HttpDiskCacheHelper(
                         sketch,
                         request,

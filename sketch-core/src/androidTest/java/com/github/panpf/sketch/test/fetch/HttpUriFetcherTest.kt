@@ -122,7 +122,7 @@ class HttpUriFetcherTest {
         // CachePolicy.ENABLED
         runBlocking {
             val request = DownloadRequest.new(testUri.uriString) {
-                diskCachePolicy(CachePolicy.ENABLED)
+                networkContentDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!
@@ -153,7 +153,7 @@ class HttpUriFetcherTest {
         // CachePolicy.DISABLED
         runBlocking {
             val request = DownloadRequest.new(testUri.uriString) {
-                diskCachePolicy(CachePolicy.DISABLED)
+                networkContentDiskCachePolicy(CachePolicy.DISABLED)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!
@@ -184,7 +184,7 @@ class HttpUriFetcherTest {
         // CachePolicy.READ_ONLY
         runBlocking {
             val request = DownloadRequest.new(testUri.uriString) {
-                diskCachePolicy(CachePolicy.READ_ONLY)
+                networkContentDiskCachePolicy(CachePolicy.READ_ONLY)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!
@@ -212,7 +212,7 @@ class HttpUriFetcherTest {
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
             val request2 = DownloadRequest.new(testUri.uriString) {
-                diskCachePolicy(CachePolicy.ENABLED)
+                networkContentDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher2 =
                 httpUriFetcherFactory.create(sketch, request2)!!
@@ -232,7 +232,7 @@ class HttpUriFetcherTest {
         // CachePolicy.WRITE_ONLY
         runBlocking {
             val request = DownloadRequest.new(testUri.uriString) {
-                diskCachePolicy(CachePolicy.WRITE_ONLY)
+                networkContentDiskCachePolicy(CachePolicy.WRITE_ONLY)
             }
             val httpUriFetcher =
                 httpUriFetcherFactory.create(sketch, request)!!

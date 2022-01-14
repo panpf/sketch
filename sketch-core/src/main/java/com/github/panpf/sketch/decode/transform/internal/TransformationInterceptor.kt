@@ -14,20 +14,22 @@ class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRes
         val request = chain.request
         val result = chain.proceed(request)
         val transformations = request.transformations
-        return if (transformations?.isNotEmpty() == true) {
-            val bitmap = withContext(sketch.decodeTaskDispatcher) {
-                var currentBitmap = result.bitmap
-                transformations.forEach {
-                    val newBitmap = it.transform(sketch, request, currentBitmap)
-                    if (newBitmap !== currentBitmap) {
-                        val oldBitmap = currentBitmap
-                        currentBitmap = newBitmap
-                        sketch.bitmapPoolHelper.freeBitmapToPool(oldBitmap)
-                    }
+        if (transformations?.isNotEmpty() != true) return result
+
+        val oldBitmap = result.bitmap
+        val newBitmap = withContext(sketch.decodeTaskDispatcher) {
+            var bitmap = result.bitmap
+            transformations.forEach {
+                val transformBitmap = it.transform(sketch, request, bitmap)
+                if (transformBitmap !== bitmap) {
+                    sketch.bitmapPoolHelper.freeBitmapToPool(bitmap)
+                    bitmap = transformBitmap
                 }
-                currentBitmap
             }
-            BitmapDecodeResult(bitmap, result.info, result.from)
+            bitmap
+        }
+        return if (oldBitmap !== newBitmap) {
+            BitmapDecodeResult(newBitmap, result.info, result.from, true)
         } else {
             result
         }

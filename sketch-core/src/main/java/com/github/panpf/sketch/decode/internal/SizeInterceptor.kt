@@ -22,7 +22,7 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
             val newBitmap = resize(bitmap, resize, bitmapPoolHelper)
             if (newBitmap !== bitmap) {
                 bitmapPoolHelper.freeBitmapToPool(bitmap)
-                BitmapDecodeResult(newBitmap, bitmapResult.info, bitmapResult.from)
+                BitmapDecodeResult(newBitmap, bitmapResult.info, bitmapResult.from, true)
             } else {
                 bitmapResult
             }

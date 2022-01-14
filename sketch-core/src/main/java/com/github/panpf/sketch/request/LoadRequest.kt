@@ -21,17 +21,6 @@ import com.github.panpf.sketch.request.internal.ImageResult
 interface LoadRequest : DownloadRequest {
 
     /**
-     * What is resultDiskCache. To speed up image load, cache the final bitmap to disk if you set [maxSize], [resize], [transformations] parameters (see [newQualityKey]). So that it can be used directly after the next read
-     */
-    val resultDiskCacheKey: String?
-
-    /**
-     * resultDiskCache policy configuration
-     * @see resultDiskCacheKey
-     */
-    val resultDiskCachePolicy: CachePolicy
-
-    /**
      * Limit the maximum size of the bitmap on decode, default value is [MaxSize.SCREEN_SIZE]
      *
      * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
@@ -84,6 +73,16 @@ interface LoadRequest : DownloadRequest {
      */
     val disabledCorrectExifOrientation: Boolean?
 
+    /**
+     * Used to cache bitmaps in memory and on disk
+     */
+    val cacheKey: String
+
+    /**
+     * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
+     */
+    val bitmapResultDiskCachePolicy: CachePolicy
+
     fun newLoadRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
@@ -131,8 +130,8 @@ interface LoadRequest : DownloadRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: MutableMap<String, String>? = null
-        private var diskCachePolicy: CachePolicy? = null
-        private var resultDiskCachePolicy: CachePolicy? = null
+        private var networkContentDiskCachePolicy: CachePolicy? = null
+        private var bitmapResultDiskCachePolicy: CachePolicy? = null
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
@@ -150,8 +149,8 @@ interface LoadRequest : DownloadRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.toMutableMap()
-            this.diskCachePolicy = request.diskCachePolicy
-            this.resultDiskCachePolicy = request.resultDiskCachePolicy
+            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
+            this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -233,12 +232,13 @@ interface LoadRequest : DownloadRequest {
             this.httpHeaders?.remove(name)
         }
 
-        fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
-            this.diskCachePolicy = diskCachePolicy
-        }
+        fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+            apply {
+                this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
+            }
 
-        fun resultDiskCachePolicy(resultDiskCachePolicy: CachePolicy?): Builder = apply {
-            this.resultDiskCachePolicy = resultDiskCachePolicy
+        fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder = apply {
+            this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
         }
 
         fun maxSize(maxSize: MaxSize?): Builder = apply {
@@ -356,8 +356,8 @@ interface LoadRequest : DownloadRequest {
             _depth = depth,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.toMap(),
-            _diskCachePolicy = diskCachePolicy,
-            _resultDiskCachePolicy = resultDiskCachePolicy,
+            _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
@@ -376,8 +376,8 @@ interface LoadRequest : DownloadRequest {
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _diskCachePolicy: CachePolicy?,
-        _resultDiskCachePolicy: CachePolicy?,
+        _networkContentDiskCachePolicy: CachePolicy?,
+        _bitmapResultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,
@@ -394,19 +394,22 @@ interface LoadRequest : DownloadRequest {
 
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = uriString
+        override val networkContentDiskCacheKey: String = uriString
 
-        // todo 改为 networkContentDiskCachePolicy
-        override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+        override val networkContentDiskCachePolicy: CachePolicy =
+            _networkContentDiskCachePolicy ?: CachePolicy.ENABLED
 
-        // todo 不需要外部定义结果缓存 key 和其 policy
-        // todo 改名为 bitmapResultCachePolicy
-        override val resultDiskCacheKey: String? by lazy {
-            qualityKey?.let { "${uriString}_$it" }
+        override val cacheKey: String by lazy {
+            buildString {
+                append(uriString)
+                qualityKey?.let {
+                    append("_").append(it)
+                }
+            }
         }
 
-        override val resultDiskCachePolicy: CachePolicy =
-            _resultDiskCachePolicy ?: CachePolicy.ENABLED
+        override val bitmapResultDiskCachePolicy: CachePolicy =
+            _bitmapResultDiskCachePolicy ?: CachePolicy.ENABLED
 
         private val qualityKey: String? by lazy { newQualityKey() }
 
@@ -420,8 +423,7 @@ interface LoadRequest : DownloadRequest {
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                append("_").append("diskCachePolicy($diskCachePolicy)")
-                append("_").append("resultDiskCachePolicy($resultDiskCachePolicy)")
+                append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
                 maxSize?.let {
                     append("_").append(it.cacheKey)
                 }
@@ -449,6 +451,7 @@ interface LoadRequest : DownloadRequest {
                 if (disabledCorrectExifOrientation == true) {
                     append("_").append("disabledCorrectExifOrientation")
                 }
+                append("_").append("bitmapResultDiskCachePolicy($bitmapResultDiskCachePolicy)")
             }
         }
     }

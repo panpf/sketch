@@ -2,6 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -13,12 +14,11 @@ import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
 
-class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
+class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
     companion object {
-        const val MODULE = "LoadResultCacheInterceptor"
+        const val MODULE = "BitmapResultCacheInterceptor"
     }
 
     override suspend fun intercept(
@@ -29,10 +29,13 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
         val resultCacheHelper = ResultCacheHelper.from(sketch, request)
         resultCacheHelper?.lock?.lock()
         try {
-            return resultCacheHelper?.read(sketch.decodeTaskDispatcher)
-                ?: chain.proceed(request).apply {
-                    resultCacheHelper?.write(this, sketch.decodeTaskDispatcher)
+            return withContext(sketch.decodeTaskDispatcher) {
+                resultCacheHelper?.read()
+            } ?: chain.proceed(request).apply {
+                withContext(sketch.decodeTaskDispatcher) {
+                    resultCacheHelper?.write(this@apply)
                 }
+            }
         } finally {
             resultCacheHelper?.lock?.unlock()
         }
@@ -50,9 +53,9 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
             diskCache.getOrCreateEditMutexLock(encodedBitmapDataDiskCacheKey)
         }
 
-        @Suppress("BlockingMethodInNonBlockingContext")
-        suspend fun read(context: CoroutineContext): BitmapDecodeResult? = withContext(context) {
-            if (request.resultDiskCachePolicy.readEnabled) {
+        @WorkerThread
+        fun read(): BitmapDecodeResult? =
+            if (request.bitmapResultDiskCachePolicy.readEnabled) {
                 val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
                 val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
                 try {
@@ -63,20 +66,16 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
                         val imageInfo = ImageInfo.fromJsonString(jsonString)
                         val bitmap = BitmapFactory.decodeFile(
                             bitmapDataDiskCacheEntry.file.path,
-                            request.newDecodeConfigByQualityParams(imageInfo.mimeType).toBitmapOptions()
+                            request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+                                .toBitmapOptions()
                         )
                         if (bitmap.width > 1 && bitmap.height > 1) {
-                            BitmapDecodeResult(bitmap, imageInfo, DISK_CACHE)
+                            BitmapDecodeResult(bitmap, imageInfo, DISK_CACHE, false)
                         } else {
                             bitmap.recycle()
                             logger.e(
                                 MODULE,
-                                "Invalid image size in result cache. size=%dx%d, uri=%s, diskCacheKey=%s".format(
-                                    bitmap.width,
-                                    bitmap.height,
-                                    request.uriString,
-                                    encodedBitmapDataDiskCacheKey
-                                )
+                                "Invalid image size in result cache. size=${bitmap.width}x${bitmap.height}, uri=${request.uriString}, diskCacheKey=${encodedBitmapDataDiskCacheKey}"
                             )
                             bitmapDataDiskCacheEntry.delete()
                             metaDataDiskCacheEntry.delete()
@@ -96,39 +95,32 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
             } else {
                 null
             }
-        }
 
-        @Suppress("BlockingMethodInNonBlockingContext")
-        suspend fun write(result: BitmapDecodeResult, context: CoroutineContext) {
-            // todo BitmapDecodeResult 增加是否需要缓存标记，这样更准确
-            withContext(context) {
-                if (request.resultDiskCachePolicy.writeEnabled) {
-                    val bitmapDataEditor =
-                        diskCache.edit(encodedBitmapDataDiskCacheKey) ?: return@withContext
-                    try {
+        fun write(result: BitmapDecodeResult) {
+            if (request.bitmapResultDiskCachePolicy.writeEnabled && result.cacheToDisk) {
+                val bitmapDataEditor = diskCache.edit(encodedBitmapDataDiskCacheKey)
+                val metaDataEditor = diskCache.edit(encodedMetaDataDiskCacheKey)
+                try {
+                    if (bitmapDataEditor != null && metaDataEditor != null) {
                         bitmapDataEditor.newOutputStream().use {
                             result.bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
                         }
                         bitmapDataEditor.commit()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        bitmapDataEditor.abort()
-                        return@withContext
-                    }
 
-                    val metaDataEditor =
-                        diskCache.edit(encodedMetaDataDiskCacheKey) ?: return@withContext
-                    try {
                         metaDataEditor.newOutputStream().use {
                             it.bufferedWriter().write(result.info.toJsonString())
                         }
                         metaDataEditor.commit()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        metaDataEditor.abort()
-                        diskCache[encodedBitmapDataDiskCacheKey]?.delete()
-                        return@withContext
+                    } else {
+                        bitmapDataEditor?.abort()
+                        metaDataEditor?.abort()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    bitmapDataEditor?.abort()
+                    metaDataEditor?.abort()
+                    diskCache[encodedBitmapDataDiskCacheKey]?.delete()
+                    diskCache[encodedMetaDataDiskCacheKey]?.delete()
                 }
             }
         }
@@ -137,8 +129,8 @@ class ResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult
 
             @JvmStatic
             fun from(sketch: Sketch, request: LoadRequest): ResultCacheHelper? {
-                if (!request.resultDiskCachePolicy.isReadOrWrite) return null
-                val bitmapDataDiskCacheKey = request.resultDiskCacheKey ?: return null
+                if (!request.bitmapResultDiskCachePolicy.isReadOrWrite) return null
+                val bitmapDataDiskCacheKey = request.cacheKey
                 val diskCache: DiskCache = sketch.diskCache
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
                 val encodedBitmapDataDiskCacheKey = diskCache.encodeKey(bitmapDataDiskCacheKey)

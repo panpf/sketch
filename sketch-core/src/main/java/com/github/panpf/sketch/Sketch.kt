@@ -20,7 +20,7 @@ import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrectInterceptor
 import com.github.panpf.sketch.decode.internal.SizeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
 import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.fetch.AndroidResUriFetcher
 import com.github.panpf.sketch.fetch.ApkIconUriFetcher
@@ -117,7 +117,7 @@ class Sketch private constructor(
         (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
     val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =
         (_bitmapDecodeInterceptors ?: listOf()) +
-                ResultCacheInterceptor() +
+                BitmapResultCacheInterceptor() +
                 TransformationInterceptor() +
                 SizeInterceptor() +
                 ExifOrientationCorrectInterceptor() +

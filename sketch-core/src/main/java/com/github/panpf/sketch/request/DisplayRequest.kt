@@ -17,7 +17,6 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
-import com.github.panpf.sketch.request.DownloadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -34,9 +33,8 @@ import com.github.panpf.sketch.util.getLifecycle
 
 interface DisplayRequest : LoadRequest {
 
-    val memoryCacheKey: String
-    val memoryCachePolicy: CachePolicy
     val disabledAnimationDrawable: Boolean?
+    val bitmapMemoryCachePolicy: CachePolicy
     val placeholderImage: StateImage?
     val errorImage: StateImage?
     val target: Target?
@@ -91,17 +89,17 @@ interface DisplayRequest : LoadRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: MutableMap<String, String>? = null
-        private var diskCachePolicy: CachePolicy? = null
-        private var resultDiskCachePolicy: CachePolicy? = null
+        private var networkContentDiskCachePolicy: CachePolicy? = null
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resize: Resize? = null
         private var transformations: List<Transformation>? = null
+        private var bitmapResultDiskCachePolicy: CachePolicy? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
-        private var memoryCachePolicy: CachePolicy? = null
+        private var bitmapMemoryCachePolicy: CachePolicy? = null
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
@@ -122,8 +120,8 @@ interface DisplayRequest : LoadRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.toMutableMap()
-            this.diskCachePolicy = request.diskCachePolicy
-            this.resultDiskCachePolicy = request.resultDiskCachePolicy
+            this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
+            this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -134,7 +132,7 @@ interface DisplayRequest : LoadRequest {
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
-            this.memoryCachePolicy = request.memoryCachePolicy
+            this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
@@ -215,12 +213,13 @@ interface DisplayRequest : LoadRequest {
             this.httpHeaders?.remove(name)
         }
 
-        fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
-            this.diskCachePolicy = diskCachePolicy
-        }
+        fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
+            apply {
+                this.networkContentDiskCachePolicy = networkContentDiskCachePolicy
+            }
 
-        fun resultDiskCachePolicy(resultDiskCachePolicy: CachePolicy?): Builder = apply {
-            this.resultDiskCachePolicy = resultDiskCachePolicy
+        fun bitmapResultDiskCachePolicy(bitmapResultDiskCachePolicy: CachePolicy?): Builder = apply {
+            this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
         }
 
         fun maxSize(maxSize: MaxSize?): Builder = apply {
@@ -322,8 +321,8 @@ interface DisplayRequest : LoadRequest {
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
             }
 
-        fun memoryCachePolicy(memoryCachePolicy: CachePolicy?): Builder = apply {
-            this.memoryCachePolicy = memoryCachePolicy
+        fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder = apply {
+            this.bitmapMemoryCachePolicy = bitmapMemoryCachePolicy
         }
 
         fun disabledAnimationDrawable(disabledAnimationDrawable: Boolean? = true): Builder = apply {
@@ -453,8 +452,8 @@ interface DisplayRequest : LoadRequest {
                 _depth = depth,
                 parameters = parametersBuilder?.build(),
                 httpHeaders = httpHeaders?.toMap(),
-                _diskCachePolicy = diskCachePolicy,
-                _resultDiskCachePolicy = resultDiskCachePolicy,
+                _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                 maxSize = maxSize,
                 bitmapConfig = bitmapConfig,
                 colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
@@ -463,7 +462,7 @@ interface DisplayRequest : LoadRequest {
                 transformations = transformations,
                 disabledBitmapPool = disabledBitmapPool,
                 disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-                _memoryCachePolicy = memoryCachePolicy,
+                _bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                 disabledAnimationDrawable = disabledAnimationDrawable,
                 placeholderImage = placeholderImage,
                 errorImage = errorImage,
@@ -486,8 +485,8 @@ interface DisplayRequest : LoadRequest {
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _diskCachePolicy: CachePolicy?,
-        _resultDiskCachePolicy: CachePolicy?,
+        _networkContentDiskCachePolicy: CachePolicy?,
+        _bitmapResultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         override val colorSpace: ColorSpace?,
@@ -496,7 +495,7 @@ interface DisplayRequest : LoadRequest {
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val disabledCorrectExifOrientation: Boolean?,
-        _memoryCachePolicy: CachePolicy?,
+        _bitmapMemoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
@@ -510,22 +509,12 @@ interface DisplayRequest : LoadRequest {
 
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = uriString
+        override val networkContentDiskCacheKey: String = uriString
 
-        override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
+        override val networkContentDiskCachePolicy: CachePolicy =
+            _networkContentDiskCachePolicy ?: CachePolicy.ENABLED
 
-        override val resultDiskCacheKey: String? by lazy {
-            qualityKey?.let { "${uriString}_$it" }
-        }
-
-        override val resultDiskCachePolicy: CachePolicy =
-            _resultDiskCachePolicy ?: CachePolicy.ENABLED
-
-        override val memoryCachePolicy: CachePolicy = _memoryCachePolicy ?: CachePolicy.ENABLED
-
-        private val qualityKey: String? by lazy { newQualityKey() }
-
-        override val memoryCacheKey: String by lazy {
+        override val cacheKey: String by lazy {
             buildString {
                 append(uriString)
                 qualityKey?.let {
@@ -537,6 +526,13 @@ interface DisplayRequest : LoadRequest {
             }
         }
 
+        override val bitmapResultDiskCachePolicy: CachePolicy =
+            _bitmapResultDiskCachePolicy ?: CachePolicy.ENABLED
+
+        override val bitmapMemoryCachePolicy: CachePolicy = _bitmapMemoryCachePolicy ?: CachePolicy.ENABLED
+
+        private val qualityKey: String? by lazy { newQualityKey() }
+
         override val key: String by lazy {
             buildString {
                 append("Display")
@@ -547,8 +543,7 @@ interface DisplayRequest : LoadRequest {
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                append("_").append("diskCachePolicy($diskCachePolicy)")
-                append("_").append("resultDiskCachePolicy($resultDiskCachePolicy)")
+                append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
                 maxSize?.let {
                     append("_").append(it.cacheKey)
                 }
@@ -576,10 +571,11 @@ interface DisplayRequest : LoadRequest {
                 if (disabledCorrectExifOrientation == true) {
                     append("_").append("disabledCorrectExifOrientation")
                 }
-                append("_").append("memoryCachePolicy($memoryCachePolicy)")
+                append("_").append("resultDiskCachePolicy($bitmapResultDiskCachePolicy)")
                 if (disabledAnimationDrawable == true) {
                     append("_").append("disabledAnimationDrawable")
                 }
+                append("_").append("bitmapMemoryCachePolicy($bitmapMemoryCachePolicy)")
             }
         }
     }

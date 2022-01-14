@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.decode
 
+import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
@@ -69,20 +71,36 @@ class DecodeConfig {
      *
      *
      * After decode, the bitmap's color space is stored in
-     * [.outColorSpace].
+     * [BitmapFactory.Options.outColorSpace].
      */
     var inPreferredColorSpace: ColorSpace? = null
+
+    val isCacheToDisk: Boolean
+        get() {
+            if (inSampleSize != null && inSampleSize != 1) {
+                return true
+            }
+            @Suppress("DEPRECATION")
+            if (VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed == true) {
+                return true
+            }
+            if (inPreferredConfig != null && inPreferredConfig != ARGB_8888) {
+                return true
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.O && inPreferredColorSpace != null) {
+                return true
+            }
+            return false
+        }
 
     fun toBitmapOptions(): BitmapFactory.Options {
         val options = BitmapFactory.Options()
         inSampleSize?.let {
             options.inSampleSize = it
         }
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            @Suppress("DEPRECATION")
-            inPreferQualityOverSpeed?.let {
-                options.inPreferQualityOverSpeed = it
-            }
+        @Suppress("DEPRECATION")
+        if (VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed == true) {
+            options.inPreferQualityOverSpeed = true
         }
         inPreferredConfig?.let {
             options.inPreferredConfig = it

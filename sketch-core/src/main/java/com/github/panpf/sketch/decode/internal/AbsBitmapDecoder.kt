@@ -42,17 +42,17 @@ abstract class AbsBitmapDecoder(
 
         val resize = request.resize
         val imageType = ImageType.valueOfMimeType(imageInfo.mimeType)
-        val decodeOptions = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val imageOrientationCorrector =
             ExifOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
 
         val bitmap = if (resize != null && shouldUseRegionDecoder(resize, imageInfo, imageType)) {
-            decodeRegionWrapper(imageInfo, resize, decodeOptions, imageOrientationCorrector)
+            decodeRegionWrapper(imageInfo, resize, decodeConfig, imageOrientationCorrector)
         } else {
-            decodeWrapper(imageInfo, decodeOptions, imageOrientationCorrector)
+            decodeWrapper(imageInfo, decodeConfig, imageOrientationCorrector)
         }
 
-        return BitmapDecodeResult(bitmap, imageInfo, dataSource.from)
+        return BitmapDecodeResult(bitmap, imageInfo, dataSource.from, decodeConfig.isCacheToDisk)
     }
 
     private fun shouldUseRegionDecoder(
