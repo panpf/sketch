@@ -108,8 +108,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT")}")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${property("RETROFIT2_KOTLINX_SERIALIZATION_CONVERTER")}")
 
-    implementation(files("libs/bugly_1.2.3.8__release.jar"))
-
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${property("LEAK_CANARY")}")
 }
 

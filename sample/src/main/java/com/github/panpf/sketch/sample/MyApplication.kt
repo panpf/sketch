@@ -19,7 +19,6 @@ package com.github.panpf.sketch.sample
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
-import com.github.panpf.sketch.BuildConfig
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.decode.video.FFmpegVideoFrameDecoder
@@ -29,14 +28,8 @@ import com.github.panpf.sketch.gif.GifDrawableDecoder
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
-import com.tencent.bugly.crashreport.CrashReport
 
 class MyApplication : MultiDexApplication(), SketchFactory {
-
-    override fun onCreate() {
-        super.onCreate()
-        CrashReport.initCrashReport(baseContext, "900007777", BuildConfig.DEBUG)    // todo 不用了
-    }
 
     override fun newSketch(): Sketch = Sketch.new(this) {
         logger(Logger(DEBUG))
