@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.http
 
+import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.DownloadRequest
@@ -11,6 +12,7 @@ import okhttp3.internal.headersContentLength
 import java.io.InputStream
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
+@RequiresApi(21)
 class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
 
     override fun toString(): String =
@@ -73,6 +75,7 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         }
     }
 
+    @RequiresApi(21)
     class Builder {
         private var readTimeout: Int = 0
         private var connectTimeout: Int = HttpStack.DEFAULT_CONNECT_TIMEOUT

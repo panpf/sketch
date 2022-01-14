@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch.sample
 
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
 import com.github.panpf.sketch.BuildConfig
 import com.github.panpf.sketch.Sketch
@@ -38,7 +40,9 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 
     override fun newSketch(): Sketch = Sketch.new(this) {
         logger(Logger(DEBUG))
-        httpStack(OkHttpStack.Builder().build())
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            httpStack(OkHttpStack.Builder().build())
+        }
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
