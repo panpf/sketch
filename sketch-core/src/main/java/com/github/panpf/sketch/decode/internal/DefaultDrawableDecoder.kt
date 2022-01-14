@@ -7,12 +7,12 @@ import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 class DefaultDrawableDecoder(
     private val sketch: Sketch,
     private val request: DisplayRequest,
-    private val dataSource: DataSource
+    private val fetchResult: FetchResult
 ) : DrawableDecoder {
 
     companion object {
@@ -43,7 +43,7 @@ class DefaultDrawableDecoder(
                         index = 0,
                         sketch = sketch,
                         request = request,
-                        dataSource = dataSource
+                        fetchResult = fetchResult
                     ).proceed(request).run {
                         val drawable = memoryCacheHelper?.write(this)
                             ?: BitmapDrawable(sketch.appContext.resources, this.bitmap)
@@ -60,10 +60,8 @@ class DefaultDrawableDecoder(
 
     class Factory : DrawableDecoder.Factory {
         override fun create(
-            sketch: Sketch,
-            request: DisplayRequest,
-            dataSource: DataSource
-        ): DrawableDecoder = DefaultDrawableDecoder(sketch, request, dataSource)
+            sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
+        ): DrawableDecoder = DefaultDrawableDecoder(sketch, request, fetchResult)
     }
 
     private class BitmapMemoryCacheHelper(

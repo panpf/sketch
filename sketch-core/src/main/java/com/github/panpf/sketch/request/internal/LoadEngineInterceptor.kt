@@ -18,7 +18,7 @@ class LoadEngineInterceptor : RequestInterceptor<LoadRequest, LoadData> {
             index = 0,
             sketch = sketch,
             request = request,
-            dataSource = null,
+            fetchResult = null,
         ).proceed(request)
         return LoadData(bitmapDecodeResult.bitmap, bitmapDecodeResult.info, bitmapDecodeResult.from)
     }

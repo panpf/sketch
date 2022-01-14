@@ -13,6 +13,7 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.readImageInfo
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
 
 class GifDrawableDecoder(
@@ -107,21 +108,19 @@ class GifDrawableDecoder(
         override fun create(
             sketch: Sketch,
             request: DisplayRequest,
-            dataSource: DataSource
+            fetchResult: FetchResult
         ): GifDrawableDecoder? {
-            if (request.disabledAnimationDrawable == true) {
-                return null
+            if (request.disabledAnimationDrawable != true) {
+                // todo 改进判断方式，参考 coil 当 mimeType 判断不出来时用文件头标识判断
+                val mimeType = fetchResult.mimeType ?: BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                    fetchResult.dataSource.decodeBitmap(this)
+                }.outMimeType.orEmpty()
+                if (mimeType == "image/gif") {
+                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource)
+                }
             }
-            // todo 改进判断方式，参考 coil 改成 BufferedSource
-            val mimeType = BitmapFactory.Options().apply {
-                inJustDecodeBounds = true
-                dataSource.decodeBitmap(this)
-            }.outMimeType.orEmpty()
-            return if (mimeType == "image/gif") {
-                GifDrawableDecoder(sketch, request, dataSource)
-            } else {
-                null
-            }
+            return null
         }
     }
 }

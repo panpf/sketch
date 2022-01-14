@@ -8,6 +8,7 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
@@ -148,9 +149,7 @@ open class DefaultBitmapDecoder(
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
-            request: LoadRequest,
-            dataSource: DataSource
-        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, dataSource)
+            sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
+        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
     }
 }

@@ -11,6 +11,7 @@ import com.github.panpf.sketch.viewability.internal.AbsProgressViewAbility
 import com.github.panpf.sketch.viewability.internal.Host
 import com.github.panpf.sketch.viewability.internal.ViewAbilityContainerOwner
 
+// todo 改成 request 状态，未下载时显示 转转转，下载时显示进度，下载成功消失，下载失败显示失败，点击可以重试
 class CircleProgressViewAbility constructor(
     sizeDp: Float = DEFAULT_SIZE_DP,
     private val backgroundColor: Int = BACKGROUND_COLOR,

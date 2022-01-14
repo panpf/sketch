@@ -1,5 +1,7 @@
 package com.github.panpf.sketch.fetch
 
+import android.webkit.MimeTypeMap
+import androidx.annotation.VisibleForTesting
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
@@ -13,6 +15,7 @@ import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.request.internal.RequestDepthException
+import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
@@ -35,6 +38,7 @@ class HttpUriFetcher(
     companion object {
         const val SCHEME = "http"
         const val SCHEME1 = "https"
+        const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -83,11 +87,10 @@ class HttpUriFetcher(
             }
         }
         return if (coroutineScope.isActive) {
-            FetchResult(
-                ByteArrayDataSource(
-                    sketch, request, DataFrom.NETWORK, byteArrayOutputStream.toByteArray()
-                )
-            )
+            val contentType = response.contentType
+            val mimeType = getMimeType(request.uriString, contentType)
+            val bytes = byteArrayOutputStream.toByteArray()
+            FetchResult(ByteArrayDataSource(sketch, request, DataFrom.NETWORK, bytes), mimeType)
         } else {
             throw CancellationException()
         }
@@ -154,33 +157,55 @@ class HttpUriFetcher(
         val sketch: Sketch,
         val request: DownloadRequest,
         val diskCache: DiskCache,
-        val encodedDiskCacheKey: String,
+        val encodedDataDiskCacheKey: String,
+        val encodedContentTypeDiskCacheKey: String,
         val diskCachePolicy: CachePolicy,
     ) {
 
         val lock: Mutex by lazy {
-            diskCache.getOrCreateEditMutexLock(encodedDiskCacheKey)
+            diskCache.getOrCreateEditMutexLock(encodedDataDiskCacheKey)
         }
 
         fun read(): FetchResult? {
-            if (diskCachePolicy.readEnabled) {
-                val diskCacheEntry = diskCache[encodedDiskCacheKey]
-                if (diskCacheEntry != null) {
-                    return FetchResult(
-                        DiskCacheDataSource(
-                            sketch, request, DataFrom.DISK_CACHE, diskCacheEntry
-                        )
-                    )
-                } else if (request.depth >= RequestDepth.LOCAL) {
-                    throw RequestDepthException(request, request.depth, request.depthFrom)
+            if (!diskCachePolicy.readEnabled) return null
+
+            val dataDiskCacheEntry = diskCache[encodedDataDiskCacheKey]
+            if (dataDiskCacheEntry != null) {
+                val contentTypeDiskCacheEntry = diskCache[encodedContentTypeDiskCacheKey]
+                val contentType = if (contentTypeDiskCacheEntry != null) {
+                    // todo 貌似 contentType 是始终 null
+                    try {
+                        contentTypeDiskCacheEntry.newInputStream()
+                            .use {
+                                it.bufferedReader().readText()
+                            }.takeIf {
+                                it.isNotEmpty() && it.isNotBlank()
+                            } ?: throw IOException("contentType disk cache text empty")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        contentTypeDiskCacheEntry.delete()
+                        null
+                    }
+                } else {
+                    null
                 }
+                val mimeType = getMimeType(request.uriString, contentType)
+                return FetchResult(
+                    DiskCacheDataSource(sketch, request, DataFrom.DISK_CACHE, dataDiskCacheEntry),
+                    mimeType
+                )
             }
-            return null
+
+            if (request.depth >= RequestDepth.LOCAL) {
+                throw RequestDepthException(request, request.depth, request.depthFrom)
+            } else {
+                return null
+            }
         }
 
         fun newEditor(): DiskCache.Editor? =
             if (diskCachePolicy.writeEnabled) {
-                diskCache.edit(encodedDiskCacheKey)
+                diskCache.edit(encodedDataDiskCacheKey)
             } else {
                 null
             }
@@ -202,35 +227,35 @@ class HttpUriFetcher(
                     )
                 }
             }
+            val contentType = response.contentType
             if (!response.isContentChunked && readLength == response.contentLength) {
                 diskCacheEditor.commit()
+                if (contentType?.isNotEmpty() == true && contentType.isNotBlank()) {
+                    val contentTypeEditor = diskCache.edit(encodedContentTypeDiskCacheKey)
+                    contentTypeEditor?.newOutputStream()?.use {
+                        it.bufferedWriter().write(contentType)
+                    }
+                }
             } else {
                 diskCacheEditor.abort()
             }
 
             if (coroutineScope.isActive) {
-                val diskCacheEntry = diskCache[encodedDiskCacheKey]
+                val mimeType = getMimeType(request.uriString, contentType)
+                val diskCacheEntry = diskCache[encodedDataDiskCacheKey]
                     ?: throw IOException("Disk cache loss after write. key: ${request.networkContentDiskCacheKey}")
                 if (diskCachePolicy.readEnabled) {
                     FetchResult(
-                        DiskCacheDataSource(
-                            sketch,
-                            request,
-                            DataFrom.NETWORK,
-                            diskCacheEntry
-                        )
+                        DiskCacheDataSource(sketch, request, DataFrom.NETWORK, diskCacheEntry),
+                        mimeType
                     )
                 } else {
                     diskCacheEntry.newInputStream()
                         .use { it.readBytes() }
                         .run {
                             FetchResult(
-                                ByteArrayDataSource(
-                                    sketch,
-                                    request,
-                                    DataFrom.NETWORK,
-                                    this
-                                )
+                                ByteArrayDataSource(sketch, request, DataFrom.NETWORK, this),
+                                mimeType
                             )
                         }
                 }
@@ -246,18 +271,36 @@ class HttpUriFetcher(
             fun from(sketch: Sketch, request: DownloadRequest): HttpDiskCacheHelper? =
                 if (request.networkContentDiskCachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
-                    val encodedDiskCacheKey = diskCache.encodeKey(request.networkContentDiskCacheKey)
+                    val encodedDataDiskCacheKey =
+                        diskCache.encodeKey(request.networkContentDiskCacheKey)
+                    val encodedContentTypeDiskCacheKey =
+                        diskCache.encodeKey(request.networkContentDiskCacheKey + "_contentType")
                     val diskCachePolicy = request.networkContentDiskCachePolicy
                     HttpDiskCacheHelper(
-                        sketch,
-                        request,
-                        diskCache,
-                        encodedDiskCacheKey,
-                        diskCachePolicy,
+                        sketch = sketch,
+                        request = request,
+                        diskCache = diskCache,
+                        encodedDataDiskCacheKey = encodedDataDiskCacheKey,
+                        encodedContentTypeDiskCacheKey = encodedContentTypeDiskCacheKey,
+                        diskCachePolicy = diskCachePolicy,
                     )
                 } else {
                     null
                 }
         }
     }
+}
+
+/**
+ * Parse the response's `content-type` header.
+ *
+ * "text/plain" is often used as a default/fallback MIME type.
+ * Attempt to guess a better MIME type from the file extension.
+ */
+@VisibleForTesting
+internal fun getMimeType(url: String, contentType: String?): String? {
+    if (contentType == null || contentType.startsWith(HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)) {
+        MimeTypeMap.getSingleton().getMimeTypeFromUrl(url)?.let { return it }
+    }
+    return contentType?.substringBefore(';')
 }

@@ -38,14 +38,16 @@ abstract class AbsDiskCacheFetcher(
     val dataFrom: DataFrom
 ) : Fetcher {
 
-    override suspend fun fetch(): FetchResult {
-        return FetchResult(getDataSource())
-    }
+    abstract val mimeType: String
 
     abstract fun getDiskCacheKey(): String
 
     @Throws(Exception::class)
     protected abstract fun outContent(outputStream: OutputStream)
+
+    override suspend fun fetch(): FetchResult {
+        return FetchResult(getDataSource(), mimeType)
+    }
 
     private suspend fun getDataSource(): DataSource {
         val diskCache = sketch.diskCache

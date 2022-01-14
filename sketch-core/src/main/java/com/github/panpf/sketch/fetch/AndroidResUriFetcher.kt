@@ -41,8 +41,10 @@ class AndroidResUriFetcher(
         }
     }
 
-    override suspend fun fetch(): FetchResult =
-        FetchResult(ContentDataSource(sketch, request, contentUri))
+    override suspend fun fetch(): FetchResult {
+        val mimeType = sketch.appContext.contentResolver.getType(contentUri)
+        return FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)
+    }
 
     class Factory : Fetcher.Factory {
         override fun create(

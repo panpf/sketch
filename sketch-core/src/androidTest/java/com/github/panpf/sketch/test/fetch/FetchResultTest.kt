@@ -22,11 +22,11 @@ class FetchResultTest {
         val sketch = Sketch.new(context)
         val request = LoadRequest.new("")
 
-        FetchResult(FileDataSource(sketch, request, File("/sdcard/sample.jpeg"))).apply {
+        FetchResult(FileDataSource(sketch, request, File("/sdcard/sample.jpeg")), "image/jpeg").apply {
             Assert.assertEquals(DataFrom.LOCAL, from)
         }
 
-        FetchResult(ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf())).apply {
+        FetchResult(ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()), "image/jpeg").apply {
             Assert.assertEquals(DataFrom.NETWORK, from)
         }
     }
@@ -37,11 +37,11 @@ class FetchResultTest {
         val sketch = Sketch.new(context)
         val request = LoadRequest.new("")
 
-        FetchResult(FileDataSource(sketch, request, File("/sdcard/sample.jpeg"))).apply {
+        FetchResult(FileDataSource(sketch, request, File("/sdcard/sample.jpeg")), "image/jpeg").apply {
             Assert.assertEquals("FetchResult(source=FileDataSource(from=LOCAL, file=/sdcard/sample.jpeg))", this.toString())
         }
 
-        FetchResult(ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf())).apply {
+        FetchResult(ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()), "image/jpeg").apply {
             Assert.assertEquals("FetchResult(source=ByteArrayDataSource(from=NETWORK, length=0))", this.toString())
         }
     }

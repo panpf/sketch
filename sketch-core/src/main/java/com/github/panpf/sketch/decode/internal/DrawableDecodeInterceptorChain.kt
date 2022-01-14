@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DrawableDecodeResult
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
 
 internal class DrawableDecodeInterceptorChain(
@@ -12,7 +13,7 @@ internal class DrawableDecodeInterceptorChain(
     val index: Int,
     override val sketch: Sketch,
     override val request: DisplayRequest,
-    override val dataSource: DataSource?,
+    override val fetchResult: FetchResult?,
 ) : DecodeInterceptor.Chain<DisplayRequest, DrawableDecodeResult> {
 
     @WorkerThread
@@ -31,6 +32,6 @@ internal class DrawableDecodeInterceptorChain(
         index,
         sketch,
         request,
-        dataSource
+        fetchResult
     )
 }

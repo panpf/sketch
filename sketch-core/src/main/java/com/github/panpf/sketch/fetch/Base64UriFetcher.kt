@@ -21,7 +21,7 @@ fun newBase64Uri(mimeType: String, imageDataBase64String: String): Uri =
 class Base64UriFetcher(
     sketch: Sketch,
     request: LoadRequest,
-    val mimeType: String,
+    override val mimeType: String,
     val imageDataBase64StringLazy: Lazy<String>,
 ) : AbsStreamDiskCacheFetcher(sketch, request, MEMORY) {
 

@@ -4,15 +4,16 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 
-internal class BitmapDecodeInterceptorChain(
+internal class BitmapDecodeInterceptorChain constructor(
     val initialRequest: LoadRequest,
     val interceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>,
     val index: Int,
     override val sketch: Sketch,
     override val request: LoadRequest,
-    override val dataSource: DataSource?,
+    override val fetchResult: FetchResult?,
 ) : DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult> {
 
     @WorkerThread
@@ -31,6 +32,6 @@ internal class BitmapDecodeInterceptorChain(
         index,
         sketch,
         request,
-        dataSource
+        fetchResult
     )
 }

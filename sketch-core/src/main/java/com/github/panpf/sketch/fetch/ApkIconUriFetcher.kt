@@ -28,6 +28,9 @@ class ApkIconUriFetcher(
         fun newUri(filePath: String): Uri = Uri.parse("$SCHEME://$filePath")
     }
 
+    override val mimeType: String
+        get() = "application/vnd.android.package-archive"
+
     override fun getBitmap(): Bitmap = readApkIcon(
         sketch.appContext,
         apkFilePath,

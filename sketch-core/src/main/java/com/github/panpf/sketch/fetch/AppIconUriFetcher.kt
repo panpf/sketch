@@ -33,6 +33,9 @@ class AppIconUriFetcher(
             Uri.parse("$SCHEME://$packageName/$versionCode")
     }
 
+    override val mimeType: String
+        get() = "application/vnd.android.app-archive"
+
     override fun getBitmap(): Bitmap {
         val packageInfo: PackageInfo = try {
             sketch.appContext.packageManager.getPackageInfo(packageName, 0)
@@ -54,9 +57,15 @@ class AppIconUriFetcher(
             val uri = request.uri
             return if (request is LoadRequest && SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
-                    ?: throw UriInvalidException(request, "App icon uri 'packageName' part invalid. ${request.uriString}")
+                    ?: throw UriInvalidException(
+                        request,
+                        "App icon uri 'packageName' part invalid. ${request.uriString}"
+                    )
                 val versionCode = uri.lastPathSegment?.toIntOrNull()
-                    ?: throw UriInvalidException(request, "App icon uri 'versionCode' part invalid. ${request.uriString}")
+                    ?: throw UriInvalidException(
+                        request,
+                        "App icon uri 'versionCode' part invalid. ${request.uriString}"
+                    )
                 AppIconUriFetcher(sketch, request, packageName, versionCode)
             } else {
                 null

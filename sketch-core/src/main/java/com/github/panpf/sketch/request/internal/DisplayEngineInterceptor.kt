@@ -18,7 +18,7 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
             index = 0,
             sketch = sketch,
             request = request,
-            dataSource = null,
+            fetchResult = null,
         ).proceed(request)
         return DisplayData(drawableDecodeResult.drawable, drawableDecodeResult.info, drawableDecodeResult.from)
     }

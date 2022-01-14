@@ -6,7 +6,6 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.webkit.MimeTypeMap
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.Sketch
@@ -17,8 +16,8 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
@@ -147,12 +146,10 @@ class VideoFrameDecoder(
         override fun create(
             sketch: Sketch,
             request: LoadRequest,
-            dataSource: DataSource
+            fetchResult: FetchResult
         ): VideoFrameDecoder? {
-            // todo mimeType 由 fetchResult 统一提供
-            val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(request.uriString)
-            if (mimeType?.startsWith("video/") != true) return null
-            return VideoFrameDecoder(sketch, request, dataSource)
+            if (fetchResult.mimeType?.startsWith("video/") != true) return null
+            return VideoFrameDecoder(sketch, request, fetchResult.dataSource)
         }
     }
 }

@@ -1,8 +1,8 @@
 package com.github.panpf.sketch
 
-import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DrawableDecoder
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.LoadRequest
@@ -38,9 +38,9 @@ class ComponentRegistry private constructor(
     fun newBitmapDecoder(
         sketch: Sketch,
         request: LoadRequest,
-        dataSource: DataSource,
+        fetchResult: FetchResult,
     ): BitmapDecoder = bitmapDecoderFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, dataSource)
+        it.create(sketch, request, fetchResult)
     } ?: throw IllegalArgumentException(
         "No BitmapDecoder can handle this uri: ${request.uriString}, " +
                 "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
@@ -49,9 +49,9 @@ class ComponentRegistry private constructor(
     fun newDrawableDecoder(
         sketch: Sketch,
         request: DisplayRequest,
-        dataSource: DataSource,
+        fetchResult: FetchResult,
     ): DrawableDecoder = drawableDecoderFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, dataSource)
+        it.create(sketch, request, fetchResult)
     } ?: throw IllegalArgumentException(
         "No DrawableDecoder can handle this uri: ${request.uriString}, " +
                 "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
