@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.widget.ImageView.ScaleType

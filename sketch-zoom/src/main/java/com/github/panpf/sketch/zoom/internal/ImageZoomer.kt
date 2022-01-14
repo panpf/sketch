@@ -15,7 +15,7 @@
  */
 @file:Suppress("SetterBackingFieldAssignment")
 
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -25,9 +25,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.SLog.Companion.wm
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.AbsZoomImageView
+import com.github.panpf.sketch.zoom.internal.block.Block
 import java.util.*
 import kotlin.math.abs
 
@@ -35,7 +34,7 @@ import kotlin.math.abs
  * 图片缩放器，接收触摸事件，变换 [Matrix]，改变图片的显示效果，代理点击和长按事件
  */
 // TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
-class ImageZoomer(val imageView: SketchZoomImageView) {
+class ImageZoomer(val imageView: AbsZoomImageView) {
 
     companion object {
         const val MODULE = "ImageZoomer"
@@ -55,7 +54,10 @@ class ImageZoomer(val imageView: SketchZoomImageView) {
             }
         }
     private val sizes = Sizes()
-    private var zoomScales: ZoomScales = AdaptiveTwoLevelScales()
+    private var zoomScales: ZoomScales = AdaptiveTwoLevelScales(imageView)
+    private val logger by lazy {
+        imageView.sketch.logger
+    }
 
     /**
      * 获取旋转角度
@@ -243,7 +245,7 @@ class ImageZoomer(val imageView: SketchZoomImageView) {
     @JvmOverloads
     fun location(x: Float, y: Float, animate: Boolean = false): Boolean {
         if (!isWorking) {
-            wm(MODULE, "not working. location")
+            logger.w(MODULE, "not working. location")
             return false
         }
         scaleDragHelper.location(x, y, animate)
@@ -261,13 +263,13 @@ class ImageZoomer(val imageView: SketchZoomImageView) {
      */
     fun zoom(scale: Float, focalX: Float, focalY: Float, animate: Boolean): Boolean {
         if (!isWorking) {
-            wm(MODULE, "not working. zoom(float, float, float, boolean)")
+            logger.w(MODULE, "not working. zoom(float, float, float, boolean)")
             return false
         }
         if (scale < zoomScales.minZoomScale || scale > zoomScales.maxZoomScale) {
-            wmf(
-                MODULE, "Scale must be within the range of %s(minScale) and %s(maxScale). %s",
-                zoomScales.minZoomScale, zoomScales.maxZoomScale, scale
+            logger.w(
+                MODULE,
+                "Scale must be within the range of ${zoomScales.minZoomScale}(minScale) and ${zoomScales.maxZoomScale}(maxScale). ${scale}"
             )
             return false
         }
@@ -284,7 +286,7 @@ class ImageZoomer(val imageView: SketchZoomImageView) {
     @JvmOverloads
     fun zoom(scale: Float, animate: Boolean = false): Boolean {
         if (!isWorking) {
-            wm(MODULE, "not working. zoom(float, boolean)")
+            logger.w(MODULE, "not working. zoom(float, boolean)")
             return false
         }
         val imageView = getImageView()
@@ -308,14 +310,14 @@ class ImageZoomer(val imageView: SketchZoomImageView) {
     fun rotateTo(degrees: Int): Boolean {
         var newDegrees = degrees
         if (!isWorking) {
-            wm(MODULE, "not working. rotateTo")
+            logger.w(MODULE, "not working. rotateTo")
             return false
         }
         if (rotateDegrees == newDegrees) {
             return false
         }
         if (newDegrees % 90 != 0) {
-            wm(MODULE, "rotate degrees must be in multiples of 90")
+            logger.w(MODULE, "rotate degrees must be in multiples of 90")
             return false
         }
         newDegrees %= 360
@@ -495,7 +497,7 @@ class ImageZoomer(val imageView: SketchZoomImageView) {
         if (zoomScales != null) {
             this.zoomScales = zoomScales
         } else {
-            this.zoomScales = AdaptiveTwoLevelScales()
+            this.zoomScales = AdaptiveTwoLevelScales(imageView)
         }
         reset("setZoomScales")
     }

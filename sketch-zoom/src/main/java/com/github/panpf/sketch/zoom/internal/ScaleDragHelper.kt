@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.graphics.Matrix
@@ -27,10 +27,10 @@ import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.SLog.Companion.isLoggable
 import com.github.panpf.sketch.SLog.Companion.vm
 import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.Sketch.Companion.with
 import com.github.panpf.sketch.util.SketchUtils.Companion.formatFloat
 import com.github.panpf.sketch.util.SketchUtils.Companion.getMatrixScale
-import com.github.panpf.sketch.zoom.ScaleDragGestureDetector.OnScaleDragGestureListener
+import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
+import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnScaleDragGestureListener
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -38,7 +38,7 @@ import kotlin.math.roundToInt
  * 缩放和拖拽处理，控制 Matrix 变化，更新 Matrix
  */
 internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZoomer) :
-    OnScaleDragGestureListener, ScaleDragGestureDetector.ActionListener {
+    OnScaleDragGestureListener, ActionListener {
 
     private val baseMatrix = Matrix() // 存储默认的缩放和位移信息
     private val supportMatrix = Matrix() // 存储用户通过触摸事件产生的缩放、位移和外部设置的旋转信息

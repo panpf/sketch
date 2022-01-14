@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.internal.block
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -26,15 +26,14 @@ import com.github.panpf.sketch.SLog.Companion.isLoggable
 import com.github.panpf.sketch.SLog.Companion.vm
 import com.github.panpf.sketch.SLog.Companion.vmf
 import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.Sketch.Companion.with
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.ObjectPool
 import com.github.panpf.sketch.util.SketchUtils.Companion.getByteCount
 import com.github.panpf.sketch.util.SketchUtils.Companion.isCross
-import com.github.panpf.sketch.zoom.BlockDisplayer
-import com.github.panpf.sketch.zoom.Size
-import com.github.panpf.sketch.zoom.block.Block.Companion.blockListToString
-import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.internal.BlockDisplayer
+import com.github.panpf.sketch.zoom.internal.Size
+import com.github.panpf.sketch.zoom.internal.block.Block.Companion.blockListToString
+import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.roundToInt

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.internal.block
 
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.Sketch.Companion.with
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPoolForRegionDecoder
 import com.github.panpf.sketch.util.KeyCounter
-import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
 import java.lang.ref.WeakReference
 
 /**

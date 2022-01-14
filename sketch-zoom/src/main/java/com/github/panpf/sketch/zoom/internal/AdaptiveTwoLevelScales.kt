@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.Sketch.Companion.with
+import com.github.panpf.sketch.zoom.AbsZoomImageView
 
 /**
  * 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出两级缩放比例
  */
-class AdaptiveTwoLevelScales : ZoomScales {
+class AdaptiveTwoLevelScales(val zoomImageView: AbsZoomImageView) : ZoomScales {
 
     companion object {
         private const val DEFAULT_MAXIMIZE_SCALE = 1.75f
@@ -78,13 +78,12 @@ class AdaptiveTwoLevelScales : ZoomScales {
         fillZoomScale = widthScale.coerceAtLeast(heightScale)
         originZoomScale =
             (imageWidth.toFloat() / drawableWidth).coerceAtLeast(imageHeight.toFloat() / drawableHeight)
-        initZoomScale = getInitScale(context, sizes, finalScaleType!!, rotateDegrees, readMode)
-        val sizeCalculator = with(context).configuration.sizeCalculator
-        if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        initZoomScale = getInitScale(sizes, finalScaleType!!, rotateDegrees, readMode)
+        if (readMode && zoomImageView.canUseReadModeByHeight(imageWidth, imageHeight)) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale
             maxZoomScale = originZoomScale.coerceAtLeast(fillZoomScale)
-        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (readMode && zoomImageView.canUseReadModeByWidth(imageWidth, imageHeight)) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale
             maxZoomScale = originZoomScale.coerceAtLeast(fillZoomScale)
@@ -129,7 +128,6 @@ class AdaptiveTwoLevelScales : ZoomScales {
     }
 
     private fun getInitScale(
-        context: Context,
         sizes: Sizes,
         scaleType: ScaleType,
         rotateDegrees: Float,
@@ -147,7 +145,6 @@ class AdaptiveTwoLevelScales : ZoomScales {
         val heightScale = sizes.viewSize.height.toFloat() / drawableHeight
         val imageThanViewLarge =
             drawableWidth > sizes.viewSize.width || drawableHeight > sizes.viewSize.height
-        val sizeCalculator = with(context).configuration.sizeCalculator
         val finalScaleType: ScaleType = if (scaleType == ScaleType.MATRIX) {
             ScaleType.FIT_CENTER
         } else if (scaleType == ScaleType.CENTER_INSIDE) {
@@ -155,9 +152,9 @@ class AdaptiveTwoLevelScales : ZoomScales {
         } else {
             scaleType
         }
-        return if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        return if (readMode && zoomImageView.canUseReadModeByHeight(imageWidth, imageHeight)) {
             widthScale
-        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (readMode && zoomImageView.canUseReadModeByWidth(imageWidth, imageHeight)) {
             heightScale
         } else if (finalScaleType == ScaleType.CENTER) {
             1.0f

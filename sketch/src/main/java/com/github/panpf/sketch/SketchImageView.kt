@@ -6,8 +6,8 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.viewability.internal.AbsAbilityImageView
 
 open class SketchImageView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : AbsAbilityImageView(context, attrs) {
+    context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
+) : AbsAbilityImageView(context, attrs, defStyle) {
     override fun submitRequest(request: DisplayRequest) {
         val newRequest = request.newDisplayRequest {
             target(this@SketchImageView)

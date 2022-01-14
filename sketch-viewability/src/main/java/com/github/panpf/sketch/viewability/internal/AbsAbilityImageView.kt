@@ -11,8 +11,8 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
 abstract class AbsAbilityImageView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : AppCompatImageView(context, attrs), ViewAbilityContainerOwner {
+    context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
+) : AppCompatImageView(context, attrs, defStyle), ViewAbilityContainerOwner {
 
     private val _viewAbilityContainer: ViewAbilityContainer by lazy {
         ViewAbilityContainerImpl(this, this)

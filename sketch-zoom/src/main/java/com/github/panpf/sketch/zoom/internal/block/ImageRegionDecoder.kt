@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.internal.block
 
 import android.content.Context
 import android.graphics.*
-import com.github.panpf.sketch.Sketch.Companion.with
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageDecodeUtils.Companion.decodeBitmap
 import com.github.panpf.sketch.decode.ImageType

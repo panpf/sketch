@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.internal.block
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -24,7 +24,7 @@ import com.github.panpf.sketch.SLog
 import com.github.panpf.sketch.SLog.Companion.isLoggable
 import com.github.panpf.sketch.SLog.Companion.vmf
 import com.github.panpf.sketch.util.KeyCounter
-import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
 import java.util.concurrent.atomic.AtomicInteger
 
 /**

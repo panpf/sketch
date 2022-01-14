@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.zoom.block
+package com.github.panpf.sketch.zoom.internal.block
 
 import com.github.panpf.sketch.SketchException
 import java.lang.IllegalArgumentException

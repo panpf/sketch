@@ -13,28 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom
+package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.graphics.*
 import android.text.TextUtils
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.Sketch.Companion.with
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPoolForRegionDecoder
-import com.github.panpf.sketch.decode.ImageType
-import com.github.panpf.sketch.decode.ImageType.Companion.valueOfMimeType
+import com.github.panpf.sketch.ImageType
 import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.drawable.SketchLoadingDrawable
-import com.github.panpf.sketch.util.SketchUtils.Companion.formatFloat
-import com.github.panpf.sketch.util.SketchUtils.Companion.formatSupportBitmapRegionDecoder
-import com.github.panpf.sketch.util.SketchUtils.Companion.getLastDrawable
-import com.github.panpf.sketch.util.SketchUtils.Companion.getMatrixScale
-import com.github.panpf.sketch.viewfun.FunctionPropertyView
-import com.github.panpf.sketch.zoom.block.*
-import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.internal.block.Block
+import com.github.panpf.sketch.zoom.internal.block.BlockDecoder
+import com.github.panpf.sketch.zoom.internal.block.BlockExecutor
+import com.github.panpf.sketch.zoom.internal.block.BlockManager
+import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.internal.block.ImageRegionDecoder
 
 /**
  * 对于超大图片，分块显示可见区域

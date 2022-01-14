@@ -8,8 +8,8 @@ import com.github.panpf.sketch.viewability.showDataFrom
 import com.github.panpf.sketch.sample.appSettingsService
 
 class MyImageView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : SketchImageView(context, attrs) {
+    context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
+) : SketchImageView(context, attrs, defStyle) {
 
     private val dataFromObserver = Observer<Boolean> {
         showDataFrom(it == true)
