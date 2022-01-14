@@ -60,7 +60,6 @@ interface DownloadRequest : ImageRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: MutableMap<String, String>? = null
-        private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
@@ -71,7 +70,6 @@ interface DownloadRequest : ImageRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.toMutableMap()
-            this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
             this.listener = request.listener
             this.progressListener = request.progressListener
@@ -148,10 +146,6 @@ interface DownloadRequest : ImageRequest {
             this.httpHeaders?.remove(name)
         }
 
-        fun diskCacheKey(diskCacheKey: String?): Builder = apply {
-            this.diskCacheKey = diskCacheKey
-        }
-
         fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
             this.diskCachePolicy = diskCachePolicy
         }
@@ -193,7 +187,6 @@ interface DownloadRequest : ImageRequest {
             _depth = depth,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.toMap(),
-            _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
             listener = listener,
             progressListener = progressListener,
@@ -205,7 +198,6 @@ interface DownloadRequest : ImageRequest {
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _diskCacheKey: String?,
         _diskCachePolicy: CachePolicy?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
@@ -215,7 +207,7 @@ interface DownloadRequest : ImageRequest {
 
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = _diskCacheKey ?: uriString
+        override val diskCacheKey: String = uriString
 
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 

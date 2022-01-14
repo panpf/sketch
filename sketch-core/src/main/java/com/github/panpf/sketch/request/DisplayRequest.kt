@@ -91,9 +91,7 @@ interface DisplayRequest : LoadRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: MutableMap<String, String>? = null
-        private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
-        private var resultDiskCacheKey: String? = null
         private var resultDiskCachePolicy: CachePolicy? = null
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
@@ -103,7 +101,6 @@ interface DisplayRequest : LoadRequest {
         private var transformations: List<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
-        private var memoryCacheKey: String? = null
         private var memoryCachePolicy: CachePolicy? = null
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
@@ -125,9 +122,7 @@ interface DisplayRequest : LoadRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.toMutableMap()
-            this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
-            this.resultDiskCacheKey = request.resultDiskCacheKey
             this.resultDiskCachePolicy = request.resultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
@@ -139,7 +134,6 @@ interface DisplayRequest : LoadRequest {
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
-            this.memoryCacheKey = request.memoryCacheKey
             this.memoryCachePolicy = request.memoryCachePolicy
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
@@ -221,16 +215,8 @@ interface DisplayRequest : LoadRequest {
             this.httpHeaders?.remove(name)
         }
 
-        fun diskCacheKey(diskCacheKey: String?): Builder = apply {
-            this.diskCacheKey = diskCacheKey
-        }
-
         fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
             this.diskCachePolicy = diskCachePolicy
-        }
-
-        fun resultDiskCacheKey(resultDiskCacheKey: String?): Builder = apply {
-            this.resultDiskCacheKey = resultDiskCacheKey
         }
 
         fun resultDiskCachePolicy(resultDiskCachePolicy: CachePolicy?): Builder = apply {
@@ -335,10 +321,6 @@ interface DisplayRequest : LoadRequest {
             apply {
                 this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
             }
-
-        fun memoryCacheKey(memoryCacheKey: String?): Builder = apply {
-            this.memoryCacheKey = memoryCacheKey
-        }
 
         fun memoryCachePolicy(memoryCachePolicy: CachePolicy?): Builder = apply {
             this.memoryCachePolicy = memoryCachePolicy
@@ -471,9 +453,7 @@ interface DisplayRequest : LoadRequest {
                 _depth = depth,
                 parameters = parametersBuilder?.build(),
                 httpHeaders = httpHeaders?.toMap(),
-                _diskCacheKey = diskCacheKey,
                 _diskCachePolicy = diskCachePolicy,
-                _resultDiskCacheKey = resultDiskCacheKey,
                 _resultDiskCachePolicy = resultDiskCachePolicy,
                 maxSize = maxSize,
                 bitmapConfig = bitmapConfig,
@@ -483,7 +463,6 @@ interface DisplayRequest : LoadRequest {
                 transformations = transformations,
                 disabledBitmapPool = disabledBitmapPool,
                 disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-                _memoryCacheKey = memoryCacheKey,
                 _memoryCachePolicy = memoryCachePolicy,
                 disabledAnimationDrawable = disabledAnimationDrawable,
                 placeholderImage = placeholderImage,
@@ -507,9 +486,7 @@ interface DisplayRequest : LoadRequest {
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _diskCacheKey: String?,
         _diskCachePolicy: CachePolicy?,
-        _resultDiskCacheKey: String?,
         _resultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
@@ -519,7 +496,6 @@ interface DisplayRequest : LoadRequest {
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val disabledCorrectExifOrientation: Boolean?,
-        _memoryCacheKey: String?,
         _memoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
@@ -534,12 +510,12 @@ interface DisplayRequest : LoadRequest {
 
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = _diskCacheKey ?: uriString
+        override val diskCacheKey: String = uriString
 
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
         override val resultDiskCacheKey: String? by lazy {
-            _resultDiskCacheKey ?: qualityKey?.let { "${uriString}_$it" }
+            qualityKey?.let { "${uriString}_$it" }
         }
 
         override val resultDiskCachePolicy: CachePolicy =
@@ -550,7 +526,7 @@ interface DisplayRequest : LoadRequest {
         private val qualityKey: String? by lazy { newQualityKey() }
 
         override val memoryCacheKey: String by lazy {
-            _memoryCacheKey ?: buildString {
+            buildString {
                 append(uriString)
                 qualityKey?.let {
                     append("_").append(it)

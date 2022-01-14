@@ -131,9 +131,7 @@ interface LoadRequest : DownloadRequest {
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
         private var httpHeaders: MutableMap<String, String>? = null
-        private var diskCacheKey: String? = null
         private var diskCachePolicy: CachePolicy? = null
-        private var resultDiskCacheKey: String? = null
         private var resultDiskCachePolicy: CachePolicy? = null
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
@@ -152,9 +150,7 @@ interface LoadRequest : DownloadRequest {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.toMutableMap()
-            this.diskCacheKey = request.diskCacheKey
             this.diskCachePolicy = request.diskCachePolicy
-            this.resultDiskCacheKey = request.resultDiskCacheKey
             this.resultDiskCachePolicy = request.resultDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
@@ -237,16 +233,8 @@ interface LoadRequest : DownloadRequest {
             this.httpHeaders?.remove(name)
         }
 
-        fun diskCacheKey(diskCacheKey: String?): Builder = apply {
-            this.diskCacheKey = diskCacheKey
-        }
-
         fun diskCachePolicy(diskCachePolicy: CachePolicy?): Builder = apply {
             this.diskCachePolicy = diskCachePolicy
-        }
-
-        fun resultDiskCacheKey(resultDiskCacheKey: String?): Builder = apply {
-            this.resultDiskCacheKey = resultDiskCacheKey
         }
 
         fun resultDiskCachePolicy(resultDiskCachePolicy: CachePolicy?): Builder = apply {
@@ -368,9 +356,7 @@ interface LoadRequest : DownloadRequest {
             _depth = depth,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.toMap(),
-            _diskCacheKey = diskCacheKey,
             _diskCachePolicy = diskCachePolicy,
-            _resultDiskCacheKey = resultDiskCacheKey,
             _resultDiskCachePolicy = resultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
@@ -390,9 +376,7 @@ interface LoadRequest : DownloadRequest {
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _diskCacheKey: String?,
         _diskCachePolicy: CachePolicy?,
-        _resultDiskCacheKey: String?,
         _resultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
@@ -410,14 +394,15 @@ interface LoadRequest : DownloadRequest {
 
         override val depth: RequestDepth = _depth ?: NETWORK
 
-        override val diskCacheKey: String = _diskCacheKey ?: uriString
+        override val diskCacheKey: String = uriString
 
         // todo 改为 networkContentDiskCachePolicy
         override val diskCachePolicy: CachePolicy = _diskCachePolicy ?: CachePolicy.ENABLED
 
         // todo 不需要外部定义结果缓存 key 和其 policy
+        // todo 改名为 bitmapResultCachePolicy
         override val resultDiskCacheKey: String? by lazy {
-            _resultDiskCacheKey ?: qualityKey?.let { "${uriString}_$it" }
+            qualityKey?.let { "${uriString}_$it" }
         }
 
         override val resultDiskCachePolicy: CachePolicy =
