@@ -35,14 +35,17 @@ class FileUriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
             val uriString = request.uriString
             if (request is LoadRequest) {
-                if (uriString.startsWith("/")) {
-                    return FileUriFetcher(sketch, request, File(uriString))
+                val subStartIndex = when {
+                    SCHEME.equals(request.uri.scheme, ignoreCase = true) -> SCHEME.length + 3   // file://
+                    uriString.startsWith("/") -> 0
+                    else -> -1
                 }
-
-                val prefix = "$SCHEME://"
-                val uriPrefix = uriString.substring(0, prefix.length)
-                if (prefix.equals(uriPrefix, ignoreCase = true)) {
-                    return FileUriFetcher(sketch, request, File(uriString.substring(prefix.length)))
+                if (subStartIndex != -1) {
+                    val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
+                        ?: uriString.indexOf("#").takeIf { it != -1 }
+                        ?: uriString.length
+                    val file = File(uriString.substring(subStartIndex, subEndIndex))
+                    return FileUriFetcher(sketch, request, file)
                 }
             }
             return null

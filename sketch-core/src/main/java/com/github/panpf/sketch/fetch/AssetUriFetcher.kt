@@ -34,7 +34,12 @@ class AssetUriFetcher(
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? =
             if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
-                val assetFileName = request.uriString.substring(("$SCHEME://").length)
+                val uriString = request.uriString
+                val subStartIndex = SCHEME.length + 3
+                val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
+                    ?: uriString.indexOf("#").takeIf { it != -1 }
+                    ?: uriString.length
+                val assetFileName = uriString.substring(subStartIndex, subEndIndex)
                 AssetUriFetcher(sketch, request, assetFileName)
             } else {
                 null
