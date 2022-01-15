@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.sample.AssetImage
 import com.github.panpf.sketch.sample.R.drawable
@@ -25,6 +26,7 @@ class ImageFormatViewModel(application1: Application) : LifecycleAndroidViewMode
 
     private fun load() {
         viewModelScope.launch {
+            val headerUserPackageInfo = loadUserAppPackageInfo(true)
             val footerUserPackageInfo = loadUserAppPackageInfo(false)
 
             val imageDetails = AssetImage.IMAGES_FORMAT.plus(
@@ -32,6 +34,10 @@ class ImageFormatViewModel(application1: Application) : LifecycleAndroidViewMode
                     application1.newResourceUri(drawable.im_placeholder).toString(),
                     application1.newResourceUri(drawable.ic_play).toString(),
                     footerUserPackageInfo.applicationInfo.publicSourceDir,
+                    newAppIconUri(
+                        headerUserPackageInfo.packageName,
+                        headerUserPackageInfo.versionCode
+                    ).toString()
                 )
             ).map {
                 ImageDetail(it, it, null)
@@ -40,7 +46,8 @@ class ImageFormatViewModel(application1: Application) : LifecycleAndroidViewMode
                 arrayOf(
                     "XML",
                     "VECTOR",
-                    "APK_ICON"
+                    "APK_ICON",
+                    "APP_ICON",
                 )
             )
             data.postValue(titles to imageDetails)

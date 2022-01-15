@@ -1,55 +1,44 @@
 package com.github.panpf.sketch.fetch
 
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
-import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
+import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
-import com.github.panpf.sketch.util.readApkIcon
+import java.io.FileDescriptor
+import java.io.InputStream
 
 /**
- * Sample: 'apk.icon://com.github.panpf.sketch.sample'
+ * Sample: 'app.icon://com.github.panpf.sketch.sample/1120'
  */
 fun newAppIconUri(packageName: String, versionCode: Int): Uri =
     Uri.parse("$SCHEME://$packageName/$versionCode")
 
 /**
- * Support 'apk.icon://com.github.panpf.sketch.sample' uri
+ * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
  */
 class AppIconUriFetcher(
-    sketch: Sketch,
-    request: LoadRequest,
+    val sketch: Sketch,
+    val request: LoadRequest,
     val packageName: String,
     val versionCode: Int,
-) : AbsBitmapDiskCacheFetcher(sketch, request, LOCAL) {
+) : Fetcher {
 
     companion object {
         const val SCHEME = "app.icon"
+        const val MIME_TYPE = "application/vnd.android.app-icon"
     }
 
-    override val mimeType: String
-        get() = "application/vnd.android.app-archive"
-
-    override fun getBitmap(): Bitmap {
-        val packageInfo: PackageInfo = try {
-            sketch.appContext.packageManager.getPackageInfo(packageName, 0)
-        } catch (e: PackageManager.NameNotFoundException) {
-            throw Exception("Not found PackageInfo by '$packageName'. ${request.uriString}", e)
-        }
-        if (packageInfo.versionCode != versionCode) {
-            throw Exception("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode. ${request.uriString}")
-        }
-        val apkFilePath = packageInfo.applicationInfo.sourceDir
-        return readApkIcon(sketch.appContext, apkFilePath, false, sketch.bitmapPoolHelper)
+    override suspend fun fetch(): FetchResult {
+        return FetchResult(
+            AppIconDataSource(sketch, request, LOCAL, packageName, versionCode),
+            MIME_TYPE
+        )
     }
-
-    override fun getDiskCacheKey(): String = request.uriString
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
@@ -63,6 +52,26 @@ class AppIconUriFetcher(
             } else {
                 null
             }
+        }
+    }
+
+    class AppIconDataSource(
+        override val sketch: Sketch,
+        override val request: ImageRequest,
+        override val from: DataFrom,
+        val packageName: String,
+        val versionCode: Int,
+    ) : DataSource {
+        override fun length(): Long {
+            throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
+        }
+
+        override fun newFileDescriptor(): FileDescriptor? {
+            throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
+        }
+
+        override fun newInputStream(): InputStream {
+            throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
         }
     }
 }

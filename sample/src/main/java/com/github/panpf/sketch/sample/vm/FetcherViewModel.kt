@@ -31,7 +31,6 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
             val localFirstPhotoPath = loadLocalFirstPhotoPath()
             val localSecondPhotoUri = loadLocalSecondPhotoUri()
             val headerUserPackageInfo = loadUserAppPackageInfo(true)
-            val footerUserPackageInfo = loadUserAppPackageInfo(false)
             val datas = ArrayList<Pair<String, String>>().apply {
                 add("HTTP" to "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg")
                 add("HTTPS" to "https://images.unsplash.com/photo-1431440869543-efaf3388c585?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=8b00971a3e4a84fb43403797126d1991%22")

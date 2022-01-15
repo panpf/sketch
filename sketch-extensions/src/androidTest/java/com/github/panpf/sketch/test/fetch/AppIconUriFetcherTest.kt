@@ -3,10 +3,9 @@ package com.github.panpf.sketch.test.fetch
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
+import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.newAppIconUri
-import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
@@ -55,18 +54,15 @@ class AppIconUriFetcherTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
         val fetcherFactory = AppIconUriFetcher.Factory()
-        val appIconUri = newAppIconUri(context.packageName, context.packageManager.getPackageInfo(context.packageName, 0).versionCode)
+        val appIconUri = newAppIconUri(
+            context.packageName,
+            context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+        )
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest.new(appIconUri))!!
-        val diskCache = sketch.diskCache
-        val existDiskCacheEntry = diskCache.exist(diskCache.encodeKey(fetcher.getDiskCacheKey()))
         val source = runBlocking {
             fetcher.fetch().dataSource
         }
-        Assert.assertEquals(
-            if (existDiskCacheEntry) DataFrom.DISK_CACHE else DataFrom.LOCAL,
-            source.from
-        )
-        Assert.assertTrue(source is DiskCacheDataSource)
+        Assert.assertTrue(source is AppIconDataSource)
     }
 }

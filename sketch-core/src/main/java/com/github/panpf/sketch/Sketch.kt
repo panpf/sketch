@@ -23,7 +23,6 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationCorrectInterceptor
 import com.github.panpf.sketch.decode.internal.SizeInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
-import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
@@ -100,7 +99,6 @@ class Sketch private constructor(
             addFetcher(ContentUriFetcher.Factory())
             addFetcher(ResourceUriFetcher.Factory())
             addFetcher(AssetUriFetcher.Factory())
-            addFetcher(AppIconUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
             addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
