@@ -3,16 +3,13 @@ package com.github.panpf.sketch.fetch
 import android.net.Uri
 import android.util.Base64
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIER
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
-import com.github.panpf.sketch.fetch.internal.AbsStreamDiskCacheFetcher
 import com.github.panpf.sketch.request.DataFrom.MEMORY
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
-import com.github.panpf.sketch.util.MD5Utils
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 
 /**
  * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
@@ -24,22 +21,21 @@ fun newBase64Uri(mimeType: String, imageDataBase64String: String): Uri =
  * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
  */
 class Base64UriFetcher(
-    sketch: Sketch,
-    request: LoadRequest,
-    override val mimeType: String,
+    val sketch: Sketch,
+    val request: LoadRequest,
+    val mimeType: String,
     val imageDataBase64StringLazy: Lazy<String>,
-) : AbsStreamDiskCacheFetcher(sketch, request, MEMORY) {
+) : Fetcher {
 
     companion object {
         const val SCHEME = "data"
         const val BASE64_IDENTIFIER = "base64,"
     }
 
-    override fun openInputStream(): InputStream {
-        return ByteArrayInputStream(Base64.decode(imageDataBase64StringLazy.value, Base64.DEFAULT))
+    override suspend fun fetch(): FetchResult {
+        val bytes = Base64.decode(imageDataBase64StringLazy.value, Base64.DEFAULT)
+        return FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
     }
-
-    override fun getDiskCacheKey(): String = MD5Utils.md5(request.uriString)
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
