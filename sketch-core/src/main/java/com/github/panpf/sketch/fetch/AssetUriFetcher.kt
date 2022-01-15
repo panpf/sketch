@@ -4,11 +4,15 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetsDataSource
+import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 
-fun newAssetUri(assetFilePath: String): Uri = AssetUriFetcher.newUri(assetFilePath)
+/**
+ * Sample: 'asset://test.png'
+ */
+fun newAssetUri(assetFilePath: String): Uri = Uri.parse("$SCHEME://$assetFilePath")
 
 /**
  * Support 'asset://test.png' uri
@@ -21,9 +25,6 @@ class AssetUriFetcher(
 
     companion object {
         const val SCHEME = "asset"
-
-        @JvmStatic
-        fun newUri(assetFilePath: String): Uri = Uri.parse("$SCHEME://$assetFilePath")
     }
 
     override suspend fun fetch(): FetchResult {

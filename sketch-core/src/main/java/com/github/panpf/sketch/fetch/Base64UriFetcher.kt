@@ -3,6 +3,8 @@ package com.github.panpf.sketch.fetch
 import android.net.Uri
 import android.util.Base64
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIER
+import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.fetch.internal.AbsStreamDiskCacheFetcher
 import com.github.panpf.sketch.request.DataFrom.MEMORY
 import com.github.panpf.sketch.request.LoadRequest
@@ -12,8 +14,11 @@ import com.github.panpf.sketch.util.MD5Utils
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
+/**
+ * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
+ */
 fun newBase64Uri(mimeType: String, imageDataBase64String: String): Uri =
-    Base64UriFetcher.newUri(mimeType, imageDataBase64String)
+    Uri.parse("$SCHEME:$mimeType;${BASE64_IDENTIFIER}$imageDataBase64String")
 
 /**
  * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
@@ -28,10 +33,6 @@ class Base64UriFetcher(
     companion object {
         const val SCHEME = "data"
         const val BASE64_IDENTIFIER = "base64,"
-
-        @JvmStatic
-        fun newUri(mimeType: String, imageDataBase64String: String): Uri =
-            Uri.parse("$SCHEME:$mimeType;base64,$imageDataBase64String")
     }
 
     override fun openInputStream(): InputStream {

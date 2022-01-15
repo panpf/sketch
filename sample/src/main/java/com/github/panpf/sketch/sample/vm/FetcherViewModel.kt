@@ -9,8 +9,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.github.panpf.sketch.fetch.ApkIconUriFetcher
-import com.github.panpf.sketch.fetch.AppIconUriFetcher
+import com.github.panpf.sketch.fetch.newApkIconUri
+import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.sample.AssetImage
 import com.github.panpf.sketch.sample.R
@@ -49,16 +49,12 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
                         .toString()
                 )
                 add(
-                    "APP" to AppIconUriFetcher
-                        .newUri(
-                            headerUserPackageInfo.packageName,
-                            headerUserPackageInfo.versionCode
-                        ).toString()
+                    "APP" to newAppIconUri(
+                        headerUserPackageInfo.packageName,
+                        headerUserPackageInfo.versionCode
+                    ).toString()
                 )
-                add(
-                    "APK" to ApkIconUriFetcher.newUri(footerUserPackageInfo.applicationInfo.publicSourceDir)
-                        .toString()
-                )
+                add("APK" to newApkIconUri(footerUserPackageInfo.applicationInfo.publicSourceDir).toString())
                 add("BASE64" to BASE64_IMAGE)
             }
             val uris = datas.map { it.second }.toTypedArray()

@@ -3,6 +3,7 @@ package com.github.panpf.sketch.fetch
 import android.graphics.Bitmap
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.ApkIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
@@ -10,7 +11,10 @@ import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.util.createFileUriDiskCacheKey
 import com.github.panpf.sketch.util.readApkIcon
 
-fun newApkIconUri(filePath: String): Uri = ApkIconUriFetcher.newUri(filePath)
+/**
+ * Sample: 'apk.icon:///sdcard/test.apk'
+ */
+fun newApkIconUri(filePath: String): Uri = Uri.parse("$SCHEME://$filePath")
 
 /**
  * Support 'apk.icon:///sdcard/test.apk' uri
@@ -23,9 +27,6 @@ class ApkIconUriFetcher(
 
     companion object {
         const val SCHEME = "apk.icon"
-
-        @JvmStatic
-        fun newUri(filePath: String): Uri = Uri.parse("$SCHEME://$filePath")
     }
 
     override val mimeType: String

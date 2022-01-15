@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.fetch.internal.AbsBitmapDiskCacheFetcher
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
@@ -12,8 +13,11 @@ import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.UriInvalidException
 import com.github.panpf.sketch.util.readApkIcon
 
+/**
+ * Sample: 'apk.icon://com.github.panpf.sketch.sample'
+ */
 fun newAppIconUri(packageName: String, versionCode: Int): Uri =
-    AppIconUriFetcher.newUri(packageName, versionCode)
+    Uri.parse("$SCHEME://$packageName/$versionCode")
 
 /**
  * Support 'apk.icon://com.github.panpf.sketch.sample' uri
@@ -27,10 +31,6 @@ class AppIconUriFetcher(
 
     companion object {
         const val SCHEME = "app.icon"
-
-        @JvmStatic
-        fun newUri(packageName: String, versionCode: Int): Uri =
-            Uri.parse("$SCHEME://$packageName/$versionCode")
     }
 
     override val mimeType: String
