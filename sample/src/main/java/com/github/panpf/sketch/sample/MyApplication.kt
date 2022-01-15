@@ -21,6 +21,7 @@ import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
+import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.video.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.extensions.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.extensions.SaveCellularTrafficDisplayInterceptor
@@ -39,6 +40,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
+            addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
             addDrawableDecoder(GifDrawableDecoder.Factory())
         }
