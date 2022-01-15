@@ -17,7 +17,7 @@ package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.LoadRequest
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
@@ -26,7 +26,7 @@ import java.io.InputStream
 
 class FileDataSource constructor(
     override val sketch: Sketch,
-    override val request: ImageRequest,
+    override val request: LoadRequest,
     val file: File
 ) : DataSource {
 

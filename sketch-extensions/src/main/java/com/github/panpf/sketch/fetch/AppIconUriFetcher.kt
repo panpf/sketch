@@ -57,7 +57,7 @@ class AppIconUriFetcher(
 
     class AppIconDataSource(
         override val sketch: Sketch,
-        override val request: ImageRequest,
+        override val request: LoadRequest,
         override val from: DataFrom,
         val packageName: String,
         val versionCode: Int,

@@ -19,7 +19,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.LoadRequest
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
@@ -31,7 +31,7 @@ import java.io.InputStream
  */
 class ContentDataSource constructor(
     override val sketch: Sketch,
-    override val request: ImageRequest,
+    override val request: LoadRequest,
     val contentUri: Uri
 ) : DataSource {
 

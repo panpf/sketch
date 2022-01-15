@@ -94,9 +94,7 @@ class ResourceUriFetcher(
     }
 
     class Factory : Fetcher.Factory {
-        override fun create(
-            sketch: Sketch, request: ImageRequest
-        ): ResourceUriFetcher? =
+        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? =
             if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
                 ResourceUriFetcher(sketch, request, request.uri)
             } else {

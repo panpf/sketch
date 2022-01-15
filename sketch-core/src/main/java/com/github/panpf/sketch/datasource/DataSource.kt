@@ -18,7 +18,6 @@ package com.github.panpf.sketch.datasource
 import android.content.Context
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.withLock
@@ -31,6 +30,7 @@ import java.io.InputStream
 /**
  * 数据源
  */
+// todo 支持匹配 byteString，因为有的 decoder 需要根据头部标识来判断文件类型
 interface DataSource {
 
     val sketch: Sketch

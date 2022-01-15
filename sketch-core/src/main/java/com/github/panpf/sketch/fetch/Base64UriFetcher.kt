@@ -53,7 +53,7 @@ class Base64UriFetcher(
                         base64ImageString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
                     })
                 } else {
-                    throw UriInvalidException(request, "Base64 image invalid")
+                    throw UriInvalidException(request, "Invalid base64 image")
                 }
             } else {
                 null
