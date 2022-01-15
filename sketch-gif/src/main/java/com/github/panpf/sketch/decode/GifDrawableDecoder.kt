@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.decode
 
-import android.graphics.BitmapFactory.Options
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetsDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -9,24 +8,25 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.DrawableResDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.decode.internal.decodeBitmap
-import com.github.panpf.sketch.decode.internal.readImageInfo
-import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.drawable.SketchGifDrawableImpl
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
 
+// todo 参考 coil 的 gif 实现
 class GifDrawableDecoder(
     private val sketch: Sketch,
     private val request: DisplayRequest,
-    private val dataSource: DataSource
+    private val dataSource: DataSource,
+    private val imageInfo: ImageInfo,
 ) : DrawableDecoder {
 
-    // todo 参考 coil 的 gif 实现
+    companion object {
+        const val MIME_TYPE = "image/gif"
+    }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun decodeDrawable(): DrawableDecodeResult {
         val request = request
-        val imageInfo = dataSource.readImageInfo(request)
         val gifDrawable = when (val source = dataSource) {
             is ByteArrayDataSource -> {
                 SketchGifDrawableImpl(
@@ -102,7 +102,7 @@ class GifDrawableDecoder(
 
     }
 
-    class Factory : com.github.panpf.sketch.decode.DrawableDecoder.Factory {
+    class Factory : DrawableDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
@@ -110,13 +110,9 @@ class GifDrawableDecoder(
             fetchResult: FetchResult
         ): GifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
-                // todo 改进判断方式，参考 coil 当 mimeType 判断不出来时用文件头标识判断
-                val mimeType = fetchResult.mimeType ?: Options().apply {
-                    inJustDecodeBounds = true
-                    fetchResult.dataSource.decodeBitmap(this)
-                }.outMimeType.orEmpty()
-                if (mimeType == "image/gif") {
-                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource)
+                val imageInfo = fetchResult.imageInfo
+                if (imageInfo != null && MIME_TYPE.equals(imageInfo.mimeType, ignoreCase = true)) {
+                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource, imageInfo)
                 }
             }
             return null

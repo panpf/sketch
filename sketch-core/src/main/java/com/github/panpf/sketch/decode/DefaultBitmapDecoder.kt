@@ -7,11 +7,10 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
-import com.github.panpf.sketch.decode.internal.decodeBitmap
+import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
-import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -19,22 +18,21 @@ import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 open class DefaultBitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
-    dataSource: DataSource
+    dataSource: DataSource,
+    val imageInfo: ImageInfo,
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
     companion object {
         const val MODULE = "DefaultBitmapDecoder"
     }
 
-    override fun readImageInfo(): ImageInfo = dataSource.readImageInfo(request)
+    override fun readImageInfo(): ImageInfo = imageInfo
 
     override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean =
         imageFormat?.supportBitmapRegionDecoder() == true
 
     override fun decodeRegion(
-        imageInfo: ImageInfo,
-        srcRect: Rect,
-        decodeConfig: DecodeConfig
+        imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (request.disabledBitmapPool != true) {
@@ -95,7 +93,7 @@ open class DefaultBitmapDecoder(
         }
 
         val bitmap: Bitmap = try {
-            dataSource.decodeBitmap(decodeOptions)
+            dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable, false)) {
@@ -106,7 +104,7 @@ open class DefaultBitmapDecoder(
                 decodeOptions.inBitmap = null
                 bitmapPoolHelper.freeBitmapToPool(inBitmap)
                 try {
-                    dataSource.decodeBitmap(decodeOptions)
+                    dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
                 } catch (throwable2: Throwable) {
                     throw BitmapDecodeException(request, "Bitmap decode error", throwable2)
                 }
@@ -130,6 +128,8 @@ open class DefaultBitmapDecoder(
 
         override fun create(
             sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
-        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
+        ): BitmapDecoder? = fetchResult.imageInfo?.let {
+            DefaultBitmapDecoder(sketch, request, fetchResult.dataSource, it)
+        }
     }
 }

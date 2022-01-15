@@ -17,24 +17,26 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.BitmapFactory.Options
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.LoadRequest
 import java.io.IOException
 
-fun DataSource.readImageInfo(request: LoadRequest): ImageInfo {
-    val boundOptions = Options().apply {
+fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
+    val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
     }
-    decodeBitmap(boundOptions)
+    decodeBitmapWithBitmapFactory(boundOptions)
     if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-        val message = "Invalid image size. ${boundOptions.outWidth}x${boundOptions.outHeight}"
-        throw BitmapDecodeException(request, message)
+        val message = "Invalid image size: ${boundOptions.outWidth}x${boundOptions.outHeight}"
+        throw Exception(message)
+    }
+    if (boundOptions.outMimeType?.isEmpty() != false) {
+        val message = "Invalid image: BitmapFactory cannot recognize mimeType"
+        throw Exception(message)
     }
 
     val exifOrientation: Int = ExifOrientationCorrector
@@ -47,8 +49,15 @@ fun DataSource.readImageInfo(request: LoadRequest): ImageInfo {
     )
 }
 
+fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? = try {
+    readImageInfoWithBitmapFactory()
+} catch (e: Throwable) {
+    e.printStackTrace()
+    null
+}
+
 @Throws(IOException::class)
-fun DataSource.decodeBitmap(options: BitmapFactory.Options): Bitmap? =
+fun DataSource.decodeBitmapWithBitmapFactory(options: BitmapFactory.Options): Bitmap? =
     newInputStream().use {
         BitmapFactory.decodeStream(it, null, options)
     }
