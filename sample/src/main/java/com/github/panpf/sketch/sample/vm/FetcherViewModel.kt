@@ -9,12 +9,10 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.github.panpf.sketch.fetch.AndroidResUriFetcher
 import com.github.panpf.sketch.fetch.ApkIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
-import com.github.panpf.sketch.fetch.DrawableResUriFetcher
+import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.sample.AssetImage
-import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import kotlinx.coroutines.Dispatchers
@@ -45,19 +43,17 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
                     add("FILE" to localFirstPhotoPath)
                 }
                 add("ASSET" to AssetImage.MEI_NV)
+                add("RES_ID" to application1.newResourceUri(R.mipmap.ic_launcher).toString())
                 add(
-                    "DRAWABLE" to DrawableResUriFetcher.newUri(R.mipmap.ic_launcher).toString()
-                )
-                add(
-                    "ANDROID_RES" to AndroidResUriFetcher
-                        .newUriByName(BuildConfig.APPLICATION_ID, "mipmap", "ic_launcher")
+                    "RES_NAME" to application1.newResourceUri("drawable", "im_placeholder")
                         .toString()
                 )
                 add(
-                    "APP" to AppIconUriFetcher.newUri(
-                        headerUserPackageInfo.packageName,
-                        headerUserPackageInfo.versionCode
-                    ).toString()
+                    "APP" to AppIconUriFetcher
+                        .newUri(
+                            headerUserPackageInfo.packageName,
+                            headerUserPackageInfo.versionCode
+                        ).toString()
                 )
                 add(
                     "APK" to ApkIconUriFetcher.newUri(footerUserPackageInfo.applicationInfo.publicSourceDir)

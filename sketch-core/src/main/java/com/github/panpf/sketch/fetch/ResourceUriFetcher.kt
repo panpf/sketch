@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.fetch
 
+import android.content.Context
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.net.Uri
@@ -7,43 +8,47 @@ import android.util.TypedValue
 import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DrawableResDataSource
+import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import java.io.FileNotFoundException
 
-fun newAndroidResUriByName(packageName: String, resType: String, drawableResName: String): Uri =
-    AndroidResUriFetcher.newUriByName(packageName, resType, drawableResName)
+/**
+ * Sample: 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
+ */
+fun newResourceUri(packageName: String, resType: String, drawableResName: String): Uri =
+    Uri.parse("$SCHEME://$packageName/$resType/$drawableResName")
 
-fun newAndroidResUriById(packageName: String, drawableResId: Int): Uri =
-    AndroidResUriFetcher.newUriById(packageName, drawableResId)
+/**
+ * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
+ */
+fun newResourceUri(packageName: String, drawableResId: Int): Uri =
+    Uri.parse("$SCHEME://$packageName/$drawableResId")
+
+/**
+ * Sample: 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
+ */
+fun Context.newResourceUri(resType: String, drawableResName: String): Uri =
+    newResourceUri(packageName, resType, drawableResName)
+
+/**
+ * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
+ */
+fun Context.newResourceUri(drawableResId: Int): Uri =
+    newResourceUri(packageName, drawableResId)
 
 /**
  * Support 'android.resource://com.github.panpf.sketch.sample/mipmap/ic_launch' uri
  */
-class AndroidResUriFetcher(
+class ResourceUriFetcher(
     val sketch: Sketch,
     val request: LoadRequest,
     val contentUri: Uri,
 ) : Fetcher {
 
     companion object {
-
         const val SCHEME = "android.resource"
-
-        /**
-         * Sample: 'android.resource://com.github.panpf.sketch.sample/mipmap/ic_launcher'
-         */
-        @JvmStatic
-        fun newUriByName(packageName: String, resType: String, drawableResName: String): Uri =
-            Uri.parse("$SCHEME://$packageName/$resType/$drawableResName")
-
-        /**
-         * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
-         */
-        @JvmStatic
-        fun newUriById(packageName: String, drawableResId: Int): Uri =
-            Uri.parse("$SCHEME://$packageName/$drawableResId")
     }
 
     override suspend fun fetch(): FetchResult {
@@ -91,9 +96,9 @@ class AndroidResUriFetcher(
     class Factory : Fetcher.Factory {
         override fun create(
             sketch: Sketch, request: ImageRequest
-        ): AndroidResUriFetcher? =
+        ): ResourceUriFetcher? =
             if (request is LoadRequest && SCHEME.equals(request.uri.scheme, ignoreCase = true)) {
-                AndroidResUriFetcher(sketch, request, request.uri)
+                ResourceUriFetcher(sketch, request, request.uri)
             } else {
                 null
             }
