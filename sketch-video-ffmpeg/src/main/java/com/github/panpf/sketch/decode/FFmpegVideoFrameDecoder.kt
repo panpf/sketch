@@ -11,9 +11,6 @@ import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
-import com.github.panpf.sketch.decode.video.videoFrameMicros
-import com.github.panpf.sketch.decode.video.videoFrameOption
-import com.github.panpf.sketch.decode.video.videoFramePercentDuration
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.runBlocking
@@ -116,7 +113,7 @@ class FFmpegVideoFrameDecoder(
     ): Bitmap =
         throw UnsupportedOperationException("FFmpegVideoFrameDecoder not support decode region")
 
-    class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
+    class Factory : BitmapDecoder.Factory {
         override fun create(
             sketch: Sketch,
             request: LoadRequest,

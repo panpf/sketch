@@ -181,18 +181,14 @@ class ExifOrientationCorrector(private val exifOrientation: Int) {
          * @param dataSource DataSource
          * @return exif 保存的原始方向
          */
-        fun readExifOrientation(mimeType: String, dataSource: DataSource): Int {
+        fun readExifOrientation(mimeType: String, dataSource: DataSource): Int =
             if (support(mimeType)) {
-                try {
-                    return dataSource.newInputStream().use {
-                        readExifOrientation(it)
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
+                dataSource.newInputStream().use {
+                    readExifOrientation(it)
                 }
+            } else {
+                ExifInterface.ORIENTATION_UNDEFINED
             }
-            return ExifInterface.ORIENTATION_UNDEFINED
-        }
 
         /**
          * 根据mimeType判断该类型的图片是否支持通过ExitInterface读取旋转角度
