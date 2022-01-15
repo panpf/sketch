@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.decode.video.videoFramePercentDuration
+import com.github.panpf.sketch.decode.videoFramePercentDuration
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.extensions.pauseLoadWhenScrolling
 import com.github.panpf.sketch.extensions.pauseLoadWhenScrollingErrorImage

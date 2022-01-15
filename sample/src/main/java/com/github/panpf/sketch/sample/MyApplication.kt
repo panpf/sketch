@@ -23,11 +23,11 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
-import com.github.panpf.sketch.decode.video.FFmpegVideoFrameDecoder
+import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.extensions.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.extensions.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
-import com.github.panpf.sketch.gif.GifDrawableDecoder
+import com.github.panpf.sketch.decode.GifDrawableDecoder
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG

@@ -1,6 +1,6 @@
-package com.github.panpf.sketch.gif
+package com.github.panpf.sketch.decode
 
-import android.graphics.BitmapFactory
+import android.graphics.BitmapFactory.Options
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetsDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -9,11 +9,10 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.DrawableResDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.drawable.SketchGifDrawableImpl
 import com.github.panpf.sketch.request.DisplayRequest
 
 class GifDrawableDecoder(
@@ -103,7 +102,7 @@ class GifDrawableDecoder(
 
     }
 
-    class Factory : DrawableDecoder.Factory {
+    class Factory : com.github.panpf.sketch.decode.DrawableDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
@@ -112,7 +111,7 @@ class GifDrawableDecoder(
         ): GifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
                 // todo 改进判断方式，参考 coil 当 mimeType 判断不出来时用文件头标识判断
-                val mimeType = fetchResult.mimeType ?: BitmapFactory.Options().apply {
+                val mimeType = fetchResult.mimeType ?: Options().apply {
                     inJustDecodeBounds = true
                     fetchResult.dataSource.decodeBitmap(this)
                 }.outMimeType.orEmpty()

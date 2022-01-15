@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.gif
+package com.github.panpf.sketch.drawable
 
 /*
  * Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
@@ -23,7 +23,6 @@ import android.graphics.drawable.Animatable
 import android.widget.MediaController.MediaPlayerControl
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
-import com.github.panpf.sketch.drawable.SketchDrawable
 import java.io.InputStream
 import java.nio.ByteBuffer
 

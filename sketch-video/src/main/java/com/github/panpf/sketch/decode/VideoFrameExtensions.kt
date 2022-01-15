@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.decode.video
+package com.github.panpf.sketch.decode
 
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.OPTION_CLOSEST
