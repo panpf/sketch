@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.gif
+package com.github.panpf.sketch.drawable
 
 /*
  * Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
@@ -64,7 +64,7 @@ class SketchGifDrawableImpl : GifDrawable, SketchGifDrawable {
     override val exifOrientation: Int
         get() = imageInfo.exifOrientation
     override val info: String by lazy {
-        "${NAME}(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s)".format(
+        "$NAME(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s)".format(
             originWidth,
             originHeight,
             mimeType,

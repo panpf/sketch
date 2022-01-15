@@ -1,7 +1,9 @@
-package com.github.panpf.sketch.decode.video
+package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
@@ -9,30 +11,32 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.decode.video.videoFrameMicros
+import com.github.panpf.sketch.decode.video.videoFrameOption
+import com.github.panpf.sketch.decode.video.videoFramePercentDuration
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.runBlocking
-import wseemann.media.FFmpegMediaMetadataRetriever
 import kotlin.math.roundToInt
 
 /**
- * Notes: It is not support MediaMetadataRetriever.BitmapParams
+ * Notes: Android 26 and before versions do not support scale to read frames,
+ * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
  *
- * Notes：LoadRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect
+ * Notes：LoadRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
+ * The bitmapConfig attribute takes effect only on Android 30 or later
  */
-class FFmpegVideoFrameDecoder(
+class VideoFrameDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource,
     val mimeType: String,
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
-    private val mediaMetadataRetriever: FFmpegMediaMetadataRetriever by lazy {
-        FFmpegMediaMetadataRetriever().apply {
+    private val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
+        MediaMetadataRetriever().apply {
             if (dataSource is ContentDataSource) {
                 setDataSource(dataSource.context, dataSource.contentUri)
             } else {
@@ -45,24 +49,28 @@ class FFmpegVideoFrameDecoder(
     }
 
     override fun close() {
-        mediaMetadataRetriever.release()
+        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+            mediaMetadataRetriever.close()
+        } else {
+            mediaMetadataRetriever.release()
+        }
     }
 
     override fun readImageInfo(): ImageInfo {
-        val srcWidth =
-            mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                ?.toIntOrNull() ?: 0
-        val srcHeight =
-            mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                ?.toIntOrNull() ?: 0
+        val srcWidth = mediaMetadataRetriever
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
+        val srcHeight = mediaMetadataRetriever
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
         if (srcWidth <= 1 || srcHeight <= 1) {
             val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
             throw BitmapDecodeException(request, message)
         }
         val exifOrientation =
             if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-                (mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-                    ?.toIntOrNull() ?: 0).run {
+                val videoRotation = mediaMetadataRetriever
+                    .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+                    ?.toIntOrNull() ?: 0
+                videoRotation.run {
                     when (this) {
                         0 -> ExifInterface.ORIENTATION_UNDEFINED
                         90 -> ExifInterface.ORIENTATION_ROTATE_90
@@ -78,13 +86,13 @@ class FFmpegVideoFrameDecoder(
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
-        val option =
-            request.videoFrameOption() ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
+        val option = request.videoFrameOption() ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros()
             ?: request.videoFramePercentDuration()?.let { percentDuration ->
-                val duration = mediaMetadataRetriever
-                    .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
-                    ?.toLongOrNull() ?: 0L
+                val duration =
+                    mediaMetadataRetriever
+                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                        ?.toLongOrNull() ?: 0L
                 (duration * percentDuration * 1000).toLong()
             }
             ?: 0L
@@ -100,10 +108,27 @@ class FFmpegVideoFrameDecoder(
         } else {
             imageInfo.height
         }
-        return mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
-            ?: throw BitmapDecodeException(
-                request, "Failed to decode frame at $frameMicros microseconds."
-            )
+        return when {
+            VERSION.SDK_INT >= 30 -> {
+                val bitmapParams = BitmapParams().apply {
+                    val inPreferredConfigFromRequest = decodeConfig.inPreferredConfig
+                    if (inPreferredConfigFromRequest != null) {
+                        preferredConfig = inPreferredConfigFromRequest
+                    }
+                }
+                mediaMetadataRetriever
+                    .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
+            }
+            VERSION.SDK_INT >= 27 -> {
+                mediaMetadataRetriever
+                    .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
+            }
+            else -> {
+                mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
+            }
+        } ?: throw BitmapDecodeException(
+            request, "Failed to decode frame at $frameMicros microseconds."
+        )
     }
 
     override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean = false
@@ -112,18 +137,17 @@ class FFmpegVideoFrameDecoder(
         imageInfo: ImageInfo,
         srcRect: Rect,
         decodeConfig: DecodeConfig
-    ): Bitmap =
-        throw UnsupportedOperationException("FFmpegVideoFrameDecoder not support decode region")
+    ): Bitmap = throw UnsupportedOperationException("VideoFrameDecoder not support decode region")
 
-    class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
+    class Factory : BitmapDecoder.Factory {
         override fun create(
             sketch: Sketch,
             request: LoadRequest,
             fetchResult: FetchResult
-        ): FFmpegVideoFrameDecoder? {
+        ): VideoFrameDecoder? {
             val mimeType = fetchResult.mimeType
             if (mimeType?.startsWith("video/") != true) return null
-            return FFmpegVideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+            return VideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
         }
     }
 }

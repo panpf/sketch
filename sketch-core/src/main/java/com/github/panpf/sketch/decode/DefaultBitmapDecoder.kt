@@ -1,13 +1,17 @@
-package com.github.panpf.sketch.decode.internal
+package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import android.graphics.Rect
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
+import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.decode.internal.decodeBitmap
+import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
+import com.github.panpf.sketch.decode.internal.isInBitmapError
+import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder

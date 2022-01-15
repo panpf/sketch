@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.decode.internal
+package com.github.panpf.sketch.decode
 
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -7,9 +7,7 @@ import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.decode.DrawableDecoder
+import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.fetch.FetchResult
@@ -89,7 +87,7 @@ class DefaultDrawableDecoder(
                         "From memory get bitmap. bitmap=%s. %s"
                             .format(cachedRefBitmap.info, request.key)
                     }
-                    cachedRefBitmap.setIsWaitingUse("${MODULE}:waitingUse:fromMemory", true)
+                    cachedRefBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
                     val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
                     DrawableDecodeResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
                 }
@@ -111,7 +109,7 @@ class DefaultDrawableDecoder(
                     request.key,
                     bitmapPoolHelper
                 )
-                refBitmap.setIsWaitingUse("${MODULE}:waitingUse:new", true)
+                refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
                 memoryCache.put(bitmapMemoryCacheKey, refBitmap)
                 SketchBitmapDrawable(refBitmap, bitmapDecodeResult.from)
             } else {

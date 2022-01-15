@@ -1,13 +1,11 @@
-package com.github.panpf.sketch.decode.internal
+package com.github.panpf.sketch.decode
 
 import android.content.res.Resources
 import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DrawableResDataSource
-import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
