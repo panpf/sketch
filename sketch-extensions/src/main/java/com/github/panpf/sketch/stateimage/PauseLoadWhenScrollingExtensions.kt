@@ -1,11 +1,10 @@
-package com.github.panpf.sketch.extensions
+package com.github.panpf.sketch.stateimage
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 import com.github.panpf.sketch.util.SketchException
 
 fun ErrorStateImage.Builder.pauseLoadWhenScrollingErrorImage(): ErrorStateImage.Builder = apply {

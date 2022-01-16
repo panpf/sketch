@@ -1,0 +1,39 @@
+package com.github.panpf.sketch.request
+
+import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
+import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
+
+/**
+ * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular, Then can also cooperate with [saveCellularTrafficErrorImage] custom error image display
+ */
+class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
+
+    companion object {
+        const val KEY = "sketch#SaveCellularTraffic"
+        const val ENABLED_KEY = "sketch#enabledSaveCellularTraffic"
+        const val IGNORE_KEY = "sketch#ignoreSaveCellularTraffic"
+    }
+
+    var enabled = true
+
+    override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
+        val sketch = chain.sketch
+        val request = chain.request
+        val finalRequest = if (
+            enabled
+            && request.isSaveCellularTraffic
+            && !request.isIgnoredSaveCellularTraffic
+            && sketch.appContext.isCellularNetworkConnected()
+            && request.depth < RequestDepth.LOCAL
+        ) {
+            request.newDisplayRequest {
+                depth(RequestDepth.LOCAL)
+                depthFrom(KEY)
+            }
+        } else {
+            request
+        }
+        return chain.proceed(finalRequest)
+    }
+}

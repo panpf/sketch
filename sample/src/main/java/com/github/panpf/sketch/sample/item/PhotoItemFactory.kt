@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.extensions.pauseLoadWhenScrolling
-import com.github.panpf.sketch.extensions.pauseLoadWhenScrollingErrorImage
-import com.github.panpf.sketch.extensions.saveCellularTraffic
-import com.github.panpf.sketch.extensions.saveCellularTrafficErrorImage
-import com.github.panpf.sketch.extensions.setClickRedisplayAndIgnoreSaveCellularTraffic
+import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
+import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
+import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
+import com.github.panpf.sketch.viewability.setClickRedisplayAndIgnoreSaveCellularTraffic
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 

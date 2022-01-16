@@ -15,6 +15,9 @@ import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.videoFrameMicros
+import com.github.panpf.sketch.request.videoFrameOption
+import com.github.panpf.sketch.request.videoFramePercentDuration
 import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 

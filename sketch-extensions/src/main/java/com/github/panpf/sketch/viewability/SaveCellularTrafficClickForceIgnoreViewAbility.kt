@@ -1,9 +1,11 @@
-package com.github.panpf.sketch.extensions
+package com.github.panpf.sketch.viewability
 
 import android.view.View
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
+import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.viewability.internal.Host
 import com.github.panpf.sketch.viewability.internal.ViewAbility
 import com.github.panpf.sketch.viewability.internal.ViewAbility.ClickObserver

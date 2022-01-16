@@ -4,16 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.decode.videoFramePercentDuration
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.extensions.pauseLoadWhenScrolling
-import com.github.panpf.sketch.extensions.pauseLoadWhenScrollingErrorImage
-import com.github.panpf.sketch.extensions.saveCellularTraffic
-import com.github.panpf.sketch.extensions.saveCellularTrafficErrorImage
+import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.request.videoFramePercentDuration
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.VideoInfo
 import com.github.panpf.sketch.sample.databinding.ItemVideoBinding
+import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
+import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
 
 class LocalVideoItemFactory :
     BindingItemFactory<VideoInfo, ItemVideoBinding>(VideoInfo::class) {

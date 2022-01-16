@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.decode
+package com.github.panpf.sketch.request
 
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.OPTION_CLOSEST
@@ -6,8 +6,6 @@ import android.media.MediaMetadataRetriever.OPTION_CLOSEST_SYNC
 import android.media.MediaMetadataRetriever.OPTION_NEXT_SYNC
 import android.media.MediaMetadataRetriever.OPTION_PREVIOUS_SYNC
 import androidx.annotation.FloatRange
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.LoadRequest
 
 internal const val VIDEO_FRAME_MICROS_KEY = "sketch#video_frame_micros"
 internal const val VIDEO_FRAME_PERCENT_DURATION_KEY = "sketch#video_frame_percent_duration"

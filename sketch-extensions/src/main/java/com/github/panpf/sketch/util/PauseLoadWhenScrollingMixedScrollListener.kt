@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.extensions
+package com.github.panpf.sketch.util
 
 import android.view.ViewGroup
 import android.widget.AbsListView
@@ -8,7 +8,9 @@ import android.widget.WrapperListAdapter
 import androidx.core.view.descendants
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.request.internal.requestManagerOrNull
+import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 
 class PauseLoadWhenScrollingMixedScrollListener : RecyclerView.OnScrollListener(),
     AbsListView.OnScrollListener {
