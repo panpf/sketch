@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import androidx.lifecycle.Observer
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.viewability.setMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.viewability.showDataFrom
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
@@ -20,7 +22,7 @@ class MyListImageView @JvmOverloads constructor(
         val newLogoDrawable: (String) -> Drawable = {
             TextDrawable.builder()
                 .beginConfig()
-                .width(((it.length+1) * 6).dp2px)
+                .width(((it.length + 1) * 6).dp2px)
                 .height(16.dp2px)
                 .fontSize(9.dp2px)
                 .bold()
@@ -40,34 +42,35 @@ class MyListImageView @JvmOverloads constructor(
         )
     }
 
-    private val progressIndicatorObserver = Observer<Boolean> {
-        showMaskProgressIndicator(it == true)
-    }
-    private val mimeTypeLogoObserver = Observer<Boolean> {
-        setMimeTypeLogoWithDrawable(
-            mimeTypeIconMap = if (it == true) mimeTypeLogoMap else null,
-            margin = 4.dp2px
-        )
-    }
-    private val dataFromObserver = Observer<Boolean> {
-        showDataFrom(it == true)
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        context.appSettingsService.showProgressIndicatorInList.observeForever(
-            progressIndicatorObserver
-        )
-        context.appSettingsService.showMimeTypeLogoInLIst.observeForever(mimeTypeLogoObserver)
-        context.appSettingsService.showDataFrom.observeForever(dataFromObserver)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        context.appSettingsService.showProgressIndicatorInList.removeObserver(
-            progressIndicatorObserver
-        )
-        context.appSettingsService.showMimeTypeLogoInLIst.removeObserver(mimeTypeLogoObserver)
-        context.appSettingsService.showDataFrom.removeObserver(dataFromObserver)
+    init {
+        context.appSettingsService.apply {
+            disabledAnimatableDrawableInList.observeFromView(this@MyListImageView) {
+                updateDisplayOptions {
+                    disabledAnimationDrawable(it == true)
+                }
+            }
+            pauseLoadWhenScrollInList.observeFromView(this@MyListImageView) {
+                updateDisplayOptions {
+                    pauseLoadWhenScrolling(it == true)
+                }
+            }
+            saveCellularTrafficInList.observeFromView(this@MyListImageView) {
+                updateDisplayOptions {
+                    saveCellularTraffic(it == true)
+                }
+            }
+            showProgressIndicatorInList.observeFromView(this@MyListImageView) {
+                showMaskProgressIndicator(it == true)
+            }
+            showMimeTypeLogoInLIst.observeFromView(this@MyListImageView) {
+                setMimeTypeLogoWithDrawable(
+                    mimeTypeIconMap = if (it == true) mimeTypeLogoMap else null,
+                    margin = 4.dp2px
+                )
+            }
+            showDataFrom.observeFromView(this@MyListImageView) {
+                showDataFrom(it == true)
+            }
+        }
     }
 }

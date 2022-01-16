@@ -21,6 +21,12 @@ import com.github.panpf.sketch.request.internal.ImageResult
 interface LoadRequest : DownloadRequest {
 
     /**
+     * Used to cache bitmaps in memory and on disk
+     */
+    val cacheKey: String
+
+
+    /**
      * Limit the maximum size of the bitmap on decode, default value is [MaxSize.SCREEN_SIZE]
      *
      * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
@@ -74,11 +80,6 @@ interface LoadRequest : DownloadRequest {
     val disabledCorrectExifOrientation: Boolean?
 
     /**
-     * Used to cache bitmaps in memory and on disk
-     */
-    val cacheKey: String
-
-    /**
      * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
      */
     val bitmapResultDiskCachePolicy: CachePolicy
@@ -129,40 +130,97 @@ interface LoadRequest : DownloadRequest {
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
+        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
+
         private var httpHeaders: MutableMap<String, String>? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
-        private var bitmapResultDiskCachePolicy: CachePolicy? = null
+        private var progressListener: ProgressListener<ImageRequest>? = null
+
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
+
+        @RequiresApi(VERSION_CODES.O)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resize: Resize? = null
-        private var transformations: List<Transformation>? = null
+        private var transformations: MutableSet<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
-        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
-        private var progressListener: ProgressListener<ImageRequest>? = null
+        private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
         constructor(uriString: String) : this(Uri.parse(uriString))
 
         internal constructor(request: LoadRequest) : this(request.uri) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
+            this.listener = request.listener
+
             this.httpHeaders = request.httpHeaders?.toMutableMap()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-            this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
+            this.progressListener = request.progressListener
+
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
             }
+            @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resize = request.resize
-            this.transformations = request.transformations
+            this.transformations = request.transformations?.toMutableSet()
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
-            this.listener = request.listener
-            this.progressListener = request.progressListener
+            this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
+        }
+
+        fun options(options: LoadOptions): Builder = apply {
+            options.depth?.let {
+                this.depth = it
+            }
+            options.parameters?.let {
+                it.forEach { entry ->
+                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                }
+            }
+            options.httpHeaders?.let {
+                it.forEach { entry ->
+                    setHttpHeader(entry.key, entry.value)
+                }
+            }
+            options.networkContentDiskCachePolicy?.let {
+                this.networkContentDiskCachePolicy = it
+            }
+
+            options.maxSize?.let {
+                this.maxSize = it
+            }
+            options.bitmapConfig?.let {
+                this.bitmapConfig = it
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                options.colorSpace?.let {
+                    this.colorSpace = it
+                }
+            }
+            @Suppress("DEPRECATION")
+            options.preferQualityOverSpeed?.let {
+                this.preferQualityOverSpeed = it
+            }
+            options.resize?.let {
+                this.resize = it
+            }
+            options.transformations?.let {
+                transformations(it)
+            }
+            options.disabledBitmapPool?.let {
+                this.disabledBitmapPool = it
+            }
+            options.bitmapResultDiskCachePolicy?.let {
+                this.bitmapResultDiskCachePolicy = it
+            }
+            options.bitmapResultDiskCachePolicy?.let {
+                this.bitmapResultDiskCachePolicy = it
+            }
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -270,7 +328,7 @@ interface LoadRequest : DownloadRequest {
             this.bitmapConfig = BitmapConfig.HIGH_QUALITY
         }
 
-        @RequiresApi(26)
+        @RequiresApi(VERSION_CODES.O)
         fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
             this.colorSpace = colorSpace
         }
@@ -307,11 +365,15 @@ interface LoadRequest : DownloadRequest {
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
-            this.transformations = transformations
+            this.transformations = (this.transformations ?: LinkedHashSet()).apply {
+                transformations?.forEach {
+                    add(it)
+                }
+            }
         }
 
         fun transformations(vararg transformations: Transformation): Builder = apply {
-            this.transformations = transformations.toList()
+            transformations(transformations.toList())
         }
 
         fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder = apply {
@@ -352,24 +414,44 @@ interface LoadRequest : DownloadRequest {
             this.progressListener = progressListener as ProgressListener<ImageRequest>?
         }
 
-        fun build(): LoadRequest = LoadRequestImpl(
-            uri = uri,
-            _depth = depth,
-            parameters = parametersBuilder?.build(),
-            httpHeaders = httpHeaders?.toMap(),
-            _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-            _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-            maxSize = maxSize,
-            bitmapConfig = bitmapConfig,
-            colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-            preferQualityOverSpeed = preferQualityOverSpeed,
-            resize = resize,
-            transformations = transformations,
-            disabledBitmapPool = disabledBitmapPool,
-            disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-            listener = listener,
-            progressListener = progressListener,
-        )
+        fun build(): LoadRequest = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            LoadRequestImpl(
+                uri = uri,
+                _depth = depth,
+                parameters = parametersBuilder?.build(),
+                httpHeaders = httpHeaders?.toMap(),
+                _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                maxSize = maxSize,
+                bitmapConfig = bitmapConfig,
+                colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
+                preferQualityOverSpeed = preferQualityOverSpeed,
+                resize = resize,
+                transformations = transformations?.toList(),
+                disabledBitmapPool = disabledBitmapPool,
+                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                listener = listener,
+                progressListener = progressListener,
+            )
+        } else {
+            LoadRequestImpl(
+                uri = uri,
+                _depth = depth,
+                parameters = parametersBuilder?.build(),
+                httpHeaders = httpHeaders?.toMap(),
+                _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                maxSize = maxSize,
+                bitmapConfig = bitmapConfig,
+                preferQualityOverSpeed = preferQualityOverSpeed,
+                resize = resize,
+                transformations = transformations?.toList(),
+                disabledBitmapPool = disabledBitmapPool,
+                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                listener = listener,
+                progressListener = progressListener,
+            )
+        }
     }
 
     private class LoadRequestImpl(
@@ -381,7 +463,7 @@ interface LoadRequest : DownloadRequest {
         _bitmapResultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
-        override val colorSpace: ColorSpace?,
+        @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
         override val resize: Resize?,
         override val transformations: List<Transformation>?,
@@ -390,6 +472,51 @@ interface LoadRequest : DownloadRequest {
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : LoadRequest {
+
+        @RequiresApi(VERSION_CODES.O)
+        constructor(
+            uri: Uri,
+            _depth: RequestDepth?,
+            parameters: Parameters?,
+            httpHeaders: Map<String, String>?,
+            _networkContentDiskCachePolicy: CachePolicy?,
+            _bitmapResultDiskCachePolicy: CachePolicy?,
+            maxSize: MaxSize?,
+            bitmapConfig: BitmapConfig?,
+            colorSpace: ColorSpace?,
+            preferQualityOverSpeed: Boolean?,
+            resize: Resize?,
+            transformations: List<Transformation>?,
+            disabledBitmapPool: Boolean?,
+            disabledCorrectExifOrientation: Boolean?,
+            listener: Listener<ImageRequest, ImageResult, ImageResult>?,
+            progressListener: ProgressListener<ImageRequest>?
+        ) : this(
+            uri = uri,
+            _depth = _depth,
+            parameters = parameters,
+            httpHeaders = httpHeaders,
+            _networkContentDiskCachePolicy = _networkContentDiskCachePolicy,
+            _bitmapResultDiskCachePolicy = _bitmapResultDiskCachePolicy,
+            maxSize = maxSize,
+            bitmapConfig = bitmapConfig,
+            preferQualityOverSpeed = preferQualityOverSpeed,
+            resize = resize,
+            transformations = transformations,
+            disabledBitmapPool = disabledBitmapPool,
+            disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+            listener = listener,
+            progressListener = progressListener,
+        ) {
+            _colorSpace = colorSpace
+        }
+
+        @RequiresApi(VERSION_CODES.O)
+        private var _colorSpace: ColorSpace? = null
+
+        @get:RequiresApi(VERSION_CODES.O)
+        override val colorSpace: ColorSpace?
+            get() = _colorSpace
 
         override val uriString: String by lazy { uri.toString() }
 

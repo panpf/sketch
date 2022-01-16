@@ -24,7 +24,7 @@ data class Resize constructor(
     val width: Int,
     val height: Int,
     val mode: Mode = DEFAULT_MODE,
-    val scaleType: ScaleType = DEFAULT_SCALE_TYPE,
+    val scaleType: ScaleType = DEFAULT_SCALE_TYPE,  // todo 定一个专用的缩放枚举
     /**
      * Only applies to [Resize.Mode.THUMBNAIL_MODE]
      */
@@ -40,6 +40,7 @@ data class Resize constructor(
         val DEFAULT_MIN_ASPECT_RATIO: Float = 1.5f
     }
 
+    // todo rename to Precision
     enum class Mode {
         /**
          * Even if the size of the original image is smaller than [Resize], you will get a [Bitmap] with the same size as [Resize]

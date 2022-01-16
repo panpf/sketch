@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.request.pauseLoadWhenScrolling
-import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
@@ -61,6 +58,14 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
     ) {
         binding.imageItemImageView.apply {
             setClickRedisplayAndIgnoreSaveCellularTraffic(true)
+            updateDisplayOptions {
+                placeholderImage(R.drawable.im_placeholder)
+//                svgBackgroundColor(Color.WHITE)
+                errorImage(R.drawable.im_error) {
+                    saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
+                    pauseLoadWhenScrollingErrorImage()
+                }
+            }
         }
     }
 
@@ -91,17 +96,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                 }
             }
 
-            displayImage(data.firstThumbnailUrl) {
-                disabledAnimationDrawable(context.appSettingsService.disabledAnimatableDrawableInList.value == true)
-                pauseLoadWhenScrolling(context.appSettingsService.pauseLoadWhenScrollInList.value == true)
-                saveCellularTraffic(context.appSettingsService.saveCellularTrafficInList.value == true)
-                placeholderImage(R.drawable.im_placeholder)
-//                svgBackgroundColor(Color.WHITE)
-                errorImage(R.drawable.im_error) {
-                    saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
-                    pauseLoadWhenScrollingErrorImage()
-                }
-            }
+            displayImage(data.firstThumbnailUrl)
         }
     }
 }

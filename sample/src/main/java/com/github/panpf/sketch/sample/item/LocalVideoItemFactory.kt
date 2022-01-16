@@ -5,11 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.request.pauseLoadWhenScrolling
-import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.videoFramePercentDuration
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.VideoInfo
 import com.github.panpf.sketch.sample.databinding.ItemVideoBinding
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
@@ -29,6 +26,14 @@ class LocalVideoItemFactory :
         binding: ItemVideoBinding,
         item: BindingItem<VideoInfo, ItemVideoBinding>
     ) {
+        binding.videoItemIconImage.updateDisplayOptions {
+            placeholderImage(R.drawable.im_placeholder)
+            errorImage(R.drawable.im_error) {
+                saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
+                pauseLoadWhenScrollingErrorImage()
+            }
+            videoFramePercentDuration(0.5f)
+        }
     }
 
     override fun bindItemData(
@@ -39,17 +44,7 @@ class LocalVideoItemFactory :
         absoluteAdapterPosition: Int,
         data: VideoInfo
     ) {
-        binding.videoItemIconImage.displayImage(data.path) {
-            disabledAnimationDrawable(context.appSettingsService.disabledAnimatableDrawableInList.value == true)
-            pauseLoadWhenScrolling(context.appSettingsService.pauseLoadWhenScrollInList.value == true)
-            saveCellularTraffic(context.appSettingsService.saveCellularTrafficInList.value == true)
-            placeholderImage(R.drawable.im_placeholder)
-            videoFramePercentDuration(0.5f)
-            errorImage(R.drawable.im_error) {
-                saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
-                pauseLoadWhenScrollingErrorImage()
-            }
-        }
+        binding.videoItemIconImage.displayImage(data.path)
         binding.videoItemNameText.text = data.title
         binding.videoItemSizeText.text = data.getTempFormattedSize(context)
         binding.videoItemDateText.text = data.tempFormattedDate

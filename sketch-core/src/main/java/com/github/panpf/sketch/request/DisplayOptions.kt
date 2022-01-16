@@ -6,99 +6,64 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
-import com.github.panpf.sketch.request.internal.CombinedListener
-import com.github.panpf.sketch.request.internal.CombinedProgressListener
+import com.github.panpf.sketch.request.DisplayRequest.Companion.SIZE_BY_VIEW_FIXED_SIZE
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.target.DisplayOptionsProvider
-import com.github.panpf.sketch.target.ImageViewTarget
-import com.github.panpf.sketch.target.ListenerProvider
-import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.getLifecycle
 
-interface DisplayRequest : LoadRequest {
-
-    val target: Target?
-    val lifecycle: Lifecycle?
+interface DisplayOptions : LoadOptions {
 
     val disabledAnimationDrawable: Boolean?
-    val bitmapMemoryCachePolicy: CachePolicy
+    val bitmapMemoryCachePolicy: CachePolicy?
     val placeholderImage: StateImage?
     val errorImage: StateImage?
 
-    fun newDisplayRequestBuilder(
+    fun newDisplayOptionsBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
         configBlock?.invoke(this)
     }
 
-    fun newDisplayRequest(
+    fun newDisplayOptions(
         configBlock: (Builder.() -> Unit)? = null
-    ): DisplayRequest = Builder(this).apply {
+    ): DisplayOptions = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
 
     companion object {
-        internal const val SIZE_BY_VIEW_FIXED_SIZE: Int = -214238643
-
         fun new(
-            uriString: String?,
             configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uriString).apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun new(
-            uri: Uri?,
-            configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uri ?: Uri.EMPTY).apply {
+        ): DisplayOptions = Builder().apply {
             configBlock?.invoke(this)
         }.build()
 
         fun newBuilder(
-            uriString: String?,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uriString).apply {
-            configBlock?.invoke(this)
-        }
-
-        fun newBuilder(
             uri: Uri?,
             configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uri ?: Uri.EMPTY).apply {
+        ): Builder = Builder().apply {
             configBlock?.invoke(this)
         }
     }
 
-    class Builder(private val uri: Uri) {
+    class Builder {
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
-        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
 
         private var httpHeaders: MutableMap<String, String>? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
-        private var progressListener: ProgressListener<ImageRequest>? = null
 
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
-
         @RequiresApi(VERSION_CODES.O)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
@@ -112,24 +77,14 @@ interface DisplayRequest : LoadRequest {
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
-        private var target: Target? = null
-        private var lifecycle: Lifecycle? = null
 
-        constructor(uriString: String?) : this(
-            if (uriString != null && uriString.isNotEmpty() && uriString.isNotBlank()) {
-                Uri.parse(uriString)
-            } else {
-                Uri.EMPTY
-            }
-        )
+        constructor()
 
-        internal constructor(request: DisplayRequest) : this(request.uri) {
+        internal constructor(request: DisplayOptions) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
-            this.listener = request.listener
             this.httpHeaders = request.httpHeaders?.toMutableMap()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-            this.progressListener = request.progressListener
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -146,71 +101,6 @@ interface DisplayRequest : LoadRequest {
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
-            this.target = request.target
-            this.lifecycle = request.lifecycle
-        }
-
-        fun options(options: DisplayOptions): Builder = apply {
-            options.depth?.let {
-                this.depth = it
-            }
-            options.parameters?.let {
-                it.forEach { entry ->
-                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
-                }
-            }
-            options.httpHeaders?.let {
-                it.forEach { entry ->
-                    setHttpHeader(entry.key, entry.value)
-                }
-            }
-            options.networkContentDiskCachePolicy?.let {
-                this.networkContentDiskCachePolicy = it
-            }
-
-            options.maxSize?.let {
-                this.maxSize = it
-            }
-            options.bitmapConfig?.let {
-                this.bitmapConfig = it
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                options.colorSpace?.let {
-                    this.colorSpace = it
-                }
-            }
-            @Suppress("DEPRECATION")
-            options.preferQualityOverSpeed?.let {
-                this.preferQualityOverSpeed = it
-            }
-            options.resize?.let {
-                this.resize = it
-            }
-            options.transformations?.let {
-                transformations(it)
-            }
-            options.disabledBitmapPool?.let {
-                this.disabledBitmapPool = it
-            }
-            options.bitmapResultDiskCachePolicy?.let {
-                this.bitmapResultDiskCachePolicy = it
-            }
-            options.bitmapResultDiskCachePolicy?.let {
-                this.bitmapResultDiskCachePolicy = it
-            }
-
-            options.disabledAnimationDrawable?.let {
-                this.disabledAnimationDrawable = it
-            }
-            options.bitmapMemoryCachePolicy?.let {
-                this.bitmapMemoryCachePolicy = it
-            }
-            options.placeholderImage?.let {
-                this.placeholderImage = it
-            }
-            options.errorImage?.let {
-                this.errorImage = it
-            }
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -455,84 +345,14 @@ interface DisplayRequest : LoadRequest {
             }
         }
 
-        fun target(target: Target?): Builder = apply {
-            this.target = target
-            target.asOrNull<ViewTarget<*>>()
-                ?.view.asOrNull<DisplayOptionsProvider>()
-                ?.displayOptions
-                ?.let {
-                    options(it)
-                }
-        }
-
-        fun target(imageView: ImageView): Builder = apply {
-            target(ImageViewTarget(imageView))
-        }
-
-        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
-            this.lifecycle = lifecycle
-        }
-
-        fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.listener = listener as Listener<ImageRequest, ImageResult, ImageResult>?
-            }
-
-        /**
-         * Convenience function to create and set the [Listener].
-         */
-        inline fun listener(
-            crossinline onStart: (request: DisplayRequest) -> Unit = {},
-            crossinline onCancel: (request: DisplayRequest) -> Unit = {},
-            crossinline onError: (request: DisplayRequest, result: DisplayResult.Error) -> Unit = { _, _ -> },
-            crossinline onSuccess: (request: DisplayRequest, result: DisplayResult.Success) -> Unit = { _, _ -> }
-        ): Builder =
-            listener(object : Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error> {
-                override fun onStart(request: DisplayRequest) = onStart(request)
-                override fun onCancel(request: DisplayRequest) = onCancel(request)
-                override fun onError(request: DisplayRequest, result: DisplayResult.Error) =
-                    onError(request, result)
-
-                override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) =
-                    onSuccess(request, result)
-            })
-
-        fun progressListener(progressListener: ProgressListener<DisplayRequest>?): Builder =
-            apply {
-                @Suppress("UNCHECKED_CAST")
-                this.progressListener = progressListener as ProgressListener<ImageRequest>?
-            }
-
-        fun build(): DisplayRequest {
-            val target = target
-            val listener = listener
-            val progressListener = progressListener
-            val viewListenerProvider =
-                target.asOrNull<ViewTarget<*>>()?.view?.asOrNull<ListenerProvider>()
-            @Suppress("UNCHECKED_CAST") val viewListener =
-                viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult, ImageResult>?
-            @Suppress("UNCHECKED_CAST") val viewProgressListener =
-                viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
-            val finalListener = if (listener != null && viewListener != null) {
-                CombinedListener(listOf(listener, viewListener))
-            } else {
-                listener ?: viewListener
-            }
-            val finalProgressListener =
-                if (progressListener != null && viewProgressListener != null) {
-                    CombinedProgressListener(listOf(progressListener, viewProgressListener))
-                } else {
-                    progressListener ?: viewProgressListener
-                }
+        fun build(): DisplayOptions {
             return if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                DisplayRequestImpl(
-                    uri = uri,
-                    _depth = depth,
+                DisplayOptionsImpl(
+                    depth = depth,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.toMap(),
-                    _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                    _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                     maxSize = maxSize,
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
@@ -541,23 +361,18 @@ interface DisplayRequest : LoadRequest {
                     transformations = transformations,
                     disabledBitmapPool = disabledBitmapPool,
                     disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-                    _bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
+                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
-                    target = target,
-                    lifecycle = lifecycle ?: resolveLifecycle(),
-                    listener = finalListener,
-                    progressListener = finalProgressListener,
                 )
             } else {
-                DisplayRequestImpl(
-                    uri = uri,
-                    _depth = depth,
+                DisplayOptionsImpl(
+                    depth = depth,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.toMap(),
-                    _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                    _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                    networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                    bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                     maxSize = maxSize,
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
@@ -565,32 +380,21 @@ interface DisplayRequest : LoadRequest {
                     transformations = transformations,
                     disabledBitmapPool = disabledBitmapPool,
                     disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-                    _bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
+                    bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
-                    target = target,
-                    lifecycle = lifecycle ?: resolveLifecycle(),
-                    listener = finalListener,
-                    progressListener = finalProgressListener,
                 )
             }
         }
-
-        private fun resolveLifecycle(): Lifecycle? {
-            val target = target
-            val context = if (target is ViewTarget<*>) target.view.context else null
-            return context.getLifecycle()
-        }
     }
 
-    private class DisplayRequestImpl(
-        override val uri: Uri,
-        _depth: RequestDepth?,
+    private class DisplayOptionsImpl(
+        override val depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _networkContentDiskCachePolicy: CachePolicy?,
-        _bitmapResultDiskCachePolicy: CachePolicy?,
+        override val networkContentDiskCachePolicy: CachePolicy?,
+        override val bitmapResultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
@@ -599,24 +403,19 @@ interface DisplayRequest : LoadRequest {
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val disabledCorrectExifOrientation: Boolean?,
-        _bitmapMemoryCachePolicy: CachePolicy?,
+        override val bitmapMemoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
-        override val target: Target?,
-        override val lifecycle: Lifecycle?,
-        override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
-        override val progressListener: ProgressListener<ImageRequest>?,
-    ) : DisplayRequest {
+    ) : DisplayOptions {
 
         @RequiresApi(VERSION_CODES.O)
         constructor(
-            uri: Uri,
-            _depth: RequestDepth?,
+            depth: RequestDepth?,
             parameters: Parameters?,
             httpHeaders: Map<String, String>?,
-            _networkContentDiskCachePolicy: CachePolicy?,
-            _bitmapResultDiskCachePolicy: CachePolicy?,
+            networkContentDiskCachePolicy: CachePolicy?,
+            bitmapResultDiskCachePolicy: CachePolicy?,
             maxSize: MaxSize?,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
@@ -625,21 +424,16 @@ interface DisplayRequest : LoadRequest {
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
             disabledCorrectExifOrientation: Boolean?,
-            _bitmapMemoryCachePolicy: CachePolicy?,
+            bitmapMemoryCachePolicy: CachePolicy?,
             disabledAnimationDrawable: Boolean?,
             placeholderImage: StateImage?,
             errorImage: StateImage?,
-            target: Target?,
-            lifecycle: Lifecycle?,
-            listener: Listener<ImageRequest, ImageResult, ImageResult>?,
-            progressListener: ProgressListener<ImageRequest>?,
         ) : this(
-            uri = uri,
-            _depth = _depth,
+            depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            _networkContentDiskCachePolicy = _networkContentDiskCachePolicy,
-            _bitmapResultDiskCachePolicy = _bitmapResultDiskCachePolicy,
+            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
@@ -647,14 +441,10 @@ interface DisplayRequest : LoadRequest {
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
             disabledCorrectExifOrientation = disabledCorrectExifOrientation,
-            _bitmapMemoryCachePolicy = _bitmapMemoryCachePolicy,
+            bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
             disabledAnimationDrawable = disabledAnimationDrawable,
             placeholderImage = placeholderImage,
             errorImage = errorImage,
-            target = target,
-            lifecycle = lifecycle,
-            listener = listener,
-            progressListener = progressListener,
         ) {
             _colorSpace = colorSpace
         }
@@ -665,86 +455,5 @@ interface DisplayRequest : LoadRequest {
         @get:RequiresApi(VERSION_CODES.O)
         override val colorSpace: ColorSpace?
             get() = _colorSpace
-
-        override val uriString: String by lazy { uri.toString() }
-
-        override val depth: RequestDepth = _depth ?: NETWORK
-
-        override val networkContentDiskCacheKey: String = uriString
-
-        override val networkContentDiskCachePolicy: CachePolicy =
-            _networkContentDiskCachePolicy ?: CachePolicy.ENABLED
-
-        override val cacheKey: String by lazy {
-            buildString {
-                append(uriString)
-                qualityKey?.let {
-                    append("_").append(it)
-                }
-                if (disabledAnimationDrawable == true) {
-                    append("_").append("DisabledAnimationDrawable")
-                }
-            }
-        }
-
-        override val bitmapResultDiskCachePolicy: CachePolicy =
-            _bitmapResultDiskCachePolicy ?: CachePolicy.ENABLED
-
-        override val bitmapMemoryCachePolicy: CachePolicy =
-            _bitmapMemoryCachePolicy ?: CachePolicy.ENABLED
-
-        private val qualityKey: String? by lazy { newQualityKey() }
-
-        override val key: String by lazy {
-            buildString {
-                append("Display")
-                append("_").append(uriString)
-                parameters?.key?.takeIf { it.isNotEmpty() }?.let {
-                    append("_").append(it)
-                }
-                httpHeaders?.takeIf { it.isNotEmpty() }?.let {
-                    append("_").append("httpHeaders(").append(it.toString()).append(")")
-                }
-                if (networkContentDiskCachePolicy != CachePolicy.ENABLED) {
-                    append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
-                }
-                maxSize?.let {
-                    append("_").append(it.cacheKey)
-                }
-                bitmapConfig?.let {
-                    append("_").append(it.cacheKey)
-                }
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    colorSpace?.let {
-                        append("_").append("colorSpace(${it.name.replace(" ", "")}")
-                    }
-                }
-                @Suppress("DEPRECATION")
-                if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
-                    append("_").append("preferQualityOverSpeed")
-                }
-                resize?.let {
-                    append("_").append(it.cacheKey)
-                }
-                transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-                    append("_").append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
-                }
-                if (disabledBitmapPool == true) {
-                    append("_").append("disabledBitmapPool")
-                }
-                if (disabledCorrectExifOrientation == true) {
-                    append("_").append("disabledCorrectExifOrientation")
-                }
-                if (bitmapResultDiskCachePolicy != CachePolicy.ENABLED) {
-                    append("_").append("bitmapResultDiskCachePolicy($bitmapResultDiskCachePolicy)")
-                }
-                if (disabledAnimationDrawable == true) {
-                    append("_").append("disabledAnimationDrawable")
-                }
-                if (bitmapMemoryCachePolicy != CachePolicy.ENABLED) {
-                    append("_").append("bitmapMemoryCachePolicy($bitmapMemoryCachePolicy)")
-                }
-            }
-        }
     }
 }

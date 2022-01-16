@@ -8,8 +8,9 @@ import com.github.panpf.sketch.request.internal.ImageResult
 
 interface DownloadRequest : ImageRequest {
 
-    val httpHeaders: Map<String, String>?
     val networkContentDiskCacheKey: String
+
+    val httpHeaders: Map<String, String>?
     val networkContentDiskCachePolicy: CachePolicy
     val progressListener: ProgressListener<ImageRequest>?
 
@@ -59,9 +60,10 @@ interface DownloadRequest : ImageRequest {
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
+        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
+
         private var httpHeaders: MutableMap<String, String>? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
-        private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
         constructor(uriString: String) : this(Uri.parse(uriString))
@@ -69,10 +71,30 @@ interface DownloadRequest : ImageRequest {
         internal constructor(request: DownloadRequest) : this(request.uri) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
+            this.listener = request.listener
+
             this.httpHeaders = request.httpHeaders?.toMutableMap()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-            this.listener = request.listener
             this.progressListener = request.progressListener
+        }
+
+        fun options(options: DownloadOptions): Builder = apply {
+            options.depth?.let {
+                this.depth = it
+            }
+            options.parameters?.let {
+                it.forEach { entry ->
+                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                }
+            }
+            options.httpHeaders?.let {
+                it.forEach { entry ->
+                    setHttpHeader(entry.key, entry.value)
+                }
+            }
+            options.networkContentDiskCachePolicy?.let {
+                this.networkContentDiskCachePolicy = it
+            }
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -100,11 +122,7 @@ interface DownloadRequest : ImageRequest {
         fun setParameter(key: String, value: Any?, cacheKey: String? = value?.toString()): Builder =
             apply {
                 this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
-                    set(
-                        key,
-                        value,
-                        cacheKey
-                    )
+                    set(key, value, cacheKey)
                 }
             }
 
