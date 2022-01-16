@@ -30,12 +30,12 @@ abstract class AbsBitmapDecoder(
     protected abstract fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean
 
     protected abstract fun decodeRegion(
-        imageInfo: ImageInfo,
-        srcRect: Rect,
-        decodeConfig: DecodeConfig,
+        imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig,
     ): Bitmap
 
     protected abstract fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
+
+    protected open fun isCacheToDisk(decodeConfig: DecodeConfig) = decodeConfig.isCacheToDisk
 
     override suspend fun decodeBitmap(): BitmapDecodeResult {
         val imageInfo = readImageInfo()
@@ -52,7 +52,7 @@ abstract class AbsBitmapDecoder(
             decodeWrapper(imageInfo, decodeConfig, imageOrientationCorrector)
         }
 
-        return BitmapDecodeResult(bitmap, imageInfo, dataSource.from, decodeConfig.isCacheToDisk)
+        return BitmapDecodeResult(bitmap, imageInfo, dataSource.from, isCacheToDisk(decodeConfig))
     }
 
     private fun shouldUseRegionDecoder(

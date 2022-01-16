@@ -56,6 +56,8 @@ class VideoFrameDecoder(
         }
     }
 
+    override fun isCacheToDisk(decodeConfig: DecodeConfig): Boolean = true
+
     override fun readImageInfo(): ImageInfo {
         val srcWidth = mediaMetadataRetriever
             .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0

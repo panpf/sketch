@@ -42,7 +42,7 @@ class ImageFormatViewModel(application1: Application) : LifecycleAndroidViewMode
             ).map {
                 ImageDetail(it, it, null)
             }
-            val titles = arrayOf("JPG", "PNG", "GIF", "WEBP", "BMP").plus(
+            val titles = arrayOf("JPG", "PNG", "GIF", "WEBP", "BMP", "SVG").plus(
                 arrayOf(
                     "XML",
                     "VECTOR",

@@ -49,6 +49,8 @@ class FFmpegVideoFrameDecoder(
         mediaMetadataRetriever.release()
     }
 
+    override fun isCacheToDisk(decodeConfig: DecodeConfig): Boolean = true
+
     override fun readImageInfo(): ImageInfo {
         val srcWidth =
             mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)

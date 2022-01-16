@@ -25,6 +25,7 @@ import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.decode.GifDrawableDecoder
+import com.github.panpf.sketch.decode.SVGBitmapDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
@@ -43,6 +44,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
             addFetcher(AppIconUriFetcher.Factory())
+            addBitmapDecoder(SVGBitmapDecoder.Factory())
             addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
             addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())

@@ -6,10 +6,10 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.lifecycle.Observer
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.viewability.setMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.viewability.showDataFrom
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MyListImageView @JvmOverloads constructor(
@@ -34,8 +34,9 @@ class MyListImageView @JvmOverloads constructor(
             "image/jpeg" to newLogoDrawable("JPEG"),
             "image/webp" to newLogoDrawable("WEBP"),
             "image/bmp" to newLogoDrawable("BMP"),
+            "image/svg+xml" to newLogoDrawable("SVG"),
             "image/heic" to newLogoDrawable("HEIC"),
-            "image/heif" to newLogoDrawable("HEIF")
+            "image/heif" to newLogoDrawable("HEIF"),
         )
     }
 

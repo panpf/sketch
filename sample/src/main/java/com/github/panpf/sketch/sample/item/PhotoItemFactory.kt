@@ -96,6 +96,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                 pauseLoadWhenScrolling(context.appSettingsService.pauseLoadWhenScrollInList.value == true)
                 saveCellularTraffic(context.appSettingsService.saveCellularTrafficInList.value == true)
                 placeholderImage(R.drawable.im_placeholder)
+//                svgBackgroundColor(Color.WHITE)
                 errorImage(R.drawable.im_error) {
                     saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
                     pauseLoadWhenScrollingErrorImage()

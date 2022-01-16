@@ -6,7 +6,8 @@ object AssetImage {
         "asset://sample.png",
         "asset://sample.gif",
         "asset://sample.webp",
-        "asset://sample.bmp"
+        "asset://sample.bmp",
+        "asset://sample.svg",
     )
 
     val IMAGES_HUGE = arrayOf(
