@@ -9,12 +9,6 @@ import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
  */
 class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
 
-    companion object {
-        const val KEY = "sketch#SaveCellularTraffic"
-        const val ENABLED_KEY = "sketch#enabledSaveCellularTraffic"
-        const val IGNORE_KEY = "sketch#ignoreSaveCellularTraffic"
-    }
-
     var enabled = true
 
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
@@ -29,7 +23,7 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest,
         ) {
             request.newDisplayRequest {
                 depth(RequestDepth.LOCAL)
-                depthFrom(KEY)
+                setDepthFromSaveCellularTraffic()
             }
         } else {
             request

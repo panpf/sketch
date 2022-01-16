@@ -30,7 +30,7 @@ class ComponentRegistry private constructor(
         return fetcherFactoryList.firstNotNullOfOrNull {
             it.create(sketch, request)
         } ?: throw IllegalArgumentException(
-            "No Fetcher can handle this uri: ${request.uriString}, " +
+            "No Fetcher can handle this uri '${request.uriString}', " +
                     "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
         )
     }
@@ -42,7 +42,7 @@ class ComponentRegistry private constructor(
     ): BitmapDecoder = bitmapDecoderFactoryList.firstNotNullOfOrNull {
         it.create(sketch, request, fetchResult)
     } ?: throw IllegalArgumentException(
-        "No BitmapDecoder can handle this uri: ${request.uriString}, " +
+        "No BitmapDecoder can handle this uri '${request.uriString}', " +
                 "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
     )
 
@@ -53,7 +53,7 @@ class ComponentRegistry private constructor(
     ): DrawableDecoder = drawableDecoderFactoryList.firstNotNullOfOrNull {
         it.create(sketch, request, fetchResult)
     } ?: throw IllegalArgumentException(
-        "No DrawableDecoder can handle this uri: ${request.uriString}, " +
+        "No DrawableDecoder can handle this uri '${request.uriString}', " +
                 "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
     )
 
