@@ -16,8 +16,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Rect
-import android.widget.ImageView.ScaleType
-import kotlin.math.abs
+import com.github.panpf.sketch.decode.Resize
 import kotlin.math.roundToInt
 
 data class ResizeMapping(
@@ -35,8 +34,8 @@ data class ResizeMapping(
          * @param imageHeight  图片原始高
          * @param resizeWidth  目标宽
          * @param resizeHeight 目标高
-         * @param scaleType    缩放类型
-         * @param exactlySame  强制使新图片的尺寸和 resizeWidth、resizeHeight 一致
+         * @param resizeScale    缩放类型
+         * @param exactlySize  强制使新图片的尺寸和 resizeWidth、resizeHeight 一致
          * @return 计算结果
          */
         fun calculator(
@@ -44,164 +43,63 @@ data class ResizeMapping(
             imageHeight: Int,
             resizeWidth: Int,
             resizeHeight: Int,
-            scaleType: ScaleType?,
-            exactlySame: Boolean
+            resizeScale: Resize.Scale,
+            exactlySize: Boolean
         ): ResizeMapping {
-            val newScaleType = scaleType ?: ScaleType.FIT_CENTER
             if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
                 return ResizeMapping(
-                    imageWidth,
-                    imageHeight,
-                    Rect(0, 0, imageWidth, imageHeight),
-                    Rect(0, 0, imageWidth, imageHeight)
+                    newWidth = imageWidth,
+                    newHeight = imageHeight,
+                    srcRect = Rect(0, 0, imageWidth, imageHeight),
+                    destRect = Rect(0, 0, resizeWidth, resizeHeight)
                 )
             }
+
             val newImageWidth: Int
             val newImageHeight: Int
-            if (exactlySame) {
+            if (!exactlySize && (resizeWidth > imageWidth || resizeHeight > imageHeight)) {
+                val scale = (resizeWidth.toFloat() / imageWidth)
+                    .coerceAtMost(resizeHeight.toFloat() / imageHeight)
+                newImageWidth = (resizeWidth / scale).roundToInt()
+                newImageHeight = (resizeHeight / scale).roundToInt()
+            } else {
                 newImageWidth = resizeWidth
                 newImageHeight = resizeHeight
-            } else {
-                val finalImageSize =
-                    scaleTargetSize(imageWidth, imageHeight, resizeWidth, resizeHeight)
-                newImageWidth = finalImageSize[0]
-                newImageHeight = finalImageSize[1]
             }
             val destRect = Rect(0, 0, newImageWidth, newImageHeight)
-            val srcRect: Rect =
-                if (newScaleType == ScaleType.CENTER || newScaleType == ScaleType.CENTER_CROP || newScaleType == ScaleType.CENTER_INSIDE) {
-                    srcMappingCenterRect(
-                        imageWidth,
-                        imageHeight,
-                        newImageWidth,
-                        newImageHeight
-                    )
-                } else if (newScaleType == ScaleType.FIT_START) {
-                    srcMappingStartRect(
-                        imageWidth,
-                        imageHeight,
-                        newImageWidth,
-                        newImageHeight
-                    )
-                } else if (newScaleType == ScaleType.FIT_CENTER) {
-                    srcMappingCenterRect(
-                        imageWidth,
-                        imageHeight,
-                        newImageWidth,
-                        newImageHeight
-                    )
-                } else if (newScaleType == ScaleType.FIT_END) {
-                    srcMappingEndRect(
-                        imageWidth,
-                        imageHeight,
-                        newImageWidth,
-                        newImageHeight
-                    )
-                } else if (newScaleType == ScaleType.FIT_XY) {
-                    Rect(0, 0, imageWidth, imageHeight)
-                } else if (newScaleType == ScaleType.MATRIX) {
-                    srcMatrixRect(
-                        imageWidth,
-                        imageHeight,
-                        newImageWidth,
-                        newImageHeight
-                    )
-                } else {
-                    srcMappingCenterRect(
-                        imageWidth,
-                        imageHeight,
-                        newImageWidth,
-                        newImageHeight
-                    )
+            val srcRect: Rect = when (resizeScale) {
+                Resize.Scale.START_CROP -> {
+                    val finalScale = (imageWidth.toFloat() / newImageWidth)
+                        .coerceAtMost(imageHeight.toFloat() / newImageHeight)
+                    val srcWidth = (newImageWidth * finalScale).toInt()
+                    val srcHeight = (newImageHeight * finalScale).toInt()
+                    val srcLeft = 0
+                    val srcTop = 0
+                    Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
                 }
+                Resize.Scale.CENTER_CROP -> {
+                    val finalScale = (imageWidth.toFloat() / newImageWidth)
+                        .coerceAtMost(imageHeight.toFloat() / newImageHeight)
+                    val srcWidth = (newImageWidth * finalScale).toInt()
+                    val srcHeight = (newImageHeight * finalScale).toInt()
+                    val srcLeft = (imageWidth - srcWidth) / 2
+                    val srcTop = (imageHeight - srcHeight) / 2
+                    Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
+                }
+                Resize.Scale.END_CROP -> {
+                    val finalScale = (imageWidth.toFloat() / newImageWidth)
+                        .coerceAtMost(imageHeight.toFloat() / newImageHeight)
+                    val srcWidth = (newImageWidth * finalScale).toInt()
+                    val srcHeight = (newImageHeight * finalScale).toInt()
+                    val srcLeft: Int = imageWidth - srcWidth
+                    val srcTop: Int = imageHeight - srcHeight
+                    Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
+                }
+                Resize.Scale.FILL -> {
+                    Rect(0, 0, imageWidth, imageHeight)
+                }
+            }
             return ResizeMapping(newImageWidth, newImageHeight, srcRect, destRect)
-        }
-
-        private fun srcMappingStartRect(
-            originalImageWidth: Int,
-            originalImageHeight: Int,
-            targetImageWidth: Int,
-            targetImageHeight: Int
-        ): Rect {
-            val widthScale = originalImageWidth.toFloat() / targetImageWidth
-            val heightScale = originalImageHeight.toFloat() / targetImageHeight
-            val finalScale = widthScale.coerceAtMost(heightScale)
-            val srcWidth = (targetImageWidth * finalScale).toInt()
-            val srcHeight = (targetImageHeight * finalScale).toInt()
-            val srcLeft = 0
-            val srcTop = 0
-            return Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
-        }
-
-        private fun srcMappingCenterRect(
-            originalImageWidth: Int,
-            originalImageHeight: Int,
-            targetImageWidth: Int,
-            targetImageHeight: Int
-        ): Rect {
-            val widthScale = originalImageWidth.toFloat() / targetImageWidth
-            val heightScale = originalImageHeight.toFloat() / targetImageHeight
-            val finalScale = widthScale.coerceAtMost(heightScale)
-            val srcWidth = (targetImageWidth * finalScale).toInt()
-            val srcHeight = (targetImageHeight * finalScale).toInt()
-            val srcLeft = (originalImageWidth - srcWidth) / 2
-            val srcTop = (originalImageHeight - srcHeight) / 2
-            return Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
-        }
-
-        private fun srcMappingEndRect(
-            originalImageWidth: Int,
-            originalImageHeight: Int,
-            targetImageWidth: Int,
-            targetImageHeight: Int
-        ): Rect {
-            val widthScale = originalImageWidth.toFloat() / targetImageWidth
-            val heightScale = originalImageHeight.toFloat() / targetImageHeight
-            val finalScale = widthScale.coerceAtMost(heightScale)
-            val srcWidth = (targetImageWidth * finalScale).toInt()
-            val srcHeight = (targetImageHeight * finalScale).toInt()
-            val srcLeft: Int = originalImageWidth - srcWidth
-            val srcTop: Int = originalImageHeight - srcHeight
-            return Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
-        }
-
-        private fun srcMatrixRect(
-            originalImageWidth: Int,
-            originalImageHeight: Int,
-            targetImageWidth: Int,
-            targetImageHeight: Int
-        ): Rect {
-            return if (originalImageWidth > targetImageWidth && originalImageHeight > targetImageHeight) {
-                Rect(0, 0, targetImageWidth, targetImageHeight)
-            } else {
-                val scale =
-                    if (targetImageWidth - originalImageWidth > targetImageHeight - originalImageHeight) targetImageWidth.toFloat() / originalImageWidth else targetImageHeight.toFloat() / originalImageHeight
-                val srcWidth = (targetImageWidth / scale).toInt()
-                val srcHeight = (targetImageHeight / scale).toInt()
-                val srcLeft = 0
-                val srcTop = 0
-                Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
-            }
-        }
-
-        private fun scaleTargetSize(
-            originalImageWidth: Int,
-            originalImageHeight: Int,
-            targetImageWidth: Int,
-            targetImageHeight: Int
-        ): IntArray {
-            var newTargetImageWidth = targetImageWidth
-            var newTargetImageHeight = targetImageHeight
-            if (newTargetImageWidth > originalImageWidth || newTargetImageHeight > originalImageHeight) {
-                val scale =
-                    if (abs(newTargetImageWidth - originalImageWidth) < abs(
-                            newTargetImageHeight - originalImageHeight
-                        )
-                    ) newTargetImageWidth.toFloat() / originalImageWidth else newTargetImageHeight.toFloat() / originalImageHeight
-                newTargetImageWidth = (newTargetImageWidth / scale).roundToInt()
-                newTargetImageHeight = (newTargetImageHeight / scale).roundToInt()
-            }
-            return intArrayOf(newTargetImageWidth, newTargetImageHeight)
         }
     }
 }

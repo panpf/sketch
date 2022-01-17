@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.widget.ImageView.ScaleType
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
@@ -14,8 +13,13 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.decode.Resize.Scale
+import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.decode.Resize.Scope
+import com.github.panpf.sketch.decode.Resize.Scope.All
 import com.github.panpf.sketch.decode.transform.Transformation
-import com.github.panpf.sketch.request.DisplayRequest.Companion.SIZE_BY_VIEW_FIXED_SIZE
+import com.github.panpf.sketch.request.DisplayRequest.Companion.VIEW_FIXED_SIZE
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -193,7 +197,7 @@ interface DisplayOptions : LoadOptions {
         }
 
         fun maxSizeByViewFixedSize(): Builder = apply {
-            this.maxSize = MaxSize(SIZE_BY_VIEW_FIXED_SIZE, SIZE_BY_VIEW_FIXED_SIZE)
+            this.maxSize = MaxSize(VIEW_FIXED_SIZE, VIEW_FIXED_SIZE)
         }
 
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
@@ -247,23 +251,19 @@ interface DisplayOptions : LoadOptions {
         fun resize(
             @Px width: Int,
             @Px height: Int,
-            mode: Resize.Mode = Resize.Mode.EXACTLY_SAME
+            precision: Resize.Precision = KEEP_ASPECT_RATIO,
+            scale: Scale = CENTER_CROP,
+            scope: Scope = All,
         ): Builder = apply {
-            this.resize = Resize(width, height, mode)
+            this.resize = Resize(width, height, precision, scale, scope)
         }
 
         fun resizeByViewFixedSize(
-            mode: Resize.Mode = Resize.DEFAULT_MODE,
-            scaleType: ScaleType = Resize.DEFAULT_SCALE_TYPE,
-            minAspectRatio: Float = Resize.DEFAULT_MIN_ASPECT_RATIO
+            precision: Resize.Precision = KEEP_ASPECT_RATIO,
+            scale: Scale = CENTER_CROP,
+            scope: Scope = All,
         ): Builder = apply {
-            this.resize = Resize(
-                SIZE_BY_VIEW_FIXED_SIZE,
-                SIZE_BY_VIEW_FIXED_SIZE,
-                mode,
-                scaleType,
-                minAspectRatio
-            )
+            this.resize = Resize(VIEW_FIXED_SIZE, VIEW_FIXED_SIZE, precision, scale, scope)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {

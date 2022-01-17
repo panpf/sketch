@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.request.internal
 
-import android.net.Uri
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.MaxSize
@@ -124,7 +123,7 @@ class DisplayExecutor(private val sketch: Sketch) {
             }
 
         val maxSize = request.maxSize
-        val fixedSizeFlag = DisplayRequest.SIZE_BY_VIEW_FIXED_SIZE
+        val fixedSizeFlag = DisplayRequest.VIEW_FIXED_SIZE
         val newMaxSize = if (maxSize != null) {
             if (maxSize.width == fixedSizeFlag || maxSize.height == fixedSizeFlag) {
                 require(view != null) {
@@ -174,9 +173,9 @@ class DisplayExecutor(private val sketch: Sketch) {
                         ?: throw FixedSizeException(
                             request, createErrorMessage("height", "resizeByViewFixedSize()")
                         ),
-                    mode = resize.mode,
-                    scaleType = resize.scaleType,
-                    minAspectRatio = resize.minAspectRatio
+                    precision = resize.precision,
+                    scale = resize.scale,
+                    scope = resize.scope,
                 )
             } else {
                 resize

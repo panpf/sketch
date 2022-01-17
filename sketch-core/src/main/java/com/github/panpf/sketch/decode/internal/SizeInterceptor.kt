@@ -33,21 +33,23 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         }
     }
 
-    private fun needResize(bitmap: Bitmap, resize: Resize): Boolean = when (resize.mode) {
-        Resize.Mode.EXACTLY_SAME -> {
-            resize.width != bitmap.width || resize.height != bitmap.height
-        }
-        Resize.Mode.ASPECT_RATIO_SAME -> {
-            val resizeAspectRatio =
-                "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
-            val bitmapAspectRatio =
-                "%.1f".format((bitmap.width.toFloat() / bitmap.height.toFloat()))
-            resizeAspectRatio != bitmapAspectRatio
-        }
-        else -> {
+    private fun needResize(bitmap: Bitmap, resize: Resize): Boolean =
+        if (resize.scope is Resize.Scope.All) {
+            when (resize.precision) {
+                Resize.Precision.EXACTLY -> {
+                    resize.width != bitmap.width || resize.height != bitmap.height
+                }
+                Resize.Precision.KEEP_ASPECT_RATIO -> {
+                    val resizeAspectRatio =
+                        "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
+                    val bitmapAspectRatio =
+                        "%.1f".format((bitmap.width.toFloat() / bitmap.height.toFloat()))
+                    resizeAspectRatio != bitmapAspectRatio
+                }
+            }
+        } else {
             false
         }
-    }
 
     private fun resize(bitmap: Bitmap, resize: Resize, bitmapPoolHelper: BitmapPoolHelper): Bitmap {
         val mapping = ResizeMapping.calculator(
@@ -55,8 +57,8 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
             imageHeight = bitmap.height,
             resizeWidth = resize.width,
             resizeHeight = resize.height,
-            scaleType = resize.scaleType,
-            exactlySame = resize.mode == Resize.Mode.EXACTLY_SAME
+            resizeScale = resize.scale,
+            exactlySize = resize.precision == Resize.Precision.EXACTLY
         )
         // todo 限制不超过 maxSize
         val config = bitmap.config ?: Bitmap.Config.ARGB_8888

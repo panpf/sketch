@@ -59,15 +59,16 @@ abstract class AbsBitmapDecoder(
         resize: Resize, imageInfo: ImageInfo, imageFormat: ImageFormat?
     ): Boolean {
         if (canDecodeRegion(imageInfo, imageFormat)) {
-            val resizeAspectRatio = (resize.width.toFloat() / resize.height.toFloat()).format(1)
             val imageAspectRatio =
                 (imageInfo.width.toFloat() / imageInfo.height.toFloat()).format(1)
-            return if (resize.mode == Resize.Mode.THUMBNAIL_MODE) {
-                val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
-                val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
-                maxAspectRatio > minAspectRatio * resize.minAspectRatio
-            } else {
-                resizeAspectRatio != imageAspectRatio
+            val resizeAspectRatio = (resize.width.toFloat() / resize.height.toFloat()).format(1)
+            return when (val scope = resize.scope) {
+                is Resize.Scope.OnlyLongImage -> {
+                    scope.isLongImageByAspectRatio(imageAspectRatio, resizeAspectRatio)
+                }
+                is Resize.Scope.All -> {
+                    imageAspectRatio != resizeAspectRatio
+                }
             }
         }
         return false
@@ -92,8 +93,8 @@ abstract class AbsBitmapDecoder(
             imageHeight = imageSize.y,
             resizeWidth = resize.width,
             resizeHeight = resize.height,
-            scaleType = resize.scaleType,
-            exactlySame = false
+            resizeScale = resize.scale,
+            exactlySize = resize.precision == Resize.Precision.EXACTLY
         )
         val resizeMappingSrcWidth = resizeMapping.srcRect.width()
         val resizeMappingSrcHeight = resizeMapping.srcRect.height()

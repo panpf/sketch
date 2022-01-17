@@ -16,47 +16,73 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
-import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.decode.Resize.Mode.EXACTLY_SAME
-import com.github.panpf.sketch.decode.Resize.Mode.THUMBNAIL_MODE
+import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.decode.Resize.Scope.All
+import com.github.panpf.sketch.util.format
 
 data class Resize constructor(
     val width: Int,
     val height: Int,
-    val mode: Mode = DEFAULT_MODE,
-    val scaleType: ScaleType = DEFAULT_SCALE_TYPE,  // todo 定一个专用的缩放枚举
-    /**
-     * Only applies to [Resize.Mode.THUMBNAIL_MODE]
-     */
-    val minAspectRatio: Float = DEFAULT_MIN_ASPECT_RATIO,
+    val precision: Precision = KEEP_ASPECT_RATIO,
+    val scale: Scale = CENTER_CROP,
+    val scope: Scope = All
 ) {
 
-    val cacheKey: String =
-        "Resize(${width}x${height},${scaleType},${mode}${if (mode == THUMBNAIL_MODE) "-$minAspectRatio" else ""})"
+    val cacheKey: String = "Resize(${width}x${height},${scale},${precision},${scope})"
 
-    companion object {
-        val DEFAULT_MODE: Mode = EXACTLY_SAME
-        val DEFAULT_SCALE_TYPE: ScaleType = ScaleType.FIT_CENTER
-        val DEFAULT_MIN_ASPECT_RATIO: Float = 1.5f
-    }
-
-    // todo rename to Precision
-    enum class Mode {
+    enum class Precision {
         /**
          * Even if the size of the original image is smaller than [Resize], you will get a [Bitmap] with the same size as [Resize]
          */
-        EXACTLY_SAME,
+        EXACTLY,
 
         /**
          * The size of the new image will not be larger than [Resize], but the aspect ratio will be the same
          */
-        ASPECT_RATIO_SAME,
+        KEEP_ASPECT_RATIO,
+    }
+
+    enum class Scale {
+        START_CROP,
+        CENTER_CROP,
+        END_CROP,
+        FILL,
+    }
+
+    sealed interface Scope {
 
         /**
-         * If the difference between the aspect ratio of resize and the aspect ratio of image exceeds [minAspectRatio],
-         * a portion of the original image will be captured based on the [width],[height],[scaleType] attributes.
-         * This mode is suitable for displaying thumbnails of super-long images in nine squares
+         * Resize works on all image.
          */
-        THUMBNAIL_MODE,
+        object All : Scope {
+            override fun toString(): String = "ALL"
+        }
+
+        /**
+         * Resize only works on long image. How to determine the long image please see [isLongImage]
+         */
+        data class OnlyLongImage(private val minAspectRatio: Float = 1.5f) : Scope {
+
+            fun isLongImage(
+                imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+            ): Boolean {
+                val imageAspectRatio =
+                    (imageWidth.toFloat() / imageHeight.toFloat()).format(1)
+                val resizeAspectRatio = (resizeWidth.toFloat() / resizeHeight.toFloat()).format(1)
+                return isLongImageByAspectRatio(imageAspectRatio, resizeAspectRatio)
+            }
+
+            fun isLongImageByAspectRatio(
+                imageAspectRatio: Float,
+                resizeAspectRatio: Float
+            ): Boolean {
+                val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
+                val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
+                return maxAspectRatio > minAspectRatio * minAspectRatio
+            }
+
+            override fun toString(): String = "OnlyLongImage(minAspectRatio=$minAspectRatio)"
+        }
     }
 }

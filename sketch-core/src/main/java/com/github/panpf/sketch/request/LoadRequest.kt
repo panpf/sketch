@@ -13,6 +13,11 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.decode.Resize.Scale
+import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.decode.Resize.Scope
+import com.github.panpf.sketch.decode.Resize.Scope.All
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.request.LoadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
@@ -342,9 +347,11 @@ interface LoadRequest : DownloadRequest {
         fun resize(
             @Px width: Int,
             @Px height: Int,
-            mode: Resize.Mode = Resize.Mode.EXACTLY_SAME
+            precision: Resize.Precision = KEEP_ASPECT_RATIO,
+            scale: Scale = CENTER_CROP,
+            scope: Scope = All,
         ): Builder = apply {
-            this.resize = Resize(width, height, mode)
+            this.resize = Resize(width, height, precision, scale, scope)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
