@@ -4,6 +4,7 @@ import android.widget.ImageView
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.RequestManagerUtils
 
 fun ImageView.displayImage(
     uri: String?,
@@ -14,16 +15,13 @@ fun ImageView.displayImage(
 /**
  * Dispose the request that's attached to this view (if there is one).
  */
+@Suppress("NOTHING_TO_INLINE")
 inline fun ImageView.dispose() {
-//    CoilUtils.dispose(this)
-    TODO("Not yet implementation")
+    RequestManagerUtils.dispose(this)
 }
 
-///**
-// * Get the [ImageResult] of the most recently executed image request that's attached to this view.
-// */
-//inline val ImageView.result: ImageResult?
-//    get() = {
-//        TODO("Not yet implementation")
-//        CoilUtils.result(this)
-//    }
+/**
+ * Get the [DisplayResult] of the most recently executed image request that's attached to this view.
+ */
+inline val ImageView.result: DisplayResult?
+    get() = RequestManagerUtils.result(this)

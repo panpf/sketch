@@ -115,6 +115,3 @@ internal val View.requestManager: ViewTargetRequestManager
                 }
         }
     }
-
-val View.requestManagerOrNull: ViewTargetRequestManager?
-    get() = getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?

@@ -9,7 +9,7 @@ import androidx.core.view.descendants
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
-import com.github.panpf.sketch.request.internal.requestManagerOrNull
+import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 
 class PauseLoadWhenScrollingMixedScrollListener : RecyclerView.OnScrollListener(),
@@ -44,7 +44,7 @@ class PauseLoadWhenScrollingMixedScrollListener : RecyclerView.OnScrollListener(
 
     private fun restartAllChildViewRequest(view: ViewGroup) {
         view.descendants.forEach {
-            val requestManager = it.requestManagerOrNull
+            val requestManager = RequestManagerUtils.requestManagerOrNull(it)
             if (requestManager != null) {
                 val result = requestManager.getResult()
                 if (result is DisplayResult.Error && result.exception.isCausedByPauseLoadWhenScrolling) {
