@@ -22,10 +22,10 @@ import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
-class AssetsDataSource constructor(
+class AssetDataSource constructor(
     override val sketch: Sketch,
     override val request: LoadRequest,
-    val assetsFilePath: String
+    val assetFileName: String
 ) : DataSource {
 
     override val from: DataFrom
@@ -36,20 +36,20 @@ class AssetsDataSource constructor(
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
-            ?: context.assets.openFd(assetsFilePath).use {
+            ?: context.assets.openFd(assetFileName).use {
                 it.length
             }.apply {
-                this@AssetsDataSource._length = this
+                this@AssetDataSource._length = this
             }
 
     @Throws(IOException::class)
     override fun newFileDescriptor(): FileDescriptor =
-        context.assets.openFd(assetsFilePath).fileDescriptor
+        context.assets.openFd(assetFileName).fileDescriptor
 
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = context.assets.open(assetsFilePath)
+    override fun newInputStream(): InputStream = context.assets.open(assetFileName)
 
     override fun toString(): String =
-        "AssetsDataSource(assetsFilePath='$assetsFilePath')"
+        "AssetDataSource(assetFileName='$assetFileName')"
 }
 

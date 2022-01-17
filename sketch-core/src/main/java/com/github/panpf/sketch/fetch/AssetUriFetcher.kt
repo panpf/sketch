@@ -2,7 +2,7 @@ package com.github.panpf.sketch.fetch
 
 import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.AssetsDataSource
+import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
@@ -28,7 +28,7 @@ class AssetUriFetcher(
 
     override suspend fun fetch(): FetchResult {
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(assetFileName)
-        return FetchResult(AssetsDataSource(sketch, request, assetFileName), mimeType)
+        return FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)
     }
 
     class Factory : Fetcher.Factory {

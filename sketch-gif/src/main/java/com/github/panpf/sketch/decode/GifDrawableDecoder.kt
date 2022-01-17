@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.AssetsDataSource
+import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
@@ -80,7 +80,7 @@ class GifDrawableDecoder(
                     source.file
                 )
             }
-            is AssetsDataSource -> {
+            is AssetDataSource -> {
                 SketchGifDrawableImpl(
                     request.key,
                     request.uriString,
@@ -88,7 +88,7 @@ class GifDrawableDecoder(
                     source.from,
                     sketch.bitmapPoolHelper,
                     source.context.assets,
-                    source.assetsFilePath
+                    source.assetFileName
                 )
             }
             else -> {

@@ -4,7 +4,7 @@ import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.AssetsDataSource
+import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DisplayRequest
@@ -62,6 +62,6 @@ class AssetUriFetcherTest {
         val source = runBlocking {
             fetcher.fetch().dataSource
         }
-        Assert.assertTrue(source is AssetsDataSource)
+        Assert.assertTrue(source is AssetDataSource)
     }
 }
