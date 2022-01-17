@@ -4,19 +4,17 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.viewability.setMimeTypeLogoWithDrawable
-import com.github.panpf.sketch.viewability.showDataFrom
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MyListImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
-) : SketchImageView(context, attrs, defStyle) {
+) : MyImageView(context, attrs, defStyle) {
 
     private val mimeTypeLogoMap by lazy {
         val newLogoDrawable: (String) -> Drawable = {
@@ -67,9 +65,6 @@ class MyListImageView @JvmOverloads constructor(
                     mimeTypeIconMap = if (it == true) mimeTypeLogoMap else null,
                     margin = 4.dp2px
                 )
-            }
-            showDataFrom.observeFromView(this@MyListImageView) {
-                showDataFrom(it == true)
             }
         }
     }

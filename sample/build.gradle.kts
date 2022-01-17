@@ -106,6 +106,7 @@ dependencies {
     implementation("io.github.panpf.tools4k:tools4k:${property("TOOLS4K")}")
     implementation("com.github.promeg:tinypinyin:${property("TINYPINYIN")}")
     implementation("io.github.panpf.liveevent:liveevent:${property("LIVEEVENT")}")
+    implementation("io.github.panpf.activitymonitor:activitymonitor:${property("ACTIVITY_MONITOR")}")
     implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT")}")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${property("RETROFIT2_KOTLINX_SERIALIZATION_CONVERTER")}")
 

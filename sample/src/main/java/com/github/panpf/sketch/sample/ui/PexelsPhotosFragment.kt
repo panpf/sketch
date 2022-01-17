@@ -126,7 +126,7 @@ class PexelsPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
 
                 val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
-                    PhotoItemFactory().setOnItemClickListener { _, _, _, absoluteAdapterPosition, _ ->
+                    PhotoItemFactory().setOnViewClickListener(R.id.imageItemImageView) { _, _, _, absoluteAdapterPosition, _ ->
                         startImageDetail(binding, absoluteAdapterPosition)
                     }
                 ))
