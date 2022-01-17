@@ -32,9 +32,41 @@ import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
 
+//fun DisplayRequest(
+//    uriString: String?,
+//    target: Target,
+//    configBlock: (Builder.() -> Unit)? = null
+//): DisplayRequest = Builder(uriString, target).apply {
+//    configBlock?.invoke(this)
+//}.build()
+//
+//fun DisplayRequest(
+//    uriString: String?,
+//    imageView: ImageView,
+//    configBlock: (Builder.() -> Unit)? = null
+//): DisplayRequest = Builder(uriString, ImageViewTarget(imageView)).apply {
+//    configBlock?.invoke(this)
+//}.build()
+//
+//fun DisplayRequestBuilder(
+//    uriString: String?,
+//    target: Target,
+//    configBlock: (Builder.() -> Unit)? = null
+//): DisplayRequest.Builder = Builder(uriString, target).apply {
+//    configBlock?.invoke(this)
+//}
+//
+//fun DisplayRequestBuilder(
+//    uriString: String?,
+//    imageView: ImageView,
+//    configBlock: (Builder.() -> Unit)? = null
+//): DisplayRequest.Builder = Builder(uriString, ImageViewTarget(imageView)).apply {
+//    configBlock?.invoke(this)
+//}
+
 interface DisplayRequest : LoadRequest {
 
-    val target: Target?
+    val target: Target
     val lifecycle: Lifecycle?
 
     val disabledAnimationDrawable: Boolean?
@@ -59,34 +91,64 @@ interface DisplayRequest : LoadRequest {
 
         fun new(
             uriString: String?,
+            target: Target,
             configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uriString).apply {
+        ): DisplayRequest = Builder(uriString, target).apply {
+            configBlock?.invoke(this)
+        }.build()
+
+        fun new(
+            uriString: String?,
+            imageView: ImageView,
+            configBlock: (Builder.() -> Unit)? = null
+        ): DisplayRequest = new(uriString, ImageViewTarget(imageView), configBlock)
+
+        fun newBuilder(
+            uriString: String?,
+            target: Target,
+            configBlock: (Builder.() -> Unit)? = null
+        ): Builder = Builder(uriString, target).apply {
+            configBlock?.invoke(this)
+        }
+
+        fun newBuilder(
+            uriString: String?,
+            imageView: ImageView,
+            configBlock: (Builder.() -> Unit)? = null
+        ): Builder = newBuilder(uriString, ImageViewTarget(imageView), configBlock)
+
+        fun new(
+            uri: Uri?,
+            target: Target,
+            configBlock: (Builder.() -> Unit)? = null
+        ): DisplayRequest = Builder(uri, target).apply {
             configBlock?.invoke(this)
         }.build()
 
         fun new(
             uri: Uri?,
+            imageView: ImageView,
             configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uri ?: Uri.EMPTY).apply {
-            configBlock?.invoke(this)
-        }.build()
+        ): DisplayRequest = new(uri, ImageViewTarget(imageView), configBlock)
 
         fun newBuilder(
-            uriString: String?,
+            uri: Uri?,
+            target: Target,
             configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uriString).apply {
+        ): Builder = Builder(uri, target).apply {
             configBlock?.invoke(this)
         }
 
         fun newBuilder(
             uri: Uri?,
+            imageView: ImageView,
             configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uri ?: Uri.EMPTY).apply {
-            configBlock?.invoke(this)
-        }
+        ): Builder = newBuilder(uri, ImageViewTarget(imageView), configBlock)
     }
 
-    class Builder(private val uri: Uri) {
+    class Builder {
+        private val uri: Uri
+        private val target: Target
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
@@ -112,18 +174,31 @@ interface DisplayRequest : LoadRequest {
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
-        private var target: Target? = null
         private var lifecycle: Lifecycle? = null
 
-        constructor(uriString: String?) : this(
+        constructor(uri: Uri?, target: Target) {
+            this.uri = uri ?: Uri.EMPTY
+            this.target = target
+            target.asOrNull<ViewTarget<*>>()
+                ?.view.asOrNull<DisplayOptionsProvider>()
+                ?.displayOptions
+                ?.let {
+                    options(it)
+                }
+        }
+
+        constructor(uriString: String?, target: Target) : this(
             if (uriString != null && uriString.isNotEmpty() && uriString.isNotBlank()) {
                 Uri.parse(uriString)
             } else {
                 Uri.EMPTY
-            }
+            },
+            target
         )
 
-        internal constructor(request: DisplayRequest) : this(request.uri) {
+        internal constructor(request: DisplayRequest) {
+            this.uri = request.uri
+            this.target = request.target
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.listener = request.listener
@@ -146,7 +221,6 @@ interface DisplayRequest : LoadRequest {
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
-            this.target = request.target
             this.lifecycle = request.lifecycle
         }
 
@@ -455,20 +529,6 @@ interface DisplayRequest : LoadRequest {
             }
         }
 
-        fun target(target: Target?): Builder = apply {
-            this.target = target
-            target.asOrNull<ViewTarget<*>>()
-                ?.view.asOrNull<DisplayOptionsProvider>()
-                ?.displayOptions
-                ?.let {
-                    options(it)
-                }
-        }
-
-        fun target(imageView: ImageView): Builder = apply {
-            target(ImageViewTarget(imageView))
-        }
-
         fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             this.lifecycle = lifecycle
         }
@@ -603,7 +663,7 @@ interface DisplayRequest : LoadRequest {
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
-        override val target: Target?,
+        override val target: Target,
         override val lifecycle: Lifecycle?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
@@ -629,7 +689,7 @@ interface DisplayRequest : LoadRequest {
             disabledAnimationDrawable: Boolean?,
             placeholderImage: StateImage?,
             errorImage: StateImage?,
-            target: Target?,
+            target: Target,
             lifecycle: Lifecycle?,
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?,

@@ -2,6 +2,7 @@ package com.github.panpf.sketch
 
 import android.content.Context
 import android.net.Uri
+import android.widget.ImageView
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.BitmapPoolHelper
@@ -50,6 +51,7 @@ import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
 import com.github.panpf.sketch.request.internal.requestManager
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineDispatcher
@@ -163,14 +165,30 @@ class Sketch private constructor(
     @AnyThread
     fun enqueueDisplay(
         uriString: String?,
+        target: Target,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uriString, configBlock))
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uriString, target, configBlock))
+
+    @AnyThread
+    fun enqueueDisplay(
+        uriString: String?,
+        imageView: ImageView,
+        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uriString, imageView, configBlock))
 
     @AnyThread
     fun enqueueDisplay(
         uri: Uri?,
+        target: Target,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uri, configBlock))
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uri, target, configBlock))
+
+    @AnyThread
+    fun enqueueDisplay(
+        uri: Uri?,
+        imageView: ImageView,
+        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uri, imageView, configBlock))
 
     suspend fun executeDisplay(request: DisplayRequest): DisplayResult =
         coroutineScope {
@@ -186,13 +204,27 @@ class Sketch private constructor(
 
     suspend fun executeDisplay(
         uriString: String?,
+        target: Target,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest.new(uriString, configBlock))
+    ): DisplayResult = executeDisplay(DisplayRequest.new(uriString, target, configBlock))
+
+    suspend fun executeDisplay(
+        uriString: String?,
+        imageView: ImageView,
+        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
+    ): DisplayResult = executeDisplay(DisplayRequest.new(uriString, imageView, configBlock))
 
     suspend fun executeDisplay(
         uri: Uri?,
+        target: Target,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest.new(uri, configBlock))
+    ): DisplayResult = executeDisplay(DisplayRequest.new(uri, target, configBlock))
+
+    suspend fun executeDisplay(
+        uri: Uri?,
+        imageView: ImageView,
+        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
+    ): DisplayResult = executeDisplay(DisplayRequest.new(uri, imageView, configBlock))
 
 
     /****************************************** Load **********************************************/

@@ -15,10 +15,7 @@ open class SketchImageView @JvmOverloads constructor(
     override var displayOptions: DisplayOptions? = null
 
     override fun submitRequest(request: DisplayRequest) {
-        val newRequest = request.newDisplayRequest {
-            target(this@SketchImageView)
-        }
-        context.sketch.enqueueDisplay(newRequest)
+        context.sketch.enqueueDisplay(request)
     }
 
     fun updateDisplayOptions(configBlock: (Builder.() -> Unit)) {
