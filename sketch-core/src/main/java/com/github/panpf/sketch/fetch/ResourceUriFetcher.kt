@@ -7,7 +7,7 @@ import android.net.Uri
 import android.util.TypedValue
 import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DrawableResDataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
@@ -17,26 +17,25 @@ import java.io.FileNotFoundException
 /**
  * Sample: 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
  */
-fun newResourceUri(packageName: String, resType: String, drawableResName: String): Uri =
-    Uri.parse("$SCHEME://$packageName/$resType/$drawableResName")
+fun newResourceUri(packageName: String, resType: String, drawableResName: String): String =
+    "$SCHEME://$packageName/$resType/$drawableResName"
 
 /**
  * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
-fun newResourceUri(packageName: String, drawableResId: Int): Uri =
-    Uri.parse("$SCHEME://$packageName/$drawableResId")
+fun newResourceUri(packageName: String, drawableResId: Int): String =
+    "$SCHEME://$packageName/$drawableResId"
 
 /**
  * Sample: 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
  */
-fun Context.newResourceUri(resType: String, drawableResName: String): Uri =
+fun Context.newResourceUri(resType: String, drawableResName: String): String =
     newResourceUri(packageName, resType, drawableResName)
 
 /**
  * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
-fun Context.newResourceUri(drawableResId: Int): Uri =
-    newResourceUri(packageName, drawableResId)
+fun Context.newResourceUri(drawableResId: Int): String = newResourceUri(packageName, drawableResId)
 
 /**
  * Support 'android.resource://com.github.panpf.sketch.sample/mipmap/ic_launch' uri
@@ -59,7 +58,7 @@ class ResourceUriFetcher(
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromUrl(entryName)
-        return FetchResult(DrawableResDataSource(sketch, request, resources, id), mimeType)
+        return FetchResult(ResourceDataSource(sketch, request, resources, id), mimeType)
     }
 
     @Throws(FileNotFoundException::class)

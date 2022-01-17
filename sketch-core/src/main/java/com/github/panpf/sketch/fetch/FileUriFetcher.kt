@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
 import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.FileDataSource
@@ -12,7 +11,7 @@ import java.io.File
 /**
  * Sample: 'file:///sdcard/sample.jpg'
  */
-fun newFileUri(filePath: String): Uri = Uri.parse("$SCHEME://$filePath")
+fun newFileUri(filePath: String): String = "$SCHEME://$filePath"
 
 /**
  * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
@@ -37,7 +36,7 @@ class FileUriFetcher(
             val uriString = request.uriString
             if (request is LoadRequest) {
                 val subStartIndex = when {
-                    SCHEME.equals(request.uri.scheme, ignoreCase = true) -> SCHEME.length + 3   // file://
+                    SCHEME.equals(request.uri.scheme, ignoreCase = true) -> SCHEME.length + 3
                     uriString.startsWith("/") -> 0
                     else -> -1
                 }

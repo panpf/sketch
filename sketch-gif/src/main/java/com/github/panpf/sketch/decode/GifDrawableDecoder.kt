@@ -6,7 +6,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.datasource.DrawableResDataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.drawable.SketchGifDrawableImpl
 import com.github.panpf.sketch.fetch.FetchResult
@@ -48,7 +48,7 @@ class GifDrawableDecoder(
                     source.diskCacheEntry.file
                 )
             }
-            is DrawableResDataSource -> {
+            is ResourceDataSource -> {
                 SketchGifDrawableImpl(
                     request.key,
                     request.uriString,

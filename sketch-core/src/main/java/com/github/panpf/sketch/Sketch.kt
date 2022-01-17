@@ -167,28 +167,14 @@ class Sketch private constructor(
         uriString: String?,
         target: Target,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uriString, target, configBlock))
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest(uriString, target, configBlock))
 
     @AnyThread
     fun enqueueDisplay(
         uriString: String?,
         imageView: ImageView,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uriString, imageView, configBlock))
-
-    @AnyThread
-    fun enqueueDisplay(
-        uri: Uri?,
-        target: Target,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uri, target, configBlock))
-
-    @AnyThread
-    fun enqueueDisplay(
-        uri: Uri?,
-        imageView: ImageView,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest.new(uri, imageView, configBlock))
+    ): Disposable<DisplayResult> = enqueueDisplay(DisplayRequest(uriString, imageView, configBlock))
 
     suspend fun executeDisplay(request: DisplayRequest): DisplayResult =
         coroutineScope {
@@ -206,25 +192,13 @@ class Sketch private constructor(
         uriString: String?,
         target: Target,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest.new(uriString, target, configBlock))
+    ): DisplayResult = executeDisplay(DisplayRequest(uriString, target, configBlock))
 
     suspend fun executeDisplay(
         uriString: String?,
         imageView: ImageView,
         configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest.new(uriString, imageView, configBlock))
-
-    suspend fun executeDisplay(
-        uri: Uri?,
-        target: Target,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest.new(uri, target, configBlock))
-
-    suspend fun executeDisplay(
-        uri: Uri?,
-        imageView: ImageView,
-        configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-    ): DisplayResult = executeDisplay(DisplayRequest.new(uri, imageView, configBlock))
+    ): DisplayResult = executeDisplay(DisplayRequest(uriString, imageView, configBlock))
 
 
     /****************************************** Load **********************************************/
@@ -241,13 +215,7 @@ class Sketch private constructor(
     fun enqueueLoad(
         uriString: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<LoadResult> = enqueueLoad(LoadRequest.new(uriString, configBlock))
-
-    @AnyThread
-    fun enqueueLoad(
-        uri: Uri,
-        configBlock: (LoadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<LoadResult> = enqueueLoad(LoadRequest.new(uri, configBlock))
+    ): Disposable<LoadResult> = enqueueLoad(LoadRequest(uriString, configBlock))
 
     suspend fun executeLoad(request: LoadRequest): LoadResult = coroutineScope {
         val job = async(decodeTaskDispatcher) {
@@ -259,12 +227,7 @@ class Sketch private constructor(
     suspend fun executeLoad(
         uriString: String,
         configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): LoadResult = executeLoad(LoadRequest.new(uriString, configBlock))
-
-    suspend fun executeLoad(
-        uri: Uri,
-        configBlock: (LoadRequest.Builder.() -> Unit)? = null
-    ): LoadResult = executeLoad(LoadRequest.new(uri, configBlock))
+    ): LoadResult = executeLoad(LoadRequest(uriString, configBlock))
 
 
     /**************************************** Download ********************************************/
@@ -281,13 +244,7 @@ class Sketch private constructor(
     fun enqueueDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uriString, configBlock))
-
-    @AnyThread
-    fun enqueueDownload(
-        uri: Uri,
-        configBlock: (DownloadRequest.Builder.() -> Unit)? = null,
-    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest.new(uri, configBlock))
+    ): Disposable<DownloadResult> = enqueueDownload(DownloadRequest(uriString, configBlock))
 
     suspend fun executeDownload(request: DownloadRequest): DownloadResult =
         coroutineScope {
@@ -300,12 +257,7 @@ class Sketch private constructor(
     suspend fun executeDownload(
         uriString: String,
         configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): DownloadResult = executeDownload(DownloadRequest.new(uriString, configBlock))
-
-    suspend fun executeDownload(
-        uri: Uri,
-        configBlock: (DownloadRequest.Builder.() -> Unit)? = null
-    ): DownloadResult = executeDownload(DownloadRequest.new(uri, configBlock))
+    ): DownloadResult = executeDownload(DownloadRequest(uriString, configBlock))
 
 
     companion object {

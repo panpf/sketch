@@ -16,5 +16,5 @@ class FetchResult constructor(val dataSource: DataSource, val mimeType: String?)
         dataSource.readImageInfoWithBitmapFactoryOrNull()
     }
 
-    override fun toString(): String = "FetchResult(source=$dataSource,mimeType=$mimeType)"
+    override fun toString(): String = "FetchResult(source=$dataSource,mimeType='$mimeType')"
 }

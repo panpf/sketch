@@ -1,9 +1,10 @@
 package com.github.panpf.sketch.test.fetch
 
+import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.ContentDataSource
+import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.DisplayRequest
@@ -21,11 +22,11 @@ class FileUriFetcherTest {
     fun testNewUri() {
         Assert.assertEquals(
             "file:///sdcard/sample.jpg",
-            newFileUri("/sdcard/sample.jpg").toString()
+            newFileUri("/sdcard/sample.jpg")
         )
         Assert.assertEquals(
             "file:///sdcard1/sample1.jpg",
-            newFileUri("/sdcard1/sample1.jpg").toString()
+            newFileUri("/sdcard1/sample1.jpg")
         )
     }
 
@@ -37,24 +38,25 @@ class FileUriFetcherTest {
         val filePath = "/sdcard/sample.jpg"
         val ftpUri = "ftp:///sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
+        val imageView = ImageView(context)
 
         val httpUriFetcherFactory = FileUriFetcher.Factory()
-        httpUriFetcherFactory.create(sketch, LoadRequest.new(fileUri))!!.apply {
-            Assert.assertEquals("file:///sdcard/sample.jpg", this.fileUri.toString())
+        httpUriFetcherFactory.create(sketch, LoadRequest(fileUri))!!.apply {
+            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, LoadRequest.new(filePath))!!.apply {
-            Assert.assertEquals("file:///sdcard/sample.jpg", this.fileUri.toString())
+        httpUriFetcherFactory.create(sketch, LoadRequest(filePath))!!.apply {
+            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest.new(fileUri))!!.apply {
-            Assert.assertEquals("file:///sdcard/sample.jpg", this.fileUri.toString())
+        httpUriFetcherFactory.create(sketch, DisplayRequest(fileUri, imageView))!!.apply {
+            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        httpUriFetcherFactory.create(sketch, DisplayRequest.new(filePath))!!.apply {
-            Assert.assertEquals("file:///sdcard/sample.jpg", this.fileUri.toString())
+        httpUriFetcherFactory.create(sketch, DisplayRequest(filePath, imageView))!!.apply {
+            Assert.assertEquals("/sdcard/sample.jpg", this.file.path)
         }
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(fileUri)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(filePath)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest.new(ftpUri)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest.new(contentUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(fileUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(filePath)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(ftpUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, LoadRequest(contentUri)))
     }
 
     @Test
@@ -64,10 +66,10 @@ class FileUriFetcherTest {
         val fetcherFactory = FileUriFetcher.Factory()
         val fileUri = "file:///sdcard/sample.jpg"
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest.new(fileUri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(fileUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }
-        Assert.assertTrue(source is ContentDataSource)
+        Assert.assertTrue(source is FileDataSource)
     }
 }

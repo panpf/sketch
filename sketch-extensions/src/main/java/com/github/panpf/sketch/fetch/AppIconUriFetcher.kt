@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
@@ -15,8 +14,8 @@ import java.io.InputStream
 /**
  * Sample: 'app.icon://com.github.panpf.sketch.sample/1120'
  */
-fun newAppIconUri(packageName: String, versionCode: Int): Uri =
-    Uri.parse("$SCHEME://$packageName/$versionCode")
+fun newAppIconUri(packageName: String, versionCode: Int): String =
+    "$SCHEME://$packageName/$versionCode"
 
 /**
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
@@ -33,12 +32,10 @@ class AppIconUriFetcher(
         const val MIME_TYPE = "application/vnd.android.app-icon"
     }
 
-    override suspend fun fetch(): FetchResult {
-        return FetchResult(
-            AppIconDataSource(sketch, request, LOCAL, packageName, versionCode),
-            MIME_TYPE
-        )
-    }
+    override suspend fun fetch(): FetchResult = FetchResult(
+        AppIconDataSource(sketch, request, LOCAL, packageName, versionCode),
+        MIME_TYPE
+    )
 
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
@@ -62,16 +59,16 @@ class AppIconUriFetcher(
         val packageName: String,
         val versionCode: Int,
     ) : DataSource {
-        override fun length(): Long {
+        override fun length(): Long =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
-        }
 
-        override fun newFileDescriptor(): FileDescriptor? {
+        override fun newFileDescriptor(): FileDescriptor? =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
-        }
 
-        override fun newInputStream(): InputStream {
+        override fun newInputStream(): InputStream =
             throw UnsupportedOperationException("Please configure AppIconBitmapDecoder")
-        }
+
+        override fun toString(): String =
+            "AppIconDataSource(packageName='$packageName',versionCode=$versionCode)"
     }
 }

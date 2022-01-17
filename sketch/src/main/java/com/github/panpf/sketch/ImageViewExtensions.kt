@@ -9,7 +9,7 @@ fun ImageView.displayImage(
     uri: String?,
     configBlock: (DisplayRequest.Builder.() -> Unit)? = null
 ): Disposable<DisplayResult> =
-    context.sketch.enqueueDisplay(DisplayRequest.new(uri, this@displayImage, configBlock))
+    context.sketch.enqueueDisplay(DisplayRequest(uri, this@displayImage, configBlock))
 
 /**
  * Dispose the request that's attached to this view (if there is one).

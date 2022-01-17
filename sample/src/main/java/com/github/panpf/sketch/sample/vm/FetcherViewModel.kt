@@ -41,16 +41,13 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
                     add("FILE" to localFirstPhotoPath)
                 }
                 add("ASSET" to AssetImage.MEI_NV)
-                add("RES_ID" to application1.newResourceUri(R.mipmap.ic_launcher).toString())
-                add(
-                    "RES_NAME" to application1.newResourceUri("drawable", "im_placeholder")
-                        .toString()
-                )
+                add("RES_ID" to application1.newResourceUri(R.mipmap.ic_launcher))
+                add("RES_NAME" to application1.newResourceUri("drawable", "im_placeholder"))
                 add(
                     "APP_ICON" to newAppIconUri(
                         headerUserPackageInfo.packageName,
                         headerUserPackageInfo.versionCode
-                    ).toString()
+                    )
                 )
                 add("BASE64" to BASE64_IMAGE)
             }

@@ -49,7 +49,5 @@ class FileDataSource constructor(
 
     override suspend fun file(): File = file
 
-    override fun toString(): String {
-        return "FileDataSource(from=$from, file=${file.path})"
-    }
+    override fun toString(): String = "FileDataSource(file='${file.path}')"
 }

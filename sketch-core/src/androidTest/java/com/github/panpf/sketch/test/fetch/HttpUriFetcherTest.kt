@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.fetch
 
+import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
@@ -37,16 +38,17 @@ class HttpUriFetcherTest {
         val httpsUri = "https://sample.com/sample.jpg"
         val ftpUri = "ftp://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
+        val imageView = ImageView(context)
 
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(httpUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(httpsUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest.new(httpUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest.new(httpsUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest.new(httpUri)))
-        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest.new(httpsUri)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(ftpUri)))
-        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest.new(contentUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest(httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DownloadRequest(httpsUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest(httpUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, LoadRequest(httpsUri)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest(httpUri, imageView)))
+        Assert.assertNotNull(httpUriFetcherFactory.create(sketch, DisplayRequest(httpsUri, imageView)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(ftpUri)))
+        Assert.assertNull(httpUriFetcherFactory.create(sketch, DownloadRequest(contentUri)))
     }
 
     @Test
@@ -62,7 +64,7 @@ class HttpUriFetcherTest {
         // Loop the test 50 times without making any mistakes
         repeat(50) {
             runBlocking {
-                val request = DownloadRequest.new(testUri.uriString)
+                val request = DownloadRequest(testUri.uriString)
                 val httpUriFetcher =
                     httpUriFetcherFactory.create(sketch, request)!!
                 val encodedDiskCacheKey = diskCache.encodeKey(request.uriString)
@@ -121,7 +123,7 @@ class HttpUriFetcherTest {
 
         // CachePolicy.ENABLED
         runBlocking {
-            val request = DownloadRequest.new(testUri.uriString) {
+            val request = DownloadRequest(testUri.uriString) {
                 networkContentDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher =
@@ -152,7 +154,7 @@ class HttpUriFetcherTest {
 
         // CachePolicy.DISABLED
         runBlocking {
-            val request = DownloadRequest.new(testUri.uriString) {
+            val request = DownloadRequest(testUri.uriString) {
                 networkContentDiskCachePolicy(CachePolicy.DISABLED)
             }
             val httpUriFetcher =
@@ -183,7 +185,7 @@ class HttpUriFetcherTest {
 
         // CachePolicy.READ_ONLY
         runBlocking {
-            val request = DownloadRequest.new(testUri.uriString) {
+            val request = DownloadRequest(testUri.uriString) {
                 networkContentDiskCachePolicy(CachePolicy.READ_ONLY)
             }
             val httpUriFetcher =
@@ -211,7 +213,7 @@ class HttpUriFetcherTest {
             }
             Assert.assertNull(diskCache[encodedDiskCacheKey])
 
-            val request2 = DownloadRequest.new(testUri.uriString) {
+            val request2 = DownloadRequest(testUri.uriString) {
                 networkContentDiskCachePolicy(CachePolicy.ENABLED)
             }
             val httpUriFetcher2 =
@@ -231,7 +233,7 @@ class HttpUriFetcherTest {
 
         // CachePolicy.WRITE_ONLY
         runBlocking {
-            val request = DownloadRequest.new(testUri.uriString) {
+            val request = DownloadRequest(testUri.uriString) {
                 networkContentDiskCachePolicy(CachePolicy.WRITE_ONLY)
             }
             val httpUriFetcher =
@@ -272,7 +274,7 @@ class HttpUriFetcherTest {
         val testUri = TestHttpStack.testUris.first()
 
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.uriString) {
+        val request = DownloadRequest(testUri.uriString) {
             progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }
@@ -310,7 +312,7 @@ class HttpUriFetcherTest {
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.testUris.first()
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.uriString) {
+        val request = DownloadRequest(testUri.uriString) {
             progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }
@@ -343,7 +345,7 @@ class HttpUriFetcherTest {
         val httpUriFetcherFactory = HttpUriFetcher.Factory()
         val testUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val progressList = mutableListOf<Long>()
-        val request = DownloadRequest.new(testUri.uriString) {
+        val request = DownloadRequest(testUri.uriString) {
             progressListener { _, _, completedLength ->
                 progressList.add(completedLength)
             }

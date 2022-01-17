@@ -17,6 +17,7 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.request.DisplayRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
@@ -32,37 +33,37 @@ import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
 
-//fun DisplayRequest(
-//    uriString: String?,
-//    target: Target,
-//    configBlock: (Builder.() -> Unit)? = null
-//): DisplayRequest = Builder(uriString, target).apply {
-//    configBlock?.invoke(this)
-//}.build()
-//
-//fun DisplayRequest(
-//    uriString: String?,
-//    imageView: ImageView,
-//    configBlock: (Builder.() -> Unit)? = null
-//): DisplayRequest = Builder(uriString, ImageViewTarget(imageView)).apply {
-//    configBlock?.invoke(this)
-//}.build()
-//
-//fun DisplayRequestBuilder(
-//    uriString: String?,
-//    target: Target,
-//    configBlock: (Builder.() -> Unit)? = null
-//): DisplayRequest.Builder = Builder(uriString, target).apply {
-//    configBlock?.invoke(this)
-//}
-//
-//fun DisplayRequestBuilder(
-//    uriString: String?,
-//    imageView: ImageView,
-//    configBlock: (Builder.() -> Unit)? = null
-//): DisplayRequest.Builder = Builder(uriString, ImageViewTarget(imageView)).apply {
-//    configBlock?.invoke(this)
-//}
+fun DisplayRequest(
+    uriString: String?,
+    target: Target,
+    configBlock: (Builder.() -> Unit)? = null
+): DisplayRequest = Builder(uriString, target).apply {
+    configBlock?.invoke(this)
+}.build()
+
+fun DisplayRequest(
+    uriString: String?,
+    imageView: ImageView,
+    configBlock: (Builder.() -> Unit)? = null
+): DisplayRequest = Builder(uriString, ImageViewTarget(imageView)).apply {
+    configBlock?.invoke(this)
+}.build()
+
+fun DisplayRequestBuilder(
+    uriString: String?,
+    target: Target,
+    configBlock: (Builder.() -> Unit)? = null
+): Builder = Builder(uriString, target).apply {
+    configBlock?.invoke(this)
+}
+
+fun DisplayRequestBuilder(
+    uriString: String?,
+    imageView: ImageView,
+    configBlock: (Builder.() -> Unit)? = null
+): Builder = Builder(uriString, ImageViewTarget(imageView)).apply {
+    configBlock?.invoke(this)
+}
 
 interface DisplayRequest : LoadRequest {
 
@@ -88,66 +89,10 @@ interface DisplayRequest : LoadRequest {
 
     companion object {
         internal const val SIZE_BY_VIEW_FIXED_SIZE: Int = -214238643
-
-        fun new(
-            uriString: String?,
-            target: Target,
-            configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uriString, target).apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun new(
-            uriString: String?,
-            imageView: ImageView,
-            configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = new(uriString, ImageViewTarget(imageView), configBlock)
-
-        fun newBuilder(
-            uriString: String?,
-            target: Target,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uriString, target).apply {
-            configBlock?.invoke(this)
-        }
-
-        fun newBuilder(
-            uriString: String?,
-            imageView: ImageView,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = newBuilder(uriString, ImageViewTarget(imageView), configBlock)
-
-        fun new(
-            uri: Uri?,
-            target: Target,
-            configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = Builder(uri, target).apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun new(
-            uri: Uri?,
-            imageView: ImageView,
-            configBlock: (Builder.() -> Unit)? = null
-        ): DisplayRequest = new(uri, ImageViewTarget(imageView), configBlock)
-
-        fun newBuilder(
-            uri: Uri?,
-            target: Target,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uri, target).apply {
-            configBlock?.invoke(this)
-        }
-
-        fun newBuilder(
-            uri: Uri?,
-            imageView: ImageView,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = newBuilder(uri, ImageViewTarget(imageView), configBlock)
     }
 
     class Builder {
-        private val uri: Uri
+        private val uriString: String
         private val target: Target
 
         private var depth: RequestDepth? = null
@@ -176,8 +121,8 @@ interface DisplayRequest : LoadRequest {
         private var errorImage: StateImage? = null
         private var lifecycle: Lifecycle? = null
 
-        constructor(uri: Uri?, target: Target) {
-            this.uri = uri ?: Uri.EMPTY
+        constructor(uriString: String?, target: Target) {
+            this.uriString = uriString.orEmpty()
             this.target = target
             target.asOrNull<ViewTarget<*>>()
                 ?.view.asOrNull<DisplayOptionsProvider>()
@@ -187,17 +132,8 @@ interface DisplayRequest : LoadRequest {
                 }
         }
 
-        constructor(uriString: String?, target: Target) : this(
-            if (uriString != null && uriString.isNotEmpty() && uriString.isNotBlank()) {
-                Uri.parse(uriString)
-            } else {
-                Uri.EMPTY
-            },
-            target
-        )
-
         internal constructor(request: DisplayRequest) {
-            this.uri = request.uri
+            this.uriString = request.uriString
             this.target = request.target
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
@@ -587,7 +523,7 @@ interface DisplayRequest : LoadRequest {
                 }
             return if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 DisplayRequestImpl(
-                    uri = uri,
+                    uriString = uriString,
                     _depth = depth,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.toMap(),
@@ -612,7 +548,7 @@ interface DisplayRequest : LoadRequest {
                 )
             } else {
                 DisplayRequestImpl(
-                    uri = uri,
+                    uriString = uriString,
                     _depth = depth,
                     parameters = parametersBuilder?.build(),
                     httpHeaders = httpHeaders?.toMap(),
@@ -645,7 +581,7 @@ interface DisplayRequest : LoadRequest {
     }
 
     private class DisplayRequestImpl(
-        override val uri: Uri,
+        override val uriString: String,
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
@@ -671,7 +607,7 @@ interface DisplayRequest : LoadRequest {
 
         @RequiresApi(VERSION_CODES.O)
         constructor(
-            uri: Uri,
+            uriString: String,
             _depth: RequestDepth?,
             parameters: Parameters?,
             httpHeaders: Map<String, String>?,
@@ -694,7 +630,7 @@ interface DisplayRequest : LoadRequest {
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?,
         ) : this(
-            uri = uri,
+            uriString = uriString,
             _depth = _depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
@@ -726,7 +662,7 @@ interface DisplayRequest : LoadRequest {
         override val colorSpace: ColorSpace?
             get() = _colorSpace
 
-        override val uriString: String by lazy { uri.toString() }
+        override val uri: Uri by lazy { Uri.parse(uriString) }
 
         override val depth: RequestDepth = _depth ?: NETWORK
 

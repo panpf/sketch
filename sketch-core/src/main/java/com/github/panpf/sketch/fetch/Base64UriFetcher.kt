@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
 import android.util.Base64
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -14,8 +13,8 @@ import com.github.panpf.sketch.request.internal.UriInvalidException
 /**
  * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
  */
-fun newBase64Uri(mimeType: String, imageDataBase64String: String): Uri =
-    Uri.parse("$SCHEME:$mimeType;${BASE64_IDENTIFIER}$imageDataBase64String")
+fun newBase64Uri(mimeType: String, imageDataBase64String: String): String =
+    "$SCHEME:$mimeType;${BASE64_IDENTIFIER}$imageDataBase64String"
 
 /**
  * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri

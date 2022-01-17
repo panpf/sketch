@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.fetch
 
+import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
@@ -23,15 +24,16 @@ class ContentUriFetcherTest {
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
         val httpUri = "http://sample.com/sample.jpg"
+        val imageView = ImageView(context)
 
-        fetcherFactory.create(sketch, LoadRequest.new(contentUri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(contentUri))!!.apply {
             Assert.assertEquals(contentUri, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest.new(contentUri))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(contentUri, imageView))!!.apply {
             Assert.assertEquals(contentUri, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest.new(contentUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest.new(httpUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(httpUri)))
     }
 
     @Test
@@ -41,7 +43,7 @@ class ContentUriFetcherTest {
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest.new(contentUri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(contentUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

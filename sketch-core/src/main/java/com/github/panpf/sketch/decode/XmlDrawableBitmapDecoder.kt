@@ -4,7 +4,7 @@ import android.content.res.Resources
 import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DrawableResDataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom
@@ -42,7 +42,7 @@ class XmlDrawableBitmapDecoder(
             fetchResult: FetchResult
         ): BitmapDecoder? {
             val dataSource = fetchResult.dataSource
-            return if (fetchResult.mimeType == "text/xml" && dataSource is DrawableResDataSource) {
+            return if (fetchResult.mimeType == "text/xml" && dataSource is ResourceDataSource) {
                 XmlDrawableBitmapDecoder(
                     // Be sure to use dataSource.resources
                     sketch, request, dataSource.resources, dataSource.drawableId

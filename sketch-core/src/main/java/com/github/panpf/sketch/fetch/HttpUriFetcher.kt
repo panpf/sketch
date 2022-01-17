@@ -142,10 +142,8 @@ class HttpUriFetcher(
     class Factory : Fetcher.Factory {
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? =
             if (request is DownloadRequest
-                && (SCHEME.equals(
-                    request.uri.scheme,
-                    ignoreCase = true
-                ) || SCHEME1.equals(request.uri.scheme, ignoreCase = true))
+                && (SCHEME.equals(request.uri.scheme, ignoreCase = true)
+                        || SCHEME1.equals(request.uri.scheme, ignoreCase = true))
             ) {
                 HttpUriFetcher(sketch, request, request.uriString)
             } else {

@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
 import android.webkit.MimeTypeMap
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetsDataSource
@@ -12,7 +11,7 @@ import com.github.panpf.sketch.util.getMimeTypeFromUrl
 /**
  * Sample: 'asset://test.png'
  */
-fun newAssetUri(assetFilePath: String): Uri = Uri.parse("$SCHEME://$assetFilePath")
+fun newAssetUri(assetFilePath: String): String = "$SCHEME://$assetFilePath"
 
 /**
  * Support 'asset://test.png' uri

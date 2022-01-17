@@ -39,5 +39,5 @@ class ByteArrayDataSource constructor(
     override fun newFileDescriptor(): FileDescriptor? = null
 
     override fun toString(): String =
-        "ByteArrayDataSource(from=$from, length=${data.size.toLong()})"
+        "ByteArrayDataSource(from=$from,length=${data.size.toLong()})"
 }

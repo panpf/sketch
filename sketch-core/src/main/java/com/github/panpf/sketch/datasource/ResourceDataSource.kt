@@ -25,7 +25,7 @@ import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
-class DrawableResDataSource constructor(
+class ResourceDataSource constructor(
     override val sketch: Sketch,
     override val request: LoadRequest,
     val resources: Resources,
@@ -42,19 +42,17 @@ class DrawableResDataSource constructor(
         _length.takeIf { it != -1L }
             ?: (resources.openRawResourceFd(drawableId)?.use {
                 it.length
-            } ?: throw IOException("Invalid drawable res id: $drawableId")).apply {
-                this@DrawableResDataSource._length = this
+            } ?: throw IOException("Invalid res id: $drawableId")).apply {
+                this@ResourceDataSource._length = this
             }
 
     override fun newFileDescriptor(): FileDescriptor =
         resources.openRawResourceFd(drawableId)?.fileDescriptor
-            ?: throw IOException("Invalid drawable res id: $drawableId")
+            ?: throw IOException("Invalid res id: $drawableId")
 
     @Throws(IOException::class)
     override fun newInputStream(): InputStream =
         resources.openRawResource(drawableId)
 
-    override fun toString(): String {
-        return "DrawableDataSource(from=$from, drawableId=$drawableId)"
-    }
+    override fun toString(): String = "ResourceDataSource(drawableId=$drawableId)"
 }

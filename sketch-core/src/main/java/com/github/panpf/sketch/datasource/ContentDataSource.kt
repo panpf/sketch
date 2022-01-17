@@ -66,5 +66,5 @@ class ContentDataSource constructor(
             super.file()
         }
 
-    override fun toString(): String = "ContentDataSource(from=$from, contentUri=$contentUri)"
+    override fun toString(): String = "ContentDataSource(contentUri='$contentUri')"
 }

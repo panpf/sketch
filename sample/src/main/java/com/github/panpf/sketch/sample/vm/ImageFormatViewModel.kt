@@ -31,13 +31,13 @@ class ImageFormatViewModel(application1: Application) : LifecycleAndroidViewMode
 
             val imageDetails = AssetImage.IMAGES_FORMAT.plus(
                 arrayOf(
-                    application1.newResourceUri(drawable.im_placeholder).toString(),
-                    application1.newResourceUri(drawable.ic_play).toString(),
+                    application1.newResourceUri(drawable.im_placeholder),
+                    application1.newResourceUri(drawable.ic_play),
                     footerUserPackageInfo.applicationInfo.publicSourceDir,
                     newAppIconUri(
                         headerUserPackageInfo.packageName,
                         headerUserPackageInfo.versionCode
-                    ).toString()
+                    )
                 )
             ).map {
                 ImageDetail(it, it, null)

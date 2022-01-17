@@ -14,9 +14,24 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.request.LoadRequest.Builder
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
+
+fun LoadRequest(
+    uriString: String,
+    configBlock: (Builder.() -> Unit)? = null
+): LoadRequest = Builder(uriString).apply {
+    configBlock?.invoke(this)
+}.build()
+
+fun LoadRequestBuilder(
+    uriString: String,
+    configBlock: (Builder.() -> Unit)? = null
+): Builder = Builder(uriString).apply {
+    configBlock?.invoke(this)
+}
 
 interface LoadRequest : DownloadRequest {
 
@@ -96,37 +111,7 @@ interface LoadRequest : DownloadRequest {
         configBlock?.invoke(this)
     }.build()
 
-    companion object {
-        fun new(
-            uriString: String,
-            configBlock: (Builder.() -> Unit)? = null
-        ): LoadRequest = Builder(uriString).apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun new(
-            uri: Uri,
-            configBlock: (Builder.() -> Unit)? = null
-        ): LoadRequest = Builder(uri).apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun newBuilder(
-            uriString: String,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uriString).apply {
-            configBlock?.invoke(this)
-        }
-
-        fun newBuilder(
-            uri: Uri,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder(uri).apply {
-            configBlock?.invoke(this)
-        }
-    }
-
-    class Builder(private val uri: Uri) {
+    class Builder(private val uriString: String) {
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
@@ -148,9 +133,7 @@ interface LoadRequest : DownloadRequest {
         private var disabledCorrectExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
-        constructor(uriString: String) : this(Uri.parse(uriString))
-
-        internal constructor(request: LoadRequest) : this(request.uri) {
+        internal constructor(request: LoadRequest) : this(request.uriString) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
             this.listener = request.listener
@@ -416,7 +399,7 @@ interface LoadRequest : DownloadRequest {
 
         fun build(): LoadRequest = if (VERSION.SDK_INT >= VERSION_CODES.O) {
             LoadRequestImpl(
-                uri = uri,
+                uriString = uriString,
                 _depth = depth,
                 parameters = parametersBuilder?.build(),
                 httpHeaders = httpHeaders?.toMap(),
@@ -435,7 +418,7 @@ interface LoadRequest : DownloadRequest {
             )
         } else {
             LoadRequestImpl(
-                uri = uri,
+                uriString = uriString,
                 _depth = depth,
                 parameters = parametersBuilder?.build(),
                 httpHeaders = httpHeaders?.toMap(),
@@ -455,7 +438,7 @@ interface LoadRequest : DownloadRequest {
     }
 
     private class LoadRequestImpl(
-        override val uri: Uri,
+        override val uriString: String,
         _depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
@@ -475,7 +458,7 @@ interface LoadRequest : DownloadRequest {
 
         @RequiresApi(VERSION_CODES.O)
         constructor(
-            uri: Uri,
+            uriString: String,
             _depth: RequestDepth?,
             parameters: Parameters?,
             httpHeaders: Map<String, String>?,
@@ -492,7 +475,7 @@ interface LoadRequest : DownloadRequest {
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?
         ) : this(
-            uri = uri,
+            uriString = uriString,
             _depth = _depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
@@ -518,7 +501,7 @@ interface LoadRequest : DownloadRequest {
         override val colorSpace: ColorSpace?
             get() = _colorSpace
 
-        override val uriString: String by lazy { uri.toString() }
+        override val uri: Uri by lazy { Uri.parse(uriString) }
 
         override val depth: RequestDepth = _depth ?: NETWORK
 

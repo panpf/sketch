@@ -49,8 +49,7 @@ class AssetsDataSource constructor(
     @Throws(IOException::class)
     override fun newInputStream(): InputStream = context.assets.open(assetsFilePath)
 
-    override fun toString(): String {
-        return "AssetsDataSource(from=$from, assetsFilePath='$assetsFilePath')"
-    }
+    override fun toString(): String =
+        "AssetsDataSource(assetsFilePath='$assetsFilePath')"
 }
 

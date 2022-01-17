@@ -33,7 +33,7 @@ class DownloadExecutorTest {
         }
         val normalDownloadListenerSupervisor = DownloadListenerSupervisor()
         val normalListenerActionList = normalDownloadListenerSupervisor.callbackActionList
-        val normalRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString) {
+        val normalRequest = DownloadRequest(TestHttpStack.testUris.first().uriString) {
             listener(normalDownloadListenerSupervisor)
         }
         runBlocking {
@@ -51,7 +51,7 @@ class DownloadExecutorTest {
         }
         val cancelDownloadListenerSupervisor = DownloadListenerSupervisor()
         val cancelListenerList = cancelDownloadListenerSupervisor.callbackActionList
-        val cancelRequest = DownloadRequest.new(TestHttpStack.testUris.first().uriString) {
+        val cancelRequest = DownloadRequest(TestHttpStack.testUris.first().uriString) {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
             listener(cancelDownloadListenerSupervisor)
         }
@@ -70,7 +70,7 @@ class DownloadExecutorTest {
         val errorDownloadListenerSupervisor = DownloadListenerSupervisor()
         val errorTestUri = TestHttpStack.TestUri("http://fake.jpeg", 43235)
         val errorListenerActionList = errorDownloadListenerSupervisor.callbackActionList
-        val errorRequest = DownloadRequest.new(errorTestUri.uriString) {
+        val errorRequest = DownloadRequest(errorTestUri.uriString) {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
             listener(errorDownloadListenerSupervisor)
         }

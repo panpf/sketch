@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.fetch
 
+import android.widget.ImageView
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
@@ -21,11 +22,11 @@ class AssetUriFetcherTest {
     fun testNewUri() {
         Assert.assertEquals(
             "asset://fd5717876ab046b8aa889c9aaac4b56c.jpeg",
-            newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg").toString()
+            newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
         )
         Assert.assertEquals(
             "asset://fd5717876ab046b8aa889c9aaac4b56c.png",
-            newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.png").toString()
+            newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.png")
         )
     }
 
@@ -37,16 +38,17 @@ class AssetUriFetcherTest {
         val assetUri = newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
+        val imageView = ImageView(context)
 
-        fetcherFactory.create(sketch, LoadRequest.new(assetUri))!!.apply {
+        fetcherFactory.create(sketch, LoadRequest(assetUri))!!.apply {
             Assert.assertEquals("fd5717876ab046b8aa889c9aaac4b56c.jpeg", assetFileName)
         }
-        fetcherFactory.create(sketch, DisplayRequest.new(assetUri))!!.apply {
+        fetcherFactory.create(sketch, DisplayRequest(assetUri, imageView))!!.apply {
             Assert.assertEquals("fd5717876ab046b8aa889c9aaac4b56c.jpeg", assetFileName)
         }
-        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest.new(assetUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest.new(httpUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest.new(contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(assetUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(httpUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(contentUri)))
     }
 
     @Test
@@ -56,7 +58,7 @@ class AssetUriFetcherTest {
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest.new(assetUri))!!
+        val fetcher = fetcherFactory.create(sketch, LoadRequest(assetUri))!!
         val source = runBlocking {
             fetcher.fetch().dataSource
         }

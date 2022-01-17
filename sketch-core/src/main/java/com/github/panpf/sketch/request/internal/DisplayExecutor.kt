@@ -35,7 +35,7 @@ class DisplayExecutor(private val sketch: Sketch) {
         }
 
         try {
-            if (request.uri === Uri.EMPTY || request.uriString.isEmpty() || request.uriString.isBlank()) {
+            if (request.uriString.isEmpty() || request.uriString.isBlank()) {
                 throw UriEmptyException(request)
             }
 

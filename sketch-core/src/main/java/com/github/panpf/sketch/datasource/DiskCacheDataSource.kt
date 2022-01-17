@@ -45,11 +45,8 @@ class DiskCacheDataSource constructor(
 
     override fun newFileDescriptor(): FileDescriptor? = null
 
-    override suspend fun file(): File {
-        return diskCacheEntry.file
-    }
+    override suspend fun file(): File = diskCacheEntry.file
 
-    override fun toString(): String {
-        return "DiskCacheDataSource(from=$from, file=${diskCacheEntry.file.path})"
-    }
+    override fun toString(): String =
+        "DiskCacheDataSource(from=$from,file='${diskCacheEntry.file.path}')"
 }
