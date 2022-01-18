@@ -99,11 +99,11 @@ class ViewAbilityContainerImpl(
     }
 
     override fun onDetachedFromWindow() {
-        _viewAbilityList.forEach {
-            it.host = null
-        }
         attachObserverList?.forEach {
             it.onDetachedFromWindow()
+        }
+        _viewAbilityList.forEach {
+            it.host = null
         }
     }
 
