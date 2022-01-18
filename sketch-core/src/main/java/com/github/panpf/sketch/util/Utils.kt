@@ -45,7 +45,7 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
 
 internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
-internal fun Context?.getLifecycle(): Lifecycle? {
+fun Context?.getLifecycle(): Lifecycle? {
     var context: Context? = this
     while (true) {
         when (context) {
