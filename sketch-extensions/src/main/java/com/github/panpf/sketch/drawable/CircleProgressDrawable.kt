@@ -101,6 +101,9 @@ class CircleProgressDrawable(
                 addUpdateListener {
                     progress = animatedValue as Float
                 }
+                if (callback == null) {
+                    progressAnimator?.cancel()
+                }
                 if (onAnimationEnd != null) {
                     addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator?) {
