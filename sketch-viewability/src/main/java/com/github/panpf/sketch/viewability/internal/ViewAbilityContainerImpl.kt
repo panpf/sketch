@@ -16,6 +16,7 @@ import com.github.panpf.sketch.viewability.internal.ViewAbility.LayoutObserver
 import com.github.panpf.sketch.viewability.internal.ViewAbility.LongClickObserver
 import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestListenerObserver
 import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestProgressListenerObserver
+import com.github.panpf.sketch.viewability.internal.ViewAbility.VisibilityChangedObserver
 import java.lang.ref.WeakReference
 
 class ViewAbilityContainerImpl(
@@ -37,6 +38,7 @@ class ViewAbilityContainerImpl(
     private var drawObserverList: List<DrawObserver>? = null
     private var layoutAbilityList: List<LayoutObserver>? = null
     private var attachObserverList: List<AttachObserver>? = null
+    private var visibilityChangedObserverList: List<VisibilityChangedObserver>? = null
     private var longClickAbilityList: List<LongClickObserver>? = null
     private var requestListenerAbilityList: List<RequestListenerObserver>? = null
     private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
@@ -46,6 +48,8 @@ class ViewAbilityContainerImpl(
         drawObserverList = _viewAbilityList.mapNotNull { if (it is DrawObserver) it else null }
         layoutAbilityList = _viewAbilityList.mapNotNull { if (it is LayoutObserver) it else null }
         attachObserverList = _viewAbilityList.mapNotNull { if (it is AttachObserver) it else null }
+        visibilityChangedObserverList =
+            _viewAbilityList.mapNotNull { if (it is VisibilityChangedObserver) it else null }
         longClickAbilityList =
             _viewAbilityList.mapNotNull { if (it is LongClickObserver) it else null }
         requestListenerAbilityList =
@@ -110,6 +114,12 @@ class ViewAbilityContainerImpl(
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         layoutAbilityList?.forEach {
             it.onLayout(changed, left, top, right, bottom)
+        }
+    }
+
+    override fun onVisibilityChanged(changedView: View, visibility: Int) {
+        visibilityChangedObserverList?.forEach {
+            it.onVisibilityChanged(changedView, visibility)
         }
     }
 

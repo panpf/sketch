@@ -31,6 +31,10 @@ interface ViewAbility {
         fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int)
     }
 
+    interface VisibilityChangedObserver {
+        fun onVisibilityChanged(changedView: View, visibility: Int)
+    }
+
     interface LongClickObserver {
         val canIntercept: Boolean
         fun onLongClick(v: View): Boolean

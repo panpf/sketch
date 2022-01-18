@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.viewability.internal
 
 import android.graphics.Canvas
+import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import com.github.panpf.sketch.request.DisplayRequest
@@ -26,6 +27,8 @@ interface ViewAbilityContainer {
     fun onDetachedFromWindow()
 
     fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int)
+
+    fun onVisibilityChanged(changedView: View, visibility: Int)
 
     fun onDrawBefore(canvas: Canvas)
 
