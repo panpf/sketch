@@ -8,6 +8,7 @@ import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
+import com.github.panpf.sketch.viewability.removeProgressIndicator
 import com.github.panpf.sketch.viewability.setMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.viewability.showMaskProgressIndicator
 import com.github.panpf.tools4a.dimen.ktx.dp2px
@@ -58,7 +59,11 @@ class MyListImageView @JvmOverloads constructor(
                 }
             }
             showProgressIndicatorInList.observeFromView(this@MyListImageView) {
-                showMaskProgressIndicator(it == true)
+                if (it == true) {
+                    showMaskProgressIndicator()
+                } else {
+                    removeProgressIndicator()
+                }
             }
             showMimeTypeLogoInLIst.observeFromView(this@MyListImageView) {
                 setMimeTypeLogoWithDrawable(
