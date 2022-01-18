@@ -5,15 +5,18 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.MainThread
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.util.getLifecycle
 
-class Host(private val view: View, private val owner: ViewAbilityContainerOwner) {
+class Host(val view: View, private val owner: ViewAbilityContainerOwner) {
 
     private val _layoutRect = Rect()
     private val _paddingRect = Rect()
 
-    val context: Context
-        get() = view.context
+    val context: Context = view.context
+
+    val lifecycle: Lifecycle? = view.context.getLifecycle()
 
     val drawable: Drawable?
         get() = owner.getDrawable()
