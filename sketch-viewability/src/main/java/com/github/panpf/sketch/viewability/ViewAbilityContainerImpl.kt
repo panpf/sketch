@@ -9,6 +9,7 @@ import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
 import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
@@ -43,6 +44,9 @@ class ViewAbilityContainerImpl(
     private var requestListenerAbilityList: List<RequestListenerObserver>? = null
     private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
 
+    override val viewAbilityList: List<ViewAbility>
+        get() = _viewAbilityImmutableList
+
     private fun onAbilityListChanged() {
         clickObserverList = _viewAbilityList.mapNotNull { if (it is ClickObserver) it else null }
         drawObserverList = _viewAbilityList.mapNotNull { if (it is DrawObserver) it else null }
@@ -67,15 +71,18 @@ class ViewAbilityContainerImpl(
     override fun addViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
         _viewAbilityList.add(viewAbility)
         onAbilityListChanged()
+        if (host.view.isAttachedToWindowCompat && viewAbility is AttachObserver) {
+            viewAbility.onAttachedToWindow()
+        }
     }
 
     override fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
+        if (viewAbility is AttachObserver) {
+            viewAbility.onDetachedFromWindow()
+        }
         _viewAbilityList.remove(viewAbility)
         onAbilityListChanged()
     }
-
-    override val viewAbilityList: List<ViewAbility>
-        get() = _viewAbilityImmutableList
 
     override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
         return if (requestListenerAbilityList?.isNotEmpty() == true) {
