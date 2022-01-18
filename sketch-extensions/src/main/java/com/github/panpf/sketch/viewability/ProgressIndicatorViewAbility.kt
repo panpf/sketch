@@ -94,9 +94,11 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
     override fun onRequestStart(request: DisplayRequest) {
         show = true
         progressDrawable.updateProgress(0f)
+        startAnimation()
     }
 
     override fun onRequestError(request: DisplayRequest, result: Error) {
+        stopAnimation()
         show = false
         host?.invalidate()
     }
@@ -110,6 +112,7 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
 
     override fun onRequestSuccess(request: DisplayRequest, result: Success) {
         progressDrawable.updateProgress(1f) {
+            stopAnimation()
             show = false
             host?.invalidate()
         }
