@@ -60,6 +60,7 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
 //                        NavMainDirections.actionGlobalImageOrientationTestHomeFragment()
 //                    ),
 //                    Link("Other Test", NavMainDirections.actionGlobalOtherTestFragment()),
+                    Link("Other Test", NavMainDirections.actionGlobalTestFragment()),
 //
 //                    ListSeparator("App"),
 //                    Link("Settings", NavMainDirections.actionGlobalSettingsFragment()),

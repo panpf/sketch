@@ -69,6 +69,10 @@
         android:id="@+id/localVideoListFragment"
         android:name="com.github.panpf.sketch.sample.ui.LocalVideoListFragment"
         android:label="LocalVideoListFragment" />
+    <fragment
+        android:id="@+id/testFragment"
+        android:name="com.github.panpf.sketch.sample.ui.TestFragment"
+        android:label="TestFragment" />
 
     <action
         android:id="@+id/action_global_pexelsPhotosFragment"
@@ -129,6 +133,13 @@
     <action
         android:id="@+id/action_global_localVideoListFragment"
         app:destination="@id/localVideoListFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_testFragment"
+        app:destination="@id/testFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
