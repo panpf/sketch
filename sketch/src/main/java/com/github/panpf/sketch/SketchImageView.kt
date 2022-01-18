@@ -6,7 +6,7 @@ import com.github.panpf.sketch.request.DisplayOptions
 import com.github.panpf.sketch.request.DisplayOptions.Builder
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.target.DisplayOptionsProvider
-import com.github.panpf.sketch.viewability.internal.AbsAbilityImageView
+import com.github.panpf.sketch.viewability.AbsAbilityImageView
 
 open class SketchImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0

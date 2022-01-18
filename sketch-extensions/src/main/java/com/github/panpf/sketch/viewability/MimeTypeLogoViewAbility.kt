@@ -10,11 +10,8 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.viewability.internal.Host
-import com.github.panpf.sketch.viewability.internal.ViewAbility
-import com.github.panpf.sketch.viewability.internal.ViewAbility.DrawObserver
-import com.github.panpf.sketch.viewability.internal.ViewAbility.RequestListenerObserver
-import com.github.panpf.sketch.viewability.internal.ViewAbilityContainerOwner
+import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 
 class MimeTypeLogoViewAbility(
     private val mimeTypeIconMap: Map<String, MimeTypeLogo>,
