@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.viewability
 
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
@@ -13,6 +14,7 @@ import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
 import com.github.panpf.sketch.viewability.ViewAbility.ClickObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
 import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
 import com.github.panpf.sketch.viewability.ViewAbility.LongClickObserver
 import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
@@ -21,7 +23,7 @@ import com.github.panpf.sketch.viewability.ViewAbility.VisibilityChangedObserver
 import java.lang.ref.WeakReference
 
 class ViewAbilityContainerImpl(
-    private val owner: ViewAbilityContainerOwner,
+    private val owner: ViewAbilityOwner,
     view: View
 ) : ViewAbilityContainer {
 
@@ -35,11 +37,12 @@ class ViewAbilityContainerImpl(
 
     private val _viewAbilityList = LinkedHashSet<ViewAbility>()
     private var _viewAbilityImmutableList: List<ViewAbility> = _viewAbilityList.toList()
-    private var clickObserverList: List<ClickObserver>? = null
-    private var drawObserverList: List<DrawObserver>? = null
-    private var layoutAbilityList: List<LayoutObserver>? = null
     private var attachObserverList: List<AttachObserver>? = null
     private var visibilityChangedObserverList: List<VisibilityChangedObserver>? = null
+    private var layoutAbilityList: List<LayoutObserver>? = null
+    private var drawObserverList: List<DrawObserver>? = null
+    private var drawableObserverList: List<DrawableObserver>? = null
+    private var clickObserverList: List<ClickObserver>? = null
     private var longClickAbilityList: List<LongClickObserver>? = null
     private var requestListenerAbilityList: List<RequestListenerObserver>? = null
     private var requestProgressListenerAbilityList: List<RequestProgressListenerObserver>? = null
@@ -48,12 +51,14 @@ class ViewAbilityContainerImpl(
         get() = _viewAbilityImmutableList
 
     private fun onAbilityListChanged() {
-        clickObserverList = _viewAbilityList.mapNotNull { if (it is ClickObserver) it else null }
-        drawObserverList = _viewAbilityList.mapNotNull { if (it is DrawObserver) it else null }
-        layoutAbilityList = _viewAbilityList.mapNotNull { if (it is LayoutObserver) it else null }
         attachObserverList = _viewAbilityList.mapNotNull { if (it is AttachObserver) it else null }
         visibilityChangedObserverList =
             _viewAbilityList.mapNotNull { if (it is VisibilityChangedObserver) it else null }
+        layoutAbilityList = _viewAbilityList.mapNotNull { if (it is LayoutObserver) it else null }
+        drawObserverList = _viewAbilityList.mapNotNull { if (it is DrawObserver) it else null }
+        drawableObserverList =
+            _viewAbilityList.mapNotNull { if (it is DrawableObserver) it else null }
+        clickObserverList = _viewAbilityList.mapNotNull { if (it is ClickObserver) it else null }
         longClickAbilityList =
             _viewAbilityList.mapNotNull { if (it is LongClickObserver) it else null }
         requestListenerAbilityList =
@@ -61,9 +66,6 @@ class ViewAbilityContainerImpl(
         requestProgressListenerAbilityList =
             _viewAbilityList.mapNotNull { if (it is RequestProgressListenerObserver) it else null }
         _viewAbilityImmutableList = _viewAbilityList.toList()
-        _viewAbilityList.forEach {
-            it.host = host
-        }
         refreshOnClickListener()
         refreshOnLongClickListener()
     }
@@ -71,39 +73,43 @@ class ViewAbilityContainerImpl(
     override fun addViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
         _viewAbilityList.add(viewAbility)
         onAbilityListChanged()
-        if (host.view.isAttachedToWindowCompat && viewAbility is AttachObserver) {
-            viewAbility.onAttachedToWindow()
+
+        _viewAbilityList.forEach {
+            it.host = host
         }
+        val view = host.view
+        if (view.isAttachedToWindowCompat) {
+            if (viewAbility is AttachObserver) {
+                viewAbility.onAttachedToWindow()
+            }
+            if (viewAbility is VisibilityChangedObserver) {
+                viewAbility.onVisibilityChanged(view, view.visibility)
+            }
+            if (view.visibility != View.GONE) {
+                if (viewAbility is LayoutObserver && (view.width > 0 || view.height > 0)) {
+                    viewAbility.onLayout(false, view.left, view.top, view.right, view.bottom)
+                }
+            }
+        }
+
+        host.invalidate()
     }
 
     override fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityContainer = apply {
         if (viewAbility is AttachObserver) {
             viewAbility.onDetachedFromWindow()
         }
+        _viewAbilityList.forEach {
+            it.host = null
+        }
+
         _viewAbilityList.remove(viewAbility)
         onAbilityListChanged()
-    }
 
-    override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
-        return if (requestListenerAbilityList?.isNotEmpty() == true) {
-            displayRequestListener
-        } else {
-            null
-        }
-    }
-
-    override fun getRequestProgressListener(): ProgressListener<DisplayRequest>? {
-        return if (requestProgressListenerAbilityList?.isNotEmpty() == true) {
-            displayRequestListener
-        } else {
-            null
-        }
+        host.invalidate()
     }
 
     override fun onAttachedToWindow() {
-        _viewAbilityList.forEach {
-            it.host = host
-        }
         attachObserverList?.forEach {
             it.onAttachedToWindow()
         }
@@ -113,20 +119,17 @@ class ViewAbilityContainerImpl(
         attachObserverList?.forEach {
             it.onDetachedFromWindow()
         }
-        _viewAbilityList.forEach {
-            it.host = null
+    }
+
+    override fun onVisibilityChanged(changedView: View, visibility: Int) {
+        visibilityChangedObserverList?.forEach {
+            it.onVisibilityChanged(changedView, visibility)
         }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         layoutAbilityList?.forEach {
             it.onLayout(changed, left, top, right, bottom)
-        }
-    }
-
-    override fun onVisibilityChanged(changedView: View, visibility: Int) {
-        visibilityChangedObserverList?.forEach {
-            it.onVisibilityChanged(changedView, visibility)
         }
     }
 
@@ -151,6 +154,12 @@ class ViewAbilityContainerImpl(
     override fun onDrawForeground(canvas: Canvas) {
         drawObserverList?.forEach {
             it.onDrawForeground(canvas)
+        }
+    }
+
+    override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
+        drawableObserverList?.forEach {
+            it.onDrawableChanged(oldDrawable, newDrawable)
         }
     }
 
@@ -194,6 +203,22 @@ class ViewAbilityContainerImpl(
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         this.longClickListenerWrapper = l
         refreshOnLongClickListener()
+    }
+
+    override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
+        return if (requestListenerAbilityList?.isNotEmpty() == true) {
+            displayRequestListener
+        } else {
+            null
+        }
+    }
+
+    override fun getRequestProgressListener(): ProgressListener<DisplayRequest>? {
+        return if (requestProgressListenerAbilityList?.isNotEmpty() == true) {
+            displayRequestListener
+        } else {
+            null
+        }
     }
 
     private fun refreshOnClickListener() {

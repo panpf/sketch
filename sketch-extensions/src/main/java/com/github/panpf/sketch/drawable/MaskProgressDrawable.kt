@@ -7,13 +7,12 @@ import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
-import android.graphics.drawable.Animatable
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 
 class MaskProgressDrawable(
     @ColorInt private val maskColor: Int = DEFAULT_MASK_COLOR
-) : ProgressDrawable(), Animatable {
+) : ProgressDrawable() {
 
     companion object {
         const val DEFAULT_MASK_COLOR = 0x22000000
@@ -23,7 +22,7 @@ class MaskProgressDrawable(
         color = maskColor
         isAntiAlias = true
     }
-    private var progress: Float = 0f
+    override var progress: Float = 0f
         set(value) {
             field = value
             invalidateSelf()
@@ -56,7 +55,7 @@ class MaskProgressDrawable(
 
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    override fun updateProgress(
+    override fun animUpdateProgress(
         @FloatRange(from = 0.0, to = 1.0) newProgress: Float,
         onAnimationEnd: (() -> Unit)?
     ) {
@@ -66,10 +65,11 @@ class MaskProgressDrawable(
             progressAnimator?.cancel()
             progressAnimator = ValueAnimator.ofFloat(lastProgress, targetProgress).apply {
                 addUpdateListener {
-                    progress = animatedValue as Float
-                }
-                if (callback == null) {
-                    progressAnimator?.cancel()
+                    if (isActive()) {
+                        progress = animatedValue as Float
+                    } else {
+                        progressAnimator?.cancel()
+                    }
                 }
                 if (onAnimationEnd != null) {
                     addListener(object : AnimatorListenerAdapter() {
@@ -86,15 +86,13 @@ class MaskProgressDrawable(
         }
     }
 
-    override fun start() {
-
+    override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
+        val changed = super.setVisible(visible, restart)
+        if (changed && !visible) {
+            progressAnimator?.cancel()
+        }
+        return changed
     }
-
-    override fun stop() {
-        progressAnimator?.cancel()
-    }
-
-    override fun isRunning(): Boolean = progressAnimator?.isRunning == true
 
     override fun getIntrinsicWidth(): Int = -1
 

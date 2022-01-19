@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.viewability
 
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.view.View
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
@@ -15,9 +16,12 @@ interface ViewAbility {
         fun onDetachedFromWindow()
     }
 
-    interface ClickObserver {
-        val canIntercept: Boolean
-        fun onClick(v: View): Boolean
+    interface VisibilityChangedObserver {
+        fun onVisibilityChanged(changedView: View, visibility: Int)
+    }
+
+    interface LayoutObserver {
+        fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int)
     }
 
     interface DrawObserver {
@@ -27,12 +31,13 @@ interface ViewAbility {
         fun onDrawForeground(canvas: Canvas)
     }
 
-    interface LayoutObserver {
-        fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int)
+    interface DrawableObserver {
+        fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?)
     }
 
-    interface VisibilityChangedObserver {
-        fun onVisibilityChanged(changedView: View, visibility: Int)
+    interface ClickObserver {
+        val canIntercept: Boolean
+        fun onClick(v: View): Boolean
     }
 
     interface LongClickObserver {

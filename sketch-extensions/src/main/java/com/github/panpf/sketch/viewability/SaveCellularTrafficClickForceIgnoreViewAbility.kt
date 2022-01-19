@@ -51,12 +51,11 @@ class SaveCellularTrafficClickForceIgnoreViewAbility
     }
 }
 
-fun ViewAbilityContainerOwner.setClickRedisplayAndIgnoreSaveCellularTraffic(enabled: Boolean) {
-    val viewAbilityContainer = viewAbilityContainer
-    viewAbilityContainer.viewAbilityList
+fun ViewAbilityOwner.setClickRedisplayAndIgnoreSaveCellularTraffic(enabled: Boolean) {
+    viewAbilityList
         .find { it is SaveCellularTrafficClickForceIgnoreViewAbility }
-        ?.let { viewAbilityContainer.removeViewAbility(it) }
+        ?.let { removeViewAbility(it) }
     if (enabled) {
-        viewAbilityContainer.addViewAbility(SaveCellularTrafficClickForceIgnoreViewAbility())
+        addViewAbility(SaveCellularTrafficClickForceIgnoreViewAbility())
     }
 }

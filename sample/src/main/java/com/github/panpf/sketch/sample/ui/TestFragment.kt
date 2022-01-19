@@ -25,7 +25,7 @@ class TestFragment : BindingFragment<FragmentTestBinding>() {
                     Color.WHITE,
                     5f
                 ).apply {
-                    updateProgress(0.4f)
+                    animUpdateProgress(0.4f)
                     binding.testFragmentImageView.post {
                         start()
                     }

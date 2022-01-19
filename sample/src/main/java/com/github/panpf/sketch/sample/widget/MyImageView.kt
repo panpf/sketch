@@ -15,6 +15,7 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.viewability.removeDataFrom
 import com.github.panpf.sketch.viewability.showDataFrom
 
 open class MyImageView @JvmOverloads constructor(
@@ -24,7 +25,11 @@ open class MyImageView @JvmOverloads constructor(
     init {
         context.appSettingsService.apply {
             showDataFrom.observeFromView(this@MyImageView) {
-                showDataFrom(it == true)
+                if (it == true) {
+                    showDataFrom()
+                } else {
+                    removeDataFrom()
+                }
             }
         }
 

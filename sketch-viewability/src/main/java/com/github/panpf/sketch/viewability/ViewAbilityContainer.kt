@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.viewability
 
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
@@ -12,11 +13,11 @@ import com.github.panpf.sketch.request.ProgressListener
 
 interface ViewAbilityContainer {
 
+    val viewAbilityList: List<ViewAbility>
+
     fun addViewAbility(viewAbility: ViewAbility): ViewAbilityContainer
 
     fun removeViewAbility(viewAbility: ViewAbility): ViewAbilityContainer
-
-    val viewAbilityList: List<ViewAbility>
 
     fun getRequestListener(): Listener<DisplayRequest, Success, Error>?
 
@@ -37,6 +38,8 @@ interface ViewAbilityContainer {
     fun onDrawForegroundBefore(canvas: Canvas)
 
     fun onDrawForeground(canvas: Canvas)
+
+    fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?)
 
     fun setOnClickListener(l: OnClickListener?)
 

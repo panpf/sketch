@@ -4,19 +4,18 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
+import com.github.panpf.sketch.viewability.ViewAbility.DrawableObserver
 import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
-import com.github.panpf.sketch.viewability.ViewAbility.RequestListenerObserver
 
 class DataFromViewAbility(
     sizeDp: Float = DEFAULT_SIZE_DP
-) : ViewAbility, RequestListenerObserver, DrawObserver, LayoutObserver {
+) : ViewAbility, AttachObserver, DrawObserver, LayoutObserver, DrawableObserver {
 
     companion object {
         const val DEFAULT_SIZE_DP = 20f
@@ -32,48 +31,24 @@ class DataFromViewAbility(
     private val realSize = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f)
 
     override var host: Host? = null
-        set(value) {
-            field = value
-            initImageFromPath()
-            value?.postInvalidate()
-        }
 
-    private fun initImageFromPath() {
-        path.reset()
-        val host = host ?: return
-        val layoutRect = host.layoutRect
-        val paddingRect = host.paddingRect
-        path.apply {
-            moveTo(
-                layoutRect.right - paddingRect.right - realSize,
-                layoutRect.top + paddingRect.top.toFloat()
-            )
-            lineTo(
-                layoutRect.right - paddingRect.right.toFloat(),
-                layoutRect.top + paddingRect.top.toFloat()
-            )
-            lineTo(
-                layoutRect.right - paddingRect.right.toFloat(),
-                layoutRect.top - paddingRect.top.toFloat() + realSize
-            )
-            close()
-        }
+    override fun onAttachedToWindow() {
+        reset()
+        host?.invalidate()
+    }
+
+    override fun onDetachedFromWindow() {
+
+    }
+
+    override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
+        reset()
+        host?.invalidate()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        initImageFromPath()
-    }
-
-    override fun onRequestStart(request: DisplayRequest) {
-        host?.postInvalidate()
-    }
-
-    override fun onRequestError(request: DisplayRequest, result: Error) {
-        host?.postInvalidate()
-    }
-
-    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
-        host?.postInvalidate()
+        reset()
+        host?.invalidate()
     }
 
     override fun onDrawBefore(canvas: Canvas) {
@@ -81,38 +56,61 @@ class DataFromViewAbility(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val host = host ?: return
-        val lastDrawable = host.drawable?.getLastDrawable() ?: return
-        if (lastDrawable !is SketchDrawable) return
-        val dataFrom = lastDrawable.dataFrom ?: return
         val path = path.takeIf { !it.isEmpty } ?: return
+        canvas.drawPath(path, paint)
+    }
+
+    override fun onDrawForegroundBefore(canvas: Canvas) {
+
+    }
+
+    override fun onDrawForeground(canvas: Canvas) {
+
+    }
+
+    private fun reset(): Boolean {
+        // Execute first, path will remain empty if subsequent conditions are not met, and the onDraw method will not execute
+        path.reset()
+        val host = host ?: return false
+
+        val lastDrawable = host.drawable?.getLastDrawable() ?: return false
+        if (lastDrawable !is SketchDrawable) return false
+        val dataFrom = lastDrawable.dataFrom ?: return false
         when (dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.DISK_CACHE -> paint.color = FROM_FLAG_COLOR_DISK_CACHE
             DataFrom.NETWORK -> paint.color = FROM_FLAG_COLOR_NETWORK
             DataFrom.LOCAL -> paint.color = FROM_FLAG_COLOR_LOCAL
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
-            else -> return
         }
-        canvas.drawPath(path, paint)
-    }
 
-    override fun onDrawForegroundBefore(canvas: Canvas) {
-    }
-
-    override fun onDrawForeground(canvas: Canvas) {
+        val view = host.view
+        path.apply {
+            moveTo(
+                view.right - view.paddingRight - realSize,
+                view.top + view.paddingTop.toFloat()
+            )
+            lineTo(
+                view.right - view.paddingRight.toFloat(),
+                view.top + view.paddingTop.toFloat()
+            )
+            lineTo(
+                view.right - view.paddingRight.toFloat(),
+                view.top - view.paddingTop.toFloat() + realSize
+            )
+            close()
+        }
+        return true
     }
 }
 
-fun ViewAbilityContainerOwner.showDataFrom(
-    showDataFrom: Boolean = true,
-    sizeDp: Float = DataFromViewAbility.DEFAULT_SIZE_DP
-) {
-    val viewAbilityContainer = viewAbilityContainer
-    viewAbilityContainer.viewAbilityList
+fun ViewAbilityOwner.showDataFrom(sizeDp: Float = DataFromViewAbility.DEFAULT_SIZE_DP) {
+    removeDataFrom()
+    addViewAbility(DataFromViewAbility(sizeDp))
+}
+
+fun ViewAbilityOwner.removeDataFrom() {
+    viewAbilityList
         .find { it is DataFromViewAbility }
-        ?.let { viewAbilityContainer.removeViewAbility(it) }
-    if (showDataFrom) {
-        viewAbilityContainer.addViewAbility(DataFromViewAbility(sizeDp))
-    }
+        ?.let { removeViewAbility(it) }
 }

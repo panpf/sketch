@@ -10,7 +10,6 @@ import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.graphics.PixelFormat
 import android.graphics.RectF
-import android.graphics.drawable.Animatable
 import androidx.annotation.FloatRange
 
 class ArcProgressDrawable(
@@ -19,7 +18,7 @@ class ArcProgressDrawable(
     private val strokeColor: Int,
     private val progressColor: Int,
     private val strokeWidth: Float,
-) : ProgressDrawable(), Animatable {
+) : ProgressDrawable() {
 
     private val backgroundPaint = Paint().apply {
         isAntiAlias = true
@@ -37,7 +36,7 @@ class ArcProgressDrawable(
         color = progressColor
     }
     private val progressOval = RectF()
-    private var progress: Float = -1F
+    override var progress: Float = 0f
         set(value) {
             field = value
             invalidateSelf()
@@ -88,7 +87,7 @@ class ArcProgressDrawable(
 
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    override fun updateProgress(
+    override fun animUpdateProgress(
         @FloatRange(from = 0.0, to = 1.0) newProgress: Float,
         onAnimationEnd: (() -> Unit)?
     ) {
@@ -98,10 +97,11 @@ class ArcProgressDrawable(
             progressAnimator?.cancel()
             progressAnimator = ValueAnimator.ofFloat(lastProgress, targetProgress).apply {
                 addUpdateListener {
-                    progress = animatedValue as Float
-                }
-                if (callback == null) {
-                    progressAnimator?.cancel()
+                    if (isActive()) {
+                        progress = animatedValue as Float
+                    } else {
+                        progressAnimator?.cancel()
+                    }
                 }
                 if (onAnimationEnd != null) {
                     addListener(object : AnimatorListenerAdapter() {
@@ -118,15 +118,13 @@ class ArcProgressDrawable(
         }
     }
 
-    override fun start() {
-
+    override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
+        val changed = super.setVisible(visible, restart)
+        if (changed && !visible) {
+            progressAnimator?.cancel()
+        }
+        return changed
     }
-
-    override fun stop() {
-        progressAnimator?.cancel()
-    }
-
-    override fun isRunning(): Boolean = progressAnimator?.isRunning == true
 
     override fun getIntrinsicWidth(): Int = size
 

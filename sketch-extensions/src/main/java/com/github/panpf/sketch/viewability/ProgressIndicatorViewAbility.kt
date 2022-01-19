@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable.Callback
 import android.os.SystemClock
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.State.RESUMED
@@ -19,7 +20,6 @@ import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
-import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver
 import com.github.panpf.sketch.viewability.ViewAbility.LayoutObserver
@@ -33,7 +33,8 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
 
     override var host: Host? = null
 
-    private var show = false
+    private var requestRunning = false
+    private var isAttachedToWindow = false
     private val lifecycleObserver = LifecycleEventObserver { _, event ->
         if (event == ON_RESUME) {
             startAnimation()
@@ -43,25 +44,99 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
     }
 
     init {
-        progressDrawable.callback = object : Callback {
-            override fun invalidateDrawable(who: Drawable) {
-                host?.invalidate()
-            }
+        progressDrawable.apply {
+            setVisible(false, false)
+            callback = object : Callback {
+                override fun invalidateDrawable(who: Drawable) {
+                    host?.invalidate()
+                }
 
-            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-                val delay = `when` - SystemClock.uptimeMillis()
-                host?.view?.postDelayed(what, delay)
-            }
+                override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+                    val delay = `when` - SystemClock.uptimeMillis()
+                    host?.view?.postDelayed(what, delay)
+                }
 
-            override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-                host?.view?.removeCallbacks(what)
+                override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+                    host?.view?.removeCallbacks(what)
+                }
             }
         }
     }
 
+    override fun onAttachedToWindow() {
+        isAttachedToWindow = true
+        host?.lifecycle?.addObserver(lifecycleObserver)
+        resetDrawableVisible()
+    }
+
+    override fun onVisibilityChanged(changedView: View, visibility: Int) {
+        resetDrawableVisible()
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         updateDrawableBounds()
-        host?.postInvalidate()
+    }
+
+    override fun onDrawBefore(canvas: Canvas) {
+
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        if (progressDrawable.isVisible) {
+            progressDrawable.draw(canvas)
+        }
+    }
+
+    override fun onDrawForegroundBefore(canvas: Canvas) {
+
+    }
+
+    override fun onDrawForeground(canvas: Canvas) {
+
+    }
+
+    override fun onDetachedFromWindow() {
+        // Because the View.isAttachedToWindow () method still returns true when execute here
+        isAttachedToWindow = false
+        host?.lifecycle?.removeObserver(lifecycleObserver)
+        resetDrawableVisible()
+    }
+
+    override fun onRequestStart(request: DisplayRequest) {
+        requestRunning = true
+        progressDrawable.animUpdateProgress(0f)
+        resetDrawableVisible()
+    }
+
+    override fun onRequestError(request: DisplayRequest, result: Error) {
+        requestRunning = false
+        resetDrawableVisible()
+    }
+
+    override fun onUpdateRequestProgress(
+        request: DisplayRequest, totalLength: Long, completedLength: Long
+    ) {
+        val newProgress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
+        progressDrawable.animUpdateProgress(newProgress)
+    }
+
+    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
+        progressDrawable.animUpdateProgress(1f) {
+            requestRunning = false
+            resetDrawableVisible()
+        }
+    }
+
+    private fun resetDrawableVisible() {
+        val view = host?.view ?: return
+        val visible = isAttachedToWindow && view.isVisible && requestRunning
+        if (progressDrawable.setVisible(visible, false)) {
+            if (visible) {
+                startAnimation()
+            } else {
+                stopAnimation()
+            }
+        }
     }
 
     private fun updateDrawableBounds() {
@@ -91,86 +166,13 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
         progressDrawable.setBounds(left, top, right, bottom)
     }
 
-    override fun onRequestStart(request: DisplayRequest) {
-        show = true
-        progressDrawable.updateProgress(0f)
-        startAnimation()
-    }
-
-    override fun onRequestError(request: DisplayRequest, result: Error) {
-        stopAnimation()
-        show = false
-        host?.invalidate()
-    }
-
-    override fun onUpdateRequestProgress(
-        request: DisplayRequest, totalLength: Long, completedLength: Long
-    ) {
-        val newProgress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
-        progressDrawable.updateProgress(newProgress)
-    }
-
-    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
-        progressDrawable.updateProgress(1f) {
-            stopAnimation()
-            show = false
-            host?.invalidate()
-        }
-    }
-
-    override fun onDrawBefore(canvas: Canvas) {
-
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        host?.view
-            ?.takeIf { it.isAttachedToWindowCompat && it.visibility == View.VISIBLE }
-            ?: return
-        if (!show) return
-        progressDrawable.draw(canvas)
-    }
-
-    override fun onDrawForegroundBefore(canvas: Canvas) {
-
-    }
-
-    override fun onDrawForeground(canvas: Canvas) {
-
-    }
-
-    override fun onVisibilityChanged(changedView: View, visibility: Int) {
-        val view = host?.view ?: return
-        val visible = visibility == View.VISIBLE && view.visibility == View.VISIBLE
-        if (visible) {
-            startAnimation()
-        } else {
-            stopAnimation()
-        }
-    }
-
-    override fun onAttachedToWindow() {
-        val lifecycle = host?.lifecycle
-        if (lifecycle != null) {
-            if (lifecycle.currentState >= RESUMED) {
-                startAnimation()
-            }
-            lifecycle.addObserver(lifecycleObserver)
-        } else {
-            startAnimation()
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        stopAnimation()
-        host?.lifecycle?.removeObserver(lifecycleObserver)
-    }
-
     private fun startAnimation() {
-        host?.view
-            ?.takeIf { it.isAttachedToWindowCompat && it.visibility == View.VISIBLE }
-            ?: return
+        val lifecycle = host?.lifecycle
         val progressDrawable = progressDrawable
-        if (progressDrawable is Animatable) {
+        if (progressDrawable is Animatable
+            && progressDrawable.isVisible
+            && (lifecycle == null || lifecycle.currentState >= RESUMED)
+        ) {
             progressDrawable.start()
         }
     }
@@ -183,20 +185,19 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
     }
 }
 
-fun ViewAbilityContainerOwner.showProgressIndicator(progressDrawable: ProgressDrawable) {
+fun ViewAbilityOwner.showProgressIndicator(progressDrawable: ProgressDrawable) {
     removeProgressIndicator()
     val indicator = ProgressIndicatorViewAbility(progressDrawable)
-    viewAbilityContainer.addViewAbility(indicator)
+    addViewAbility(indicator)
 }
 
-fun ViewAbilityContainerOwner.removeProgressIndicator() {
-    val viewAbilityContainer = viewAbilityContainer
-    viewAbilityContainer.viewAbilityList
+fun ViewAbilityOwner.removeProgressIndicator() {
+    viewAbilityList
         .find { it is ProgressIndicatorViewAbility }
-        ?.let { viewAbilityContainer.removeViewAbility(it) }
+        ?.let { removeViewAbility(it) }
 }
 
-fun ViewAbilityContainerOwner.showArcProgressIndicator(
+fun ViewAbilityOwner.showArcProgressIndicator(
     sizeDp: Float = 50f,
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
@@ -212,6 +213,6 @@ fun ViewAbilityContainerOwner.showArcProgressIndicator(
     showProgressIndicator(progressDrawable)
 }
 
-fun ViewAbilityContainerOwner.showMaskProgressIndicator(
+fun ViewAbilityOwner.showMaskProgressIndicator(
     @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
 ) = showProgressIndicator(MaskProgressDrawable(maskColor))
