@@ -44,7 +44,7 @@ class DefaultDrawableDecoder(
                         fetchResult = fetchResult
                     ).proceed(request).run {
                         val drawable = memoryCacheHelper?.write(this)
-                            ?: BitmapDrawable(sketch.appContext.resources, this.bitmap)
+                            ?: BitmapDrawable(sketch.appContext.resources, this.bitmap) // todo 依然返回 SketchBitmapDrawable
                         DrawableDecodeResult(drawable, this.info, this.from)
                     }
             } finally {

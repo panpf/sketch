@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.request.internal.ImageData
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 

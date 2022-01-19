@@ -1,7 +1,5 @@
 package com.github.panpf.sketch.drawable
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Canvas
 import android.graphics.ColorFilter
@@ -10,7 +8,7 @@ import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.graphics.PixelFormat
 import android.graphics.RectF
-import androidx.annotation.FloatRange
+import com.github.panpf.sketch.util.format
 
 class ArcProgressDrawable(
     private val size: Int,
@@ -36,15 +34,49 @@ class ArcProgressDrawable(
         color = progressColor
     }
     private val progressOval = RectF()
-    override var progress: Float = 0f
+
+    private var _progress: Float = 0f
         set(value) {
             field = value
             invalidateSelf()
+            if (value >= 1f) {
+                onProgressEnd?.invoke()
+            }
         }
+
     private var progressAnimator: ValueAnimator? = null
 
+    override var progress: Float
+        get() = _progress
+        set(value) {
+            val valueFormat = value.format(1).coerceAtLeast(0f).coerceAtMost(1f)
+            if (valueFormat != _progress) {
+                if (valueFormat > _progress) {
+                    updateProgress(valueFormat)
+                } else {
+                    _progress = valueFormat
+                }
+            }
+        }
+    override var onProgressEnd: (() -> Unit)? = null
+
+    private fun updateProgress(newProgress: Float) {
+        progressAnimator?.cancel()
+        progressAnimator = ValueAnimator.ofFloat(_progress, newProgress).apply {
+            addUpdateListener {
+                if (isActive()) {
+                    _progress = animatedValue as Float
+                } else {
+                    progressAnimator?.cancel()
+                }
+            }
+            duration = 150
+        }
+        progressAnimator?.start()
+    }
+
     override fun draw(canvas: Canvas) {
-        val progress = progress.takeIf { it >= 0f } ?: return
+        val progress = _progress.takeIf { it >= 0f } ?: return
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
         canvas.save()
 
@@ -86,37 +118,6 @@ class ArcProgressDrawable(
     }
 
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-    override fun animUpdateProgress(
-        @FloatRange(from = 0.0, to = 1.0) newProgress: Float,
-        onAnimationEnd: (() -> Unit)?
-    ) {
-        val targetProgress = newProgress.coerceAtLeast(0f).coerceAtMost(1f)
-        val lastProgress = progress
-        if (lastProgress < targetProgress) {
-            progressAnimator?.cancel()
-            progressAnimator = ValueAnimator.ofFloat(lastProgress, targetProgress).apply {
-                addUpdateListener {
-                    if (isActive()) {
-                        progress = animatedValue as Float
-                    } else {
-                        progressAnimator?.cancel()
-                    }
-                }
-                if (onAnimationEnd != null) {
-                    addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            onAnimationEnd()
-                        }
-                    })
-                }
-                duration = 150
-            }
-            progressAnimator?.start()
-        } else {
-            onAnimationEnd?.invoke()
-        }
-    }
 
     override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
         val changed = super.setVisible(visible, restart)

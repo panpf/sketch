@@ -141,10 +141,14 @@ interface DisplayRequest : LoadRequest {
             this.target = request.target
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
-            this.listener = request.listener
+            this.listener =
+                request.listener.asOrNull<CombinedListener<ImageRequest, ImageResult, ImageResult>>()?.fromBuilderListener
+                    ?: request.listener
             this.httpHeaders = request.httpHeaders?.toMutableMap()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-            this.progressListener = request.progressListener
+            this.progressListener =
+                request.progressListener.asOrNull<CombinedProgressListener<ImageRequest>>()?.fromBuilderProgressListener
+                    ?: request.progressListener
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -510,14 +514,15 @@ interface DisplayRequest : LoadRequest {
                 viewListenerProvider?.getListener() as Listener<ImageRequest, ImageResult, ImageResult>?
             @Suppress("UNCHECKED_CAST") val viewProgressListener =
                 viewListenerProvider?.getProgressListener() as ProgressListener<ImageRequest>?
-            val finalListener = if (listener != null && viewListener != null) {
-                CombinedListener(listOf(listener, viewListener))
-            } else {
-                listener ?: viewListener
-            }
+            val finalListener =
+                if (listener != null && viewListener != null && listener !== viewListener) {
+                    CombinedListener(viewListener, listener)
+                } else {
+                    listener ?: viewListener
+                }
             val finalProgressListener =
-                if (progressListener != null && viewProgressListener != null) {
-                    CombinedProgressListener(listOf(progressListener, viewProgressListener))
+                if (progressListener != null && viewProgressListener != null && progressListener != viewProgressListener) {
+                    CombinedProgressListener(viewProgressListener, progressListener)
                 } else {
                     progressListener ?: viewProgressListener
                 }
