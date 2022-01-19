@@ -49,7 +49,7 @@ import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
 import com.github.panpf.sketch.sample.item.PhotoItemFactory
 import com.github.panpf.sketch.sample.vm.LocalPhotoListViewModel
-import com.github.panpf.sketch.sample.vm.SampleMenuListViewModel
+import com.github.panpf.sketch.sample.vm.PhotoListMenusViewModel
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -58,7 +58,7 @@ import kotlinx.serialization.json.Json
 class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
-    private val sampleMenuListViewModel by viewModels<SampleMenuListViewModel>()
+    private val sampleMenuListViewModel by viewModels<PhotoListMenusViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,18 +151,6 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                         startImageDetail(binding, absoluteAdapterPosition)
                     }
                 ))
-
-                appSettingsService.disabledAnimatableDrawableInList.observe(viewLifecycleOwner) {
-                    pagingAdapter.notifyDataSetChanged()
-                }
-
-                appSettingsService.saveCellularTrafficInList.observe(viewLifecycleOwner) {
-                    pagingAdapter.notifyDataSetChanged()
-                }
-
-                appSettingsService.pauseLoadWhenScrollInList.observe(viewLifecycleOwner) {
-                    pagingAdapter.notifyDataSetChanged()
-                }
 
                 binding.refreshRecyclerFragment.setOnRefreshListener {
                     pagingAdapter.refresh()

@@ -4,8 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import com.github.panpf.sketch.request.pauseLoadWhenScrolling
-import com.github.panpf.sketch.request.saveCellularTraffic
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
+import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.viewability.removeProgressIndicator
@@ -40,24 +41,23 @@ class MyListImageView @JvmOverloads constructor(
             "image/heif" to newLogoDrawable("HEIF"),
         )
     }
+    private val mediatorLiveData = MediatorLiveData<Any>()
 
     init {
+        mediatorLiveData.observeFromView(this) {
+            RequestManagerUtils.requestManagerOrNull(this@MyListImageView)?.restart()
+        }
+
         context.appSettingsService.apply {
-            disabledAnimatableDrawableInList.observeFromView(this@MyListImageView) {
-                updateDisplayOptions {
-                    disabledAnimationDrawable(it == true)
+            mediatorLiveData.apply {
+                val observer = Observer<Boolean> {
+                    postValue(1)
                 }
+                addSource(disabledAnimatableDrawableInList, observer)
+                addSource(pauseLoadWhenScrollInList, observer)
+                addSource(saveCellularTrafficInList, observer)
             }
-            pauseLoadWhenScrollInList.observeFromView(this@MyListImageView) {
-                updateDisplayOptions {
-                    pauseLoadWhenScrolling(it == true)
-                }
-            }
-            saveCellularTrafficInList.observeFromView(this@MyListImageView) {
-                updateDisplayOptions {
-                    saveCellularTraffic(it == true)
-                }
-            }
+
             showProgressIndicatorInList.observeFromView(this@MyListImageView) {
                 if (it == true) {
                     showMaskProgressIndicator()

@@ -30,6 +30,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
+import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
@@ -40,6 +41,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             httpStack(OkHttpStack.Builder().build())
         }
+        addDisplayInterceptor(SettingsDisplayRequestInterceptor())
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {

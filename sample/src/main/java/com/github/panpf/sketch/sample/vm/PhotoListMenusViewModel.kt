@@ -9,7 +9,7 @@ import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.bean.LayoutMode
 import com.github.panpf.sketch.sample.bean.MenuItemInfo
 
-class SampleMenuListViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
+class PhotoListMenusViewModel(application1: Application) : LifecycleAndroidViewModel(application1) {
 
     val menuList = MutableLiveData<List<MenuItemInfo<*>>>()
 
@@ -116,6 +116,70 @@ class SampleMenuListViewModel(application1: Application) : LifecycleAndroidViewM
             MenuItem.SHOW_AS_ACTION_NEVER
         ) { _, newValue ->
             application1.appSettingsService.pauseLoadWhenScrollInList.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+
+
+
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.disabledBitmapMemoryCache.value!!,
+            titles = arrayOf("Disabled Bitmap Memory Cache", "Enabled Bitmap Memory Cache"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.disabledBitmapMemoryCache.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.disabledNetworkContentDiskCache.value!!,
+            titles = arrayOf("Disabled Network Content Disk Cache", "Enabled Network Content Disk Cache"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.disabledNetworkContentDiskCache.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.disabledBitmapResultDiskCache.value!!,
+            titles = arrayOf("Disabled Bitmap Result Disk Cache", "Enabled Bitmap Result Disk Cache"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.disabledBitmapResultDiskCache.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.disabledBitmapPool.value!!,
+            titles = arrayOf("Disabled Bitmap Pool", "Enabled Bitmap Pool"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.disabledBitmapPool.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.disabledCorrectImageOrientation.value!!,
+            titles = arrayOf("Disabled Correct Image Orientation", "Enabled Correct Image Orientation"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.disabledCorrectImageOrientation.postValue(newValue)
             menuList.postValue(menuList.value)
         })
     }

@@ -26,10 +26,6 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "showProgressIndicatorInList", true)
     }
 
-    val showDataFrom by lazy {
-        BooleanPrefsData(context, "showDataFrom", true)
-    }
-
     val disabledAnimatableDrawableInList by lazy {
         BooleanPrefsData(context, "disabledAnimatableDrawableInList", false)
     }
@@ -42,14 +38,24 @@ class AppSettingsService(val context: Context) {
         BooleanPrefsData(context, "pauseLoadWhenScrollInList", false)
     }
 
-    val memoryCacheDisabled by lazy {
-        BooleanPrefsData(context, "memoryCacheDisabled", false)
+    val showDataFrom by lazy {
+        BooleanPrefsData(context, "showDataFrom", true)
     }
-    val bitmapPoolDisabled by lazy {
-        BooleanPrefsData(context, "bitmapPoolDisabled", false)
+
+    val disabledBitmapMemoryCache by lazy {
+        BooleanPrefsData(context, "disabledBitmapMemoryCache", false)
     }
-    val diskCacheDisabled by lazy {
-        BooleanPrefsData(context, "diskCacheDisabled", false)
+    val disabledNetworkContentDiskCache by lazy {
+        BooleanPrefsData(context, "disabledNetworkContentDiskCache", false)
+    }
+    val disabledBitmapResultDiskCache by lazy {
+        BooleanPrefsData(context, "disabledBitmapResultDiskCache", false)
+    }
+    val disabledBitmapPool by lazy {
+        BooleanPrefsData(context, "disabledBitmapPool", false)
+    }
+    val disabledCorrectImageOrientation by lazy {
+        BooleanPrefsData(context, "disabledCorrectImageOrientation", false)
     }
 
     val inPreferQualityOverSpeedEnabled by lazy {
@@ -57,19 +63,6 @@ class AppSettingsService(val context: Context) {
     }
     val lowQualityImageEnabled by lazy {
         BooleanPrefsData(context, "lowQualityImageEnabled", false)
-    }
-    val cacheProcessedImageEnabled by lazy {
-        BooleanPrefsData(context, "cacheProcessedImageEnabled", true)
-    }
-    val correctImageOrientationEnabled by lazy {
-        BooleanPrefsData(context, "correctImageOrientationEnabled", true)
-    }
-
-    val showImageFromFlagEnabled by lazy {
-        BooleanPrefsData(context, "showImageFromFlagEnabled", false)
-    }
-    val scrollingPauseLoadEnabled by lazy {
-        BooleanPrefsData(context, "scrollingPauseLoadEnabled", false)
     }
 
     //    val logLevel by lazy {
