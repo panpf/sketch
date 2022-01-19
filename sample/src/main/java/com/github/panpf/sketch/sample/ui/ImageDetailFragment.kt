@@ -9,7 +9,7 @@ import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.viewability.showCircleProgressIndicator
+import com.github.panpf.sketch.viewability.showArcProgressIndicator
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -22,7 +22,7 @@ class ImageDetailFragment : BindingFragment<FragmentImageBinding>() {
 
     override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         super.onInitViews(binding, savedInstanceState)
-        binding.imageFragmentImageView.showCircleProgressIndicator()
+        binding.imageFragmentImageView.showArcProgressIndicator()
     }
 
     override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {

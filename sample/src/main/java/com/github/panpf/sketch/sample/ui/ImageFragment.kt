@@ -7,7 +7,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
-import com.github.panpf.sketch.viewability.showCircleProgressIndicator
+import com.github.panpf.sketch.viewability.showArcProgressIndicator
 import com.github.panpf.sketch.viewability.showDataFrom
 
 class ImageFragment : BindingFragment<FragmentImageBinding>() {
@@ -19,7 +19,7 @@ class ImageFragment : BindingFragment<FragmentImageBinding>() {
 
     override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         super.onInitViews(binding, savedInstanceState)
-        binding.imageFragmentImageView.showCircleProgressIndicator()
+        binding.imageFragmentImageView.showArcProgressIndicator()
         binding.imageFragmentImageView.showDataFrom()
     }
 

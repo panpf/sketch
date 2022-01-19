@@ -13,8 +13,7 @@ import android.graphics.RectF
 import android.graphics.drawable.Animatable
 import androidx.annotation.FloatRange
 
-// todo 新增圆圈进度条的样式，并且进度为 0 时显示一个圆弧在圆圈上转转转
-class CircleProgressDrawable(
+class ArcProgressDrawable(
     private val size: Int,
     private val backgroundColor: Int,
     private val strokeColor: Int,
@@ -29,7 +28,7 @@ class CircleProgressDrawable(
     private val strokePaint = Paint().apply {
         isAntiAlias = true
         color = strokeColor
-        strokeWidth = this@CircleProgressDrawable.strokeWidth
+        strokeWidth = this@ArcProgressDrawable.strokeWidth
         style = STROKE
     }
     private val progressPaint = Paint().apply {

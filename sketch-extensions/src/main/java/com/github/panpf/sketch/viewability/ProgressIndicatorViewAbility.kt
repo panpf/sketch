@@ -13,7 +13,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.lifecycle.LifecycleEventObserver
-import com.github.panpf.sketch.drawable.CircleProgressDrawable
+import com.github.panpf.sketch.drawable.ArcProgressDrawable
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
@@ -196,13 +196,13 @@ fun ViewAbilityContainerOwner.removeProgressIndicator() {
         ?.let { viewAbilityContainer.removeViewAbility(it) }
 }
 
-fun ViewAbilityContainerOwner.showCircleProgressIndicator(
+fun ViewAbilityContainerOwner.showArcProgressIndicator(
     sizeDp: Float = 50f,
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
 ) {
     val size = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-    val progressDrawable = CircleProgressDrawable(
+    val progressDrawable = ArcProgressDrawable(
         size = size,
         backgroundColor = backgroundColor,
         strokeColor = color,
