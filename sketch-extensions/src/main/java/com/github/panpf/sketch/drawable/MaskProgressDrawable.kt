@@ -35,19 +35,23 @@ class MaskProgressDrawable(
     override var progress: Float
         get() = _progress
         set(value) {
-            val valueFormat = value.format(1).coerceAtLeast(0f).coerceAtMost(1f)
-            if (valueFormat != _progress) {
-                if (valueFormat > _progress) {
-                    updateProgress(valueFormat)
+            val newValue = value.format(1).coerceAtLeast(0f).coerceAtMost(1f)
+            if (newValue != _progress) {
+                if (_progress == 0f && newValue == 1f) {
+                    // Here is the loading of the local image, no loading progress, quickly complete
+                    _progress = newValue
+                } else if (newValue > _progress) {
+                    animationUpdateProgress(newValue)
                 } else {
-                    _progress = valueFormat
+                    // If newValue is less than _progress, you can reset it quickly
+                    _progress = newValue
                 }
             }
         }
     override var onProgressEnd: (() -> Unit)? = null
 
     override fun draw(canvas: Canvas) {
-        val currentProgress = _progress.takeIf { it >= 0f } ?: return
+        val currentProgress = _progress.takeIf { it > 0f } ?: return
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
         canvas.save()
 
@@ -72,7 +76,7 @@ class MaskProgressDrawable(
 
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    private fun updateProgress(newProgress: Float) {
+    private fun animationUpdateProgress(newProgress: Float) {
         progressAnimator?.cancel()
         progressAnimator = ValueAnimator.ofFloat(_progress, newProgress).apply {
             addUpdateListener {
