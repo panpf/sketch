@@ -82,7 +82,7 @@ class ArcProgressDrawable(
     override fun draw(canvas: Canvas) {
         val progress = _progress.takeIf { it >= 0f } ?: return
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
-        canvas.save()
+        val saveCount = canvas.save()
 
         // background
         val widthRadius = bounds.width() / 2f
@@ -106,7 +106,7 @@ class ArcProgressDrawable(
         val sweepAngle = progress.coerceAtLeast(0.01f) * 360f
         canvas.drawArc(progressOval, 270f, sweepAngle, true, progressPaint)
 
-        canvas.restore()
+        canvas.restoreToCount(saveCount)
     }
 
     override fun setAlpha(alpha: Int) {

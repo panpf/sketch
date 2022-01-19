@@ -53,7 +53,7 @@ class MaskProgressDrawable(
     override fun draw(canvas: Canvas) {
         val currentProgress = _progress.takeIf { it > 0f } ?: return
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
-        canvas.save()
+        val saveCount = canvas.save()
 
         canvas.drawRect(
             bounds.left.toFloat(),
@@ -63,7 +63,7 @@ class MaskProgressDrawable(
             paint
         )
 
-        canvas.restore()
+        canvas.restoreToCount(saveCount)
     }
 
     override fun setAlpha(alpha: Int) {
