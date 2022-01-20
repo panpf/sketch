@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.graphics.Paint.Cap.ROUND
 import android.graphics.Paint.Style.STROKE
 import android.graphics.PixelFormat
-import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Animatable
 import android.os.Build.VERSION
@@ -88,7 +87,7 @@ class RingProgressDrawable(
         if (_progress == 0f) {
             indeterminateHelper.draw(canvas, cx, cy, radius)
         } else {
-            progressHelper.draw(canvas, bounds, cx, cy, radius, _progress)
+            progressHelper.draw(canvas, cx, cy, radius)
         }
 
         canvas.restoreToCount(saveCount)
@@ -235,13 +234,14 @@ class RingProgressDrawable(
     }
 
     private class ProgressHelper(val drawable: RingProgressDrawable) {
-        private var bufferedProgress: Float = 0f
-            set(value) {
-                field = value
-                drawable.invalidateSelf()
-            }
+        //        private var bufferedProgress: Float = 0f
+//            set(value) {
+//                field = value
+//                drawable.invalidateSelf()
+//            }
         private var progressAnimator: ValueAnimator? = null
-        private var bufferedProgressAnimator: ValueAnimator? = null
+
+        //        private var bufferedProgressAnimator: ValueAnimator? = null
         private val progressPaint = Paint().apply {
             isAntiAlias = true
             style = STROKE
@@ -249,45 +249,40 @@ class RingProgressDrawable(
             color = drawable.ringColor
             strokeCap = ROUND
         }
-        private val bufferedProgressPaint = Paint().apply {
-            isAntiAlias = true
-            style = STROKE
-            strokeWidth = drawable.ringWidth
-            color = ColorUtils.setAlphaComponent(drawable.ringColor, 180)
-            strokeCap = ROUND
-        }
+
+        //        private val bufferedProgressPaint = Paint().apply {
+//            isAntiAlias = true
+//            style = STROKE
+//            strokeWidth = drawable.ringWidth
+//            color = ColorUtils.setAlphaComponent(drawable.ringColor, 180)
+//            strokeCap = ROUND
+//        }
         private val progressOval = RectF()
 
-        fun draw(
-            canvas: Canvas,
-            bounds: Rect,
-            cx: Float,
-            cy: Float,
-            radius: Float,
-            progress: Float
-        ) {
-//        // _progress
-//        progressOval.set(cx - radius, cy - radius, cx + radius, cy + radius)
-//        val sweepAngle = _progress.coerceAtLeast(0.01f) * 360f
-//        canvas.drawArc(progressOval, 270f, sweepAngle, false, progressPaint)
-//
-//        // buffered _progress
+        fun draw(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
+            // _progress
+            progressOval.set(cx - radius, cy - radius, cx + radius, cy + radius)
+            val sweepAngle = drawable._progress.coerceAtLeast(0.01f) * 360f
+            canvas.drawArc(progressOval, 270f, sweepAngle, false, progressPaint)
+
+//         buffered _progress
 //        val bufferedProgressSweepAngle = bufferedProgress.coerceAtLeast(0.01f) * 360f
 //        canvas.drawArc(progressOval, 270f, bufferedProgressSweepAngle, false, bufferedProgressPaint)
         }
 
         fun updateProgress(newProgress: Float) {
-//            progressAnimator?.cancel()
-//            progressAnimator = ValueAnimator.ofFloat(_progress, newProgress).apply {
-//                addUpdateListener {
-//                    _progress = animatedValue as Float
-//                }
-//                if (callback == null) {
-//                    progressAnimator?.cancel()
-//                }
-//                duration = 150
-//            }
-//            progressAnimator?.start()
+            progressAnimator?.cancel()
+            progressAnimator = ValueAnimator.ofFloat(drawable._progress, newProgress).apply {
+                addUpdateListener {
+                    if (drawable.isActive()) {
+                        drawable._progress = animatedValue as Float
+                    } else {
+                        it.cancel()
+                    }
+                }
+                duration = 150
+            }
+            progressAnimator?.start()
         }
 
         fun isRunning(): Boolean = progressAnimator?.isRunning == true
@@ -311,17 +306,17 @@ class RingProgressDrawable(
         }
 
         fun stop() {
-
+            progressAnimator?.end()
         }
 
         fun setAlpha(alpha: Int) {
             progressPaint.alpha = alpha
-            bufferedProgressPaint.alpha = alpha
+//            bufferedProgressPaint.alpha = alpha
         }
 
         fun setColorFilter(colorFilter: ColorFilter?) {
             progressPaint.colorFilter = colorFilter
-            bufferedProgressPaint.colorFilter = colorFilter
+//            bufferedProgressPaint.colorFilter = colorFilter
         }
     }
 }
