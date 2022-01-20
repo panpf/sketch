@@ -83,7 +83,7 @@ class MaskProgressDrawable(
                 if (isActive()) {
                     _progress = animatedValue as Float
                 } else {
-                    progressAnimator?.cancel()
+                    it?.cancel()
                 }
             }
             duration = 150
