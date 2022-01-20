@@ -134,13 +134,7 @@ class ProgressIndicatorViewAbility(private val progressDrawable: ProgressDrawabl
     private fun resetDrawableVisible() {
         val view = host?.view ?: return
         val visible = isAttachedToWindow && view.isVisible && requestRunning
-        if (progressDrawable.setVisible(visible, false)) {
-            if (visible) {
-                startAnimation()
-            } else {
-                stopAnimation()
-            }
-        }
+        progressDrawable.setVisible(visible, false)
     }
 
     private fun updateDrawableBounds() {
