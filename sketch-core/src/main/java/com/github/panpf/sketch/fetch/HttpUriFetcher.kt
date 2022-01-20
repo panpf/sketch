@@ -4,6 +4,7 @@ import android.webkit.MimeTypeMap
 import androidx.annotation.VisibleForTesting
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -194,8 +195,9 @@ class HttpUriFetcher(
                 )
             }
 
-            if (request.depth >= RequestDepth.LOCAL) {
-                throw RequestDepthException(request, request.depth, request.depthFrom)
+            val requestDepth = request.depth
+            if (requestDepth != null && requestDepth >= RequestDepth.LOCAL) {
+                throw RequestDepthException(request, requestDepth, request.depthFrom)
             } else {
                 return null
             }
@@ -266,8 +268,9 @@ class HttpUriFetcher(
         }
 
         companion object {
-            fun from(sketch: Sketch, request: DownloadRequest): HttpDiskCacheHelper? =
-                if (request.networkContentDiskCachePolicy.isReadOrWrite) {
+            fun from(sketch: Sketch, request: DownloadRequest): HttpDiskCacheHelper? {
+                val cachePolicy = request.networkContentDiskCachePolicy ?: ENABLED
+                return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
                     val encodedDataDiskCacheKey =
                         diskCache.encodeKey(request.networkContentDiskCacheKey)
@@ -280,11 +283,13 @@ class HttpUriFetcher(
                         diskCache = diskCache,
                         encodedDataDiskCacheKey = encodedDataDiskCacheKey,
                         encodedContentTypeDiskCacheKey = encodedContentTypeDiskCacheKey,
-                        diskCachePolicy = diskCachePolicy,
+                        diskCachePolicy = cachePolicy,
                     )
                 } else {
                     null
                 }
+            }
+
         }
     }
 }

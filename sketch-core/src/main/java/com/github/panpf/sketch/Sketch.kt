@@ -1,7 +1,6 @@
 package com.github.panpf.sketch
 
 import android.content.Context
-import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.cache.BitmapPool
@@ -13,16 +12,16 @@ import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemorySizeCalculator
 import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.DrawableDecodeResult
+import com.github.panpf.sketch.decode.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
 import com.github.panpf.sketch.decode.internal.DecodeInterceptor
-import com.github.panpf.sketch.decode.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrectInterceptor
 import com.github.panpf.sketch.decode.internal.SizeInterceptor
-import com.github.panpf.sketch.decode.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -33,17 +32,23 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.DisplayData
+import com.github.panpf.sketch.request.DisplayOptions
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.DownloadData
+import com.github.panpf.sketch.request.DownloadOptions
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.LoadData
+import com.github.panpf.sketch.request.LoadOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.internal.DefaultOptionsDisplayRequestInterceptor
+import com.github.panpf.sketch.request.internal.DefaultOptionsDownloadInterceptor
+import com.github.panpf.sketch.request.internal.DefaultOptionsLoadInterceptor
 import com.github.panpf.sketch.request.internal.DisplayEngineInterceptor
 import com.github.panpf.sketch.request.internal.DisplayExecutor
 import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
@@ -76,6 +81,9 @@ class Sketch private constructor(
     _displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>>?,
     _bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>>?,
     _drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>?,
+    val defaultDisplayOptions: DisplayOptions?,
+    val defaultLoadOptions: LoadOptions?,
+    val defaultDownloadOptions: DownloadOptions?,
 ) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
@@ -105,14 +113,21 @@ class Sketch private constructor(
             addBitmapDecoder(XmlDrawableBitmapDecoder.Factory())
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
-            // todo 支持 svg
         }.build()
+
     val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>> =
-        (_downloadInterceptors ?: listOf()) + DownloadEngineInterceptor()
+        (_downloadInterceptors ?: listOf()) +
+                DefaultOptionsDownloadInterceptor(defaultDownloadOptions) +
+                DownloadEngineInterceptor()
     val loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>> =
-        (_loadInterceptors ?: listOf()) + LoadEngineInterceptor()
+        (_loadInterceptors ?: listOf()) +
+                DefaultOptionsLoadInterceptor(defaultLoadOptions) +
+                LoadEngineInterceptor()
     val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
-        (_displayInterceptors ?: listOf()) + DisplayEngineInterceptor()
+        (_displayInterceptors ?: listOf()) +
+                DefaultOptionsDisplayRequestInterceptor(defaultDisplayOptions) +
+                DisplayEngineInterceptor()
+
     val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =
         (_bitmapDecodeInterceptors ?: listOf()) +
                 BitmapResultCacheInterceptor() +
@@ -288,6 +303,9 @@ class Sketch private constructor(
             null
         private var drawableDecodeInterceptors: MutableList<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>? =
             null
+        private var defaultDisplayOptions: DisplayOptions? = null
+        private var defaultLoadOptions: LoadOptions? = null
+        private var defaultDownloadOptions: DownloadOptions? = null
 
         fun logger(logger: Logger?): Builder = apply {
             this.logger = logger
@@ -354,6 +372,18 @@ class Sketch private constructor(
                     }
             }
 
+        fun defaultDisplayOptions(defaultDisplayOptions: DisplayOptions): Builder = apply {
+            this.defaultDisplayOptions = defaultDisplayOptions
+        }
+
+        fun defaultLoadOptions(defaultLoadOptions: DisplayOptions): Builder = apply {
+            this.defaultLoadOptions = defaultLoadOptions
+        }
+
+        fun defaultDownloadOptions(defaultDownloadOptions: DisplayOptions): Builder = apply {
+            this.defaultDownloadOptions = defaultDownloadOptions
+        }
+
         fun build(): Sketch = Sketch(
             _context = appContext,
             _logger = logger,
@@ -367,6 +397,9 @@ class Sketch private constructor(
             _displayInterceptors = displayInterceptors,
             _bitmapDecodeInterceptors = bitmapDecodeInterceptors,
             _drawableDecodeInterceptors = drawableDecodeInterceptors,
+            defaultDisplayOptions = defaultDisplayOptions,
+            defaultLoadOptions = defaultLoadOptions,
+            defaultDownloadOptions = defaultDownloadOptions,
         )
     }
 }

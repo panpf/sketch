@@ -20,7 +20,6 @@ import com.github.panpf.sketch.decode.Resize.Scope
 import com.github.panpf.sketch.decode.Resize.Scope.All
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.request.LoadRequest.Builder
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 
@@ -102,7 +101,7 @@ interface LoadRequest : DownloadRequest {
     /**
      * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
      */
-    val bitmapResultDiskCachePolicy: CachePolicy
+    val bitmapResultDiskCachePolicy: CachePolicy?
 
     fun newLoadRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -407,11 +406,11 @@ interface LoadRequest : DownloadRequest {
         fun build(): LoadRequest = if (VERSION.SDK_INT >= VERSION_CODES.O) {
             LoadRequestImpl(
                 uriString = uriString,
-                _depth = depth,
+                depth = depth,
                 parameters = parametersBuilder?.build(),
                 httpHeaders = httpHeaders?.toMap(),
-                _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                 maxSize = maxSize,
                 bitmapConfig = bitmapConfig,
                 colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
@@ -426,11 +425,11 @@ interface LoadRequest : DownloadRequest {
         } else {
             LoadRequestImpl(
                 uriString = uriString,
-                _depth = depth,
+                depth = depth,
                 parameters = parametersBuilder?.build(),
                 httpHeaders = httpHeaders?.toMap(),
-                _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
-                _bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+                networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+                bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                 maxSize = maxSize,
                 bitmapConfig = bitmapConfig,
                 preferQualityOverSpeed = preferQualityOverSpeed,
@@ -446,11 +445,11 @@ interface LoadRequest : DownloadRequest {
 
     private class LoadRequestImpl(
         override val uriString: String,
-        _depth: RequestDepth?,
+        override val depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _networkContentDiskCachePolicy: CachePolicy?,
-        _bitmapResultDiskCachePolicy: CachePolicy?,
+        override val networkContentDiskCachePolicy: CachePolicy?,
+        override val bitmapResultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
@@ -466,11 +465,11 @@ interface LoadRequest : DownloadRequest {
         @RequiresApi(VERSION_CODES.O)
         constructor(
             uriString: String,
-            _depth: RequestDepth?,
+            depth: RequestDepth?,
             parameters: Parameters?,
             httpHeaders: Map<String, String>?,
-            _networkContentDiskCachePolicy: CachePolicy?,
-            _bitmapResultDiskCachePolicy: CachePolicy?,
+            networkContentDiskCachePolicy: CachePolicy?,
+            bitmapResultDiskCachePolicy: CachePolicy?,
             maxSize: MaxSize?,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
@@ -483,11 +482,11 @@ interface LoadRequest : DownloadRequest {
             progressListener: ProgressListener<ImageRequest>?
         ) : this(
             uriString = uriString,
-            _depth = _depth,
+            depth = depth,
             parameters = parameters,
             httpHeaders = httpHeaders,
-            _networkContentDiskCachePolicy = _networkContentDiskCachePolicy,
-            _bitmapResultDiskCachePolicy = _bitmapResultDiskCachePolicy,
+            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
@@ -510,12 +509,7 @@ interface LoadRequest : DownloadRequest {
 
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
-        override val depth: RequestDepth = _depth ?: NETWORK
-
         override val networkContentDiskCacheKey: String = uriString
-
-        override val networkContentDiskCachePolicy: CachePolicy =
-            _networkContentDiskCachePolicy ?: CachePolicy.ENABLED
 
         override val cacheKey: String by lazy {
             buildString {
@@ -526,23 +520,23 @@ interface LoadRequest : DownloadRequest {
             }
         }
 
-        override val bitmapResultDiskCachePolicy: CachePolicy =
-            _bitmapResultDiskCachePolicy ?: CachePolicy.ENABLED
-
         private val qualityKey: String? by lazy { newQualityKey() }
 
         override val key: String by lazy {
             buildString {
                 append("Load")
                 append("_").append(uriString)
+                depth?.let {
+                    append("_").append("RequestDepth(${it})")
+                }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append(it)
                 }
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                if (networkContentDiskCachePolicy != CachePolicy.ENABLED) {
-                    append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                networkContentDiskCachePolicy?.let {
+                    append("_").append("networkContentDiskCachePolicy($it)")
                 }
                 maxSize?.let {
                     append("_").append(it.cacheKey)
@@ -571,8 +565,8 @@ interface LoadRequest : DownloadRequest {
                 if (disabledCorrectExifOrientation == true) {
                     append("_").append("disabledCorrectExifOrientation")
                 }
-                if (bitmapResultDiskCachePolicy != CachePolicy.ENABLED) {
-                    append("_").append("bitmapResultDiskCachePolicy($bitmapResultDiskCachePolicy)")
+                bitmapResultDiskCachePolicy?.let {
+                    append("_").append("bitmapResultDiskCachePolicy($it)")
                 }
             }
         }

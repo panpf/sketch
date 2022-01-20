@@ -3,7 +3,6 @@ package com.github.panpf.sketch.request
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.DownloadRequest.Builder
-import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
 
@@ -26,7 +25,7 @@ interface DownloadRequest : ImageRequest {
     val networkContentDiskCacheKey: String
 
     val httpHeaders: Map<String, String>?
-    val networkContentDiskCachePolicy: CachePolicy
+    val networkContentDiskCachePolicy: CachePolicy?
     val progressListener: ProgressListener<ImageRequest>?
 
     fun newDownloadRequest(
@@ -186,10 +185,10 @@ interface DownloadRequest : ImageRequest {
 
         fun build(): DownloadRequest = DownloadRequestImpl(
             uriString = uriString,
-            _depth = depth,
+            depth = depth,
             parameters = parametersBuilder?.build(),
             httpHeaders = httpHeaders?.toMap(),
-            _networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
             listener = listener,
             progressListener = progressListener,
         )
@@ -197,35 +196,33 @@ interface DownloadRequest : ImageRequest {
 
     private class DownloadRequestImpl(
         override val uriString: String,
-        _depth: RequestDepth?,
+        override val depth: RequestDepth?,
         override val parameters: Parameters?,
         override val httpHeaders: Map<String, String>?,
-        _networkContentDiskCachePolicy: CachePolicy?,
+        override val networkContentDiskCachePolicy: CachePolicy?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : DownloadRequest {
 
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
-        override val depth: RequestDepth = _depth ?: NETWORK
-
         override val networkContentDiskCacheKey: String = uriString
-
-        override val networkContentDiskCachePolicy: CachePolicy =
-            _networkContentDiskCachePolicy ?: CachePolicy.ENABLED
 
         override val key: String by lazy {
             buildString {
                 append("Download")
                 append("_").append(uriString)
+                depth?.let {
+                    append("_").append("RequestDepth(${it})")
+                }
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append(it)
                 }
                 httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append("httpHeaders(").append(it.toString()).append(")")
                 }
-                if (networkContentDiskCachePolicy != CachePolicy.ENABLED) {
-                    append("_").append("networkContentDiskCachePolicy($networkContentDiskCachePolicy)")
+                networkContentDiskCachePolicy?.let {
+                    append("_").append("networkContentDiskCachePolicy($it)")
                 }
             }
         }

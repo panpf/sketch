@@ -31,6 +31,13 @@ interface DisplayOptions : LoadOptions {
     val placeholderImage: StateImage?
     val errorImage: StateImage?
 
+    override fun isEmpty(): Boolean =
+        super.isEmpty()
+                && disabledAnimationDrawable == null
+                && bitmapMemoryCachePolicy == null
+                && placeholderImage == null
+                && errorImage == null
+
     fun newDisplayOptionsBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
@@ -68,6 +75,7 @@ interface DisplayOptions : LoadOptions {
 
         private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
+
         @RequiresApi(VERSION_CODES.O)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null

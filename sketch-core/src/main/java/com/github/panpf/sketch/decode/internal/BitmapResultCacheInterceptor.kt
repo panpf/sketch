@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -44,6 +46,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
     private class ResultCacheHelper(
         private val request: LoadRequest,
         private val diskCache: DiskCache,
+        private val cachePolicy: CachePolicy,
         private val logger: Logger,
         val encodedBitmapDataDiskCacheKey: String,
         val encodedMetaDataDiskCacheKey: String,
@@ -55,7 +58,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
 
         @WorkerThread
         fun read(): BitmapDecodeResult? =
-            if (request.bitmapResultDiskCachePolicy.readEnabled) {
+            if (cachePolicy.readEnabled) {
                 val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
                 val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
                 try {
@@ -96,7 +99,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
             }
 
         fun write(result: BitmapDecodeResult) {
-            if (request.bitmapResultDiskCachePolicy.writeEnabled && result.cacheToDisk) {
+            if (cachePolicy.writeEnabled && result.cacheToDisk) {
                 val bitmapDataEditor = diskCache.edit(encodedBitmapDataDiskCacheKey)
                 val metaDataEditor = diskCache.edit(encodedMetaDataDiskCacheKey)
                 try {
@@ -128,7 +131,8 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
 
             @JvmStatic
             fun from(sketch: Sketch, request: LoadRequest): ResultCacheHelper? {
-                if (!request.bitmapResultDiskCachePolicy.isReadOrWrite) return null
+                val cachePolicy = request.bitmapResultDiskCachePolicy ?: ENABLED
+                if (!cachePolicy.isReadOrWrite) return null
                 val bitmapDataDiskCacheKey = request.cacheKey
                 val diskCache: DiskCache = sketch.diskCache
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
@@ -137,6 +141,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                 return ResultCacheHelper(
                     request,
                     diskCache,
+                    cachePolicy,
                     sketch.logger,
                     encodedBitmapDataDiskCacheKey,
                     encodedMetaDataDiskCacheKey

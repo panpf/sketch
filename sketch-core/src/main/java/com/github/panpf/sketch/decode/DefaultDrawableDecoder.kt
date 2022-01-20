@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
@@ -44,7 +45,10 @@ class DefaultDrawableDecoder(
                         fetchResult = fetchResult
                     ).proceed(request).run {
                         val drawable = memoryCacheHelper?.write(this)
-                            ?: BitmapDrawable(sketch.appContext.resources, this.bitmap) // todo 依然返回 SketchBitmapDrawable
+                            ?: BitmapDrawable(
+                                sketch.appContext.resources,
+                                this.bitmap
+                            ) // todo 依然返回 SketchBitmapDrawable
                         DrawableDecodeResult(drawable, this.info, this.from)
                     }
             } finally {
@@ -81,6 +85,7 @@ class DefaultDrawableDecoder(
             }
 
             val cachedRefBitmap = memoryCache[bitmapMemoryCacheKey]
+            val requestDepth = request.depth
             return when {
                 cachedRefBitmap != null -> {
                     logger.d(MODULE) {
@@ -91,8 +96,8 @@ class DefaultDrawableDecoder(
                     val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
                     DrawableDecodeResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
                 }
-                request.depth >= RequestDepth.MEMORY -> {
-                    throw RequestDepthException(request, request.depth, request.depthFrom)
+                requestDepth != null && requestDepth >= RequestDepth.MEMORY -> {
+                    throw RequestDepthException(request, requestDepth, request.depthFrom)
                 }
                 else -> {
                     null
@@ -120,10 +125,11 @@ class DefaultDrawableDecoder(
 
             @JvmStatic
             fun from(sketch: Sketch, request: DisplayRequest): BitmapMemoryCacheHelper? {
-                return if (request.bitmapMemoryCachePolicy.isReadOrWrite) {
+                val cachePolicy = request.bitmapMemoryCachePolicy ?: ENABLED
+                return if (cachePolicy.isReadOrWrite) {
                     BitmapMemoryCacheHelper(
                         sketch.memoryCache,
-                        request.bitmapMemoryCachePolicy,
+                        cachePolicy,
                         request.cacheKey,
                         sketch.logger,
                         request,

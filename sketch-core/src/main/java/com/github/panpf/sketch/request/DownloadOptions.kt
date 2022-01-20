@@ -9,6 +9,9 @@ interface DownloadOptions : ImageOptions {
     val httpHeaders: Map<String, String>?   //todo 搞一个专门的 header，因为需要 addHeader 和 setHeader 两种
     val networkContentDiskCachePolicy: CachePolicy?
 
+    override fun isEmpty(): Boolean =
+        super.isEmpty() && httpHeaders == null && networkContentDiskCachePolicy == null
+
     fun newDownloadOptions(
         configBlock: (Builder.() -> Unit)? = null
     ): DownloadOptions = Builder(this).apply {

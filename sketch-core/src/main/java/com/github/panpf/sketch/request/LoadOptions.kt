@@ -35,6 +35,17 @@ interface LoadOptions : DownloadOptions {
     val disabledCorrectExifOrientation: Boolean?
     val bitmapResultDiskCachePolicy: CachePolicy?
 
+    override fun isEmpty(): Boolean =
+        super.isEmpty()
+                && maxSize == null
+                && bitmapConfig == null
+                && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
+                && preferQualityOverSpeed == null
+                && transformations == null
+                && disabledBitmapPool == null
+                && disabledCorrectExifOrientation == null
+                && bitmapResultDiskCachePolicy == null
+
     fun newLoadOptionsBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {

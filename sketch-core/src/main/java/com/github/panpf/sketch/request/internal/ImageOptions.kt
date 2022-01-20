@@ -9,4 +9,6 @@ interface ImageOptions {
 
     val depthFrom: String?
         get() = parameters?.value(ImageRequest.REQUEST_DEPTH_FROM)
+
+    open fun isEmpty(): Boolean = depth == null && parameters?.isEmpty() != false
 }

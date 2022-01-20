@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.bean
 
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,5 +13,6 @@ class ImageDetail(
     @SerialName("middenUrl") val middenUrl: String?,
     @SerialName("placeholderImageMemoryKey") val placeholderImageMemoryKey: String?,
 ) : Parcelable {
+    @IgnoredOnParcel
     val firstMiddenUrl: String = middenUrl ?: url
 }
