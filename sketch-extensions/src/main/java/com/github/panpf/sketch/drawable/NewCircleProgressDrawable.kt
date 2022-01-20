@@ -13,7 +13,6 @@ import android.graphics.drawable.Animatable
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
-import androidx.core.animation.addListener
 import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.github.panpf.sketch.util.format
@@ -28,8 +27,7 @@ class NewCircleProgressDrawable(
 ) : ProgressDrawable(), Animatable {
 
     companion object {
-        private val FULL_GROUP_ROTATION: Float = 3.0f * 360
-        private const val NUM_POINTS = 5
+        private const val TURNS_COUNT = 5
     }
 
     private val backgroundPaint = Paint().apply {
@@ -120,10 +118,12 @@ class NewCircleProgressDrawable(
 
     private fun drawWaiting(canvas: Canvas, bounds: Rect, cx: Float, cy: Float, radius: Float) {
         canvas.rotate(waitingRotation, cx, cy)
+//        canvas.rotate(330f, cx, cy)
 
         // _progress
         progressOval.set(cx - radius, cy - radius, cx + radius, cy + radius)
         val startAngle = waitingArcStartAngle
+//        val startAngle = 270f
 //        val startAngle = 90f
         val sweepAngle = 100f
 //        val sweepAngle = (startAngle + 90)
@@ -133,10 +133,6 @@ class NewCircleProgressDrawable(
             sweepAngle,
             false,
             progressPaint
-        )
-        Log.d(
-            "CircleProgressDrawable",
-            "startAngle=$startAngle, sweepAngle=$sweepAngle, waitingRotation=$waitingRotation"
         )
     }
 
@@ -190,24 +186,31 @@ class NewCircleProgressDrawable(
     override fun start() {
         if (_progress == 0f) {
             waitingAnimator?.cancel()
+            mRotationCount = 0
+            var lastValue = 0f
             waitingAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
                 addUpdateListener {
                     if (isActive()) {
-                        val value = animatedValue as Float
-                        waitingArcStartAngle = ((waitingInterpolator.getInterpolation(value) * 360f))
-                        val renderProgress = value
-                        waitingRotation =
-                            ((FULL_GROUP_ROTATION / NUM_POINTS) * renderProgress) + (FULL_GROUP_ROTATION * (mRotationCount / NUM_POINTS))
+                        val value = (animatedValue as Float).format(2)
+                        // 为什么不用 AnimatorListener.onAnimationRepeat 方法来计算圈数，因为它有时会在到达 1.0 时提前回调 onAnimationRepeat 导致圈数提前加 1
+                        // 为什么不直接判断 value == 1.0f，因为 value 可能到 0.99 就结束了
+                        if (value < lastValue) {
+                            mRotationCount = (mRotationCount + 1) % TURNS_COUNT
+                        }
+                        waitingArcStartAngle =
+                            ((waitingInterpolator.getInterpolation(value) * 360f)).format(2)
+                        val rotationDegreesOfTurn = 360f / TURNS_COUNT
+                        waitingRotation = (((mRotationCount * rotationDegreesOfTurn) + (value * rotationDegreesOfTurn)) % 360f).format(2)
+                        Log.d(
+                            "CircleProgressDrawable",
+                            "value=$value, startAngle=$waitingArcStartAngle, waitingRotation=$waitingRotation, mRotationCount=$mRotationCount"
+                        )
+                        lastValue = value
                     } else {
                         waitingAnimator?.cancel()
                     }
                 }
-                addListener(onRepeat = {
-                    mRotationCount = (mRotationCount + 1) % NUM_POINTS
-                }, onStart = {
-                    mRotationCount = 0
-                })
-                duration = 2000
+                duration = 1600
                 interpolator = LinearInterpolator()
                 repeatMode = ValueAnimator.RESTART
                 repeatCount = ValueAnimator.INFINITE
