@@ -74,7 +74,7 @@ class ArcProgressDrawable(
                     it?.cancel()
                 }
             }
-            duration = 150
+            duration = 300
         }
         progressAnimator?.start()
     }

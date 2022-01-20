@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.github.panpf.sketch.drawable.ArcProgressDrawable
 import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
+import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult.Error
 import com.github.panpf.sketch.request.DisplayResult.Success
@@ -196,11 +197,10 @@ fun ViewAbilityOwner.removeProgressIndicator() {
 }
 
 fun ViewAbilityOwner.showArcProgressIndicator(
-    sizeDp: Float = 50f,
+    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
     color: Int = Color.WHITE,
     backgroundColor: Int = 0x44000000,
 ) {
-    val size = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     val progressDrawable = ArcProgressDrawable(
         size = size,
         backgroundColor = backgroundColor,
@@ -214,3 +214,9 @@ fun ViewAbilityOwner.showArcProgressIndicator(
 fun ViewAbilityOwner.showMaskProgressIndicator(
     @ColorInt maskColor: Int = MaskProgressDrawable.DEFAULT_MASK_COLOR,
 ) = showProgressIndicator(MaskProgressDrawable(maskColor))
+
+fun ViewAbilityOwner.showRingProgressIndicator(
+    size: Int = (50f * Resources.getSystem().displayMetrics.density + 0.5f).toInt(),
+    ringWidth: Float = size * 0.1f,
+    @ColorInt ringColor: Int = Color.WHITE,
+) = showProgressIndicator(RingProgressDrawable(size, ringWidth, ringColor))
