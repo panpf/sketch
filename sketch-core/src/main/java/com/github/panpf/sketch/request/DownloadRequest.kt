@@ -60,22 +60,30 @@ interface DownloadRequest : ImageRequest {
             this.progressListener = request.progressListener
         }
 
-        fun options(options: DownloadOptions): Builder = apply {
-            options.depth?.let {
-                this.depth = it
-            }
-            options.parameters?.let {
-                it.forEach { entry ->
-                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+        fun options(options: DownloadOptions, requestFirst: Boolean = false): Builder = apply {
+            if (!requestFirst || this.depth == null) {
+                options.depth?.let {
+                    this.depth = it
                 }
             }
-            options.httpHeaders?.let {
+            options.parameters?.takeIf { it.isNotEmpty() }?.let {
                 it.forEach { entry ->
-                    setHttpHeader(entry.key, entry.value)
+                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
+                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                    }
                 }
             }
-            options.networkContentDiskCachePolicy?.let {
-                this.networkContentDiskCachePolicy = it
+            options.httpHeaders?.takeIf { it.isNotEmpty() }?.let {
+                it.forEach { entry ->
+                    if (!requestFirst || httpHeaders?.get(entry.key) == null) {
+                        setHttpHeader(entry.key, entry.value)
+                    }
+                }
+            }
+            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
+                options.networkContentDiskCachePolicy?.let {
+                    this.networkContentDiskCachePolicy = it
+                }
             }
         }
 

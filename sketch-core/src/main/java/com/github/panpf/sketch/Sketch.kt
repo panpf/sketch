@@ -150,7 +150,6 @@ class Sketch private constructor(
             ?: LruBitmapPool(appContext, memorySizeCalculator.bitmapPoolSize, logger)
         bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)
 
-        // todo 增加 defaultOptions
         if (diskCache is LruDiskCache) {
             val wrapperErrorCallback = diskCache.errorCallback
             diskCache.errorCallback =

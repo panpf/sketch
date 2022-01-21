@@ -160,53 +160,72 @@ interface LoadRequest : DownloadRequest {
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
         }
 
-        fun options(options: LoadOptions): Builder = apply {
-            options.depth?.let {
-                this.depth = it
-            }
-            options.parameters?.let {
-                it.forEach { entry ->
-                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+        fun options(options: LoadOptions, requestFirst: Boolean = false): Builder = apply {
+            if (!requestFirst || this.depth == null) {
+                options.depth?.let {
+                    this.depth = it
                 }
             }
-            options.httpHeaders?.let {
+            options.parameters?.takeIf { it.isNotEmpty() }?.let {
                 it.forEach { entry ->
-                    setHttpHeader(entry.key, entry.value)
+                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
+                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                    }
                 }
             }
-            options.networkContentDiskCachePolicy?.let {
-                this.networkContentDiskCachePolicy = it
+            options.httpHeaders?.takeIf { it.isNotEmpty() }?.let {
+                it.forEach { entry ->
+                    if (!requestFirst || httpHeaders?.get(entry.key) == null) {
+                        setHttpHeader(entry.key, entry.value)
+                    }
+                }
+            }
+            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
+                options.networkContentDiskCachePolicy?.let {
+                    this.networkContentDiskCachePolicy = it
+                }
             }
 
-            options.maxSize?.let {
-                this.maxSize = it
-            }
-            options.bitmapConfig?.let {
-                this.bitmapConfig = it
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                options.colorSpace?.let {
-                    this.colorSpace = it
+            if (!requestFirst || this.maxSize == null) {
+                options.maxSize?.let {
+                    this.maxSize = it
                 }
             }
-            @Suppress("DEPRECATION")
-            options.preferQualityOverSpeed?.let {
-                this.preferQualityOverSpeed = it
+            if (!requestFirst || this.bitmapConfig == null) {
+                options.bitmapConfig?.let {
+                    this.bitmapConfig = it
+                }
             }
-            options.resize?.let {
-                this.resize = it
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                if (!requestFirst || this.colorSpace == null) {
+                    options.colorSpace?.let {
+                        this.colorSpace = it
+                    }
+                }
             }
-            options.transformations?.let {
-                transformations(it)
+            if (!requestFirst || this.preferQualityOverSpeed == null) {
+                @Suppress("DEPRECATION")
+                options.preferQualityOverSpeed?.let {
+                    this.preferQualityOverSpeed = it
+                }
             }
-            options.disabledBitmapPool?.let {
-                this.disabledBitmapPool = it
+            if (!requestFirst || this.resize == null) {
+                options.resize?.let {
+                    this.resize = it
+                }
             }
-            options.bitmapResultDiskCachePolicy?.let {
-                this.bitmapResultDiskCachePolicy = it
+            options.transformations?.takeIf { it.isNotEmpty() }?.let {
+                addTransformations(it)
             }
-            options.bitmapResultDiskCachePolicy?.let {
-                this.bitmapResultDiskCachePolicy = it
+            if (!requestFirst || this.disabledBitmapPool == null) {
+                options.disabledBitmapPool?.let {
+                    this.disabledBitmapPool = it
+                }
+            }
+            if (!requestFirst || this.bitmapResultDiskCachePolicy == null) {
+                options.bitmapResultDiskCachePolicy?.let {
+                    this.bitmapResultDiskCachePolicy = it
+                }
             }
         }
 
@@ -353,16 +372,37 @@ interface LoadRequest : DownloadRequest {
             this.resize = Resize(width, height, precision, scale, scope)
         }
 
+
+
         fun transformations(transformations: List<Transformation>?): Builder = apply {
-            this.transformations = (this.transformations ?: LinkedHashSet()).apply {
-                transformations?.forEach {
-                    add(it)
-                }
-            }
+            this.transformations = transformations?.toMutableSet()
         }
 
         fun transformations(vararg transformations: Transformation): Builder = apply {
-            transformations(transformations.toList())
+            this.transformations = transformations.toMutableSet()
+        }
+
+        fun addTransformations(transformations: List<Transformation>): Builder = apply {
+            val newTransformations = transformations.filter { newTransformation ->
+                this.transformations?.find { it.cacheKey == newTransformation.cacheKey } == null
+            }
+            this.transformations = (this.transformations ?: HashSet()).apply {
+                addAll(newTransformations)
+            }
+        }
+
+        fun addTransformations(vararg transformations: Transformation): Builder = apply {
+            addTransformations(transformations.toList())
+        }
+
+        fun removeTransformations(removeTransformations: List<Transformation>): Builder = apply {
+            this.transformations = this.transformations?.filter { oldTransformation ->
+                removeTransformations.find { it.cacheKey == oldTransformation.cacheKey } == null
+            }?.toMutableSet()
+        }
+
+        fun removeTransformations(vararg removeTransformations: Transformation): Builder = apply {
+            removeTransformations(removeTransformations.toList())
         }
 
         fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder = apply {

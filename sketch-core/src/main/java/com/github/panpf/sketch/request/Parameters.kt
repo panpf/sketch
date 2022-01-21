@@ -132,6 +132,8 @@ class Parameters private constructor(
             map.remove(key)
         }
 
+        fun exist(key: String): Boolean = map[key] != null
+
         /** Create a new [Parameters] instance. */
         fun build() = Parameters(map.toMap())
     }

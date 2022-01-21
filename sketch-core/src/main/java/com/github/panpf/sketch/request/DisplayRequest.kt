@@ -114,7 +114,7 @@ interface DisplayRequest : LoadRequest {
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
         private var resize: Resize? = null
-        private var transformations: List<Transformation>? = null
+        private var transformations: MutableSet<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var disabledCorrectExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
@@ -157,7 +157,7 @@ interface DisplayRequest : LoadRequest {
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resize = request.resize
-            this.transformations = request.transformations
+            this.transformations = request.transformations?.toMutableSet()
             this.disabledBitmapPool = request.disabledBitmapPool
             this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
@@ -168,66 +168,93 @@ interface DisplayRequest : LoadRequest {
             this.lifecycle = request.lifecycle
         }
 
-        fun options(options: DisplayOptions): Builder = apply {
-            options.depth?.let {
-                this.depth = it
+        fun options(options: DisplayOptions, requestFirst: Boolean = false): Builder = apply {
+            if (!requestFirst || this.depth == null) {
+                options.depth?.let {
+                    this.depth = it
+                }
             }
             options.parameters?.takeIf { it.isNotEmpty() }?.let {
                 it.forEach { entry ->
-                    setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                    if (!requestFirst || parametersBuilder?.exist(entry.first) != true) {
+                        setParameter(entry.first, entry.second.value, entry.second.cacheKey)
+                    }
                 }
             }
             options.httpHeaders?.takeIf { it.isNotEmpty() }?.let {
                 it.forEach { entry ->
-                    setHttpHeader(entry.key, entry.value)
+                    if (!requestFirst || httpHeaders?.get(entry.key) == null) {
+                        setHttpHeader(entry.key, entry.value)
+                    }
                 }
             }
-            options.networkContentDiskCachePolicy?.let {
-                this.networkContentDiskCachePolicy = it
+            if (!requestFirst || this.networkContentDiskCachePolicy == null) {
+                options.networkContentDiskCachePolicy?.let {
+                    this.networkContentDiskCachePolicy = it
+                }
             }
 
-            options.maxSize?.let {
-                this.maxSize = it
+            if (!requestFirst || this.maxSize == null) {
+                options.maxSize?.let {
+                    this.maxSize = it
+                }
             }
-            options.bitmapConfig?.let {
-                this.bitmapConfig = it
+            if (!requestFirst || this.bitmapConfig == null) {
+                options.bitmapConfig?.let {
+                    this.bitmapConfig = it
+                }
             }
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                options.colorSpace?.let {
-                    this.colorSpace = it
+                if (!requestFirst || this.colorSpace == null) {
+                    options.colorSpace?.let {
+                        this.colorSpace = it
+                    }
                 }
             }
-            @Suppress("DEPRECATION")
-            options.preferQualityOverSpeed?.let {
-                this.preferQualityOverSpeed = it
+            if (!requestFirst || this.preferQualityOverSpeed == null) {
+                @Suppress("DEPRECATION")
+                options.preferQualityOverSpeed?.let {
+                    this.preferQualityOverSpeed = it
+                }
             }
-            options.resize?.let {
-                this.resize = it
+            if (!requestFirst || this.resize == null) {
+                options.resize?.let {
+                    this.resize = it
+                }
             }
             options.transformations?.takeIf { it.isNotEmpty() }?.let {
-                transformations(it)
+                addTransformations(it)
             }
-            options.disabledBitmapPool?.let {
-                this.disabledBitmapPool = it
+            if (!requestFirst || this.disabledBitmapPool == null) {
+                options.disabledBitmapPool?.let {
+                    this.disabledBitmapPool = it
+                }
             }
-            options.bitmapResultDiskCachePolicy?.let {
-                this.bitmapResultDiskCachePolicy = it
-            }
-            options.bitmapResultDiskCachePolicy?.let {
-                this.bitmapResultDiskCachePolicy = it
+            if (!requestFirst || this.bitmapResultDiskCachePolicy == null) {
+                options.bitmapResultDiskCachePolicy?.let {
+                    this.bitmapResultDiskCachePolicy = it
+                }
             }
 
-            options.disabledAnimationDrawable?.let {
-                this.disabledAnimationDrawable = it
+            if (!requestFirst || this.disabledAnimationDrawable == null) {
+                options.disabledAnimationDrawable?.let {
+                    this.disabledAnimationDrawable = it
+                }
             }
-            options.bitmapMemoryCachePolicy?.let {
-                this.bitmapMemoryCachePolicy = it
+            if (!requestFirst || this.bitmapMemoryCachePolicy == null) {
+                options.bitmapMemoryCachePolicy?.let {
+                    this.bitmapMemoryCachePolicy = it
+                }
             }
-            options.placeholderImage?.let {
-                this.placeholderImage = it
+            if (!requestFirst || this.placeholderImage == null) {
+                options.placeholderImage?.let {
+                    this.placeholderImage = it
+                }
             }
-            options.errorImage?.let {
-                this.errorImage = it
+            if (!requestFirst || this.errorImage == null) {
+                options.errorImage?.let {
+                    this.errorImage = it
+                }
             }
         }
 
@@ -280,6 +307,7 @@ interface DisplayRequest : LoadRequest {
         /**
          * Add a header for any network operations performed by this request.
          */
+        // todo add it's the same as set
         fun addHttpHeader(name: String, value: String): Builder = apply {
             this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
                 put(name, value)
@@ -391,11 +419,34 @@ interface DisplayRequest : LoadRequest {
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
-            this.transformations = transformations
+            this.transformations = transformations?.toMutableSet()
         }
 
         fun transformations(vararg transformations: Transformation): Builder = apply {
-            this.transformations = transformations.toList()
+            this.transformations = transformations.toMutableSet()
+        }
+
+        fun addTransformations(transformations: List<Transformation>): Builder = apply {
+            val newTransformations = transformations.filter { newTransformation ->
+                this.transformations?.find { it.cacheKey == newTransformation.cacheKey } == null
+            }
+            this.transformations = (this.transformations ?: HashSet()).apply {
+                addAll(newTransformations)
+            }
+        }
+
+        fun addTransformations(vararg transformations: Transformation): Builder = apply {
+            addTransformations(transformations.toList())
+        }
+
+        fun removeTransformations(removeTransformations: List<Transformation>): Builder = apply {
+            this.transformations = this.transformations?.filter { oldTransformation ->
+                removeTransformations.find { it.cacheKey == oldTransformation.cacheKey } == null
+            }?.toMutableSet()
+        }
+
+        fun removeTransformations(vararg removeTransformations: Transformation): Builder = apply {
+            removeTransformations(removeTransformations.toList())
         }
 
         fun disabledBitmapPool(disabledBitmapPool: Boolean? = true): Builder = apply {
@@ -539,7 +590,7 @@ interface DisplayRequest : LoadRequest {
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resize = resize,
-                    transformations = transformations,
+                    transformations = transformations?.toList(),
                     disabledBitmapPool = disabledBitmapPool,
                     disabledCorrectExifOrientation = disabledCorrectExifOrientation,
                     bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
@@ -563,7 +614,7 @@ interface DisplayRequest : LoadRequest {
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resize = resize,
-                    transformations = transformations,
+                    transformations = transformations?.toList(),
                     disabledBitmapPool = disabledBitmapPool,
                     disabledCorrectExifOrientation = disabledCorrectExifOrientation,
                     bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,

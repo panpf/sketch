@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.request.DisplayOptions
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadOptions
 import com.github.panpf.sketch.request.DownloadRequest
@@ -13,8 +12,7 @@ class DefaultOptionsDownloadInterceptor(
     override suspend fun intercept(chain: Chain<DownloadRequest, DownloadData>): DownloadData {
         val request = if (defaultDownloadOptions?.isEmpty() == true) {
             chain.request.newDownloadRequest {
-                // todo 改为 request 优先模式
-                options(defaultDownloadOptions)
+                options(defaultDownloadOptions, requestFirst = true)
             }
         } else {
             chain.request

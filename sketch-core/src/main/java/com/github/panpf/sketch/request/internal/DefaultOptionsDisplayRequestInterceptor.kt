@@ -13,8 +13,7 @@ class DefaultOptionsDisplayRequestInterceptor(
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val request = if (defaultDisplayOptions?.isEmpty() == true) {
             chain.request.newDisplayRequest {
-                // todo 改为 request 优先模式
-                options(defaultDisplayOptions)
+                options(defaultDisplayOptions, requestFirst = true)
             }
         } else {
             chain.request
