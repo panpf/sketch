@@ -75,7 +75,7 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
 
     private suspend fun loadLocalFirstPhotoPath(): String? {
         return withContext(Dispatchers.IO) {
-            val cursor = application1.contentResolver.query(
+            @Suppress("DEPRECATION") val cursor = application1.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(MediaStore.Images.Media.DATA),
                 null,
@@ -85,6 +85,7 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
             var imagePath: String? = null
             cursor?.use {
                 if (cursor.moveToNext()) {
+                    @Suppress("DEPRECATION")
                     imagePath =
                         cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                 }

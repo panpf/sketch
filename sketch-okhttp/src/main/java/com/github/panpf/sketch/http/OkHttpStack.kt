@@ -21,8 +21,13 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
     override fun getResponse(sketch: Sketch, request: DownloadRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
             url(url)
-            request.httpHeaders?.entries?.forEach {
-                header(it.key, it.value)
+            request.httpHeaders?.apply {
+                addList.forEach {
+                    addHeader(it.first, it.second)
+                }
+                setList.forEach {
+                    header(it.first, it.second)
+                }
             }
         }.build()
         return OkHttpResponse(okHttpClient.newCall(httpRequest).execute())

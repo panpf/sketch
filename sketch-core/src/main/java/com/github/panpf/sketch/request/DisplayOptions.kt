@@ -3,7 +3,6 @@ package com.github.panpf.sketch.request
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.DrawableRes
@@ -19,10 +18,23 @@ import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.Resize.Scope
 import com.github.panpf.sketch.decode.Resize.Scope.All
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DisplayRequest.Companion.VIEW_FIXED_SIZE
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
+
+fun DisplayOptions(
+    configBlock: (DisplayOptions.Builder.() -> Unit)? = null
+): DisplayOptions = DisplayOptions.Builder().apply {
+    configBlock?.invoke(this)
+}.build()
+
+fun DisplayOptionsBuilder(
+    configBlock: (DisplayOptions.Builder.() -> Unit)? = null
+): DisplayOptions.Builder = DisplayOptions.Builder().apply {
+    configBlock?.invoke(this)
+}
 
 interface DisplayOptions : LoadOptions {
 
@@ -50,27 +62,12 @@ interface DisplayOptions : LoadOptions {
         configBlock?.invoke(this)
     }.build()
 
-    companion object {
-        fun new(
-            configBlock: (Builder.() -> Unit)? = null
-        ): DisplayOptions = Builder().apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun newBuilder(
-            uri: Uri?,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder().apply {
-            configBlock?.invoke(this)
-        }
-    }
-
     class Builder {
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
 
-        private var httpHeaders: MutableMap<String, String>? = null
+        private var httpHeaders: HttpHeaders.Builder? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
 
         private var maxSize: MaxSize? = null
@@ -95,7 +92,7 @@ interface DisplayOptions : LoadOptions {
         internal constructor(request: DisplayOptions) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
-            this.httpHeaders = request.httpHeaders?.toMutableMap()
+            this.httpHeaders = request.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
             this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
@@ -157,16 +154,16 @@ interface DisplayOptions : LoadOptions {
             this.parametersBuilder?.remove(key)
         }
 
-        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
-            this.httpHeaders = httpHeaders?.toMutableMap()
+        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
+            this.httpHeaders = httpHeaders?.newBuilder()
         }
 
         /**
          * Add a header for any network operations performed by this request.
          */
         fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
-                put(name, value)
+            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
+                add(name, value)
             }
         }
 
@@ -174,7 +171,7 @@ interface DisplayOptions : LoadOptions {
          * Set a header for any network operations performed by this request.
          */
         fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
                 set(name, value)
             }
         }
@@ -183,7 +180,7 @@ interface DisplayOptions : LoadOptions {
          * Remove all network headers with the key [name].
          */
         fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeaders?.remove(name)
+            this.httpHeaders?.removeAll(name)
         }
 
         fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
@@ -358,7 +355,7 @@ interface DisplayOptions : LoadOptions {
                 DisplayOptionsImpl(
                     depth = depth,
                     parameters = parametersBuilder?.build(),
-                    httpHeaders = httpHeaders?.toMap(),
+                    httpHeaders = httpHeaders?.build(),
                     networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                     maxSize = maxSize,
@@ -378,7 +375,7 @@ interface DisplayOptions : LoadOptions {
                 DisplayOptionsImpl(
                     depth = depth,
                     parameters = parametersBuilder?.build(),
-                    httpHeaders = httpHeaders?.toMap(),
+                    httpHeaders = httpHeaders?.build(),
                     networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                     maxSize = maxSize,
@@ -400,7 +397,7 @@ interface DisplayOptions : LoadOptions {
     private class DisplayOptionsImpl(
         override val depth: RequestDepth?,
         override val parameters: Parameters?,
-        override val httpHeaders: Map<String, String>?,
+        override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
         override val maxSize: MaxSize?,
@@ -421,7 +418,7 @@ interface DisplayOptions : LoadOptions {
         constructor(
             depth: RequestDepth?,
             parameters: Parameters?,
-            httpHeaders: Map<String, String>?,
+            httpHeaders: HttpHeaders?,
             networkContentDiskCachePolicy: CachePolicy?,
             bitmapResultDiskCachePolicy: CachePolicy?,
             maxSize: MaxSize?,

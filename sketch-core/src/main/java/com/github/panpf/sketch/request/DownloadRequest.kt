@@ -2,6 +2,7 @@ package com.github.panpf.sketch.request
 
 import android.net.Uri
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DownloadRequest.Builder
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
@@ -24,7 +25,7 @@ interface DownloadRequest : ImageRequest {
 
     val networkContentDiskCacheKey: String
 
-    val httpHeaders: Map<String, String>?
+    val httpHeaders: HttpHeaders?
     val networkContentDiskCachePolicy: CachePolicy?
     val progressListener: ProgressListener<ImageRequest>?
 
@@ -46,7 +47,7 @@ interface DownloadRequest : ImageRequest {
         private var parametersBuilder: Parameters.Builder? = null
         private var listener: Listener<ImageRequest, ImageResult, ImageResult>? = null
 
-        private var httpHeaders: MutableMap<String, String>? = null
+        private var httpHeaders: HttpHeaders.Builder? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
@@ -55,7 +56,7 @@ interface DownloadRequest : ImageRequest {
             this.parametersBuilder = request.parameters?.newBuilder()
             this.listener = request.listener
 
-            this.httpHeaders = request.httpHeaders?.toMutableMap()
+            this.httpHeaders = request.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
             this.progressListener = request.progressListener
         }
@@ -73,10 +74,13 @@ interface DownloadRequest : ImageRequest {
                     }
                 }
             }
-            options.httpHeaders?.takeIf { it.isNotEmpty() }?.let {
-                it.forEach { entry ->
-                    if (!requestFirst || httpHeaders?.get(entry.key) == null) {
-                        setHttpHeader(entry.key, entry.value)
+            options.httpHeaders?.takeIf { !it.isEmpty() }?.let { headers ->
+                headers.addList.forEach {
+                    addHttpHeader(it.first, it.second)
+                }
+                headers.setList.forEach {
+                    if (!requestFirst || httpHeaders?.setExist(it.first) != true) {
+                        setHttpHeader(it.first, it.second)
                     }
                 }
             }
@@ -125,16 +129,16 @@ interface DownloadRequest : ImageRequest {
             this.parametersBuilder?.remove(key)
         }
 
-        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
-            this.httpHeaders = httpHeaders?.toMutableMap()
+        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
+            this.httpHeaders = httpHeaders?.newBuilder()
         }
 
         /**
          * Add a header for any network operations performed by this request.
          */
         fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
-                put(name, value)
+            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
+                add(name, value)
             }
         }
 
@@ -142,7 +146,7 @@ interface DownloadRequest : ImageRequest {
          * Set a header for any network operations performed by this request.
          */
         fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
                 set(name, value)
             }
         }
@@ -151,7 +155,7 @@ interface DownloadRequest : ImageRequest {
          * Remove all network headers with the key [name].
          */
         fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeaders?.remove(name)
+            this.httpHeaders?.removeAll(name)
         }
 
         fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
@@ -195,7 +199,7 @@ interface DownloadRequest : ImageRequest {
             uriString = uriString,
             depth = depth,
             parameters = parametersBuilder?.build(),
-            httpHeaders = httpHeaders?.toMap(),
+            httpHeaders = httpHeaders?.build(),
             networkContentDiskCachePolicy = networkContentDiskCachePolicy,
             listener = listener,
             progressListener = progressListener,
@@ -206,7 +210,7 @@ interface DownloadRequest : ImageRequest {
         override val uriString: String,
         override val depth: RequestDepth?,
         override val parameters: Parameters?,
-        override val httpHeaders: Map<String, String>?,
+        override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
@@ -226,8 +230,8 @@ interface DownloadRequest : ImageRequest {
                 parameters?.key?.takeIf { it.isNotEmpty() }?.let {
                     append("_").append(it)
                 }
-                httpHeaders?.takeIf { it.isNotEmpty() }?.let {
-                    append("_").append("httpHeaders(").append(it.toString()).append(")")
+                httpHeaders?.takeIf { !it.isEmpty() }?.let {
+                    append("_").append(it)
                 }
                 networkContentDiskCachePolicy?.let {
                     append("_").append("networkContentDiskCachePolicy($it)")

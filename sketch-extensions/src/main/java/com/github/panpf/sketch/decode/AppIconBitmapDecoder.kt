@@ -25,6 +25,7 @@ class AppIconBitmapDecoder(
         } catch (e: PackageManager.NameNotFoundException) {
             throw Exception("Not found PackageInfo by '$packageName'", e)
         }
+        @Suppress("DEPRECATION")
         if (packageInfo.versionCode != versionCode) {
             throw Exception("App versionCode mismatch, ${packageInfo.versionCode} != $versionCode")
         }

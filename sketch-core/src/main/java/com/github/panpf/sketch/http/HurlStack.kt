@@ -60,8 +60,13 @@ class HurlStack(
                         setRequestProperty(key, value)
                     }
                 }
-                request.httpHeaders?.forEach {
-                    setRequestProperty(it.key, it.value)
+                request.httpHeaders?.apply {
+                    addList.forEach {
+                        addRequestProperty(it.first, it.second)
+                    }
+                    setList.forEach {
+                        setRequestProperty(it.first, it.second)
+                    }
                 }
                 processRequest?.invoke(url, this)
             }

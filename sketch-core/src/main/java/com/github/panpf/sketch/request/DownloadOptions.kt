@@ -1,12 +1,25 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.ImageOptions
 import com.github.panpf.sketch.request.internal.ImageRequest
 
+fun DownloadOptions(
+    configBlock: (DownloadOptions.Builder.() -> Unit)? = null
+): DownloadOptions = DownloadOptions.Builder().apply {
+    configBlock?.invoke(this)
+}.build()
+
+fun DownloadOptionsBuilder(
+    configBlock: (DownloadOptions.Builder.() -> Unit)? = null
+): DownloadOptions.Builder = DownloadOptions.Builder().apply {
+    configBlock?.invoke(this)
+}
+
 interface DownloadOptions : ImageOptions {
 
-    val httpHeaders: Map<String, String>?   //todo 搞一个专门的 header，因为需要 addHeader 和 setHeader 两种
+    val httpHeaders: HttpHeaders?
     val networkContentDiskCachePolicy: CachePolicy?
 
     override fun isEmpty(): Boolean =
@@ -24,26 +37,12 @@ interface DownloadOptions : ImageOptions {
         configBlock?.invoke(this)
     }
 
-    companion object {
-        fun new(
-            configBlock: (Builder.() -> Unit)? = null
-        ): DownloadOptions = Builder().apply {
-            configBlock?.invoke(this)
-        }.build()
-
-        fun newBuilder(
-            configBlock: (Builder.() -> Unit)? = null
-        ): Builder = Builder().apply {
-            configBlock?.invoke(this)
-        }
-    }
-
     open class Builder {
 
         private var depth: RequestDepth? = null
         private var parametersBuilder: Parameters.Builder? = null
 
-        private var httpHeaders: MutableMap<String, String>? = null
+        private var httpHeaders: HttpHeaders.Builder? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
 
         constructor()
@@ -52,7 +51,7 @@ interface DownloadOptions : ImageOptions {
             this.depth = options.depth
             this.parametersBuilder = options.parameters?.newBuilder()
 
-            this.httpHeaders = options.httpHeaders?.toMutableMap()
+            this.httpHeaders = options.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = options.networkContentDiskCachePolicy
         }
 
@@ -94,16 +93,16 @@ interface DownloadOptions : ImageOptions {
             this.parametersBuilder?.remove(key)
         }
 
-        fun httpHeaders(httpHeaders: Map<String, String>?): Builder = apply {
-            this.httpHeaders = httpHeaders?.toMutableMap()
+        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
+            this.httpHeaders = httpHeaders?.newBuilder()
         }
 
         /**
          * Add a header for any network operations performed by this request.
          */
         fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
-                put(name, value)
+            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
+                add(name, value)
             }
         }
 
@@ -111,7 +110,7 @@ interface DownloadOptions : ImageOptions {
          * Set a header for any network operations performed by this request.
          */
         fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeaders = (this.httpHeaders ?: HashMap()).apply {
+            this.httpHeaders = (this.httpHeaders ?: HttpHeaders.Builder()).apply {
                 set(name, value)
             }
         }
@@ -120,7 +119,7 @@ interface DownloadOptions : ImageOptions {
          * Remove all network headers with the key [name].
          */
         fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeaders?.remove(name)
+            this.httpHeaders?.removeAll(name)
         }
 
         fun networkContentDiskCachePolicy(networkContentDiskCachePolicy: CachePolicy?): Builder =
@@ -131,7 +130,7 @@ interface DownloadOptions : ImageOptions {
         fun build(): DownloadOptions = DownloadOptionsImpl(
             depth = depth,
             parameters = parametersBuilder?.build(),
-            httpHeaders = httpHeaders?.toMap(),
+            httpHeaders = httpHeaders?.build(),
             networkContentDiskCachePolicy = networkContentDiskCachePolicy,
         )
     }
@@ -139,7 +138,7 @@ interface DownloadOptions : ImageOptions {
     private class DownloadOptionsImpl(
         override val depth: RequestDepth?,
         override val parameters: Parameters?,
-        override val httpHeaders: Map<String, String>?,
+        override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy?,
     ) : DownloadOptions
 }

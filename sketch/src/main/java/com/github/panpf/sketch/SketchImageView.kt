@@ -20,6 +20,6 @@ open class SketchImageView @JvmOverloads constructor(
 
     fun updateDisplayOptions(configBlock: (Builder.() -> Unit)) {
         displayOptions =
-            displayOptions?.newDisplayOptions(configBlock) ?: DisplayOptions.new(configBlock)
+            displayOptions?.newDisplayOptions(configBlock) ?: DisplayOptions(configBlock)
     }
 }

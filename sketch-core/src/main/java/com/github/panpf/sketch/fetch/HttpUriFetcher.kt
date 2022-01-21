@@ -276,7 +276,6 @@ class HttpUriFetcher(
                         diskCache.encodeKey(request.networkContentDiskCacheKey)
                     val encodedContentTypeDiskCacheKey =
                         diskCache.encodeKey(request.networkContentDiskCacheKey + "_contentType")
-                    val diskCachePolicy = request.networkContentDiskCachePolicy
                     HttpDiskCacheHelper(
                         sketch = sketch,
                         request = request,

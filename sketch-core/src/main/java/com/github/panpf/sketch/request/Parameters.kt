@@ -18,6 +18,7 @@ class Parameters private constructor(
     val size: Int @JvmName("size") get() = map.size
 
     /** Returns the value associated with [key] or null if [key] has no mapping. */
+    @Suppress("UNCHECKED_CAST")
     fun <T> value(key: String): T? = map[key]?.value as T?
 
     /** Returns the cache key associated with [key] or null if [key] has no mapping. */
