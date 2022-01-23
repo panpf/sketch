@@ -19,14 +19,7 @@ import kotlin.math.roundToInt
 
 // todo 文件名改为 Svg1BitmapDecoder 提交 再改为 SvgBitmapDecoder
 
-/**
- * Notes: Android 26 and before versions do not support scale to read frames,
- * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
- *
- * Notes：LoadRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
- * The bitmapConfig attribute takes effect only on Android 30 or later
- */
-class SVGBitmapDecoder(
+class Svg1BitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource,
@@ -119,12 +112,12 @@ class SVGBitmapDecoder(
             sketch: Sketch,
             request: LoadRequest,
             fetchResult: FetchResult
-        ): SVGBitmapDecoder? =
+        ): Svg1BitmapDecoder? =
             if (
                 MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
                 || fetchResult.headerBytes.isSvg()
             ) {
-                SVGBitmapDecoder(
+                Svg1BitmapDecoder(
                     sketch,
                     request,
                     fetchResult.dataSource,
