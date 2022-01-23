@@ -17,9 +17,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.svgBackgroundColor
 import kotlin.math.roundToInt
 
-// todo 文件名改为 Svg1BitmapDecoder 提交 再改为 SvgBitmapDecoder
-
-class Svg1BitmapDecoder(
+class SvgBitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource,
@@ -112,12 +110,12 @@ class Svg1BitmapDecoder(
             sketch: Sketch,
             request: LoadRequest,
             fetchResult: FetchResult
-        ): Svg1BitmapDecoder? =
+        ): SvgBitmapDecoder? =
             if (
                 MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
                 || fetchResult.headerBytes.isSvg()
             ) {
-                Svg1BitmapDecoder(
+                SvgBitmapDecoder(
                     sketch,
                     request,
                     fetchResult.dataSource,
