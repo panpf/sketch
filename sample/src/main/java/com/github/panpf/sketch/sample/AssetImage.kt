@@ -4,11 +4,11 @@ object AssetImage {
     val IMAGES_FORMAT = arrayOf(
         "asset://sample.jpeg",
         "asset://sample.png",
-        "asset://sample.gif",
         "asset://sample.bmp",
         "asset://sample.svg",
         "asset://sample.webp",
         "asset://sample.heic",
+        "asset://sample_anim.gif",
     )
 
     val IMAGES_HUGE = arrayOf(

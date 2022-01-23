@@ -6,10 +6,11 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
+import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.drawable.SketchGifDrawableImpl
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.request.DisplayRequest
 
 // todo 参考 coil 的 gif 实现
@@ -105,14 +106,19 @@ class GifDrawableDecoder(
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch,
-            request: DisplayRequest,
-            fetchResult: FetchResult
+            sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
         ): GifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
                 val imageInfo = fetchResult.imageInfo
-                if (imageInfo != null && MIME_TYPE.equals(imageInfo.mimeType, ignoreCase = true)) {
+                val mimeType = fetchResult.imageInfo?.mimeType
+                if (imageInfo != null && MIME_TYPE.equals(mimeType, ignoreCase = true)) {
                     return GifDrawableDecoder(sketch, request, fetchResult.dataSource, imageInfo)
+                } else if (imageInfo != null && fetchResult.headerBytes.isGif()) {
+                    // This will not happen unless there is a bug in the BitmapFactory
+                    val newImageInfo = ImageInfo(
+                        MIME_TYPE, imageInfo.width, imageInfo.height, imageInfo.exifOrientation
+                    )
+                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource, newImageInfo)
                 }
             }
             return null

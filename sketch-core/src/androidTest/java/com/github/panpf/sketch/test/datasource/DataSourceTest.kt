@@ -22,8 +22,8 @@ class DataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-            assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+            request = LoadRequest(newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
         ).apply {
             val file = runBlocking {
                 file()

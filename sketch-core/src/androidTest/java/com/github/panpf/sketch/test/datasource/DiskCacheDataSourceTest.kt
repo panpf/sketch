@@ -20,12 +20,12 @@ class DiskCacheDataSourceTest {
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg"))
+        val request = LoadRequest(newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
                 request = request,
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                assetFileName = "sample.jpeg"
             ).file()
         }
         val diskCache = sketch.diskCache
@@ -48,12 +48,12 @@ class DiskCacheDataSourceTest {
     fun testNewFileDescriptor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg"))
+        val request = LoadRequest(newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
                 request = request,
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                assetFileName = "sample.jpeg"
             ).file()
         }
         val diskCache = sketch.diskCache
@@ -72,12 +72,12 @@ class DiskCacheDataSourceTest {
     fun testNewInputStream() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg"))
+        val request = LoadRequest(newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
                 request = request,
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                assetFileName = "sample.jpeg"
             ).file()
         }
         val diskCache = sketch.diskCache
@@ -96,12 +96,12 @@ class DiskCacheDataSourceTest {
     fun testFile() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg"))
+        val request = LoadRequest(newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
                 request = request,
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                assetFileName = "sample.jpeg"
             ).file()
         }
         val diskCache = sketch.diskCache
@@ -126,12 +126,12 @@ class DiskCacheDataSourceTest {
     fun testToString() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg"))
+        val request = LoadRequest(newAssetUri("sample.jpeg"))
         runBlocking {
             AssetDataSource(
                 sketch = sketch,
                 request = request,
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                assetFileName = "sample.jpeg"
             ).file()
         }
         val diskCache = sketch.diskCache

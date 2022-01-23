@@ -20,15 +20,15 @@ class AssetDataSourceTest {
     fun testConstructor() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg"))
+        val request = LoadRequest(newAssetUri("sample.jpeg"))
         AssetDataSource(
             sketch = sketch,
             request = request,
-            assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+            assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals("fd5717876ab046b8aa889c9aaac4b56c.jpeg", this.assetFileName)
+            Assert.assertEquals("sample.jpeg", this.assetFileName)
             Assert.assertEquals(DataFrom.LOCAL, this.from)
         }
     }
@@ -39,8 +39,8 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-            assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+            request = LoadRequest(newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertEquals(540456, length())
         }
@@ -62,8 +62,8 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-            assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+            request = LoadRequest(newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertNotNull(newFileDescriptor())
         }
@@ -85,8 +85,8 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-            assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+            request = LoadRequest(newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
         ).apply {
             newInputStream().close()
         }
@@ -108,11 +108,11 @@ class AssetDataSourceTest {
         val sketch = Sketch.new(context)
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-            assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+            request = LoadRequest(newAssetUri("sample.jpeg")),
+            assetFileName = "sample.jpeg"
         ).apply {
             Assert.assertEquals(
-                "AssetDataSource(assetFileName='fd5717876ab046b8aa889c9aaac4b56c.jpeg')",
+                "AssetDataSource(assetFileName='sample.jpeg')",
                 toString()
             )
         }

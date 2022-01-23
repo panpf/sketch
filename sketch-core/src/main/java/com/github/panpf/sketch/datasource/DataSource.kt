@@ -30,7 +30,6 @@ import java.io.InputStream
 /**
  * 数据源
  */
-// todo 支持匹配 byteString，因为有的 decoder 需要根据头部标识来判断文件类型
 interface DataSource {
 
     val sketch: Sketch

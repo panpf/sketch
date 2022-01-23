@@ -21,8 +21,8 @@ class AssetUriFetcherTest {
     @Test
     fun testNewUri() {
         Assert.assertEquals(
-            "asset://fd5717876ab046b8aa889c9aaac4b56c.jpeg",
-            newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
+            "asset://sample.jpeg",
+            newAssetUri("sample.jpeg")
         )
         Assert.assertEquals(
             "asset://fd5717876ab046b8aa889c9aaac4b56c.png",
@@ -35,16 +35,16 @@ class AssetUriFetcherTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
         val fetcherFactory = AssetUriFetcher.Factory()
-        val assetUri = newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
+        val assetUri = newAssetUri("sample.jpeg")
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
         val imageView = ImageView(context)
 
         fetcherFactory.create(sketch, LoadRequest(assetUri))!!.apply {
-            Assert.assertEquals("fd5717876ab046b8aa889c9aaac4b56c.jpeg", assetFileName)
+            Assert.assertEquals("sample.jpeg", assetFileName)
         }
         fetcherFactory.create(sketch, DisplayRequest(assetUri, imageView))!!.apply {
-            Assert.assertEquals("fd5717876ab046b8aa889c9aaac4b56c.jpeg", assetFileName)
+            Assert.assertEquals("sample.jpeg", assetFileName)
         }
         Assert.assertNull(fetcherFactory.create(sketch, DownloadRequest(assetUri)))
         Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(httpUri)))
@@ -56,7 +56,7 @@ class AssetUriFetcherTest {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
         val fetcherFactory = AssetUriFetcher.Factory()
-        val assetUri = newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")
+        val assetUri = newAssetUri("sample.jpeg")
 
         val fetcher = fetcherFactory.create(sketch, LoadRequest(assetUri))!!
         val source = runBlocking {

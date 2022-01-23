@@ -12,9 +12,12 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.svgBackgroundColor
 import kotlin.math.roundToInt
+
+// todo 文件名改为 Svg1BitmapDecoder 提交 再改为 SvgBitmapDecoder
 
 /**
  * Notes: Android 26 and before versions do not support scale to read frames,
@@ -101,9 +104,7 @@ class SVGBitmapDecoder(
     override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean = false
 
     override fun decodeRegion(
-        imageInfo: ImageInfo,
-        srcRect: Rect,
-        decodeConfig: DecodeConfig
+        imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap = throw UnsupportedOperationException("SVGBitmapDecoder not support decode region")
 
     override fun close() {
@@ -113,14 +114,17 @@ class SVGBitmapDecoder(
     class Factory(
         val useViewBoundsAsIntrinsicSize: Boolean = true
     ) : BitmapDecoder.Factory {
+
         override fun create(
             sketch: Sketch,
             request: LoadRequest,
             fetchResult: FetchResult
-        ): SVGBitmapDecoder? {
-            // todo 支持根据文件头标识识别 svg 文件
-            return if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
-                return SVGBitmapDecoder(
+        ): SVGBitmapDecoder? =
+            if (
+                MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
+                || fetchResult.headerBytes.isSvg()
+            ) {
+                SVGBitmapDecoder(
                     sketch,
                     request,
                     fetchResult.dataSource,
@@ -130,10 +134,11 @@ class SVGBitmapDecoder(
             } else {
                 null
             }
-        }
     }
 
-    /** Convert null and [Bitmap.Config.HARDWARE] configs to [Bitmap.Config.ARGB_8888]. */
+    /**
+     * Convert null and [Bitmap.Config.HARDWARE] configs to [Bitmap.Config.ARGB_8888].
+     */
     private fun Bitmap.Config?.toSoftware(): Bitmap.Config {
         return if (this == null || isHardware) Bitmap.Config.ARGB_8888 else this
     }

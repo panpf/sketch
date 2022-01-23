@@ -3,17 +3,49 @@ package com.github.panpf.sketch.fetch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
+import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.request.DataFrom
+
+fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
+    DefaultFetchResult(dataSource, mimeType)
 
 /**
  * The result of [Fetcher.fetch]
  */
-class FetchResult constructor(val dataSource: DataSource, val mimeType: String?) {
+interface FetchResult {
 
-    val from: DataFrom = dataSource.from
+    val dataSource: DataSource
 
-    val imageInfo: ImageInfo? by lazy {
+    val mimeType: String?
+
+    val from: DataFrom
+        get() = dataSource.from
+
+    val imageInfo: ImageInfo?
+
+    val headerBytes: HeaderBytes
+}
+
+open class DefaultFetchResult constructor(
+    override val dataSource: DataSource, override val mimeType: String?
+) : FetchResult {
+
+    override val imageInfo: ImageInfo? by lazy {
         dataSource.readImageInfoWithBitmapFactoryOrNull()
+    }
+
+    override val headerBytes: HeaderBytes by lazy {
+        val byteArray = ByteArray(1024)
+        val readLength = dataSource.newInputStream().use {
+            it.read(byteArray)
+        }
+        HeaderBytes(
+            if (readLength == byteArray.size) {
+                byteArray
+            } else {
+                byteArray.copyOf(readLength)
+            }
+        )
     }
 
     override fun toString(): String = "FetchResult(source=$dataSource,mimeType='$mimeType')"

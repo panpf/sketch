@@ -27,8 +27,8 @@ class ContentDataSourceTest {
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                request = LoadRequest(newAssetUri("sample.jpeg")),
+                assetFileName = "sample.jpeg"
             ).file()
             Uri.fromFile(file)
         }
@@ -52,8 +52,8 @@ class ContentDataSourceTest {
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                request = LoadRequest(newAssetUri("sample.jpeg")),
+                assetFileName = "sample.jpeg"
             ).file()
             Uri.fromFile(file)
         }
@@ -86,8 +86,8 @@ class ContentDataSourceTest {
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                request = LoadRequest(newAssetUri("sample.jpeg")),
+                assetFileName = "sample.jpeg"
             ).file()
             Uri.fromFile(file)
         }
@@ -120,8 +120,8 @@ class ContentDataSourceTest {
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                request = LoadRequest(newAssetUri("sample.jpeg")),
+                assetFileName = "sample.jpeg"
             ).file()
             Uri.fromFile(file)
         }
@@ -154,8 +154,8 @@ class ContentDataSourceTest {
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                request = LoadRequest(newAssetUri("sample.jpeg")),
+                assetFileName = "sample.jpeg"
             ).file()
             Uri.fromFile(file)
         }
@@ -168,7 +168,7 @@ class ContentDataSourceTest {
                 file()
             }
             Assert.assertEquals(
-                "/storage/emulated/0/Android/data/com.github.panpf.sketch.core.test/cache/sketch/7b39d374d441edcbc5674ad92c2f1f18.0",
+                "/storage/emulated/0/Android/data/com.github.panpf.sketch.core.test/cache/sketch/a67023478ef0ffa2bb1e599affca0237.0",
                 file.path
             )
         }
@@ -195,8 +195,8 @@ class ContentDataSourceTest {
         val contentUri = runBlocking {
             val file = AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(newAssetUri("fd5717876ab046b8aa889c9aaac4b56c.jpeg")),
-                assetFileName = "fd5717876ab046b8aa889c9aaac4b56c.jpeg"
+                request = LoadRequest(newAssetUri("sample.jpeg")),
+                assetFileName = "sample.jpeg"
             ).file()
             Uri.fromFile(file)
         }
@@ -206,7 +206,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             Assert.assertEquals(
-                "ContentDataSource(contentUri='file:///storage/emulated/0/Android/data/com.github.panpf.sketch.core.test/cache/sketch/7b39d374d441edcbc5674ad92c2f1f18.0')",
+                "ContentDataSource(contentUri='file:///storage/emulated/0/Android/data/com.github.panpf.sketch.core.test/cache/sketch/a67023478ef0ffa2bb1e599affca0237.0')",
                 toString()
             )
         }
