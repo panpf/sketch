@@ -15,6 +15,7 @@ import android.opengl.EGLConfig
 import android.opengl.GLES10
 import android.opengl.GLES20
 import android.os.Build
+import android.os.Build.VERSION
 import android.os.Looper
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -138,6 +139,16 @@ fun getTrimLevelName(level: Int): String = when (level) {
 
 fun Any.toHexString(): String =
     Integer.toHexString(this.hashCode())
+
+/**
+ * Convert null and [Bitmap.Config.HARDWARE] configs to [Bitmap.Config.ARGB_8888].
+ */
+fun Bitmap.Config?.toSoftware(): Bitmap.Config {
+    return if (this == null || isHardware) Bitmap.Config.ARGB_8888 else this
+}
+
+val Bitmap.Config.isHardware: Boolean
+    get() = VERSION.SDK_INT >= 26 && this == Bitmap.Config.HARDWARE
 
 /**
  * 计算 inSampleSize

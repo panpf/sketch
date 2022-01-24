@@ -61,7 +61,7 @@ class MimeTypeLogoViewAbility(
         val view = host.view
         val lastDrawable = host.drawable?.getLastDrawable() ?: return
         if (lastDrawable !is SketchDrawable) return
-        val mimeType = lastDrawable.mimeType ?: return
+        val mimeType = lastDrawable.imageMimeType ?: return
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
         if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return
         val logoDrawable = mimeTypeLogo.getDrawable(host.context)

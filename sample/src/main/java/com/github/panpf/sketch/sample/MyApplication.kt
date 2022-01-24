@@ -51,6 +51,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
             addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
             addDrawableDecoder(GifDrawableDecoder.Factory())
+//            addDrawableDecoder(KoralGifDrawableDecoder.Factory())
         }
     }
 }

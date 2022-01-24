@@ -5,7 +5,6 @@ import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.GifDrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.DefaultFetchResult
 import com.github.panpf.sketch.fetch.FetchResult

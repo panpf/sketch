@@ -18,7 +18,6 @@ package com.github.panpf.sketch.cache
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.text.format.Formatter
-import com.github.panpf.sketch.drawable.SketchRefBitmap
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -37,7 +36,7 @@ class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : Memor
         private const val MODULE = "LruMemoryCache"
     }
 
-    private val cache: LruCache<String, SketchRefBitmap> = RefBitmapLruCache(maxSize)
+    private val cache: LruCache<String, RefCountBitmap> = RefBitmapLruCache(maxSize)
     private val appContext: Context = context.applicationContext
     private val editMutexLockMap: MutableMap<String, Mutex> = WeakHashMap()
 
@@ -61,7 +60,7 @@ class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : Memor
         }
 
     @Synchronized
-    override fun put(key: String, refBitmap: SketchRefBitmap) {
+    override fun put(key: String, refCountBitmap: RefCountBitmap) {
         if (isClosed) {
             logger.e(MODULE, "Closed. Unable put, key=$key")
             return
@@ -75,18 +74,18 @@ class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : Memor
             return
         }
         val oldCacheSize = cache.size()
-        cache.put(key, refBitmap)
+        cache.put(key, refCountBitmap)
         logger.d(MODULE) {
             "put. beforeCacheSize=%s. %s. afterCacheSize=%s".format(
                 Formatter.formatFileSize(appContext, oldCacheSize.toLong()),
-                refBitmap.requestKey,
+                refCountBitmap.requestKey,
                 Formatter.formatFileSize(appContext, cache.size().toLong())
             )
         }
     }
 
     @Synchronized
-    override fun get(key: String): SketchRefBitmap? {
+    override fun get(key: String): RefCountBitmap? {
         if (isClosed) {
             logger.e(MODULE, "Closed. Unable get, key=$key")
             return null
@@ -105,7 +104,7 @@ class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : Memor
     }
 
     @Synchronized
-    override fun remove(key: String): SketchRefBitmap? {
+    override fun remove(key: String): RefCountBitmap? {
         if (isClosed) {
             logger.e(MODULE, "Closed. Unable remove, key=$key")
             return null
@@ -177,25 +176,25 @@ class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : Memor
     }
 
     private class RefBitmapLruCache constructor(maxSize: Int) :
-        LruCache<String, SketchRefBitmap>(maxSize) {
+        LruCache<String, RefCountBitmap>(maxSize) {
 
-        override fun put(key: String, refBitmap: SketchRefBitmap): SketchRefBitmap? {
-            refBitmap.setIsCached("$MODULE:put", true)
-            return super.put(key, refBitmap)
+        override fun put(key: String, refCountBitmap: RefCountBitmap): RefCountBitmap? {
+            refCountBitmap.setIsCached("$MODULE:put", true)
+            return super.put(key, refCountBitmap)
         }
 
-        override fun sizeOf(key: String, refBitmap: SketchRefBitmap): Int {
-            val bitmapSize = refBitmap.byteCount
+        override fun sizeOf(key: String, refCountBitmap: RefCountBitmap): Int {
+            val bitmapSize = refCountBitmap.byteCount
             return if (bitmapSize == 0) 1 else bitmapSize
         }
 
         override fun entryRemoved(
             evicted: Boolean,
             key: String,
-            oldRefBitmap: SketchRefBitmap,
-            newRefBitmap: SketchRefBitmap?
+            oldRefCountBitmap: RefCountBitmap,
+            newRefCountBitmap: RefCountBitmap?
         ) {
-            oldRefBitmap.setIsCached("$MODULE:entryRemoved", false)
+            oldRefCountBitmap.setIsCached("$MODULE:entryRemoved", false)
         }
     }
 }

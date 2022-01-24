@@ -75,7 +75,7 @@ class DataFromViewAbility(
 
         val lastDrawable = host.drawable?.getLastDrawable() ?: return false
         if (lastDrawable !is SketchDrawable) return false
-        val dataFrom = lastDrawable.dataFrom ?: return false
+        val dataFrom = lastDrawable.imageDataFrom ?: return false
         when (dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.DISK_CACHE -> paint.color = FROM_FLAG_COLOR_DISK_CACHE

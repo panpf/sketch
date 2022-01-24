@@ -12,4 +12,10 @@ interface GiphyService {
         @Query("offset") pageStart: Int,
         @Query("limit") pageSize: Int
     ): Response<GiphySearchResponse>
+
+    @GET("/v1/gifs/trending?&api_key=Gc7131jiJuvI7IdN0HZ1D7nh0ow5BU6g&pingback_id=17c5f87f46b18d99")
+    suspend fun trending(
+        @Query("offset") pageStart: Int,
+        @Query("limit") pageSize: Int
+    ): Response<GiphySearchResponse>
 }

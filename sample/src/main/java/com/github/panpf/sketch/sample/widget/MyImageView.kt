@@ -10,13 +10,10 @@ import androidx.lifecycle.Observer
 import com.github.panpf.activity.monitor.ActivityMonitor
 import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.drawable.SketchGifDrawable
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
-import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.getLastDrawable
 import com.github.panpf.sketch.viewability.removeDataFrom
 import com.github.panpf.sketch.viewability.showDataFrom
@@ -65,36 +62,23 @@ open class MyImageView @JvmOverloads constructor(
             append(
                 "image: ${
                     drawable.run {
-                        val size = "${originWidth}x${originHeight}"
-                        val exifOrieName = ExifOrientationCorrector.toName(exifOrientation)
-                        "$size, ${mimeType}, ${exifOrieName}"
+                        val size = "${imageWidth}x${imageHeight}"
+                        val exifOrieName = ExifOrientationCorrector.toName(imageExifOrientation)
+                        "$size, ${imageMimeType}, ${exifOrieName}"
                     }
                 }"
             )
-            if (drawable is SketchBitmapDrawable) {
-                append("\n").append("\n")
-                append(
-                    "bitmap: ${
-                        drawable.run {
-                            val byteCount = bitmap.byteCountCompat
-                            val size = Formatter.formatFileSize(activity, byteCount.toLong())
-                            "${bitmap.width}x${bitmap.height}, ${bitmap.config}, $size, ${dataFrom}"
-                        }
-                    }"
-                )
-            } else if (drawable is SketchGifDrawable) {
-                append("\n").append("\n")
-                append("gif: ${
-                    drawable.run {
-                        val bitmap = getCurrentFrame()
-                        val byteCount = bitmap?.byteCountCompat ?: 0
-                        val size = Formatter.formatFileSize(activity, byteCount.toLong())
-                        "${bitmap?.width}x${bitmap?.height}, ${bitmap?.config}, $size, ${dataFrom}"
-                    }
-                }")
-            }
             append("\n").append("\n")
-            append(drawable.key)
+            append(
+                "bitmap: ${
+                    drawable.run {
+                        val size = Formatter.formatFileSize(activity, bitmapByteCount.toLong())
+                        "${bitmapWidth}x${bitmapHeight}, ${bitmapConfig}, $size, $imageDataFrom"
+                    }
+                }"
+            )
+            append("\n").append("\n")
+            append(drawable.requestKey)
         }
         AlertDialog.Builder(activity).apply {
             setMessage(message)

@@ -15,32 +15,11 @@
  */
 package com.github.panpf.sketch.drawable
 
-import android.graphics.Bitmap
-import com.github.panpf.sketch.request.DataFrom
+interface SketchRefCountDrawable : SketchDrawable {
 
-interface SketchDrawable {
+    fun setIsDisplayed(callingStation: String, displayed: Boolean)
 
-    val requestKey: String?
+    fun setIsWaitingUse(callingStation: String, waitingUse: Boolean)
 
-    val requestUri: String
-
-
-    val imageWidth: Int
-
-    val imageHeight: Int
-
-    val imageMimeType: String?
-
-    val imageExifOrientation: Int
-
-    val imageDataFrom: DataFrom?
-
-
-    val bitmapWidth: Int
-
-    val bitmapHeight: Int
-
-    val bitmapByteCount: Int
-
-    val bitmapConfig: Bitmap.Config?
+    val isRecycled: Boolean
 }

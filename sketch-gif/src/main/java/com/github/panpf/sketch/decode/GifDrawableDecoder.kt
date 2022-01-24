@@ -1,102 +1,75 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.panpf.sketch.decode
 
+import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Movie
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
-import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.drawable.SketchGifDrawableImpl
+import com.github.panpf.sketch.drawable.MovieDrawable
+import com.github.panpf.sketch.drawable.SketchGifDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.animatedTransformation
+import com.github.panpf.sketch.request.animationEndCallback
+import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.util.animatable2CompatCallbackOf
+import java.util.Base64.Decoder
 
-// todo 参考 coil 的 gif 实现
-class GifDrawableDecoder(
+/**
+ * A [Decoder] that uses [Movie] to decode GIFs.
+ *
+ * NOTE: Prefer using [ImageDecoderDecoder] on API 28 and above.
+ *
+ * @param enforceMinimumFrameDelay If true, rewrite a GIF's frame delay to a default value if
+ *  it is below a threshold. See https://github.com/coil-kt/coil/issues/540 for more info.
+ */
+class GifDrawableDecoder constructor(
     private val sketch: Sketch,
     private val request: DisplayRequest,
     private val dataSource: DataSource,
     private val imageInfo: ImageInfo,
 ) : DrawableDecoder {
 
-    companion object {
-        const val MIME_TYPE = "image/gif"
-    }
-
-    @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun decodeDrawable(): DrawableDecodeResult {
-        val request = request
-        val gifDrawable = when (val source = dataSource) {
-            is ByteArrayDataSource -> {
-                SketchGifDrawableImpl(
-                    request.key,
-                    request.uriString,
-                    imageInfo,
-                    source.from,
-                    sketch.bitmapPoolHelper,
-                    source.data
-                )
-            }
-            is DiskCacheDataSource -> {
-                SketchGifDrawableImpl(
-                    request.key,
-                    request.uriString,
-                    imageInfo,
-                    source.from,
-                    sketch.bitmapPoolHelper,
-                    source.diskCacheEntry.file
-                )
-            }
-            is ResourceDataSource -> {
-                SketchGifDrawableImpl(
-                    request.key,
-                    request.uriString,
-                    imageInfo,
-                    source.from,
-                    sketch.bitmapPoolHelper,
-                    source.context.resources,
-                    source.drawableId
-                )
-            }
-            is ContentDataSource -> {
-                SketchGifDrawableImpl(
-                    request.key,
-                    request.uriString,
-                    imageInfo,
-                    source.from,
-                    sketch.bitmapPoolHelper,
-                    source.context.contentResolver,
-                    source.contentUri
-                )
-            }
-            is FileDataSource -> {
-                SketchGifDrawableImpl(
-                    request.key,
-                    request.uriString,
-                    imageInfo,
-                    source.from,
-                    sketch.bitmapPoolHelper,
-                    source.file
-                )
-            }
-            is AssetDataSource -> {
-                SketchGifDrawableImpl(
-                    request.key,
-                    request.uriString,
-                    imageInfo,
-                    source.from,
-                    sketch.bitmapPoolHelper,
-                    source.context.assets,
-                    source.assetFileName
-                )
-            }
-            else -> {
-                throw Exception("Unsupported DataSource: ${source::class.qualifiedName}")
-            }
+        val movie: Movie? = dataSource.newInputStream().use { Movie.decodeStream(it) }
+
+        check(movie != null && movie.width() > 0 && movie.height() > 0) { "Failed to decode GIF." }
+
+        val movieDrawable = MovieDrawable(
+            movie = movie,
+            config = when {
+                movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
+                else -> ARGB_8888
+            },
+            sketch.bitmapPoolHelper,
+        )
+
+        movieDrawable.setRepeatCount(request.repeatCount() ?: MovieDrawable.REPEAT_INFINITE)
+
+        // Set the start and end animation callbacks if any one is supplied through the request.
+        val onStart = request.animationStartCallback()
+        val onEnd = request.animationEndCallback()
+        if (onStart != null || onEnd != null) {
+            movieDrawable.registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
         }
-        return DrawableDecodeResult(gifDrawable, imageInfo, dataSource.from)
+
+        // Set the animated transformation to be applied on each frame.
+        movieDrawable.setAnimatedTransformation(request.animatedTransformation())
+
+        return DrawableDecodeResult(
+            drawable = SketchGifDrawable(
+                request.key,
+                request.uriString,
+                imageInfo,
+                dataSource.from,
+                movieDrawable
+            ),
+            info = imageInfo, from = dataSource.from
+        )
     }
 
     override fun close() {
@@ -116,12 +89,23 @@ class GifDrawableDecoder(
                 } else if (imageInfo != null && fetchResult.headerBytes.isGif()) {
                     // This will not happen unless there is a bug in the BitmapFactory
                     val newImageInfo = ImageInfo(
-                        MIME_TYPE, imageInfo.width, imageInfo.height, imageInfo.exifOrientation
+                        MIME_TYPE,
+                        imageInfo.width,
+                        imageInfo.height,
+                        imageInfo.exifOrientation
                     )
                     return GifDrawableDecoder(sketch, request, fetchResult.dataSource, newImageInfo)
                 }
             }
             return null
         }
+    }
+
+    companion object {
+        const val MIME_TYPE = "image/gif"
+        const val REPEAT_COUNT_KEY = "coil#repeat_count"
+        const val ANIMATED_TRANSFORMATION_KEY = "coil#animated_transformation"
+        const val ANIMATION_START_CALLBACK_KEY = "coil#animation_start_callback"
+        const val ANIMATION_END_CALLBACK_KEY = "coil#animation_end_callback"
     }
 }

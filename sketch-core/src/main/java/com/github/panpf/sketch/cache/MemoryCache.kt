@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.drawable.SketchRefBitmap
 import kotlinx.coroutines.sync.Mutex
 
 /**
@@ -47,23 +46,23 @@ interface MemoryCache {
      * 缓存一张图片
      *
      * @param key       缓存 key
-     * @param refBitmap 待缓存图片
+     * @param refCountBitmap 待缓存图片
      */
-    fun put(key: String, refBitmap: SketchRefBitmap)
+    fun put(key: String, refCountBitmap: RefCountBitmap)
 
     /**
      * 根据指定 key 获取图片
      *
      * @param key 缓存 key
      */
-    operator fun get(key: String): SketchRefBitmap?
+    operator fun get(key: String): RefCountBitmap?
 
     /**
      * 根据指定 key 删除图片
      *
      * @param key 缓存 key
      */
-    fun remove(key: String): SketchRefBitmap?
+    fun remove(key: String): RefCountBitmap?
 
     /**
      * 根据 level 修整缓存

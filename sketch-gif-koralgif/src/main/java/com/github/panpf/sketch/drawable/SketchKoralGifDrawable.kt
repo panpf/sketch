@@ -23,14 +23,17 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DataFrom
 
+/**
+ * 增加了从 BitmapPool 中寻找可复用 Bitmap 的功能以及图片的信息
+ */
 @SuppressLint("RestrictedApi")
-class SketchGifDrawable(
+class SketchKoralGifDrawable(
     override val requestKey: String,
     override val requestUri: String,
     private val imageInfo: ImageInfo,
     override val imageDataFrom: DataFrom,
-    private val movieDrawable: MovieDrawable,
-) : DrawableWrapper(movieDrawable), SketchAnimatableDrawable {
+    private val gifDrawable: ReuseGifDrawable,
+) : DrawableWrapper(gifDrawable), SketchAnimatableDrawable {
 
     override val imageWidth: Int
         get() = imageInfo.width
@@ -45,30 +48,30 @@ class SketchGifDrawable(
         get() = imageInfo.exifOrientation
 
     override val bitmapWidth: Int
-        get() = movieDrawable.bitmapWidth
+        get() = gifDrawable.bitmapWidth
 
     override val bitmapHeight: Int
-        get() = movieDrawable.bitmapHeight
+        get() = gifDrawable.bitmapHeight
 
     override val bitmapByteCount: Int
-        get() = movieDrawable.bitmapByteCount
+        get() = gifDrawable.bitmapByteCount
 
     override val bitmapConfig: Bitmap.Config?
-        get() = movieDrawable.bitmapConfig
+        get() = gifDrawable.bitmapConfig
 
-    override fun start() = movieDrawable.start()
+    override fun start() = gifDrawable.start()
 
-    override fun stop() = movieDrawable.stop()
+    override fun stop() = gifDrawable.stop()
 
-    override fun isRunning(): Boolean = movieDrawable.isRunning
+    override fun isRunning(): Boolean = gifDrawable.isRunning
 
     override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
-        movieDrawable.registerAnimationCallback(callback)
+        gifDrawable.registerAnimationCallback(callback)
     }
 
     override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
-        return movieDrawable.unregisterAnimationCallback(callback)
+        return gifDrawable.unregisterAnimationCallback(callback)
     }
 
-    override fun clearAnimationCallbacks() = movieDrawable.clearAnimationCallbacks()
+    override fun clearAnimationCallbacks() = gifDrawable.clearAnimationCallbacks()
 }

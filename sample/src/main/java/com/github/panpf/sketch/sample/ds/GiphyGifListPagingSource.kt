@@ -15,7 +15,8 @@ class GiphyGifListPagingSource(private val context: Context) :
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
-            context.apiService.giphy.search("young girl", pageStart, pageSize)
+//            context.apiService.giphy.search("young girl", pageStart, pageSize)
+            context.apiService.giphy.trending(pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return LoadResult.Error(e)

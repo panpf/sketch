@@ -15,8 +15,17 @@ class BitmapConfig(private val config: Bitmap.Config) {
         }
     })"
 
+    val isLowQuality: Boolean
+        get() = this === LOW_QUALITY
+
+    val isMiddenQuality: Boolean
+        get() = this === MIDDEN_QUALITY
+
+    val isHighQuality: Boolean
+        get() = this === HIGH_QUALITY
+
     fun getConfigByMimeType(mimeType: String?): Bitmap.Config = when {
-        this === LOW_QUALITY -> {
+        isLowQuality -> {
             when {
                 ImageFormat.valueOfMimeType(mimeType) == ImageFormat.JPEG -> {
                     Bitmap.Config.RGB_565
@@ -29,10 +38,10 @@ class BitmapConfig(private val config: Bitmap.Config) {
                 }
             }
         }
-        this === MIDDEN_QUALITY -> {
+        isMiddenQuality -> {
             Bitmap.Config.ARGB_8888
         }
-        this === HIGH_QUALITY -> {
+        isHighQuality -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Bitmap.Config.RGBA_F16
             } else {
@@ -46,7 +55,7 @@ class BitmapConfig(private val config: Bitmap.Config) {
 
     companion object {
         /**
-         * 优先使用较低质量额图片配置。如果图片格式是 jpeg 格式就使用 [Bitmap.Config.RGB_565]，否则 JELLY_BEAN_MR2 及以下版本使用 [Bitmap.Config.ARGB_4444]，KITKAT 及以上版本使用 [Bitmap.Config.ARGB_8888]
+         * 优先使用较低质量的图片配置。如果图片格式是 jpeg 格式就使用 [Bitmap.Config.RGB_565]，否则 JELLY_BEAN_MR2 及以下版本使用 [Bitmap.Config.ARGB_4444]，KITKAT 及以上版本使用 [Bitmap.Config.ARGB_8888]
          */
         @JvmStatic
         val LOW_QUALITY = BitmapConfig(Bitmap.Config.RGB_565)

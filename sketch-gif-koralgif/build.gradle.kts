@@ -29,7 +29,8 @@ android {
 dependencies {
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
-    api(project(":sketch-core"))
+    api("pl.droidsonroids:relinker:${property("RELINKER")}")
+    api(project(":sketch-gif"))
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
