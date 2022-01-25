@@ -39,9 +39,7 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 
     override fun newSketch(): Sketch = Sketch.new(this) {
         logger(Logger(DEBUG))
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            httpStack(OkHttpStack.Builder().build())
-        }
+        httpStack(OkHttpStack.Builder().build())
         addDisplayInterceptor(SettingsDisplayRequestInterceptor())
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())

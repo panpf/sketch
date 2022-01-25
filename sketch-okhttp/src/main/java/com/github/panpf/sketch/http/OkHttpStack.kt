@@ -1,22 +1,18 @@
 package com.github.panpf.sketch.http
 
-import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.DownloadRequest
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.internal.closeQuietly
-import okhttp3.internal.headersContentLength
 import java.io.InputStream
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-@RequiresApi(21)
 class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
 
     override fun toString(): String =
-        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis},readTimeout=${okHttpClient.readTimeoutMillis})"
+        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis()},readTimeout=${okHttpClient.readTimeoutMillis()})"
 
     override fun getResponse(sketch: Sketch, request: DownloadRequest, url: String): Response {
         val httpRequest = Request.Builder().apply {
@@ -35,13 +31,13 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
 
     private class OkHttpResponse(val response: okhttp3.Response) : Response {
         override val code: Int by lazy {
-            response.code
+            response.code()
         }
         override val message: String? by lazy {
-            response.message
+            response.message()
         }
         override val contentLength: Long by lazy {
-            response.headersContentLength()
+            response.header("Content-Length")?.toLongOrNull() ?: -1L
         }
         override val contentType: String? by lazy {
             response.header("content-type")
@@ -66,21 +62,24 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
             response.header(name)?.toLongOrNull() ?: defaultValue
 
         override val headersString: String? by lazy {
-            val headers = response.headers
+            val headers = response.headers()
             headers.names().joinToString(prefix = "[", postfix = "]") { name ->
                 "{${name}:${headers.values(name).joinToString(separator = ",")}}"
             }
         }
 
         override val content: InputStream
-            get() = response.body?.byteStream()!!
+            get() = response.body()?.byteStream()!!
 
         override fun releaseConnection() {
-            response.closeQuietly()
+            try {
+                response.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-    @RequiresApi(21)
     class Builder {
         private var readTimeout: Int = 0
         private var connectTimeout: Int = HttpStack.DEFAULT_CONNECT_TIMEOUT

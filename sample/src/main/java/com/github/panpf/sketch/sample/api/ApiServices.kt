@@ -3,7 +3,7 @@ package com.github.panpf.sketch.sample.api
 import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
@@ -12,13 +12,13 @@ class ApiServices(private val context: Context) {
     private val json = Json {
         ignoreUnknownKeys = true
     }
-    private val jsonConverterFactory = json.asConverterFactory("application/json".toMediaType())
+    private val jsonConverterFactory = json.asConverterFactory(MediaType.get("application/json"))
 
     val giphy = Retrofit.Builder()
-        .baseUrl("https://api.giphy.com")
-        .addConverterFactory(jsonConverterFactory)
-        .build()
-        .create(GiphyService::class.java)
+            .baseUrl("https://api.giphy.com")
+            .addConverterFactory(jsonConverterFactory)
+            .build()
+            .create(GiphyService::class.java)
 
     val pexels = Retrofit.Builder()
         .baseUrl("https://api.pexels.com")
