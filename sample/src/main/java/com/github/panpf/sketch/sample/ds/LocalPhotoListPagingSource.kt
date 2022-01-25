@@ -21,7 +21,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
         val assetPhotos = if (startPosition == 0) {
             withToIO {
-                AssetImages.FORMATS.plus(AssetImages.HUGES).map {
+                AssetImages.FORMATS.plus(AssetImages.HUGES).plus(AssetImages.LONGS).map {
                     val options = context.assets.open(it.replace("asset://", "")).use {
                         BitmapFactory.Options().apply {
                             inJustDecodeBounds = true

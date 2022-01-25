@@ -33,7 +33,7 @@ class RefCountBitmap(
 ) {
 
     companion object {
-        private const val MODULE = "SketchRefBitmap"
+        private const val MODULE = "RefCountBitmap"
     }
 
     private var bitmapHolder: Bitmap? = initBitmap

@@ -12,10 +12,13 @@ object AssetImages {
     )
 
     val HUGES = arrayOf(
-        "asset://large_qing_ming_shang_he_tu.jpg",
-        "asset://large_chang_wei_bo.jpg",
-        "asset://large_world_map.jpg",
-        "asset://large_card.png"
+        "asset://sample_huge_world.jpg",
+        "asset://sample_huge_card.png",
+    )
+
+    val LONGS = arrayOf(
+        "asset://sample_long_qmsht.jpg",
+        "asset://sample_long_comic.jpg",
     )
 
     val VIDEOS = arrayOf(
