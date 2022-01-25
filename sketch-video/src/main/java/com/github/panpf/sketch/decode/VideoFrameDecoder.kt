@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode
 
+import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.media.MediaMetadataRetriever
@@ -22,12 +23,13 @@ import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
 /**
- * Notes: Android 26 and before versions do not support scale to read frames,
+ * Notes: Android O(26/8.0) and before versions do not support scale to read frames,
  * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
  *
  * Notes：LoadRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
  * The bitmapConfig attribute takes effect only on Android 30 or later
  */
+@TargetApi(VERSION_CODES.O_MR1)
 class VideoFrameDecoder(
     sketch: Sketch,
     request: LoadRequest,
@@ -111,7 +113,7 @@ class VideoFrameDecoder(
             imageInfo.height
         }
         return when {
-            VERSION.SDK_INT >= 30 -> {
+            VERSION.SDK_INT >= VERSION_CODES.R -> {
                 val bitmapParams = BitmapParams().apply {
                     val inPreferredConfigFromRequest = decodeConfig.inPreferredConfig
                     if (inPreferredConfigFromRequest != null) {
@@ -121,7 +123,7 @@ class VideoFrameDecoder(
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
             }
-            VERSION.SDK_INT >= 27 -> {
+            VERSION.SDK_INT >= VERSION_CODES.O_MR1 -> {
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
             }

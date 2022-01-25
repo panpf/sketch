@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.sample.AssetImage
+import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.bean.ImageDetail
@@ -29,7 +29,7 @@ class ImageFormatViewModel(application1: Application) : LifecycleAndroidViewMode
             val headerUserPackageInfo = loadUserAppPackageInfo(true)
             val footerUserPackageInfo = loadUserAppPackageInfo(false)
 
-            val imageDetails = AssetImage.IMAGES_FORMAT.plus(
+            val imageDetails = AssetImages.FORMATS.plus(
                 arrayOf(
                     application1.newResourceUri(drawable.im_placeholder),
                     application1.newResourceUri(drawable.ic_play),

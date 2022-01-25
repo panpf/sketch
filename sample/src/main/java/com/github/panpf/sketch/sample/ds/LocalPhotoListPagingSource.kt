@@ -6,7 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.AssetImage
+import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.tools4k.coroutines.withToIO
 
@@ -21,7 +21,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
         val assetPhotos = if (startPosition == 0) {
             withToIO {
-                AssetImage.IMAGES_FORMAT.plus(AssetImage.IMAGES_HUGE).map {
+                AssetImages.FORMATS.plus(AssetImages.HUGES).map {
                     val options = context.assets.open(it.replace("asset://", "")).use {
                         BitmapFactory.Options().apply {
                             inJustDecodeBounds = true

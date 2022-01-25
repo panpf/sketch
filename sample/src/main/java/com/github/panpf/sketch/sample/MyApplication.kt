@@ -27,6 +27,7 @@ import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.decode.GifDrawableDecoder
 import com.github.panpf.sketch.decode.KoralGifDrawableDecoder
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
+import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
@@ -48,7 +49,11 @@ class MyApplication : MultiDexApplication(), SketchFactory {
             addBitmapDecoder(SvgBitmapDecoder.Factory())
             addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
-            addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
+            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+                addBitmapDecoder(VideoFrameDecoder.Factory())
+            } else {
+                addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
+            }
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 addDrawableDecoder(GifDrawableDecoder.Factory())
             } else {

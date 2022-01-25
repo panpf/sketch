@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.sample.AssetImage
+import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class FetcherViewModel(application1: Application) : LifecycleAndroidViewModel(ap
                 if (localFirstPhotoPath != null) {
                     add("FILE" to localFirstPhotoPath)
                 }
-                add("ASSET" to AssetImage.IMAGES_FORMAT.first())
+                add("ASSET" to AssetImages.FORMATS.first())
                 add("RES_ID" to application1.newResourceUri(R.mipmap.ic_launcher))
                 add("RES_NAME" to application1.newResourceUri("drawable", "im_placeholder"))
                 add(

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.sample
 
-object AssetImage {
-    val IMAGES_FORMAT = arrayOf(
+object AssetImages {
+    val FORMATS = arrayOf(
         "asset://sample.jpeg",
         "asset://sample.png",
         "asset://sample.bmp",
@@ -11,10 +11,14 @@ object AssetImage {
         "asset://sample_anim.gif",
     )
 
-    val IMAGES_HUGE = arrayOf(
+    val HUGES = arrayOf(
         "asset://large_qing_ming_shang_he_tu.jpg",
         "asset://large_chang_wei_bo.jpg",
         "asset://large_world_map.jpg",
         "asset://large_card.png"
+    )
+
+    val VIDEOS = arrayOf(
+        "asset://sample.mp4"
     )
 }

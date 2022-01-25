@@ -1,10 +1,16 @@
 package com.github.panpf.sketch.sample.ds
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.graphics.BitmapFactory.Options
 import android.provider.MediaStore
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.bean.VideoInfo
+import com.github.panpf.tools4k.coroutines.withToIO
+import java.text.SimpleDateFormat
 
 class LocalVideoListPagingSource(private val context: Context) :
     PagingSource<Int, VideoInfo>() {
@@ -14,6 +20,23 @@ class LocalVideoListPagingSource(private val context: Context) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoInfo> {
         val startPosition = params.key ?: 0
         val pageSize = params.loadSize
+
+        val assetVideos = if (startPosition == 0) {
+            withToIO {
+                AssetImages.VIDEOS.map {
+                    VideoInfo(
+                        title = "sample",
+                        path = it,
+                        mimeType = "video/mp4",
+                        size = 157092,
+                        duration = 2000,
+                        date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2022-01-25 17:08:22").time
+                    )
+                }
+            }
+        } else {
+            emptyList()
+        }
 
         val cursor = context.contentResolver.query(
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -51,6 +74,6 @@ class LocalVideoListPagingSource(private val context: Context) :
         } else {
             null
         }
-        return LoadResult.Page(dataList, null, nextKey)
+        return LoadResult.Page(assetVideos.plus(dataList), null, nextKey)
     }
 }
