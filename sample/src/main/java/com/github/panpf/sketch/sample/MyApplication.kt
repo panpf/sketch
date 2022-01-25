@@ -25,6 +25,7 @@ import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.decode.GifDrawableDecoder
+import com.github.panpf.sketch.decode.KoralGifDrawableDecoder
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
@@ -50,8 +51,11 @@ class MyApplication : MultiDexApplication(), SketchFactory {
             addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
             addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
-            addDrawableDecoder(GifDrawableDecoder.Factory())
-//            addDrawableDecoder(KoralGifDrawableDecoder.Factory())
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                addDrawableDecoder(GifDrawableDecoder.Factory())
+            } else {
+                addDrawableDecoder(KoralGifDrawableDecoder.Factory())
+            }
         }
     }
 }

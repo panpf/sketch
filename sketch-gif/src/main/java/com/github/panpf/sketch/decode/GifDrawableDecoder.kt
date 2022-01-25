@@ -5,6 +5,8 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -27,6 +29,7 @@ import java.util.Base64.Decoder
  * @param enforceMinimumFrameDelay If true, rewrite a GIF's frame delay to a default value if
  *  it is below a threshold. See https://github.com/coil-kt/coil/issues/540 for more info.
  */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifDrawableDecoder constructor(
     private val sketch: Sketch,
     private val request: DisplayRequest,
@@ -76,6 +79,7 @@ class GifDrawableDecoder constructor(
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
