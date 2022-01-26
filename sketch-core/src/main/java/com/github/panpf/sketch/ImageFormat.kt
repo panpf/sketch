@@ -5,9 +5,9 @@ enum class ImageFormat(val mimeType: String) {
     PNG("image/png"),
     WEBP("image/webp"),
     GIF("image/gif"),
-    BMP("image/bmp");
-//    HEIC("image/heic"),
-//    HEIF("image/heif"),
+    BMP("image/bmp"),
+    HEIF("image/heif"),
+    ;
 
     companion object {
         @JvmStatic
@@ -17,6 +17,7 @@ enum class ImageFormat(val mimeType: String) {
             WEBP.mimeType.equals(mimeType, ignoreCase = true) -> WEBP
             GIF.mimeType.equals(mimeType, ignoreCase = true) -> GIF
             BMP.mimeType.equals(mimeType, ignoreCase = true) -> BMP
+            HEIF.mimeType.equals(mimeType, ignoreCase = true) -> HEIF
             else -> null
         }
     }

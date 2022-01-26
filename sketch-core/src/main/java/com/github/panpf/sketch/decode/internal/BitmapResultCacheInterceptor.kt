@@ -77,7 +77,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                         } else {
                             bitmap.recycle()
                             val msg =
-                                "Invalid image size in result cache. ${bitmap.width}x${bitmap.height}"
+                                "Invalid image size in result cache: ${bitmap.width}x${bitmap.height}"
                             logger.e(MODULE, msg)
                             bitmapDataDiskCacheEntry.delete()
                             metaDataDiskCacheEntry.delete()

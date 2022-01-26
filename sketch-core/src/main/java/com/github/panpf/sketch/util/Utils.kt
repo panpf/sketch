@@ -16,6 +16,7 @@ import android.opengl.GLES10
 import android.opengl.GLES20
 import android.os.Build
 import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Looper
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -25,6 +26,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -77,7 +79,10 @@ internal fun Lifecycle.removeAndAddObserver(observer: LifecycleObserver) {
 }
 
 fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
-    this == ImageFormat.JPEG || this == ImageFormat.PNG || this == ImageFormat.WEBP
+    this == ImageFormat.JPEG
+            || this == ImageFormat.PNG
+            || this == ImageFormat.WEBP
+            || (VERSION.SDK_INT >= VERSION_CODES.P && this == HEIF)
 
 /**
  * 获取 [Bitmap] 占用内存大小，单位字节
@@ -87,7 +92,7 @@ val Bitmap.byteCountCompat: Int
         // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
         return when {
             this.isRecycled -> 0
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> this.allocationByteCount
+            VERSION.SDK_INT >= VERSION_CODES.KITKAT -> this.allocationByteCount
             else -> this.byteCount
         }
     }
@@ -112,7 +117,7 @@ fun Bitmap.Config?.getBytesPerPixel(): Int {
         config == Bitmap.Config.ALPHA_8 -> 1
         config == Bitmap.Config.RGB_565 || config == Bitmap.Config.ARGB_4444 -> 2
         config == Bitmap.Config.ARGB_8888 -> 4
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && config == Bitmap.Config.RGBA_F16 -> 8
+        VERSION.SDK_INT >= Build.VERSION_CODES.O && config == Bitmap.Config.RGBA_F16 -> 8
         else -> 4
     }
 }
@@ -336,7 +341,7 @@ fun MimeTypeMap.getMimeTypeFromUrl(url: String?): String? {
  */
 val openGLMaxTextureSize: Int by lazy {
     try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             openGLMaxTextureSizeJB1
         } else {
             openGLMaxTextureSizeBase
@@ -434,7 +439,7 @@ private val openGLMaxTextureSizeJB1: Int
 private val openGLMaxTextureSizeBase: Int
     get() {
         // In JELLY_BEAN will collapse
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
+        if (VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
             return 0
         }
         val egl = EGLContext.getEGL() as EGL10

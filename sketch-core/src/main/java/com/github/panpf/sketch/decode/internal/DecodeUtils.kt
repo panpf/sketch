@@ -35,7 +35,7 @@ fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
         throw Exception(message)
     }
     if (boundOptions.outMimeType?.isEmpty() != false) {
-        val message = "Invalid image: BitmapFactory cannot recognize mimeType"
+        val message = "Invalid image mimeType: null"
         throw Exception(message)
     }
 
@@ -102,11 +102,14 @@ fun isSrcRectError(
     srcRect: Rect
 ): Boolean =
     if (throwable is IllegalArgumentException) {
-        if (srcRect.left >= imageWidth && srcRect.top >= imageHeight && srcRect.right <= imageWidth && srcRect.bottom <= imageHeight) {
+        if (srcRect.left >= imageWidth
+            && srcRect.top >= imageHeight
+            && srcRect.right <= imageWidth
+            && srcRect.bottom <= imageHeight
+        ) {
             val message = throwable.message
-            message != null && (message == "rectangle is outside the image srcRect" || message.contains(
-                "srcRect"
-            ))
+            message != null && (message == "rectangle is outside the image srcRect"
+                    || message.contains("srcRect"))
         } else {
             true
         }
