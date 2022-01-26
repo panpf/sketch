@@ -1,11 +1,11 @@
-package com.github.panpf.sketch.gif.test.decode
+package com.github.panpf.sketch.gif.koralgif.test.decode
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.GifDrawableDecoder
+import com.github.panpf.sketch.decode.KoralGifDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom
@@ -20,7 +20,7 @@ import java.io.FileDescriptor
 import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
-class GifDrawableDecoderTest {
+class KoralGifDrawableDecoderTest {
 
     @Test
     fun testFactory() {
@@ -30,19 +30,19 @@ class GifDrawableDecoderTest {
         // normal
         val request = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget())
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
-        Assert.assertNotNull(GifDrawableDecoder.Factory().create(sketch, request, fetchResult))
+        Assert.assertNotNull(KoralGifDrawableDecoder.Factory().create(sketch, request, fetchResult))
 
         // not gif
         val request1 = DisplayRequest(newAssetUri("sample.png"), TestTarget())
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
-        Assert.assertNull(GifDrawableDecoder.Factory().create(sketch, request1, fetchResult1))
+        Assert.assertNull(KoralGifDrawableDecoder.Factory().create(sketch, request1, fetchResult1))
 
         // disabledAnimationDrawable true
         val request2 = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget()) {
             disabledAnimationDrawable()
         }
         val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
-        Assert.assertNull(GifDrawableDecoder.Factory().create(sketch, request2, fetchResult2))
+        Assert.assertNull(KoralGifDrawableDecoder.Factory().create(sketch, request2, fetchResult2))
 
         // mimeType error
         val request3 = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget())
@@ -50,7 +50,7 @@ class GifDrawableDecoderTest {
             AssetDataSource(sketch, request3, "sample_anim.gif"),
             "image/jpeg",
         )
-        Assert.assertNotNull(GifDrawableDecoder.Factory().create(sketch, request3, fetchResult3))
+        Assert.assertNotNull(KoralGifDrawableDecoder.Factory().create(sketch, request3, fetchResult3))
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode
 
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -19,7 +20,6 @@ class KoralGifDrawableDecoder(
     private val sketch: Sketch,
     private val request: DisplayRequest,
     private val dataSource: DataSource,
-    private val imageInfo: ImageInfo,
 ) : DrawableDecoder {
 
     // todo 实现 GifExtensions 定义的扩展函数
@@ -51,6 +51,9 @@ class KoralGifDrawableDecoder(
                 throw Exception("Unsupported DataSource: ${source::class.qualifiedName}")
             }
         }
+        val width = gifDrawable.intrinsicWidth
+        val height = gifDrawable.intrinsicHeight
+        val imageInfo = ImageInfo(MIME_TYPE, width, height, ExifInterface.ORIENTATION_UNDEFINED)
         val drawable = SketchKoralGifDrawable(
             request.key,
             request.uriString,
@@ -71,26 +74,10 @@ class KoralGifDrawableDecoder(
             sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
         ): KoralGifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
-                val imageInfo = fetchResult.imageInfo
-                val mimeType = fetchResult.imageInfo?.mimeType
-                if (imageInfo != null && MIME_TYPE.equals(mimeType, ignoreCase = true)) {
-                    return KoralGifDrawableDecoder(
-                        sketch,
-                        request,
-                        fetchResult.dataSource,
-                        imageInfo
-                    )
-                } else if (imageInfo != null && fetchResult.headerBytes.isGif()) {
-                    // This will not happen unless there is a bug in the BitmapFactory
-                    val newImageInfo = ImageInfo(
-                        MIME_TYPE, imageInfo.width, imageInfo.height, imageInfo.exifOrientation
-                    )
-                    return KoralGifDrawableDecoder(
-                        sketch,
-                        request,
-                        fetchResult.dataSource,
-                        newImageInfo
-                    )
+                if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
+                    return KoralGifDrawableDecoder(sketch, request, fetchResult.dataSource)
+                } else if (fetchResult.headerBytes.isGif()) {
+                    return KoralGifDrawableDecoder(sketch, request, fetchResult.dataSource)
                 }
             }
             return null

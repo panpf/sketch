@@ -1,8 +1,6 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.request.DataFrom
 
@@ -21,18 +19,12 @@ interface FetchResult {
     val from: DataFrom
         get() = dataSource.from
 
-    val imageInfo: ImageInfo?
-
     val headerBytes: HeaderBytes
 }
 
 open class DefaultFetchResult constructor(
     override val dataSource: DataSource, override val mimeType: String?
 ) : FetchResult {
-
-    override val imageInfo: ImageInfo? by lazy {
-        dataSource.readImageInfoWithBitmapFactoryOrNull()
-    }
 
     override val headerBytes: HeaderBytes by lazy {
         val byteArray = ByteArray(1024)

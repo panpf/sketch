@@ -11,6 +11,7 @@ import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.supportBitmapRegionDecoder
@@ -19,14 +20,13 @@ open class DefaultBitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
     dataSource: DataSource,
-    val imageInfo: ImageInfo,
 ) : AbsBitmapDecoder(sketch, request, dataSource) {
 
     companion object {
         const val MODULE = "DefaultBitmapDecoder"
     }
 
-    override fun readImageInfo(): ImageInfo = imageInfo
+    override fun readImageInfo(): ImageInfo = dataSource.readImageInfoWithBitmapFactory()
 
     override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean =
         imageFormat?.supportBitmapRegionDecoder() == true
@@ -77,7 +77,7 @@ open class DefaultBitmapDecoder(
         )
         if (bitmap.width <= 1 || bitmap.height <= 1) {
             bitmap.recycle()
-            val message = "Invalid image size. size=${bitmap.width}x${bitmap.height}"
+            val message = "Invalid image size: ${bitmap.width}x${bitmap.height}"
             throw BitmapDecodeException(request, message)
         }
         return bitmap
@@ -128,8 +128,6 @@ open class DefaultBitmapDecoder(
 
         override fun create(
             sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
-        ): BitmapDecoder? = fetchResult.imageInfo?.let {
-            DefaultBitmapDecoder(sketch, request, fetchResult.dataSource, it)
-        }
+        ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
     }
 }

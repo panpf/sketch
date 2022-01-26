@@ -7,6 +7,7 @@ import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -34,13 +35,14 @@ class GifDrawableDecoder constructor(
     private val sketch: Sketch,
     private val request: DisplayRequest,
     private val dataSource: DataSource,
-    private val imageInfo: ImageInfo,
 ) : DrawableDecoder {
 
     override suspend fun decodeDrawable(): DrawableDecodeResult {
         val movie: Movie? = dataSource.newInputStream().use { Movie.decodeStream(it) }
 
-        check(movie != null && movie.width() > 0 && movie.height() > 0) { "Failed to decode GIF." }
+        val width = movie?.width() ?: 0
+        val height = movie?.height() ?: 0
+        check(movie != null && width > 0 && height > 0) { "Failed to decode GIF." }
 
         val movieDrawable = MovieDrawable(
             movie = movie,
@@ -62,6 +64,8 @@ class GifDrawableDecoder constructor(
 
         // Set the animated transformation to be applied on each frame.
         movieDrawable.setAnimatedTransformation(request.animatedTransformation())
+
+        val imageInfo = ImageInfo(MIME_TYPE, width, height, ExifInterface.ORIENTATION_UNDEFINED)
 
         return DrawableDecodeResult(
             drawable = SketchGifDrawable(
@@ -86,19 +90,11 @@ class GifDrawableDecoder constructor(
             sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
         ): GifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
-                val imageInfo = fetchResult.imageInfo
-                val mimeType = fetchResult.imageInfo?.mimeType
-                if (imageInfo != null && MIME_TYPE.equals(mimeType, ignoreCase = true)) {
-                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource, imageInfo)
-                } else if (imageInfo != null && fetchResult.headerBytes.isGif()) {
-                    // This will not happen unless there is a bug in the BitmapFactory
-                    val newImageInfo = ImageInfo(
-                        MIME_TYPE,
-                        imageInfo.width,
-                        imageInfo.height,
-                        imageInfo.exifOrientation
-                    )
-                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource, newImageInfo)
+                if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
+                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource)
+                } else if (fetchResult.headerBytes.isGif()) {
+                    // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
+                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource)
                 }
             }
             return null
@@ -107,9 +103,9 @@ class GifDrawableDecoder constructor(
 
     companion object {
         const val MIME_TYPE = "image/gif"
-        const val REPEAT_COUNT_KEY = "coil#repeat_count"
-        const val ANIMATED_TRANSFORMATION_KEY = "coil#animated_transformation"
-        const val ANIMATION_START_CALLBACK_KEY = "coil#animation_start_callback"
-        const val ANIMATION_END_CALLBACK_KEY = "coil#animation_end_callback"
+        const val REPEAT_COUNT_KEY = "sketch#repeat_count"
+        const val ANIMATED_TRANSFORMATION_KEY = "sketch#animated_transformation"
+        const val ANIMATION_START_CALLBACK_KEY = "sketch#animation_start_callback"
+        const val ANIMATION_END_CALLBACK_KEY = "sketch#animation_end_callback"
     }
 }
