@@ -22,7 +22,8 @@ class DataFromViewAbility(
         private const val FROM_FLAG_COLOR_MEMORY_CACHE = 0x7700FF00   // green
         private const val FROM_FLAG_COLOR_MEMORY = 0x77008800   // dark green
         private const val FROM_FLAG_COLOR_LOCAL = 0x771E90FF   // dodger blue
-        private const val FROM_FLAG_COLOR_DISK_CACHE = 0x77FFFF00 // yellow
+        private const val FROM_FLAG_COLOR_DISK_CACHE = 0x77FF8800 // dark yellow
+        private const val FROM_FLAG_COLOR_RESULT_DISK_CACHE = 0x77FFFF00 // yellow
         private const val FROM_FLAG_COLOR_NETWORK = 0x77FF0000  // red
     }
 
@@ -78,6 +79,7 @@ class DataFromViewAbility(
         val dataFrom = lastDrawable.imageDataFrom ?: return false
         when (dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
+            DataFrom.RESULT_DISK_CACHE -> paint.color = FROM_FLAG_COLOR_RESULT_DISK_CACHE
             DataFrom.DISK_CACHE -> paint.color = FROM_FLAG_COLOR_DISK_CACHE
             DataFrom.NETWORK -> paint.color = FROM_FLAG_COLOR_NETWORK
             DataFrom.LOCAL -> paint.color = FROM_FLAG_COLOR_LOCAL

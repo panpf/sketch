@@ -30,16 +30,20 @@ class BlurTransformation(
     override val cacheKey: String =
         "Blur(${radius}${if (maskColor != null) ",$maskColor" else ""})"
 
-    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
+    override suspend fun transform(
+        sketch: Sketch,
+        request: LoadRequest,
+        input: Bitmap
+    ): TransformResult? {
         // blur handle
         val canReuseInBitmap = input.config != null && input.isMutable
-        val blurBitmap = fastGaussianBlur(input, radius, canReuseInBitmap) ?: return input
+        val blurBitmap = fastGaussianBlur(input, radius, canReuseInBitmap) ?: return null
 
         // layer color handle
         if (maskColor != null) {
             Canvas(blurBitmap).drawColor(maskColor)
         }
-        return blurBitmap
+        return TransformResult(blurBitmap, BlurTransformed(radius, maskColor))
     }
 
     companion object {

@@ -6,6 +6,6 @@ import com.github.panpf.sketch.request.internal.ImageData
 
 data class DisplayData constructor(
     val drawable: Drawable,
-    val info: ImageInfo,
-    val from: DataFrom
+    val imageInfo: ImageInfo,
+    val dataFrom: DataFrom
 ) : ImageData

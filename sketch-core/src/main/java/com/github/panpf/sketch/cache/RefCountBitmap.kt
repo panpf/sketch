@@ -17,6 +17,7 @@ package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.toHexString
@@ -24,11 +25,12 @@ import com.github.panpf.sketch.util.toHexString
 /**
  * 引用 [Bitmap]，能够计算缓存引用、显示引用以及等待显示引用
  */
-class RefCountBitmap(
+class RefCountBitmap constructor(
     initBitmap: Bitmap,
     val imageUri: String,
     val imageInfo: ImageInfo,
     val requestKey: String,
+    val transformedList: List<Transformed>?,
     private val bitmapPoolHelper: BitmapPoolHelper
 ) {
 

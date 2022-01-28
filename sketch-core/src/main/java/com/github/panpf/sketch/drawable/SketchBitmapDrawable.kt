@@ -18,14 +18,16 @@ package com.github.panpf.sketch.drawable
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.util.byteCountCompat
 
-open class SketchBitmapDrawable(
+open class SketchBitmapDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
     private val imageInfo: ImageInfo,
     override val imageDataFrom: DataFrom,
+    override val transformedList: List<Transformed>?,
     bitmap: Bitmap,
 ) : BitmapDrawable(null, bitmap), SketchDrawable {
 

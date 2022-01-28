@@ -58,8 +58,6 @@ class VideoFrameDecoder(
         }
     }
 
-    override fun isCacheToDisk(decodeConfig: DecodeConfig): Boolean = true
-
     override fun readImageInfo(): ImageInfo {
         val srcWidth = mediaMetadataRetriever
             .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
@@ -90,6 +88,7 @@ class VideoFrameDecoder(
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+        // todo 缓存视频帧到磁盘缓存
         val option = request.videoFrameOption() ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros()
             ?: request.videoFramePercentDuration()?.let { percentDuration ->

@@ -33,7 +33,7 @@ import java.io.InputStream
 /**
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
-class ExifOrientationCorrector(private val exifOrientation: Int) {
+class ExifOrientationCorrector(val exifOrientation: Int) {
 
     init {
         if (!hasRotate(exifOrientation)) {

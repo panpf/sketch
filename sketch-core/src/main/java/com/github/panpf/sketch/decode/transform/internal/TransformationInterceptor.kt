@@ -1,9 +1,12 @@
 package com.github.panpf.sketch.decode.transform.internal
 
+import android.graphics.Bitmap
 import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.DecodeInterceptor
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.withContext
+import java.util.LinkedList
 
 class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
@@ -17,19 +20,27 @@ class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRes
         if (transformations?.isNotEmpty() != true) return result
 
         val oldBitmap = result.bitmap
-        val newBitmap = withContext(sketch.decodeTaskDispatcher) {
-            var bitmap = result.bitmap
+        var transformedBitmap: Bitmap? = null
+        val transformedList = LinkedList<Transformed>()
+        withContext(sketch.decodeTaskDispatcher) {
             transformations.forEach {
-                val transformBitmap = it.transform(sketch, request, bitmap)
-                if (transformBitmap !== bitmap) {
-                    sketch.bitmapPoolHelper.freeBitmapToPool(bitmap)
-                    bitmap = transformBitmap
+                val inputBitmap = transformedBitmap ?: oldBitmap
+                val transformResult = it.transform(sketch, request, inputBitmap)
+                if (transformResult != null) {
+                    sketch.bitmapPoolHelper.freeBitmapToPool(inputBitmap)
+                    transformedBitmap = transformResult.bitmap
+                    transformedList.add(transformResult.transformed)
                 }
             }
-            bitmap
+            transformedBitmap
         }
-        return if (oldBitmap !== newBitmap) {
-            BitmapDecodeResult(newBitmap, result.info, result.from, true)
+        val newBitmap = transformedBitmap
+        return if (newBitmap != null) {
+            result.new(newBitmap) {
+                transformedList.forEach {
+                    addTransformed(it)
+                }
+            }
         } else {
             result
         }

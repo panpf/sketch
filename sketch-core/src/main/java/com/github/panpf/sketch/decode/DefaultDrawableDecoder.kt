@@ -46,9 +46,14 @@ class DefaultDrawableDecoder(
                     ).proceed(request).run {
                         val drawable = memoryCacheHelper?.write(this)
                             ?: SketchBitmapDrawable(
-                                request.key, request.uriString, this.info, this.from, this.bitmap
+                                request.key,
+                                request.uriString,
+                                this.imageInfo,
+                                this.dataFrom,
+                                this.transformedList,
+                                this.bitmap
                             )
-                        DrawableDecodeResult(drawable, this.info, this.from)
+                        DrawableDecodeResult(drawable, this.imageInfo, this.dataFrom)
                     }
             } finally {
                 memoryCacheHelper?.lock?.unlock()
@@ -109,13 +114,14 @@ class DefaultDrawableDecoder(
                 val refBitmap = RefCountBitmap(
                     bitmapDecodeResult.bitmap,
                     request.uriString,
-                    bitmapDecodeResult.info,
+                    bitmapDecodeResult.imageInfo,
                     request.key,
+                    bitmapDecodeResult.transformedList,
                     bitmapPoolHelper
                 )
                 refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
                 memoryCache.put(bitmapMemoryCacheKey, refBitmap)
-                SketchRefCountBitmapDrawable(refBitmap, bitmapDecodeResult.from)
+                SketchRefCountBitmapDrawable(refBitmap, bitmapDecodeResult.dataFrom)
             } else {
                 null
             }

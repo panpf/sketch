@@ -15,7 +15,7 @@ class CircleCropTransformation(val scale: Resize.Scale = Resize.Scale.CENTER_CRO
 
     override val cacheKey: String = "CircleCrop($scale)"
 
-    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
+    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult {
         val newSize = input.width.coerceAtMost(input.height)
         val resizeMapping = ResizeMapping.calculator(
             input.width, input.height, newSize, newSize, scale, false
@@ -41,6 +41,6 @@ class CircleCropTransformation(val scale: Resize.Scale = Resize.Scale.CENTER_CRO
         // 应用遮罩模式并绘制图片
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         canvas.drawBitmap(input, resizeMapping.srcRect, resizeMapping.destRect, paint)
-        return circleBitmap
+        return TransformResult(circleBitmap, CircleCropTransformed(scale))
     }
 }

@@ -49,7 +49,7 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
 
     override val cacheKey: String = "RoundedCorners(${radiusArray.joinToString(separator = ",")})"
 
-    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
+    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult {
         val bitmapPoolHelper = sketch.bitmapPoolHelper
         val roundedCornersBitmap = bitmapPoolHelper.getOrMake(input.width, input.height, input.safeConfig)
         val canvas = Canvas(roundedCornersBitmap)
@@ -71,6 +71,6 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         val rect = Rect(0, 0, input.width, input.height)
         canvas.drawBitmap(input, rect, rect, paint)
-        return roundedCornersBitmap
+        return TransformResult(roundedCornersBitmap, RoundedCornersTransformed(radiusArray))
     }
 }

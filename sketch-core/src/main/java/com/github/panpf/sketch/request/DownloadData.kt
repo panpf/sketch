@@ -11,11 +11,11 @@ sealed interface DownloadData: ImageData {
     @Throws(IOException::class)
     fun newInputStream(): InputStream
 
-    val from: DataFrom
+    val dataFrom: DataFrom
 
     class Bytes(
         val data: ByteArray,
-        override val from: DataFrom
+        override val dataFrom: DataFrom
     ) : DownloadData {
 
         override fun newInputStream(): InputStream = ByteArrayInputStream(data)
@@ -23,7 +23,7 @@ sealed interface DownloadData: ImageData {
 
     class Cache(
         val diskCacheEntry: DiskCache.Entry,
-        override val from: DataFrom
+        override val dataFrom: DataFrom
     ) : DownloadData {
 
         override fun newInputStream(): InputStream {

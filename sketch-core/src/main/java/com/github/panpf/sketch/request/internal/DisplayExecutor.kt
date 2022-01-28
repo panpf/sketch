@@ -156,6 +156,7 @@ class DisplayExecutor(private val sketch: Sketch) {
 
         val resize = request.resize
         val newResize =
+            // todo 切换布局模式时 resize 貌似没有刷新为新的尺寸
             if (resize != null && (resize.width == fixedSizeFlag || resize.height == fixedSizeFlag)) {
                 require(view != null) {
                     val message =

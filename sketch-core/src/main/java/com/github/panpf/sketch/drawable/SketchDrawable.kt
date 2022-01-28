@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.drawable
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom
 
 interface SketchDrawable {
@@ -43,4 +44,6 @@ interface SketchDrawable {
     val bitmapByteCount: Int
 
     val bitmapConfig: Bitmap.Config?
+
+    val transformedList: List<Transformed>?
 }

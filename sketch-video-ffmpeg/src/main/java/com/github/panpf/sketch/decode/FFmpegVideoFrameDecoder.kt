@@ -49,8 +49,6 @@ class FFmpegVideoFrameDecoder(
         mediaMetadataRetriever.release()
     }
 
-    override fun isCacheToDisk(decodeConfig: DecodeConfig): Boolean = true
-
     override fun readImageInfo(): ImageInfo {
         val srcWidth =
             mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
@@ -81,6 +79,7 @@ class FFmpegVideoFrameDecoder(
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+        // todo 缓存视频帧到磁盘缓存
         val option =
             request.videoFrameOption() ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros()

@@ -37,7 +37,7 @@ class DownloadExecutor(private val sketch: Sketch) {
             sketch.logger.d(MODULE) {
                 "Request Successful. ${request.uriString}"
             }
-            val successResult = DownloadResult.Success(request, downloadData, downloadData.from)
+            val successResult = DownloadResult.Success(request, downloadData, downloadData.dataFrom)
             listenerDelegate?.onSuccess(request, successResult)
             return successResult
         } catch (throwable: Throwable) {

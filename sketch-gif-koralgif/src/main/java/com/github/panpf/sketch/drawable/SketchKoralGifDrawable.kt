@@ -21,6 +21,7 @@ import android.graphics.Bitmap
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom
 
 /**
@@ -58,6 +59,8 @@ class SketchKoralGifDrawable(
 
     override val bitmapConfig: Bitmap.Config?
         get() = gifDrawable.bitmapConfig
+
+    override val transformedList: List<Transformed>? = null
 
     override fun start() = gifDrawable.start()
 

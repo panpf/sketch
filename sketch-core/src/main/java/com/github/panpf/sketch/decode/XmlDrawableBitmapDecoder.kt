@@ -22,13 +22,14 @@ class XmlDrawableBitmapDecoder(
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
             ?: throw BitmapDecodeException(request, "Invalid drawable resource id '$drawableResId'")
         val bitmap = drawableToBitmap(drawable, false, sketch.bitmapPoolHelper)
+        // todo bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
             "image/android-xml",
             bitmap.width,
             bitmap.height,
             ExifInterface.ORIENTATION_UNDEFINED
         )
-        return BitmapDecodeResult(bitmap, imageInfo, DataFrom.LOCAL, true)
+        return BitmapDecodeResult(bitmap, imageInfo, DataFrom.LOCAL)
     }
 
     override fun close() {

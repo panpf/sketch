@@ -19,6 +19,7 @@ enum class DataFrom {
     NETWORK,
     DISK_CACHE,
     LOCAL,
+    RESULT_DISK_CACHE,
     MEMORY_CACHE,
     MEMORY
 }

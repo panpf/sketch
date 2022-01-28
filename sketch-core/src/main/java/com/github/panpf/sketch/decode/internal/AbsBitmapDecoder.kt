@@ -35,8 +35,6 @@ abstract class AbsBitmapDecoder(
 
     protected abstract fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
 
-    protected open fun isCacheToDisk(decodeConfig: DecodeConfig) = decodeConfig.isCacheToDisk
-
     override suspend fun decodeBitmap(): BitmapDecodeResult {
         val imageInfo = readImageInfo()
 
@@ -46,13 +44,24 @@ abstract class AbsBitmapDecoder(
         val imageOrientationCorrector =
             ExifOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
 
+        val resizeTransformed: ResizeTransformed?
         val bitmap = if (resize != null && shouldUseRegionDecoder(resize, imageInfo, imageType)) {
+            resizeTransformed = ResizeTransformed(resize)
             decodeRegionWrapper(imageInfo, resize, decodeConfig, imageOrientationCorrector)
         } else {
+            resizeTransformed = null
             decodeWrapper(imageInfo, decodeConfig, imageOrientationCorrector)
         }
 
-        return BitmapDecodeResult(bitmap, imageInfo, dataSource.from, isCacheToDisk(decodeConfig))
+        return BitmapDecodeResult.Builder(bitmap, imageInfo, dataSource.from).apply {
+            resizeTransformed?.let {
+                addTransformed(it)
+            }
+            val inSampleSize = decodeConfig.inSampleSize
+            if (inSampleSize != null && inSampleSize != 1) {
+                addTransformed(InSampledTransformed(inSampleSize))
+            }
+        }.build()
     }
 
     private fun shouldUseRegionDecoder(

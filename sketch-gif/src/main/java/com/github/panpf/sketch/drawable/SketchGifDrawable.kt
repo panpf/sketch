@@ -21,6 +21,7 @@ import android.graphics.Bitmap
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom
 
 @SuppressLint("RestrictedApi")
@@ -55,6 +56,8 @@ class SketchGifDrawable(
 
     override val bitmapConfig: Bitmap.Config?
         get() = movieDrawable.bitmapConfig
+
+    override val transformedList: List<Transformed>? = null
 
     override fun start() = movieDrawable.start()
 

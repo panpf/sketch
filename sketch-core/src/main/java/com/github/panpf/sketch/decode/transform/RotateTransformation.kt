@@ -13,9 +13,16 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override val cacheKey: String = "Rotate($degrees)"
 
-    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap {
-        if (degrees % 360 == 0) return input
-        return rotate(input, degrees, sketch.bitmapPoolHelper)
+    override suspend fun transform(
+        sketch: Sketch,
+        request: LoadRequest,
+        input: Bitmap
+    ): TransformResult? {
+        if (degrees % 360 == 0) return null
+        return TransformResult(
+            rotate(input, degrees, sketch.bitmapPoolHelper),
+            RotateTransformed(degrees)
+        )
     }
 
     companion object {

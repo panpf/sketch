@@ -6,6 +6,6 @@ import com.github.panpf.sketch.request.internal.ImageData
 
 data class LoadData constructor(
     val bitmap: Bitmap,
-    val info: ImageInfo,
-    val from: DataFrom
+    val imageInfo: ImageInfo,
+    val dataFrom: DataFrom
 ): ImageData

@@ -26,6 +26,7 @@ class SketchRefCountBitmapDrawable constructor(
     refCountBitmap.imageUri,
     refCountBitmap.imageInfo,
     imageDataFrom,
+    refCountBitmap.transformedList,
     refCountBitmap.bitmap!!
 ), SketchRefCountDrawable {
 

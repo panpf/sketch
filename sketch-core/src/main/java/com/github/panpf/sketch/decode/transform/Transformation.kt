@@ -24,5 +24,5 @@ interface Transformation {
      * @param input The input [Bitmap] to transform.
      * @return The transformed [Bitmap].
      */
-    suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): Bitmap
+    suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult?
 }

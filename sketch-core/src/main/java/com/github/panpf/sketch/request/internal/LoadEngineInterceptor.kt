@@ -20,6 +20,6 @@ class LoadEngineInterceptor : RequestInterceptor<LoadRequest, LoadData> {
             request = request,
             fetchResult = null,
         ).proceed(request)
-        return LoadData(bitmapDecodeResult.bitmap, bitmapDecodeResult.info, bitmapDecodeResult.from)
+        return LoadData(bitmapDecodeResult.bitmap, bitmapDecodeResult.imageInfo, bitmapDecodeResult.dataFrom)
     }
 }

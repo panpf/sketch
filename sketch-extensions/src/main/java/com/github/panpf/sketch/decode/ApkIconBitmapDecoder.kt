@@ -25,13 +25,14 @@ class ApkIconBitmapDecoder(
             false,
             sketch.bitmapPoolHelper
         )
+        // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
             MIME_TYPE,
             bitmap.width,
             bitmap.height,
             ExifInterface.ORIENTATION_UNDEFINED
         )
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL, true)
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
     }
 
     override fun close() {

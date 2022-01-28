@@ -33,8 +33,6 @@ class SvgBitmapDecoder(
         dataSource.newInputStream().use { SVG.getFromInputStream(it) }
     }
 
-    override fun isCacheToDisk(decodeConfig: DecodeConfig): Boolean = true
-
     override fun readImageInfo(): ImageInfo {
         val width: Int
         val height: Int

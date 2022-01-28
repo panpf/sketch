@@ -10,7 +10,7 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.DataFrom.DISK_CACHE
+import com.github.panpf.sketch.request.DataFrom.RESULT_DISK_CACHE
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.Logger
@@ -73,7 +73,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                                 .toBitmapOptions()
                         )
                         if (bitmap.width > 1 && bitmap.height > 1) {
-                            BitmapDecodeResult(bitmap, imageInfo, DISK_CACHE, false)
+                            BitmapDecodeResult(bitmap, imageInfo, RESULT_DISK_CACHE)
                         } else {
                             bitmap.recycle()
                             val msg =
@@ -99,7 +99,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
             }
 
         fun write(result: BitmapDecodeResult) {
-            if (cachePolicy.writeEnabled && result.cacheToDisk) {
+            if (cachePolicy.writeEnabled && result.transformedList?.any { it.cacheResultToDisk } == true) {
                 val bitmapDataEditor = diskCache.edit(encodedBitmapDataDiskCacheKey)
                 val metaDataEditor = diskCache.edit(encodedMetaDataDiskCacheKey)
                 try {
@@ -110,7 +110,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                         bitmapDataEditor.commit()
 
                         metaDataEditor.newOutputStream().use {
-                            it.bufferedWriter().write(result.info.toJsonString())
+                            it.bufferedWriter().write(result.imageInfo.toJsonString())
                         }
                         metaDataEditor.commit()
                     } else {
