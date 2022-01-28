@@ -17,11 +17,7 @@ package com.github.panpf.sketch.zoom.internal
 
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vm
-import com.github.panpf.sketch.SLog.Companion.wm
-import com.github.panpf.sketch.util.SketchUtils.Companion.postOnAnimation
+import androidx.core.view.ViewCompat.postOnAnimation
 
 /**
  * 定位执行器
@@ -35,6 +31,12 @@ internal class LocationRunner(
         Scroller(imageZoomer.getImageView().context, AccelerateDecelerateInterpolator())
     private var currentX = 0
     private var currentY = 0
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
+
+    val isRunning: Boolean
+        get() = !scroller.isFinished
 
     /**
      * 定位到预览图上指定的位置
@@ -51,20 +53,16 @@ internal class LocationRunner(
     override fun run() {
         // remaining post that should not be handled
         if (scroller.isFinished) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "finished. location run")
-            }
+            logger.v(ImageZoomer.MODULE) { "finished. location run" }
             return
         }
         if (!imageZoomer.isWorking) {
-            wm(ImageZoomer.MODULE, "not working. location run")
+            logger.w(ImageZoomer.MODULE, "not working. location run")
             scroller.forceFinished(true)
             return
         }
         if (!scroller.computeScrollOffset()) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "scroll finished. location run")
-            }
+            logger.v(ImageZoomer.MODULE) { "scroll finished. location run" }
             return
         }
         val newX = scroller.currX
@@ -75,12 +73,8 @@ internal class LocationRunner(
         currentX = newX
         currentY = newY
 
-        // Post On animation
         postOnAnimation(imageZoomer.getImageView(), this)
     }
-
-    val isRunning: Boolean
-        get() = !scroller.isFinished
 
     fun cancel() {
         scroller.forceFinished(true)

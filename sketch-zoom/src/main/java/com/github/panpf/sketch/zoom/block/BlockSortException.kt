@@ -1,13 +1,10 @@
-package com.github.panpf.sketch.zoom.internal.block
-
-import com.github.panpf.sketch.SketchException
-import java.lang.IllegalArgumentException
+package com.github.panpf.sketch.zoom.block
 
 class BlockSortException(
     cause: IllegalArgumentException,
     val blockList: List<Block>,
     val isUseLegacyMergeSort: Boolean
-) : SketchException(cause) {
+) : Exception(cause) {
 
     @get:Synchronized
     override val cause: IllegalArgumentException

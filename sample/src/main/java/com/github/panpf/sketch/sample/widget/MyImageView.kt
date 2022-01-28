@@ -78,6 +78,8 @@ open class MyImageView @JvmOverloads constructor(
                 }"
             )
             append("\n").append("\n")
+            append("transformedList: ${drawable.transformedList?.joinToString()}")
+            append("\n").append("\n")
             append(drawable.requestKey)
         }
         AlertDialog.Builder(activity).apply {

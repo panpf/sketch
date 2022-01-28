@@ -23,12 +23,7 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vm
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.util.SketchUtils.Companion.formatFloat
-import com.github.panpf.sketch.util.SketchUtils.Companion.getMatrixScale
+import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnScaleDragGestureListener
 import kotlin.math.abs
@@ -48,7 +43,8 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
     private var locationRunner // 定位执行器
             : LocationRunner? = null
     private val scaleDragGestureDetector // 缩放和拖拽手势识别器
-            : ScaleDragGestureDetector = ScaleDragGestureDetector(context.applicationContext)
+            : ScaleDragGestureDetector =
+        ScaleDragGestureDetector(context.applicationContext, imageZoomer)
     private val tempDisplayRectF = RectF()
     var horScrollEdge = EDGE_NONE // 横向滚动边界
         private set
@@ -61,6 +57,9 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
             = 0f
     var isZooming // 缩放中状态
             = false
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
 
     fun reset() {
         resetBaseMatrix()
@@ -75,11 +74,8 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
     fun onTouchEvent(event: MotionEvent): Boolean { // 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner!!.isRunning) {
-                if (isLoggable(SLog.VERBOSE)) {
-                    vm(
-                        ImageZoomer.MODULE,
-                        "disallow parent intercept touch event. location running"
-                    )
+                logger.v(ImageZoomer.MODULE) {
+                    "disallow parent intercept touch event. location running"
                 }
                 requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true)
                 return true
@@ -103,9 +99,7 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
         tempLastScaleFocusY = 0f
 
         // 上来就禁止父View拦截事件
-        if (isLoggable(SLog.VERBOSE)) {
-            vm(ImageZoomer.MODULE, "disallow parent intercept touch event. action down")
-        }
+        logger.v(ImageZoomer.MODULE) { "disallow parent intercept touch event. action down" }
         requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), true)
 
         // 取消快速滚动
@@ -119,16 +113,12 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
         if (scaleDragGestureDetector.isScaling) {
             return
         }
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(ImageZoomer.MODULE, "drag. dx: %s, dy: %s", dx, dy)
-        }
+        logger.v(ImageZoomer.MODULE) { "drag. dx: $dx, dy: $dy" }
         supportMatrix.postTranslate(dx, dy)
         checkAndApplyMatrix()
         if (!imageZoomer.isAllowParentInterceptOnEdge || scaleDragGestureDetector.isScaling || disallowParentInterceptTouchEvent) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    ImageZoomer.MODULE,
-                    "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s",
+            logger.v(ImageZoomer.MODULE) {
+                "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s".format(
                     imageZoomer.isAllowParentInterceptOnEdge,
                     scaleDragGestureDetector.isScaling,
                     disallowParentInterceptTouchEvent
@@ -142,20 +132,16 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
 //        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
 //                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)) {
         if (horScrollEdge == EDGE_BOTH || horScrollEdge == EDGE_START && dx >= 1f || horScrollEdge == EDGE_END && dx <= -1f) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    ImageZoomer.MODULE,
-                    "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+            logger.v(ImageZoomer.MODULE) {
+                "allow parent intercept touch event. onDrag. scrollEdge=%s-%s".format(
                     getScrollEdgeName(horScrollEdge),
                     getScrollEdgeName(verScrollEdge)
                 )
             }
             requestDisallowInterceptTouchEvent(imageZoomer.getImageView(), false)
         } else {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    ImageZoomer.MODULE,
-                    "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+            logger.v(ImageZoomer.MODULE) {
+                "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s".format(
                     getScrollEdgeName(horScrollEdge),
                     getScrollEdgeName(verScrollEdge)
                 )
@@ -173,10 +159,8 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
 
     override fun onScale(scaleFactor: Float, focusX: Float, focusY: Float) {
         var newScaleFactor = scaleFactor
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(
-                ImageZoomer.MODULE,
-                "scale. scaleFactor: %s, dx: %s, dy: %s",
+        logger.v(ImageZoomer.MODULE) {
+            "scale. scaleFactor: %s, dx: %s, dy: %s".format(
                 newScaleFactor,
                 focusX,
                 focusY
@@ -189,7 +173,7 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
         if (newScaleFactor > 1.0f) {
             // 放大的时候，如果当前已经超过最大缩放比例，就调慢缩放速度
             // 这样就能模拟出超过最大缩放比例时很难再继续放大有种拉橡皮筋的感觉
-            val maxSuppScale = imageZoomer.maxZoomScale / getMatrixScale(baseMatrix)
+            val maxSuppScale = imageZoomer.maxZoomScale / baseMatrix.getScale()
             if (oldSuppScale >= maxSuppScale) {
                 var addScale = newSuppScale - oldSuppScale
                 addScale *= 0.4f
@@ -199,7 +183,7 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
         } else if (newScaleFactor < 1.0f) {
             // 缩小的时候，如果当前已经小于最小缩放比例，就调慢缩放速度
             // 这样就能模拟出小于最小缩放比例时很难再继续缩小有种拉橡皮筋的感觉
-            val minSuppScale = imageZoomer.minZoomScale / getMatrixScale(baseMatrix)
+            val minSuppScale = imageZoomer.minZoomScale / baseMatrix.getScale()
             if (oldSuppScale <= minSuppScale) {
                 var addScale = newSuppScale - oldSuppScale
                 addScale *= 0.4f
@@ -214,20 +198,16 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
     }
 
     override fun onScaleBegin(): Boolean {
-        if (isLoggable(SLog.VERBOSE)) {
-            vm(ImageZoomer.MODULE, "scale begin")
-        }
+        logger.v(ImageZoomer.MODULE) { "scale begin" }
         isZooming = true
         return true
     }
 
     override fun onScaleEnd() {
-        if (isLoggable(SLog.VERBOSE)) {
-            vm(ImageZoomer.MODULE, "scale end")
-        }
-        val currentScale = formatFloat(zoomScale, 2)
-        val overMinZoomScale = currentScale < formatFloat(imageZoomer.minZoomScale, 2)
-        val overMaxZoomScale = currentScale > formatFloat(imageZoomer.maxZoomScale, 2)
+        logger.v(ImageZoomer.MODULE) { "scale end" }
+        val currentScale = zoomScale.format(2)
+        val overMinZoomScale = currentScale < imageZoomer.minZoomScale.format(2)
+        val overMaxZoomScale = currentScale > imageZoomer.maxZoomScale.format(2)
         if (!overMinZoomScale && !overMaxZoomScale) {
             isZooming = false
             imageZoomer.onMatrixChanged()
@@ -235,15 +215,15 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
     }
 
     override fun onActionUp(ev: MotionEvent) {
-        val currentScale = formatFloat(zoomScale, 2)
-        if (currentScale < formatFloat(imageZoomer.minZoomScale, 2)) {
+        val currentScale = zoomScale.format(2)
+        if (currentScale < imageZoomer.minZoomScale.format(2)) {
             // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
             val drawRectF = RectF()
             getDrawRect(drawRectF)
             if (!drawRectF.isEmpty) {
                 zoom(imageZoomer.minZoomScale, drawRectF.centerX(), drawRectF.centerY(), true)
             }
-        } else if (currentScale > formatFloat(imageZoomer.maxZoomScale, 2)) {
+        } else if (currentScale > imageZoomer.maxZoomScale.format(2)) {
             // 如果当前缩放倍数大于最大倍数就回滚至最大倍数
             if (tempLastScaleFocusX != 0f && tempLastScaleFocusY != 0f) {
                 zoom(imageZoomer.maxZoomScale, tempLastScaleFocusX, tempLastScaleFocusY, true)
@@ -279,10 +259,17 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
             scaleType
         }
         val initScale = imageZoomer.getZoomScales().initZoomScale
-        val sizeCalculator = with(imageZoomer.getImageView().context).configuration.sizeCalculator
-        if (readMode && sizeCalculator.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        if (readMode && imageZoomer.readModeConditions.canUseReadModeByHeight(
+                imageWidth,
+                imageHeight
+            )
+        ) {
             baseMatrix.postScale(initScale, initScale)
-        } else if (readMode && sizeCalculator.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (readMode && imageZoomer.readModeConditions.canUseReadModeByWidth(
+                imageWidth,
+                imageHeight
+            )
+        ) {
             baseMatrix.postScale(initScale, initScale)
         } else if (finalScaleType == ScaleType.CENTER) {
             baseMatrix.postScale(initScale, initScale)
@@ -430,8 +417,8 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
         val imageViewHeight = imageViewSize.height
 
         // 充满的时候是无法移动的，因此先放到最大
-        val scale = formatFloat(zoomScale, 2)
-        val fullZoomScale = formatFloat(imageZoomer.fullZoomScale, 2)
+        val scale = zoomScale.format(2)
+        val fullZoomScale = imageZoomer.fullZoomScale.format(2)
         if (scale == fullZoomScale) {
             zoom(imageZoomer.maxZoomScale, newX, newY, false)
         }
@@ -460,10 +447,8 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
         // 当前显示区域的left和top就是开始位置
         val startX = abs(drawRectF.left.toInt())
         val startY = abs(drawRectF.top.toInt())
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(
-                ImageZoomer.MODULE,
-                "location. start=%dx%d, end=%dx%d",
+        logger.v(ImageZoomer.MODULE) {
+            "location. start=%dx%d, end=%dx%d".format(
                 startX,
                 startY,
                 trimCenterLocationX,
@@ -500,20 +485,18 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
     }
 
     val defaultZoomScale: Float
-        get() = getMatrixScale(baseMatrix)
+        get() = baseMatrix.getScale()
     val supportZoomScale: Float
-        get() = getMatrixScale(supportMatrix)
+        get() = supportMatrix.getScale()
     val zoomScale: Float
-        get() = getMatrixScale(getDrawMatrix())
+        get() = getDrawMatrix().getScale()
 
     /**
      * 获取绘制区域
      */
     fun getDrawRect(rectF: RectF) {
         if (!imageZoomer.isWorking) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "not working. getDrawRect")
-            }
+            logger.v(ImageZoomer.MODULE) { "not working. getDrawRect" }
             rectF.setEmpty()
             return
         }
@@ -527,9 +510,7 @@ internal class ScaleDragHelper(context: Context, private val imageZoomer: ImageZ
      */
     fun getVisibleRect(rect: Rect) {
         if (!imageZoomer.isWorking) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "not working. getVisibleRect")
-            }
+            logger.v(ImageZoomer.MODULE) { "not working. getVisibleRect" }
             rect.setEmpty()
             return
         }

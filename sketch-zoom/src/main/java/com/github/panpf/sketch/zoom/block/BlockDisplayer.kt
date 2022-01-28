@@ -13,24 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal
+package com.github.panpf.sketch.zoom.block
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.Point
+import android.graphics.Rect
 import android.text.TextUtils
-import com.github.panpf.sketch.ImageType
+import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.zoom.internal.block.Block
-import com.github.panpf.sketch.zoom.internal.block.BlockDecoder
-import com.github.panpf.sketch.zoom.internal.block.BlockExecutor
-import com.github.panpf.sketch.zoom.internal.block.BlockManager
-import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
-import com.github.panpf.sketch.zoom.internal.block.ImageRegionDecoder
+import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.util.getLastDrawable
+import com.github.panpf.sketch.util.supportBitmapRegionDecoder
+import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.internal.ImageZoomer
+import com.github.panpf.sketch.zoom.internal.getScale
+import java.util.Locale
 
 /**
  * 对于超大图片，分块显示可见区域
  */
 // TODO: 2017/5/8 重新规划设计大图查看器的实现，感觉现在的有些乱（初始化，解码，显示分离）
+// todo 重构
 class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
     companion object {
@@ -43,6 +53,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
     val blockDecoder: BlockDecoder
     private val blockManager: BlockManager
     private val appContext = context.applicationContext
+    val logger = imageZoomer.logger
 
     /**
      * 获取当前缩放比例
@@ -92,70 +103,58 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
     var onBlockChangedListener: OnBlockChangedListener? = null
 
     init {
-        blockExecutor = BlockExecutor(ExecutorCallback())
-        blockManager = BlockManager(context, this)
-        blockDecoder = BlockDecoder(this)
+        blockExecutor = BlockExecutor(ExecutorCallback(), imageZoomer)
+        blockManager = BlockManager(this, imageZoomer)
+        blockDecoder = BlockDecoder(this, imageZoomer)
         matrix = Matrix()
         drawBlockPaint = Paint()
     }
 
     /* -----------主要方法----------- */
     fun reset() {
-        val imageView = imageZoomer.imageView
-        val previewDrawable = getLastDrawable(imageZoomer.imageView.drawable)
+        val previewDrawable = imageZoomer.imageView.drawable.getLastDrawable()
         var sketchDrawable: SketchDrawable? = null
         var drawableQualified = false
-        if (previewDrawable is SketchDrawable && previewDrawable !is SketchLoadingDrawable) {
+        val correctImageOrientation: Boolean
+        if (previewDrawable is SketchDrawable) {
             sketchDrawable = previewDrawable
-            val previewWidth = previewDrawable.intrinsicWidth
-            val previewHeight = previewDrawable.intrinsicHeight
-            val imageWidth = sketchDrawable.originWidth
-            val imageHeight = sketchDrawable.originHeight
+            val previewWidth = previewDrawable.bitmapWidth
+            val previewHeight = previewDrawable.bitmapHeight
+            val imageWidth = sketchDrawable.imageWidth
+            val imageHeight = sketchDrawable.imageHeight
             drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight
-            drawableQualified = drawableQualified and formatSupportBitmapRegionDecoder(
-                valueOfMimeType(
-                    sketchDrawable.mimeType
+            drawableQualified =
+                drawableQualified and (ImageFormat.valueOfMimeType(sketchDrawable.imageMimeType)
+                    ?.supportBitmapRegionDecoder() == true)
+            val message =
+                if (drawableQualified) "Use BlockDisplayer" else "Don't need to use BlockDisplayer"
+            logger.v(NAME) {
+                "$message. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s".format(
+                    Locale.getDefault(),
+                    previewWidth,
+                    previewHeight,
+                    imageWidth,
+                    imageHeight,
+                    sketchDrawable.imageMimeType,
+                    sketchDrawable.requestKey
                 )
-            )
-            if (drawableQualified) {
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        NAME,
-                        "Use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
-                        previewWidth,
-                        previewHeight,
-                        imageWidth,
-                        imageHeight,
-                        sketchDrawable.mimeType!!,
-                        sketchDrawable.key!!
-                    )
-                }
-            } else {
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        NAME,
-                        "Don't need to use BlockDisplayer. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
-                        previewWidth,
-                        previewHeight,
-                        imageWidth,
-                        imageHeight,
-                        sketchDrawable.mimeType!!,
-                        sketchDrawable.key!!
-                    )
-                }
             }
+            correctImageOrientation =
+                previewDrawable.imageExifOrientation != ExifInterface.ORIENTATION_UNDEFINED
+                        && previewDrawable.transformedList?.getExifOrientationTransformed() != null
+        } else {
+            correctImageOrientation = false
         }
-        val correctImageOrientationDisabled = imageView.options.isCorrectImageOrientationDisabled
         if (drawableQualified) {
             clean("setImage")
-            imageUri = sketchDrawable!!.uri
+            imageUri = sketchDrawable!!.requestUri
             running = !TextUtils.isEmpty(imageUri)
-            blockDecoder.setImage(imageUri, correctImageOrientationDisabled)
+            blockDecoder.setImage(imageUri, !correctImageOrientation)
         } else {
             clean("setImage")
             imageUri = null
             running = false
-            blockDecoder.setImage(null, correctImageOrientationDisabled)
+            blockDecoder.setImage(null, !correctImageOrientation)
         }
     }
 
@@ -211,13 +210,11 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
     fun onMatrixChanged() {
         if (!isReady && !isInitializing) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(NAME, "BlockDisplayer not available. onMatrixChanged. %s", imageUri!!)
-            }
+            logger.v(NAME) { "BlockDisplayer not available. onMatrixChanged. $imageUri" }
             return
         }
         if (imageZoomer.rotateDegrees % 90 != 0) {
-            wmf(NAME, "rotate degrees must be in multiples of 90. %s", imageUri!!)
+            logger.w(NAME, "rotate degrees must be in multiples of 90. $imageUri")
             return
         }
         val drawMatrix = (tempDrawMatrix ?: Matrix().apply {
@@ -239,29 +236,27 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
         // 没有准备好就不往下走了
         if (!isReady) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(NAME, "not ready. %s", imageUri!!)
-            }
+            logger.v(NAME) { "not ready. $imageUri" }
             return
         }
 
         // 暂停中也不走了
         if (isPaused) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(NAME, "paused. %s", imageUri!!)
-            }
+            logger.v(NAME) { "paused. $imageUri" }
             return
         }
 
         // 传进来的参数不能用就什么也不显示
         if (newVisibleRect.isEmpty || drawableSize.isEmpty || viewSize.isEmpty) {
-            wmf(
+            logger.w(
                 NAME,
-                "update params is empty. update. newVisibleRect=%s, drawableSize=%s, viewSize=%s. %s",
-                newVisibleRect.toShortString(),
-                drawableSize.toString(),
-                viewSize.toString(),
-                imageUri!!
+                "update params is empty. update. newVisibleRect=%s, drawableSize=%s, viewSize=%s. %s"
+                    .format(
+                        newVisibleRect.toShortString(),
+                        drawableSize.toString(),
+                        viewSize.toString(),
+                        imageUri!!
+                    )
             )
             clean("update param is empty")
             return
@@ -269,11 +264,8 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == drawableSize.width && newVisibleRect.height() == drawableSize.height) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    NAME, "full display. update. newVisibleRect=%s. %s",
-                    newVisibleRect.toShortString(), imageUri!!
-                )
+            logger.v(NAME) {
+                "full display. update. newVisibleRect=${newVisibleRect.toShortString()}. $imageUri"
             }
             clean("full display")
             return
@@ -282,7 +274,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
         // 更新Matrix
         lastZoomScale = zoomScale
         matrix.set(drawMatrix)
-        zoomScale = formatFloat(getMatrixScale(matrix), 2)
+        zoomScale = matrix.getScale().format(2)
         invalidateView()
         blockManager.update(newVisibleRect, drawableSize, viewSize, imageSize!!, zooming)
     }
@@ -301,16 +293,12 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
         }
         isPaused = pause
         if (isPaused) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(NAME, "pause. %s", imageUri!!)
-            }
+            logger.v(NAME) { "pause. $imageUri" }
             if (running) {
                 clean("pause")
             }
         } else {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(NAME, "resume. %s", imageUri!!)
-            }
+            logger.v(NAME) { "resume. $imageUri" }
             if (running) {
                 onMatrixChanged()
             }
@@ -344,8 +332,8 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
     /**
      * 获取图片的类型
      */
-    val imageType: ImageType?
-        get() = if (blockDecoder.isReady) blockDecoder.decoder!!.imageType else null
+    val imageType: ImageFormat?
+        get() = if (blockDecoder.isReady) blockDecoder.decoder!!.imageFormat else null
 
     /**
      * 获取绘制区域
@@ -423,7 +411,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
         override fun onInitCompleted(imageUri: String, decoder: ImageRegionDecoder) {
             if (!running) {
-                wmf(NAME, "stop running. initCompleted. %s", imageUri)
+                logger.w(NAME, "stop running. initCompleted. $imageUri")
                 return
             }
             blockDecoder.initCompleted(imageUri, decoder)
@@ -432,7 +420,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
         override fun onInitError(imageUri: String, e: Exception) {
             if (!running) {
-                wmf(NAME, "stop running. initError. %s", imageUri)
+                logger.w(NAME, "stop running. initError. $imageUri")
                 return
             }
             blockDecoder.initError(imageUri, e)
@@ -440,8 +428,8 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
         override fun onDecodeCompleted(block: Block, bitmap: Bitmap, useTime: Int) {
             if (!running) {
-                wmf(NAME, "stop running. decodeCompleted. block=%s", block.info)
-                freeBitmapToPoolForRegionDecoder(bitmap, with(context).configuration.bitmapPool)
+                logger.w(NAME, "stop running. decodeCompleted. block=${block.info}")
+                imageZoomer.imageView.sketch.bitmapPoolHelper.freeBitmapToPool(bitmap)
                 return
             }
             blockManager.decodeCompleted(block, bitmap, useTime)
@@ -449,7 +437,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
 
         override fun onDecodeError(block: Block, exception: DecodeErrorException) {
             if (!running) {
-                wmf(NAME, "stop running. decodeError. block=%s", block.info)
+                logger.w(NAME, "stop running. decodeError. block=${block.info}")
                 return
             }
             blockManager.decodeError(block, exception)

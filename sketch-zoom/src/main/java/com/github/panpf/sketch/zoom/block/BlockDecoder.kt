@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.util.KeyCounter
-import com.github.panpf.sketch.zoom.internal.BlockDisplayer
+import com.github.panpf.sketch.zoom.block.internal.KeyCounter
+import com.github.panpf.sketch.zoom.internal.ImageZoomer
 
 /**
  * 碎片解码器
  */
-class BlockDecoder(private val blockDisplayer: BlockDisplayer) {
+class BlockDecoder constructor(
+    private val blockDisplayer: BlockDisplayer,
+    private val imageZoomer: ImageZoomer
+) {
 
     companion object {
         private const val NAME = "BlockDecoder"
@@ -36,6 +35,9 @@ class BlockDecoder(private val blockDisplayer: BlockDisplayer) {
         private set
     private var running = false
     private var initializing = false
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
 
     /**
      * 设置新的图片
@@ -63,7 +65,7 @@ class BlockDecoder(private val blockDisplayer: BlockDisplayer) {
      */
     fun decodeBlock(block: Block) {
         if (!isReady) {
-            wmf(NAME, "not ready. decodeBlock. %s", block.info)
+            logger.w(NAME, "not ready. decodeBlock. ${block.info}")
             return
         }
         block.decoder = decoder
@@ -71,31 +73,23 @@ class BlockDecoder(private val blockDisplayer: BlockDisplayer) {
     }
 
     fun clean(why: String) {
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(NAME, "clean. %s", why)
-        }
+        logger.v(NAME) { "clean. $why" }
         initKeyCounter.refresh()
     }
 
     fun recycle(why: String) {
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(NAME, "recycle. %s", why)
-        }
+        logger.v(NAME) { "recycle. $why" }
         decoder?.recycle()
     }
 
     fun initCompleted(imageUri: String, decoder: ImageRegionDecoder) {
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(NAME, "init completed. %s", imageUri)
-        }
+        logger.v(NAME) { "init completed. $imageUri" }
         initializing = false
         this.decoder = decoder
     }
 
     fun initError(imageUri: String, e: Exception) {
-        if (isLoggable(SLog.DEBUG)) {
-            vmf(NAME, "init failed. %s. %s", e.message ?: "", imageUri)
-        }
+        logger.v(NAME) { "init failed. ${e.message ?: ""}. $imageUri" }
         initializing = false
     }
 

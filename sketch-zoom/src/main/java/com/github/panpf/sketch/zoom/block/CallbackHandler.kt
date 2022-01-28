@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPoolForRegionDecoder
-import com.github.panpf.sketch.util.KeyCounter
-import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.block.internal.KeyCounter
 import java.lang.ref.WeakReference
 
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
  */
-class CallbackHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
+class CallbackHandler constructor(looper: Looper, executor: BlockExecutor, val bitmapPoolHelper: BitmapPoolHelper, val logger: Logger) :
+    Handler(looper) {
 
     companion object {
         private const val NAME = "CallbackHandler"
@@ -40,7 +40,6 @@ class CallbackHandler(looper: Looper, executor: BlockExecutor) : Handler(looper)
         private const val WHAT_DECODE_FAILED = 2005
     }
 
-    private val bitmapPool: BitmapPool = with(executor.callback.context).configuration.bitmapPool
     private val executorReference: WeakReference<BlockExecutor> = WeakReference(executor)
 
     override fun handleMessage(msg: Message) {
@@ -142,23 +141,18 @@ class CallbackHandler(looper: Looper, executor: BlockExecutor) : Handler(looper)
     ) {
         val executor = executorReference.get()
         if (executor == null) {
-            wmf(
+            logger.w(
                 NAME,
-                "weak reference break. initCompleted. key: %d, imageUri: %s",
-                key,
-                decoder.imageUri
+                "weak reference break. initCompleted. key: $key, imageUri: ${decoder.imageUri}",
             )
             decoder.recycle()
             return
         }
         val newKey = keyCounter.key
         if (key != newKey) {
-            wmf(
+            logger.w(
                 NAME,
-                "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s",
-                key,
-                newKey,
-                decoder.imageUri
+                "init key expired. initCompleted. key: $key. newKey: $newKey, imageUri: ${decoder.imageUri}",
             )
             decoder.recycle()
             return
@@ -174,18 +168,12 @@ class CallbackHandler(looper: Looper, executor: BlockExecutor) : Handler(looper)
     ) {
         val executor = executorReference.get()
         if (executor == null) {
-            wmf(NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri)
+            logger.w(NAME, "weak reference break. initError. key: $key, imageUri: $imageUri")
             return
         }
         val newKey = keyCounter.key
         if (key != newKey) {
-            wmf(
-                NAME,
-                "key expire. initError. key: %d. newKey: %d, imageUri: %s",
-                key,
-                newKey,
-                imageUri
-            )
+            logger.w(NAME, "key expire. initError. key: $key. newKey: $newKey, imageUri: $imageUri")
             return
         }
         executor.callback.onInitError(imageUri, exception)
@@ -194,14 +182,14 @@ class CallbackHandler(looper: Looper, executor: BlockExecutor) : Handler(looper)
     private fun decodeCompleted(key: Int, block: Block, bitmap: Bitmap, useTime: Int) {
         val executor = executorReference.get()
         if (executor == null) {
-            wmf(NAME, "weak reference break. decodeCompleted. key: %d, block=%s", key, block.info)
-            freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool)
+            logger.w(NAME, "weak reference break. decodeCompleted. key: $key, block=${block.info}")
+            bitmapPoolHelper.freeBitmapToPool(bitmap)
             return
         }
         if (!block.isExpired(key)) {
             executor.callback.onDecodeCompleted(block, bitmap, useTime)
         } else {
-            freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool)
+            bitmapPoolHelper.freeBitmapToPool(bitmap)
             executor.callback.onDecodeError(
                 block,
                 DecodeErrorException(DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED)
@@ -212,7 +200,7 @@ class CallbackHandler(looper: Looper, executor: BlockExecutor) : Handler(looper)
     private fun decodeError(key: Int, block: Block, exception: DecodeErrorException) {
         val executor = executorReference.get()
         if (executor == null) {
-            wmf(NAME, "weak reference break. decodeError. key: %d, block=%s", key, block.info)
+            logger.w(NAME, "weak reference break. decodeError. key: $key, block=${block.info}")
             return
         }
         executor.callback.onDecodeError(block, exception)

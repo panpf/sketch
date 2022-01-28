@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPoolForRegionDecoder
-import com.github.panpf.sketch.util.KeyCounter
+import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.zoom.block.internal.KeyCounter
 
 /**
  * 碎片
@@ -61,9 +60,9 @@ class Block {
         return keyCounter.key != key
     }
 
-    fun clean(bitmapPool: BitmapPool) {
+    fun clean(bitmapPoolHelper: BitmapPoolHelper) {
         if (bitmap != null) {
-            freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool)
+            bitmapPoolHelper.freeBitmapToPool(bitmap)
             bitmap = null
         }
         bitmapDrawSrcRect.setEmpty()

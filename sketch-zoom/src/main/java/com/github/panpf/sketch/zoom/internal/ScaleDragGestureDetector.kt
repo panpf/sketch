@@ -21,12 +21,10 @@ import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
-import com.github.panpf.sketch.SLog.Companion.wm
-import com.github.panpf.sketch.util.SketchUtils.Companion.getPointerIndex
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-open class ScaleDragGestureDetector(context: Context?) {
+open class ScaleDragGestureDetector constructor(context: Context?, val imageZoomer: ImageZoomer) {
     private val mTouchSlop: Float
     private val mMinimumVelocity: Float
     private val mDetector: ScaleGestureDetector
@@ -39,6 +37,9 @@ open class ScaleDragGestureDetector(context: Context?) {
         private set
     private var mActivePointerId = INVALID_POINTER_ID
     private var mActivePointerIndex = 0
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
     fun setOnGestureListener(listener: OnScaleDragGestureListener?) {
         mListener = listener
     }
@@ -108,7 +109,7 @@ open class ScaleDragGestureDetector(context: Context?) {
                     if (null != mVelocityTracker) {
                         mVelocityTracker!!.addMovement(ev)
                     } else {
-                        wm(NAME, "Velocity tracker is null")
+                        logger.w(NAME, "Velocity tracker is null")
                     }
                     mLastTouchX = getActiveX(ev)
                     mLastTouchY = getActiveY(ev)

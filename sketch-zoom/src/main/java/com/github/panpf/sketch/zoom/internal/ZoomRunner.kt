@@ -18,11 +18,7 @@
  */
 package com.github.panpf.sketch.zoom.internal
 
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vm
-import com.github.panpf.sketch.SLog.Companion.wm
-import com.github.panpf.sketch.util.SketchUtils.Companion.postOnAnimation
+import androidx.core.view.ViewCompat.postOnAnimation
 
 internal class ZoomRunner(
     private val imageZoomer: ImageZoomer,
@@ -36,10 +32,13 @@ internal class ZoomRunner(
     private val mStartTime: Long = System.currentTimeMillis()
     private val mZoomStart: Float = currentZoom
     private val mZoomEnd: Float = targetZoom
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
 
     override fun run() {
         if (!imageZoomer.isWorking) {
-            wm(ImageZoomer.MODULE, "not working. zoom run")
+            logger.w(ImageZoomer.MODULE, "not working. zoom run")
             return
         }
         val t = interpolate()
@@ -53,9 +52,7 @@ internal class ZoomRunner(
         if (continueZoom) {
             postOnAnimation(imageZoomer.getImageView(), this)
         } else {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "finished. zoom run")
-            }
+            logger.v(ImageZoomer.MODULE) { "finished. zoom run" }
         }
     }
 

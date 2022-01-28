@@ -24,10 +24,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.animation.DecelerateInterpolator
 import android.widget.Scroller
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.util.SketchUtils.Companion.dp2px
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -43,12 +39,15 @@ internal class ScrollBarHelper(context: Context, private val imageZoomer: ImageZ
     private val handler: Handler
     private val hiddenScrollBarRunner: HiddenScrollBarRunner
     private val fadeScrollBarRunner: FadeScrollBarRunner
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
 
     init {
         scrollBarPaint.color = Color.parseColor("#000000")
         scrollBarPaint.alpha = scrollBarAlpha
-        scrollBarSize = dp2px(context, 3)
-        scrollBarMargin = dp2px(context, 3)
+        scrollBarSize = 3.dp2px
+        scrollBarMargin = 3.dp2px
         scrollBarRadius = (scrollBarSize / 2).toFloat().roundToInt()
         handler = Handler(Looper.getMainLooper())
         hiddenScrollBarRunner = HiddenScrollBarRunner()
@@ -59,12 +58,9 @@ internal class ScrollBarHelper(context: Context, private val imageZoomer: ImageZ
         val drawRectF = tempDisplayRectF
         imageZoomer.getDrawRect(drawRectF)
         if (drawRectF.isEmpty) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    ImageZoomer.MODULE,
-                    "displayRectF is empty. drawScrollBar. drawRectF=%s",
-                    drawRectF.toString()
-                )
+            logger.v(ImageZoomer.MODULE) {
+                "displayRectF is empty. drawScrollBar. drawRectF=drawRectF.toString()"
+
             }
             return
         }
@@ -74,15 +70,9 @@ internal class ScrollBarHelper(context: Context, private val imageZoomer: ImageZ
         val displayWidth = drawRectF.width()
         val displayHeight = drawRectF.height()
         if (viewWidth <= 0 || viewHeight <= 0 || displayWidth == 0f || displayHeight == 0f) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    ImageZoomer.MODULE,
-                    "size is 0. drawScrollBar. viewSize=%dx%d, displaySize=%sx%s",
-                    viewWidth,
-                    viewHeight,
-                    displayWidth,
-                    displayHeight
-                )
+            logger.v(ImageZoomer.MODULE) {
+                "size is 0. drawScrollBar. viewSize=%dx%d, displaySize=%sx%s"
+                    .format(viewWidth, viewHeight, displayWidth, displayHeight)
             }
             return
         }

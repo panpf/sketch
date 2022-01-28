@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.HandlerThread
 import android.os.Looper
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.util.KeyCounter
-import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.block.internal.KeyCounter
+import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 碎片解码执行器，负责初始化解码器以及管理解码线程
  */
-class BlockExecutor(var callback: Callback) {
+class BlockExecutor(var callback: Callback, val imageZoomer: ImageZoomer) {
 
     companion object {
         private const val NAME = "BlockExecutor"
@@ -39,10 +37,16 @@ class BlockExecutor(var callback: Callback) {
 
     private val handlerThreadLock = Any()
 
-    var callbackHandler: CallbackHandler = CallbackHandler(Looper.getMainLooper(), this)
+    var callbackHandler: CallbackHandler = CallbackHandler(
+        Looper.getMainLooper(),
+        this,
+        imageZoomer.imageView.sketch.bitmapPoolHelper,
+        imageZoomer.logger
+    )
     private var handlerThread: HandlerThread? = null
     private var initHandler: InitHandler? = null
     private var decodeHandler: DecodeHandler? = null
+    private val logger = imageZoomer.logger
 
     /**
      * 安装解码线程
@@ -58,11 +62,11 @@ class BlockExecutor(var callback: Callback) {
                         HandlerThread("ImageRegionDecodeThread" + THREAD_NUMBER.addAndGet(1))
                     this@BlockExecutor.handlerThread = handlerThread
                     handlerThread.start()
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(NAME, "image region decode thread %s started", handlerThread.name)
+                    logger.v(NAME) {
+                        "image region decode thread '${handlerThread.name}' started"
                     }
-                    decodeHandler = DecodeHandler(handlerThread.looper, this)
-                    initHandler = InitHandler(handlerThread.looper, this)
+                    decodeHandler = DecodeHandler(handlerThread.looper, this, imageZoomer)
+                    initHandler = InitHandler(handlerThread.looper, this, imageZoomer)
                     callbackHandler.postDelayRecycleDecodeThread()
                 }
             }
@@ -121,8 +125,8 @@ class BlockExecutor(var callback: Callback) {
                 } else {
                     handlerThread.quit()
                 }
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(NAME, "image region decode thread %s quit", handlerThread.name)
+                logger.v(NAME) {
+                    "image region decode thread '${handlerThread.name}' quit"
                 }
                 this@BlockExecutor.handlerThread = null
             }

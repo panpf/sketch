@@ -20,12 +20,7 @@ package com.github.panpf.sketch.zoom.internal
 
 import android.graphics.RectF
 import android.widget.OverScroller
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vm
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.SLog.Companion.wm
-import com.github.panpf.sketch.util.SketchUtils.Companion.postOnAnimation
+import androidx.core.view.ViewCompat.postOnAnimation
 import kotlin.math.roundToInt
 
 internal class FlingRunner(
@@ -36,10 +31,13 @@ internal class FlingRunner(
     private val scroller: OverScroller = OverScroller(imageZoomer.imageView.context)
     private var currentX = 0
     private var currentY = 0
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
 
     fun fling(velocityX: Int, velocityY: Int) {
         if (!imageZoomer.isWorking) {
-            wm(ImageZoomer.MODULE, "not working. fling")
+            logger.w(ImageZoomer.MODULE, "not working. fling")
             return
         }
         val drawRectF = RectF()
@@ -70,11 +68,8 @@ internal class FlingRunner(
             maxY = startY
             minY = maxY
         }
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(
-                ImageZoomer.MODULE, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
-                startX, startY, minX, minY, maxX, maxY
-            )
+        logger.v(ImageZoomer.MODULE) {
+            "fling. start=${startX}x${startY}, min=${minX}x${minY}, max=${maxX}x${maxY}"
         }
 
         // If we actually can move, fling the scroller
@@ -94,19 +89,15 @@ internal class FlingRunner(
     override fun run() {
         // remaining post that should not be handled
         if (scroller.isFinished) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "finished. fling run")
-            }
+            logger.v(ImageZoomer.MODULE) { "finished. fling run" }
             return
         }
         if (!imageZoomer.isWorking) {
-            wm(ImageZoomer.MODULE, "not working. fling run")
+            logger.w(ImageZoomer.MODULE, "not working. fling run")
             return
         }
         if (!scroller.computeScrollOffset()) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vm(ImageZoomer.MODULE, "scroll finished. fling run")
-            }
+            logger.v(ImageZoomer.MODULE) { "scroll finished. fling run" }
             return
         }
         val newX = scroller.currX
@@ -115,14 +106,11 @@ internal class FlingRunner(
         currentX = newX
         currentY = newY
 
-        // Post On animation
         postOnAnimation(imageZoomer.imageView, this)
     }
 
     fun cancelFling() {
-        if (isLoggable(SLog.VERBOSE)) {
-            vm(ImageZoomer.MODULE, "cancel fling")
-        }
+        logger.v(ImageZoomer.MODULE) { "cancel fling" }
         scroller.forceFinished(true)
         imageZoomer.imageView.removeCallbacks(this)
     }

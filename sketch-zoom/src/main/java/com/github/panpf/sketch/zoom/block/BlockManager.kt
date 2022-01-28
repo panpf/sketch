@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.dmf
-import com.github.panpf.sketch.SLog.Companion.emf
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vm
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.util.ObjectPool
-import com.github.panpf.sketch.util.SketchUtils.Companion.getByteCount
-import com.github.panpf.sketch.util.SketchUtils.Companion.isCross
-import com.github.panpf.sketch.zoom.internal.BlockDisplayer
+import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.calculateInSampleSize
+import com.github.panpf.sketch.zoom.block.Block.Companion.blockListToString
+import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
+import com.github.panpf.sketch.zoom.block.internal.ObjectPool
+import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import com.github.panpf.sketch.zoom.internal.Size
-import com.github.panpf.sketch.zoom.internal.block.Block.Companion.blockListToString
-import com.github.panpf.sketch.zoom.internal.block.DecodeHandler.DecodeErrorException
-import java.util.*
+import com.github.panpf.sketch.zoom.internal.isCross
+import java.util.Collections
+import java.util.LinkedList
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -42,17 +36,21 @@ import kotlin.math.roundToInt
  * 碎片管理器
  */
 // TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
-class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer) {
+// todo 重构
+class BlockManager(
+    private val blockDisplayer: BlockDisplayer,
+    imageZoomer: ImageZoomer
+) {
 
     companion object {
         private const val MODULE = "BlockManager"
     }
 
     private val visibleRect = Rect() // 可见区域，当前用户真正能看见的区域
-    private val appContext: Context = context.applicationContext
-    private val bitmapPool: BitmapPool = with(context).configuration.bitmapPool
+    private val bitmapPoolHelper: BitmapPoolHelper = imageZoomer.imageView.sketch.bitmapPoolHelper
     private val blockPool: ObjectPool<Block> = ObjectPool({ Block() }, 60)
     private val rectPool: ObjectPool<Rect> = ObjectPool({ Rect() }, 20)
+    private val logger = imageZoomer.logger
 
     var blockBaseNumber = 3 // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
     var drawRect = Rect() // 绘制区域，可见区域加大一圈就是绘制区域，为的是提前将四周加载出来，用户缓慢滑动时可直接看到
@@ -69,22 +67,17 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
         zooming: Boolean
     ) {
         if (zooming) {
-            if (isLoggable(SLog.VERBOSE)) {
-                dmf(
-                    MODULE, "zooming. newVisibleRect=%s, blocks=%d",
-                    newVisibleRect.toShortString(), blockList.size
-                )
+            logger.d(MODULE) {
+                "zooming. newVisibleRect=${newVisibleRect.toShortString()}, blocks=${blockList.size}"
             }
             return
         }
 
         // 过滤掉重复的刷新
         if (visibleRect == newVisibleRect) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    MODULE, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
-                    newVisibleRect.toShortString(), visibleRect.toShortString()
-                )
+            logger.v(MODULE) {
+                "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s"
+                    .format(newVisibleRect.toShortString(), visibleRect.toShortString())
             }
             return
         }
@@ -109,7 +102,7 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
         newDrawRect.right = drawableSize.width.coerceAtMost(newVisibleRect.right + drawWidthAdd)
         newDrawRect.bottom = drawableSize.height.coerceAtMost(newVisibleRect.bottom + drawHeightAdd)
         if (newDrawRect.isEmpty) {
-            emf(MODULE, "newDrawRect is empty. %s", newDrawRect.toShortString())
+            logger.e(MODULE, "newDrawRect is empty. ${newDrawRect.toShortString()}")
             return
         }
 
@@ -118,7 +111,7 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
         val blockWidth = newDrawRect.width() / finalBlocks
         val blockHeight = newDrawRect.height() / finalBlocks
         if (blockWidth <= 0 || blockHeight <= 0) {
-            emf(MODULE, "blockWidth or blockHeight exception. %dx%d", blockWidth, blockHeight)
+            logger.e(MODULE, "blockWidth or blockHeight exception. ${blockWidth}x${blockHeight}")
             return
         }
 
@@ -142,24 +135,23 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             originWidthScale,
             originHeightScale
         )
-        val inSampleSize = calculateInSampleSize(
+        val inSampleSize = calculateInSampleSizeDelegate(
             newDrawSrcRect.width(),
             newDrawSrcRect.height(),
             viewSize.width,
             viewSize.height
         )
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(
-                MODULE,
-                "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, blocks=%d",
-                newVisibleRect.toShortString(),
-                newDrawRect.toShortString(),
-                decodeRect.toShortString(),
-                inSampleSize,
-                blockDisplayer.zoomScale,
-                blockDisplayer.lastZoomScale,
-                blockList.size
-            )
+        logger.v(MODULE) {
+            "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, blocks=%d"
+                .format(
+                    newVisibleRect.toShortString(),
+                    newDrawRect.toShortString(),
+                    decodeRect.toShortString(),
+                    inSampleSize,
+                    blockDisplayer.zoomScale,
+                    blockDisplayer.lastZoomScale,
+                    blockList.size
+                )
         }
 
         // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
@@ -188,29 +180,20 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
                         originWidthScale, originHeightScale, inSampleSize, newDecodeRect
                     )
                 } else {
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vm(MODULE, "not found empty rect")
-                    }
+                    logger.v(MODULE) { "not found empty rect" }
                 }
                 val onBlockChangedListener = blockDisplayer.onBlockChangedListener
                 onBlockChangedListener?.onBlockChanged(blockDisplayer)
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "update finished, newDecodeRect=%s, blocks=%d",
-                        newDecodeRect.toShortString(), blockList.size
-                    )
+                logger.v(MODULE) {
+                    "update finished, newDecodeRect=%s, blocks=%d"
+                        .format(newDecodeRect.toShortString(), blockList.size)
                 }
             } else {
-                if (isLoggable(SLog.VERBOSE)) {
-                    vm(MODULE, "update finished draw rect no change")
-                }
+                logger.v(MODULE) { "update finished draw rect no change" }
             }
         } else {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(
-                    MODULE, "update finished. final draw rect is empty. newDecodeRect=%s",
-                    newDecodeRect.toShortString()
-                )
+            logger.v(MODULE) {
+                "update finished. final draw rect is empty. newDecodeRect=${newDecodeRect.toShortString()}"
             }
         }
         drawRect.set(newDrawRect)
@@ -244,24 +227,14 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
     /**
      * 计算解码时的缩放比例
      */
-    private fun calculateInSampleSize(
-        srcWidth: Int,
-        srcHeight: Int,
-        viewWidth: Int,
-        viewHeight: Int
+    private fun calculateInSampleSizeDelegate(
+        srcWidth: Int, srcHeight: Int, viewWidth: Int, viewHeight: Int
     ): Int {
         // 由于绘制区域比显示区域大了一圈，因此targetSize也得大一圈
         val targetSizeScale = blockBaseNumber.toFloat() / 10 + 1
         val targetWidth = (viewWidth * targetSizeScale).roundToInt()
         val targetHeight = (viewHeight * targetSizeScale).roundToInt()
-        val sizeCalculator = with(appContext).configuration.sizeCalculator
-        return sizeCalculator.calculateInSampleSize(
-            srcWidth,
-            srcHeight,
-            targetWidth,
-            targetHeight,
-            false
-        )
+        return calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight)
     }
 
     /**
@@ -293,23 +266,17 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             if (newDrawRect.left == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.left = 0
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE,
-                        "decode rect left to 0, newDecodeRect=%s",
-                        newDecodeRect.toShortString()
-                    )
+                logger.v(MODULE) {
+                    "decode rect left to 0, newDecodeRect=${newDecodeRect.toShortString()}"
                 }
             } else if (leftSpace > leftAndRightEdge || newDecodeRect.left - drawBlockWidth <= 0) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.left > newDrawRect.left) {
                     newDecodeRect.left = 0.coerceAtLeast(newDecodeRect.left - drawBlockWidth)
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(
-                            MODULE, "decode rect left expand %d, newDecodeRect=%s",
-                            drawBlockWidth, newDecodeRect.toShortString()
-                        )
+                    logger.v(MODULE) {
+                        "decode rect left expand %d, newDecodeRect=%s"
+                            .format(drawBlockWidth, newDecodeRect.toShortString())
                     }
                 }
             }
@@ -320,23 +287,17 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             if (newDrawRect.top == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.top = 0
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE,
-                        "decode rect top to 0, newDecodeRect=%s",
-                        newDecodeRect.toShortString()
-                    )
+                logger.v(MODULE) {
+                    "decode rect top to 0, newDecodeRect=${newDecodeRect.toShortString()}"
                 }
             } else if (topSpace > topAndBottomEdge || newDecodeRect.top - drawBlockHeight <= 0) {
                 // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.top > newDrawRect.top) {
                     newDecodeRect.top = 0.coerceAtLeast(newDecodeRect.top - drawBlockHeight)
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(
-                            MODULE, "decode rect top expand %d, newDecodeRect=%s",
-                            drawBlockHeight, newDecodeRect.toShortString()
-                        )
+                    logger.v(MODULE) {
+                        "decode rect top expand %d, newDecodeRect=%s"
+                            .format(drawBlockHeight, newDecodeRect.toShortString())
                     }
                 }
             }
@@ -348,11 +309,9 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             if (newDrawRect.right == maxDrawWidth) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.right = maxDrawWidth
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "decode rect right to %d, newDecodeRect=%s",
-                        maxDrawWidth, newDecodeRect.toShortString()
-                    )
+                logger.v(MODULE) {
+                    "decode rect right to %d, newDecodeRect=%s"
+                        .format(maxDrawWidth, newDecodeRect.toShortString())
                 }
             } else if (rightSpace > leftAndRightEdge || newDecodeRect.right + drawBlockWidth >= maxDrawWidth) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
@@ -360,9 +319,10 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
                 while (newDecodeRect.right < newDrawRect.right) {
                     newDecodeRect.right =
                         maxDrawWidth.coerceAtMost(newDecodeRect.right + drawBlockWidth)
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(
-                            MODULE, "decode rect right expand %d, newDecodeRect=%s",
+                    logger.v(
+                        MODULE
+                    ) {
+                        "decode rect right expand %d, newDecodeRect=%s".format(
                             drawBlockWidth, newDecodeRect.toShortString()
                         )
                     }
@@ -375,9 +335,10 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             if (newDrawRect.bottom > maxDrawHeight) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.bottom = maxDrawHeight
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "decode rect bottom to %d, newDecodeRect=%s",
+                logger.v(
+                    MODULE
+                ) {
+                    "decode rect bottom to %d, newDecodeRect=%s".format(
                         maxDrawHeight, newDecodeRect.toShortString()
                     )
                 }
@@ -387,9 +348,10 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
                 while (newDecodeRect.bottom < newDrawRect.bottom) {
                     newDecodeRect.bottom =
                         maxDrawHeight.coerceAtMost(newDecodeRect.bottom + drawBlockHeight)
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(
-                            MODULE, "decode rect bottom expand %d, newDecodeRect=%s",
+                    logger.v(
+                        MODULE
+                    ) {
+                        "decode rect bottom expand %d, newDecodeRect=%s".format(
                             drawBlockHeight, newDecodeRect.toShortString()
                         )
                     }
@@ -401,36 +363,40 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
         while (newDecodeRect.left + drawBlockWidth < newDrawRect.left || newDecodeRect.top + drawBlockHeight < newDrawRect.top || newDecodeRect.right - drawBlockWidth > newDrawRect.right || newDecodeRect.bottom - drawBlockHeight > newDrawRect.bottom) {
             if (newDecodeRect.left + drawBlockWidth < newDrawRect.left) {
                 newDecodeRect.left += drawBlockWidth
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "decode rect left reduced %d, newDecodeRect=%s",
+                logger.v(
+                    MODULE
+                ) {
+                    "decode rect left reduced %d, newDecodeRect=%s".format(
                         drawBlockWidth, newDecodeRect.toShortString()
                     )
                 }
             }
             if (newDecodeRect.top + drawBlockHeight < newDrawRect.top) {
                 newDecodeRect.top += drawBlockHeight
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "decode rect top reduced %d, newDecodeRect=%s",
+                logger.v(
+                    MODULE
+                ) {
+                    "decode rect top reduced %d, newDecodeRect=%s".format(
                         drawBlockHeight, newDecodeRect.toShortString()
                     )
                 }
             }
             if (newDecodeRect.right - drawBlockWidth > newDrawRect.right) {
                 newDecodeRect.right -= drawBlockWidth
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "decode rect right reduced %d, newDecodeRect=%s",
+                logger.v(
+                    MODULE
+                ) {
+                    "decode rect right reduced %d, newDecodeRect=%s".format(
                         drawBlockWidth, newDecodeRect.toShortString()
                     )
                 }
             }
             if (newDecodeRect.bottom - drawBlockHeight > newDrawRect.bottom) {
                 newDecodeRect.bottom -= drawBlockHeight
-                if (isLoggable(SLog.VERBOSE)) {
-                    vmf(
-                        MODULE, "decode rect bottom reduced %d, newDecodeRect=%s",
+                logger.v(
+                    MODULE
+                ) {
+                    "decode rect bottom reduced %d, newDecodeRect=%s".format(
                         drawBlockHeight, newDecodeRect.toShortString()
                     )
                 }
@@ -487,25 +453,21 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
 
             /*
              * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，这里的处理办法是暂时改用旧版的排序算法再次排序
-             */emf(MODULE, "onBlockSortError. %s", blockListToString(blockList)!!)
-            with(appContext).configuration.callback.onError(BlockSortException(e, blockList, false))
+             */
+            logger.e(MODULE, "onBlockSortError. ${blockListToString(blockList)}")
+//            with(appContext).configuration.callback.onError(BlockSortException(e, blockList, false))
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "true")
             try {
                 Collections.sort(blockList, blockComparator)
             } catch (e2: IllegalArgumentException) {
                 e2.printStackTrace()
-                emf(
+                logger.e(
                     MODULE,
-                    "onBlockSortError. useLegacyMergeSort. %s",
-                    blockListToString(blockList)!!
+                    "onBlockSortError. useLegacyMergeSort. ${blockListToString(blockList)!!}",
                 )
-                with(appContext).configuration.callback.onError(
-                    BlockSortException(
-                        e,
-                        blockList,
-                        false
-                    )
-                )
+//                with(appContext).configuration.callback.onError(
+//                    BlockSortException(e, blockList, false)
+//                )
             }
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "false")
         }
@@ -619,18 +581,14 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             block = blockIterator.next()
 
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
-            if (blockDisplayer.zoomScale != block.scale || !isCross(block.drawRect, drawRect)) {
+            if (blockDisplayer.zoomScale != block.scale || !block.drawRect.isCross(drawRect)) {
                 if (!block.isEmpty) {
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(MODULE, "recycle block. block=%s", block.info)
-                    }
+                    logger.v(MODULE) { "recycle block. block=${block.info}" }
                     blockIterator.remove()
-                    block.clean(bitmapPool)
+                    block.clean(bitmapPoolHelper)
                     blockPool.put(block)
                 } else {
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(MODULE, "recycle loading block and refresh key. block=%s", block.info)
-                    }
+                    logger.v(MODULE) { "recycle loading block and refresh key. block=${block.info}" }
                     block.refreshKey()
                     blockIterator.remove()
                 }
@@ -644,15 +602,14 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
         inSampleSize: Int, newDecodeRect: Rect
     ) {
         for (emptyRect in emptyRectList) {
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(MODULE, "load emptyRect=%s", emptyRect.toShortString())
-            }
+            logger.v(MODULE) { "load emptyRect=${emptyRect.toShortString()}" }
             var blockLeft = emptyRect.left
             var blockTop = emptyRect.top
             var blockRight = 0
             var blockBottom = 0
-            while (blockRight.toFloat().roundToInt() < emptyRect.right || blockBottom.toFloat()
-                    .roundToInt() < emptyRect.bottom
+            while (
+                blockRight.toFloat().roundToInt() < emptyRect.right
+                || blockBottom.toFloat().roundToInt() < emptyRect.bottom
             ) {
                 blockRight = (blockLeft + blockWidth).coerceAtMost(emptyRect.right)
                 blockBottom = (blockTop + blockHeight).coerceAtMost(emptyRect.bottom)
@@ -670,19 +627,20 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
                         originHeightScale
                     )
                     blockList.add(loadBlock)
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(
-                            MODULE, "submit and refresh key. newDecodeRect=%s, block=%s",
+                    logger.v(
+                        MODULE
+                    ) {
+                        "submit and refresh key. newDecodeRect=%s, block=%s".format(
                             newDecodeRect.toShortString(), loadBlock.info
                         )
                     }
                     loadBlock.refreshKey()
                     blockDisplayer.blockDecoder.decodeBlock(loadBlock)
                 } else {
-                    if (isLoggable(SLog.VERBOSE)) {
-                        vmf(
-                            MODULE,
-                            "repeated block. blockDrawRect=%d, %d, %d, %d",
+                    logger.v(
+                        MODULE
+                    ) {
+                        "repeated block. blockDrawRect=%d, %d, %d, %d".format(
                             blockLeft.toFloat().roundToInt(),
                             blockTop.toFloat().roundToInt(),
                             blockRight.toFloat().roundToInt(),
@@ -703,10 +661,11 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
     }
 
     fun decodeCompleted(block: Block, bitmap: Bitmap, useTime: Int) {
-        if (isLoggable(SLog.VERBOSE)) {
+        logger.v(
+            MODULE
+        ) {
             val bitmapConfig = if (bitmap.config != null) bitmap.config.name else null
-            vmf(
-                MODULE, "decode completed. useTime=%dms, block=%s, bitmap=%dx%d(%s), blocks=%d",
+            "decode completed. useTime=%dms, block=%s, bitmap=%dx%d(%s), blocks=%d".format(
                 useTime, block.info, bitmap.width, bitmap.height, bitmapConfig!!, blockList.size
             )
         }
@@ -719,22 +678,23 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
     }
 
     fun decodeError(block: Block, exception: DecodeErrorException) {
-        wmf(
-            MODULE, "decode failed. %s. block=%s, blocks=%d",
-            exception.causeMessage, block.info, blockList.size
+        logger.w(
+            MODULE, "decode failed. %s. block=%s, blocks=%d".format(
+                exception.causeMessage, block.info, blockList.size
+            )
         )
         blockList.remove(block)
-        block.clean(bitmapPool)
+        block.clean(bitmapPoolHelper)
         blockPool.put(block)
     }
 
     fun clean(why: String?) {
         for (block in blockList) {
             block.refreshKey()
-            block.clean(bitmapPool)
+            block.clean(bitmapPoolHelper)
             blockPool.put(block)
-            if (isLoggable(SLog.VERBOSE)) {
-                vmf(MODULE, "clean block and refresh key. %s. block=%s", why!!, block.info)
+            logger.v(MODULE) {
+                "clean block and refresh key. %s. block=%s".format(why!!, block.info)
             }
         }
         blockList.clear()
@@ -753,7 +713,7 @@ class BlockManager(context: Context, private val blockDisplayer: BlockDisplayer)
             var bytes: Long = 0
             for (block in blockList) {
                 if (!block.isEmpty) {
-                    bytes += getByteCount(block.bitmap).toLong()
+                    bytes += block.bitmap?.byteCountCompat?.toLong() ?: 0
                 }
             }
             return bytes

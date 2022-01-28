@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.util.KeyCounter
+import com.github.panpf.sketch.zoom.block.internal.KeyCounter
+import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import java.lang.ref.WeakReference
 
 /**
  * 运行在解码线程中，负责初始化 [BlockDecoder]
  */
-internal class InitHandler(looper: Looper, decodeExecutor: BlockExecutor) : Handler(looper) {
+internal class InitHandler(
+    looper: Looper,
+    decodeExecutor: BlockExecutor,
+    private val imageZoomer: ImageZoomer
+) : Handler(looper) {
 
     companion object {
         private const val NAME = "InitHandler"
@@ -36,6 +37,9 @@ internal class InitHandler(looper: Looper, decodeExecutor: BlockExecutor) : Hand
     }
 
     private val reference: WeakReference<BlockExecutor> = WeakReference(decodeExecutor)
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
+    }
 
     override fun handleMessage(msg: Message) {
         val decodeExecutor = reference.get()
@@ -74,25 +78,22 @@ internal class InitHandler(looper: Looper, decodeExecutor: BlockExecutor) : Hand
         keyCounter: KeyCounter
     ) {
         if (decodeExecutor == null) {
-            wmf(NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri)
+            logger.w(NAME, "weak reference break. key: $key, imageUri: $imageUri")
             return
         }
         var newKey = keyCounter.key
         if (key != newKey) {
-            wmf(
+            logger.w(
                 NAME,
-                "init key expired. before init. key: %d, newKey: %d, imageUri: %s",
-                key,
-                newKey,
-                imageUri
+                "init key expired. before init. key: $key, newKey: $newKey, imageUri: $imageUri"
             )
             return
         }
         val decoder: ImageRegionDecoder = try {
             ImageRegionDecoder.build(
-                decodeExecutor.callback.context,
                 imageUri,
-                correctImageOrientationDisabled
+                correctImageOrientationDisabled,
+                imageZoomer.imageView.sketch
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -110,12 +111,9 @@ internal class InitHandler(looper: Looper, decodeExecutor: BlockExecutor) : Hand
         }
         newKey = keyCounter.key
         if (key != newKey) {
-            wmf(
+            logger.w(
                 NAME,
-                "init key expired. after init. key: %d, newKey: %d, imageUri: %s",
-                key,
-                newKey,
-                imageUri
+                "init key expired. after init. key: $key, newKey: $newKey, imageUri: $imageUri"
             )
             decoder.recycle()
             return
@@ -124,9 +122,7 @@ internal class InitHandler(looper: Looper, decodeExecutor: BlockExecutor) : Hand
     }
 
     fun clean(why: String?) {
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(NAME, "clean. %s", why!!)
-        }
+        logger.v(NAME) { "clean. $why" }
         removeMessages(WHAT_INIT)
     }
 

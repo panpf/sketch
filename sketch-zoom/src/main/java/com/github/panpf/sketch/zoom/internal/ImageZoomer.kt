@@ -17,7 +17,11 @@
 
 package com.github.panpf.sketch.zoom.internal
 
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Point
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import android.view.View
@@ -26,14 +30,17 @@ import android.view.animation.Interpolator
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.zoom.AbsZoomImageView
-import com.github.panpf.sketch.zoom.internal.block.Block
-import java.util.*
+import com.github.panpf.sketch.zoom.DefaultReadModeConditions
+import com.github.panpf.sketch.zoom.ReadModeConditions
+import com.github.panpf.sketch.zoom.block.Block
+import com.github.panpf.sketch.zoom.block.BlockDisplayer
 import kotlin.math.abs
 
 /**
  * 图片缩放器，接收触摸事件，变换 [Matrix]，改变图片的显示效果，代理点击和长按事件
  */
 // TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
+// todo 重构
 class ImageZoomer(val imageView: AbsZoomImageView) {
 
     companion object {
@@ -54,10 +61,15 @@ class ImageZoomer(val imageView: AbsZoomImageView) {
             }
         }
     private val sizes = Sizes()
-    private var zoomScales: ZoomScales = AdaptiveTwoLevelScales(imageView)
-    private val logger by lazy {
+    private var zoomScales: ZoomScales = AdaptiveTwoLevelScales(this)
+    val logger by lazy {
         imageView.sketch.logger
     }
+    var readModeConditions: ReadModeConditions = DefaultReadModeConditions()
+        set(value) {
+            field = value
+            // todo 重置，因为此属性的改变会影响图片的默认缩放效果
+        }
 
     /**
      * 获取旋转角度
@@ -108,15 +120,15 @@ class ImageZoomer(val imageView: AbsZoomImageView) {
     var onScaleChangeListener: OnScaleChangeListener? = null
     private var onRotateChangeListener: OnRotateChangeListener? = null
 
-    /**
-     * 设置单击监听器
-     */
-    var onViewTapListener: OnViewTapListener? = null
+//    /**
+//     * 设置单击监听器
+//     */
+//    var onViewTapListener: OnViewTapListener? = null
 
-    /**
-     * 长按监听器
-     */
-    var onViewLongPressListener: OnViewLongPressListener? = null
+//    /**
+//     * 长按监听器
+//     */
+//    var onViewLongPressListener: OnViewLongPressListener? = null
     private var onMatrixChangeListenerList: ArrayList<OnMatrixChangeListener>? = null
     private val tapHelper: TapHelper
     private val scaleDragHelper: ScaleDragHelper
@@ -125,7 +137,7 @@ class ImageZoomer(val imageView: AbsZoomImageView) {
     /**
      * 获取分块显示器
      */
-    val blockDisplayer: BlockDisplayer
+    val blockDisplayer: BlockDisplayer  // todo 将 blockDisplayer 改成插件的形式放到 Zoomer 中
 
     init {
         val appContext = imageView.context.applicationContext
@@ -242,7 +254,6 @@ class ImageZoomer(val imageView: AbsZoomImageView) {
      * @param y 预览图上指定位置的 y 坐标
      * @return true：定位成功；false：定位失败，通常是 [ImageZoomer] 尚未开始工作
      */
-    @JvmOverloads
     fun location(x: Float, y: Float, animate: Boolean = false): Boolean {
         if (!isWorking) {
             logger.w(MODULE, "not working. location")
@@ -497,7 +508,7 @@ class ImageZoomer(val imageView: AbsZoomImageView) {
         if (zoomScales != null) {
             this.zoomScales = zoomScales
         } else {
-            this.zoomScales = AdaptiveTwoLevelScales(imageView)
+            this.zoomScales = AdaptiveTwoLevelScales(this)
         }
         reset("setZoomScales")
     }

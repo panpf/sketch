@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.zoom.internal.block
+package com.github.panpf.sketch.zoom.block
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -21,28 +21,17 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.github.panpf.sketch.SLog
-import com.github.panpf.sketch.SLog.Companion.emf
-import com.github.panpf.sketch.SLog.Companion.isLoggable
-import com.github.panpf.sketch.SLog.Companion.vmf
-import com.github.panpf.sketch.SLog.Companion.wmf
-import com.github.panpf.sketch.SketchCallback
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPool
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.freeBitmapToPoolForRegionDecoder
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.sdkSupportInBitmapForRegionDecoder
-import com.github.panpf.sketch.cache.BitmapPoolUtils.Companion.setInBitmapFromPoolForRegionDecoder
-import com.github.panpf.sketch.decode.DecodeRegionException
-import com.github.panpf.sketch.decode.ImageDecodeUtils.Companion.isInBitmapDecodeError
-import com.github.panpf.sketch.decode.ImageDecodeUtils.Companion.isSrcRectDecodeError
-import com.github.panpf.sketch.decode.ImageDecodeUtils.Companion.recycleInBitmapOnDecodeError
-import com.github.panpf.sketch.decode.ImageOrientationCorrector
+import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.decode.internal.isInBitmapError
+import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import java.lang.ref.WeakReference
 
 /**
  * 解码处理器，运行在解码线程中，负责解码
  */
-class DecodeHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
+class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZoomer: ImageZoomer) :
+    Handler(looper) {
 
     companion object {
         private const val NAME = "DecodeHandler"
@@ -51,15 +40,9 @@ class DecodeHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
 
     private var disableInBitmap = false
     private val reference: WeakReference<BlockExecutor> = WeakReference(executor)
-    private val bitmapPool: BitmapPool
-    private val callback: SketchCallback
-    private val orientationCorrector: ImageOrientationCorrector
-
-    init {
-        val configuration = with(executor.callback.context).configuration
-        bitmapPool = configuration.bitmapPool
-        callback = configuration.callback
-        orientationCorrector = configuration.orientationCorrector
+    private val bitmapPoolHelper: BitmapPoolHelper = imageZoomer.imageView.sketch.bitmapPoolHelper
+    private val logger by lazy {
+        imageZoomer.imageView.sketch.logger
     }
 
     override fun handleMessage(msg: Message) {
@@ -80,7 +63,7 @@ class DecodeHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
 
     private fun decode(executor: BlockExecutor?, key: Int, block: Block) {
         if (executor == null) {
-            wmf(NAME, "weak reference break. key: %d, block=%s", key, block.info)
+            logger.w(NAME, "weak reference break. key: $key, block=${block.info}")
             return
         }
         if (block.isExpired(key)) {
@@ -113,21 +96,17 @@ class DecodeHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
 
         // 根据图片方向恢复src区域的真实位置
         val imageSize = regionDecoder.imageSize
-        orientationCorrector.reverseRotate(
-            srcRect,
-            imageSize.x,
-            imageSize.y,
-            regionDecoder.exifOrientation
-        )
+        regionDecoder.exifOrientationCorrector
+            ?.reverseRotateRect(srcRect, imageSize.x, imageSize.y)
         val options = BitmapFactory.Options()
         options.inSampleSize = inSampleSize
-        val imageType = regionDecoder.imageType
-        if (imageType != null) {
-            // todo 使用 DisplayOptions 中的参数
-            options.inPreferredConfig = imageType.getConfig(false)
-        }
-        if (!disableInBitmap && sdkSupportInBitmapForRegionDecoder()) {
-            setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool)
+//        val imageType = regionDecoder.imageFormat
+//        if (imageType != null) {
+//            // todo 使用 DisplayOptions 中的参数
+//            options.inPreferredConfig = imageType.getConfig(false)
+//        }
+        if (!disableInBitmap) {
+            bitmapPoolHelper.setInBitmapForRegionDecoder(srcRect.width(), srcRect.height(), options)
         }
         val time = System.currentTimeMillis()
         var bitmap: Bitmap? = null
@@ -135,97 +114,67 @@ class DecodeHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
             bitmap = regionDecoder.decodeRegion(srcRect, options)
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
-            if (isInBitmapDecodeError(throwable, options, true)) {
+            val inBitmap = options.inBitmap
+            if (inBitmap != null && isInBitmapError(throwable, true)) {
                 disableInBitmap = true
-                recycleInBitmapOnDecodeError(
-                    callback,
-                    bitmapPool,
-                    regionDecoder.imageUri,
-                    regionDecoder.imageSize.x,
-                    regionDecoder.imageSize.y,
-                    regionDecoder.imageType!!.mimeType,
-                    throwable,
-                    options,
-                    true
-                )
+                val message =
+                    "Bitmap region decode error. Because inBitmap. uri=${regionDecoder.imageUri}"
+                logger.e(NAME, throwable, message)
+
+                options.inBitmap = null
+                bitmapPoolHelper.freeBitmapToPool(inBitmap)
                 try {
                     bitmap = regionDecoder.decodeRegion(srcRect, options)
                 } catch (throwable1: Throwable) {
                     throwable1.printStackTrace()
                 }
-            } else if (isSrcRectDecodeError(
-                    throwable,
-                    regionDecoder.imageSize.x,
-                    regionDecoder.imageSize.y,
-                    srcRect
-                )
-            ) {
-                emf(
-                    NAME,
-                    "onDecodeRegionError. imageUri=%s, imageSize=%dx%d, imageMimeType= %s, srcRect=%s, inSampleSize=%d",
-                    regionDecoder.imageUri,
-                    regionDecoder.imageSize.x,
-                    regionDecoder.imageSize.y,
-                    regionDecoder.imageType!!.mimeType,
-                    srcRect.toString(),
-                    options.inSampleSize
-                )
-                callback.onError(
-                    DecodeRegionException(
-                        throwable,
+            } else if (isSrcRectError(throwable, imageSize.x, imageSize.y, srcRect)) {
+                val message =
+                    "Bitmap region decode error. Because srcRect. imageUri=%s, imageSize=%dx%d, imageMimeType=%s, srcRect=%s, inSampleSize=%d".format(
                         regionDecoder.imageUri,
                         regionDecoder.imageSize.x,
                         regionDecoder.imageSize.y,
-                        regionDecoder.imageType.mimeType,
-                        srcRect,
+                        regionDecoder.imageFormat!!.mimeType,
+                        srcRect.toString(),
                         options.inSampleSize
                     )
-                )
+                logger.e(NAME, throwable, message)
             }
         }
         val useTime = (System.currentTimeMillis() - time).toInt()
         if (bitmap == null || bitmap.isRecycled) {
             executor.callbackHandler.postDecodeError(
-                key, block, DecodeErrorException(
-                    DecodeErrorException.CAUSE_BITMAP_NULL
-                )
+                key, block, DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL)
             )
             return
         }
         if (block.isExpired(key)) {
-            freeBitmapToPoolForRegionDecoder(
-                bitmap,
-                with(executor.callback.context).configuration.bitmapPool
-            )
+            bitmapPoolHelper.freeBitmapToPool(bitmap)
             executor.callbackHandler.postDecodeError(
-                key, block, DecodeErrorException(
-                    DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED
-                )
+                key, block, DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED)
             )
             return
         }
 
         // 旋转图片
         val newBitmap =
-            orientationCorrector.rotate(bitmap, regionDecoder.exifOrientation, bitmapPool)
+            regionDecoder.exifOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper)
         if (newBitmap != null && newBitmap != bitmap) {
             bitmap = if (!newBitmap.isRecycled) {
-                freeBitmapToPool(bitmap, bitmapPool)
+                bitmapPoolHelper.freeBitmapToPool(bitmap)
                 newBitmap
             } else {
                 executor.callbackHandler.postDecodeError(
-                    key, block, DecodeErrorException(
-                        DecodeErrorException.CAUSE_ROTATE_BITMAP_RECYCLED
-                    )
+                    key,
+                    block,
+                    DecodeErrorException(DecodeErrorException.CAUSE_ROTATE_BITMAP_RECYCLED)
                 )
                 return
             }
         }
         if (bitmap.isRecycled) {
             executor.callbackHandler.postDecodeError(
-                key, block, DecodeErrorException(
-                    DecodeErrorException.CAUSE_BITMAP_RECYCLED
-                )
+                key, block, DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_RECYCLED)
             )
             return
         }
@@ -233,9 +182,7 @@ class DecodeHandler(looper: Looper, executor: BlockExecutor) : Handler(looper) {
     }
 
     fun clean(why: String) {
-        if (isLoggable(SLog.VERBOSE)) {
-            vmf(NAME, "clean. %s", why)
-        }
+        logger.v(NAME) { "clean. $why" }
         removeMessages(WHAT_DECODE)
     }
 

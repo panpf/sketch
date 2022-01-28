@@ -17,12 +17,11 @@ package com.github.panpf.sketch.zoom.internal
 
 import android.content.Context
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.zoom.AbsZoomImageView
 
 /**
  * 根据预览图尺寸、原始图尺寸和 ImageView 尺寸计算出两级缩放比例
  */
-class AdaptiveTwoLevelScales(val zoomImageView: AbsZoomImageView) : ZoomScales {
+class AdaptiveTwoLevelScales constructor(private val zoomer: ImageZoomer) : ZoomScales {
 
     companion object {
         private const val DEFAULT_MAXIMIZE_SCALE = 1.75f
@@ -79,11 +78,11 @@ class AdaptiveTwoLevelScales(val zoomImageView: AbsZoomImageView) : ZoomScales {
         originZoomScale =
             (imageWidth.toFloat() / drawableWidth).coerceAtLeast(imageHeight.toFloat() / drawableHeight)
         initZoomScale = getInitScale(sizes, finalScaleType!!, rotateDegrees, readMode)
-        if (readMode && zoomImageView.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        if (readMode && zoomer.readModeConditions.canUseReadModeByHeight(imageWidth, imageHeight)) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale
             maxZoomScale = originZoomScale.coerceAtLeast(fillZoomScale)
-        } else if (readMode && zoomImageView.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (readMode && zoomer.readModeConditions.canUseReadModeByWidth(imageWidth, imageHeight)) {
             // 阅读模式下保证阅读效果最重要
             minZoomScale = fullZoomScale
             maxZoomScale = originZoomScale.coerceAtLeast(fillZoomScale)
@@ -152,9 +151,9 @@ class AdaptiveTwoLevelScales(val zoomImageView: AbsZoomImageView) : ZoomScales {
         } else {
             scaleType
         }
-        return if (readMode && zoomImageView.canUseReadModeByHeight(imageWidth, imageHeight)) {
+        return if (readMode && zoomer.readModeConditions.canUseReadModeByHeight(imageWidth, imageHeight)) {
             widthScale
-        } else if (readMode && zoomImageView.canUseReadModeByWidth(imageWidth, imageHeight)) {
+        } else if (readMode && zoomer.readModeConditions.canUseReadModeByWidth(imageWidth, imageHeight)) {
             heightScale
         } else if (finalScaleType == ScaleType.CENTER) {
             1.0f

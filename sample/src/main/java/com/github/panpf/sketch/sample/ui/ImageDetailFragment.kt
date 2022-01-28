@@ -7,27 +7,26 @@ import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.base.BindingFragment
 import com.github.panpf.sketch.sample.bean.ImageDetail
-import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
+import com.github.panpf.sketch.sample.databinding.FragmentImageDetailBinding
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.viewability.showRingProgressIndicator
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class ImageDetailFragment : BindingFragment<FragmentImageBinding>() {
+class ImageDetailFragment : BindingFragment<FragmentImageDetailBinding>() {
 
     private val args by navArgs<ImageDetailFragmentArgs>()
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
-        FragmentImageBinding.inflate(inflater, parent, false)
+        FragmentImageDetailBinding.inflate(inflater, parent, false)
 
-    override fun onInitViews(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
+    override fun onInitViews(binding: FragmentImageDetailBinding, savedInstanceState: Bundle?) {
         super.onInitViews(binding, savedInstanceState)
-        binding.imageFragmentImageView.showRingProgressIndicator()
+//        binding.imageFragmentZoomImageView.showRingProgressIndicator()
     }
 
-    override fun onInitData(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
+    override fun onInitData(binding: FragmentImageDetailBinding, savedInstanceState: Bundle?) {
         val imageDetail = Json.decodeFromString<ImageDetail>(args.imageDetailJson)
-        binding.imageFragmentImageView.displayImage(imageDetail.firstMiddenUrl) {
+        binding.imageFragmentZoomImageView.displayImage(imageDetail.firstMiddenUrl) {
             placeholderImage(StateImage.memoryCache(imageDetail.placeholderImageMemoryKey, null))
         }
     }

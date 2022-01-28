@@ -26,6 +26,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
 
+// todo 重构
 abstract class AbsZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -74,7 +75,6 @@ abstract class AbsZoomImageView @JvmOverloads constructor(
         onDrawableChanged("setImageResource", oldDrawable, newDrawable)
     }
 
-
     override fun setImageDrawable(drawable: Drawable?) {
         val oldDrawable = getDrawable()
         super.setImageDrawable(drawable)
@@ -90,6 +90,7 @@ abstract class AbsZoomImageView @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(left: Int, top: Int, right: Int, bottom: Int) {
+        super.onSizeChanged(left, top, right, bottom)
         zoomer.reset("onSizeChanged")
     }
 

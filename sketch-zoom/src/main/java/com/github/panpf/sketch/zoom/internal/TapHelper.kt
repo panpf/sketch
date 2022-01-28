@@ -19,8 +19,7 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import com.github.panpf.sketch.util.SketchUtils.Companion.formatFloat
-import com.github.panpf.sketch.viewfun.FunctionCallbackView
+import com.github.panpf.sketch.util.format
 
 internal class TapHelper(appContext: Context, private val imageZoomer: ImageZoomer) :
     SimpleOnGestureListener() {
@@ -37,45 +36,47 @@ internal class TapHelper(appContext: Context, private val imageZoomer: ImageZoom
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
         val imageView = imageZoomer.getImageView()
-        val tapListener = imageZoomer.onViewTapListener
-        if (tapListener != null) {
-            tapListener.onViewTap(imageView, e.x, e.y)
-            return true
-        }
-        if (imageView is FunctionCallbackView) {
-            val clickListener = imageView.getOnClickListener()
-            if (imageView.isClickable) {
-                clickListener.onClick(imageView)
-                return true
-            }
-        }
+        imageView.performClick()
+//        val tapListener = imageZoomer.onViewTapListener
+//        if (tapListener != null) {
+//            tapListener.onViewTap(imageView, e.x, e.y)
+//            return true
+//        }
+//        if (imageView is FunctionCallbackView) {
+//            val clickListener = imageView.getOnClickListener()
+//            if (imageView.isClickable) {
+//                clickListener.onClick(imageView)
+//                return true
+//            }
+//        }
         return false
     }
 
     override fun onLongPress(e: MotionEvent) {
         super.onLongPress(e)
         val imageView = imageZoomer.getImageView()
-        val longPressListener = imageZoomer.onViewLongPressListener
-        if (longPressListener != null) {
-            longPressListener.onViewLongPress(imageView, e.x, e.y)
-            return
-        }
-        if (imageView is FunctionCallbackView) {
-            val longClickListener = imageView.getOnLongClickListener()
-            if (longClickListener != null && imageView.isLongClickable) {
-                longClickListener.onLongClick(imageView)
-            }
-        }
+        imageView.performLongClick()
+//        val longPressListener = imageZoomer.onViewLongPressListener
+//        if (longPressListener != null) {
+//            longPressListener.onViewLongPress(imageView, e.x, e.y)
+//            return
+//        }
+//        if (imageView is FunctionCallbackView) {
+//            val longClickListener = imageView.getOnLongClickListener()
+//            if (longClickListener != null && imageView.isLongClickable) {
+//                longClickListener.onLongClick(imageView)
+//            }
+//        }
     }
 
     override fun onDoubleTap(ev: MotionEvent): Boolean {
         try {
-            val currentScaleFormat = formatFloat(imageZoomer.zoomScale, 2)
+            val currentScaleFormat = imageZoomer.zoomScale.format(2)
             var finalScale = -1f
             for (scale in imageZoomer.getZoomScales().zoomScales!!) {
                 if (finalScale == -1f) {
                     finalScale = scale
-                } else if (currentScaleFormat < formatFloat(scale, 2)) {
+                } else if (currentScaleFormat < scale.format(2)) {
                     finalScale = scale
                     break
                 }

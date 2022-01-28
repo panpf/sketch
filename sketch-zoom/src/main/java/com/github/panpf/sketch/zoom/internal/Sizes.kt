@@ -17,8 +17,7 @@ package com.github.panpf.sketch.zoom.internal
 
 import android.widget.ImageView
 import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.drawable.SketchLoadingDrawable
-import com.github.panpf.sketch.util.SketchUtils.Companion.getLastDrawable
+import com.github.panpf.sketch.util.getLastDrawable
 
 class Sizes {
     var viewSize = Size() // ImageView 尺寸
@@ -34,7 +33,7 @@ class Sizes {
         if (imageViewWidth == 0 || imageViewHeight == 0) {
             return
         }
-        val drawable = getLastDrawable(imageView.drawable) ?: return
+        val drawable = imageView.drawable?.getLastDrawable() ?: return
         val drawableWidth = drawable.intrinsicWidth
         val drawableHeight = drawable.intrinsicHeight
         if (drawableWidth == 0 || drawableHeight == 0) {
@@ -42,9 +41,9 @@ class Sizes {
         }
         viewSize[imageViewWidth] = imageViewHeight
         drawableSize[drawableWidth] = drawableHeight
-        if (drawable is SketchDrawable && drawable !is SketchLoadingDrawable) {
+        if (drawable is SketchDrawable) {
             val sketchDrawable = drawable as SketchDrawable
-            imageSize[sketchDrawable.originWidth] = sketchDrawable.originHeight
+            imageSize[sketchDrawable.imageWidth] = sketchDrawable.imageHeight
         } else {
             imageSize[drawableWidth] = drawableHeight
         }
