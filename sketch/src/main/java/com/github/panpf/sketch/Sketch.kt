@@ -3,6 +3,7 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.widget.ImageView
 import androidx.annotation.AnyThread
+import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.DiskCache
@@ -275,12 +276,14 @@ class Sketch private constructor(
 
 
     companion object {
-        fun new(
-            context: Context,
-            configBlock: (Builder.() -> Unit)? = null
-        ): Sketch = Builder(context).apply {
-            configBlock?.invoke(this)
-        }.build()
+        fun new(context: Context, configBlock: (Builder.() -> Unit)? = null): Sketch =
+            Builder(context).apply {
+                configBlock?.invoke(this)
+            }.build()
+    }
+
+    fun interface Factory {
+        fun createSketch(): Sketch
     }
 
     class Builder(context: Context) {
@@ -401,4 +404,31 @@ class Sketch private constructor(
             defaultDownloadOptions = defaultDownloadOptions,
         )
     }
+
+    internal object SketchSingleton {
+
+        private var sketch: Sketch? = null
+
+        @JvmStatic
+        fun sketch(context: Context): Sketch =
+            sketch ?: synchronized(this) {
+                sketch ?: synchronized(this) {
+                    newSketch(context).apply {
+                        sketch = this
+                    }
+                }
+            }
+
+        private fun newSketch(context: Context): Sketch {
+            val appContext = context.applicationContext
+            return if (appContext is Factory) {
+                appContext.createSketch()
+            } else {
+                new(appContext)
+            }
+        }
+    }
 }
+
+val Context.sketch: Sketch
+    get() = SketchSingleton.sketch(this)

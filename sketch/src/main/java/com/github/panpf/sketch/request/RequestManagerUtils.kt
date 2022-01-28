@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.request
 
 import android.view.View
-import com.github.panpf.sketch.core.R
+import com.github.panpf.sketch.R
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 
 class RequestManagerUtils {

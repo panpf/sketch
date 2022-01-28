@@ -29,7 +29,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.zoom.AbsZoomImageView
+import com.github.panpf.sketch.zoom.SketchZoomImageView
 import com.github.panpf.sketch.zoom.DefaultReadModeConditions
 import com.github.panpf.sketch.zoom.ReadModeConditions
 import com.github.panpf.sketch.zoom.block.Block
@@ -41,7 +41,7 @@ import kotlin.math.abs
  */
 // TODO 解决嵌套在别的可滑动 View 中时，会导致 ArrayIndexOutOfBoundsException 异常，初步猜测 requestDisallowInterceptTouchEvent 引起的
 // todo 重构
-class ImageZoomer(val imageView: AbsZoomImageView) {
+class ImageZoomer(val imageView: SketchZoomImageView) {
 
     companion object {
         const val MODULE = "ImageZoomer"

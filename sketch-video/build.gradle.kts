@@ -30,7 +30,7 @@ dependencies {
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
-    api(project(":sketch-core"))
+    api(project(":sketch"))
 
     testImplementation("junit:junit:${property("JUNIT")}")
     androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")

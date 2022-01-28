@@ -27,7 +27,7 @@ dependencies {
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
-    api(project(":sketch-core"))
+    api(project(":sketch"))
     api(project(":sketch-viewability"))
 }
 

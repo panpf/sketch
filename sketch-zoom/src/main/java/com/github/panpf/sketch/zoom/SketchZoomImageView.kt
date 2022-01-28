@@ -24,10 +24,12 @@ import android.view.MotionEvent
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
 
-// todo 重构
-abstract class AbsZoomImageView @JvmOverloads constructor(
+// todo extends AbsAbilityImageView
+// todo The redesign
+open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
@@ -37,7 +39,8 @@ abstract class AbsZoomImageView @JvmOverloads constructor(
         ImageZoomer(this)
     }
 
-    abstract val sketch: Sketch
+    val sketch: Sketch
+        get() = context.sketch
 
     override fun setScaleType(scaleType: ScaleType) {
         if (zoomer.isWorking && scaleType != ScaleType.MATRIX) {
@@ -102,14 +105,14 @@ abstract class AbsZoomImageView @JvmOverloads constructor(
     /**
      * 根据高度计算是否可以使用阅读模式
      */
-    fun canUseReadModeByHeight(imageWidth: Int, imageHeight: Int): Boolean {
+    open fun canUseReadModeByHeight(imageWidth: Int, imageHeight: Int): Boolean {
         return imageHeight > imageWidth * 2
     }
 
     /**
      * 根据宽度度计算是否可以使用阅读模式
      */
-    fun canUseReadModeByWidth(imageWidth: Int, imageHeight: Int): Boolean {
+    open fun canUseReadModeByWidth(imageWidth: Int, imageHeight: Int): Boolean {
         return imageWidth > imageHeight * 3
     }
 }

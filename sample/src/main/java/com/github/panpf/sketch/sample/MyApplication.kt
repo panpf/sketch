@@ -20,7 +20,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
@@ -36,9 +35,9 @@ import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
-class MyApplication : MultiDexApplication(), SketchFactory {
+class MyApplication : MultiDexApplication(), Sketch.Factory {
 
-    override fun newSketch(): Sketch = Sketch.new(this) {
+    override fun createSketch(): Sketch = Sketch.new(this) {
         logger(Logger(DEBUG))
         httpStack(OkHttpStack.Builder().build())
         addDisplayInterceptor(SettingsDisplayRequestInterceptor())

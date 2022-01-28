@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    api(project(":sketch-core"))
+    api(project(":sketch"))
     api("androidx.appcompat:appcompat:${property("ANDROIDX_APPCOMPAT")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")

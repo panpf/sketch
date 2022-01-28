@@ -64,7 +64,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":sketch"))
     implementation(project(":sketch-extensions"))
     implementation(project(":sketch-gif"))
     implementation(project(":sketch-gif-koralgif"))

@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    api(project(":sketch-core"))
+    api(project(":sketch"))
     api(project(":sketch-viewability"))
     api("androidx.recyclerview:recyclerview:${property("ANDROIDX_RECYCLERVIEW")}")
     api("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")

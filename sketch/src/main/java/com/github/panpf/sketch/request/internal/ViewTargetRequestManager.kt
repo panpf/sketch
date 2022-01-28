@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request.internal
 
 import android.view.View
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.core.R
+import com.github.panpf.sketch.R
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.util.getCompletedOrNull

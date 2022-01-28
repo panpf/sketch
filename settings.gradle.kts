@@ -1,6 +1,5 @@
 include(":sample")
 include(":sketch")
-include(":sketch-core")
 include(":sketch-extensions")
 include(":sketch-gif")
 include(":sketch-gif-koralgif")

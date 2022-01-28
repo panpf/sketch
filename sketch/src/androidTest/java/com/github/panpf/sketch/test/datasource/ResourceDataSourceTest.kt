@@ -4,7 +4,7 @@ import android.content.res.Resources
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.core.test.R
+import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DataFrom
