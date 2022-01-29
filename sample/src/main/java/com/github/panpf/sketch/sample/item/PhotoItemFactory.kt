@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Resize.Scale.START_CROP
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.bean.Photo
@@ -66,7 +67,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
                     pauseLoadWhenScrollingErrorImage()
                 }
-                resizeByViewFixedSize(scope = Resize.Scope.OnlyLongImage())
+                resizeByViewFixedSize(scope = Resize.Scope.OnlyLongImage(), scale = START_CROP)
             }
         }
     }
