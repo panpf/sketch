@@ -170,7 +170,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                             request, createErrorMessage("width", "resizeByViewFixedSize()")
                         ),
                     height = resize.height.takeIf { it != fixedSizeFlag }
-                        ?: view.fixedWidth()
+                        ?: view.fixedHeight()
                         ?: throw FixedSizeException(
                             request, createErrorMessage("height", "resizeByViewFixedSize()")
                         ),
