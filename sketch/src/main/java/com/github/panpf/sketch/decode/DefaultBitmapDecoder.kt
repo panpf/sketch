@@ -28,8 +28,8 @@ open class DefaultBitmapDecoder(
 
     override fun readImageInfo(): ImageInfo = dataSource.readImageInfoWithBitmapFactory()
 
-    override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean =
-        imageFormat?.supportBitmapRegionDecoder() == true
+    override fun canDecodeRegion(imageInfo: ImageInfo): Boolean =
+        ImageFormat.valueOfMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
 
     override fun decodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig

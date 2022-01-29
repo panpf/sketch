@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.decode.Resize.Precision.EXACTLY
 import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.Resize.Scope.All
@@ -24,12 +25,24 @@ import com.github.panpf.sketch.util.format
 data class Resize constructor(
     val width: Int,
     val height: Int,
-    val precision: Precision = KEEP_ASPECT_RATIO,
+    val scope: Scope = All,
     val scale: Scale = CENTER_CROP,
-    val scope: Scope = All
+    val precision: Precision = KEEP_ASPECT_RATIO,
 ) {
 
-    val cacheKey: String = "Resize(${width}x${height},${scale},${precision},${scope})"
+    val cacheKey: String = "Resize(${width}x${height},${scope},${scale},${precision})"
+
+    fun shouldUse(imageWidth: Int, imageHeight: Int): Boolean {
+        if (!scope.accept(imageWidth, imageHeight, width, height)) return false
+        return when (precision) {
+            KEEP_ASPECT_RATIO -> {
+                val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
+                val resizeAspectRatio = width.toFloat().div(height).format(1)
+                imageAspectRatio != resizeAspectRatio
+            }
+            EXACTLY -> imageWidth != width || imageHeight != height
+        }
+    }
 
     enum class Precision {
         /**
@@ -52,37 +65,37 @@ data class Resize constructor(
 
     sealed interface Scope {
 
+        fun accept(imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int): Boolean
+
         /**
          * Resize works on all image.
          */
         object All : Scope {
-            override fun toString(): String = "ALL"
+
+            override fun accept(
+                imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
+            ): Boolean = true
+
+            override fun toString(): String = "All"
         }
 
         /**
-         * Resize only works on long image. How to determine the long image please see [isLongImage]
+         * Resize only works on long image. How to determine the long image please see [accept]
          */
-        data class OnlyLongImage(private val minAspectRatio: Float = 1.5f) : Scope {
+        data class OnlyLongImage(private val minDifferenceOfAspectRatio: Float = 1.5f) : Scope {
 
-            fun isLongImage(
+            override fun accept(
                 imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
             ): Boolean {
-                val imageAspectRatio =
-                    (imageWidth.toFloat() / imageHeight.toFloat()).format(1)
-                val resizeAspectRatio = (resizeWidth.toFloat() / resizeHeight.toFloat()).format(1)
-                return isLongImageByAspectRatio(imageAspectRatio, resizeAspectRatio)
-            }
-
-            fun isLongImageByAspectRatio(
-                imageAspectRatio: Float,
-                resizeAspectRatio: Float
-            ): Boolean {
+                val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
+                val resizeAspectRatio = resizeWidth.toFloat().div(resizeHeight).format(1)
                 val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
                 val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
-                return maxAspectRatio > minAspectRatio * minAspectRatio
+                return maxAspectRatio > (minAspectRatio * minDifferenceOfAspectRatio)
             }
 
-            override fun toString(): String = "OnlyLongImage(minAspectRatio=$minAspectRatio)"
+            override fun toString(): String =
+                "OnlyLongImage($minDifferenceOfAspectRatio)"
         }
     }
 }

@@ -17,6 +17,7 @@ package com.github.panpf.sketch.drawable
 
 interface SketchRefCountDrawable : SketchDrawable {
 
+    // todo 完善引用计数
     fun setIsDisplayed(callingStation: String, displayed: Boolean)
 
     fun setIsWaitingUse(callingStation: String, waitingUse: Boolean)

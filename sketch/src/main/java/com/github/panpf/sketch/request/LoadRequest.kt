@@ -13,6 +13,7 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.MaxSize
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Resize.Precision
 import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.Resize.Scale
 import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
@@ -369,11 +370,11 @@ interface LoadRequest : DownloadRequest {
         fun resize(
             @Px width: Int,
             @Px height: Int,
-            precision: Resize.Precision = KEEP_ASPECT_RATIO,
-            scale: Scale = CENTER_CROP,
             scope: Scope = All,
+            scale: Scale = CENTER_CROP,
+            precision: Precision = KEEP_ASPECT_RATIO,
         ): Builder = apply {
-            this.resize = Resize(width, height, precision, scale, scope)
+            this.resize = Resize(width, height, scope, scale, precision)
         }
 
 

@@ -3,7 +3,6 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -14,7 +13,6 @@ import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.calculateInSampleSize
-import com.github.panpf.sketch.util.format
 
 abstract class AbsBitmapDecoder(
     protected val sketch: Sketch,
@@ -27,7 +25,7 @@ abstract class AbsBitmapDecoder(
 
     protected abstract fun readImageInfo(): ImageInfo
 
-    protected abstract fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean
+    protected abstract fun canDecodeRegion(imageInfo: ImageInfo): Boolean
 
     protected abstract fun decodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig,
@@ -39,13 +37,15 @@ abstract class AbsBitmapDecoder(
         val imageInfo = readImageInfo()
 
         val resize = request.resize
-        val imageType = ImageFormat.valueOfMimeType(imageInfo.mimeType)
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val imageOrientationCorrector =
             ExifOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
 
         val resizeTransformed: ResizeTransformed?
-        val bitmap = if (resize != null && shouldUseRegionDecoder(resize, imageInfo, imageType)) {
+        val bitmap = if (
+            resize?.shouldUse(imageInfo.width, imageInfo.height) == true
+            && canDecodeRegion(imageInfo)
+        ) {
             resizeTransformed = ResizeTransformed(resize)
             decodeRegionWrapper(imageInfo, resize, decodeConfig, imageOrientationCorrector)
         } else {
@@ -62,25 +62,6 @@ abstract class AbsBitmapDecoder(
                 addTransformed(InSampledTransformed(inSampleSize))
             }
         }.build()
-    }
-
-    private fun shouldUseRegionDecoder(
-        resize: Resize, imageInfo: ImageInfo, imageFormat: ImageFormat?
-    ): Boolean {
-        if (canDecodeRegion(imageInfo, imageFormat)) {
-            val imageAspectRatio =
-                (imageInfo.width.toFloat() / imageInfo.height.toFloat()).format(1)
-            val resizeAspectRatio = (resize.width.toFloat() / resize.height.toFloat()).format(1)
-            return when (val scope = resize.scope) {
-                is Resize.Scope.OnlyLongImage -> {
-                    scope.isLongImageByAspectRatio(imageAspectRatio, resizeAspectRatio)
-                }
-                is Resize.Scope.All -> {
-                    imageAspectRatio != resizeAspectRatio
-                }
-            }
-        }
-        return false
     }
 
     private fun decodeRegionWrapper(

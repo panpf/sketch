@@ -174,9 +174,9 @@ class DisplayExecutor(private val sketch: Sketch) {
                         ?: throw FixedSizeException(
                             request, createErrorMessage("height", "resizeByViewFixedSize()")
                         ),
-                    precision = resize.precision,
-                    scale = resize.scale,
                     scope = resize.scope,
+                    scale = resize.scale,
+                    precision = resize.precision,
                 )
             } else {
                 resize

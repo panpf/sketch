@@ -18,7 +18,7 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         val resize = chain.request.resize
 //        val maxSize = chain.request.maxSize
         val bitmapPoolHelper = chain.sketch.bitmapPoolHelper
-        return if (resize != null && needResize(bitmap, resize)) {
+        return if (resize?.shouldUse(bitmap.width, bitmap.height) == true) {
             val newBitmap = resize(bitmap, resize, bitmapPoolHelper)
             if (newBitmap !== bitmap) {
                 bitmapPoolHelper.freeBitmapToPool(bitmap)
@@ -34,24 +34,6 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
             bitmapResult
         }
     }
-
-    private fun needResize(bitmap: Bitmap, resize: Resize): Boolean =
-        if (resize.scope is Resize.Scope.All) {
-            when (resize.precision) {
-                Resize.Precision.EXACTLY -> {
-                    resize.width != bitmap.width || resize.height != bitmap.height
-                }
-                Resize.Precision.KEEP_ASPECT_RATIO -> {
-                    val resizeAspectRatio =
-                        "%.1f".format((resize.width.toFloat() / resize.height.toFloat()))
-                    val bitmapAspectRatio =
-                        "%.1f".format((bitmap.width.toFloat() / bitmap.height.toFloat()))
-                    resizeAspectRatio != bitmapAspectRatio
-                }
-            }
-        } else {
-            false
-        }
 
     private fun resize(bitmap: Bitmap, resize: Resize, bitmapPoolHelper: BitmapPoolHelper): Bitmap {
         val mapping = ResizeMapping.calculator(

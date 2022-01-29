@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
@@ -108,7 +107,7 @@ class FFmpegVideoFrameDecoder(
             )
     }
 
-    override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean = false
+    override fun canDecodeRegion(imageInfo: ImageInfo): Boolean = false
 
     override fun decodeRegion(
         imageInfo: ImageInfo,

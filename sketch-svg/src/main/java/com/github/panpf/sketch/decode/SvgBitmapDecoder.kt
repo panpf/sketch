@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
-import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
@@ -90,7 +89,7 @@ class SvgBitmapDecoder(
         return bitmap
     }
 
-    override fun canDecodeRegion(imageInfo: ImageInfo, imageFormat: ImageFormat?): Boolean = false
+    override fun canDecodeRegion(imageInfo: ImageInfo): Boolean = false
 
     override fun decodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
