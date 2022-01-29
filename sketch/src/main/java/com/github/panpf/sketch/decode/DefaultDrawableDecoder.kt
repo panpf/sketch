@@ -5,12 +5,12 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.RefCountBitmap
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
-import com.github.panpf.sketch.drawable.SketchRefCountBitmapDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayRequest
@@ -80,7 +80,7 @@ class DefaultDrawableDecoder(
     ) {
 
         val lock: Mutex by lazy {
-            memoryCache.getOrCreateEditMutexLock(bitmapMemoryCacheKey)
+            memoryCache.editLock(bitmapMemoryCacheKey)
         }
 
         fun read(): DrawableDecodeResult? {
@@ -88,17 +88,17 @@ class DefaultDrawableDecoder(
                 return null
             }
 
-            val cachedRefBitmap = memoryCache[bitmapMemoryCacheKey]
+            val cachedCountBitmap = memoryCache[bitmapMemoryCacheKey]
             val requestDepth = request.depth
             return when {
-                cachedRefBitmap != null -> {
+                cachedCountBitmap != null -> {
                     logger.d(MODULE) {
                         "From memory get bitmap. bitmap=%s. %s"
-                            .format(cachedRefBitmap.info, request.key)
+                            .format(cachedCountBitmap.info, request.key)
                     }
-                    cachedRefBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
-                    val drawable = SketchRefCountBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
-                    DrawableDecodeResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
+                    cachedCountBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
+                    val drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE)
+                    DrawableDecodeResult(drawable, cachedCountBitmap.imageInfo, MEMORY_CACHE)
                 }
                 requestDepth != null && requestDepth >= RequestDepth.MEMORY -> {
                     throw RequestDepthException(request, requestDepth, request.depthFrom)
@@ -111,7 +111,7 @@ class DefaultDrawableDecoder(
 
         fun write(bitmapDecodeResult: BitmapDecodeResult): Drawable? =
             if (bitmapMemoryCachePolicy.writeEnabled) {
-                val refBitmap = RefCountBitmap(
+                val countBitmap = CountBitmap(
                     bitmapDecodeResult.bitmap,
                     request.uriString,
                     bitmapDecodeResult.imageInfo,
@@ -119,9 +119,9 @@ class DefaultDrawableDecoder(
                     bitmapDecodeResult.transformedList,
                     bitmapPoolHelper
                 )
-                refBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
-                memoryCache.put(bitmapMemoryCacheKey, refBitmap)
-                SketchRefCountBitmapDrawable(refBitmap, bitmapDecodeResult.dataFrom)
+                countBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
+                memoryCache.put(bitmapMemoryCacheKey, countBitmap)
+                SketchCountBitmapDrawable(countBitmap, bitmapDecodeResult.dataFrom)
             } else {
                 null
             }

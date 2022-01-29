@@ -18,69 +18,51 @@ package com.github.panpf.sketch.cache
 import kotlinx.coroutines.sync.Mutex
 
 /**
- * 内存缓存管理器
+ * Memory cache for bitmap
  */
 interface MemoryCache {
 
     /**
-     * 获取已用容量
+     * Sum of the sizes of the all cache
      */
     val size: Long
 
     /**
-     * 获取最大容量
+     * Maximum allowed sum of the sizes of the all cache
      */
     val maxSize: Long
 
     /**
-     * 是否禁用
+     * Caches[countBitmap] for [key]
      */
-    var isDisabled: Boolean
+    fun put(key: String, countBitmap: CountBitmap)
 
     /**
-     * 是否已关闭
+     * Deletes the cache of the [key]
+     * @return If null is returned, there is no cache
      */
-    val isClosed: Boolean
+    fun remove(key: String): CountBitmap?
 
     /**
-     * 缓存一张图片
+     * Get the cache of the key
+     */
+    operator fun get(key: String): CountBitmap?
+
+    /**
+     * Trim memory based on the [level]
      *
-     * @param key       缓存 key
-     * @param refCountBitmap 待缓存图片
-     */
-    fun put(key: String, refCountBitmap: RefCountBitmap)
-
-    /**
-     * 根据指定 key 获取图片
-     *
-     * @param key 缓存 key
-     */
-    operator fun get(key: String): RefCountBitmap?
-
-    /**
-     * 根据指定 key 删除图片
-     *
-     * @param key 缓存 key
-     */
-    fun remove(key: String): RefCountBitmap?
-
-    /**
-     * 根据 level 修整缓存
-     *
-     * @param level 修剪级别，对应 APP 的不同状态
+     * @param level see [android.content.ComponentCallbacks2].TRIM_MEMORY_*
      * @see android.content.ComponentCallbacks2
      */
-    fun trimMemory(level: Int)
+    fun trim(level: Int)
 
     /**
-     * 清除缓存
+     * Clear all cached bitmaps
      */
     fun clear()
 
     /**
-     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 [isDisabled]
+     * Gets an edit lock bound to the [key], or creates a new one if it does not exist
      */
-    fun close()
-
-    fun getOrCreateEditMutexLock(key: String): Mutex
+    fun editLock(key: String): Mutex
 }

@@ -15,29 +15,29 @@
  */
 package com.github.panpf.sketch.drawable
 
-import com.github.panpf.sketch.cache.RefCountBitmap
+import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.request.DataFrom
 
-class SketchRefCountBitmapDrawable constructor(
-    private val refCountBitmap: RefCountBitmap,
+class SketchCountBitmapDrawable constructor(
+    private val countBitmap: CountBitmap,
     imageDataFrom: DataFrom,
 ) : SketchBitmapDrawable(
-    refCountBitmap.requestKey,
-    refCountBitmap.imageUri,
-    refCountBitmap.imageInfo,
+    countBitmap.requestKey,
+    countBitmap.imageUri,
+    countBitmap.imageInfo,
     imageDataFrom,
-    refCountBitmap.transformedList,
-    refCountBitmap.bitmap!!
-), SketchRefCountDrawable {
+    countBitmap.transformedList,
+    countBitmap.bitmap!!
+), SketchCountDrawable {
 
     override val isRecycled: Boolean
-        get() = refCountBitmap.isRecycled
+        get() = countBitmap.isRecycled
 
     override fun setIsDisplayed(callingStation: String, displayed: Boolean) {
-        refCountBitmap.setIsDisplayed(callingStation, displayed)
+        countBitmap.setIsDisplayed(callingStation, displayed)
     }
 
     override fun setIsWaitingUse(callingStation: String, waitingUse: Boolean) {
-        refCountBitmap.setIsWaitingUse(callingStation, waitingUse)
+        countBitmap.setIsWaitingUse(callingStation, waitingUse)
     }
 }

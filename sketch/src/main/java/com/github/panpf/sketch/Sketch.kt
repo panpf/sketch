@@ -146,7 +146,7 @@ class Sketch private constructor(
     init {
         val memorySizeCalculator = MemorySizeCalculator(appContext, logger)
         memoryCache = _memoryCache
-            ?: LruMemoryCache(appContext, memorySizeCalculator.memoryCacheSize, logger)
+            ?: LruMemoryCache(memorySizeCalculator.memoryCacheSize, logger)
         val bitmapPool = _bitmapPool
             ?: LruBitmapPool(appContext, memorySizeCalculator.bitmapPoolSize, logger)
         bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)

@@ -156,7 +156,6 @@ class DisplayExecutor(private val sketch: Sketch) {
 
         val resize = request.resize
         val newResize =
-            // todo 切换布局模式时 resize 貌似没有刷新为新的尺寸
             if (resize != null && (resize.width == fixedSizeFlag || resize.height == fixedSizeFlag)) {
                 require(view != null) {
                     val message =
@@ -203,18 +202,18 @@ class DisplayExecutor(private val sketch: Sketch) {
 //        val memoryCachePolicy = newRequest.memoryCachePolicy
 //            todo read memory cache
 //            if (memoryCachePolicy.readEnabled) {
-//                val cachedRefBitmap = memoryCache[memoryCacheKey]
-//                if (cachedRefBitmap != null) {
+//                val cachedCountBitmap = memoryCache[memoryCacheKey]
+//                if (cachedCountBitmap != null) {
 //                    if (SLog.isLoggable(SLog.DEBUG)) {
 //                        SLog.dmf(
 //                            DisplayEngineInterceptor.MODULE,
 //                            "From memory get bitmap. bitmap=%s. %s",
-//                            cachedRefBitmap.info, request.key
+//                            cachedCountBitmap.info, request.key
 //                        )
 //                    }
-//                    cachedRefBitmap.setIsWaitingUse("${DisplayEngineInterceptor.MODULE}:waitingUse:fromMemory", true)
-//                    val drawable = SketchBitmapDrawable(cachedRefBitmap, MEMORY_CACHE)
-//                    return DisplayResult(drawable, cachedRefBitmap.imageInfo, MEMORY_CACHE)
+//                    cachedCountBitmap.setIsWaitingUse("${DisplayEngineInterceptor.MODULE}:waitingUse:fromMemory", true)
+//                    val drawable = SketchBitmapDrawable(cachedCountBitmap, MEMORY_CACHE)
+//                    return DisplayResult(drawable, cachedCountBitmap.imageInfo, MEMORY_CACHE)
 //                } else if (request.depth >= RequestDepth.MEMORY) {
 //                    throw DisplayException("Request depth only to MEMORY")
 //                }

@@ -53,7 +53,7 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
     ) {
 
         val lock: Mutex by lazy {
-            diskCache.getOrCreateEditMutexLock(encodedBitmapDataDiskCacheKey)
+            diskCache.editLock(encodedBitmapDataDiskCacheKey)
         }
 
         @WorkerThread

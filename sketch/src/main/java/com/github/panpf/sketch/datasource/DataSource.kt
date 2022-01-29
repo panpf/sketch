@@ -54,7 +54,7 @@ interface DataSource {
     suspend fun file(): File = withContext(Dispatchers.IO) {
         val diskCache = sketch.diskCache
         val encodedKey = sketch.diskCache.encodeKey(request.uriString + "_data_source")
-        sketch.diskCache.getOrCreateEditMutexLock(encodedKey).withLock {
+        sketch.diskCache.editLock(encodedKey).withLock {
             val entry = diskCache[encodedKey]
             if (entry != null) {
                 entry

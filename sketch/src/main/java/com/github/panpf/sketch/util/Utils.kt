@@ -33,10 +33,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 import kotlin.math.ceil
 import kotlin.math.floor
+
 
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
@@ -131,7 +134,7 @@ val Bitmap.Config?.getCompressFormat: CompressFormat
 /**
  * 获取修剪级别的名称
  */
-fun getTrimLevelName(level: Int): String = when (level) {
+fun trimLevelName(level: Int): String = when (level) {
     ComponentCallbacks2.TRIM_MEMORY_COMPLETE -> "COMPLETE"
     ComponentCallbacks2.TRIM_MEMORY_MODERATE -> "MODERATE"
     ComponentCallbacks2.TRIM_MEMORY_BACKGROUND -> "BACKGROUND"
@@ -271,6 +274,63 @@ fun createFileUriDiskCacheKey(uri: String, filePath: String): String {
         "$uri.$lastModifyTime"
     } else {
         uri
+    }
+}
+
+/**
+ * Returns the formatted file length that can be displayed, up to EB
+ *
+ * @receiver              File size
+ * @param decimalPlacesLength   Keep a few decimal places
+ * @param decimalPlacesFillZero Use 0 instead when the number of decimal places is insufficient
+ * @param compact               If true, returns 150KB, otherwise returns 150 KB
+ * @return For example: 300 B, 150.25 KB, 500.46 MB, 300 GB
+ */
+internal fun Long.formatFileSize(
+    decimalPlacesLength: Int = 2,
+    decimalPlacesFillZero: Boolean = false,
+    compact: Boolean = true,
+): String {
+    // Multiplied by 999 to avoid 1000 KB, 1000 MB
+    // Why is appendSuffix required to be true when calling the format method, because DecimalFormat encounters '#.##EB' and throws an exception 'IllegalArgumentException: Malformed exponential pattern "#.##EB"'
+    @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
+    val finalFileSize = Math.max(this, 0)
+    return if (finalFileSize <= 999) {
+        finalFileSize.toString() + if (compact) "B" else " B"
+    } else {
+        val value: Double
+        val suffix: String
+        @Suppress("CascadeIf")
+        if (finalFileSize <= 1024L * 999) {
+            value = (finalFileSize / 1024f).toDouble()
+            suffix = if (compact) "KB" else " KB"
+        } else if (finalFileSize <= 1024L * 1024 * 999) {
+            value = (finalFileSize / 1024f / 1024f).toDouble()
+            suffix = if (compact) "MB" else " MB"
+        } else if (finalFileSize <= 1024L * 1024 * 1024 * 999) {
+            value = (finalFileSize / 1024f / 1024f / 1024f).toDouble()
+            suffix = if (compact) "GB" else " GB"
+        } else if (finalFileSize <= 1024L * 1024 * 1024 * 1024 * 999) {
+            value = (finalFileSize / 1024f / 1024f / 1024f / 1024f).toDouble()
+            suffix = if (compact) "TB" else " TB"
+        } else if (finalFileSize <= 1024L * 1024 * 1024 * 1024 * 1024 * 999) {
+            value = (finalFileSize / 1024f / 1024f / 1024f / 1024f / 1024f).toDouble()
+            suffix = if (compact) "PB" else " PB"
+        } else {
+            value = (finalFileSize / 1024f / 1024f / 1024f / 1024f / 1024f / 1024f).toDouble()
+            suffix = if (compact) "EB" else " EB"
+        }
+        val buffString = StringBuilder()
+        buffString.append("#")
+        if (decimalPlacesLength > 0) {
+            buffString.append(".")
+            for (w in 0 until decimalPlacesLength) {
+                buffString.append(if (decimalPlacesFillZero) "0" else "#")
+            }
+        }
+        val format = DecimalFormat(buffString.toString())
+        format.roundingMode = RoundingMode.HALF_UP
+        format.format(value).toString() + suffix
     }
 }
 

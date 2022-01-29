@@ -4,8 +4,8 @@ import android.annotation.TargetApi
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
-import android.text.format.Formatter
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.formatFileSize
 import kotlin.math.roundToInt
 
 /**
@@ -45,10 +45,10 @@ class MemorySizeCalculator(context: Context, val logger: Logger) {
         }
         logger.d("MemorySizeCalculator") {
             "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s".format(
-                Formatter.formatFileSize(appContext, memoryCacheSize.toLong()),
-                Formatter.formatFileSize(appContext, bitmapPoolSize.toLong()),
+                memoryCacheSize.toLong().formatFileSize(),
+                bitmapPoolSize.toLong().formatFileSize(),
                 targetMemoryCacheSize + targetPoolSize > maxSize,
-                Formatter.formatFileSize(appContext, maxSize.toLong()),
+                maxSize.toLong().formatFileSize(),
                 activityManager.memoryClass,
                 isLowMemoryDevice(activityManager)
             )

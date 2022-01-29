@@ -17,12 +17,12 @@ package com.github.panpf.sketch.cache
 
 import android.content.Context
 import android.os.Environment
-import android.text.format.Formatter
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Entry
 import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MD5Utils
+import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 import java.io.File
 import java.io.IOException
@@ -248,7 +248,7 @@ class LruDiskCache(
     }
 
     @Synchronized
-    override fun getOrCreateEditMutexLock(encodedKey: String): Mutex {
+    override fun editLock(encodedKey: String): Mutex {
         return editMutexLockMap[encodedKey] ?: Mutex().apply {
             this@LruDiskCache.editMutexLockMap[encodedKey] = this
         }
@@ -259,7 +259,7 @@ class LruDiskCache(
             Locale.US,
             "%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
             MODULE,
-            Formatter.formatFileSize(appContext, maxSize),
+            maxSize.formatFileSize(),
             versionCode,
             cacheDir.path
         )

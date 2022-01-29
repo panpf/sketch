@@ -95,7 +95,10 @@ interface DiskCache {
      */
     fun close()
 
-    fun getOrCreateEditMutexLock(encodedKey: String): Mutex
+    /**
+     * Gets an edit lock bound to the specified [encodedKey], or creates a new one if it does not exist
+     */
+    fun editLock(encodedKey: String): Mutex
 
     /**
      * 磁盘缓存实体

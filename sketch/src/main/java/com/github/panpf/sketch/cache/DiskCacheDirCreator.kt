@@ -6,9 +6,9 @@ import android.os.Build
 import android.os.Environment
 import android.os.Process
 import android.os.StatFs
-import android.text.format.Formatter
 import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.formatFileSize
 import java.io.File
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -76,9 +76,8 @@ class DiskCacheDirCreator(private val context: Context) {
 
                     // 依然不够用，那不好意思了
                     if (availableBytes < minSpaceSize) {
-                        val availableFormatted =
-                            Formatter.formatFileSize(context, availableBytes)
-                        val minSpaceFormatted = Formatter.formatFileSize(context, minSpaceSize)
+                        val availableFormatted = availableBytes.formatFileSize()
+                        val minSpaceFormatted = minSpaceSize.formatFileSize()
                         noSpaceException =
                             IOException("Not enough storage space. Need " + minSpaceFormatted + ", with only " + availableFormatted + " in " + diskCacheDir.path)
                         break

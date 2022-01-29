@@ -162,7 +162,7 @@ class HttpUriFetcher(
     ) {
 
         val lock: Mutex by lazy {
-            diskCache.getOrCreateEditMutexLock(encodedDataDiskCacheKey)
+            diskCache.editLock(encodedDataDiskCacheKey)
         }
 
         fun read(): FetchResult? {

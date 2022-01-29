@@ -6,9 +6,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
-import android.text.format.Formatter
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.getTrimLevelName
+import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.trimLevelName
 import com.github.panpf.sketch.util.recycle.AttributeStrategy
 import com.github.panpf.sketch.util.recycle.LruPoolStrategy
 import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
@@ -193,16 +193,17 @@ class LruBitmapPool @JvmOverloads constructor(
     @SuppressLint("InlinedApi")
     @Synchronized
     override fun trimMemory(level: Int) {
-        val size = size.toLong()
+        val oldSize = this.size.toLong()
         if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
             trimToSize(0)
         } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
             trimToSize(maxSize / 2)
         }
-        val releasedSize = Formatter.formatFileSize(appContext, size - size)
+        val newSize = this.size.toLong()
+        val releasedSize = (oldSize - newSize).formatFileSize()
         logger.w(
             MODULE,
-            "trimMemory. level=%s, released: %s".format(getTrimLevelName(level), releasedSize)
+            "trimMemory. level=%s, released: %s".format(trimLevelName(level), releasedSize)
         )
     }
 
@@ -210,7 +211,7 @@ class LruBitmapPool @JvmOverloads constructor(
     override fun clear() {
         logger.w(
             MODULE,
-            "clear. before size ${Formatter.formatFileSize(appContext, size.toLong())}",
+            "clear. before size ${size.toLong().formatFileSize()}",
         )
         trimToSize(0)
     }
@@ -260,7 +261,7 @@ class LruBitmapPool @JvmOverloads constructor(
     override fun toString(): String {
         return "%s(maxSize=%s,strategy=%s,allowedConfigs=%s)".format(
             MODULE,
-            Formatter.formatFileSize(appContext, maxSize.toLong()),
+            maxSize.toLong().formatFileSize(),
             if (strategy is SizeConfigStrategy) "SizeConfigStrategy" else "AttributeStrategy",
             allowedConfigs.toString()
         )

@@ -16,185 +16,109 @@
 package com.github.panpf.sketch.cache
 
 import android.content.ComponentCallbacks2
-import android.content.Context
-import android.text.format.Formatter
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
-import com.github.panpf.sketch.util.getTrimLevelName
+import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.trimLevelName
 import kotlinx.coroutines.sync.Mutex
 import java.util.WeakHashMap
 
 /**
- * 创建根据最少使用规则释放缓存的内存缓存管理器
- *
- * @param context [Context]
- * @param maxSize 最大容量
+ * A bitmap memory cache that manages the cache according to a least-used rule
  */
-class LruMemoryCache(context: Context, maxSize: Int, val logger: Logger) : MemoryCache {
+class LruMemoryCache constructor(maxSize: Int, private val logger: Logger) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
+
+        @JvmStatic
+        private val editLockLock = Any()
     }
 
-    private val cache: LruCache<String, RefCountBitmap> = RefBitmapLruCache(maxSize)
-    private val appContext: Context = context.applicationContext
-    private val editMutexLockMap: MutableMap<String, Mutex> = WeakHashMap()
+    private val cache: LruCache<String, CountBitmap> = CountBitmapLruCache(maxSize)
+    private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
 
-    @get:Synchronized
     override val size: Long
-        get() = if (!isClosed) cache.size().toLong() else 0
+        get() = cache.size().toLong()
 
     override val maxSize: Long
         get() = cache.maxSize().toLong()
 
-    @get:Synchronized
-    override var isClosed = false
-        private set
+    override fun put(key: String, countBitmap: CountBitmap) {
+        if (cache[key] == null) {
+            cache.put(key, countBitmap)
+            logger.d(MODULE) {
+                val bitmapSize = countBitmap.byteCount.toLong().formatFileSize()
+                "put. key '$key', bitmap $bitmapSize, size ${size.formatFileSize()}"
+            }
+        } else {
+            logger.w(MODULE, String.format("Exist. key=$key"))
+        }
+    }
 
-    override var isDisabled = false
-        set(value) {
-            if (field != value) {
-                field = value
-                logger.w(MODULE, "setDisabled. $value")
+    override fun remove(key: String): CountBitmap? =
+        cache.remove(key).apply {
+            logger.d(MODULE) {
+                val bitmapSize = this?.byteCount?.toLong()?.formatFileSize()
+                "remove. key '$key', bitmap $bitmapSize, size ${size.formatFileSize()}"
             }
         }
 
-    @Synchronized
-    override fun put(key: String, refCountBitmap: RefCountBitmap) {
-        if (isClosed) {
-            logger.e(MODULE, "Closed. Unable put, key=$key")
-            return
+    override fun get(key: String): CountBitmap? =
+        cache[key]?.takeIf {
+            (!it.isRecycled).apply {
+                if (!this) {
+                    cache.remove(key)
+                }
+            }
         }
-        if (isDisabled) {
-            logger.w(MODULE, "Disabled. Unable put, key=$key")
-            return
-        }
-        if (cache[key] != null) {
-            logger.w(MODULE, String.format("Exist. key=$key"))
-            return
-        }
-        val oldCacheSize = cache.size()
-        cache.put(key, refCountBitmap)
-        logger.d(MODULE) {
-            "put. beforeCacheSize=%s. %s. afterCacheSize=%s".format(
-                Formatter.formatFileSize(appContext, oldCacheSize.toLong()),
-                refCountBitmap.requestKey,
-                Formatter.formatFileSize(appContext, cache.size().toLong())
-            )
-        }
-    }
 
-    @Synchronized
-    override fun get(key: String): RefCountBitmap? {
-        if (isClosed) {
-            logger.e(MODULE, "Closed. Unable get, key=$key")
-            return null
-        }
-        if (isDisabled) {
-            logger.w(MODULE, "Disabled. Unable get, key=$key")
-            return null
-        }
-        val refBitmap = cache[key]
-        return if (refBitmap != null && refBitmap.isRecycled) {
-            cache.remove(key)
-            null
-        } else {
-            refBitmap
-        }
-    }
-
-    @Synchronized
-    override fun remove(key: String): RefCountBitmap? {
-        if (isClosed) {
-            logger.e(MODULE, "Closed. Unable remove, key=$key")
-            return null
-        }
-        if (isDisabled) {
-            logger.w(MODULE, "Disabled. Unable remove, key=$key")
-            return null
-        }
-        val refBitmap = cache.remove(key)
-        logger.d(MODULE) {
-            "remove. memoryCacheSize: %s".format(
-                Formatter.formatFileSize(appContext, cache.size().toLong())
-            )
-        }
-        return refBitmap
-    }
-
-    @Synchronized
-    override fun trimMemory(level: Int) {
-        if (isClosed) {
-            return
-        }
-        val memoryCacheSize = size
+    override fun trim(level: Int) {
+        val oldSize = size
         if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
             cache.evictAll()
         } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
             cache.trimToSize(cache.maxSize() / 2)
         }
-        val releasedSize = memoryCacheSize - size
-        logger.w(
-            MODULE, "trimMemory. level=%s, released: %s".format(
-                getTrimLevelName(level),
-                Formatter.formatFileSize(appContext, releasedSize)
-            )
-        )
-    }
-
-    @Synchronized
-    override fun clear() {
-        if (isClosed) {
-            logger.e(MODULE, "Closed. Unable clear")
-            return
-        }
+        val newSize = size
+        val releasedSize = oldSize - newSize
         logger.w(
             MODULE,
-            "clear. before size: ${Formatter.formatFileSize(appContext, cache.size().toLong())}",
+            "trim. level '${trimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
         )
+    }
+
+    override fun clear() {
+        val oldSize = size
         cache.evictAll()
+        logger.w(MODULE, "clear. clean ${oldSize.formatFileSize()}")
     }
 
-    @Synchronized
-    override fun close() {
-        if (isClosed) {
-            logger.e(MODULE, "Closed. Unable close")
-            return
-        }
-        isClosed = true
-        cache.evictAll()
-    }
-
-    override fun toString(): String =
-        "%s(maxSize=%s)".format(MODULE, Formatter.formatFileSize(appContext, maxSize))
-
-    @Synchronized
-    override fun getOrCreateEditMutexLock(key: String): Mutex {
-        return editMutexLockMap[key] ?: Mutex().apply {
-            this@LruMemoryCache.editMutexLockMap[key] = this
+    override fun editLock(key: String): Mutex = synchronized(editLockLock) {
+        editLockMap[key] ?: Mutex().apply {
+            this@LruMemoryCache.editLockMap[key] = this
         }
     }
 
-    private class RefBitmapLruCache constructor(maxSize: Int) :
-        LruCache<String, RefCountBitmap>(maxSize) {
+    override fun toString(): String = "$MODULE(maxSize=${maxSize.formatFileSize()})"
 
-        override fun put(key: String, refCountBitmap: RefCountBitmap): RefCountBitmap? {
-            refCountBitmap.setIsCached("$MODULE:put", true)
-            return super.put(key, refCountBitmap)
+    private class CountBitmapLruCache constructor(maxSize: Int) :
+        LruCache<String, CountBitmap>(maxSize) {
+
+        override fun put(key: String, countBitmap: CountBitmap): CountBitmap? {
+            countBitmap.setIsCached("$MODULE:put", true)
+            return super.put(key, countBitmap)
         }
 
-        override fun sizeOf(key: String, refCountBitmap: RefCountBitmap): Int {
-            val bitmapSize = refCountBitmap.byteCount
+        override fun sizeOf(key: String, countBitmap: CountBitmap): Int {
+            val bitmapSize = countBitmap.byteCount
             return if (bitmapSize == 0) 1 else bitmapSize
         }
 
         override fun entryRemoved(
-            evicted: Boolean,
-            key: String,
-            oldRefCountBitmap: RefCountBitmap,
-            newRefCountBitmap: RefCountBitmap?
+            evicted: Boolean, key: String, oldCountBitmap: CountBitmap, newCountBitmap: CountBitmap?
         ) {
-            oldRefCountBitmap.setIsCached("$MODULE:entryRemoved", false)
+            oldCountBitmap.setIsCached("$MODULE:entryRemoved", false)
         }
     }
 }

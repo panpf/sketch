@@ -25,7 +25,7 @@ import com.github.panpf.sketch.util.toHexString
 /**
  * 引用 [Bitmap]，能够计算缓存引用、显示引用以及等待显示引用
  */
-class RefCountBitmap constructor(
+class CountBitmap constructor(
     initBitmap: Bitmap,
     val imageUri: String,
     val imageInfo: ImageInfo,
