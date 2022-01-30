@@ -50,5 +50,7 @@ class FileUriFetcher(
             }
             return null
         }
+
+        override fun toString(): String = "FileUriFetcher"
     }
 }

@@ -30,4 +30,6 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor<DisplayReque
         }
         return chain.proceed(finalRequest)
     }
+
+    override fun toString(): String = "PauseLoadWhenScrollingDisplayInterceptor"
 }

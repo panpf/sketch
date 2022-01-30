@@ -121,7 +121,7 @@ class HurlStack(
             connection.headerFields
                 .toList()
                 .joinToString(prefix = "[", postfix = "]") {
-                    "{${it.first}:${it.second.joinToString(separator = ",")}}"
+                    "{${it.first}:${it.second.joinToString(prefix = "[", postfix = "]", separator = ",")}}"
                 }
         }
 

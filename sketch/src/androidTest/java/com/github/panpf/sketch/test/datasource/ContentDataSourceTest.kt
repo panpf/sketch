@@ -168,7 +168,7 @@ class ContentDataSourceTest {
                 file()
             }
             Assert.assertEquals(
-                "/storage/emulated/0/Android/data/com.github.panpf.sketch.test/cache/sketch/a67023478ef0ffa2bb1e599affca0237.0",
+                "/storage/emulated/0/Android/data/com.github.panpf.sketch.test/cache/sketch/01d95711e2e30d06b88b93f82e3e1bde.0",
                 file.path
             )
         }
@@ -206,7 +206,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             Assert.assertEquals(
-                "ContentDataSource(contentUri='file:///storage/emulated/0/Android/data/com.github.panpf.sketch.test/cache/sketch/a67023478ef0ffa2bb1e599affca0237.0')",
+                "ContentDataSource(contentUri='file:///storage/emulated/0/Android/data/com.github.panpf.sketch.test/cache/sketch/01d95711e2e30d06b88b93f82e3e1bde.0')",
                 toString()
             )
         }

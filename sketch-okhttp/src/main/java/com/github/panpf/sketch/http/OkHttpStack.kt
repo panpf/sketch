@@ -64,7 +64,9 @@ class OkHttpStack(private val okHttpClient: OkHttpClient) : HttpStack {
         override val headersString: String? by lazy {
             val headers = response.headers()
             headers.names().joinToString(prefix = "[", postfix = "]") { name ->
-                "{${name}:${headers.values(name).joinToString(separator = ",")}}"
+                "{${name}:${
+                    headers.values(name).joinToString(prefix = "[", postfix = "]", separator = ",")
+                }}"
             }
         }
 

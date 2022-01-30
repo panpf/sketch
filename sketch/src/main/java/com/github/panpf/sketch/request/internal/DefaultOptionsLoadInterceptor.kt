@@ -19,4 +19,6 @@ class DefaultOptionsLoadInterceptor(
         }
         return chain.proceed(request)
     }
+
+    override fun toString(): String = "DefaultOptionsLoadInterceptor"
 }

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.cache.internal
 
 import android.annotation.TargetApi
 import android.app.ActivityManager
@@ -12,7 +12,8 @@ import kotlin.math.roundToInt
  * A calculator that tries to intelligently determine cache sizes for a given device based on some constants and the
  * devices screen density, width, and height.
  */
-class MemorySizeCalculator(context: Context, val logger: Logger) {
+// todo rewrite
+class MemoryCacheSizeCalculator(context: Context, val logger: Logger) {
     /**
      * Returns the recommended bitmap pool size for the device it is run on in bytes.
      */
@@ -62,7 +63,7 @@ class MemorySizeCalculator(context: Context, val logger: Logger) {
         private const val BITMAP_POOL_TARGET_SCREENS = 3
         private const val MAX_SIZE_MULTIPLIER = 0.4f
         private const val LOW_MEMORY_MAX_SIZE_MULTIPLIER = 0.33f
-        private const val NAME = "MemorySizeCalculator"
+
         private fun getMaxSize(activityManager: ActivityManager?): Int {
             val memoryClassBytes =
                 if (activityManager != null) activityManager.memoryClass * 1024 * 1024 else 100

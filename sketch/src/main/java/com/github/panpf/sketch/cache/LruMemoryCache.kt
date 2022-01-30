@@ -26,7 +26,7 @@ import java.util.WeakHashMap
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
  */
-class LruMemoryCache constructor(maxSize: Int, private val logger: Logger) : MemoryCache {
+class LruMemoryCache constructor(private val logger: Logger, maxSize: Long) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
@@ -40,7 +40,6 @@ class LruMemoryCache constructor(maxSize: Int, private val logger: Logger) : Mem
 
     override val size: Long
         get() = cache.size().toLong()
-
     override val maxSize: Long
         get() = cache.maxSize().toLong()
 
@@ -91,7 +90,7 @@ class LruMemoryCache constructor(maxSize: Int, private val logger: Logger) : Mem
     override fun clear() {
         val oldSize = size
         cache.evictAll()
-        logger.w(MODULE, "clear. clean ${oldSize.formatFileSize()}")
+        logger.w(MODULE, "clear. cleared ${oldSize.formatFileSize()}")
     }
 
     override fun editLock(key: String): Mutex = synchronized(editLockLock) {
@@ -100,13 +99,13 @@ class LruMemoryCache constructor(maxSize: Int, private val logger: Logger) : Mem
         }
     }
 
-    override fun toString(): String = "$MODULE(maxSize=${maxSize.formatFileSize()})"
+    override fun toString(): String = "${MODULE}(maxSize=${maxSize.formatFileSize()})"
 
-    private class CountBitmapLruCache constructor(maxSize: Int) :
-        LruCache<String, CountBitmap>(maxSize) {
+    private class CountBitmapLruCache constructor(maxSize: Long) :
+        LruCache<String, CountBitmap>(maxSize.toInt()) {
 
         override fun put(key: String, countBitmap: CountBitmap): CountBitmap? {
-            countBitmap.setIsCached("$MODULE:put", true)
+            countBitmap.setIsCached("${MODULE}:put", true)
             return super.put(key, countBitmap)
         }
 
@@ -118,7 +117,7 @@ class LruMemoryCache constructor(maxSize: Int, private val logger: Logger) : Mem
         override fun entryRemoved(
             evicted: Boolean, key: String, oldCountBitmap: CountBitmap, newCountBitmap: CountBitmap?
         ) {
-            oldCountBitmap.setIsCached("$MODULE:entryRemoved", false)
+            oldCountBitmap.setIsCached("${MODULE}:entryRemoved", false)
         }
     }
 }

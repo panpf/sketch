@@ -21,11 +21,11 @@ class LruMemoryCacheTest {
     @Test
     fun testMaxSize() {
         val logger = Logger()
-        LruMemoryCache(10 * 1024 * 1024, logger).apply {
+        LruMemoryCache(logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("10MB", maxSize.formatFileSize())
         }
 
-        LruMemoryCache(100 * 1024 * 1024, logger).apply {
+        LruMemoryCache(logger, 100L * 1024 * 1024).apply {
             Assert.assertEquals("100MB", maxSize.formatFileSize())
         }
     }
@@ -34,7 +34,7 @@ class LruMemoryCacheTest {
     fun testSize() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
             put("image1", makeCountBitmap(sketch, "image1", 1))
@@ -49,7 +49,7 @@ class LruMemoryCacheTest {
     fun testPutRemoveGet() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
             put("image1", makeCountBitmap(sketch, "image1", 1))
             Assert.assertNotNull(get("image1"))
@@ -73,7 +73,7 @@ class LruMemoryCacheTest {
     fun testLRU() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
             put("image1", makeCountBitmap(sketch, "image1", 1))
@@ -131,7 +131,7 @@ class LruMemoryCacheTest {
     fun testTrim() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             put("image1", makeCountBitmap(sketch, "image1", 1))
             put("image2", makeCountBitmap(sketch, "image2", 2))
@@ -151,7 +151,7 @@ class LruMemoryCacheTest {
             Assert.assertEquals("0B", size.formatFileSize())
         }
 
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             put("image1", makeCountBitmap(sketch, "image1", 1))
             put("image2", makeCountBitmap(sketch, "image2", 2))
@@ -176,7 +176,7 @@ class LruMemoryCacheTest {
     fun testClear() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             put("image1", makeCountBitmap(sketch, "image1", 1))
             put("image2", makeCountBitmap(sketch, "image2", 2))
@@ -201,7 +201,7 @@ class LruMemoryCacheTest {
     fun testEditLock() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        LruMemoryCache(10 * 1024 * 1024, sketch.logger).apply {
+        LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertNotNull(editLock("image1"))
             Assert.assertNotNull(editLock("image2"))
             Assert.assertNotNull(editLock("image3"))
@@ -212,11 +212,11 @@ class LruMemoryCacheTest {
     @Test
     fun testToString() {
         val logger = Logger()
-        LruMemoryCache(10 * 1024 * 1024, logger).apply {
+        LruMemoryCache(logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("LruMemoryCache(maxSize=10MB)", toString())
         }
 
-        LruMemoryCache(100 * 1024 * 1024, logger).apply {
+        LruMemoryCache(logger, 100L * 1024 * 1024).apply {
             Assert.assertEquals("LruMemoryCache(maxSize=100MB)", toString())
         }
     }

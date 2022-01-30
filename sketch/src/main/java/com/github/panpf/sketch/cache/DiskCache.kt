@@ -23,138 +23,111 @@ import java.io.InputStream
 import java.io.OutputStream
 
 /**
- * 磁盘缓存管理器
+ * Disk cache for bitmap or uri data
  */
 interface DiskCache {
 
-    /**
-     * 获取缓存目录
-     *
-     * @return [File]
-     */
-    val cacheDir: File
+    companion object {
+        const val DEFAULT_DIR_NAME = "sketch"
+        const val DEFAULT_MAX_SIZE = 512L * 1024 * 1024
+    }
 
     /**
-     * 获取最大容量（默认为 100M）
+     * Get the cache directory on disk
+     */
+    val directory: File
+
+    /**
+     * Maximum allowed sum of the size of the all cache
      */
     val maxSize: Long
 
     /**
-     * 获取已用容量
+     * Sum of the size of the all cache
      */
     val size: Long
 
     /**
-     * 是否已禁用
+     * Returns an editor for the entry named [key], or null if another
+     * edit is in progress.
      */
-    var isDisabled: Boolean
+    fun edit(key: String): Editor?
 
     /**
-     * 是否已关闭
-     */
-    val isClosed: Boolean
-
-    /**
-     * 是否存在指定 encodedKey 的缓存
+     * Drops the entry for [key] if it exists and can be removed. Entries
+     * actively being edited cannot be removed.
      *
-     * @param encodedKey 缓存 encodedKey
+     * @return true if an entry was removed.
      */
-    fun exist(encodedKey: String): Boolean
+    fun remove(key: String): Boolean
 
     /**
-     * 获取指定 encodedKey 的缓存
-     *
-     * @param encodedKey 缓存 encodedKey
-     * @return [Entry] 缓存实体，用于读取缓存数据
+     * Returns exist of the entry named [key]
      */
-    operator fun get(encodedKey: String): Entry?
+    fun exist(key: String): Boolean
 
     /**
-     * 编辑指定 key 的缓存
-     *
-     * @param encodedKey 缓存 encodedKey
-     * @return [Editor] 缓存编辑器
+     * Returns a snapshot of the entry named [key], or null if it doesn't exist.
      */
-    fun edit(encodedKey: String): Editor?
+    operator fun get(key: String): Snapshot?
 
     /**
-     * 将 key 进行转码
-     *
-     * @param key 缓存 key
-     * @return 转码后的 key
-     */
-    fun encodeKey(key: String): String
-
-    /**
-     * 清除所有缓存
+     * Clear all cached
      */
     fun clear()
 
     /**
-     * 关闭，关闭后就彻底不能用了，如果你只是想暂时的关闭就使用 [.setDisabled]
+     * Gets an edit lock bound to the specified [key], or creates a new one if it does not exist
      */
-    fun close()
+    fun editLock(key: String): Mutex
 
     /**
-     * Gets an edit lock bound to the specified [encodedKey], or creates a new one if it does not exist
+     * Snapshot the values for an entry.
      */
-    fun editLock(encodedKey: String): Mutex
-
-    /**
-     * 磁盘缓存实体
-     */
-    interface Entry {
+    interface Snapshot {
         /**
-         * 创建输入流
-         *
-         * @return [InputStream]
-         * @throws IOException IO 异常
+         * Returns cache key
+         */
+        val key: String
+
+        /**
+         * Returns cache file
+         */
+        val file: File
+
+        /**
+         * Returns the unbuffered stream
          */
         @Throws(IOException::class)
         fun newInputStream(): InputStream
 
         /**
-         * 获取缓存文件
-         *
-         * @return [File]
+         * Returns an editor, or null if another edit is in progress.
          */
-        val file: File
+        fun edit(): Editor?
 
         /**
-         * 获取缓存 key
+         * Delete cache file
          *
-         * @return 缓存 key，未转码的
+         * @return If true is returned, the deletion is successful
          */
-        val key: String
-
-        /**
-         * 删除实体
-         *
-         * @return true：删除成功
-         */
-        fun delete(): Boolean
+        fun remove(): Boolean
     }
 
     /**
-     * 磁盘缓存编辑器
+     * Edits the values for an entry.
      */
     interface Editor {
         /**
-         * 创建一个输出流，用于写出文件
-         *
-         * @return [OutputStream]
-         * @throws IOException IO 异常
+         * Returns a new unbuffered output stream.
+         * Call [commit] when you write done, or call [abort] if you don't want it
          */
         @Throws(IOException::class)
         fun newOutputStream(): OutputStream
 
         /**
-         * 写完提交
-         *
-         * @throws IOException                         IO 异常
-         * @throws DiskLruCache.EditorChangedException 编辑器已经改变
-         * @throws DiskLruCache.ClosedException        已经关闭了
-         * @throws DiskLruCache.FileNotExistException  文件被删除了
+         * Commits this edit so it is visible to readers.  This releases the
+         * edit lock so another edit may be started on the same key.
          */
         @Throws(
             IOException::class,
@@ -165,7 +138,8 @@ interface DiskCache {
         fun commit()
 
         /**
-         * 中断编辑
+         * Aborts this edit. This releases the edit lock so another edit may be
+         * started on the same key.
          */
         fun abort()
     }

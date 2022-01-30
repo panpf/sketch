@@ -57,6 +57,11 @@ class ComponentRegistry private constructor(
                 "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
     )
 
+    override fun toString(): String =
+        "ComponentRegistry(fetcherFactoryList=${fetcherFactoryList.joinToString(prefix = "[", postfix = "]", separator = ",")}," +
+                "bitmapDecoderFactoryList=${bitmapDecoderFactoryList.joinToString(prefix = "[", postfix = "]", separator = ",")}," +
+                "drawableDecoderFactoryList=${drawableDecoderFactoryList.joinToString(prefix = "[", postfix = "]", separator = ",")})"
+
     companion object {
         fun new(
             configBlock: (Builder.() -> Unit)? = null

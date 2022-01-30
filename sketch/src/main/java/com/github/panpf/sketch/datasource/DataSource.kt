@@ -53,13 +53,13 @@ interface DataSource {
     @Throws(IOException::class)
     suspend fun file(): File = withContext(Dispatchers.IO) {
         val diskCache = sketch.diskCache
-        val encodedKey = sketch.diskCache.encodeKey(request.uriString + "_data_source")
-        sketch.diskCache.editLock(encodedKey).withLock {
-            val entry = diskCache[encodedKey]
-            if (entry != null) {
-                entry
+        val diskCacheKey = request.uriString + "_data_source"
+        sketch.diskCache.editLock(diskCacheKey).withLock {
+            val snapshot = diskCache[diskCacheKey]
+            if (snapshot != null) {
+                snapshot
             } else {
-                val editor = diskCache.edit(encodedKey)
+                val editor = diskCache.edit(diskCacheKey)
                     ?: throw IllegalArgumentException("Disk cache cannot be used")
                 try {
                     newInputStream().use { inputStream ->
@@ -72,7 +72,7 @@ interface DataSource {
                     editor.abort()
                     throw e
                 }
-                diskCache[encodedKey]
+                diskCache[diskCacheKey]
                     ?: throw IllegalArgumentException("Disk cache cannot be used after edit")
             }
         }.file

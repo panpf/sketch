@@ -63,5 +63,7 @@ class AppIconBitmapDecoder(
                 null
             }
         }
+
+        override fun toString(): String = "AppIconBitmapDecoder"
     }
 }

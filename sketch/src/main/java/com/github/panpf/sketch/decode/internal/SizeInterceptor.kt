@@ -52,4 +52,6 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
         return resizeBitmap
     }
+
+    override fun toString(): String = "SizeInterceptor"
 }

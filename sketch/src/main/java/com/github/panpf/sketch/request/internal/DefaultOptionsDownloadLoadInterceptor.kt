@@ -19,4 +19,6 @@ class DefaultOptionsDownloadInterceptor(
         }
         return chain.proceed(request)
     }
+
+    override fun toString(): String = "DefaultOptionsDownloadInterceptor"
 }

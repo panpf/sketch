@@ -1,6 +1,8 @@
 package com.github.panpf.sketch
 
+import android.content.ComponentCallbacks2
 import android.content.Context
+import android.content.res.Configuration
 import android.widget.ImageView
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
@@ -11,7 +13,7 @@ import com.github.panpf.sketch.cache.LruBitmapPool
 import com.github.panpf.sketch.cache.LruDiskCache
 import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.MemorySizeCalculator
+import com.github.panpf.sketch.cache.internal.MemoryCacheSizeCalculator
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.DefaultDrawableDecoder
@@ -67,7 +69,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import java.io.File
 
 class Sketch private constructor(
     _context: Context,
@@ -99,8 +100,9 @@ class Sketch private constructor(
     val logger = _logger ?: Logger()
     val httpStack = _httpStack ?: HurlStack.new()
 
-    val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
     val memoryCache: MemoryCache
+    val bitmapPool: BitmapPool
+    val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
     val bitmapPoolHelper: BitmapPoolHelper
 
     val componentRegistry: ComponentRegistry = (_componentRegistry ?: ComponentRegistry.new())
@@ -144,21 +146,44 @@ class Sketch private constructor(
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
-        val memorySizeCalculator = MemorySizeCalculator(appContext, logger)
+        val memorySizeCalculator = MemoryCacheSizeCalculator(appContext, logger)
         memoryCache = _memoryCache
-            ?: LruMemoryCache(memorySizeCalculator.memoryCacheSize, logger)
-        val bitmapPool = _bitmapPool
-            ?: LruBitmapPool(appContext, memorySizeCalculator.bitmapPoolSize, logger)
+            ?: LruMemoryCache(logger, memorySizeCalculator.memoryCacheSize.toLong())
+        bitmapPool = _bitmapPool
+            ?: LruBitmapPool(logger, memorySizeCalculator.bitmapPoolSize)
         bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)
 
-        if (diskCache is LruDiskCache) {
-            val wrapperErrorCallback = diskCache.errorCallback
-            diskCache.errorCallback =
-                LruDiskCache.ErrorCallback { dir: File, throwable: Throwable ->
-                    wrapperErrorCallback?.onInstallDiskCacheError(dir, throwable)
-                    // todo
-//                configuration.callback.onError(InstallDiskCacheException(e, cacheDir))
-                }
+        appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
+            override fun onConfigurationChanged(newConfig: Configuration) {
+            }
+
+            override fun onLowMemory() {
+                memoryCache.clear()
+                bitmapPool.clear()
+            }
+
+            override fun onTrimMemory(level: Int) {
+                memoryCache.trim(level)
+                bitmapPool.trimMemory(level)
+            }
+        })
+
+        logger.d("Configuration") {
+            buildString {
+                append("\n").append("logger: $logger")
+                append("\n").append("httpStack: $httpStack")
+                append("\n").append("memoryCache: $memoryCache")
+                append("\n").append("bitmapPool: $bitmapPool")
+                append("\n").append("diskCache: $diskCache")
+                append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList.joinToString(separator = ",")}")
+                append("\n").append("bitmapDecoders: ${componentRegistry.bitmapDecoderFactoryList.joinToString(separator = ",")}")
+                append("\n").append("drawableDecoders: ${componentRegistry.drawableDecoderFactoryList.joinToString(separator = ",")}")
+                append("\n").append("downloadInterceptors: ${downloadInterceptors.joinToString()}")
+                append("\n").append("loadInterceptors: ${loadInterceptors.joinToString(separator = ",")}")
+                append("\n").append("displayInterceptors: ${displayInterceptors.joinToString(separator = ",")}")
+                append("\n").append("bitmapDecodeInterceptors: ${bitmapDecodeInterceptors.joinToString(separator = ",")}")
+                append("\n").append("drawableDecodeInterceptors: ${drawableDecodeInterceptors.joinToString(separator = ",")}")
+            }
         }
     }
 

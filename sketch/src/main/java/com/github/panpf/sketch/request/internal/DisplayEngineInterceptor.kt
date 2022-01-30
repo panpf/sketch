@@ -22,4 +22,6 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
         ).proceed(request)
         return DisplayData(drawableDecodeResult.drawable, drawableDecodeResult.info, drawableDecodeResult.from)
     }
+
+    override fun toString(): String = "DisplayEngineInterceptor"
 }

@@ -26,6 +26,7 @@ class Logger(
         const val TAG = "Sketch"
     }
 
+
     var level: Level
         get() = _level
         set(value) {
@@ -136,6 +137,8 @@ class Logger(
     private fun joinModuleAndMsg(module: String?, msg: String): String =
         if (module?.isNotEmpty() == true) "$module. $msg" else msg
 
+    override fun toString(): String = "Logger(level=$level,proxy=$proxy)"
+
     enum class Level {
         VERBOSE,
         DEBUG,
@@ -178,5 +181,7 @@ class Logger(
         override fun flush() {
 
         }
+
+        override fun toString(): String = "LogProxy"
     }
 }

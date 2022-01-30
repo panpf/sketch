@@ -1,8 +1,6 @@
 package com.github.panpf.sketch.cache
 
-import android.content.ComponentCallbacks2
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -19,21 +17,6 @@ class BitmapPoolHelper(context: Context, val logger: Logger, val bitmapPool: Bit
 
     companion object {
         const val MODULE = "BitmapPoolHelper"
-    }
-
-    init {
-        context.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
-            override fun onConfigurationChanged(newConfig: Configuration) {
-            }
-
-            override fun onLowMemory() {
-                bitmapPool.clear()
-            }
-
-            override fun onTrimMemory(level: Int) {
-                bitmapPool.trimMemory(level)
-            }
-        })
     }
 
     fun getOrMake(width: Int, height: Int, config: Bitmap.Config): Bitmap {

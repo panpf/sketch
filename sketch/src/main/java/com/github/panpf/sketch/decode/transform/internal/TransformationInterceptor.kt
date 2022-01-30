@@ -45,4 +45,6 @@ class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRes
             result
         }
     }
+
+    override fun toString(): String = "TransformationInterceptor"
 }

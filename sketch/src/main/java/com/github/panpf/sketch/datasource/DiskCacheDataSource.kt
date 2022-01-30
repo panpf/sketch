@@ -28,7 +28,7 @@ class DiskCacheDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
     override val from: DataFrom,
-    val diskCacheEntry: DiskCache.Entry,
+    val diskCacheSnapshot: DiskCache.Snapshot,
 ) : DataSource {
 
     private var _length = -1L
@@ -36,17 +36,17 @@ class DiskCacheDataSource constructor(
     @Throws(IOException::class)
     override fun length(): Long =
         _length.takeIf { it != -1L }
-            ?: diskCacheEntry.file.length().apply {
+            ?: diskCacheSnapshot.file.length().apply {
                 this@DiskCacheDataSource._length = this
             }
 
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = diskCacheEntry.newInputStream()
+    override fun newInputStream(): InputStream = diskCacheSnapshot.newInputStream()
 
     override fun newFileDescriptor(): FileDescriptor? = null
 
-    override suspend fun file(): File = diskCacheEntry.file
+    override suspend fun file(): File = diskCacheSnapshot.file
 
     override fun toString(): String =
-        "DiskCacheDataSource(from=$from,file='${diskCacheEntry.file.path}')"
+        "DiskCacheDataSource(from=$from,file='${diskCacheSnapshot.file.path}')"
 }

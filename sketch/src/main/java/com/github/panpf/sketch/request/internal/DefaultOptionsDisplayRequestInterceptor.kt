@@ -20,4 +20,6 @@ class DefaultOptionsDisplayRequestInterceptor(
         }
         return chain.proceed(request)
     }
+
+    override fun toString(): String = "DefaultOptionsDisplayRequestInterceptor"
 }

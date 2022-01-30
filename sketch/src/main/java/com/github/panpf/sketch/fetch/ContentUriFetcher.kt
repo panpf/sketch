@@ -31,5 +31,7 @@ class ContentUriFetcher(
             } else {
                 null
             }
+
+        override fun toString(): String = "ContentUriFetcher"
     }
 }

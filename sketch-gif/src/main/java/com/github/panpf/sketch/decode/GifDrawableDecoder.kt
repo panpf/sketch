@@ -99,6 +99,8 @@ class GifDrawableDecoder constructor(
             }
             return null
         }
+
+        override fun toString(): String = "GifDrawableDecoder"
     }
 
     companion object {

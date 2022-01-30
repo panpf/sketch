@@ -122,5 +122,7 @@ class SvgBitmapDecoder(
             } else {
                 null
             }
+
+        override fun toString(): String = "SvgBitmapDecoder"
     }
 }

@@ -129,5 +129,7 @@ open class DefaultBitmapDecoder(
         override fun create(
             sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
         ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
+
+        override fun toString(): String = "DefaultBitmapDecoder"
     }
 }

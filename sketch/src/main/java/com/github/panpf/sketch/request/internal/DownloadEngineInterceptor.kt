@@ -23,8 +23,10 @@ class DownloadEngineInterceptor : RequestInterceptor<DownloadRequest, DownloadDa
         val fetchResult = fetcher.fetch()
         return when (val source = fetchResult.dataSource) {
             is ByteArrayDataSource -> DownloadData.Bytes(source.data, fetchResult.from)
-            is DiskCacheDataSource -> DownloadData.Cache(source.diskCacheEntry, fetchResult.from)
+            is DiskCacheDataSource -> DownloadData.Cache(source.diskCacheSnapshot, fetchResult.from)
             else -> throw IllegalArgumentException("The unknown source: ${source::class.qualifiedName}")
         }
     }
+
+    override fun toString(): String = "DownloadEngineInterceptor"
 }

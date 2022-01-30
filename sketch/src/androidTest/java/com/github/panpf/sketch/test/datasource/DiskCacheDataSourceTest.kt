@@ -29,16 +29,16 @@ class DiskCacheDataSourceTest {
             ).file()
         }
         val diskCache = sketch.diskCache
-        val diskCacheEntry = diskCache[diskCache.encodeKey(request.uriString + "_data_source")]!!
+        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
             from = DataFrom.DISK_CACHE,
-            diskCacheEntry = diskCacheEntry,
+            diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertTrue(diskCacheEntry === this.diskCacheEntry)
+            Assert.assertTrue(diskCacheSnapshot === this.diskCacheSnapshot)
             Assert.assertEquals(DataFrom.DISK_CACHE, this.from)
             Assert.assertEquals(540456, length())
         }
@@ -57,12 +57,12 @@ class DiskCacheDataSourceTest {
             ).file()
         }
         val diskCache = sketch.diskCache
-        val diskCacheEntry = diskCache[diskCache.encodeKey(request.uriString + "_data_source")]!!
+        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
             from = DataFrom.DISK_CACHE,
-            diskCacheEntry = diskCacheEntry,
+            diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertNull(newFileDescriptor())
         }
@@ -81,12 +81,12 @@ class DiskCacheDataSourceTest {
             ).file()
         }
         val diskCache = sketch.diskCache
-        val diskCacheEntry = diskCache[diskCache.encodeKey(request.uriString + "_data_source")]!!
+        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
             from = DataFrom.DISK_CACHE,
-            diskCacheEntry = diskCacheEntry,
+            diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             newInputStream().close()
         }
@@ -105,18 +105,18 @@ class DiskCacheDataSourceTest {
             ).file()
         }
         val diskCache = sketch.diskCache
-        val diskCacheEntry = diskCache[diskCache.encodeKey(request.uriString + "_data_source")]!!
+        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
             from = DataFrom.DISK_CACHE,
-            diskCacheEntry = diskCacheEntry,
+            diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             val file = runBlocking {
                 file()
             }
             Assert.assertEquals(
-                diskCacheEntry.file.path,
+                diskCacheSnapshot.file.path,
                 file.path
             )
         }
@@ -135,15 +135,15 @@ class DiskCacheDataSourceTest {
             ).file()
         }
         val diskCache = sketch.diskCache
-        val diskCacheEntry = diskCache[diskCache.encodeKey(request.uriString + "_data_source")]!!
+        val diskCacheSnapshot = diskCache[request.uriString + "_data_source"]!!
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
             from = DataFrom.DISK_CACHE,
-            diskCacheEntry = diskCacheEntry,
+            diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertEquals(
-                "DiskCacheDataSource(from=DISK_CACHE,file='${diskCacheEntry.file.path}')",
+                "DiskCacheDataSource(from=DISK_CACHE,file='${diskCacheSnapshot.file.path}')",
                 toString()
             )
         }

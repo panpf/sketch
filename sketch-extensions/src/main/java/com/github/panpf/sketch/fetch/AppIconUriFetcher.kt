@@ -50,6 +50,8 @@ class AppIconUriFetcher(
                 null
             }
         }
+
+        override fun toString(): String = "AppIconUriFetcher"
     }
 
     class AppIconDataSource(

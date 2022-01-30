@@ -48,4 +48,6 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor<DisplayRequest, Dis
         }
         return chain.proceed(newRequest)
     }
+
+    override fun toString(): String = "SettingsDisplayRequestInterceptor"
 }

@@ -52,5 +52,7 @@ class XmlDrawableBitmapDecoder(
                 null
             }
         }
+
+        override fun toString(): String = "XmlDrawableBitmapDecoder"
     }
 }

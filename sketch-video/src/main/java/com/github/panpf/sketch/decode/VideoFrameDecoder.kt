@@ -151,5 +151,7 @@ class VideoFrameDecoder(
             if (mimeType?.startsWith("video/") != true) return null
             return VideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
         }
+
+        override fun toString(): String = "VideoFrameDecoder"
     }
 }

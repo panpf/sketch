@@ -43,32 +43,34 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
         }
     }
 
+    override fun toString(): String = "BitmapResultCacheInterceptor"
+
     private class ResultCacheHelper(
         private val request: LoadRequest,
         private val diskCache: DiskCache,
         private val cachePolicy: CachePolicy,
         private val logger: Logger,
-        val encodedBitmapDataDiskCacheKey: String,
-        val encodedMetaDataDiskCacheKey: String,
+        val bitmapDataDiskCacheKey: String,
+        val metaDataDiskCacheKey: String,
     ) {
 
         val lock: Mutex by lazy {
-            diskCache.editLock(encodedBitmapDataDiskCacheKey)
+            diskCache.editLock(bitmapDataDiskCacheKey)
         }
 
         @WorkerThread
         fun read(): BitmapDecodeResult? =
             if (cachePolicy.readEnabled) {
-                val bitmapDataDiskCacheEntry = diskCache[encodedBitmapDataDiskCacheKey]
-                val metaDataDiskCacheEntry = diskCache[encodedMetaDataDiskCacheKey]
+                val bitmapDataDiskCacheSnapshot = diskCache[bitmapDataDiskCacheKey]
+                val metaDataDiskCacheSnapshot = diskCache[metaDataDiskCacheKey]
                 try {
-                    if (bitmapDataDiskCacheEntry != null && metaDataDiskCacheEntry != null) {
-                        val jsonString = metaDataDiskCacheEntry.newInputStream().use {
+                    if (bitmapDataDiskCacheSnapshot != null && metaDataDiskCacheSnapshot != null) {
+                        val jsonString = metaDataDiskCacheSnapshot.newInputStream().use {
                             it.bufferedReader().readText()
                         }
                         val imageInfo = ImageInfo.fromJsonString(jsonString)
                         val bitmap = BitmapFactory.decodeFile(
-                            bitmapDataDiskCacheEntry.file.path,
+                            bitmapDataDiskCacheSnapshot.file.path,
                             request.newDecodeConfigByQualityParams(imageInfo.mimeType)
                                 .toBitmapOptions()
                         )
@@ -79,19 +81,19 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                             val msg =
                                 "Invalid image size in result cache: ${bitmap.width}x${bitmap.height}"
                             logger.e(MODULE, msg)
-                            bitmapDataDiskCacheEntry.delete()
-                            metaDataDiskCacheEntry.delete()
+                            bitmapDataDiskCacheSnapshot.remove()
+                            metaDataDiskCacheSnapshot.remove()
                             null
                         }
                     } else {
-                        bitmapDataDiskCacheEntry?.delete()
-                        metaDataDiskCacheEntry?.delete()
+                        bitmapDataDiskCacheSnapshot?.remove()
+                        metaDataDiskCacheSnapshot?.remove()
                         null
                     }
                 } catch (e: Throwable) {
                     e.printStackTrace()
-                    bitmapDataDiskCacheEntry?.delete()
-                    metaDataDiskCacheEntry?.delete()
+                    bitmapDataDiskCacheSnapshot?.remove()
+                    metaDataDiskCacheSnapshot?.remove()
                     null
                 }
             } else {
@@ -100,8 +102,8 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
 
         fun write(result: BitmapDecodeResult) {
             if (cachePolicy.writeEnabled && result.transformedList?.any { it.cacheResultToDisk } == true) {
-                val bitmapDataEditor = diskCache.edit(encodedBitmapDataDiskCacheKey)
-                val metaDataEditor = diskCache.edit(encodedMetaDataDiskCacheKey)
+                val bitmapDataEditor = diskCache.edit(bitmapDataDiskCacheKey)
+                val metaDataEditor = diskCache.edit(metaDataDiskCacheKey)
                 try {
                     if (bitmapDataEditor != null && metaDataEditor != null) {
                         bitmapDataEditor.newOutputStream().use {
@@ -121,8 +123,8 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                     e.printStackTrace()
                     bitmapDataEditor?.abort()
                     metaDataEditor?.abort()
-                    diskCache[encodedBitmapDataDiskCacheKey]?.delete()
-                    diskCache[encodedMetaDataDiskCacheKey]?.delete()
+                    diskCache.remove(bitmapDataDiskCacheKey)
+                    diskCache.remove(metaDataDiskCacheKey)
                 }
             }
         }
@@ -136,15 +138,13 @@ class BitmapResultCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecode
                 val bitmapDataDiskCacheKey = request.cacheKey
                 val diskCache: DiskCache = sketch.diskCache
                 val metaDataDiskCacheKey = "${bitmapDataDiskCacheKey}_metadata"
-                val encodedBitmapDataDiskCacheKey = diskCache.encodeKey(bitmapDataDiskCacheKey)
-                val encodedMetaDataDiskCacheKey = diskCache.encodeKey(metaDataDiskCacheKey)
                 return ResultCacheHelper(
                     request,
                     diskCache,
                     cachePolicy,
                     sketch.logger,
-                    encodedBitmapDataDiskCacheKey,
-                    encodedMetaDataDiskCacheKey
+                    bitmapDataDiskCacheKey,
+                    metaDataDiskCacheKey
                 )
             }
         }

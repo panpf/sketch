@@ -22,4 +22,6 @@ class BitmapDecodeEngineInterceptor : DecodeInterceptor<LoadRequest, BitmapDecod
             }
         }
     }
+
+    override fun toString(): String = "BitmapDecodeEngineInterceptor"
 }

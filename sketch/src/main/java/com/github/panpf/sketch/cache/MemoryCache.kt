@@ -23,14 +23,14 @@ import kotlinx.coroutines.sync.Mutex
 interface MemoryCache {
 
     /**
-     * Sum of the sizes of the all cache
-     */
-    val size: Long
-
-    /**
-     * Maximum allowed sum of the sizes of the all cache
+     * Maximum allowed sum of the size of the all cache
      */
     val maxSize: Long
+
+    /**
+     * Sum of the size of the all cache
+     */
+    val size: Long
 
     /**
      * Caches[countBitmap] for [key]

@@ -27,4 +27,6 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
             bitmapResult
         }
     }
+
+    override fun toString(): String = "ExifOrientationInterceptor"
 }

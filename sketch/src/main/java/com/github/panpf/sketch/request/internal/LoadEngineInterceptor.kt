@@ -22,4 +22,6 @@ class LoadEngineInterceptor : RequestInterceptor<LoadRequest, LoadData> {
         ).proceed(request)
         return LoadData(bitmapDecodeResult.bitmap, bitmapDecodeResult.imageInfo, bitmapDecodeResult.dataFrom)
     }
+
+    override fun toString(): String = "LoadEngineInterceptor"
 }

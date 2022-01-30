@@ -44,5 +44,7 @@ class AssetUriFetcher(
             } else {
                 null
             }
+
+        override fun toString(): String = "AssetUriFetcher"
     }
 }

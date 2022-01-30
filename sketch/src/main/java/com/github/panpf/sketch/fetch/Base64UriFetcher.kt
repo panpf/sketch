@@ -57,5 +57,7 @@ class Base64UriFetcher(
             } else {
                 null
             }
+
+        override fun toString(): String = "Base64UriFetcher"
     }
 }

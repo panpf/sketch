@@ -2,17 +2,17 @@ package com.github.panpf.sketch.cache
 
 import android.annotation.SuppressLint
 import android.content.ComponentCallbacks2
-import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
 import android.graphics.Color
 import android.os.Build
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
-import com.github.panpf.sketch.util.trimLevelName
 import com.github.panpf.sketch.util.recycle.AttributeStrategy
 import com.github.panpf.sketch.util.recycle.LruPoolStrategy
 import com.github.panpf.sketch.util.recycle.SizeConfigStrategy
 import com.github.panpf.sketch.util.toHexString
+import com.github.panpf.sketch.util.trimLevelName
 import java.util.Collections
 
 /**
@@ -21,11 +21,10 @@ import java.util.Collections
  * @param maxSize 最大容量
  */
 class LruBitmapPool @JvmOverloads constructor(
-    context: Context,
-    maxSize: Int,
     val logger: Logger,
+    maxSize: Int,
     private val strategy: LruPoolStrategy = defaultStrategy,
-    private val allowedConfigs: Set<Bitmap.Config?> = defaultAllowedConfigs
+    private val allowedConfigs: Set<Config?> = defaultAllowedConfigs
 ) : BitmapPool {
 
     companion object {
@@ -58,7 +57,6 @@ class LruBitmapPool @JvmOverloads constructor(
     private var misses = 0
     private var puts = 0
     private var evictions = 0
-    private val appContext: Context = context.applicationContext
 
     @get:Synchronized
     override var isClosed = false
@@ -263,7 +261,7 @@ class LruBitmapPool @JvmOverloads constructor(
             MODULE,
             maxSize.toLong().formatFileSize(),
             if (strategy is SizeConfigStrategy) "SizeConfigStrategy" else "AttributeStrategy",
-            allowedConfigs.toString()
+            allowedConfigs.joinToString(prefix = "[", postfix = "]", separator = ",")
         )
     }
 

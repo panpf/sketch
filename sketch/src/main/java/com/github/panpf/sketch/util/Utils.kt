@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.util
 
 import android.annotation.TargetApi
+import android.app.ActivityManager
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.ContextWrapper
@@ -18,6 +19,7 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Looper
+import android.os.Process
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.annotation.MainThread
@@ -157,6 +159,33 @@ fun Bitmap.Config?.toSoftware(): Bitmap.Config {
 
 val Bitmap.Config.isHardware: Boolean
     get() = VERSION.SDK_INT >= 26 && this == Bitmap.Config.HARDWARE
+
+internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): File {
+    val pid = Process.myPid()
+    val processName = (context.getSystemService(Context.ACTIVITY_SERVICE)
+        .asOrNull<ActivityManager>()?.runningAppProcesses)?.find {
+            it.pid == pid
+        }?.processName ?: return file
+
+    val packageName = context.packageName
+    val multiProcessNameSuffix = if (processName == packageName) {
+        null
+    } else if (
+        processName.length > packageName.length
+        && processName.startsWith(packageName)
+        && processName[packageName.length] == ':'
+    ) {
+        processName.substring(packageName.length + 1)
+    } else {
+        null
+    }
+
+    return if (multiProcessNameSuffix != null) {
+        File(file.parent, "${file.name}-$multiProcessNameSuffix")
+    } else {
+        file
+    }
+}
 
 /**
  * 计算 inSampleSize

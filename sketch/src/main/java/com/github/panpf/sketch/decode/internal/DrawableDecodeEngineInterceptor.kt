@@ -22,4 +22,6 @@ class DrawableDecodeEngineInterceptor : DecodeInterceptor<DisplayRequest, Drawab
             }
         }
     }
+
+    override fun toString(): String = "DrawableDecodeEngineInterceptor"
 }

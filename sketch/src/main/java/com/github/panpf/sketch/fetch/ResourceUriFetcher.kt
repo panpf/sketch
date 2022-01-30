@@ -99,5 +99,7 @@ class ResourceUriFetcher(
             } else {
                 null
             }
+
+        override fun toString(): String = "ResourceUriFetcher"
     }
 }

@@ -48,5 +48,7 @@ class ApkIconBitmapDecoder(
         } else {
             null
         }
+
+        override fun toString(): String = "ApkIconBitmapDecoder"
     }
 }

@@ -68,6 +68,8 @@ class DefaultDrawableDecoder(
         override fun create(
             sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
         ): DrawableDecoder = DefaultDrawableDecoder(sketch, request, fetchResult)
+
+        override fun toString(): String = "DefaultDrawableDecoder"
     }
 
     private class BitmapMemoryCacheHelper(

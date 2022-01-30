@@ -32,4 +32,6 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest,
         }
         return chain.proceed(finalRequest)
     }
+
+    override fun toString(): String = "SaveCellularTrafficDisplayInterceptor"
 }

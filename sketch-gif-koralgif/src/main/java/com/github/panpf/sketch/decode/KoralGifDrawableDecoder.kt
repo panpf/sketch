@@ -32,7 +32,7 @@ class KoralGifDrawableDecoder(
                 ReuseGifDrawable(bitmapPoolHelper, source.data)
             }
             is DiskCacheDataSource -> {
-                ReuseGifDrawable(bitmapPoolHelper, source.diskCacheEntry.file)
+                ReuseGifDrawable(bitmapPoolHelper, source.diskCacheSnapshot.file)
             }
             is ResourceDataSource -> {
                 ReuseGifDrawable(bitmapPoolHelper, source.context.resources, source.drawableId)
@@ -82,5 +82,7 @@ class KoralGifDrawableDecoder(
             }
             return null
         }
+
+        override fun toString(): String = "KoralGifDrawableDecoder"
     }
 }

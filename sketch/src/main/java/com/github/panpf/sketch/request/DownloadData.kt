@@ -22,12 +22,12 @@ sealed interface DownloadData: ImageData {
     }
 
     class Cache(
-        val diskCacheEntry: DiskCache.Entry,
+        val diskCacheSnapshot: DiskCache.Snapshot,
         override val dataFrom: DataFrom
     ) : DownloadData {
 
         override fun newInputStream(): InputStream {
-            return diskCacheEntry.newInputStream()
+            return diskCacheSnapshot.newInputStream()
         }
     }
 }

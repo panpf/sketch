@@ -150,31 +150,33 @@ class HttpUriFetcher(
             } else {
                 null
             }
+
+        override fun toString(): String = "HttpUriFetcher"
     }
 
     private class HttpDiskCacheHelper(
         val sketch: Sketch,
         val request: DownloadRequest,
         val diskCache: DiskCache,
-        val encodedDataDiskCacheKey: String,
-        val encodedContentTypeDiskCacheKey: String,
+        val dataDiskCacheKey: String,
+        val contentTypeDiskCacheKey: String,
         val diskCachePolicy: CachePolicy,
     ) {
 
         val lock: Mutex by lazy {
-            diskCache.editLock(encodedDataDiskCacheKey)
+            diskCache.editLock(dataDiskCacheKey)
         }
 
         fun read(): FetchResult? {
             if (!diskCachePolicy.readEnabled) return null
 
-            val dataDiskCacheEntry = diskCache[encodedDataDiskCacheKey]
-            if (dataDiskCacheEntry != null) {
-                val contentTypeDiskCacheEntry = diskCache[encodedContentTypeDiskCacheKey]
-                val contentType = if (contentTypeDiskCacheEntry != null) {
+            val dataDiskCacheSnapshot = diskCache[dataDiskCacheKey]
+            if (dataDiskCacheSnapshot != null) {
+                val contentTypeDiskCacheSnapshot = diskCache[contentTypeDiskCacheKey]
+                val contentType = if (contentTypeDiskCacheSnapshot != null) {
                     // todo 貌似 contentType 是始终 null
                     try {
-                        contentTypeDiskCacheEntry.newInputStream()
+                        contentTypeDiskCacheSnapshot.newInputStream()
                             .use {
                                 it.bufferedReader().readText()
                             }.takeIf {
@@ -182,7 +184,7 @@ class HttpUriFetcher(
                             } ?: throw IOException("contentType disk cache text empty")
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        contentTypeDiskCacheEntry.delete()
+                        contentTypeDiskCacheSnapshot.remove()
                         null
                     }
                 } else {
@@ -190,7 +192,7 @@ class HttpUriFetcher(
                 }
                 val mimeType = getMimeType(request.uriString, contentType)
                 return FetchResult(
-                    DiskCacheDataSource(sketch, request, DataFrom.DISK_CACHE, dataDiskCacheEntry),
+                    DiskCacheDataSource(sketch, request, DataFrom.DISK_CACHE, dataDiskCacheSnapshot),
                     mimeType
                 )
             }
@@ -205,7 +207,7 @@ class HttpUriFetcher(
 
         fun newEditor(): DiskCache.Editor? =
             if (diskCachePolicy.writeEnabled) {
-                diskCache.edit(encodedDataDiskCacheKey)
+                diskCache.edit(dataDiskCacheKey)
             } else {
                 null
             }
@@ -231,7 +233,7 @@ class HttpUriFetcher(
             if (!response.isContentChunked && readLength == response.contentLength) {
                 diskCacheEditor.commit()
                 if (contentType?.isNotEmpty() == true && contentType.isNotBlank()) {
-                    val contentTypeEditor = diskCache.edit(encodedContentTypeDiskCacheKey)
+                    val contentTypeEditor = diskCache.edit(contentTypeDiskCacheKey)
                     contentTypeEditor?.newOutputStream()?.use {
                         it.bufferedWriter().write(contentType)
                     }
@@ -242,15 +244,15 @@ class HttpUriFetcher(
 
             if (coroutineScope.isActive) {
                 val mimeType = getMimeType(request.uriString, contentType)
-                val diskCacheEntry = diskCache[encodedDataDiskCacheKey]
+                val diskCacheSnapshot = diskCache[dataDiskCacheKey]
                     ?: throw IOException("Disk cache loss after write. key: ${request.networkContentDiskCacheKey}")
                 if (diskCachePolicy.readEnabled) {
                     FetchResult(
-                        DiskCacheDataSource(sketch, request, DataFrom.NETWORK, diskCacheEntry),
+                        DiskCacheDataSource(sketch, request, DataFrom.NETWORK, diskCacheSnapshot),
                         mimeType
                     )
                 } else {
-                    diskCacheEntry.newInputStream()
+                    diskCacheSnapshot.newInputStream()
                         .use { it.readBytes() }
                         .run {
                             FetchResult(
@@ -272,16 +274,14 @@ class HttpUriFetcher(
                 val cachePolicy = request.networkContentDiskCachePolicy ?: ENABLED
                 return if (cachePolicy.isReadOrWrite) {
                     val diskCache = sketch.diskCache
-                    val encodedDataDiskCacheKey =
-                        diskCache.encodeKey(request.networkContentDiskCacheKey)
-                    val encodedContentTypeDiskCacheKey =
-                        diskCache.encodeKey(request.networkContentDiskCacheKey + "_contentType")
+                    val dataDiskCacheKey = request.networkContentDiskCacheKey
+                    val contentTypeDiskCacheKey = request.networkContentDiskCacheKey + "_contentType"
                     HttpDiskCacheHelper(
                         sketch = sketch,
                         request = request,
                         diskCache = diskCache,
-                        encodedDataDiskCacheKey = encodedDataDiskCacheKey,
-                        encodedContentTypeDiskCacheKey = encodedContentTypeDiskCacheKey,
+                        dataDiskCacheKey = dataDiskCacheKey,
+                        contentTypeDiskCacheKey = contentTypeDiskCacheKey,
                         diskCachePolicy = cachePolicy,
                     )
                 } else {
