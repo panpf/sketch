@@ -37,7 +37,7 @@ open class DefaultBitmapDecoder(
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (request.disabledBitmapPool != true) {
             // todo 这里的宽高，貌似有问题，需要验证一下
-            bitmapPoolHelper.setInBitmapForRegionDecoder(
+            bitmapPool.setInBitmapForRegionDecoder(
                 width = srcRect.width(),
                 height = srcRect.height(),
                 options = decodeOptions,
@@ -55,7 +55,7 @@ open class DefaultBitmapDecoder(
                     logger.e(MODULE, throwable, message)
 
                     decodeOptions.inBitmap = null
-                    bitmapPoolHelper.freeBitmapToPool(inBitmap)
+                    bitmapPool.freeBitmapToPool(inBitmap)
                     try {
                         dataSource.decodeRegionBitmap(srcRect, decodeOptions)
                     } catch (throwable2: Throwable) {
@@ -87,7 +87,7 @@ open class DefaultBitmapDecoder(
         val decodeOptions = decodeConfig.toBitmapOptions()
         // Set inBitmap from bitmap pool
         if (request.disabledBitmapPool != true) {
-            bitmapPoolHelper.setInBitmap(
+            bitmapPool.setInBitmap(
                 decodeOptions, imageInfo.width, imageInfo.height, imageInfo.mimeType
             )
         }
@@ -102,7 +102,7 @@ open class DefaultBitmapDecoder(
                 logger.e(MODULE, throwable, message)
 
                 decodeOptions.inBitmap = null
-                bitmapPoolHelper.freeBitmapToPool(inBitmap)
+                bitmapPool.freeBitmapToPool(inBitmap)
                 try {
                     dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
                 } catch (throwable2: Throwable) {

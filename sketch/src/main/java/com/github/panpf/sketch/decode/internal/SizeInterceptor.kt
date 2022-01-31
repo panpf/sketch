@@ -2,7 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
@@ -17,11 +17,11 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         val bitmap = bitmapResult.bitmap
         val resize = chain.request.resize
 //        val maxSize = chain.request.maxSize
-        val bitmapPoolHelper = chain.sketch.bitmapPoolHelper
+        val bitmapPool = chain.sketch.bitmapPool
         return if (resize?.shouldUse(bitmap.width, bitmap.height) == true) {
-            val newBitmap = resize(bitmap, resize, bitmapPoolHelper)
+            val newBitmap = resize(bitmap, resize, bitmapPool)
             if (newBitmap !== bitmap) {
-                bitmapPoolHelper.freeBitmapToPool(bitmap)
+                bitmapPool.freeBitmapToPool(bitmap)
                 bitmapResult.new(newBitmap) {
                     addTransformed(ResizeTransformed(resize))
                 }
@@ -35,7 +35,7 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         }
     }
 
-    private fun resize(bitmap: Bitmap, resize: Resize, bitmapPoolHelper: BitmapPoolHelper): Bitmap {
+    private fun resize(bitmap: Bitmap, resize: Resize, bitmapPool: BitmapPool): Bitmap {
         val mapping = ResizeMapping.calculator(
             imageWidth = bitmap.width,
             imageHeight = bitmap.height,
@@ -47,7 +47,7 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         // todo 限制不超过 maxSize
         val config = bitmap.config ?: Bitmap.Config.ARGB_8888
         val resizeBitmap =
-            bitmapPoolHelper.getOrMake(mapping.newWidth, mapping.newHeight, config)
+            bitmapPool.getOrMake(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(resizeBitmap)
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
         return resizeBitmap

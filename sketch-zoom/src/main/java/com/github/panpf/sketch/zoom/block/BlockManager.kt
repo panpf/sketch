@@ -18,7 +18,7 @@ package com.github.panpf.sketch.zoom.block
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.zoom.block.Block.Companion.blockListToString
@@ -47,7 +47,7 @@ class BlockManager(
     }
 
     private val visibleRect = Rect() // 可见区域，当前用户真正能看见的区域
-    private val bitmapPoolHelper: BitmapPoolHelper = imageZoomer.imageView.sketch.bitmapPoolHelper
+    private val bitmapPool: BitmapPool = imageZoomer.imageView.sketch.bitmapPool
     private val blockPool: ObjectPool<Block> = ObjectPool({ Block() }, 60)
     private val rectPool: ObjectPool<Rect> = ObjectPool({ Rect() }, 20)
     private val logger = imageZoomer.logger
@@ -585,7 +585,7 @@ class BlockManager(
                 if (!block.isEmpty) {
                     logger.v(MODULE) { "recycle block. block=${block.info}" }
                     blockIterator.remove()
-                    block.clean(bitmapPoolHelper)
+                    block.clean(bitmapPool)
                     blockPool.put(block)
                 } else {
                     logger.v(MODULE) { "recycle loading block and refresh key. block=${block.info}" }
@@ -684,14 +684,14 @@ class BlockManager(
             )
         )
         blockList.remove(block)
-        block.clean(bitmapPoolHelper)
+        block.clean(bitmapPool)
         blockPool.put(block)
     }
 
     fun clean(why: String?) {
         for (block in blockList) {
             block.refreshKey()
-            block.clean(bitmapPoolHelper)
+            block.clean(bitmapPool)
             blockPool.put(block)
             logger.v(MODULE) {
                 "clean block and refresh key. %s. block=%s".format(why!!, block.info)

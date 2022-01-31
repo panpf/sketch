@@ -6,7 +6,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.byteCountCompat
 import pl.droidsonroids.gif.GifDrawable
 import java.io.File
@@ -28,26 +28,26 @@ class ReuseGifDrawable : GifDrawable, Animatable2Compat {
         get() = mBuffer?.byteCountCompat ?: 0
 
     internal constructor(
-        bitmapPoolHelper: BitmapPoolHelper, assets: AssetManager, assetName: String
-    ) : super(assets, assetName, bitmapPoolHelper)
+        bitmapPool: BitmapPool, assets: AssetManager, assetName: String
+    ) : super(assets, assetName, bitmapPool)
 
-    internal constructor(bitmapPoolHelper: BitmapPoolHelper, bytes: ByteArray) : super(
+    internal constructor(bitmapPool: BitmapPool, bytes: ByteArray) : super(
         bytes,
-        bitmapPoolHelper
+        bitmapPool
     )
 
-    internal constructor(bitmapPoolHelper: BitmapPoolHelper, file: File) : super(
+    internal constructor(bitmapPool: BitmapPool, file: File) : super(
         file,
-        bitmapPoolHelper
+        bitmapPool
     )
 
     internal constructor(
-        bitmapPoolHelper: BitmapPoolHelper, res: Resources, id: Int
-    ) : super(res, id, bitmapPoolHelper)
+        bitmapPool: BitmapPool, res: Resources, id: Int
+    ) : super(res, id, bitmapPool)
 
     internal constructor(
-        bitmapPoolHelper: BitmapPoolHelper, resolver: ContentResolver?, uri: Uri
-    ) : super(resolver, uri, bitmapPoolHelper)
+        bitmapPool: BitmapPool, resolver: ContentResolver?, uri: Uri
+    ) : super(resolver, uri, bitmapPool)
 
     override fun start() {
         val isRunning = isRunning

@@ -40,7 +40,7 @@ class BlockExecutor(var callback: Callback, val imageZoomer: ImageZoomer) {
     var callbackHandler: CallbackHandler = CallbackHandler(
         Looper.getMainLooper(),
         this,
-        imageZoomer.imageView.sketch.bitmapPoolHelper,
+        imageZoomer.imageView.sketch.bitmapPool,
         imageZoomer.logger
     )
     private var handlerThread: HandlerThread? = null

@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.toHexString
 
@@ -31,7 +32,8 @@ class CountBitmap constructor(
     val imageInfo: ImageInfo,
     val requestKey: String,
     val transformedList: List<Transformed>?,
-    private val bitmapPoolHelper: BitmapPoolHelper
+    private val logger: Logger,
+    private val bitmapPool: BitmapPool
 ) {
 
     companion object {
@@ -125,12 +127,11 @@ class CountBitmap constructor(
      * @param callingStation 调用位置
      */
     private fun referenceChanged(callingStation: String) {
-        val logger = bitmapPoolHelper.logger
         val bitmapHolder = this.bitmapHolder
         if (bitmapHolder == null || isRecycled) {
             logger.e(MODULE, "Recycled. $callingStation. $requestKey")
         } else if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
-            bitmapPoolHelper.freeBitmapToPool(bitmapHolder)
+            bitmapPool.freeBitmapToPool(bitmapHolder)
             this.bitmapHolder = null
             logger.d(MODULE) {
                 "Free. %s. %s".format(callingStation, requestKey)

@@ -50,7 +50,7 @@ class GifDrawableDecoder constructor(
                 movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
                 else -> ARGB_8888
             },
-            sketch.bitmapPoolHelper,
+            sketch.bitmapPool,
         )
 
         movieDrawable.setRepeatCount(request.repeatCount() ?: MovieDrawable.REPEAT_INFINITE)

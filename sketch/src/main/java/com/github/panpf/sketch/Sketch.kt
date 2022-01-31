@@ -7,7 +7,6 @@ import android.widget.ImageView
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.BitmapPoolHelper
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.LruBitmapPool
 import com.github.panpf.sketch.cache.LruDiskCache
@@ -103,7 +102,6 @@ class Sketch private constructor(
     val memoryCache: MemoryCache
     val bitmapPool: BitmapPool
     val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
-    val bitmapPoolHelper: BitmapPoolHelper
 
     val componentRegistry: ComponentRegistry = (_componentRegistry ?: ComponentRegistry.new())
         .newBuilder().apply {
@@ -151,7 +149,6 @@ class Sketch private constructor(
             ?: LruMemoryCache(logger, memorySizeCalculator.memoryCacheSize.toLong())
         bitmapPool = _bitmapPool
             ?: LruBitmapPool(logger, memorySizeCalculator.bitmapPoolSize)
-        bitmapPoolHelper = BitmapPoolHelper(_context, logger, bitmapPool)
 
         appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
             override fun onConfigurationChanged(newConfig: Configuration) {

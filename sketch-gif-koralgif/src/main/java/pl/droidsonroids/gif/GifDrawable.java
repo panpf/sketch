@@ -33,7 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
 
-import com.github.panpf.sketch.cache.BitmapPoolHelper;
+import com.github.panpf.sketch.cache.BitmapPool;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -67,7 +67,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      */
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
     @Nullable
-    private final BitmapPoolHelper bitmapPoolHelper;
+    private final BitmapPool bitmapPool;
     /**
      * Frame buffer, holds current frame.
      */
@@ -96,8 +96,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          when opening failed
      * @throws NullPointerException if res is null
      */
-    public GifDrawable(@NonNull Resources res, @RawRes @DrawableRes int id, @Nullable BitmapPoolHelper bitmapPoolHelper) throws NotFoundException, IOException {
-        this(res.openRawResourceFd(id), bitmapPoolHelper);
+    public GifDrawable(@NonNull Resources res, @RawRes @DrawableRes int id, @Nullable BitmapPool bitmapPool) throws NotFoundException, IOException {
+        this(res.openRawResourceFd(id), bitmapPool);
         final float densityScale = GifViewUtils.getDensityScale(res, id);
         mScaledHeight = (int) (mNativeInfoHandle.getHeight() * densityScale);
         mScaledWidth = (int) (mNativeInfoHandle.getWidth() * densityScale);
@@ -111,8 +111,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          when opening failed
      * @throws NullPointerException if assets or assetName is null
      */
-    public GifDrawable(@NonNull AssetManager assets, @NonNull String assetName, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(assets.openFd(assetName), bitmapPoolHelper);
+    public GifDrawable(@NonNull AssetManager assets, @NonNull String assetName, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(assets.openFd(assetName), bitmapPool);
     }
 
     /**
@@ -125,8 +125,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          when opening failed
      * @throws NullPointerException if filePath is null
      */
-    public GifDrawable(@NonNull String filePath, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(new GifInfoHandle(filePath), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@NonNull String filePath, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(new GifInfoHandle(filePath), null, null, true, bitmapPool);
     }
 
     /**
@@ -136,8 +136,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          when opening failed
      * @throws NullPointerException if file is null
      */
-    public GifDrawable(@NonNull File file, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(file.getPath(), bitmapPoolHelper);
+    public GifDrawable(@NonNull File file, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(file.getPath(), bitmapPool);
     }
 
     /**
@@ -149,20 +149,20 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IllegalArgumentException if stream does not support marking
      * @throws NullPointerException     if stream is null
      */
-    public GifDrawable(@NonNull InputStream stream, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(new GifInfoHandle(stream), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@NonNull InputStream stream, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(new GifInfoHandle(stream), null, null, true, bitmapPool);
     }
 
     /**
      * Creates drawable from AssetFileDescriptor.
-     * Convenience wrapper for {@link GifDrawable#GifDrawable(FileDescriptor, BitmapPoolHelper)}
+     * Convenience wrapper for {@link GifDrawable#GifDrawable(FileDescriptor, BitmapPool)}
      *
      * @param afd source
      * @throws NullPointerException if afd is null
      * @throws IOException          when opening failed
      */
-    public GifDrawable(@NonNull AssetFileDescriptor afd, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(new GifInfoHandle(afd), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@NonNull AssetFileDescriptor afd, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(new GifInfoHandle(afd), null, null, true, bitmapPool);
     }
 
     /**
@@ -172,8 +172,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          when opening failed
      * @throws NullPointerException if fd is null
      */
-    public GifDrawable(@NonNull FileDescriptor fd, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(new GifInfoHandle(fd), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@NonNull FileDescriptor fd, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(new GifInfoHandle(fd), null, null, true, bitmapPool);
     }
 
     /**
@@ -184,8 +184,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          if bytes does not contain valid GIF data
      * @throws NullPointerException if bytes are null
      */
-    public GifDrawable(@NonNull byte[] bytes, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(new GifInfoHandle(bytes), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@NonNull byte[] bytes, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(new GifInfoHandle(bytes), null, null, true, bitmapPool);
     }
 
     /**
@@ -196,8 +196,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @throws IOException          if buffer does not contain valid GIF data or is indirect
      * @throws NullPointerException if buffer is null
      */
-    public GifDrawable(@NonNull ByteBuffer buffer, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(new GifInfoHandle(buffer), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@NonNull ByteBuffer buffer, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(new GifInfoHandle(buffer), null, null, true, bitmapPool);
     }
 
     /**
@@ -209,8 +209,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * @param resolver resolver used to query {@code uri}, can be null for file:// scheme Uris
      * @throws IOException if resolution fails or destination is not a GIF.
      */
-    public GifDrawable(@Nullable ContentResolver resolver, @NonNull Uri uri, @Nullable BitmapPoolHelper bitmapPoolHelper) throws IOException {
-        this(GifInfoHandle.openUri(resolver, uri), null, null, true, bitmapPoolHelper);
+    public GifDrawable(@Nullable ContentResolver resolver, @NonNull Uri uri, @Nullable BitmapPool bitmapPool) throws IOException {
+        this(GifInfoHandle.openUri(resolver, uri), null, null, true, bitmapPool);
     }
 
     public GifDrawable(
@@ -218,9 +218,9 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
             final GifDrawable oldDrawable,
             ScheduledThreadPoolExecutor executor,
             boolean isRenderingTriggeredOnDraw,
-            @Nullable BitmapPoolHelper bitmapPoolHelper
+            @Nullable BitmapPool bitmapPool
     ) {
-        this.bitmapPoolHelper = bitmapPoolHelper;
+        this.bitmapPool = bitmapPool;
         mIsRenderingTriggeredOnDraw = isRenderingTriggeredOnDraw;
         mExecutor = executor != null ? executor : GifRenderingExecutor.getInstance();
         mNativeInfoHandle = gifInfoHandle;
@@ -251,8 +251,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
     }
 
     private Bitmap makeBitmap(int width, int height, Bitmap.Config config) {
-        if (bitmapPoolHelper != null) {
-            return bitmapPoolHelper.getOrMake(width, height, config);
+        if (bitmapPool != null) {
+            return bitmapPool.getOrMake(width, height, config);
         } else {
             return Bitmap.createBitmap(width, height, config);
         }
@@ -272,8 +272,8 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 
     private void recycleBitmap() {
         if (mBuffer != null) {
-            if (bitmapPoolHelper != null) {
-                this.bitmapPoolHelper.freeBitmapToPool(mBuffer);
+            if (bitmapPool != null) {
+                this.bitmapPool.freeBitmapToPool(mBuffer);
             } else {
                 mBuffer.recycle();
             }
@@ -461,7 +461,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
     }
 
     /**
-     * An {@link GifDrawable#GifDrawable(Resources, int, BitmapPoolHelper)} wrapper but returns null
+     * An {@link GifDrawable#GifDrawable(Resources, int, BitmapPool)} wrapper but returns null
      * instead of throwing exception if creation fails.
      *
      * @param res        resources to read from

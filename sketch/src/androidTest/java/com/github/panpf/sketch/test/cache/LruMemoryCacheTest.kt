@@ -233,7 +233,8 @@ class LruMemoryCacheTest {
             ImageInfo("image/jpeg", width, height, 0),
             imageUri,
             null,
-            sketch.bitmapPoolHelper
+            sketch.logger,
+            sketch.bitmapPool
         )
     }
 }

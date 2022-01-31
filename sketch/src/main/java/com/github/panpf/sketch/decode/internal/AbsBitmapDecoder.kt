@@ -20,7 +20,7 @@ abstract class AbsBitmapDecoder(
     protected val dataSource: DataSource,
 ) : BitmapDecoder {
 
-    protected val bitmapPoolHelper = sketch.bitmapPoolHelper
+    protected val bitmapPool = sketch.bitmapPool
     protected val logger = sketch.logger
 
     protected abstract fun readImageInfo(): ImageInfo

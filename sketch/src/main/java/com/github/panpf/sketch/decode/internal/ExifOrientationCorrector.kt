@@ -24,7 +24,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import java.io.IOException
@@ -117,7 +117,7 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
     /**
      * 根据图片方向旋转图片
      */
-    fun rotateBitmap(bitmap: Bitmap, bitmapPoolHelper: BitmapPoolHelper): Bitmap {
+    fun rotateBitmap(bitmap: Bitmap, bitmapPool: BitmapPool): Bitmap {
         val matrix = Matrix()
         initializeMatrix(exifOrientation, matrix)
 
@@ -133,7 +133,7 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }
-        val result = bitmapPoolHelper.getOrMake(newWidth, newHeight, config)
+        val result = bitmapPool.getOrMake(newWidth, newHeight, config)
         matrix.postTranslate(-newRect.left, -newRect.top)
         val canvas = Canvas(result)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)

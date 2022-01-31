@@ -16,7 +16,7 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
@@ -26,13 +26,11 @@ import com.github.panpf.sketch.util.isHardware
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
- *
- * NOTE: Prefer using [ImageDecoderDecoder] and [AnimatedImageDrawable] on API 28 and above.
  */
 class MovieDrawable constructor(
     private val movie: Movie,
     private val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
-    private val bitmapPoolHelper: BitmapPoolHelper,
+    private val bitmapPool: BitmapPool,
 ) : Drawable(), Animatable2Compat {
 
     val bitmapConfig: Bitmap.Config?
@@ -243,7 +241,7 @@ class MovieDrawable constructor(
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
-        val bitmap = bitmapPoolHelper.getOrMake(bitmapWidth, bitmapHeight, config)
+        val bitmap = bitmapPool.getOrMake(bitmapWidth, bitmapHeight, config)
         softwareBitmap?.recycle()
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)
@@ -285,7 +283,7 @@ class MovieDrawable constructor(
         if (!isRunning) return
         isRunning = false
         // todo free bitmap
-//        bitmapPoolHelper.freeBitmapToPool(softwareBitmap)
+//        bitmapPool.freeBitmapToPool(softwareBitmap)
 //        softwareBitmap = null
 
         callbacks.forEach { it.onAnimationEnd(this) }

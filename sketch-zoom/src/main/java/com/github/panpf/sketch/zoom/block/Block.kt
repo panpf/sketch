@@ -17,7 +17,7 @@ package com.github.panpf.sketch.zoom.block
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.zoom.block.internal.KeyCounter
 
 /**
@@ -60,9 +60,9 @@ class Block {
         return keyCounter.key != key
     }
 
-    fun clean(bitmapPoolHelper: BitmapPoolHelper) {
+    fun clean(bitmapPool: BitmapPool) {
         if (bitmap != null) {
-            bitmapPoolHelper.freeBitmapToPool(bitmap)
+            bitmapPool.freeBitmapToPool(bitmap)
             bitmap = null
         }
         bitmapDrawSrcRect.setEmpty()

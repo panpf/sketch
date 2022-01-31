@@ -29,7 +29,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.ImageFormat.HEIF
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
@@ -377,7 +377,7 @@ fun readApkIcon(
     context: Context,
     apkFilePath: String,
     lowQualityImage: Boolean,
-    bitmapPoolHelper: BitmapPoolHelper
+    bitmapPool: BitmapPool
 ): Bitmap {
     val packageManager = context.packageManager
     val packageInfo =
@@ -386,7 +386,7 @@ fun readApkIcon(
     packageInfo.applicationInfo.sourceDir = apkFilePath
     packageInfo.applicationInfo.publicSourceDir = apkFilePath
     val drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo)
-    return drawableToBitmap(drawable, lowQualityImage, bitmapPoolHelper)
+    return drawableToBitmap(drawable, lowQualityImage, bitmapPool)
 }
 
 /**
@@ -395,12 +395,12 @@ fun readApkIcon(
 fun drawableToBitmap(
     drawable: Drawable,
     lowQualityImage: Boolean,
-    bitmapPoolHelper: BitmapPoolHelper
+    bitmapPool: BitmapPool
 ): Bitmap {
     drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
     val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
     val bitmap: Bitmap =
-        bitmapPoolHelper.getOrMake(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
+        bitmapPool.getOrMake(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
     val canvas = Canvas(bitmap)
     drawable.draw(canvas)
     return bitmap

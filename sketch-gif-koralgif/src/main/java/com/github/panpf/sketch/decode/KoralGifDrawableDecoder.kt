@@ -26,26 +26,26 @@ class KoralGifDrawableDecoder(
 
     override suspend fun decodeDrawable(): DrawableDecodeResult {
         val request = request
-        val bitmapPoolHelper = sketch.bitmapPoolHelper
+        val bitmapPool = sketch.bitmapPool
         val gifDrawable = when (val source = dataSource) {
             is ByteArrayDataSource -> {
-                ReuseGifDrawable(bitmapPoolHelper, source.data)
+                ReuseGifDrawable(bitmapPool, source.data)
             }
             is DiskCacheDataSource -> {
-                ReuseGifDrawable(bitmapPoolHelper, source.diskCacheSnapshot.file)
+                ReuseGifDrawable(bitmapPool, source.diskCacheSnapshot.file)
             }
             is ResourceDataSource -> {
-                ReuseGifDrawable(bitmapPoolHelper, source.context.resources, source.drawableId)
+                ReuseGifDrawable(bitmapPool, source.context.resources, source.drawableId)
             }
             is ContentDataSource -> {
                 val contentResolver = source.context.contentResolver
-                ReuseGifDrawable(bitmapPoolHelper, contentResolver, source.contentUri)
+                ReuseGifDrawable(bitmapPool, contentResolver, source.contentUri)
             }
             is FileDataSource -> {
-                ReuseGifDrawable(bitmapPoolHelper, source.file)
+                ReuseGifDrawable(bitmapPool, source.file)
             }
             is AssetDataSource -> {
-                ReuseGifDrawable(bitmapPoolHelper, source.context.assets, source.assetFileName)
+                ReuseGifDrawable(bitmapPool, source.context.assets, source.assetFileName)
             }
             else -> {
                 throw Exception("Unsupported DataSource: ${source::class.qualifiedName}")

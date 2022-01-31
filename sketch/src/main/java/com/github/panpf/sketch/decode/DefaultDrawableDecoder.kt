@@ -2,7 +2,7 @@ package com.github.panpf.sketch.decode
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
@@ -78,7 +78,7 @@ class DefaultDrawableDecoder(
         private val bitmapMemoryCacheKey: String,
         private val logger: Logger,
         private val request: DisplayRequest,
-        private val bitmapPoolHelper: BitmapPoolHelper,
+        private val bitmapPool: BitmapPool,
     ) {
 
         val lock: Mutex by lazy {
@@ -119,7 +119,8 @@ class DefaultDrawableDecoder(
                     bitmapDecodeResult.imageInfo,
                     request.key,
                     bitmapDecodeResult.transformedList,
-                    bitmapPoolHelper
+                    logger,
+                    bitmapPool
                 )
                 countBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
                 memoryCache.put(bitmapMemoryCacheKey, countBitmap)
@@ -140,7 +141,7 @@ class DefaultDrawableDecoder(
                         request.cacheKey,
                         sketch.logger,
                         request,
-                        sketch.bitmapPoolHelper,
+                        sketch.bitmapPool,
                     )
                 } else {
                     null

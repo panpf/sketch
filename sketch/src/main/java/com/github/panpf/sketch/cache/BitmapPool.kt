@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 
 /**
  * [Bitmap] 复用缓存池，用于缓存并复用 [Bitmap]，便于解码时直接使用，减少内存分配
@@ -62,6 +63,39 @@ interface BitmapPool {
      * @return [android.graphics.Bitmap]
      */
     fun getOrMake(width: Int, height: Int, config: Bitmap.Config): Bitmap
+
+    /**
+     * 从 bitmap pool 中取出可复用的 Bitmap 设置到 inBitmap 上，适用于 BitmapFactory
+     *
+     * @param options     BitmapFactory.Options 需要用到 inSampleSize 以及 inPreferredConfig 属性
+     * @param outWidth    图片原始宽
+     * @param outHeight   图片原始高
+     * @param outMimeType 图片类型
+     * @return true：找到了可复用的 Bitmap
+     */
+    fun setInBitmap(
+        options: BitmapFactory.Options, outWidth: Int, outHeight: Int, outMimeType: String?,
+    ): Boolean
+
+    /**
+     * 从 bitmap pool 中取出可复用的 Bitmap 设置到 inBitmap 上，适用于 BitmapRegionDecoder
+     *
+     * @param options    BitmapFactory.Options 需要用到 options 的 inSampleSize 以及 inPreferredConfig 属性
+     * @return true：找到了可复用的 Bitmap
+     */
+    fun setInBitmapForRegionDecoder(
+        width: Int,
+        height: Int,
+        options: BitmapFactory.Options
+    ): Boolean
+
+    /**
+     * 回收 bitmap，首先尝试放入 bitmap pool，放不进去就回收
+     *
+     * @param bitmap     要处理的 bitmap
+     * @return true：成功放入 bitmap pool
+     */
+    fun freeBitmapToPool(bitmap: Bitmap?): Boolean
 
     /**
      * 是否已禁用

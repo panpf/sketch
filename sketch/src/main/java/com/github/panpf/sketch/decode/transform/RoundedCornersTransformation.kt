@@ -50,8 +50,8 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
     override val cacheKey: String = "RoundedCorners(${radiusArray.joinToString(separator = ",")})"
 
     override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult {
-        val bitmapPoolHelper = sketch.bitmapPoolHelper
-        val roundedCornersBitmap = bitmapPoolHelper.getOrMake(input.width, input.height, input.safeConfig)
+        val bitmapPool = sketch.bitmapPool
+        val roundedCornersBitmap = bitmapPool.getOrMake(input.width, input.height, input.safeConfig)
         val canvas = Canvas(roundedCornersBitmap)
         val paint = Paint()
         paint.isAntiAlias = true

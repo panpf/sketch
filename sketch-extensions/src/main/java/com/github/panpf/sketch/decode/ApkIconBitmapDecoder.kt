@@ -23,7 +23,7 @@ class ApkIconBitmapDecoder(
             sketch.appContext,
             file.path,
             false,
-            sketch.bitmapPoolHelper
+            sketch.bitmapPool
         )
         // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(

@@ -21,7 +21,7 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
@@ -40,7 +40,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
     private var disableInBitmap = false
     private val reference: WeakReference<BlockExecutor> = WeakReference(executor)
-    private val bitmapPoolHelper: BitmapPoolHelper = imageZoomer.imageView.sketch.bitmapPoolHelper
+    private val bitmapPool: BitmapPool = imageZoomer.imageView.sketch.bitmapPool
     private val logger by lazy {
         imageZoomer.imageView.sketch.logger
     }
@@ -106,7 +106,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 //            options.inPreferredConfig = imageType.getConfig(false)
 //        }
         if (!disableInBitmap) {
-            bitmapPoolHelper.setInBitmapForRegionDecoder(srcRect.width(), srcRect.height(), options)
+            bitmapPool.setInBitmapForRegionDecoder(srcRect.width(), srcRect.height(), options)
         }
         val time = System.currentTimeMillis()
         var bitmap: Bitmap? = null
@@ -122,7 +122,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
                 logger.e(NAME, throwable, message)
 
                 options.inBitmap = null
-                bitmapPoolHelper.freeBitmapToPool(inBitmap)
+                bitmapPool.freeBitmapToPool(inBitmap)
                 try {
                     bitmap = regionDecoder.decodeRegion(srcRect, options)
                 } catch (throwable1: Throwable) {
@@ -149,7 +149,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
             return
         }
         if (block.isExpired(key)) {
-            bitmapPoolHelper.freeBitmapToPool(bitmap)
+            bitmapPool.freeBitmapToPool(bitmap)
             executor.callbackHandler.postDecodeError(
                 key, block, DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED)
             )
@@ -158,10 +158,10 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
         // 旋转图片
         val newBitmap =
-            regionDecoder.exifOrientationCorrector?.rotateBitmap(bitmap, bitmapPoolHelper)
+            regionDecoder.exifOrientationCorrector?.rotateBitmap(bitmap, bitmapPool)
         if (newBitmap != null && newBitmap != bitmap) {
             bitmap = if (!newBitmap.isRecycled) {
-                bitmapPoolHelper.freeBitmapToPool(bitmap)
+                bitmapPool.freeBitmapToPool(bitmap)
                 newBitmap
             } else {
                 executor.callbackHandler.postDecodeError(

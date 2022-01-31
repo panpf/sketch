@@ -31,7 +31,7 @@ class AppIconBitmapDecoder(
         }
         val iconDrawable = packageInfo.applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
-        val bitmap = drawableToBitmap(iconDrawable, false, sketch.bitmapPoolHelper)
+        val bitmap = drawableToBitmap(iconDrawable, false, sketch.bitmapPool)
         // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
             AppIconUriFetcher.MIME_TYPE,

@@ -19,7 +19,7 @@ import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.github.panpf.sketch.cache.BitmapPoolHelper
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
 import com.github.panpf.sketch.zoom.block.internal.KeyCounter
@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
  */
-class CallbackHandler constructor(looper: Looper, executor: BlockExecutor, val bitmapPoolHelper: BitmapPoolHelper, val logger: Logger) :
+class CallbackHandler constructor(looper: Looper, executor: BlockExecutor, val bitmapPool: BitmapPool, val logger: Logger) :
     Handler(looper) {
 
     companion object {
@@ -183,13 +183,13 @@ class CallbackHandler constructor(looper: Looper, executor: BlockExecutor, val b
         val executor = executorReference.get()
         if (executor == null) {
             logger.w(NAME, "weak reference break. decodeCompleted. key: $key, block=${block.info}")
-            bitmapPoolHelper.freeBitmapToPool(bitmap)
+            bitmapPool.freeBitmapToPool(bitmap)
             return
         }
         if (!block.isExpired(key)) {
             executor.callback.onDecodeCompleted(block, bitmap, useTime)
         } else {
-            bitmapPoolHelper.freeBitmapToPool(bitmap)
+            bitmapPool.freeBitmapToPool(bitmap)
             executor.callback.onDecodeError(
                 block,
                 DecodeErrorException(DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED)
