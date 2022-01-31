@@ -37,10 +37,10 @@ class LruMemoryCacheTest {
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
-            put("image1", makeCountBitmap(sketch, "image1", 1))
+            putBitmap(sketch, "image1", 1)
             Assert.assertEquals("1MB", size.formatFileSize())
 
-            put("image2", makeCountBitmap(sketch, "image2", 2))
+            putBitmap(sketch, "image2", 2)
             Assert.assertEquals("3MB", size.formatFileSize())
         }
     }
@@ -51,11 +51,11 @@ class LruMemoryCacheTest {
         val sketch = Sketch.new(context)
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
-            put("image1", makeCountBitmap(sketch, "image1", 1))
+            putBitmap(sketch, "image1", 1)
             Assert.assertNotNull(get("image1"))
 
             Assert.assertNull(get("image2"))
-            put("image2", makeCountBitmap(sketch, "image2", 2))
+            putBitmap(sketch, "image2", 2)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
 
@@ -76,29 +76,29 @@ class LruMemoryCacheTest {
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
-            put("image1", makeCountBitmap(sketch, "image1", 1))
+            putBitmap(sketch, "image1", 1)
             Assert.assertEquals("1MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
 
-            put("image2", makeCountBitmap(sketch, "image2", 2))
+            putBitmap(sketch, "image2", 2)
             Assert.assertEquals("3MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
 
-            put("image3", makeCountBitmap(sketch, "image3", 3))
+            putBitmap(sketch, "image3", 3)
             Assert.assertEquals("6MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
 
-            put("image4", makeCountBitmap(sketch, "image4", 4))
+            putBitmap(sketch, "image4", 4)
             Assert.assertEquals("10MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
             Assert.assertNotNull(get("image4"))
 
-            put("image5", makeCountBitmap(sketch, "image5", 5))
+            putBitmap(sketch, "image5", 5)
             Assert.assertEquals("9MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -106,7 +106,7 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(get("image4"))
             Assert.assertNotNull(get("image5"))
 
-            put("image6", makeCountBitmap(sketch, "image6", 6))
+            putBitmap(sketch, "image6", 6)
             Assert.assertEquals("6MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -115,7 +115,7 @@ class LruMemoryCacheTest {
             Assert.assertNull(get("image5"))
             Assert.assertNotNull(get("image6"))
 
-            put("image7", makeCountBitmap(sketch, "image7", 7))
+            putBitmap(sketch, "image7", 7)
             Assert.assertEquals("7MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -133,10 +133,10 @@ class LruMemoryCacheTest {
         val sketch = Sketch.new(context)
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
-            put("image1", makeCountBitmap(sketch, "image1", 1))
-            put("image2", makeCountBitmap(sketch, "image2", 2))
-            put("image3", makeCountBitmap(sketch, "image3", 3))
-            put("image4", makeCountBitmap(sketch, "image3", 4))
+            putBitmap(sketch, "image1", 1)
+            putBitmap(sketch, "image2", 2)
+            putBitmap(sketch, "image3", 3)
+            putBitmap(sketch, "image3", 4)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
@@ -153,10 +153,10 @@ class LruMemoryCacheTest {
 
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
-            put("image1", makeCountBitmap(sketch, "image1", 1))
-            put("image2", makeCountBitmap(sketch, "image2", 2))
-            put("image3", makeCountBitmap(sketch, "image3", 3))
-            put("image4", makeCountBitmap(sketch, "image3", 4))
+            putBitmap(sketch, "image1", 1)
+            putBitmap(sketch, "image2", 2)
+            putBitmap(sketch, "image3", 3)
+            putBitmap(sketch, "image3", 4)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
@@ -178,10 +178,10 @@ class LruMemoryCacheTest {
         val sketch = Sketch.new(context)
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
-            put("image1", makeCountBitmap(sketch, "image1", 1))
-            put("image2", makeCountBitmap(sketch, "image2", 2))
-            put("image3", makeCountBitmap(sketch, "image3", 3))
-            put("image4", makeCountBitmap(sketch, "image3", 4))
+            putBitmap(sketch, "image1", 1)
+            putBitmap(sketch, "image2", 2)
+            putBitmap(sketch, "image3", 3)
+            putBitmap(sketch, "image3", 4)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
@@ -221,13 +221,13 @@ class LruMemoryCacheTest {
         }
     }
 
-    private fun makeCountBitmap(sketch: Sketch, imageUri: String, sizeMb: Int): CountBitmap {
+    private fun LruMemoryCache.putBitmap(sketch: Sketch, imageUri: String, sizeMb: Int) {
         val bytes = sizeMb * 1024 * 1024
         val pixelCount = bytes / 4
         val width = 10
         val height = pixelCount / width
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
-        return CountBitmap(
+        put(imageUri, CountBitmap(
             bitmap,
             imageUri,
             ImageInfo("image/jpeg", width, height, 0),
@@ -235,6 +235,6 @@ class LruMemoryCacheTest {
             null,
             sketch.logger,
             sketch.bitmapPool
-        )
+        ))
     }
 }

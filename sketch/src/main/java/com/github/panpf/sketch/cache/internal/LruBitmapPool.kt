@@ -24,12 +24,6 @@ import com.github.panpf.sketch.util.trimLevelName
 class LruBitmapPool constructor(
     private val logger: Logger,
     override val maxSize: Long,
-    private val strategy: LruPoolStrategy =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            SizeConfigStrategy()
-        } else {
-            AttributeStrategy()
-        },
     val allowedConfigs: Set<Bitmap.Config?> =
         Bitmap.Config.values().run {
             if (Build.VERSION.SDK_INT >= 19) {
@@ -49,6 +43,12 @@ class LruBitmapPool constructor(
     private var misses = 0
     private var puts = 0
     private var evictions = 0
+    private val strategy: LruPoolStrategy =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            SizeConfigStrategy()
+        } else {
+            AttributeStrategy()
+        }
 
     override val size: Long
         get() = _size
@@ -82,7 +82,7 @@ class LruBitmapPool constructor(
             strategy.put(bitmap)
             puts++
             this._size += bitmapSize
-            evict()
+            trimToSize(maxSize)
             logger.d(MODULE) {
                 "Put bitmap in pool. ${strategy.logBitmap(bitmap)}, ${bitmap.toHexString()}, size ${size.formatFileSize()}"
             }
@@ -126,10 +126,6 @@ class LruBitmapPool constructor(
         }
     }
 
-    private fun evict() {
-        trimToSize(maxSize)
-    }
-
     override fun trim(level: Int) {
         synchronized(this) {
             val oldSize = this.size
@@ -154,7 +150,6 @@ class LruBitmapPool constructor(
         }
     }
 
-    @Synchronized
     private fun trimToSize(size: Long) {
         synchronized(this) {
             while (this.size > size) {
