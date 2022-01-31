@@ -62,7 +62,7 @@ class Block {
 
     fun clean(bitmapPool: BitmapPool) {
         if (bitmap != null) {
-            bitmapPool.freeBitmapToPool(bitmap)
+            bitmapPool.free(bitmap)
             bitmap = null
         }
         bitmapDrawSrcRect.setEmpty()

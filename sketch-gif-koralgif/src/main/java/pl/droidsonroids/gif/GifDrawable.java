@@ -252,7 +252,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 
     private Bitmap makeBitmap(int width, int height, Bitmap.Config config) {
         if (bitmapPool != null) {
-            return bitmapPool.getOrMake(width, height, config);
+            return bitmapPool.getOrCreate(width, height, config);
         } else {
             return Bitmap.createBitmap(width, height, config);
         }
@@ -273,7 +273,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
     private void recycleBitmap() {
         if (mBuffer != null) {
             if (bitmapPool != null) {
-                this.bitmapPool.freeBitmapToPool(mBuffer);
+                this.bitmapPool.free(mBuffer);
             } else {
                 mBuffer.recycle();
             }

@@ -8,10 +8,10 @@ import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.cache.LruBitmapPool
-import com.github.panpf.sketch.cache.LruDiskCache
-import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.internal.LruBitmapPool
+import com.github.panpf.sketch.cache.internal.LruDiskCache
+import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheSizeCalculator
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DefaultBitmapDecoder
@@ -148,7 +148,7 @@ class Sketch private constructor(
         memoryCache = _memoryCache
             ?: LruMemoryCache(logger, memorySizeCalculator.memoryCacheSize.toLong())
         bitmapPool = _bitmapPool
-            ?: LruBitmapPool(logger, memorySizeCalculator.bitmapPoolSize)
+            ?: LruBitmapPool(logger, memorySizeCalculator.bitmapPoolSize.toLong())
 
         appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
             override fun onConfigurationChanged(newConfig: Configuration) {
@@ -161,7 +161,7 @@ class Sketch private constructor(
 
             override fun onTrimMemory(level: Int) {
                 memoryCache.trim(level)
-                bitmapPool.trimMemory(level)
+                bitmapPool.trim(level)
             }
         })
 

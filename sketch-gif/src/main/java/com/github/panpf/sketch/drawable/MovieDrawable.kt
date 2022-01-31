@@ -241,7 +241,7 @@ class MovieDrawable constructor(
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
-        val bitmap = bitmapPool.getOrMake(bitmapWidth, bitmapHeight, config)
+        val bitmap = bitmapPool.getOrCreate(bitmapWidth, bitmapHeight, config)
         softwareBitmap?.recycle()
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)

@@ -21,7 +21,7 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         return if (resize?.shouldUse(bitmap.width, bitmap.height) == true) {
             val newBitmap = resize(bitmap, resize, bitmapPool)
             if (newBitmap !== bitmap) {
-                bitmapPool.freeBitmapToPool(bitmap)
+                bitmapPool.free(bitmap)
                 bitmapResult.new(newBitmap) {
                     addTransformed(ResizeTransformed(resize))
                 }
@@ -47,7 +47,7 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         // todo 限制不超过 maxSize
         val config = bitmap.config ?: Bitmap.Config.ARGB_8888
         val resizeBitmap =
-            bitmapPool.getOrMake(mapping.newWidth, mapping.newHeight, config)
+            bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)
         val canvas = Canvas(resizeBitmap)
         canvas.drawBitmap(bitmap, mapping.srcRect, mapping.destRect, null)
         return resizeBitmap

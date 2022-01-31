@@ -33,7 +33,7 @@ interface MemoryCache {
     val size: Long
 
     /**
-     * Caches[countBitmap] for [key]
+     * Caches [countBitmap] for [key]
      */
     fun put(key: String, countBitmap: CountBitmap)
 

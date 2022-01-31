@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import androidx.annotation.Nullable;
 
 public interface LruPoolStrategy {
+
     void put(Bitmap bitmap);
 
     @Nullable

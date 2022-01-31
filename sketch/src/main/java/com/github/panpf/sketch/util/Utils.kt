@@ -400,7 +400,7 @@ fun drawableToBitmap(
     drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
     val config = if (lowQualityImage) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888
     val bitmap: Bitmap =
-        bitmapPool.getOrMake(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
+        bitmapPool.getOrCreate(drawable.intrinsicWidth, drawable.intrinsicHeight, config)
     val canvas = Canvas(bitmap)
     drawable.draw(canvas)
     return bitmap

@@ -106,7 +106,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 //            options.inPreferredConfig = imageType.getConfig(false)
 //        }
         if (!disableInBitmap) {
-            bitmapPool.setInBitmapForRegionDecoder(srcRect.width(), srcRect.height(), options)
+            bitmapPool.setInBitmapForRegionDecoder(options, srcRect.width(), srcRect.height())
         }
         val time = System.currentTimeMillis()
         var bitmap: Bitmap? = null
@@ -122,7 +122,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
                 logger.e(NAME, throwable, message)
 
                 options.inBitmap = null
-                bitmapPool.freeBitmapToPool(inBitmap)
+                bitmapPool.free(inBitmap)
                 try {
                     bitmap = regionDecoder.decodeRegion(srcRect, options)
                 } catch (throwable1: Throwable) {
@@ -149,7 +149,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
             return
         }
         if (block.isExpired(key)) {
-            bitmapPool.freeBitmapToPool(bitmap)
+            bitmapPool.free(bitmap)
             executor.callbackHandler.postDecodeError(
                 key, block, DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED)
             )
@@ -161,7 +161,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
             regionDecoder.exifOrientationCorrector?.rotateBitmap(bitmap, bitmapPool)
         if (newBitmap != null && newBitmap != bitmap) {
             bitmap = if (!newBitmap.isRecycled) {
-                bitmapPool.freeBitmapToPool(bitmap)
+                bitmapPool.free(bitmap)
                 newBitmap
             } else {
                 executor.callbackHandler.postDecodeError(

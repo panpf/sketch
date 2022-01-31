@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.cache.internal
 
 import android.content.ComponentCallbacks2
+import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
@@ -26,7 +28,10 @@ import java.util.WeakHashMap
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
  */
-class LruMemoryCache constructor(private val logger: Logger, maxSize: Long) : MemoryCache {
+class LruMemoryCache constructor(
+    private val logger: Logger,
+    override val maxSize: Long
+) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
@@ -40,8 +45,6 @@ class LruMemoryCache constructor(private val logger: Logger, maxSize: Long) : Me
 
     override val size: Long
         get() = cache.size().toLong()
-    override val maxSize: Long
-        get() = cache.maxSize().toLong()
 
     override fun put(key: String, countBitmap: CountBitmap) {
         if (cache[key] == null) {
@@ -79,8 +82,7 @@ class LruMemoryCache constructor(private val logger: Logger, maxSize: Long) : Me
         } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
             cache.trimToSize(cache.maxSize() / 2)
         }
-        val newSize = size
-        val releasedSize = oldSize - newSize
+        val releasedSize = oldSize - size
         logger.w(
             MODULE,
             "trim. level '${trimLevelName(level)}', released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
@@ -99,13 +101,13 @@ class LruMemoryCache constructor(private val logger: Logger, maxSize: Long) : Me
         }
     }
 
-    override fun toString(): String = "${MODULE}(maxSize=${maxSize.formatFileSize()})"
+    override fun toString(): String = "$MODULE(maxSize=${maxSize.formatFileSize()})"
 
     private class CountBitmapLruCache constructor(maxSize: Long) :
         LruCache<String, CountBitmap>(maxSize.toInt()) {
 
         override fun put(key: String, countBitmap: CountBitmap): CountBitmap? {
-            countBitmap.setIsCached("${MODULE}:put", true)
+            countBitmap.setIsCached("$MODULE:put", true)
             return super.put(key, countBitmap)
         }
 
@@ -117,7 +119,7 @@ class LruMemoryCache constructor(private val logger: Logger, maxSize: Long) : Me
         override fun entryRemoved(
             evicted: Boolean, key: String, oldCountBitmap: CountBitmap, newCountBitmap: CountBitmap?
         ) {
-            oldCountBitmap.setIsCached("${MODULE}:entryRemoved", false)
+            oldCountBitmap.setIsCached("$MODULE:entryRemoved", false)
         }
     }
 }

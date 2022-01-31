@@ -79,7 +79,7 @@ class SvgBitmapDecoder(
         svg.setDocumentHeight("100%")
 
         val bitmap = sketch.bitmapPool
-            .getOrMake(dstWidth, dstHeight, decodeConfig.inPreferredConfig.toSoftware())
+            .getOrCreate(dstWidth, dstHeight, decodeConfig.inPreferredConfig.toSoftware())
         val canvas = Canvas(bitmap).apply {
             backgroundColor?.let {
                 drawColor(it)

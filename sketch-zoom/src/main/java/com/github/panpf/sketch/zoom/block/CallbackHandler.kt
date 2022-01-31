@@ -183,13 +183,13 @@ class CallbackHandler constructor(looper: Looper, executor: BlockExecutor, val b
         val executor = executorReference.get()
         if (executor == null) {
             logger.w(NAME, "weak reference break. decodeCompleted. key: $key, block=${block.info}")
-            bitmapPool.freeBitmapToPool(bitmap)
+            bitmapPool.free(bitmap)
             return
         }
         if (!block.isExpired(key)) {
             executor.callback.onDecodeCompleted(block, bitmap, useTime)
         } else {
-            bitmapPool.freeBitmapToPool(bitmap)
+            bitmapPool.free(bitmap)
             executor.callback.onDecodeError(
                 block,
                 DecodeErrorException(DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED)

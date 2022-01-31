@@ -131,7 +131,7 @@ class CountBitmap constructor(
         if (bitmapHolder == null || isRecycled) {
             logger.e(MODULE, "Recycled. $callingStation. $requestKey")
         } else if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
-            bitmapPool.freeBitmapToPool(bitmapHolder)
+            bitmapPool.free(bitmapHolder)
             this.bitmapHolder = null
             logger.d(MODULE) {
                 "Free. %s. %s".format(callingStation, requestKey)

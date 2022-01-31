@@ -429,7 +429,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
         override fun onDecodeCompleted(block: Block, bitmap: Bitmap, useTime: Int) {
             if (!running) {
                 logger.w(NAME, "stop running. decodeCompleted. block=${block.info}")
-                imageZoomer.imageView.sketch.bitmapPool.freeBitmapToPool(bitmap)
+                imageZoomer.imageView.sketch.bitmapPool.free(bitmap)
                 return
             }
             blockManager.decodeCompleted(block, bitmap, useTime)

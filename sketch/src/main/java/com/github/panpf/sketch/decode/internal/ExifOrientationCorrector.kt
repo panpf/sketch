@@ -133,7 +133,7 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }
-        val result = bitmapPool.getOrMake(newWidth, newHeight, config)
+        val result = bitmapPool.getOrCreate(newWidth, newHeight, config)
         matrix.postTranslate(-newRect.left, -newRect.top)
         val canvas = Canvas(result)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
