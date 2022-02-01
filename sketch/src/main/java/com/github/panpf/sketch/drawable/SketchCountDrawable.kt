@@ -15,12 +15,16 @@
  */
 package com.github.panpf.sketch.drawable
 
+import androidx.annotation.MainThread
+
 interface SketchCountDrawable : SketchDrawable {
 
     // todo 完善引用计数
+    @MainThread
     fun setIsDisplayed(callingStation: String, displayed: Boolean)
 
-    fun setIsWaitingUse(callingStation: String, waitingUse: Boolean)
+    @MainThread
+    fun setIsWaiting(callingStation: String, waitingUse: Boolean)
 
     val isRecycled: Boolean
 }

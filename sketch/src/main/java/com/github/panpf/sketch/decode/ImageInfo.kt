@@ -34,11 +34,8 @@ data class ImageInfo(
     }.toString()
 
     override fun toString(): String {
-        return "ImageInfo(mimeType='$mimeType',width=$width,height=$height,exifOrientation=${
-            ExifOrientationCorrector.toName(
-                exifOrientation
-            )
-        })"
+        val exifOrientationName = ExifOrientationCorrector.toName(exifOrientation)
+        return "ImageInfo(mimeType='$mimeType',width=$width,height=$height,exifOrientation=${exifOrientationName})"
     }
 
     companion object {

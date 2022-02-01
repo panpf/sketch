@@ -16,40 +16,40 @@
 package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.toHexString
 
 /**
- * 引用 [Bitmap]，能够计算缓存引用、显示引用以及等待显示引用
+ * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
  */
 class CountBitmap constructor(
     initBitmap: Bitmap,
+    val requestKey: String,
     val imageUri: String,
     val imageInfo: ImageInfo,
-    val requestKey: String,
     val transformedList: List<Transformed>?,
     private val logger: Logger,
     private val bitmapPool: BitmapPool
 ) {
 
     companion object {
-        private const val MODULE = "RefCountBitmap"
+        private const val MODULE = "CountBitmap"
     }
 
     private var bitmapHolder: Bitmap? = initBitmap
-    private var memoryCacheRefCount = 0  // 内存缓存引用
-    private var displayRefCount = 0 // 真正显示引用
-    private var waitingUseRefCount = 0 // 等待使用引用
+    private var cacheCount = 0  // Memory cache count
+    private var displayCount = 0 // View display count
+    private var waitingCount = 0 // Waiting count
 
-    @get:Synchronized
     val bitmap: Bitmap?
         get() = bitmapHolder
 
-    @get:Synchronized
     val isRecycled: Boolean
         get() = bitmapHolder?.isRecycled ?: true
 
@@ -57,7 +57,7 @@ class CountBitmap constructor(
         get() = bitmap?.byteCountCompat ?: 0
 
     val info: String by lazy {
-        "ReferenceCountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%d/%s)".format(
+        "CountBitmap(ImageInfo=%dx%d/%s/%s,BitmapInfo=%dx%d/%s/%s/%s)".format(
             imageInfo.width,
             imageInfo.height,
             imageInfo.mimeType,
@@ -65,86 +65,61 @@ class CountBitmap constructor(
             initBitmap.width,
             initBitmap.height,
             initBitmap.config,
-            initBitmap.byteCountCompat,
+            initBitmap.byteCountCompat.toLong().formatFileSize(),
             initBitmap.toHexString(),
         )
     }
 
-    /**
-     * 设置显示引用
-     *
-     * @param callingStation 调用位置
-     * @param displayed      显示
-     */
-    @Synchronized
+    @MainThread
     fun setIsDisplayed(callingStation: String, displayed: Boolean) {
         if (displayed) {
-            displayRefCount++
-            referenceChanged(callingStation)
-        } else if (displayRefCount > 0) {
-            displayRefCount--
-            referenceChanged(callingStation)
+            displayCount++
+            countChanged(callingStation)
+        } else if (displayCount > 0) {
+            displayCount--
+            countChanged(callingStation)
         }
     }
 
-    /**
-     * 设置缓存引用
-     *
-     * @param callingStation 调用位置
-     * @param cached         缓存
-     */
-    @Synchronized
+    @MainThread
     fun setIsCached(callingStation: String, cached: Boolean) {
         if (cached) {
-            memoryCacheRefCount++
-            referenceChanged(callingStation)
-        } else if (memoryCacheRefCount > 0) {
-            memoryCacheRefCount--
-            referenceChanged(callingStation)
+            cacheCount++
+            countChanged(callingStation)
+        } else if (cacheCount > 0) {
+            cacheCount--
+            countChanged(callingStation)
         }
     }
 
-    /**
-     * 设置等待使用引用
-     *
-     * @param callingStation 调用位置
-     * @param waitingUse     等待使用
-     */
-    @Synchronized
-    fun setIsWaitingUse(callingStation: String, waitingUse: Boolean) {
+    @MainThread
+    fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
         if (waitingUse) {
-            waitingUseRefCount++
-            referenceChanged(callingStation)
-        } else if (waitingUseRefCount > 0) {
-            waitingUseRefCount--
-            referenceChanged(callingStation)
+            waitingCount++
+            countChanged(callingStation)
+        } else if (waitingCount > 0) {
+            waitingCount--
+            countChanged(callingStation)
         }
     }
 
-    /**
-     * 引用变化时执行此方法
-     *
-     * @param callingStation 调用位置
-     */
-    private fun referenceChanged(callingStation: String) {
+    private fun countChanged(callingStation: String) {
         val bitmapHolder = this.bitmapHolder
-        if (bitmapHolder == null || isRecycled) {
+        if (bitmapHolder == null) {
             logger.e(MODULE, "Recycled. $callingStation. $requestKey")
-        } else if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
+        } else if (isRecycled) {
+            logger.e(MODULE, "Recycle. $callingStation. ${bitmapHolder.toHexString()}. $requestKey")
+        } else if (cacheCount == 0 && displayCount == 0 && waitingCount == 0) {
             bitmapPool.free(bitmapHolder)
             this.bitmapHolder = null
             logger.d(MODULE) {
-                "Free. %s. %s".format(callingStation, requestKey)
+                "Free bitmap. $callingStation. ${bitmapHolder.toHexString()}. $requestKey"
             }
         } else {
             logger.d(MODULE) {
-                "Can't free. %s. references(%d,%d,%d). %s".format(
-                    callingStation,
-                    memoryCacheRefCount,
-                    displayRefCount,
-                    waitingUseRefCount,
-                    requestKey
-                )
+                "Can't free bitmap. $callingStation. " +
+                        "cacheCount $cacheCount, displayCount $displayCount, waitingCount $waitingCount. " +
+                        "${bitmapHolder.toHexString()}. $requestKey"
             }
         }
     }

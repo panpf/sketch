@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.drawable
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.request.DataFrom
 
@@ -33,11 +34,13 @@ class SketchCountBitmapDrawable constructor(
     override val isRecycled: Boolean
         get() = countBitmap.isRecycled
 
+    @MainThread
     override fun setIsDisplayed(callingStation: String, displayed: Boolean) {
         countBitmap.setIsDisplayed(callingStation, displayed)
     }
 
-    override fun setIsWaitingUse(callingStation: String, waitingUse: Boolean) {
-        countBitmap.setIsWaitingUse(callingStation, waitingUse)
+    @MainThread
+    override fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
+        countBitmap.setIsWaiting(callingStation, waitingUse)
     }
 }

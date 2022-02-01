@@ -12,7 +12,7 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
-import com.github.panpf.sketch.cache.internal.MemoryCacheSizeCalculator
+import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.DefaultDrawableDecoder
@@ -68,6 +68,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlin.math.roundToLong
 
 class Sketch private constructor(
     _context: Context,
@@ -99,8 +100,10 @@ class Sketch private constructor(
     val logger = _logger ?: Logger()
     val httpStack = _httpStack ?: HurlStack.new()
 
-    val memoryCache: MemoryCache
-    val bitmapPool: BitmapPool
+    val memoryCache: MemoryCache = _memoryCache
+        ?: LruMemoryCache(logger, (appContext.defaultMemoryCacheBytes() * 0.5f).roundToLong())
+    val bitmapPool: BitmapPool = _bitmapPool
+        ?: LruBitmapPool(logger, (appContext.defaultMemoryCacheBytes() * 0.5f).roundToLong())
     val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
 
     val componentRegistry: ComponentRegistry = (_componentRegistry ?: ComponentRegistry.new())
@@ -144,12 +147,6 @@ class Sketch private constructor(
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
-        val memorySizeCalculator = MemoryCacheSizeCalculator(appContext, logger)
-        memoryCache = _memoryCache
-            ?: LruMemoryCache(logger, memorySizeCalculator.memoryCacheSize.toLong())
-        bitmapPool = _bitmapPool
-            ?: LruBitmapPool(logger, memorySizeCalculator.bitmapPoolSize.toLong())
-
         appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
             override fun onConfigurationChanged(newConfig: Configuration) {
             }

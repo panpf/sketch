@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test.cache
+package com.github.panpf.sketch.test.cache.internal
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

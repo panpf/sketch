@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test.cache
+package com.github.panpf.sketch.test.cache.internal
 
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
@@ -136,7 +136,7 @@ class LruMemoryCacheTest {
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
             putBitmap(sketch, "image3", 3)
-            putBitmap(sketch, "image3", 4)
+            putBitmap(sketch, "image4", 4)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
@@ -156,7 +156,7 @@ class LruMemoryCacheTest {
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
             putBitmap(sketch, "image3", 3)
-            putBitmap(sketch, "image3", 4)
+            putBitmap(sketch, "image4", 4)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
@@ -181,7 +181,7 @@ class LruMemoryCacheTest {
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
             putBitmap(sketch, "image3", 3)
-            putBitmap(sketch, "image3", 4)
+            putBitmap(sketch, "image4", 4)
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
@@ -230,8 +230,8 @@ class LruMemoryCacheTest {
         put(imageUri, CountBitmap(
             bitmap,
             imageUri,
-            ImageInfo("image/jpeg", width, height, 0),
             imageUri,
+            ImageInfo("image/jpeg", width, height, 0),
             null,
             sketch.logger,
             sketch.bitmapPool

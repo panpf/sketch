@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test.cache
+package com.github.panpf.sketch.test.cache.internal
 
 import android.content.ComponentCallbacks2
 import android.graphics.Bitmap

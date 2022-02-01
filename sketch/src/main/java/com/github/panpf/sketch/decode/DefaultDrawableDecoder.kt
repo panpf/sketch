@@ -98,7 +98,7 @@ class DefaultDrawableDecoder(
                         "From memory get bitmap. bitmap=%s. %s"
                             .format(cachedCountBitmap.info, request.key)
                     }
-                    cachedCountBitmap.setIsWaitingUse("$MODULE:waitingUse:fromMemory", true)
+                    cachedCountBitmap.setIsWaiting("$MODULE:waitingUse:fromMemory", true)
                     val drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE)
                     DrawableDecodeResult(drawable, cachedCountBitmap.imageInfo, MEMORY_CACHE)
                 }
@@ -115,14 +115,14 @@ class DefaultDrawableDecoder(
             if (bitmapMemoryCachePolicy.writeEnabled) {
                 val countBitmap = CountBitmap(
                     bitmapDecodeResult.bitmap,
+                    request.key,
                     request.uriString,
                     bitmapDecodeResult.imageInfo,
-                    request.key,
                     bitmapDecodeResult.transformedList,
                     logger,
                     bitmapPool
                 )
-                countBitmap.setIsWaitingUse("$MODULE:waitingUse:new", true)
+                countBitmap.setIsWaiting("$MODULE:waitingUse:new", true)
                 memoryCache.put(bitmapMemoryCacheKey, countBitmap)
                 SketchCountBitmapDrawable(countBitmap, bitmapDecodeResult.dataFrom)
             } else {
