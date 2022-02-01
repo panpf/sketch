@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
 
 class BlurTransformation(
@@ -272,3 +273,13 @@ class BlurTransformation(
         }
     }
 }
+
+class BlurTransformed(val radius: Int, val maskColor: Int?) : Transformed {
+    override val key: String = "BlurTransformed($radius,${maskColor ?: -1})"
+    override val cacheResultToDisk: Boolean = true
+
+    override fun toString(): String = key
+}
+
+fun List<Transformed>.getBlurTransformed(): BlurTransformed? =
+    find { it is BlurTransformed } as BlurTransformed?

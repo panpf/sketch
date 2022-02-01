@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
 
 // todo 融合 ResizeInterceptor 和 ExifOrientationCorrectInterceptor
@@ -55,3 +56,13 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
     override fun toString(): String = "SizeInterceptor"
 }
+
+class ResizeTransformed constructor(val resize: Resize): Transformed {
+    override val key: String = "ResizeTransformed($resize)"
+    override val cacheResultToDisk: Boolean = true
+
+    override fun toString(): String = key
+}
+
+fun List<Transformed>.getResizeTransformed(): ResizeTransformed? =
+    find { it is ResizeTransformed } as ResizeTransformed?

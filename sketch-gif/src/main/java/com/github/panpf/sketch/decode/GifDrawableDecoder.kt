@@ -75,7 +75,7 @@ class GifDrawableDecoder constructor(
                 dataSource.from,
                 movieDrawable
             ),
-            info = imageInfo, from = dataSource.from
+            imageInfo = imageInfo, dataFrom = dataSource.from
         )
     }
 

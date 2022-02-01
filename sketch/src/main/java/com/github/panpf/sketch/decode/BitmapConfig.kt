@@ -6,14 +6,15 @@ import com.github.panpf.sketch.ImageFormat
 
 class BitmapConfig(private val config: Bitmap.Config) {
 
-    val cacheKey: String = "BitmapConfig(${
-        when {
+    val cacheKey: String by lazy {
+        val configName = when {
             this === LOW_QUALITY -> "LOW_QUALITY"
             this === MIDDEN_QUALITY -> "MIDDEN_QUALITY"
             this === HIGH_QUALITY -> "HIGH_QUALITY"
             else -> config
         }
-    })"
+        "BitmapConfig($configName)"
+    }
 
     val isLowQuality: Boolean
         get() = this === LOW_QUALITY
@@ -55,19 +56,22 @@ class BitmapConfig(private val config: Bitmap.Config) {
 
     companion object {
         /**
-         * 优先使用较低质量的图片配置。如果图片格式是 jpeg 格式就使用 [Bitmap.Config.RGB_565]，否则 JELLY_BEAN_MR2 及以下版本使用 [Bitmap.Config.ARGB_4444]，KITKAT 及以上版本使用 [Bitmap.Config.ARGB_8888]
+         * Lower quality bitmap config are preferred.
+         * Use [Bitmap.Config.RGB_565] if the image format is JPEG,
+         * otherwise use [Bitmap.Config.ARGB_4444] for JELLY_BEAN_MR2 and below,
+         * KITKAT and later use [Bitmap.Config.ARGB_8888]
          */
         @JvmStatic
         val LOW_QUALITY = BitmapConfig(Bitmap.Config.RGB_565)
 
         /**
-         * 始终使用 [Bitmap.Config.ARGB_8888]
+         * Always use [Bitmap.Config.ARGB_8888]
          */
         @JvmStatic
         val MIDDEN_QUALITY = BitmapConfig(Bitmap.Config.ARGB_8888)
 
         /**
-         * 优先使用 [Bitmap.Config.RGBA_F16]，否则使用 [Bitmap.Config.ARGB_8888]
+         * [Bitmap.Config.RGBA_F16] is preferred, otherwise [Bitmap.Config.ARGB_8888] is used.
          */
         @JvmStatic
         val HIGH_QUALITY = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

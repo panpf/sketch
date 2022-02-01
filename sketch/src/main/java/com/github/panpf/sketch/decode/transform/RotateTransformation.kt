@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
 
 class RotateTransformation(val degrees: Int) : Transformation {
@@ -50,3 +51,13 @@ class RotateTransformation(val degrees: Int) : Transformation {
         }
     }
 }
+
+class RotateTransformed(val degrees: Int) : Transformed {
+    override val key: String = "RotateTransformed($degrees)"
+    override val cacheResultToDisk: Boolean = true
+
+    override fun toString(): String = key
+}
+
+fun List<Transformed>.getRotateTransformed(): RotateTransformed? =
+    find { it is RotateTransformed } as RotateTransformed?

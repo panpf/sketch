@@ -12,12 +12,7 @@ data class BitmapDecodeResult constructor(
 ) {
 
     fun new(bitmap: Bitmap, block: (Builder.() -> Unit)? = null): BitmapDecodeResult =
-        Builder(
-            bitmap,
-            imageInfo,
-            dataFrom,
-            transformedList?.toMutableList()
-        ).apply {
+        Builder(bitmap, imageInfo, dataFrom, transformedList?.toMutableList()).apply {
             block?.invoke(this)
         }.build()
 

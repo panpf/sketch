@@ -19,7 +19,7 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
 import org.json.JSONException
 import org.json.JSONObject
 
-data class ImageInfo(
+data class ImageInfo constructor(
     val mimeType: String,
     val width: Int,
     val height: Int,

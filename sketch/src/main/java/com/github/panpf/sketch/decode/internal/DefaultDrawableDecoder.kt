@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.decode
+package com.github.panpf.sketch.decode.internal
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
@@ -8,7 +8,9 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DrawableDecodeResult
+import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -64,7 +66,7 @@ class DefaultDrawableDecoder(
 
     }
 
-    class Factory : DrawableDecoder.Factory {
+    class Factory : com.github.panpf.sketch.decode.DrawableDecoder.Factory {
         override fun create(
             sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
         ): DrawableDecoder = DefaultDrawableDecoder(sketch, request, fetchResult)

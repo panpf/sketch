@@ -5,7 +5,7 @@ import com.github.panpf.sketch.request.DataFrom
 
 data class DrawableDecodeResult(
     val drawable: Drawable,
-    val info: ImageInfo,
-    val from: DataFrom,
+    val imageInfo: ImageInfo,
+    val dataFrom: DataFrom,
     val transformedList: List<Transformed>? = null
 )

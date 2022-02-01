@@ -1,13 +1,15 @@
-package com.github.panpf.sketch.decode
+package com.github.panpf.sketch.decode.internal
 
 import android.content.res.Resources
 import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.BitmapDecoder
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.drawableToBitmap
 
@@ -29,14 +31,14 @@ class XmlDrawableBitmapDecoder(
             bitmap.height,
             ExifInterface.ORIENTATION_UNDEFINED
         )
-        return BitmapDecodeResult(bitmap, imageInfo, DataFrom.LOCAL)
+        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
     }
 
     override fun close() {
 
     }
 
-    class Factory : BitmapDecoder.Factory {
+    class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
         override fun create(
             sketch: Sketch,
             request: LoadRequest,

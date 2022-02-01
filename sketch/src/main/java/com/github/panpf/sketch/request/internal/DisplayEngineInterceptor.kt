@@ -20,7 +20,7 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
             request = request,
             fetchResult = null,
         ).proceed(request)
-        return DisplayData(drawableDecodeResult.drawable, drawableDecodeResult.info, drawableDecodeResult.from)
+        return DisplayData(drawableDecodeResult.drawable, drawableDecodeResult.imageInfo, drawableDecodeResult.dataFrom)
     }
 
     override fun toString(): String = "DisplayEngineInterceptor"

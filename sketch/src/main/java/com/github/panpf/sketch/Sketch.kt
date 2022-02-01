@@ -14,10 +14,10 @@ import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.decode.XmlDrawableBitmapDecoder
+import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
 import com.github.panpf.sketch.decode.internal.DecodeInterceptor

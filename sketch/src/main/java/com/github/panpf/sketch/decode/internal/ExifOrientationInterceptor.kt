@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
 
 class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
@@ -30,3 +31,14 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
 
     override fun toString(): String = "ExifOrientationInterceptor"
 }
+
+class ExifOrientationTransformed(val exifOrientation: Int) : Transformed {
+    override val key: String =
+        "ExifOrientationTransformed(${ExifOrientationCorrector.toName(exifOrientation)}"
+    override val cacheResultToDisk: Boolean = true
+
+    override fun toString(): String = key
+}
+
+fun List<Transformed>.getExifOrientationTransformed(): ExifOrientationTransformed? =
+    find { it is ExifOrientationTransformed } as ExifOrientationTransformed?

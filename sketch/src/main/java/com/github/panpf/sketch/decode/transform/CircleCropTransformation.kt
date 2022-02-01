@@ -7,6 +7,7 @@ import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.ResizeMapping
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.safeConfig
@@ -44,3 +45,13 @@ class CircleCropTransformation(val scale: Resize.Scale = Resize.Scale.CENTER_CRO
         return TransformResult(circleBitmap, CircleCropTransformed(scale))
     }
 }
+
+class CircleCropTransformed(val scale: Resize.Scale) : Transformed {
+    override val key: String = "CircleCropTransformed($scale)"
+    override val cacheResultToDisk: Boolean = true
+
+    override fun toString(): String = key
+}
+
+fun List<Transformed>.getCircleCropTransformed(): CircleCropTransformed? =
+    find { it is CircleCropTransformed } as CircleCropTransformed?

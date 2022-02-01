@@ -15,9 +15,15 @@
  */
 package com.github.panpf.sketch.decode
 
-data class MaxSize(val width: Int, val height: Int) {
+data class MaxSize constructor(val width: Int, val height: Int) {
 
-    val cacheKey: String = "MaxSize(${width}x${height})"
+    val cacheKey: String by lazy {
+        if (SCREEN_SIZE === this) {
+            "MaxSize(SCREEN_SIZE)"
+        } else {
+            "MaxSize(${width}x${height})"
+        }
+    }
 
     companion object {
         /**
