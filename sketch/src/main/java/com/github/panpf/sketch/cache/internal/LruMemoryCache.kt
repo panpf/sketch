@@ -46,15 +46,17 @@ class LruMemoryCache constructor(
     override val size: Long
         get() = cache.size().toLong()
 
-    override fun put(key: String, countBitmap: CountBitmap) {
-        if (cache[key] == null) {
+    override fun put(key: String, countBitmap: CountBitmap): Boolean {
+        return if (cache[key] == null) {
             cache.put(key, countBitmap)
             logger.d(MODULE) {
                 val bitmapSize = countBitmap.byteCount.toLong().formatFileSize()
                 "put. key '$key', bitmap $bitmapSize, size ${size.formatFileSize()}"
             }
+            true
         } else {
             logger.w(MODULE, String.format("Exist. key=$key"))
+            false
         }
     }
 

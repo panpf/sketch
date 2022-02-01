@@ -21,6 +21,6 @@ internal class DownloadInterceptorChain(
         return interceptor.intercept(next)
     }
 
-    private fun copy(index: Int = this.index, request: DownloadRequest = this.request) =
+    private fun copy(index: Int, request: DownloadRequest): DownloadInterceptorChain =
         DownloadInterceptorChain(initialRequest, interceptors, index, sketch, request)
 }

@@ -35,7 +35,7 @@ interface MemoryCache {
     /**
      * Caches [countBitmap] for [key]
      */
-    fun put(key: String, countBitmap: CountBitmap)
+    fun put(key: String, countBitmap: CountBitmap): Boolean
 
     /**
      * Deletes the cache of the [key]

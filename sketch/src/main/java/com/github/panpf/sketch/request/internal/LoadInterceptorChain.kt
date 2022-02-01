@@ -21,8 +21,6 @@ internal class LoadInterceptorChain(
         return interceptor.intercept(next)
     }
 
-    private fun copy(
-        index: Int = this.index,
-        request: LoadRequest = this.request,
-    ) = LoadInterceptorChain(initialRequest, interceptors, index, sketch, request)
+    private fun copy(index: Int, request: LoadRequest): LoadInterceptorChain =
+        LoadInterceptorChain(initialRequest, interceptors, index, sketch, request)
 }

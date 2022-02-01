@@ -51,8 +51,9 @@ class LruMemoryCacheTest {
         val sketch = Sketch.new(context)
         LruMemoryCache(sketch.logger, 10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
-            putBitmap(sketch, "image1", 1)
+            Assert.assertTrue(putBitmap(sketch, "image1", 1))
             Assert.assertNotNull(get("image1"))
+            Assert.assertFalse(putBitmap(sketch, "image1", 1))
 
             Assert.assertNull(get("image2"))
             putBitmap(sketch, "image2", 2)
@@ -221,20 +222,22 @@ class LruMemoryCacheTest {
         }
     }
 
-    private fun LruMemoryCache.putBitmap(sketch: Sketch, imageUri: String, sizeMb: Int) {
+    private fun LruMemoryCache.putBitmap(sketch: Sketch, imageUri: String, sizeMb: Int): Boolean {
         val bytes = sizeMb * 1024 * 1024
         val pixelCount = bytes / 4
         val width = 10
         val height = pixelCount / width
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
-        put(imageUri, CountBitmap(
-            bitmap,
-            imageUri,
-            imageUri,
-            ImageInfo("image/jpeg", width, height, 0),
-            null,
-            sketch.logger,
-            sketch.bitmapPool
-        ))
+        return put(
+            imageUri, CountBitmap(
+                bitmap,
+                imageUri,
+                imageUri,
+                ImageInfo("image/jpeg", width, height, 0),
+                null,
+                sketch.logger,
+                sketch.bitmapPool
+            )
+        )
     }
 }

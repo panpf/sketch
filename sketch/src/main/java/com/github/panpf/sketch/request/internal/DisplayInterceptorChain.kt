@@ -21,8 +21,6 @@ internal class DisplayInterceptorChain(
         return interceptor.intercept(next)
     }
 
-    private fun copy(
-        index: Int = this.index,
-        request: DisplayRequest = this.request,
-    ) = DisplayInterceptorChain(initialRequest, interceptors, index, sketch, request)
+    private fun copy(index: Int, request: DisplayRequest): DisplayInterceptorChain =
+        DisplayInterceptorChain(initialRequest, interceptors, index, sketch, request)
 }

@@ -101,7 +101,7 @@ interface LoadRequest : DownloadRequest {
     val disabledCorrectExifOrientation: Boolean?
 
     /**
-     * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheInterceptor
+     * @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
      */
     val bitmapResultDiskCachePolicy: CachePolicy?
 
@@ -634,43 +634,36 @@ fun LoadRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
         }
     }
 
-internal fun LoadRequest.newQualityKey(): String? = buildString {
-    val prefix = "Quality("
-    append(prefix)
-    parameters?.cacheKey?.let {
-        if (length > prefix.length) append(",")
-        append(it)
-    }
-    maxSize?.let {
-        if (length > prefix.length) append(",")
-        append(it.cacheKey)
-    }
-    bitmapConfig?.let {
-        if (length > prefix.length) append(",")
-        append(it.cacheKey)
-    }
-    if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        colorSpace?.let {
-            if (length > prefix.length) append(",")
-            append("colorSpace(${it.name.replace(" ", "")}")
+internal fun LoadRequest.newQualityKey(): String? {
+    val fragmentList = buildList {
+        parameters?.cacheKey?.let {
+            add(it)
+        }
+        maxSize?.let {
+            add(it.cacheKey)
+        }
+        bitmapConfig?.let {
+            add(it.cacheKey)
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            colorSpace?.let {
+                add("colorSpace(${it.name.replace(" ", "")}")
+            }
+        }
+        @Suppress("DEPRECATION")
+        if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
+            add("preferQualityOverSpeed")
+        }
+        resize?.let {
+            add(it.cacheKey)
+        }
+        transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+            add("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
+        }
+        if (disabledCorrectExifOrientation == true) {
+            add("disabledCorrectExifOrientation")
         }
     }
-    @Suppress("DEPRECATION")
-    if (VERSION.SDK_INT < VERSION_CODES.N && preferQualityOverSpeed == true) {
-        if (length > prefix.length) append(",")
-        append("preferQualityOverSpeed")
-    }
-    resize?.let {
-        if (length > prefix.length) append(",")
-        append(it.cacheKey)
-    }
-    transformations?.takeIf { it.isNotEmpty() }?.let { list ->
-        if (length > prefix.length) append(",")
-        append("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
-    }
-    if (disabledCorrectExifOrientation == true) {
-        if (length > prefix.length) append(",")
-        append("disabledCorrectExifOrientation")
-    }
-    append(")")
-}.takeIf { it.isNotEmpty() }
+    return fragmentList.takeIf { it.isNotEmpty() }
+        ?.joinToString(separator = ",", prefix = "Quality(", postfix = ")")
+}
