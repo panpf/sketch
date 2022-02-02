@@ -54,8 +54,8 @@ class AppSettingsService(val context: Context) {
     val disabledBitmapPool by lazy {
         BooleanPrefsData(context, "disabledBitmapPool", false)
     }
-    val disabledCorrectImageOrientation by lazy {
-        BooleanPrefsData(context, "disabledCorrectImageOrientation", false)
+    val ignoreExifOrientation by lazy {
+        BooleanPrefsData(context, "ignoreExifOrientation", false)
     }
 
     val inPreferQualityOverSpeedEnabled by lazy {

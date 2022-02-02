@@ -37,7 +37,7 @@ abstract class AbsBitmapDecoder(
     protected abstract fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
 
     private fun readExifOrientationWrapper(imageInfo: ImageInfo): Int =
-        if (request.disabledCorrectExifOrientation != true) {
+        if (request.ignoreExifOrientation != true) {
             readExifOrientation(imageInfo)
         } else {
             ExifInterface.ORIENTATION_UNDEFINED

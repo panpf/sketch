@@ -80,7 +80,7 @@ interface DisplayOptions : LoadOptions {
         private var resize: Resize? = null
         private var transformations: List<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
-        private var disabledCorrectExifOrientation: Boolean? = null
+        private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
         private var bitmapMemoryCachePolicy: CachePolicy? = null
@@ -105,7 +105,7 @@ interface DisplayOptions : LoadOptions {
             this.resize = request.resize
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
-            this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+            this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
             this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
@@ -284,9 +284,9 @@ interface DisplayOptions : LoadOptions {
             this.disabledBitmapPool = disabledBitmapPool
         }
 
-        fun disabledCorrectExifOrientation(disabledCorrectExifOrientation: Boolean? = true): Builder =
+        fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
             apply {
-                this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
+                this.ignoreExifOrientation = ignoreExifOrientation
             }
 
         fun bitmapMemoryCachePolicy(bitmapMemoryCachePolicy: CachePolicy?): Builder = apply {
@@ -366,7 +366,7 @@ interface DisplayOptions : LoadOptions {
                     resize = resize,
                     transformations = transformations,
                     disabledBitmapPool = disabledBitmapPool,
-                    disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                    ignoreExifOrientation = ignoreExifOrientation,
                     bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
@@ -385,7 +385,7 @@ interface DisplayOptions : LoadOptions {
                     resize = resize,
                     transformations = transformations,
                     disabledBitmapPool = disabledBitmapPool,
-                    disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                    ignoreExifOrientation = ignoreExifOrientation,
                     bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
@@ -408,7 +408,7 @@ interface DisplayOptions : LoadOptions {
         override val resize: Resize?,
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
-        override val disabledCorrectExifOrientation: Boolean?,
+        override val ignoreExifOrientation: Boolean?,
         override val bitmapMemoryCachePolicy: CachePolicy?,
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
@@ -429,7 +429,7 @@ interface DisplayOptions : LoadOptions {
             resize: Resize?,
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
-            disabledCorrectExifOrientation: Boolean?,
+            ignoreExifOrientation: Boolean?,
             bitmapMemoryCachePolicy: CachePolicy?,
             disabledAnimationDrawable: Boolean?,
             placeholderImage: StateImage?,
@@ -446,7 +446,7 @@ interface DisplayOptions : LoadOptions {
             resize = resize,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
-            disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+            ignoreExifOrientation = ignoreExifOrientation,
             bitmapMemoryCachePolicy = bitmapMemoryCachePolicy,
             disabledAnimationDrawable = disabledAnimationDrawable,
             placeholderImage = placeholderImage,

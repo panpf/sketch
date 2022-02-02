@@ -174,12 +174,12 @@ class PhotoListMenusViewModel(application1: Application) : LifecycleAndroidViewM
         add(MenuItemInfo(
             0,
             values = arrayOf(true, false),
-            initValue = application1.appSettingsService.disabledCorrectImageOrientation.value!!,
-            titles = arrayOf("Disabled Correct Image Orientation", "Enabled Correct Image Orientation"),
+            initValue = application1.appSettingsService.ignoreExifOrientation.value!!,
+            titles = arrayOf("Ignore Exif Orientation", "Correct Exif Orientation"),
             iconResIds = null,
             MenuItem.SHOW_AS_ACTION_NEVER
         ) { _, newValue ->
-            application1.appSettingsService.disabledCorrectImageOrientation.postValue(newValue)
+            application1.appSettingsService.ignoreExifOrientation.postValue(newValue)
             menuList.postValue(menuList.value)
         })
     }

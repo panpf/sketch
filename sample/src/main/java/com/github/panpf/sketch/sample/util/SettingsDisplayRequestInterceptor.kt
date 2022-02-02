@@ -27,8 +27,8 @@ class SettingsDisplayRequestInterceptor : RequestInterceptor<DisplayRequest, Dis
             if (appSettings.disabledBitmapPool.value == true) {
                 disabledBitmapPool(true)
             }
-            if (appSettings.disabledCorrectImageOrientation.value == true) {
-                disabledCorrectExifOrientation(true)
+            if (appSettings.ignoreExifOrientation.value == true) {
+                ignoreExifOrientation(true)
             }
             val target = chain.request.target
             if (target is ViewTarget<*>) {

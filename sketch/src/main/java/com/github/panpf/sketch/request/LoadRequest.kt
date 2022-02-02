@@ -96,9 +96,9 @@ interface LoadRequest : DownloadRequest {
     val disabledBitmapPool: Boolean?
 
     /**
-     * Disabled correcting the image orientation based on 'exifOrientation'
+     * Ignore exif orientation
      */
-    val disabledCorrectExifOrientation: Boolean?
+    val ignoreExifOrientation: Boolean?
 
     /**
      * @see com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
@@ -136,7 +136,7 @@ interface LoadRequest : DownloadRequest {
         private var resize: Resize? = null
         private var transformations: MutableSet<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
-        private var disabledCorrectExifOrientation: Boolean? = null
+        private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
         internal constructor(request: LoadRequest) : this(request.uriString) {
@@ -158,7 +158,7 @@ interface LoadRequest : DownloadRequest {
             this.resize = request.resize
             this.transformations = request.transformations?.toMutableSet()
             this.disabledBitmapPool = request.disabledBitmapPool
-            this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+            this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
         }
 
@@ -413,9 +413,9 @@ interface LoadRequest : DownloadRequest {
             this.disabledBitmapPool = disabledBitmapPool
         }
 
-        fun disabledCorrectExifOrientation(disabledCorrectExifOrientation: Boolean? = true): Builder =
+        fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
             apply {
-                this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
+                this.ignoreExifOrientation = ignoreExifOrientation
             }
 
         fun listener(listener: Listener<LoadRequest, LoadResult.Success, LoadResult.Error>?): Builder =
@@ -462,7 +462,7 @@ interface LoadRequest : DownloadRequest {
                 resize = resize,
                 transformations = transformations?.toList(),
                 disabledBitmapPool = disabledBitmapPool,
-                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                ignoreExifOrientation = ignoreExifOrientation,
                 listener = listener,
                 progressListener = progressListener,
             )
@@ -480,7 +480,7 @@ interface LoadRequest : DownloadRequest {
                 resize = resize,
                 transformations = transformations?.toList(),
                 disabledBitmapPool = disabledBitmapPool,
-                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                ignoreExifOrientation = ignoreExifOrientation,
                 listener = listener,
                 progressListener = progressListener,
             )
@@ -501,7 +501,7 @@ interface LoadRequest : DownloadRequest {
         override val resize: Resize?,
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
-        override val disabledCorrectExifOrientation: Boolean?,
+        override val ignoreExifOrientation: Boolean?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
         override val progressListener: ProgressListener<ImageRequest>?,
     ) : LoadRequest {
@@ -521,7 +521,7 @@ interface LoadRequest : DownloadRequest {
             resize: Resize?,
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
-            disabledCorrectExifOrientation: Boolean?,
+            ignoreExifOrientation: Boolean?,
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
             progressListener: ProgressListener<ImageRequest>?
         ) : this(
@@ -537,7 +537,7 @@ interface LoadRequest : DownloadRequest {
             resize = resize,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
-            disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+            ignoreExifOrientation = ignoreExifOrientation,
             listener = listener,
             progressListener = progressListener,
         ) {
@@ -606,8 +606,8 @@ interface LoadRequest : DownloadRequest {
                 if (disabledBitmapPool == true) {
                     append("_").append("disabledBitmapPool")
                 }
-                if (disabledCorrectExifOrientation == true) {
-                    append("_").append("disabledCorrectExifOrientation")
+                if (ignoreExifOrientation == true) {
+                    append("_").append("ignoreExifOrientation")
                 }
                 bitmapResultDiskCachePolicy?.let {
                     append("_").append("bitmapResultDiskCachePolicy($it)")
@@ -660,8 +660,8 @@ internal fun LoadRequest.newQualityKey(): String? {
         transformations?.takeIf { it.isNotEmpty() }?.let { list ->
             add("transformations(${list.joinToString(separator = ",") { it.cacheKey }})")
         }
-        if (disabledCorrectExifOrientation == true) {
-            add("disabledCorrectExifOrientation")
+        if (ignoreExifOrientation == true) {
+            add("ignoreExifOrientation")
         }
     }
     return fragmentList.takeIf { it.isNotEmpty() }

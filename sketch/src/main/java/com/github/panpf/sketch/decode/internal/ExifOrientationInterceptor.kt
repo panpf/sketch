@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode.internal
 
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
@@ -9,15 +10,20 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>
     ): BitmapDecodeResult {
-        val bitmapResult = chain.proceed(chain.request)
-        val imageOrientationCorrector = ExifOrientationHelper(bitmapResult.exifOrientation)
+        val request = chain.request
+        val bitmapResult = chain.proceed(request)
+        val exifOrientationHelper = if (request.ignoreExifOrientation != true) {
+            ExifOrientationHelper(bitmapResult.exifOrientation)
+        } else {
+            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
+        }
         val bitmapPool = chain.sketch.bitmapPool
         val bitmap = bitmapResult.bitmap
-        val newBitmap = imageOrientationCorrector.applyOrientation(bitmap, bitmapPool)
+        val newBitmap = exifOrientationHelper.applyOrientation(bitmap, bitmapPool)
         return if (newBitmap != null) {
             bitmapPool.free(bitmap)
             bitmapResult.new(newBitmap) {
-                addTransformed(ExifOrientationTransformed(imageOrientationCorrector.exifOrientation))
+                addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
             }
         } else {
             bitmapResult

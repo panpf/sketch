@@ -46,7 +46,7 @@ interface LoadOptions : DownloadOptions {
     val resize: Resize?
     val transformations: List<Transformation>?
     val disabledBitmapPool: Boolean?
-    val disabledCorrectExifOrientation: Boolean?
+    val ignoreExifOrientation: Boolean?
     val bitmapResultDiskCachePolicy: CachePolicy?
 
     @Suppress("DEPRECATION")
@@ -58,7 +58,7 @@ interface LoadOptions : DownloadOptions {
                 && preferQualityOverSpeed == null
                 && transformations == null
                 && disabledBitmapPool == null
-                && disabledCorrectExifOrientation == null
+                && ignoreExifOrientation == null
                 && bitmapResultDiskCachePolicy == null
 
     fun newLoadOptionsBuilder(
@@ -90,7 +90,7 @@ interface LoadOptions : DownloadOptions {
         private var resize: Resize? = null
         private var transformations: MutableSet<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
-        private var disabledCorrectExifOrientation: Boolean? = null
+        private var ignoreExifOrientation: Boolean? = null
         private var bitmapResultDiskCachePolicy: CachePolicy? = null
 
         constructor()
@@ -112,7 +112,7 @@ interface LoadOptions : DownloadOptions {
             this.resize = request.resize
             this.transformations = request.transformations?.toMutableSet()
             this.disabledBitmapPool = request.disabledBitmapPool
-            this.disabledCorrectExifOrientation = request.disabledCorrectExifOrientation
+            this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
         }
 
@@ -275,9 +275,9 @@ interface LoadOptions : DownloadOptions {
             this.disabledBitmapPool = disabledBitmapPool
         }
 
-        fun disabledCorrectExifOrientation(disabledCorrectExifOrientation: Boolean? = true): Builder =
+        fun ignoreExifOrientation(ignoreExifOrientation: Boolean? = true): Builder =
             apply {
-                this.disabledCorrectExifOrientation = disabledCorrectExifOrientation
+                this.ignoreExifOrientation = ignoreExifOrientation
             }
 
         fun build(): LoadOptions = if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -294,7 +294,7 @@ interface LoadOptions : DownloadOptions {
                 resize = resize,
                 transformations = transformations?.toList(),
                 disabledBitmapPool = disabledBitmapPool,
-                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                ignoreExifOrientation = ignoreExifOrientation,
             )
         } else {
             LoadOptionsImpl(
@@ -309,7 +309,7 @@ interface LoadOptions : DownloadOptions {
                 resize = resize,
                 transformations = transformations?.toList(),
                 disabledBitmapPool = disabledBitmapPool,
-                disabledCorrectExifOrientation = disabledCorrectExifOrientation,
+                ignoreExifOrientation = ignoreExifOrientation,
             )
         }
     }
@@ -327,7 +327,7 @@ interface LoadOptions : DownloadOptions {
         override val resize: Resize?,
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
-        override val disabledCorrectExifOrientation: Boolean?,
+        override val ignoreExifOrientation: Boolean?,
     ) : LoadOptions {
 
         @RequiresApi(VERSION_CODES.O)
@@ -344,7 +344,7 @@ interface LoadOptions : DownloadOptions {
             resize: Resize?,
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
-            disabledCorrectExifOrientation: Boolean?,
+            ignoreExifOrientation: Boolean?,
         ) : this(
             depth,
             parameters,
@@ -357,7 +357,7 @@ interface LoadOptions : DownloadOptions {
             resize,
             transformations,
             disabledBitmapPool,
-            disabledCorrectExifOrientation,
+            ignoreExifOrientation,
         ) {
             _colorSpace = colorSpace
         }

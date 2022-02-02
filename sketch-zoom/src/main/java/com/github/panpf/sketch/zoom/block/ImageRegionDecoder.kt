@@ -63,7 +63,7 @@ class ImageRegionDecoder(
         @Throws(IOException::class)
         fun build(
             imageUri: String,
-            correctImageOrientationDisabled: Boolean,
+            ignoreExifOrientation: Boolean,
             sketch: Sketch
         ): ImageRegionDecoder {
             val request = LoadRequest(imageUri) // todo 请求要从 view 中去
@@ -76,7 +76,7 @@ class ImageRegionDecoder(
 
             // 读取图片方向并根据方向改变尺寸
             var exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
-            if (!correctImageOrientationDisabled) {
+            if (!ignoreExifOrientation) {
                 exifOrientation = fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
             }
             val exifOrientationHelper = ExifOrientationHelper(exifOrientation)

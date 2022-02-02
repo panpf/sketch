@@ -8,7 +8,7 @@ import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
 
-// todo 融合 ResizeInterceptor 和 ExifOrientationCorrectInterceptor
+// todo 融合 ResizeInterceptor 和 ExifOrientationHelperInterceptor
 class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
     override suspend fun intercept(
