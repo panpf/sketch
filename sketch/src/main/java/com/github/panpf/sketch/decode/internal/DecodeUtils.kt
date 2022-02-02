@@ -21,6 +21,8 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import java.io.IOException
@@ -30,40 +32,41 @@ fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
         inJustDecodeBounds = true
     }
     decodeBitmapWithBitmapFactory(boundOptions)
-    if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-        val message = "Invalid image size: ${boundOptions.outWidth}x${boundOptions.outHeight}"
-        throw Exception(message)
-    }
-    if (boundOptions.outMimeType?.isEmpty() != false) {
-        val message = "Invalid image mimeType: null"
-        throw Exception(message)
-    }
-
-    val exifOrientation: Int = ExifOrientationCorrector
-        .readExifOrientation(boundOptions.outMimeType, this)
-    return ImageInfo(
-        boundOptions.outMimeType,
-        boundOptions.outWidth,
-        boundOptions.outHeight,
-        exifOrientation
-    )
+    val mimeType = boundOptions.outMimeType ?: ""
+    val exifOrientation: Int = readExifOrientationWithMimeType(mimeType)
+    return ImageInfo(boundOptions.outWidth, boundOptions.outHeight, mimeType, exifOrientation)
 }
 
-fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? = try {
-    readImageInfoWithBitmapFactory()
-} catch (e: Throwable) {
-    e.printStackTrace()
-    null
+fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
+    val imageInfo = readImageInfoWithBitmapFactory()
+    val width = imageInfo.width
+    val height = imageInfo.height
+    val mimeType = imageInfo.mimeType
+    if (width <= 0 || height <= 0 || mimeType.isEmpty()) {
+        throw Exception("Invalid image, size=${width}x${height}, imageType='${mimeType}'")
+    }
+    return imageInfo
 }
+
+fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
+    readImageInfoWithBitmapFactory().takeIf {
+        it.width > 0 && it.height > 0 && it.mimeType.isNotEmpty()
+    }
 
 @Throws(IOException::class)
-fun DataSource.decodeBitmapWithBitmapFactory(options: BitmapFactory.Options): Bitmap? =
+fun DataSource.decodeBitmapWithBitmapFactory(options: BitmapFactory.Options? = null): Bitmap? =
     newInputStream().use {
         BitmapFactory.decodeStream(it, null, options)
     }
 
+fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
+    this == ImageFormat.JPEG
+            || this == ImageFormat.PNG
+            || this == ImageFormat.WEBP
+            || (VERSION.SDK_INT >= VERSION_CODES.P && this == HEIF)
+
 @Throws(IOException::class)
-fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options): Bitmap? =
+fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =
     newInputStream().use {
         @Suppress("DEPRECATION")
         val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {
@@ -78,41 +81,18 @@ fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options)
         }
     }
 
-/**
- * 通过异常类型以及 message 确定是不是由 inBitmap 导致的解码失败
- */
-fun isInBitmapError(
-    throwable: Throwable,
-    fromBitmapRegionDecoder: Boolean
-): Boolean =
-    if (!fromBitmapRegionDecoder && throwable is IllegalArgumentException) {
+fun isInBitmapError(throwable: Throwable): Boolean =
+    if (throwable is IllegalArgumentException) {
         val message = throwable.message.orEmpty()
         (message == "Problem decoding into existing bitmap" || message.contains("bitmap"))
     } else {
         false
     }
 
-/**
- * 通过异常类型以及 message 确定是不是由 srcRect 导致的解码失败
- */
-fun isSrcRectError(
-    throwable: Throwable,
-    imageWidth: Int,
-    imageHeight: Int,
-    srcRect: Rect
-): Boolean =
+fun isSrcRectError(throwable: Throwable): Boolean =
     if (throwable is IllegalArgumentException) {
-        if (srcRect.left >= imageWidth
-            && srcRect.top >= imageHeight
-            && srcRect.right <= imageWidth
-            && srcRect.bottom <= imageHeight
-        ) {
-            val message = throwable.message
-            message != null && (message == "rectangle is outside the image srcRect"
-                    || message.contains("srcRect"))
-        } else {
-            true
-        }
+        val message = throwable.message.orEmpty()
+        message == "rectangle is outside the image srcRect" || message.contains("srcRect")
     } else {
         false
     }

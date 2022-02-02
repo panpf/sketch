@@ -43,7 +43,7 @@ class SvgBitmapDecoder(
             width = svg.documentWidth.toInt()
             height = svg.documentHeight.toInt()
         }
-        return ImageInfo(MIME_TYPE, width, height, ExifInterface.ORIENTATION_UNDEFINED)
+        return ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {

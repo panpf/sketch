@@ -26,9 +26,9 @@ class XmlDrawableBitmapDecoder(
         val bitmap = drawableToBitmap(drawable, false, sketch.bitmapPool)
         // todo bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
-            "image/android-xml",
             bitmap.width,
             bitmap.height,
+            "image/android-xml",
             ExifInterface.ORIENTATION_UNDEFINED
         )
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL)

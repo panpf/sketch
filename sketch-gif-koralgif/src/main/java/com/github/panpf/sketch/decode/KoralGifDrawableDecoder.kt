@@ -53,7 +53,7 @@ class KoralGifDrawableDecoder(
         }
         val width = gifDrawable.intrinsicWidth
         val height = gifDrawable.intrinsicHeight
-        val imageInfo = ImageInfo(MIME_TYPE, width, height, ExifInterface.ORIENTATION_UNDEFINED)
+        val imageInfo = ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
         val drawable = SketchKoralGifDrawable(
             request.key,
             request.uriString,

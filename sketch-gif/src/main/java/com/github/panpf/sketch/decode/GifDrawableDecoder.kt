@@ -65,7 +65,7 @@ class GifDrawableDecoder constructor(
         // Set the animated transformation to be applied on each frame.
         movieDrawable.setAnimatedTransformation(request.animatedTransformation())
 
-        val imageInfo = ImageInfo(MIME_TYPE, width, height, ExifInterface.ORIENTATION_UNDEFINED)
+        val imageInfo = ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
 
         return DrawableDecodeResult(
             drawable = SketchGifDrawable(

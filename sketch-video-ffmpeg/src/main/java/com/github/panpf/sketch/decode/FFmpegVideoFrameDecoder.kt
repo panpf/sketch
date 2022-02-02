@@ -74,7 +74,7 @@ class FFmpegVideoFrameDecoder(
             } else {
                 ExifInterface.ORIENTATION_UNDEFINED
             }
-        return ImageInfo(mimeType, srcWidth, srcHeight, exifOrientation)
+        return ImageInfo(srcWidth, srcHeight, mimeType, exifOrientation)
     }
 
     override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {

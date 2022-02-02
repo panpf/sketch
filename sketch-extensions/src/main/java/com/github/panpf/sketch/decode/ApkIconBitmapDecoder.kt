@@ -27,9 +27,9 @@ class ApkIconBitmapDecoder(
         )
         // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
-            MIME_TYPE,
             bitmap.width,
             bitmap.height,
+            MIME_TYPE,
             ExifInterface.ORIENTATION_UNDEFINED
         )
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL)

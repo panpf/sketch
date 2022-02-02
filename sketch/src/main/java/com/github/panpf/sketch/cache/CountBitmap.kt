@@ -19,7 +19,7 @@ import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
@@ -61,7 +61,7 @@ class CountBitmap constructor(
             imageInfo.width,
             imageInfo.height,
             imageInfo.mimeType,
-            ExifOrientationCorrector.toName(imageInfo.exifOrientation),
+            exifOrientationName(imageInfo.exifOrientation),
             initBitmap.width,
             initBitmap.height,
             initBitmap.config,

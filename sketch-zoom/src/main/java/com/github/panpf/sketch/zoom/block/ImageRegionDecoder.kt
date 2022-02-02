@@ -26,6 +26,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
+import com.github.panpf.sketch.decode.internal.newExifOrientationCorrectorWithExifOrientation
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.LoadRequest
 import kotlinx.coroutines.runBlocking
@@ -82,7 +83,7 @@ class ImageRegionDecoder(
                 exifOrientation = imageInfo.exifOrientation
             }
             val exifOrientationCorrector =
-                ExifOrientationCorrector.fromExifOrientation(exifOrientation)
+                newExifOrientationCorrectorWithExifOrientation(exifOrientation)
             exifOrientationCorrector?.rotateSize(imageSize)
             val regionDecoder: BitmapRegionDecoder = fetchResult.dataSource.newInputStream().use {
                 if (VERSION.SDK_INT >= VERSION_CODES.S) {

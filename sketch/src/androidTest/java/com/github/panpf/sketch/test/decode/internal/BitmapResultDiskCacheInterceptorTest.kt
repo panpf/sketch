@@ -36,7 +36,7 @@ class BitmapResultDiskCacheInterceptorTest {
         Assert.assertEquals(323, result.bitmap.width)
         Assert.assertEquals(484, result.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(mimeType='image/jpeg',width=1291,height=1936,exifOrientation=NORMAL)",
+            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg',exifOrientation=NORMAL)",
             result.imageInfo.toString()
         )
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
@@ -48,7 +48,7 @@ class BitmapResultDiskCacheInterceptorTest {
         Assert.assertEquals(323, result1.bitmap.width)
         Assert.assertEquals(484, result1.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(mimeType='image/jpeg',width=1291,height=1936,exifOrientation=NORMAL)",
+            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg',exifOrientation=NORMAL)",
             result1.imageInfo.toString()
         )
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)

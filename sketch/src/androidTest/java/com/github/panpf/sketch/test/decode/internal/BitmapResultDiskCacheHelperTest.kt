@@ -69,7 +69,7 @@ class BitmapResultDiskCacheHelperTest {
         // There are the
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo("image/jpeg", 1291, 1936, 0),
+            ImageInfo(1291, 1936, "image/jpeg", 0),
             DataFrom.LOCAL,
             listOf(InSampledTransformed(4))
         )
@@ -107,7 +107,7 @@ class BitmapResultDiskCacheHelperTest {
         // transformedList empty
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo("image/jpeg", 1291, 1936, 0),
+            ImageInfo(1291, 1936, "image/jpeg", 0),
             DataFrom.LOCAL,
             null
         )
@@ -118,7 +118,7 @@ class BitmapResultDiskCacheHelperTest {
 
         val bitmapDecodeResult1 = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo("image/jpeg", 1291, 1936, 0),
+            ImageInfo(1291, 1936, "image/jpeg", 0),
             DataFrom.LOCAL,
             listOf(InSampledTransformed(4))
         )

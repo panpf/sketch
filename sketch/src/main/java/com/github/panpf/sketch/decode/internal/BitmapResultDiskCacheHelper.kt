@@ -64,17 +64,7 @@ class BitmapResultDiskCacheHelper internal constructor(
                         request.newDecodeConfigByQualityParams(imageInfo.mimeType)
                             .toBitmapOptions()
                     )
-                    if (bitmap.width > 1 && bitmap.height > 1) {
-                        BitmapDecodeResult(bitmap, imageInfo, RESULT_DISK_CACHE)
-                    } else {
-                        bitmap.recycle()
-                        val msg =
-                            "Invalid image size in result cache: ${bitmap.width}x${bitmap.height}"
-                        logger.e(MODULE, msg)
-                        bitmapDataDiskCacheSnapshot.remove()
-                        metaDataDiskCacheSnapshot.remove()
-                        null
-                    }
+                    BitmapDecodeResult(bitmap, imageInfo, RESULT_DISK_CACHE)
                 } else {
                     bitmapDataDiskCacheSnapshot?.remove()
                     metaDataDiskCacheSnapshot?.remove()

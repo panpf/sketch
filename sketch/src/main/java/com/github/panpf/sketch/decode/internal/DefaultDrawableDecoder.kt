@@ -14,6 +14,7 @@ class DefaultDrawableDecoder(
     private val fetchResult: FetchResult
 ) : DrawableDecoder {
 
+    // todo support ImageDecoder gif wep animation heif animation
     override suspend fun decodeDrawable(): DrawableDecodeResult =
         withContext(sketch.decodeTaskDispatcher) {
             val memoryCacheHelper = newBitmapMemoryCacheHelper(sketch, request)

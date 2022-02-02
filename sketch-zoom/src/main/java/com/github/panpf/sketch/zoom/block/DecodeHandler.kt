@@ -115,7 +115,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
             val inBitmap = options.inBitmap
-            if (inBitmap != null && isInBitmapError(throwable, true)) {
+            if (inBitmap != null && isInBitmapError(throwable)) {
                 disableInBitmap = true
                 val message =
                     "Bitmap region decode error. Because inBitmap. uri=${regionDecoder.imageUri}"
@@ -128,7 +128,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
                 } catch (throwable1: Throwable) {
                     throwable1.printStackTrace()
                 }
-            } else if (isSrcRectError(throwable, imageSize.x, imageSize.y, srcRect)) {
+            } else if (isSrcRectError(throwable)) {
                 val message =
                     "Bitmap region decode error. Because srcRect. imageUri=%s, imageSize=%dx%d, imageMimeType=%s, srcRect=%s, inSampleSize=%d".format(
                         regionDecoder.imageUri,

@@ -27,8 +27,6 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.panpf.sketch.ImageFormat
-import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.cache.BitmapPool
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -82,12 +80,6 @@ internal fun Lifecycle.removeAndAddObserver(observer: LifecycleObserver) {
     removeObserver(observer)
     addObserver(observer)
 }
-
-fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
-    this == ImageFormat.JPEG
-            || this == ImageFormat.PNG
-            || this == ImageFormat.WEBP
-            || (VERSION.SDK_INT >= VERSION_CODES.P && this == HEIF)
 
 /**
  * 获取 [Bitmap] 占用内存大小，单位字节

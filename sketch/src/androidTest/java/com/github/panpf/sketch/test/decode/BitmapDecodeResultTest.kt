@@ -20,12 +20,12 @@ class BitmapDecodeResultTest {
     @Test
     fun testConstructor() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
-        val imageInfo = ImageInfo("image/png", 3000, 500, 0)
+        val imageInfo = ImageInfo(3000, 500, "image/png", 0)
         val transformedList = listOf(InSampledTransformed(4), RotateTransformed(45))
         BitmapDecodeResult(newBitmap, imageInfo, LOCAL, transformedList).apply {
             Assert.assertTrue(newBitmap === bitmap)
             Assert.assertEquals(
-                "ImageInfo(mimeType='image/png',width=3000,height=500,exifOrientation=UNDEFINED)",
+                "ImageInfo(width=3000,height=500,mimeType='image/png',exifOrientation=UNDEFINED)",
                 imageInfo.toString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -39,7 +39,7 @@ class BitmapDecodeResultTest {
     @Test
     fun testNew() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
-        val imageInfo = ImageInfo("image/png", 3000, 500, 0)
+        val imageInfo = ImageInfo(3000, 500, "image/png", 0)
         val transformedList = listOf(InSampledTransformed(4), RotateTransformed(45))
         val result = BitmapDecodeResult(newBitmap, imageInfo, LOCAL, transformedList)
         Assert.assertEquals(

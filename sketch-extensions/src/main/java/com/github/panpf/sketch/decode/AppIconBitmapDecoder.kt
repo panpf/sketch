@@ -34,9 +34,9 @@ class AppIconBitmapDecoder(
         val bitmap = drawableToBitmap(iconDrawable, false, sketch.bitmapPool)
         // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
-            AppIconUriFetcher.MIME_TYPE,
             bitmap.width,
             bitmap.height,
+            AppIconUriFetcher.MIME_TYPE,
             ExifInterface.ORIENTATION_UNDEFINED
         )
         return BitmapDecodeResult(bitmap, imageInfo, LOCAL)

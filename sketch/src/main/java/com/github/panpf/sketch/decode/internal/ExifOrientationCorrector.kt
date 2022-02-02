@@ -28,6 +28,47 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 
+fun DataSource.readExifOrientation(): Int =
+    newInputStream().use {
+        ExifInterface(it).getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
+    }
+
+fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
+    if (ExifInterface.isSupportedMimeType(mimeType)) {
+        newInputStream().use {
+            ExifInterface(it).getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
+        }
+    } else {
+        ExifInterface.ORIENTATION_UNDEFINED
+    }
+
+fun newExifOrientationCorrectorWithExifOrientation(exifOrientation: Int): ExifOrientationCorrector? =
+    if (exifOrientation != ExifInterface.ORIENTATION_UNDEFINED && exifOrientation != ExifInterface.ORIENTATION_NORMAL) {
+        ExifOrientationCorrector(exifOrientation)
+    } else {
+        null
+    }
+
+fun exifOrientationName(exifOrientation: Int): String =
+    when (exifOrientation) {
+        ExifInterface.ORIENTATION_ROTATE_90 -> "ROTATE_90"
+        ExifInterface.ORIENTATION_TRANSPOSE -> "TRANSPOSE"
+        ExifInterface.ORIENTATION_ROTATE_180 -> "ROTATE_180"
+        ExifInterface.ORIENTATION_FLIP_VERTICAL -> "FLIP_VERTICAL"
+        ExifInterface.ORIENTATION_ROTATE_270 -> "ROTATE_270"
+        ExifInterface.ORIENTATION_TRANSVERSE -> "TRANSVERSE"
+        ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> "FLIP_HORIZONTAL"
+        ExifInterface.ORIENTATION_UNDEFINED -> "UNDEFINED"
+        ExifInterface.ORIENTATION_NORMAL -> "NORMAL"
+        else -> exifOrientation.toString()
+    }
+
 /**
  * 图片方向纠正器，可让原本被旋转了的图片以正常方向显示
  */
@@ -83,9 +124,9 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
         val newRect = RectF(0F, 0F, imageInfo.width.toFloat(), imageInfo.height.toFloat())
         matrix.mapRect(newRect)
         return ImageInfo(
-            imageInfo.mimeType,
             newRect.width().toInt(),
             newRect.height().toInt(),
+            imageInfo.mimeType,
             imageInfo.exifOrientation
         )
     }
@@ -171,42 +212,5 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
         canvas.drawBitmap(bitmap, matrix, paint)
         return result
-    }
-
-    companion object {
-
-        fun fromExifOrientation(exifOrientation: Int): ExifOrientationCorrector? =
-            if (exifOrientation != ExifInterface.ORIENTATION_UNDEFINED && exifOrientation != ExifInterface.ORIENTATION_NORMAL) {
-                ExifOrientationCorrector(exifOrientation)
-            } else {
-                null
-            }
-
-        fun readExifOrientation(mimeType: String, dataSource: DataSource): Int =
-            if (ExifInterface.isSupportedMimeType(mimeType)) {
-                dataSource.newInputStream().use {
-                    ExifInterface(it).getAttributeInt(
-                        ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_UNDEFINED
-                    )
-                }
-            } else {
-                ExifInterface.ORIENTATION_UNDEFINED
-            }
-
-        fun toName(exifOrientation: Int): String {
-            return when (exifOrientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> "ROTATE_90"
-                ExifInterface.ORIENTATION_TRANSPOSE -> "TRANSPOSE"
-                ExifInterface.ORIENTATION_ROTATE_180 -> "ROTATE_180"
-                ExifInterface.ORIENTATION_FLIP_VERTICAL -> "FLIP_VERTICAL"
-                ExifInterface.ORIENTATION_ROTATE_270 -> "ROTATE_270"
-                ExifInterface.ORIENTATION_TRANSVERSE -> "TRANSVERSE"
-                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> "FLIP_HORIZONTAL"
-                ExifInterface.ORIENTATION_UNDEFINED -> "UNDEFINED"
-                ExifInterface.ORIENTATION_NORMAL -> "NORMAL"
-                else -> exifOrientation.toString()
-            }
-        }
     }
 }

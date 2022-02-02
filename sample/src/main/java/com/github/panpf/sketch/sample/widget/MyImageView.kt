@@ -9,7 +9,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.panpf.activity.monitor.ActivityMonitor
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
@@ -63,8 +63,7 @@ open class MyImageView @JvmOverloads constructor(
                 "image: ${
                     drawable.run {
                         val size = "${imageWidth}x${imageHeight}"
-                        val exifOrieName = ExifOrientationCorrector.toName(imageExifOrientation)
-                        "$size, ${imageMimeType}, ${exifOrieName}"
+                        "$size, ${imageMimeType}, ${exifOrientationName(imageExifOrientation)}"
                     }
                 }"
             )

@@ -11,7 +11,7 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
     ): BitmapDecodeResult {
         val bitmapResult = chain.proceed(chain.request)
         val imageOrientationCorrector =
-            ExifOrientationCorrector.fromExifOrientation(bitmapResult.imageInfo.exifOrientation)
+            newExifOrientationCorrectorWithExifOrientation(bitmapResult.imageInfo.exifOrientation)
         return if (imageOrientationCorrector != null) {
             val bitmapPool = chain.sketch.bitmapPool
             val bitmap = bitmapResult.bitmap
@@ -34,7 +34,7 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
 
 class ExifOrientationTransformed(val exifOrientation: Int) : Transformed {
     override val key: String =
-        "ExifOrientationTransformed(${ExifOrientationCorrector.toName(exifOrientation)}"
+        "ExifOrientationTransformed(${exifOrientationName(exifOrientation)}"
     override val cacheResultToDisk: Boolean = true
 
     override fun toString(): String = key

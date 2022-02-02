@@ -12,33 +12,33 @@ class ImageInfoTest {
 
     @Test
     fun testConstructor() {
-        ImageInfo("image/jpeg", 57, 34, 0).apply {
-            Assert.assertEquals("image/jpeg", mimeType)
+        ImageInfo(57, 34, "image/jpeg", 0).apply {
             Assert.assertEquals(57, width)
             Assert.assertEquals(34, height)
+            Assert.assertEquals("image/jpeg", mimeType)
             Assert.assertEquals(0, exifOrientation)
         }
 
-        ImageInfo("image/png", 570, 340, ExifInterface.ORIENTATION_ROTATE_180).apply {
-            Assert.assertEquals("image/png", mimeType)
+        ImageInfo(570, 340, "image/png", ExifInterface.ORIENTATION_ROTATE_180).apply {
             Assert.assertEquals(570, width)
             Assert.assertEquals(340, height)
+            Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_180, exifOrientation)
         }
     }
 
     @Test
     fun testToString() {
-        ImageInfo("image/jpeg", 57, 34, 0).apply {
+        ImageInfo(57, 34, "image/jpeg", 0).apply {
             Assert.assertEquals(
-                "ImageInfo(mimeType='image/jpeg',width=57,height=34,exifOrientation=UNDEFINED)",
+                "ImageInfo(width=57,height=34,mimeType='image/jpeg',exifOrientation=UNDEFINED)",
                 toString()
             )
         }
 
-        ImageInfo("image/png", 570, 340, ExifInterface.ORIENTATION_ROTATE_180).apply {
+        ImageInfo(570, 340, "image/png", ExifInterface.ORIENTATION_ROTATE_180).apply {
             Assert.assertEquals(
-                "ImageInfo(mimeType='image/png',width=570,height=340,exifOrientation=ROTATE_180)",
+                "ImageInfo(width=570,height=340,mimeType='image/png',exifOrientation=ROTATE_180)",
                 toString()
             )
         }
@@ -46,7 +46,7 @@ class ImageInfoTest {
 
     @Test
     fun testJSON() {
-        val imageInfo = ImageInfo("image/png", 570, 340, ExifInterface.ORIENTATION_ROTATE_180)
+        val imageInfo = ImageInfo(570, 340, "image/png", ExifInterface.ORIENTATION_ROTATE_180)
         Assert.assertEquals(
             "{\"mimeType\":\"image\\/png\",\"width\":570,\"height\":340,\"exifOrientation\":3}",
             imageInfo.toJsonString()

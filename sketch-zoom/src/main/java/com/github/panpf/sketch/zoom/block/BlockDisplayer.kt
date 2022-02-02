@@ -27,10 +27,10 @@ import android.text.TextUtils
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
+import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.getLastDrawable
-import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
 import com.github.panpf.sketch.zoom.internal.getScale

@@ -10,7 +10,6 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.util.supportBitmapRegionDecoder
 
 open class DefaultBitmapDecoder(
     sketch: Sketch,
@@ -22,7 +21,7 @@ open class DefaultBitmapDecoder(
         const val MODULE = "DefaultBitmapDecoder"
     }
 
-    override fun readImageInfo(): ImageInfo = dataSource.readImageInfoWithBitmapFactory()
+    override fun readImageInfo(): ImageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
 
     override fun canDecodeRegion(imageInfo: ImageInfo): Boolean =
         ImageFormat.valueOfMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
@@ -45,7 +44,7 @@ open class DefaultBitmapDecoder(
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             when {
-                inBitmap != null && isInBitmapError(throwable, true) -> {
+                inBitmap != null && isInBitmapError(throwable) -> {
                     val message =
                         "Bitmap region decode error. Because inBitmap. uri=${request.uriString}"
                     logger.e(MODULE, throwable, message)
@@ -59,7 +58,7 @@ open class DefaultBitmapDecoder(
                         throw BitmapDecodeException(request, message2, throwable2)
                     }
                 }
-                isSrcRectError(throwable, imageInfo.width, imageInfo.height, srcRect) -> {
+                isSrcRectError(throwable) -> {
                     val message =
                         "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, resize=${request.resize}, srcRect=${srcRect}"
                     throw BitmapDecodeException(request, message, throwable)
@@ -71,9 +70,9 @@ open class DefaultBitmapDecoder(
         } ?: throw BitmapDecodeException(
             request, "Bitmap region decode return null"
         )
-        if (bitmap.width <= 1 || bitmap.height <= 1) {
+        if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
-            val message = "Invalid image size: ${bitmap.width}x${bitmap.height}"
+            val message = "Invalid image, size=${bitmap.width}x${bitmap.height}"
             throw BitmapDecodeException(request, message)
         }
         return bitmap
@@ -92,7 +91,7 @@ open class DefaultBitmapDecoder(
             dataSource.decodeBitmapWithBitmapFactory(decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
-            if (inBitmap != null && isInBitmapError(throwable, false)) {
+            if (inBitmap != null && isInBitmapError(throwable)) {
                 val message = "Bitmap decode error. Because inBitmap. uri=%s"
                     .format(request.uriString)
                 logger.e(MODULE, throwable, message)
@@ -108,9 +107,9 @@ open class DefaultBitmapDecoder(
                 throw BitmapDecodeException(request, "Bitmap decode error", throwable)
             }
         } ?: throw BitmapDecodeException(request, "Bitmap decode return null")
-        if (bitmap.width <= 1 || bitmap.height <= 1) {
+        if (bitmap.width <= 0 || bitmap.height <= 0) {
             bitmap.recycle()
-            val message = "Invalid image size. ${bitmap.width}x${bitmap.height}"
+            val message = "Invalid image, size=${bitmap.width}x${bitmap.height}"
             throw BitmapDecodeException(request, message)
         }
         return bitmap
@@ -120,7 +119,7 @@ open class DefaultBitmapDecoder(
 
     }
 
-    class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
+    class Factory : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch, request: LoadRequest, fetchResult: FetchResult

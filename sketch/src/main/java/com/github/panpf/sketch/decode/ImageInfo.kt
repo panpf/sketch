@@ -15,14 +15,14 @@
  */
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import org.json.JSONException
 import org.json.JSONObject
 
 data class ImageInfo constructor(
-    val mimeType: String,
     val width: Int,
     val height: Int,
+    val mimeType: String,
     val exifOrientation: Int
 ) {
 
@@ -34,8 +34,8 @@ data class ImageInfo constructor(
     }.toString()
 
     override fun toString(): String {
-        val exifOrientationName = ExifOrientationCorrector.toName(exifOrientation)
-        return "ImageInfo(mimeType='$mimeType',width=$width,height=$height,exifOrientation=${exifOrientationName})"
+        val exifOrientationName = exifOrientationName(exifOrientation)
+        return "ImageInfo(width=$width,height=$height,mimeType='$mimeType',exifOrientation=${exifOrientationName})"
     }
 
     companion object {
@@ -43,9 +43,9 @@ data class ImageInfo constructor(
         fun fromJsonString(jsonString: String): ImageInfo {
             val json = JSONObject(jsonString)
             return ImageInfo(
-                json.getString("mimeType"),
                 json.getInt("width"),
                 json.getInt("height"),
+                json.getString("mimeType"),
                 json.getInt("exifOrientation"),
             )
         }

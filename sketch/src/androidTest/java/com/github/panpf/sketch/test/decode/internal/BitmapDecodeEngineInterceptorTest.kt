@@ -30,7 +30,7 @@ class BitmapDecodeEngineInterceptorTest {
         Assert.assertEquals(1291, result.bitmap.width)
         Assert.assertEquals(1936, result.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(mimeType='image/jpeg',width=1291,height=1936,exifOrientation=NORMAL)",
+            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg',exifOrientation=NORMAL)",
             result.imageInfo.toString()
         )
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)

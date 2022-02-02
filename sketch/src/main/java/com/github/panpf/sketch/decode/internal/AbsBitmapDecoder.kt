@@ -39,7 +39,7 @@ abstract class AbsBitmapDecoder(
         val resize = request.resize
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val imageOrientationCorrector =
-            ExifOrientationCorrector.fromExifOrientation(imageInfo.exifOrientation)
+            newExifOrientationCorrectorWithExifOrientation(imageInfo.exifOrientation)
 
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
