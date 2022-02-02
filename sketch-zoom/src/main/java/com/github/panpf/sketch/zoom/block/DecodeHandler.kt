@@ -17,7 +17,6 @@ package com.github.panpf.sketch.zoom.block
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -91,13 +90,12 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
             )
             return
         }
-        val srcRect = Rect(block.srcRect)
         val inSampleSize = block.inSampleSize
 
         // 根据图片方向恢复src区域的真实位置
         val imageSize = regionDecoder.imageSize
-        regionDecoder.exifOrientationHelper
-            ?.reverseRotateRect(srcRect, imageSize.width, imageSize.height)
+        val srcRect = regionDecoder.exifOrientationHelper
+            .reverseRotateRect(block.srcRect, imageSize.width, imageSize.height)
         val options = BitmapFactory.Options()
         options.inSampleSize = inSampleSize
 //        val imageType = regionDecoder.imageFormat
@@ -158,7 +156,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
         // 旋转图片
         val newBitmap =
-            regionDecoder.exifOrientationHelper?.applyOrientation(bitmap, bitmapPool)
+            regionDecoder.exifOrientationHelper.applyOrientation(bitmap, bitmapPool)
         if (newBitmap != null) {
             bitmap = if (!newBitmap.isRecycled) {
                 bitmapPool.free(bitmap)

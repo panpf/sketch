@@ -35,11 +35,11 @@ import java.io.IOException
 /**
  * 图片碎片解码器，支持纠正图片方向
  */
-class ImageRegionDecoder(
+class ImageRegionDecoder constructor(
     val imageUri: String,
     val imageSize: Size,
     val imageFormat: ImageFormat?,
-    val exifOrientationHelper: ExifOrientationHelper?,
+    val exifOrientationHelper: ExifOrientationHelper,
     regionDecoder: BitmapRegionDecoder
 ) {
 

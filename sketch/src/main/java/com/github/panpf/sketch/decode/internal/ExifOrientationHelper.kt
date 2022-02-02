@@ -36,12 +36,7 @@ fun DataSource.readExifOrientation(): Int =
 
 fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
     if (ExifInterface.isSupportedMimeType(mimeType)) {
-        newInputStream().use {
-            ExifInterface(it).getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED
-            )
-        }
+        readExifOrientation()
     } else {
         ExifInterface.ORIENTATION_UNDEFINED
     }
@@ -153,30 +148,32 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
     fun reverseRotateSize(size: Size): Size =
         if (rotationDegrees == 90 || rotationDegrees == 270) Size(size.height, size.width) else size
 
-    fun reverseRotateRect(srcRect: Rect, imageWidth: Int, imageHeight: Int) {
+    fun reverseRotateRect(srcRect: Rect, imageWidth: Int, imageHeight: Int): Rect =
         when (360 - rotationDegrees) {
             90 -> {
-                val top = srcRect.top
-                srcRect.top = srcRect.left
-                srcRect.left = imageHeight - srcRect.bottom
-                srcRect.bottom = srcRect.right
-                srcRect.right = imageHeight - top
+                Rect(
+                    imageHeight - srcRect.bottom,
+                    srcRect.left,
+                    imageHeight - srcRect.top,
+                    srcRect.right
+                )
             }
             180 -> {
-                val left = srcRect.left
-                val top = srcRect.top
-                srcRect.left = imageWidth - srcRect.right
-                srcRect.right = imageWidth - left
-                srcRect.top = imageHeight - srcRect.bottom
-                srcRect.bottom = imageHeight - top
+                Rect(
+                    imageWidth - srcRect.right,
+                    imageHeight - srcRect.bottom,
+                    imageWidth - srcRect.left,
+                    imageHeight - srcRect.top
+                )
             }
             270 -> {
-                val left = srcRect.left
-                srcRect.left = srcRect.top
-                srcRect.top = imageWidth - srcRect.right
-                srcRect.right = srcRect.bottom
-                srcRect.bottom = imageWidth - left
+                Rect(
+                    srcRect.top,
+                    imageWidth - srcRect.right,
+                    srcRect.bottom,
+                    imageWidth - srcRect.left
+                )
             }
+            else -> srcRect
         }
-    }
 }
