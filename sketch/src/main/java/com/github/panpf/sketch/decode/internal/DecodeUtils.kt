@@ -22,6 +22,7 @@ import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.ImageFormat
+import com.github.panpf.sketch.ImageFormat.HEIC
 import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
@@ -63,7 +64,7 @@ fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
     this == ImageFormat.JPEG
             || this == ImageFormat.PNG
             || this == ImageFormat.WEBP
-            || (VERSION.SDK_INT >= VERSION_CODES.P && this == HEIF)
+            || (VERSION.SDK_INT >= VERSION_CODES.P && (this == HEIF || this == HEIC))
 
 @Throws(IOException::class)
 fun DataSource.decodeRegionBitmap(srcRect: Rect, options: BitmapFactory.Options? = null): Bitmap? =

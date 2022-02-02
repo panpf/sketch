@@ -194,20 +194,6 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testSupportBitmapRegionDecoder() {
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            Assert.assertTrue(ImageFormat.HEIF.supportBitmapRegionDecoder())
-        } else {
-            Assert.assertFalse(ImageFormat.HEIF.supportBitmapRegionDecoder())
-        }
-        Assert.assertFalse(ImageFormat.BMP.supportBitmapRegionDecoder())
-        Assert.assertFalse(ImageFormat.GIF.supportBitmapRegionDecoder())
-        Assert.assertTrue(ImageFormat.JPEG.supportBitmapRegionDecoder())
-        Assert.assertTrue(ImageFormat.PNG.supportBitmapRegionDecoder())
-        Assert.assertTrue(ImageFormat.WEBP.supportBitmapRegionDecoder())
-    }
-
-    @Test
     fun testDecodeRegionBitmap() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
@@ -241,6 +227,25 @@ class DecodeUtilsTest {
                 R.xml.network_security_config
             ).decodeRegionBitmap(Rect(500, 500, 600, 600))
         }
+    }
+
+    @Test
+    fun testSupportBitmapRegionDecoder() {
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            Assert.assertTrue(ImageFormat.HEIC.supportBitmapRegionDecoder())
+        } else {
+            Assert.assertFalse(ImageFormat.HEIC.supportBitmapRegionDecoder())
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            Assert.assertTrue(ImageFormat.HEIF.supportBitmapRegionDecoder())
+        } else {
+            Assert.assertFalse(ImageFormat.HEIF.supportBitmapRegionDecoder())
+        }
+        Assert.assertFalse(ImageFormat.BMP.supportBitmapRegionDecoder())
+        Assert.assertFalse(ImageFormat.GIF.supportBitmapRegionDecoder())
+        Assert.assertTrue(ImageFormat.JPEG.supportBitmapRegionDecoder())
+        Assert.assertTrue(ImageFormat.PNG.supportBitmapRegionDecoder())
+        Assert.assertTrue(ImageFormat.WEBP.supportBitmapRegionDecoder())
     }
 
     @Test
