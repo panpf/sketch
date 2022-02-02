@@ -8,6 +8,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.panpf.sketch.sample.AssetImages
 import com.github.panpf.sketch.sample.bean.Photo
+import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.tools4k.coroutines.withToIO
 
 class LocalPhotoListPagingSource(private val context: Context) :
@@ -30,6 +31,26 @@ class LocalPhotoListPagingSource(private val context: Context) :
                     }
                     Photo(
                         originalUrl = it,
+                        thumbnailUrl = null,
+                        middenUrl = null,
+                        width = options.outWidth,
+                        height = options.outHeight,
+                    )
+                }
+            }
+        } else {
+            emptyList()
+        }
+
+        val exifPhotos = if (startPosition == 0) {
+            withToIO {
+                ExifOrientationTestFileHelper(context).files().map {
+                    val options = BitmapFactory.Options().apply {
+                        inJustDecodeBounds = true
+                        BitmapFactory.decodeFile(it.file.path, this)
+                    }
+                    Photo(
+                        originalUrl = it.file.path,
                         thumbnailUrl = null,
                         middenUrl = null,
                         width = options.outWidth,
@@ -86,6 +107,6 @@ class LocalPhotoListPagingSource(private val context: Context) :
         } else {
             null
         }
-        return LoadResult.Page(assetPhotos.plus(dataList), null, nextKey)
+        return LoadResult.Page(assetPhotos.plus(exifPhotos).plus(dataList), null, nextKey)
     }
 }

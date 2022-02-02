@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
@@ -20,12 +19,12 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R
+import com.github.panpf.sketch.test.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class ExifOrientationHelperTest {
@@ -49,13 +48,12 @@ class ExifOrientationHelperTest {
             ).readExifOrientation()
         )
 
-        val rotateImageFile = getRotateImageFile(context, sketch)
-        Assert.assertEquals(
-            ExifInterface.ORIENTATION_ROTATE_90,
-            FileDataSource(
-                sketch, LoadRequest(rotateImageFile.path), rotateImageFile
-            ).readExifOrientation()
-        )
+        ExifOrientationTestFileHelper(context).files().forEach {
+            Assert.assertEquals(
+                it.exifOrientation,
+                FileDataSource(sketch, LoadRequest(it.file.path), it.file).readExifOrientation()
+            )
+        }
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
@@ -94,20 +92,18 @@ class ExifOrientationHelperTest {
             ).readExifOrientationWithMimeType("image/webp")
         )
 
-        val rotateImageFile = getRotateImageFile(context, sketch)
-        Assert.assertEquals(
-            ExifInterface.ORIENTATION_ROTATE_90,
-            FileDataSource(
-                sketch, LoadRequest(rotateImageFile.path), rotateImageFile
-            ).readExifOrientationWithMimeType("image/jpeg")
-        )
-
-        Assert.assertEquals(
-            ExifInterface.ORIENTATION_UNDEFINED,
-            FileDataSource(
-                sketch, LoadRequest(rotateImageFile.path), rotateImageFile
-            ).readExifOrientationWithMimeType("image/bmp")
-        )
+        ExifOrientationTestFileHelper(context).files().forEach {
+            Assert.assertEquals(
+                it.exifOrientation,
+                FileDataSource(sketch, LoadRequest(it.file.path), it.file)
+                    .readExifOrientationWithMimeType("image/jpeg")
+            )
+            Assert.assertEquals(
+                ExifInterface.ORIENTATION_UNDEFINED,
+                FileDataSource(sketch, LoadRequest(it.file.path), it.file)
+                    .readExifOrientationWithMimeType("image/bmp")
+            )
+        }
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_UNDEFINED,
@@ -461,24 +457,24 @@ class ExifOrientationHelperTest {
         )
     }
 
-    private fun getRotateImageFile(context: Context, sketch: Sketch): File {
-        val file = File(context.externalCacheDir ?: context.cacheDir, "sample_rotate.jpeg")
-        if (file.exists()) {
-            return file
-        }
-
-        val source = AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
-        file.outputStream().use { out ->
-            source.newInputStream().use { input ->
-                input.copyTo(out)
-            }
-        }
-
-        val exifInterface = ExifInterface(file)
-        exifInterface.rotate(90)
-        exifInterface.saveAttributes()
-        return file
-    }
+//    private fun getRotateImageFile(context: Context, sketch: Sketch): File {
+//        val file = File(context.externalCacheDir ?: context.cacheDir, "sample_rotate.jpeg")
+//        if (file.exists()) {
+//            return file
+//        }
+//
+//        val source = AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
+//        file.outputStream().use { out ->
+//            source.newInputStream().use { input ->
+//                input.copyTo(out)
+//            }
+//        }
+//
+//        val exifInterface = ExifInterface(file)
+//        exifInterface.rotate(90)
+//        exifInterface.saveAttributes()
+//        return file
+//    }
 
     private val Bitmap.leftTopPixel: Int
         get() = getPixel(0, 0)
