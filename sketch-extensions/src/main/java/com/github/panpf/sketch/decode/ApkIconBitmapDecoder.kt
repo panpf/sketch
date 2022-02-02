@@ -17,7 +17,7 @@ class ApkIconBitmapDecoder(
         const val MIME_TYPE = "application/vnd.android.package-archive"
     }
 
-    override suspend fun decodeBitmap(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         val file = fetchResult.dataSource.file()
         val bitmap = readApkIcon(
             sketch.appContext,

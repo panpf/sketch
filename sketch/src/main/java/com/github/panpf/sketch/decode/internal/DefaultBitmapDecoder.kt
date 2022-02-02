@@ -78,8 +78,9 @@ open class DefaultBitmapDecoder(
         return bitmap
     }
 
-    override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+    override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
+
         // Set inBitmap from bitmap pool
         if (request.disabledBitmapPool != true) {
             bitmapPool.setInBitmapForBitmapFactory(

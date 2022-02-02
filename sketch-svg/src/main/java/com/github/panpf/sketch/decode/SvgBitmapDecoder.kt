@@ -46,7 +46,7 @@ class SvgBitmapDecoder(
         return ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
     }
 
-    override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+    override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         val svgWidth: Float
         val svgHeight: Float
         val viewBox: RectF? = svg.documentViewBox

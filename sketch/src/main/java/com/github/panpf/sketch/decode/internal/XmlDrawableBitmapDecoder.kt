@@ -19,7 +19,7 @@ class XmlDrawableBitmapDecoder(
     val resources: Resources,
     val drawableResId: Int
 ) : BitmapDecoder {
-    override suspend fun decodeBitmap(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
             ?: throw BitmapDecodeException(request, "Invalid drawable resource id '$drawableResId'")

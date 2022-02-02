@@ -86,7 +86,7 @@ class VideoFrameDecoder(
         return ImageInfo(srcWidth, srcHeight, mimeType, exifOrientation)
     }
 
-    override fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+    override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         // todo 缓存视频帧到磁盘缓存
         val option = request.videoFrameOption() ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros()

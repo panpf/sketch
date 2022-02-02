@@ -24,7 +24,7 @@ class KoralGifDrawableDecoder(
 
     // todo 实现 GifExtensions 定义的扩展函数
 
-    override suspend fun decodeDrawable(): DrawableDecodeResult {
+    override suspend fun decode(): DrawableDecodeResult {
         val request = request
         val bitmapPool = sketch.bitmapPool
         val gifDrawable = when (val source = dataSource) {

@@ -8,7 +8,7 @@ import java.io.Closeable
 
 interface DrawableDecoder : Closeable {
 
-    suspend fun decodeDrawable(): DrawableDecodeResult
+    suspend fun decode(): DrawableDecodeResult
 
     fun interface Factory {
 

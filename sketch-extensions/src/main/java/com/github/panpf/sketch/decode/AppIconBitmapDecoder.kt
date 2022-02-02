@@ -18,7 +18,7 @@ class AppIconBitmapDecoder(
     val versionCode: Int,
 ) : BitmapDecoder {
 
-    override suspend fun decodeBitmap(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         val packageManager = sketch.appContext.packageManager
         val packageInfo: PackageInfo = try {
             packageManager.getPackageInfo(packageName, 0)

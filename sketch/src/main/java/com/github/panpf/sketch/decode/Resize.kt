@@ -44,6 +44,8 @@ data class Resize constructor(
         }
     }
 
+    override fun toString(): String = cacheKey
+
     enum class Precision {
         /**
          * Even if the size of the original image is smaller than [Resize], you will get a [Bitmap] with the same size as [Resize]

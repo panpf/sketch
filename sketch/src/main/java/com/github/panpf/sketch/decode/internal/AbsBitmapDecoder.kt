@@ -31,15 +31,13 @@ abstract class AbsBitmapDecoder(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig,
     ): Bitmap
 
-    protected abstract fun decode(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
+    protected abstract fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
 
-    override suspend fun decodeBitmap(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         val imageInfo = readImageInfo()
 
         val resize = request.resize
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-        val imageOrientationCorrector =
-            newExifOrientationCorrectorWithExifOrientation(imageInfo.exifOrientation)
 
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
@@ -47,10 +45,10 @@ abstract class AbsBitmapDecoder(
             && canDecodeRegion(imageInfo)
         ) {
             resizeTransformed = ResizeTransformed(resize)
-            decodeRegionWrapper(imageInfo, resize, decodeConfig, imageOrientationCorrector)
+            decodeRegionWrapper(imageInfo, decodeConfig, resize)
         } else {
             resizeTransformed = null
-            decodeWrapper(imageInfo, decodeConfig, imageOrientationCorrector)
+            decodeFullWrapper(imageInfo, decodeConfig)
         }
 
         return BitmapDecodeResult.Builder(bitmap, imageInfo, dataSource.from).apply {
@@ -58,7 +56,7 @@ abstract class AbsBitmapDecoder(
                 addTransformed(it)
             }
             val inSampleSize = decodeConfig.inSampleSize
-            if (inSampleSize != null && inSampleSize != 1) {
+            if (inSampleSize != null && inSampleSize > 1) {
                 addTransformed(InSampledTransformed(inSampleSize))
             }
         }.build()
@@ -66,10 +64,12 @@ abstract class AbsBitmapDecoder(
 
     private fun decodeRegionWrapper(
         imageInfo: ImageInfo,
-        resize: Resize,
         decodeConfig: DecodeConfig,
-        exifOrientationCorrector: ExifOrientationCorrector?
+        resize: Resize,
     ): Bitmap {
+        // todo support LoadRequest.disabledCorrectExifOrientation
+        val exifOrientationCorrector =
+            newExifOrientationCorrectorWithExifOrientation(imageInfo.exifOrientation)
         val imageSize = Point(imageInfo.width, imageInfo.height)
 
 //        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
@@ -98,13 +98,35 @@ abstract class AbsBitmapDecoder(
             ?.reverseRotateRect(resizeMapping.srcRect, imageSize.x, imageSize.y)
 
         return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
+
+//        val resizeSize = Size(resize.width, resize.height)
+//        val rotatedResizeSize = exifOrientationCorrector?.reverseRotateSize(resizeSize) ?: resizeSize
+//        val resizeMapping = ResizeMapping.calculator(
+//            imageWidth = imageInfo.width,
+//            imageHeight = imageInfo.height,
+//            resizeWidth = rotatedResizeSize.width,
+//            resizeHeight = rotatedResizeSize.height,
+//            resizeScale = resize.scale,
+//            exactlySize = resize.precision == Resize.Precision.EXACTLY
+//        )
+//
+//        decodeConfig.inSampleSize = calculateInSampleSize(
+//            resizeMapping.srcRect.width(),
+//            resizeMapping.srcRect.height(),
+//            resize.width,
+//            resize.height
+//        )
+//
+//        return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
     }
 
-    private fun decodeWrapper(
+    private fun decodeFullWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
-        exifOrientationCorrector: ExifOrientationCorrector?
     ): Bitmap {
+        // todo support LoadRequest.disabledCorrectExifOrientation
+        val exifOrientationCorrector =
+            newExifOrientationCorrectorWithExifOrientation(imageInfo.exifOrientation)
         val imageSize = Point(imageInfo.width, imageInfo.height)
         exifOrientationCorrector?.rotateSize(imageSize)
 
@@ -115,6 +137,6 @@ abstract class AbsBitmapDecoder(
             calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
         } ?: 1
         decodeConfig.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
-        return decode(imageInfo, decodeConfig)
+        return decodeFull(imageInfo, decodeConfig)
     }
 }

@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
@@ -134,18 +133,6 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
     /**
      * 根据旋转角度计算新图片旋转后的尺寸
      */
-    fun rotateSize(options: BitmapFactory.Options) {
-        val matrix = Matrix()
-        initializeMatrix(matrix)
-        val newRect = RectF(0F, 0F, options.outWidth.toFloat(), options.outHeight.toFloat())
-        matrix.mapRect(newRect)
-        options.outWidth = newRect.width().toInt()
-        options.outHeight = newRect.height().toInt()
-    }
-
-    /**
-     * 根据旋转角度计算新图片旋转后的尺寸
-     */
     fun rotateSize(size: Point) {
         val matrix = Matrix()
         initializeMatrix(matrix)
@@ -191,8 +178,9 @@ class ExifOrientationCorrector(val exifOrientation: Int) {
      * 根据图片方向旋转图片
      */
     fun rotateBitmap(bitmap: Bitmap, bitmapPool: BitmapPool): Bitmap {
-        val matrix = Matrix()
-        initializeMatrix(matrix)
+        val matrix = Matrix().apply {
+            initializeMatrix(this)
+        }
 
         // 根据旋转角度计算新的图片的尺寸
         val newRect = RectF(0F, 0F, bitmap.width.toFloat(), bitmap.height.toFloat())

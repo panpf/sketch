@@ -14,7 +14,7 @@ import java.io.Closeable
 // todo 增加 decodeRegionBitmap 方法，这样 core 和 zoom 都可以用
 interface BitmapDecoder : Closeable {
 
-    suspend fun decodeBitmap(): BitmapDecodeResult
+    suspend fun decode(): BitmapDecodeResult
 
     fun interface Factory {
 

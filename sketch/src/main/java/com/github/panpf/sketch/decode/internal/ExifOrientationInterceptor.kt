@@ -10,6 +10,7 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
         chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>
     ): BitmapDecodeResult {
         val bitmapResult = chain.proceed(chain.request)
+        // todo support LoadRequest.disabledCorrectExifOrientation
         val imageOrientationCorrector =
             newExifOrientationCorrectorWithExifOrientation(bitmapResult.imageInfo.exifOrientation)
         return if (imageOrientationCorrector != null) {
