@@ -26,6 +26,7 @@ open class SketchBitmapDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
     private val imageInfo: ImageInfo,
+    private val exifOrientation: Int,
     override val imageDataFrom: DataFrom,
     override val transformedList: List<Transformed>?,
     bitmap: Bitmap,
@@ -41,7 +42,7 @@ open class SketchBitmapDrawable constructor(
         get() = imageInfo.mimeType
 
     override val imageExifOrientation: Int
-        get() = imageInfo.exifOrientation
+        get() = exifOrientation
 
 
     override val bitmapWidth: Int

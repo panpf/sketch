@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.decode.internal
 
+import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
@@ -31,9 +32,10 @@ class BitmapDecodeInterceptorChainTest {
         Assert.assertEquals(1291, result.bitmap.width)
         Assert.assertEquals(1936, result.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg',exifOrientation=NORMAL)",
+            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg')",
             result.imageInfo.toString()
         )
+        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
         Assert.assertNull(result.transformedList)
     }

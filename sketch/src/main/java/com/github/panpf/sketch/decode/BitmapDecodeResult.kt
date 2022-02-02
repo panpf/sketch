@@ -7,19 +7,27 @@ import java.util.LinkedList
 data class BitmapDecodeResult constructor(
     val bitmap: Bitmap,
     val imageInfo: ImageInfo,
+    val exifOrientation: Int,
     val dataFrom: DataFrom,
     val transformedList: List<Transformed>? = null
 ) {
 
     fun new(bitmap: Bitmap, block: (Builder.() -> Unit)? = null): BitmapDecodeResult =
-        Builder(bitmap, imageInfo, dataFrom, transformedList?.toMutableList()).apply {
+        Builder(
+            bitmap = bitmap,
+            imageInfo = imageInfo,
+            exifOrientation = exifOrientation,
+            dataFrom = dataFrom,
+            transformedList = transformedList?.toMutableList()
+        ).apply {
             block?.invoke(this)
         }.build()
 
     class Builder(
         private val bitmap: Bitmap,
-        private val info: ImageInfo,
-        private val from: DataFrom,
+        private val imageInfo: ImageInfo,
+        private val exifOrientation: Int,
+        private val dataFrom: DataFrom,
         private var transformedList: MutableList<Transformed>? = null
     ) {
 
@@ -32,10 +40,11 @@ data class BitmapDecodeResult constructor(
         }
 
         fun build(): BitmapDecodeResult = BitmapDecodeResult(
-            bitmap,
-            info,
-            from,
-            transformedList?.toList()
+            bitmap = bitmap,
+            imageInfo = imageInfo,
+            exifOrientation = exifOrientation,
+            dataFrom = dataFrom,
+            transformedList = transformedList?.toList()
         )
     }
 }

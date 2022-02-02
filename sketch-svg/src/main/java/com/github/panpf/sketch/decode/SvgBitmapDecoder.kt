@@ -43,8 +43,11 @@ class SvgBitmapDecoder(
             width = svg.documentWidth.toInt()
             height = svg.documentHeight.toInt()
         }
-        return ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
+        return ImageInfo(width, height, MIME_TYPE)
     }
+
+    override fun readExifOrientation(imageInfo: ImageInfo): Int =
+        ExifInterface.ORIENTATION_UNDEFINED
 
     override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         val svgWidth: Float

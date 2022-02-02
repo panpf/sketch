@@ -31,14 +31,21 @@ class DefaultDrawableDecoder(
                     ).proceed(request).run {
                         val drawable = memoryCacheHelper?.write(this)
                             ?: SketchBitmapDrawable(
-                                request.key,
-                                request.uriString,
-                                this.imageInfo,
-                                this.dataFrom,
-                                this.transformedList,
-                                this.bitmap
+                                requestKey = request.key,
+                                requestUri = request.uriString,
+                                imageInfo = this.imageInfo,
+                                exifOrientation = this.exifOrientation,
+                                imageDataFrom = this.dataFrom,
+                                transformedList = this.transformedList,
+                                bitmap = this.bitmap
                             )
-                        DrawableDecodeResult(drawable, this.imageInfo, this.dataFrom)
+                        DrawableDecodeResult(
+                            drawable = drawable,
+                            imageInfo = this.imageInfo,
+                            exifOrientation = this.exifOrientation,
+                            dataFrom = this.dataFrom,
+                            transformedList = this.transformedList
+                        )
                     }
             } finally {
                 memoryCacheHelper?.lock?.unlock()

@@ -33,6 +33,7 @@ class CountBitmap constructor(
     val requestKey: String,
     val imageUri: String,
     val imageInfo: ImageInfo,
+    val exifOrientation: Int,
     val transformedList: List<Transformed>?,
     private val logger: Logger,
     private val bitmapPool: BitmapPool
@@ -61,7 +62,7 @@ class CountBitmap constructor(
             imageInfo.width,
             imageInfo.height,
             imageInfo.mimeType,
-            exifOrientationName(imageInfo.exifOrientation),
+            exifOrientationName(exifOrientation),
             initBitmap.width,
             initBitmap.height,
             initBitmap.config,

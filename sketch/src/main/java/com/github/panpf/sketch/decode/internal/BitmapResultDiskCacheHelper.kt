@@ -13,16 +13,19 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DataFrom.RESULT_DISK_CACHE
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
-import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
+import org.json.JSONException
+import org.json.JSONObject
 
-fun newBitmapResultDiskCacheHelper(sketch: Sketch, request: LoadRequest): BitmapResultDiskCacheHelper? {
+fun newBitmapResultDiskCacheHelper(
+    sketch: Sketch,
+    request: LoadRequest
+): BitmapResultDiskCacheHelper? {
     val cachePolicy = request.bitmapResultDiskCachePolicy ?: ENABLED
     if (!cachePolicy.isReadOrWrite) return null
     val bitmapDataDiskCacheKey = "${request.cacheKey}_result_data"
     val metaDataDiskCacheKey = "${request.cacheKey}_result_meta"
     return BitmapResultDiskCacheHelper(
-        sketch.logger,
         request,
         sketch.diskCache,
         cachePolicy,
@@ -32,7 +35,6 @@ fun newBitmapResultDiskCacheHelper(sketch: Sketch, request: LoadRequest): Bitmap
 }
 
 class BitmapResultDiskCacheHelper internal constructor(
-    private val logger: Logger,
     private val request: LoadRequest,
     private val diskCache: DiskCache,
     private val cachePolicy: CachePolicy,
@@ -58,13 +60,14 @@ class BitmapResultDiskCacheHelper internal constructor(
                     val jsonString = metaDataDiskCacheSnapshot.newInputStream().use {
                         it.bufferedReader().readText()
                     }
-                    val imageInfo = ImageInfo.fromJsonString(jsonString)
+                    val metaData = MetaData.fromJsonString(jsonString)
+                    val imageInfo = metaData.imageInfo
                     val bitmap = BitmapFactory.decodeFile(
                         bitmapDataDiskCacheSnapshot.file.path,
                         request.newDecodeConfigByQualityParams(imageInfo.mimeType)
                             .toBitmapOptions()
                     )
-                    BitmapDecodeResult(bitmap, imageInfo, RESULT_DISK_CACHE)
+                    BitmapDecodeResult(bitmap, metaData.imageInfo, metaData.exifOrientation, RESULT_DISK_CACHE)
                 } else {
                     bitmapDataDiskCacheSnapshot?.remove()
                     metaDataDiskCacheSnapshot?.remove()
@@ -91,8 +94,9 @@ class BitmapResultDiskCacheHelper internal constructor(
                     }
                     bitmapDataEditor.commit()
 
+                    val metaData = MetaData(result.imageInfo, result.exifOrientation)
                     metaDataEditor.newOutputStream().bufferedWriter().use {
-                        it.write(result.imageInfo.toJsonString())
+                        it.write(metaData.toJsonString())
                     }
                     metaDataEditor.commit()
                 } else {
@@ -111,4 +115,33 @@ class BitmapResultDiskCacheHelper internal constructor(
         } else {
             false
         }
+
+    data class MetaData constructor(
+        val imageInfo: ImageInfo,
+        val exifOrientation: Int,
+    ) {
+
+        // todo transformedList 也要缓存
+        fun toJsonString(): String = JSONObject().apply {
+            put("width", imageInfo.width)
+            put("height", imageInfo.height)
+            put("mimeType", imageInfo.mimeType)
+            put("exifOrientation", exifOrientation)
+        }.toString()
+
+        companion object {
+            @Throws(JSONException::class)
+            fun fromJsonString(jsonString: String): MetaData {
+                val json = JSONObject(jsonString)
+                return MetaData(
+                    imageInfo = ImageInfo(
+                        width = json.getInt("width"),
+                        height = json.getInt("height"),
+                        mimeType = json.getString("mimeType")
+                    ),
+                    exifOrientation = json.getInt("exifOrientation"),
+                )
+            }
+        }
+    }
 }

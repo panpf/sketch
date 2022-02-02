@@ -25,10 +25,11 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom
 
 @SuppressLint("RestrictedApi")
-class SketchGifDrawable(
+class SketchGifDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
     private val imageInfo: ImageInfo,
+    private val exifOrientation: Int,
     override val imageDataFrom: DataFrom,
     private val movieDrawable: MovieDrawable,
 ) : DrawableWrapper(movieDrawable), SketchAnimatableDrawable {
@@ -43,7 +44,7 @@ class SketchGifDrawable(
         get() = imageInfo.mimeType
 
     override val imageExifOrientation: Int
-        get() = imageInfo.exifOrientation
+        get() = exifOrientation
 
     override val bitmapWidth: Int
         get() = movieDrawable.bitmapWidth

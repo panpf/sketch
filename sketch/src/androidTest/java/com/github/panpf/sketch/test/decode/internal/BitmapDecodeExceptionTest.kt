@@ -12,6 +12,6 @@ class BitmapDecodeExceptionTest {
 
     @Test
     fun test() {
-        Assert.assertTrue(BitmapDecodeException::class.java.isAssignableFrom(SketchException::class.java))
+        Assert.assertTrue(SketchException::class.java.isAssignableFrom(BitmapDecodeException::class.java))
     }
 }

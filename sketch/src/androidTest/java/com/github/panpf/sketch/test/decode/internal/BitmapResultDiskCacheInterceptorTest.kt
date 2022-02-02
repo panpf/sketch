@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.decode.internal
 
+import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
@@ -36,9 +37,10 @@ class BitmapResultDiskCacheInterceptorTest {
         Assert.assertEquals(323, result.bitmap.width)
         Assert.assertEquals(484, result.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg',exifOrientation=NORMAL)",
+            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg')",
             result.imageInfo.toString()
         )
+        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
         Assert.assertEquals("InSampledTransformed(4)", result.transformedList?.joinToString())
 
@@ -48,9 +50,10 @@ class BitmapResultDiskCacheInterceptorTest {
         Assert.assertEquals(323, result1.bitmap.width)
         Assert.assertEquals(484, result1.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg',exifOrientation=NORMAL)",
+            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg')",
             result1.imageInfo.toString()
         )
+        Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
         Assert.assertEquals(DataFrom.RESULT_DISK_CACHE, result1.dataFrom)
         Assert.assertEquals("InSampledTransformed(4)", result.transformedList?.joinToString())
     }

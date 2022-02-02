@@ -37,9 +37,8 @@ class AppIconBitmapDecoder(
             bitmap.width,
             bitmap.height,
             AppIconUriFetcher.MIME_TYPE,
-            ExifInterface.ORIENTATION_UNDEFINED
         )
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
+        return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
     }
 
     override fun close() {

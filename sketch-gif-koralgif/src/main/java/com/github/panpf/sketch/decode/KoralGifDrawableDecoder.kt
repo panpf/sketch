@@ -53,15 +53,21 @@ class KoralGifDrawableDecoder(
         }
         val width = gifDrawable.intrinsicWidth
         val height = gifDrawable.intrinsicHeight
-        val imageInfo = ImageInfo(width, height, MIME_TYPE, ExifInterface.ORIENTATION_UNDEFINED)
+        val imageInfo = ImageInfo(width, height, MIME_TYPE)
         val drawable = SketchKoralGifDrawable(
-            request.key,
-            request.uriString,
-            imageInfo,
-            dataSource.from,
-            gifDrawable
+            requestKey = request.key,
+            requestUri = request.uriString,
+            imageInfo = imageInfo,
+            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+            imageDataFrom = dataSource.from,
+            gifDrawable = gifDrawable
         )
-        return DrawableDecodeResult(drawable, imageInfo, dataSource.from)
+        return DrawableDecodeResult(
+            drawable,
+            imageInfo,
+            ExifInterface.ORIENTATION_UNDEFINED,
+            dataSource.from
+        )
     }
 
     override fun close() {

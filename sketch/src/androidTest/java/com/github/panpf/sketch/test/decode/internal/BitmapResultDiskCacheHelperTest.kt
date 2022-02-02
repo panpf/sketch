@@ -2,6 +2,7 @@ package com.github.panpf.sketch.test.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
+import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
@@ -11,6 +12,7 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheHelper.MetaData
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.newBitmapResultDiskCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -69,7 +71,8 @@ class BitmapResultDiskCacheHelperTest {
         // There are the
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg", 0),
+            ImageInfo(1291, 1936, "image/jpeg"),
+            0,
             DataFrom.LOCAL,
             listOf(InSampledTransformed(4))
         )
@@ -107,7 +110,8 @@ class BitmapResultDiskCacheHelperTest {
         // transformedList empty
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg", 0),
+            ImageInfo(1291, 1936, "image/jpeg"),
+            0,
             DataFrom.LOCAL,
             null
         )
@@ -118,7 +122,8 @@ class BitmapResultDiskCacheHelperTest {
 
         val bitmapDecodeResult1 = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg", 0),
+            ImageInfo(1291, 1936, "image/jpeg"),
+            0,
             DataFrom.LOCAL,
             listOf(InSampledTransformed(4))
         )
@@ -144,5 +149,16 @@ class BitmapResultDiskCacheHelperTest {
         )
 
         Assert.assertNotNull(newBitmapResultDiskCacheHelper(sketch, request)!!.read())
+    }
+
+    @Test
+    fun testMeatDataJSON() {
+        val metaData = MetaData(ImageInfo(570, 340, "image/png"), ExifInterface.ORIENTATION_ROTATE_180)
+        MetaData.fromJsonString(metaData.toJsonString()).apply {
+            Assert.assertEquals(570, imageInfo.width)
+            Assert.assertEquals(340, imageInfo.height)
+            Assert.assertEquals("image/png", imageInfo.mimeType)
+            Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_180, exifOrientation)
+        }
     }
 }

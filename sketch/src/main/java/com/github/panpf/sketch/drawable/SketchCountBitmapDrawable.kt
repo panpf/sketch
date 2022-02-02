@@ -26,6 +26,7 @@ class SketchCountBitmapDrawable constructor(
     countBitmap.requestKey,
     countBitmap.imageUri,
     countBitmap.imageInfo,
+    countBitmap.exifOrientation,
     imageDataFrom,
     countBitmap.transformedList,
     countBitmap.bitmap!!

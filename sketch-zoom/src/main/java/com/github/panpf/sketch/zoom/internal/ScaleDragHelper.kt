@@ -23,6 +23,7 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.ActionListener
 import com.github.panpf.sketch.zoom.internal.ScaleDragGestureDetector.OnScaleDragGestureListener

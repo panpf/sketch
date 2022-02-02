@@ -17,6 +17,7 @@ package com.github.panpf.sketch.zoom.internal
 
 import android.widget.ImageView
 import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getLastDrawable
 
 class Sizes {

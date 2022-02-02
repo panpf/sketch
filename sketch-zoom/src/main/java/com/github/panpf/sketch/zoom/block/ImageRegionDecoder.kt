@@ -18,17 +18,17 @@ package com.github.panpf.sketch.zoom.block
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
-import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.ExifOrientationCorrector
-import com.github.panpf.sketch.decode.internal.newExifOrientationCorrectorWithExifOrientation
+import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
@@ -37,9 +37,9 @@ import java.io.IOException
  */
 class ImageRegionDecoder(
     val imageUri: String,
-    val imageSize: Point,
+    val imageSize: Size,
     val imageFormat: ImageFormat?,
-    val exifOrientationCorrector: ExifOrientationCorrector?,
+    val exifOrientationHelper: ExifOrientationHelper?,
     regionDecoder: BitmapRegionDecoder
 ) {
 
@@ -66,7 +66,7 @@ class ImageRegionDecoder(
             correctImageOrientationDisabled: Boolean,
             sketch: Sketch
         ): ImageRegionDecoder {
-            val request = LoadRequest(imageUri)
+            val request = LoadRequest(imageUri) // todo 请求要从 view 中去
             val fetch = sketch.componentRegistry.newFetcher(sketch, request)
             val fetchResult = runBlocking {
                 fetch.fetch()
@@ -74,17 +74,13 @@ class ImageRegionDecoder(
             val imageInfo = fetchResult.dataSource.readImageInfoWithBitmapFactoryOrNull()
                 ?: throw Exception("Unsupported image format.  $imageUri")
 
-            // 读取图片尺寸和类型
-            val imageSize = Point(imageInfo.width, imageInfo.height)
-
             // 读取图片方向并根据方向改变尺寸
             var exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
             if (!correctImageOrientationDisabled) {
-                exifOrientation = imageInfo.exifOrientation
+                exifOrientation = fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
             }
-            val exifOrientationCorrector =
-                newExifOrientationCorrectorWithExifOrientation(exifOrientation)
-            exifOrientationCorrector?.rotateSize(imageSize)
+            val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
+            val imageSize = exifOrientationHelper.rotateSize(Size(imageInfo.width, imageInfo.height))
             val regionDecoder: BitmapRegionDecoder = fetchResult.dataSource.newInputStream().use {
                 if (VERSION.SDK_INT >= VERSION_CODES.S) {
                     BitmapRegionDecoder.newInstance(it)
@@ -98,7 +94,7 @@ class ImageRegionDecoder(
                 imageUri,
                 imageSize,
                 imageType,
-                exifOrientationCorrector,
+                exifOrientationHelper,
                 regionDecoder
             )
         }

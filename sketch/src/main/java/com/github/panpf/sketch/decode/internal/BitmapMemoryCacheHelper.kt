@@ -69,7 +69,12 @@ class BitmapMemoryCacheHelper internal constructor(
                         true
                     )
                     val drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE)
-                    DrawableDecodeResult(drawable, cachedCountBitmap.imageInfo, MEMORY_CACHE)
+                    DrawableDecodeResult(
+                        drawable = drawable,
+                        imageInfo = cachedCountBitmap.imageInfo,
+                        exifOrientation = cachedCountBitmap.exifOrientation,
+                        dataFrom = MEMORY_CACHE
+                    )
                 }
                 requestDepth != null && requestDepth >= MEMORY -> {
                     throw RequestDepthException(request, requestDepth, request.depthFrom)
@@ -85,13 +90,14 @@ class BitmapMemoryCacheHelper internal constructor(
     fun write(result: BitmapDecodeResult): Drawable? =
         if (cachePolicy.writeEnabled) {
             val countBitmap = CountBitmap(
-                result.bitmap,
-                request.key,
-                request.uriString,
-                result.imageInfo,
-                result.transformedList,
-                logger,
-                bitmapPool
+                initBitmap = result.bitmap,
+                requestKey = request.key,
+                imageUri = request.uriString,
+                imageInfo = result.imageInfo,
+                exifOrientation = result.exifOrientation,
+                transformedList = result.transformedList,
+                logger = logger,
+                bitmapPool = bitmapPool
             )
             countBitmap.setIsWaiting("${MODULE}:waitingUse:new", true)
             memoryCache.put(cacheKey, countBitmap)

@@ -1,17 +1,14 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
@@ -29,7 +26,6 @@ import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
@@ -45,7 +41,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             }
 
         AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
@@ -53,16 +48,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
                 Assert.assertEquals("image/webp", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            }
-
-        val rotateImageFile = getRotateImageFile(context, sketch)
-        FileDataSource(sketch, LoadRequest(rotateImageFile.path), rotateImageFile)
-            .readImageInfoWithBitmapFactory().apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
-                Assert.assertEquals("image/jpeg", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_90, exifOrientation)
             }
 
         ResourceDataSource(
@@ -75,7 +60,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(-1, width)
                 Assert.assertEquals(-1, height)
                 Assert.assertEquals("", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             }
     }
 
@@ -89,7 +73,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             }
 
         AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
@@ -97,16 +80,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
                 Assert.assertEquals("image/webp", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            }
-
-        val rotateImageFile = getRotateImageFile(context, sketch)
-        FileDataSource(sketch, LoadRequest(rotateImageFile.path), rotateImageFile)
-            .readImageInfoWithBitmapFactoryOrThrow().apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
-                Assert.assertEquals("image/jpeg", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_90, exifOrientation)
             }
 
         assertThrow(Exception::class) {
@@ -129,7 +102,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1291, width)
                 Assert.assertEquals(1936, height)
                 Assert.assertEquals("image/jpeg", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             }
 
         AssetDataSource(sketch, LoadRequest(newAssetUri("sample.webp")), "sample.webp")
@@ -137,16 +109,6 @@ class DecodeUtilsTest {
                 Assert.assertEquals(1080, width)
                 Assert.assertEquals(1344, height)
                 Assert.assertEquals("image/webp", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
-            }
-
-        val rotateImageFile = getRotateImageFile(context, sketch)
-        FileDataSource(sketch, LoadRequest(rotateImageFile.path), rotateImageFile)
-            .readImageInfoWithBitmapFactoryOrNull()!!.apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
-                Assert.assertEquals("image/jpeg", mimeType)
-                Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_90, exifOrientation)
             }
 
         Assert.assertNull(
@@ -280,24 +242,5 @@ class DecodeUtilsTest {
         Assert.assertFalse(
             isSrcRectError(IllegalArgumentException(""))
         )
-    }
-
-    private fun getRotateImageFile(context: Context, sketch: Sketch): File {
-        val file = File(context.externalCacheDir ?: context.cacheDir, "sample_rotate.jpeg")
-        if (file.exists()) {
-            return file
-        }
-
-        val source = AssetDataSource(sketch, LoadRequest(newAssetUri("sample.jpeg")), "sample.jpeg")
-        file.outputStream().use { out ->
-            source.newInputStream().use { input ->
-                input.copyTo(out)
-            }
-        }
-
-        val exifInterface = ExifInterface(file)
-        exifInterface.rotate(90)
-        exifInterface.saveAttributes()
-        return file
     }
 }

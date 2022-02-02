@@ -21,13 +21,9 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
         val bitmapPool = chain.sketch.bitmapPool
         return if (resize?.shouldUse(bitmap.width, bitmap.height) == true) {
             val newBitmap = resize(bitmap, resize, bitmapPool)
-            if (newBitmap !== bitmap) {
-                bitmapPool.free(bitmap)
-                bitmapResult.new(newBitmap) {
-                    addTransformed(ResizeTransformed(resize))
-                }
-            } else {
-                bitmapResult
+            bitmapPool.free(bitmap)
+            bitmapResult.new(newBitmap) {
+                addTransformed(ResizeTransformed(resize))
             }
 //        } else if(maxSize != null && bitmap.width * bitmap.height > maxSize.width * maxSize.height){
             // todo 限制不超过 maxSize

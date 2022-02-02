@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
-import android.graphics.Point
 import android.graphics.Rect
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -12,6 +12,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateInSampleSize
 
 abstract class AbsBitmapDecoder(
@@ -25,6 +26,8 @@ abstract class AbsBitmapDecoder(
 
     protected abstract fun readImageInfo(): ImageInfo
 
+    protected abstract fun readExifOrientation(imageInfo: ImageInfo): Int
+
     protected abstract fun canDecodeRegion(imageInfo: ImageInfo): Boolean
 
     protected abstract fun decodeRegion(
@@ -33,8 +36,17 @@ abstract class AbsBitmapDecoder(
 
     protected abstract fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
 
+    private fun readExifOrientationWrapper(imageInfo: ImageInfo): Int =
+        if (request.disabledCorrectExifOrientation != true) {
+            readExifOrientation(imageInfo)
+        } else {
+            ExifInterface.ORIENTATION_UNDEFINED
+        }
+
     override suspend fun decode(): BitmapDecodeResult {
         val imageInfo = readImageInfo()
+        val exifOrientation = readExifOrientationWrapper(imageInfo)
+        val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
 
         val resize = request.resize
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
@@ -45,97 +57,72 @@ abstract class AbsBitmapDecoder(
             && canDecodeRegion(imageInfo)
         ) {
             resizeTransformed = ResizeTransformed(resize)
-            decodeRegionWrapper(imageInfo, decodeConfig, resize)
+            decodeRegionWrapper(imageInfo, decodeConfig, exifOrientationHelper, resize)
         } else {
             resizeTransformed = null
-            decodeFullWrapper(imageInfo, decodeConfig)
+            decodeFullWrapper(imageInfo, decodeConfig, exifOrientationHelper)
         }
 
-        return BitmapDecodeResult.Builder(bitmap, imageInfo, dataSource.from).apply {
-            resizeTransformed?.let {
-                addTransformed(it)
-            }
-            val inSampleSize = decodeConfig.inSampleSize
-            if (inSampleSize != null && inSampleSize > 1) {
-                addTransformed(InSampledTransformed(inSampleSize))
-            }
-        }.build()
+        return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataSource.from)
+            .apply {
+                resizeTransformed?.let {
+                    addTransformed(it)
+                }
+                val inSampleSize = decodeConfig.inSampleSize
+                if (inSampleSize != null && inSampleSize > 1) {
+                    addTransformed(InSampledTransformed(inSampleSize))
+                }
+            }.build()
     }
 
     private fun decodeRegionWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
+        exifOrientationHelper: ExifOrientationHelper,
         resize: Resize,
     ): Bitmap {
-        // todo support LoadRequest.disabledCorrectExifOrientation
-        val exifOrientationCorrector =
-            newExifOrientationCorrectorWithExifOrientation(imageInfo.exifOrientation)
-        val imageSize = Point(imageInfo.width, imageInfo.height)
-
-//        if (Build.VERSION.SDK_INT <= VERSION_CODES.M && !decodeOptions.inPreferQualityOverSpeed) {
-//            decodeConfig.inPreferQualityOverSpeed = true
-//        }
-
-        exifOrientationCorrector?.rotateSize(imageSize)
-
+        val resizeSize = Size(resize.width, resize.height)
+        val rotatedResizeSize = exifOrientationHelper.reverseRotateSize(resizeSize)
         val resizeMapping = ResizeMapping.calculator(
-            imageWidth = imageSize.x,
-            imageHeight = imageSize.y,
-            resizeWidth = resize.width,
-            resizeHeight = resize.height,
+            imageWidth = imageInfo.width,
+            imageHeight = imageInfo.height,
+            resizeWidth = rotatedResizeSize.width,
+            resizeHeight = rotatedResizeSize.height,
             resizeScale = resize.scale,
             exactlySize = resize.precision == Resize.Precision.EXACTLY
         )
-        val resizeMappingSrcWidth = resizeMapping.srcRect.width()
-        val resizeMappingSrcHeight = resizeMapping.srcRect.height()
 
-        val resizeInSampleSize = calculateInSampleSize(
-            resizeMappingSrcWidth, resizeMappingSrcHeight, resize.width, resize.height
+        decodeConfig.inSampleSize = calculateInSampleSize(
+            resizeMapping.srcRect.width(),
+            resizeMapping.srcRect.height(),
+            resize.width,
+            resize.height
         )
-        decodeConfig.inSampleSize = resizeInSampleSize
-
-        exifOrientationCorrector
-            ?.reverseRotateRect(resizeMapping.srcRect, imageSize.x, imageSize.y)
 
         return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
-
-//        val resizeSize = Size(resize.width, resize.height)
-//        val rotatedResizeSize = exifOrientationCorrector?.reverseRotateSize(resizeSize) ?: resizeSize
-//        val resizeMapping = ResizeMapping.calculator(
-//            imageWidth = imageInfo.width,
-//            imageHeight = imageInfo.height,
-//            resizeWidth = rotatedResizeSize.width,
-//            resizeHeight = rotatedResizeSize.height,
-//            resizeScale = resize.scale,
-//            exactlySize = resize.precision == Resize.Precision.EXACTLY
-//        )
-//
-//        decodeConfig.inSampleSize = calculateInSampleSize(
-//            resizeMapping.srcRect.width(),
-//            resizeMapping.srcRect.height(),
-//            resize.width,
-//            resize.height
-//        )
-//
-//        return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
     }
 
     private fun decodeFullWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
+        exifOrientationHelper: ExifOrientationHelper,
     ): Bitmap {
-        // todo support LoadRequest.disabledCorrectExifOrientation
-        val exifOrientationCorrector =
-            newExifOrientationCorrectorWithExifOrientation(imageInfo.exifOrientation)
-        val imageSize = Point(imageInfo.width, imageInfo.height)
-        exifOrientationCorrector?.rotateSize(imageSize)
-
         val maxSizeInSampleSize = request.maxSize?.let {
-            calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
+            val maxSize = Size(it.width, it.height)
+            val rotatedMaxSize = exifOrientationHelper.reverseRotateSize(maxSize)
+            calculateInSampleSize(
+                imageInfo.width, imageInfo.height, rotatedMaxSize.width, rotatedMaxSize.height
+            )
         } ?: 1
+
         val resizeInSampleSize = request.resize?.let {
-            calculateInSampleSize(imageSize.x, imageSize.y, it.width, it.height)
+            val resizeSize = Size(it.width, it.height)
+            val rotatedResizeSize = exifOrientationHelper.reverseRotateSize(resizeSize)
+            calculateInSampleSize(
+                imageInfo.width, imageInfo.height, rotatedResizeSize.width, rotatedResizeSize.height
+            )
         } ?: 1
+
         decodeConfig.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
         return decodeFull(imageInfo, decodeConfig)
     }

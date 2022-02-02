@@ -66,25 +66,26 @@ class VideoFrameDecoder(
             val message = "Invalid video size. size=${srcWidth}x${srcHeight}"
             throw BitmapDecodeException(request, message)
         }
-        val exifOrientation =
-            if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-                val videoRotation = mediaMetadataRetriever
-                    .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-                    ?.toIntOrNull() ?: 0
-                videoRotation.run {
-                    when (this) {
-                        0 -> ExifInterface.ORIENTATION_UNDEFINED
-                        90 -> ExifInterface.ORIENTATION_ROTATE_90
-                        180 -> ExifInterface.ORIENTATION_ROTATE_180
-                        270 -> ExifInterface.ORIENTATION_ROTATE_270
-                        else -> ExifInterface.ORIENTATION_UNDEFINED
-                    }
-                }
-            } else {
-                ExifInterface.ORIENTATION_UNDEFINED
-            }
-        return ImageInfo(srcWidth, srcHeight, mimeType, exifOrientation)
+        return ImageInfo(srcWidth, srcHeight, mimeType)
     }
+
+    override fun readExifOrientation(imageInfo: ImageInfo): Int =
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+            val videoRotation = mediaMetadataRetriever
+                .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+                ?.toIntOrNull() ?: 0
+            videoRotation.run {
+                when (this) {
+                    0 -> ExifInterface.ORIENTATION_UNDEFINED
+                    90 -> ExifInterface.ORIENTATION_ROTATE_90
+                    180 -> ExifInterface.ORIENTATION_ROTATE_180
+                    270 -> ExifInterface.ORIENTATION_ROTATE_270
+                    else -> ExifInterface.ORIENTATION_UNDEFINED
+                }
+            }
+        } else {
+            ExifInterface.ORIENTATION_UNDEFINED
+        }
 
     override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         // todo 缓存视频帧到磁盘缓存

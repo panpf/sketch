@@ -15,39 +15,10 @@
  */
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.decode.internal.exifOrientationName
-import org.json.JSONException
-import org.json.JSONObject
-
 data class ImageInfo constructor(
     val width: Int,
     val height: Int,
     val mimeType: String,
-    val exifOrientation: Int
 ) {
-
-    fun toJsonString(): String = JSONObject().apply {
-        put("mimeType", mimeType)
-        put("width", width)
-        put("height", height)
-        put("exifOrientation", exifOrientation)
-    }.toString()
-
-    override fun toString(): String {
-        val exifOrientationName = exifOrientationName(exifOrientation)
-        return "ImageInfo(width=$width,height=$height,mimeType='$mimeType',exifOrientation=${exifOrientationName})"
-    }
-
-    companion object {
-        @Throws(JSONException::class)
-        fun fromJsonString(jsonString: String): ImageInfo {
-            val json = JSONObject(jsonString)
-            return ImageInfo(
-                json.getInt("width"),
-                json.getInt("height"),
-                json.getString("mimeType"),
-                json.getInt("exifOrientation"),
-            )
-        }
-    }
+    override fun toString(): String = "ImageInfo(width=$width,height=$height,mimeType='$mimeType')"
 }

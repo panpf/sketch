@@ -28,10 +28,11 @@ import com.github.panpf.sketch.request.DataFrom
  * 增加了从 BitmapPool 中寻找可复用 Bitmap 的功能以及图片的信息
  */
 @SuppressLint("RestrictedApi")
-class SketchKoralGifDrawable(
+class SketchKoralGifDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
     private val imageInfo: ImageInfo,
+    private val exifOrientation: Int,
     override val imageDataFrom: DataFrom,
     private val gifDrawable: ReuseGifDrawable,
 ) : DrawableWrapper(gifDrawable), SketchAnimatableDrawable {
@@ -46,7 +47,7 @@ class SketchKoralGifDrawable(
         get() = imageInfo.mimeType
 
     override val imageExifOrientation: Int
-        get() = imageInfo.exifOrientation
+        get() = exifOrientation
 
     override val bitmapWidth: Int
         get() = gifDrawable.bitmapWidth

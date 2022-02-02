@@ -16,16 +16,15 @@
 package com.github.panpf.sketch.zoom.block
 
 import android.graphics.Bitmap
-import android.graphics.Point
 import android.graphics.Rect
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.zoom.block.Block.Companion.blockListToString
 import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
 import com.github.panpf.sketch.zoom.block.internal.ObjectPool
 import com.github.panpf.sketch.zoom.internal.ImageZoomer
-import com.github.panpf.sketch.zoom.internal.Size
 import com.github.panpf.sketch.zoom.internal.isCross
 import java.util.Collections
 import java.util.LinkedList
@@ -63,7 +62,7 @@ class BlockManager(
         newVisibleRect: Rect,
         drawableSize: Size,
         viewSize: Size,
-        imageSize: Point,
+        imageSize: Size,
         zooming: Boolean
     ) {
         if (zooming) {
@@ -82,8 +81,8 @@ class BlockManager(
             return
         }
         visibleRect.set(newVisibleRect)
-        val imageWidth = imageSize.x
-        val imageHeight = imageSize.y
+        val imageWidth = imageSize.width
+        val imageHeight = imageSize.height
 
         // 原始图和预览图对比的缩放比例
         val originWidthScale = imageWidth.toFloat() / drawableSize.width

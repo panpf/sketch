@@ -33,9 +33,11 @@ fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
         inJustDecodeBounds = true
     }
     decodeBitmapWithBitmapFactory(boundOptions)
-    val mimeType = boundOptions.outMimeType ?: ""
-    val exifOrientation: Int = readExifOrientationWithMimeType(mimeType)
-    return ImageInfo(boundOptions.outWidth, boundOptions.outHeight, mimeType, exifOrientation)
+    return ImageInfo(
+        width = boundOptions.outWidth,
+        height = boundOptions.outHeight,
+        mimeType = boundOptions.outMimeType.orEmpty()
+    )
 }
 
 fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {

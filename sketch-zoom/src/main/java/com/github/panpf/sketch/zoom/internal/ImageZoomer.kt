@@ -29,6 +29,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.SketchZoomImageView
 import com.github.panpf.sketch.zoom.DefaultReadModeConditions
 import com.github.panpf.sketch.zoom.ReadModeConditions

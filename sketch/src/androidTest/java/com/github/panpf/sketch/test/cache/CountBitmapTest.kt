@@ -56,9 +56,9 @@ class CountBitmapTest {
             "image1",
             100,
             100,
-            imageInfo = ImageInfo(100, 100, "image/png", 0)
+            imageInfo = ImageInfo(100, 100, "image/png")
         ).apply {
-            Assert.assertEquals(ImageInfo(100, 100, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(100, 100, "image/png"), imageInfo)
         }
 
         createCountBitmap(
@@ -66,9 +66,9 @@ class CountBitmapTest {
             "image2",
             100,
             150,
-            imageInfo = ImageInfo(100, 150, "image/gif", 0)
+            imageInfo = ImageInfo(100, 150, "image/gif")
         ).apply {
-            Assert.assertEquals(ImageInfo(100, 150, "image/gif", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(100, 150, "image/gif"), imageInfo)
         }
     }
 
@@ -242,7 +242,7 @@ class CountBitmapTest {
         width: Int,
         height: Int,
         requestKey: String = imageUri,
-        imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg", 0),
+        imageInfo: ImageInfo = ImageInfo(width, height, "image/jpeg"),
         transformedList: List<Transformed>? = null
     ): CountBitmap {
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
@@ -251,6 +251,7 @@ class CountBitmapTest {
             requestKey = requestKey,
             imageUri = imageUri,
             imageInfo = imageInfo,
+            exifOrientation = 0,
             transformedList = transformedList,
             logger = sketch.logger,
             bitmapPool = sketch.bitmapPool

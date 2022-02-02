@@ -96,8 +96,8 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
         // 根据图片方向恢复src区域的真实位置
         val imageSize = regionDecoder.imageSize
-        regionDecoder.exifOrientationCorrector
-            ?.reverseRotateRect(srcRect, imageSize.x, imageSize.y)
+        regionDecoder.exifOrientationHelper
+            ?.reverseRotateRect(srcRect, imageSize.width, imageSize.height)
         val options = BitmapFactory.Options()
         options.inSampleSize = inSampleSize
 //        val imageType = regionDecoder.imageFormat
@@ -132,8 +132,8 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
                 val message =
                     "Bitmap region decode error. Because srcRect. imageUri=%s, imageSize=%dx%d, imageMimeType=%s, srcRect=%s, inSampleSize=%d".format(
                         regionDecoder.imageUri,
-                        regionDecoder.imageSize.x,
-                        regionDecoder.imageSize.y,
+                        regionDecoder.imageSize.width,
+                        regionDecoder.imageSize.height,
                         regionDecoder.imageFormat!!.mimeType,
                         srcRect.toString(),
                         options.inSampleSize
@@ -158,8 +158,8 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
         // 旋转图片
         val newBitmap =
-            regionDecoder.exifOrientationCorrector?.rotateBitmap(bitmap, bitmapPool)
-        if (newBitmap != null && newBitmap != bitmap) {
+            regionDecoder.exifOrientationHelper?.applyOrientation(bitmap, bitmapPool)
+        if (newBitmap != null) {
             bitmap = if (!newBitmap.isRecycled) {
                 bitmapPool.free(bitmap)
                 newBitmap

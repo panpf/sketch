@@ -29,16 +29,15 @@ class XmlDrawableBitmapDecoder(
             bitmap.width,
             bitmap.height,
             "image/android-xml",
-            ExifInterface.ORIENTATION_UNDEFINED
         )
-        return BitmapDecodeResult(bitmap, imageInfo, LOCAL)
+        return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
     }
 
     override fun close() {
 
     }
 
-    class Factory : com.github.panpf.sketch.decode.BitmapDecoder.Factory {
+    class Factory : BitmapDecoder.Factory {
         override fun create(
             sketch: Sketch,
             request: LoadRequest,

@@ -21,7 +21,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
-import android.graphics.Point
 import android.graphics.Rect
 import android.text.TextUtils
 import androidx.exifinterface.media.ExifInterface
@@ -29,6 +28,7 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.getLastDrawable
 import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
@@ -326,7 +326,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
     /**
      * 获取图片的尺寸
      */
-    val imageSize: Point?
+    val imageSize: Size?
         get() = if (blockDecoder.isReady) blockDecoder.decoder!!.imageSize else null
 
     /**

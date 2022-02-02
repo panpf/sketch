@@ -84,7 +84,8 @@ class BitmapMemoryCacheHelperTest {
         // There are the
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg", 0),
+            ImageInfo(1291, 1936, "image/jpeg"),
+            0,
             LOCAL,
             null
         )
@@ -120,7 +121,8 @@ class BitmapMemoryCacheHelperTest {
 
         val bitmapDecodeResult = BitmapDecodeResult(
             Bitmap.createBitmap(100, 100, ARGB_8888),
-            ImageInfo(1291, 1936, "image/jpeg", 0),
+            ImageInfo(1291, 1936, "image/jpeg"),
+            0,
             LOCAL,
             null
         )
