@@ -49,18 +49,19 @@ abstract class AbsBitmapDecoder(
         val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
 
         val resize = request.resize
+        val addedResize = resize?.let { exifOrientationHelper.addToResize(it) }
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
-            resize?.shouldUse(imageInfo.width, imageInfo.height) == true
+            addedResize?.shouldUse(imageInfo.width, imageInfo.height) == true
             && canDecodeRegion(imageInfo.mimeType)
         ) {
             resizeTransformed = ResizeTransformed(resize)
-            decodeRegionWrapper(imageInfo, decodeConfig, exifOrientationHelper, resize)
+            decodeRegionWrapper(imageInfo, decodeConfig, addedResize)
         } else {
             resizeTransformed = null
-            decodeFullWrapper(imageInfo, decodeConfig, exifOrientationHelper)
+            val addedMaxSize = request.maxSize?.let { exifOrientationHelper.addRotationSize(it) }
+            decodeFullWrapper(imageInfo, decodeConfig, addedMaxSize, addedResize)
         }
 
         return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataSource.from)
@@ -78,25 +79,22 @@ abstract class AbsBitmapDecoder(
     private fun decodeRegionWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
-        exifOrientationHelper: ExifOrientationHelper,
-        resize: Resize,
+        addedResize: Resize,
     ): Bitmap {
-        val resizeSize = Size(resize.width, resize.height)
-        val rotatedResizeSize = exifOrientationHelper.addRotationSize(resizeSize)
         val resizeMapping = ResizeMapping.calculator(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
-            resizeWidth = rotatedResizeSize.width,
-            resizeHeight = rotatedResizeSize.height,
-            resizeScale = resize.scale,
-            exactlySize = resize.precision == Resize.Precision.EXACTLY
+            resizeWidth = addedResize.width,
+            resizeHeight = addedResize.height,
+            resizeScale = addedResize.scale,
+            exactlySize = addedResize.precision == Resize.Precision.EXACTLY
         )
 
         decodeConfig.inSampleSize = calculateInSampleSize(
             resizeMapping.srcRect.width(),
             resizeMapping.srcRect.height(),
-            resize.width,
-            resize.height
+            addedResize.width,
+            addedResize.height
         )
 
         return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
@@ -105,22 +103,15 @@ abstract class AbsBitmapDecoder(
     private fun decodeFullWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
-        exifOrientationHelper: ExifOrientationHelper,
+        addedMaxSize: Size?,
+        addedResize: Resize?,
     ): Bitmap {
-        val maxSizeInSampleSize = request.maxSize?.let {
-            val maxSize = Size(it.width, it.height)
-            val rotatedMaxSize = exifOrientationHelper.addRotationSize(maxSize)
-            calculateInSampleSize(
-                imageInfo.width, imageInfo.height, rotatedMaxSize.width, rotatedMaxSize.height
-            )
+        val maxSizeInSampleSize = addedMaxSize?.let {
+            calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: 1
 
-        val resizeInSampleSize = request.resize?.let {
-            val resizeSize = Size(it.width, it.height)
-            val rotatedResizeSize = exifOrientationHelper.addRotationSize(resizeSize)
-            calculateInSampleSize(
-                imageInfo.width, imageInfo.height, rotatedResizeSize.width, rotatedResizeSize.height
-            )
+        val resizeInSampleSize = addedResize?.let {
+            calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: 1
 
         decodeConfig.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
