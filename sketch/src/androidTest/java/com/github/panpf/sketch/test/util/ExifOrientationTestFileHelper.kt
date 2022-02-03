@@ -27,11 +27,11 @@ class ExifOrientationTestFileHelper(val context: Context) {
 
         val configs = arrayOf(
             Config("ROTATE_90", ExifInterface.ORIENTATION_ROTATE_90, testFilesDir),
-            Config("TRANSPOSE", ExifInterface.ORIENTATION_TRANSPOSE, testFilesDir),
+            Config("TRANSVERSE", ExifInterface.ORIENTATION_TRANSVERSE, testFilesDir),
             Config("ROTATE_180", ExifInterface.ORIENTATION_ROTATE_180, testFilesDir),
             Config("FLIP_VER", ExifInterface.ORIENTATION_FLIP_VERTICAL, testFilesDir),
             Config("ROTATE_270", ExifInterface.ORIENTATION_ROTATE_270, testFilesDir),
-            Config("TRANSVERSE", ExifInterface.ORIENTATION_TRANSVERSE, testFilesDir),
+            Config("TRANSPOSE", ExifInterface.ORIENTATION_TRANSPOSE, testFilesDir),
             Config("FLIP_HOR", ExifInterface.ORIENTATION_FLIP_HORIZONTAL, testFilesDir),
         )
         val needReset = configs.any { !it.file.exists() }
