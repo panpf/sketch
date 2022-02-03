@@ -134,7 +134,7 @@ class VideoFrameDecoder(
         )
     }
 
-    override fun canDecodeRegion(imageInfo: ImageInfo): Boolean = false
+    override fun canDecodeRegion(mimeType: String): Boolean = false
 
     override fun decodeRegion(
         imageInfo: ImageInfo,

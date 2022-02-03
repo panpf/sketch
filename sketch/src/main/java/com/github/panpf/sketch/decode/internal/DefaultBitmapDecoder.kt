@@ -26,8 +26,8 @@ open class DefaultBitmapDecoder(
     override fun readExifOrientation(imageInfo: ImageInfo): Int =
         dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
 
-    override fun canDecodeRegion(imageInfo: ImageInfo): Boolean =
-        ImageFormat.valueOfMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
+    override fun canDecodeRegion(mimeType: String): Boolean =
+        ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() == true
 
     override fun decodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig

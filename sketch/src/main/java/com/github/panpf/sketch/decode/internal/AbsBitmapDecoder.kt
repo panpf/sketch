@@ -28,7 +28,7 @@ abstract class AbsBitmapDecoder(
 
     protected abstract fun readExifOrientation(imageInfo: ImageInfo): Int
 
-    protected abstract fun canDecodeRegion(imageInfo: ImageInfo): Boolean
+    protected abstract fun canDecodeRegion(mimeType: String): Boolean
 
     protected abstract fun decodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig,
@@ -54,7 +54,7 @@ abstract class AbsBitmapDecoder(
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
             resize?.shouldUse(imageInfo.width, imageInfo.height) == true
-            && canDecodeRegion(imageInfo)
+            && canDecodeRegion(imageInfo.mimeType)
         ) {
             resizeTransformed = ResizeTransformed(resize)
             decodeRegionWrapper(imageInfo, decodeConfig, exifOrientationHelper, resize)

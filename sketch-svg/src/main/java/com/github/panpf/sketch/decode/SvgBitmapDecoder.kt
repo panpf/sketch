@@ -92,7 +92,7 @@ class SvgBitmapDecoder(
         return bitmap
     }
 
-    override fun canDecodeRegion(imageInfo: ImageInfo): Boolean = false
+    override fun canDecodeRegion(mimeType: String): Boolean = false
 
     override fun decodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
