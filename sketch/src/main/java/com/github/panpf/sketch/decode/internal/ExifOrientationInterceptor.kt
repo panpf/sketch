@@ -41,7 +41,7 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
 
 class ExifOrientationTransformed(val exifOrientation: Int) : Transformed {
     override val key: String =
-        "ExifOrientationTransformed(${exifOrientationName(exifOrientation)}"
+        "ExifOrientationTransformed(${exifOrientationName(exifOrientation)})"
     override val cacheResultToDisk: Boolean = true
 
     override fun toString(): String = key

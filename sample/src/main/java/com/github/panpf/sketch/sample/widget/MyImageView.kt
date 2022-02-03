@@ -76,7 +76,13 @@ open class MyImageView @JvmOverloads constructor(
                 }"
             )
             append("\n").append("\n")
-            append("transformedList: ${drawable.transformedList?.joinToString()}")
+            append(
+                "transformedList: ${
+                    drawable.transformedList?.joinToString {
+                        it.toString().replace("Transformed", "")
+                    }
+                }"
+            )
             append("\n").append("\n")
             append(drawable.requestKey)
         }
