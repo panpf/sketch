@@ -36,7 +36,6 @@ open class MyImageView @JvmOverloads constructor(
                 addSource(disabledNetworkContentDiskCache, observer)
                 addSource(disabledBitmapResultDiskCache, observer)
                 addSource(disabledBitmapPool, observer)
-                addSource(ignoreExifOrientation, observer)
             }
 
             showDataFrom.observeFromView(this@MyImageView) {

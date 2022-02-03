@@ -1,14 +1,20 @@
 package com.github.panpf.sketch.sample.ds
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.provider.MediaStore
+import androidx.exifinterface.media.ExifInterface
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
+import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.sample.AssetImages
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.sketch
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
 
 class LocalPhotoListPagingSource(private val context: Context) :
@@ -20,48 +26,8 @@ class LocalPhotoListPagingSource(private val context: Context) :
         val startPosition = params.key ?: 0
         val pageSize = params.loadSize
 
-        val assetPhotos = if (startPosition == 0) {
-            withToIO {
-                AssetImages.FORMATS.plus(AssetImages.HUGES).plus(AssetImages.LONGS).map {
-                    val options = context.assets.open(it.replace("asset://", "")).use {
-                        BitmapFactory.Options().apply {
-                            inJustDecodeBounds = true
-                            BitmapFactory.decodeStream(it, null, this)
-                        }
-                    }
-                    Photo(
-                        originalUrl = it,
-                        thumbnailUrl = null,
-                        middenUrl = null,
-                        width = options.outWidth,
-                        height = options.outHeight,
-                    )
-                }
-            }
-        } else {
-            emptyList()
-        }
-
-        val exifPhotos = if (startPosition == 0) {
-            withToIO {
-                ExifOrientationTestFileHelper(context).files().map {
-                    val options = BitmapFactory.Options().apply {
-                        inJustDecodeBounds = true
-                        BitmapFactory.decodeFile(it.file.path, this)
-                    }
-                    Photo(
-                        originalUrl = it.file.path,
-                        thumbnailUrl = null,
-                        middenUrl = null,
-                        width = options.outWidth,
-                        height = options.outHeight,
-                    )
-                }
-            }
-        } else {
-            emptyList()
-        }
-
+        val assetPhotos = if (startPosition == 0) readAssetPhotos() else emptyList()
+        val exifPhotos = if (startPosition == 0) readExifPhotos() else emptyList()
         val dataList = withToIO {
             val cursor = context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -76,27 +42,12 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 null,
                 MediaStore.Images.Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize
             )
-            ArrayList<Photo>(cursor?.count ?: 0).apply {
+            ArrayList<String>(cursor?.count ?: 0).apply {
                 cursor?.use {
                     while (cursor.moveToNext()) {
                         val uri =
                             cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                        val options =
-                            context.contentResolver.openInputStream(Uri.parse("file://$uri")).use {
-                                BitmapFactory.Options().apply {
-                                    inJustDecodeBounds = true
-                                    BitmapFactory.decodeStream(it, null, this)
-                                }
-                            }
-                        add(
-                            Photo(
-                                originalUrl = uri,
-                                thumbnailUrl = null,
-                                middenUrl = null,
-                                width = options.outWidth,
-                                height = options.outHeight,
-                            )
-                        )
+                        add(uri)
                     }
                 }
             }
@@ -107,6 +58,55 @@ class LocalPhotoListPagingSource(private val context: Context) :
         } else {
             null
         }
-        return LoadResult.Page(assetPhotos.plus(exifPhotos).plus(dataList), null, nextKey)
+        return LoadResult.Page(
+            assetPhotos.plus(exifPhotos).plus(dataList).map { uriToPhoto(it) },
+            null,
+            nextKey
+        )
+    }
+
+    private suspend fun readAssetPhotos(): List<String> = withToIO {
+        AssetImages.FORMATS
+            .plus(AssetImages.HUGES)
+            .plus(AssetImages.LONGS).toList()
+    }
+
+    private suspend fun readExifPhotos(): List<String> = withToIO {
+        AssetImages.EXIF_BIG
+            .plus(ExifOrientationTestFileHelper(context).files().map { it.file.path })
+            .toList()
+    }
+
+    private suspend fun uriToPhoto(uri: String): Photo = withToIO {
+        val sketch = context.sketch
+        val fetcher = sketch.componentRegistry.newFetcher(sketch, LoadRequest(uri))
+        val dataSource = fetcher.fetch().dataSource
+        val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrNull()
+        if (imageInfo != null) {
+            val exifOrientation =
+                if (context.appSettingsService.ignoreExifOrientation.value != true) {
+                    dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
+                } else {
+                    ExifInterface.ORIENTATION_UNDEFINED
+                }
+            val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
+            val size =
+                exifOrientationHelper.applyRotationSize(Size(imageInfo.width, imageInfo.height))
+            Photo(
+                originalUrl = uri,
+                thumbnailUrl = null,
+                middenUrl = null,
+                width = size.width,
+                height = size.height,
+            )
+        } else {
+            Photo(
+                originalUrl = uri,
+                thumbnailUrl = null,
+                middenUrl = null,
+                width = null,
+                height = null,
+            )
+        }
     }
 }

@@ -95,7 +95,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     }
                 } else {
                     width = itemSize.x
-                    height = if (itemSize.y != -1) itemSize.y else LayoutParams.WRAP_CONTENT
+                    height = itemSize.x
                 }
             }
 

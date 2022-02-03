@@ -21,6 +21,10 @@ object AssetImages {
         "asset://sample_long_comic.jpg",
     )
 
+    val EXIF_BIG = arrayOf(
+        "asset://exif_big_rotate_90.jpeg"
+    )
+
     val VIDEOS = arrayOf(
         "asset://sample.mp4"
     )
