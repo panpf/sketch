@@ -119,10 +119,6 @@ class PhotoListMenusViewModel(application1: Application) : LifecycleAndroidViewM
             menuList.postValue(menuList.value)
         })
 
-
-
-
-
         add(MenuItemInfo(
             0,
             values = arrayOf(true, false),
@@ -138,24 +134,24 @@ class PhotoListMenusViewModel(application1: Application) : LifecycleAndroidViewM
         add(MenuItemInfo(
             0,
             values = arrayOf(true, false),
-            initValue = application1.appSettingsService.disabledNetworkContentDiskCache.value!!,
-            titles = arrayOf("Disabled Network Content Disk Cache", "Enabled Network Content Disk Cache"),
-            iconResIds = null,
-            MenuItem.SHOW_AS_ACTION_NEVER
-        ) { _, newValue ->
-            application1.appSettingsService.disabledNetworkContentDiskCache.postValue(newValue)
-            menuList.postValue(menuList.value)
-        })
-
-        add(MenuItemInfo(
-            0,
-            values = arrayOf(true, false),
             initValue = application1.appSettingsService.disabledBitmapResultDiskCache.value!!,
             titles = arrayOf("Disabled Bitmap Result Disk Cache", "Enabled Bitmap Result Disk Cache"),
             iconResIds = null,
             MenuItem.SHOW_AS_ACTION_NEVER
         ) { _, newValue ->
             application1.appSettingsService.disabledBitmapResultDiskCache.postValue(newValue)
+            menuList.postValue(menuList.value)
+        })
+
+        add(MenuItemInfo(
+            0,
+            values = arrayOf(true, false),
+            initValue = application1.appSettingsService.disabledNetworkContentDiskCache.value!!,
+            titles = arrayOf("Disabled Network Content Disk Cache", "Enabled Network Content Disk Cache"),
+            iconResIds = null,
+            MenuItem.SHOW_AS_ACTION_NEVER
+        ) { _, newValue ->
+            application1.appSettingsService.disabledNetworkContentDiskCache.postValue(newValue)
             menuList.postValue(menuList.value)
         })
 
