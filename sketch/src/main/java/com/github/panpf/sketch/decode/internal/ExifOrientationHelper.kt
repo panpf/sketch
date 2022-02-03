@@ -136,21 +136,39 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         return Size(newRect.width().toInt(), newRect.height().toInt())
     }
 
-    fun addToResize(resize: Resize): Resize {
+    fun addToResize(resize: Resize, imageWidth: Int, imageHeight: Int): Resize {
         val newSize = addToSize(Size(resize.width, resize.height))
-        val newScale = if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
-            || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
-            || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
-            || exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
-        ) {
-            when (resize.scale) {
-                Resize.Scale.START_CROP -> Resize.Scale.END_CROP
-                Resize.Scale.CENTER_CROP -> Resize.Scale.CENTER_CROP
-                Resize.Scale.END_CROP -> Resize.Scale.START_CROP
-                Resize.Scale.FILL -> Resize.Scale.FILL
+        val correctedImageSize = applyToSize(Size(imageWidth, imageHeight))
+        val newScale = if (correctedImageSize.width > correctedImageSize.height) {
+            if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
+                || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
+                || exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+            ) {
+                when (resize.scale) {
+                    Resize.Scale.START_CROP -> Resize.Scale.END_CROP
+                    Resize.Scale.CENTER_CROP -> Resize.Scale.CENTER_CROP
+                    Resize.Scale.END_CROP -> Resize.Scale.START_CROP
+                    Resize.Scale.FILL -> Resize.Scale.FILL
+                }
+            } else {
+                resize.scale
             }
         } else {
-            resize.scale
+            if (exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
+                || exifOrientation == ExifInterface.ORIENTATION_FLIP_VERTICAL
+                || exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
+            ) {
+                when (resize.scale) {
+                    Resize.Scale.START_CROP -> Resize.Scale.END_CROP
+                    Resize.Scale.CENTER_CROP -> Resize.Scale.CENTER_CROP
+                    Resize.Scale.END_CROP -> Resize.Scale.START_CROP
+                    Resize.Scale.FILL -> Resize.Scale.FILL
+                }
+            } else {
+                resize.scale
+            }
         }
         return Resize(
             width = newSize.width,

@@ -9,36 +9,28 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ExifOrientationTestFileHelper(val context: Context) {
+class ExifOrientationTestFileHelper(val context: Context, val assetFileName: String) {
 
-    class TestFile(val title: String, val file: File, val exifOrientation: Int)
-
-    private class Config(
-        val name: String,
-        val orientation: Int,
-        cacheDir: File,
-    ) {
-        val file = File(cacheDir, "${name}.jpeg")
-    }
+    private val cacheDir: File = File(
+        context.getExternalFilesDir(null) ?: context.filesDir,
+        "exif_files" + "/" + File(assetFileName).nameWithoutExtension
+    )
+    private val configs = arrayOf(
+        Config("ROTATE_90", ExifInterface.ORIENTATION_ROTATE_90, cacheDir),
+        Config("TRANSVERSE", ExifInterface.ORIENTATION_TRANSVERSE, cacheDir),
+        Config("ROTATE_180", ExifInterface.ORIENTATION_ROTATE_180, cacheDir),
+        Config("FLIP_VER", ExifInterface.ORIENTATION_FLIP_VERTICAL, cacheDir),
+        Config("ROTATE_270", ExifInterface.ORIENTATION_ROTATE_270, cacheDir),
+        Config("TRANSPOSE", ExifInterface.ORIENTATION_TRANSPOSE, cacheDir),
+        Config("FLIP_HOR", ExifInterface.ORIENTATION_FLIP_HORIZONTAL, cacheDir),
+    )
 
     fun files(): List<TestFile> {
-        val testFilesDir =
-            File(context.getExternalFilesDir(null) ?: context.filesDir, "exif_files")
-
-        val configs = arrayOf(
-            Config("ROTATE_90", ExifInterface.ORIENTATION_ROTATE_90, testFilesDir),
-            Config("TRANSVERSE", ExifInterface.ORIENTATION_TRANSVERSE, testFilesDir),
-            Config("ROTATE_180", ExifInterface.ORIENTATION_ROTATE_180, testFilesDir),
-            Config("FLIP_VER", ExifInterface.ORIENTATION_FLIP_VERTICAL, testFilesDir),
-            Config("ROTATE_270", ExifInterface.ORIENTATION_ROTATE_270, testFilesDir),
-            Config("TRANSPOSE", ExifInterface.ORIENTATION_TRANSPOSE, testFilesDir),
-            Config("FLIP_HOR", ExifInterface.ORIENTATION_FLIP_HORIZONTAL, testFilesDir),
-        )
         val needReset = configs.any { !it.file.exists() }
         if (needReset) {
-            testFilesDir.deleteRecursively()
-            testFilesDir.mkdirs()
-            val originBitmap = context.assets.open("exif_origin.jpeg").use {
+            cacheDir.deleteRecursively()
+            cacheDir.mkdirs()
+            val originBitmap = context.assets.open(assetFileName).use {
                 BitmapFactory.decodeStream(it)
             }!!
             for (config in configs) {
@@ -88,4 +80,14 @@ class ExifOrientationTestFileHelper(val context: Context) {
             file.delete()
         }
     }
+
+    private class Config(
+        val name: String,
+        val orientation: Int,
+        cacheDir: File,
+    ) {
+        val file = File(cacheDir, "${name}.jpeg")
+    }
+
+    class TestFile(val title: String, val file: File, val exifOrientation: Int)
 }
