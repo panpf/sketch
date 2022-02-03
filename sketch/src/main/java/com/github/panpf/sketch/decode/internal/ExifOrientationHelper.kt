@@ -24,6 +24,7 @@ import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.util.Size
 import kotlin.math.abs
 
@@ -109,15 +110,15 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
 //            else -> 1
 //        }
 
-    fun applyOrientation(inBitmap: Bitmap, bitmapPool: BitmapPool? = null): Bitmap? {
+    fun applyToBitmap(inBitmap: Bitmap, bitmapPool: BitmapPool? = null): Bitmap? {
         return applyFlipAndRotation(inBitmap, isFlipped, rotationDegrees, bitmapPool, true)
     }
 
-    fun addOrientation(inBitmap: Bitmap, bitmapPool: BitmapPool? = null): Bitmap? {
+    fun addToBitmap(inBitmap: Bitmap, bitmapPool: BitmapPool? = null): Bitmap? {
         return applyFlipAndRotation(inBitmap, isFlipped, -rotationDegrees, bitmapPool, false)
     }
 
-    fun applyRotationSize(size: Size): Size {
+    fun applyToSize(size: Size): Size {
         val matrix = Matrix().apply {
             applyFlipAndRotationToMatrix(this, isFlipped, rotationDegrees, true)
         }
@@ -126,13 +127,38 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         return Size(newRect.width().toInt(), newRect.height().toInt())
     }
 
-    fun addRotationSize(size: Size): Size {
+    fun addToSize(size: Size): Size {
         val matrix = Matrix().apply {
             applyFlipAndRotationToMatrix(this, isFlipped, -rotationDegrees, false)
         }
         val newRect = RectF(0f, 0f, size.width.toFloat(), size.height.toFloat())
         matrix.mapRect(newRect)
         return Size(newRect.width().toInt(), newRect.height().toInt())
+    }
+
+    fun addToResize(resize: Resize): Resize {
+        val newSize = addToSize(Size(resize.width, resize.height))
+        val newScale = if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
+            || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
+            || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
+            || exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+        ) {
+            when (resize.scale) {
+                Resize.Scale.START_CROP -> Resize.Scale.END_CROP
+                Resize.Scale.CENTER_CROP -> Resize.Scale.CENTER_CROP
+                Resize.Scale.END_CROP -> Resize.Scale.START_CROP
+                Resize.Scale.FILL -> Resize.Scale.FILL
+            }
+        } else {
+            resize.scale
+        }
+        return Resize(
+            width = newSize.width,
+            height = newSize.height,
+            scope = resize.scope,
+            scale = newScale,
+            precision = resize.precision
+        )
     }
 
     fun reverseRotateRect(srcRect: Rect, imageWidth: Int, imageHeight: Int): Rect =

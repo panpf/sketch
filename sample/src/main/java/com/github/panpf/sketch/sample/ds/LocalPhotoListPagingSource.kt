@@ -91,7 +91,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 }
             val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
             val size =
-                exifOrientationHelper.applyRotationSize(Size(imageInfo.width, imageInfo.height))
+                exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
             Photo(
                 originalUrl = uri,
                 thumbnailUrl = null,

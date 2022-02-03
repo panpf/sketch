@@ -10,6 +10,11 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.decode.Resize.Scale.END_CROP
+import com.github.panpf.sketch.decode.Resize.Scale.FILL
+import com.github.panpf.sketch.decode.Resize.Scale.START_CROP
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.readExifOrientation
@@ -193,7 +198,7 @@ class ExifOrientationHelperTest {
     }
 
     @Test
-    fun testApplyOrientation() {
+    fun testApplyToBitmap() {
         val context = InstrumentationRegistry.getContext()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
@@ -205,7 +210,7 @@ class ExifOrientationHelperTest {
         )
 
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -213,7 +218,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 // Flip horizontally and apply ORIENTATION_ROTATE_90
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -222,7 +227,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -230,7 +235,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 // Flip horizontally and apply ORIENTATION_ROTATE_180
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -239,7 +244,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -247,7 +252,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 // Flip horizontally and apply ORIENTATION_ROTATE_270
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -256,7 +261,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
-            .applyOrientation(inBitmap)!!.let { outBitmap ->
+            .applyToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -264,21 +269,21 @@ class ExifOrientationHelperTest {
                 )
             }
         Assert.assertNull(
-            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).applyOrientation(inBitmap)
+            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).applyToBitmap(inBitmap)
         )
         Assert.assertNull(
-            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).applyOrientation(inBitmap)
+            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).applyToBitmap(inBitmap)
         )
         Assert.assertNull(
-            ExifOrientationHelper(-1).applyOrientation(inBitmap)
+            ExifOrientationHelper(-1).applyToBitmap(inBitmap)
         )
         Assert.assertNull(
-            ExifOrientationHelper(100).applyOrientation(inBitmap)
+            ExifOrientationHelper(100).applyToBitmap(inBitmap)
         )
     }
 
     @Test
-    fun testAddOrientation() {
+    fun testAddToBitmap() {
         val context = InstrumentationRegistry.getContext()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
@@ -290,7 +295,7 @@ class ExifOrientationHelperTest {
         )
 
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -298,7 +303,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 // Flip horizontally based on ORIENTATION_ROTATE_90
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -307,7 +312,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -315,7 +320,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 // Flip horizontally based on ORIENTATION_ROTATE_180
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -324,7 +329,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -332,7 +337,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 // Flip horizontally based on ORIENTATION_ROTATE_270
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -341,7 +346,7 @@ class ExifOrientationHelperTest {
                 )
             }
         ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
-            .addOrientation(inBitmap)!!.let { outBitmap ->
+            .addToBitmap(inBitmap)!!.let { outBitmap ->
                 Assert.assertEquals(
                     inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
                     outBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -349,21 +354,21 @@ class ExifOrientationHelperTest {
                 )
             }
         Assert.assertNull(
-            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).addOrientation(inBitmap)
+            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).addToBitmap(inBitmap)
         )
         Assert.assertNull(
-            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).addOrientation(inBitmap)
+            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).addToBitmap(inBitmap)
         )
         Assert.assertNull(
-            ExifOrientationHelper(-1).addOrientation(inBitmap)
+            ExifOrientationHelper(-1).addToBitmap(inBitmap)
         )
         Assert.assertNull(
-            ExifOrientationHelper(100).addOrientation(inBitmap)
+            ExifOrientationHelper(100).addToBitmap(inBitmap)
         )
     }
 
     @Test
-    fun testAddAndApplyOrientation() {
+    fun testAddAndApplyToBitmap() {
         val context = InstrumentationRegistry.getContext()
         val inBitmap = context.assets.open("sample.jpeg").use {
             BitmapFactory.decodeStream(it)
@@ -374,9 +379,9 @@ class ExifOrientationHelperTest {
                     && inBitmap.cornerA != inBitmap.cornerD
         )
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -385,9 +390,9 @@ class ExifOrientationHelperTest {
             )
         }
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -396,9 +401,9 @@ class ExifOrientationHelperTest {
             )
         }
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -407,9 +412,9 @@ class ExifOrientationHelperTest {
             )
         }
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -418,9 +423,9 @@ class ExifOrientationHelperTest {
             )
         }
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -429,9 +434,9 @@ class ExifOrientationHelperTest {
             )
         }
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -440,9 +445,9 @@ class ExifOrientationHelperTest {
             )
         }
 
-        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL).applyOrientation(
+        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL).applyToBitmap(
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
-                .addOrientation(inBitmap)!!
+                .addToBitmap(inBitmap)!!
         )!!.let { outBitmap ->
             Assert.assertEquals(
                 inBitmap.corners { listOf(cornerA, cornerB, cornerC, cornerD) }.toString(),
@@ -453,117 +458,178 @@ class ExifOrientationHelperTest {
     }
 
     @Test
-    fun testApplyRotationSize() {
+    fun testApplyToSize() {
         Assert.assertEquals(
             Size(50, 100),
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(50, 100),
             ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(50, 100),
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(50, 100),
             ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
-                .applyRotationSize(Size(100, 50))
+                .applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
-            ExifOrientationHelper(-1).applyRotationSize(Size(100, 50))
+            ExifOrientationHelper(-1).applyToSize(Size(100, 50))
         )
         Assert.assertEquals(
             Size(100, 50),
-            ExifOrientationHelper(100).applyRotationSize(Size(100, 50))
+            ExifOrientationHelper(100).applyToSize(Size(100, 50))
         )
     }
 
     @Test
-    fun testAddRotationSize() {
-        Assert.assertEquals(
-            Size(50, 100),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(50, 100),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(50, 100),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(50, 100),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
-                .addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(-1).addRotationSize(Size(100, 50))
-        )
-        Assert.assertEquals(
-            Size(100, 50),
-            ExifOrientationHelper(100).addRotationSize(Size(100, 50))
-        )
+    fun testAddToSize() {
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90).apply {
+            Assert.assertEquals(Size(50, 100), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE).apply {
+            Assert.assertEquals(Size(50, 100), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270).apply {
+            Assert.assertEquals(Size(50, 100), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE).apply {
+            Assert.assertEquals(Size(50, 100), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(-1).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+        ExifOrientationHelper(100).apply {
+            Assert.assertEquals(Size(100, 50), addToSize(Size(100, 50)))
+        }
+    }
+
+    @Test
+    fun testAddToResize() {
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90).apply {
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(5, 10, END_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(5, 10, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(5, 10, START_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(5, 10, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE).apply {
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(5, 10, END_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(5, 10, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(5, 10, START_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(5, 10, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270).apply {
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(5, 10, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(5, 10, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(5, 10, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(5, 10, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE).apply {
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(5, 10, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(5, 10, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(5, 10, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(5, 10, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(-1).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
+        ExifOrientationHelper(10).apply {
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5)))
+            Assert.assertEquals(Resize(10, 5, START_CROP), addToResize(Resize(10, 5, START_CROP)))
+            Assert.assertEquals(Resize(10, 5, CENTER_CROP), addToResize(Resize(10, 5, CENTER_CROP)))
+            Assert.assertEquals(Resize(10, 5, END_CROP), addToResize(Resize(10, 5, END_CROP)))
+            Assert.assertEquals(Resize(10, 5, FILL), addToResize(Resize(10, 5, FILL)))
+        }
     }
 
     @Test

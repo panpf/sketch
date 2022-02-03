@@ -65,7 +65,7 @@ class ExifOrientationTestFileHelper(val context: Context) {
         orientation: Int
     ) {
         val newBitmap =
-            ExifOrientationHelper(orientation).addOrientation(sourceBitmap) ?: sourceBitmap
+            ExifOrientationHelper(orientation).addToBitmap(sourceBitmap) ?: sourceBitmap
         FileOutputStream(file).use {
             newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
         }

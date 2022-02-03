@@ -21,12 +21,12 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
         }
         val bitmapPool = chain.sketch.bitmapPool
         val bitmap = bitmapResult.bitmap
-        val newBitmap = exifOrientationHelper.applyOrientation(bitmap, bitmapPool)
+        val newBitmap = exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         return if (newBitmap != null) {
             bitmapPool.free(bitmap)
             bitmapResult.new(newBitmap) {
                 addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
-                val newSize = exifOrientationHelper.applyRotationSize(
+                val newSize = exifOrientationHelper.applyToSize(
                     Size(bitmapResult.imageInfo.width, bitmapResult.imageInfo.height)
                 )
                 imageInfo(ImageInfo(newSize.width, newSize.height, bitmapResult.imageInfo.mimeType))

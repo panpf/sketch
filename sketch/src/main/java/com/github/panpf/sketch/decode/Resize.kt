@@ -30,6 +30,9 @@ data class Resize constructor(
     val precision: Precision = KEEP_ASPECT_RATIO,
 ) {
 
+    constructor(width: Int, height: Int, scale: Scale)
+            : this(width, height, All, scale = scale, KEEP_ASPECT_RATIO)
+
     val cacheKey: String = "Resize(${width}x${height},${scope},${scale},${precision})"
 
     fun shouldUse(imageWidth: Int, imageHeight: Int): Boolean {

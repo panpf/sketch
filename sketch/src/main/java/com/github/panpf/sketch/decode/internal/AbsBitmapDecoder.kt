@@ -60,7 +60,7 @@ abstract class AbsBitmapDecoder(
             decodeRegionWrapper(imageInfo, decodeConfig, addedResize)
         } else {
             resizeTransformed = null
-            val addedMaxSize = request.maxSize?.let { exifOrientationHelper.addRotationSize(it) }
+            val addedMaxSize = request.maxSize?.let { exifOrientationHelper.addToSize(it) }
             decodeFullWrapper(imageInfo, decodeConfig, addedMaxSize, addedResize)
         }
 

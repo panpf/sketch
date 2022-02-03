@@ -156,7 +156,7 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
         // 旋转图片
         val newBitmap =
-            regionDecoder.exifOrientationHelper.applyOrientation(bitmap, bitmapPool)
+            regionDecoder.exifOrientationHelper.applyToBitmap(bitmap, bitmapPool)
         if (newBitmap != null) {
             bitmap = if (!newBitmap.isRecycled) {
                 bitmapPool.free(bitmap)

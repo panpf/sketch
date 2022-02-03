@@ -80,7 +80,7 @@ class ImageRegionDecoder constructor(
                 exifOrientation = fetchResult.dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
             }
             val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
-            val imageSize = exifOrientationHelper.applyRotationSize(Size(imageInfo.width, imageInfo.height))
+            val imageSize = exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
             val regionDecoder: BitmapRegionDecoder = fetchResult.dataSource.newInputStream().use {
                 if (VERSION.SDK_INT >= VERSION_CODES.S) {
                     BitmapRegionDecoder.newInstance(it)
