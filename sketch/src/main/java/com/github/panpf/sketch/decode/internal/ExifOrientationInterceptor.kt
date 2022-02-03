@@ -2,8 +2,10 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.util.Size
 
 class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
@@ -24,6 +26,10 @@ class ExifOrientationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRe
             bitmapPool.free(bitmap)
             bitmapResult.new(newBitmap) {
                 addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
+                val newSize = exifOrientationHelper.applyRotationSize(
+                    Size(bitmapResult.imageInfo.width, bitmapResult.imageInfo.height)
+                )
+                imageInfo(ImageInfo(newSize.width, newSize.height, bitmapResult.imageInfo.mimeType))
             }
         } else {
             bitmapResult

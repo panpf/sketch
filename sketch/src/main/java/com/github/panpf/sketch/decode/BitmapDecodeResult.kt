@@ -25,11 +25,15 @@ data class BitmapDecodeResult constructor(
 
     class Builder(
         private val bitmap: Bitmap,
-        private val imageInfo: ImageInfo,
+        private var imageInfo: ImageInfo,
         private val exifOrientation: Int,
         private val dataFrom: DataFrom,
         private var transformedList: MutableList<Transformed>? = null
     ) {
+
+        fun imageInfo(imageInfo: ImageInfo): Builder = apply {
+            this.imageInfo = imageInfo
+        }
 
         fun addTransformed(transformed: Transformed): Builder = apply {
             if (this.transformedList?.find { it.key == transformed.key } == null) {
