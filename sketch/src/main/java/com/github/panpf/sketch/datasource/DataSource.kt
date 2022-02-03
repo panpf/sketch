@@ -27,11 +27,8 @@ import java.io.FileDescriptor
 import java.io.IOException
 import java.io.InputStream
 
-/**
- * 数据源
- */
 interface DataSource {
-
+    // todo 不再创建时需要 sketch 和 request
     val sketch: Sketch
 
     val request: ImageRequest

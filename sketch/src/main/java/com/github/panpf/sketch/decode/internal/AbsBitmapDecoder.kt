@@ -82,7 +82,7 @@ abstract class AbsBitmapDecoder(
         resize: Resize,
     ): Bitmap {
         val resizeSize = Size(resize.width, resize.height)
-        val rotatedResizeSize = exifOrientationHelper.reverseRotateSize(resizeSize)
+        val rotatedResizeSize = exifOrientationHelper.addRotationSize(resizeSize)
         val resizeMapping = ResizeMapping.calculator(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
@@ -109,7 +109,7 @@ abstract class AbsBitmapDecoder(
     ): Bitmap {
         val maxSizeInSampleSize = request.maxSize?.let {
             val maxSize = Size(it.width, it.height)
-            val rotatedMaxSize = exifOrientationHelper.reverseRotateSize(maxSize)
+            val rotatedMaxSize = exifOrientationHelper.addRotationSize(maxSize)
             calculateInSampleSize(
                 imageInfo.width, imageInfo.height, rotatedMaxSize.width, rotatedMaxSize.height
             )
@@ -117,7 +117,7 @@ abstract class AbsBitmapDecoder(
 
         val resizeInSampleSize = request.resize?.let {
             val resizeSize = Size(it.width, it.height)
-            val rotatedResizeSize = exifOrientationHelper.reverseRotateSize(resizeSize)
+            val rotatedResizeSize = exifOrientationHelper.addRotationSize(resizeSize)
             calculateInSampleSize(
                 imageInfo.width, imageInfo.height, rotatedResizeSize.width, rotatedResizeSize.height
             )
