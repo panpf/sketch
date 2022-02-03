@@ -18,7 +18,7 @@ package com.github.panpf.sketch.util
 import android.graphics.PointF
 import android.graphics.Rect
 
-data class Size(var width: Int, var height: Int) {
+open class Size(var width: Int, var height: Int) {
 
     constructor() : this(0, 0)
 
@@ -30,9 +30,26 @@ data class Size(var width: Int, var height: Int) {
     val isEmpty: Boolean
         get() = width == 0 || height == 0
 
-    override fun toString(): String {
-        return width.toString() + "x" + height
+    override fun toString(): String = width.toString() + "x" + height
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Size
+
+        if (width != other.width) return false
+        if (height != other.height) return false
+
+        return true
     }
+
+    override fun hashCode(): Int {
+        var result = width
+        result = 31 * result + height
+        return result
+    }
+
 
     companion object {
         private fun invalidSize(s: String): NumberFormatException {
