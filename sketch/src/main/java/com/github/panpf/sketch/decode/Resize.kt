@@ -87,7 +87,7 @@ data class Resize constructor(
         /**
          * Resize only works on long image. How to determine the long image please see [accept]
          */
-        data class OnlyLongImage(private val minDifferenceOfAspectRatio: Float = 1.5f) : Scope {
+        data class OnlyLongImage(private val minDifferenceOfAspectRatio: Float = 2f) : Scope {
 
             override fun accept(
                 imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
