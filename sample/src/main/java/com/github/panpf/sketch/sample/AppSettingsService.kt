@@ -12,7 +12,7 @@ class AppSettingsService(val context: Context) {
         EnumPrefsData(
             context,
             "photoListLayoutMode",
-            LayoutMode.STAGGERED_GRID,
+            LayoutMode.GRID,
             { LayoutMode.valueOf(it) },
             { it.name }
         )
