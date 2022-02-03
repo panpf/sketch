@@ -98,6 +98,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 middenUrl = null,
                 width = size.width,
                 height = size.height,
+                exifOrientation = exifOrientation,
             )
         } else {
             Photo(
@@ -106,6 +107,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
                 middenUrl = null,
                 width = null,
                 height = null,
+                exifOrientation = 0,
             )
         }
     }

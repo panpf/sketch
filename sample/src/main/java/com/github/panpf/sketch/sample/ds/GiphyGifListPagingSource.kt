@@ -29,7 +29,8 @@ class GiphyGifListPagingSource(private val context: Context) :
                     thumbnailUrl = it.images.previewGif.url,
                     middenUrl = null,
                     width = it.images.original.width.toInt(),
-                    height = it.images.original.height.toInt()
+                    height = it.images.original.height.toInt(),
+                    exifOrientation = 0,
                 )
             } ?: emptyList()
             val nextKey = if (dataList.isNotEmpty()) {

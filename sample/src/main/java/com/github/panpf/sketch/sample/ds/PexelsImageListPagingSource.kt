@@ -27,7 +27,8 @@ class PexelsImageListPagingSource(private val context: Context) :
                     thumbnailUrl = it.src.medium,
                     middenUrl = it.src.large,
                     width = it.width,
-                    height = it.height
+                    height = it.height,
+                    exifOrientation = 0,
                 )
             } ?: emptyList())
             val nextKey = if (dataList.isNotEmpty()) {

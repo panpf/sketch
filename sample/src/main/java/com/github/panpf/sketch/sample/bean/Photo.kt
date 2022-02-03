@@ -14,6 +14,7 @@ data class Photo constructor(
     @SerialName("middenUrl") val middenUrl: String?,
     @SerialName("width") val width: Int?,
     @SerialName("height") val height: Int?,
+    @SerialName("exifOrientation") val exifOrientation: Int,
 ) : Parcelable, DiffKey {
     override val diffKey: String = toString()
 
