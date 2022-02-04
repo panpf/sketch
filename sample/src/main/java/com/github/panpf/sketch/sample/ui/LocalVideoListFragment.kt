@@ -24,27 +24,69 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
-import com.github.panpf.tools4a.toast.ktx.showLongToast
-import kotlinx.coroutines.launch
 import com.github.panpf.sketch.sample.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.bean.DialogFragmentItemInfo
+import com.github.panpf.sketch.sample.bean.NavMenuItemInfo
+import com.github.panpf.sketch.sample.bean.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.bean.VideoInfo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LocalVideoItemFactory
+import com.github.panpf.sketch.sample.vm.ListMenuViewModel
 import com.github.panpf.sketch.sample.vm.LocalVideoListViewModel
+import com.github.panpf.tools4a.toast.ktx.showLongToast
+import kotlinx.coroutines.launch
 import java.io.File
 
 class LocalVideoListFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
+    private val listMenuViewModel by viewModels<ListMenuViewModel> {
+        ListMenuViewModel.Factory(
+            requireActivity().application,
+            showLayoutModeMenu = false,
+            showPlayMenu = false
+        )
+    }
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?
     ) = FragmentRecyclerBinding.inflate(inflater, parent, false)
+
+    override fun onInitViews(
+        toolbar: Toolbar,
+        binding: FragmentRecyclerBinding,
+        savedInstanceState: Bundle?
+    ) {
+        super.onInitViews(toolbar, binding, savedInstanceState)
+        listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
+            toolbar.menu.clear()
+            list?.forEachIndexed { groupIndex, group ->
+                group.items.forEachIndexed { index, menuItemInfo ->
+                    toolbar.menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                        menuItemInfo.iconResId?.let { iconResId ->
+                            setIcon(iconResId)
+                        }
+                        setOnMenuItemClickListener {
+                            when (menuItemInfo) {
+                                is SwitchMenuItemInfo<*> -> menuItemInfo.click()
+                                is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
+                                is DialogFragmentItemInfo -> menuItemInfo.fragment
+                                    .show(childFragmentManager, null)
+                            }
+                            true
+                        }
+                        setShowAsAction(menuItemInfo.showAsAction)
+                    }
+                }
+            }
+        }
+    }
 
     override fun onInitData(
         toolbar: Toolbar,

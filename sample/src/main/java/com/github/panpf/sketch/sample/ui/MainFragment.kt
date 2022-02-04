@@ -2,11 +2,14 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
+import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.bean.Link
 import com.github.panpf.sketch.sample.bean.ListSeparator
@@ -18,6 +21,22 @@ class MainFragment : ToolbarBindingFragment<FragmentMainBinding>() {
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup?) =
         FragmentMainBinding.inflate(inflater, parent, false)
+
+    override fun onInitViews(
+        toolbar: Toolbar,
+        binding: FragmentMainBinding,
+        savedInstanceState: Bundle?
+    ) {
+        super.onInitViews(toolbar, binding, savedInstanceState)
+        toolbar.menu.add(0, 0, 0, "Settings").apply {
+            setIcon(R.drawable.ic_settings)
+            setOnMenuItemClickListener {
+                findNavController().navigate(NavMainDirections.actionGlobalSettingsFragment())
+                true
+            }
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
+    }
 
     override fun onInitData(
         toolbar: Toolbar,

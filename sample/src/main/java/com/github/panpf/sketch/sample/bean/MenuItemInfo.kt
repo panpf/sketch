@@ -1,29 +1,7 @@
 package com.github.panpf.sketch.sample.bean
 
-class MenuItemInfo<T>(
-    val groupId: Int,
-    private val values: Array<T>,
-    private val initValue: T,
-    private val titles: Array<String>?,
-    private val iconResIds: Array<Int>?,
-    val showAsAction: Int,
-    private val onChangedListener: (oldValue: T, newValue: T) -> Unit,
-) {
-    private var currentIndex = values.indexOf(initValue)
-    private val nextIndex: Int
-        get() = (currentIndex + 1) % values.size
-
+interface MenuItemInfo {
     val title: String
-        get() = titles?.get(nextIndex).orEmpty()
-
     val iconResId: Int?
-        get() = iconResIds?.get(nextIndex)
-
-    fun click() {
-        val nextIndex = nextIndex
-        val oldValue = values[currentIndex]
-        val newValue = values[nextIndex]
-        currentIndex = nextIndex
-        onChangedListener(oldValue, newValue)
-    }
+    val showAsAction: Int
 }

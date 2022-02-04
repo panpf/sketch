@@ -41,15 +41,18 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
+import com.github.panpf.sketch.sample.bean.DialogFragmentItemInfo
 import com.github.panpf.sketch.sample.bean.ImageDetail
 import com.github.panpf.sketch.sample.bean.LayoutMode.GRID
 import com.github.panpf.sketch.sample.bean.LayoutMode.STAGGERED_GRID
+import com.github.panpf.sketch.sample.bean.NavMenuItemInfo
 import com.github.panpf.sketch.sample.bean.Photo
+import com.github.panpf.sketch.sample.bean.SwitchMenuItemInfo
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.LoadStateItemFactory
 import com.github.panpf.sketch.sample.item.PhotoItemFactory
+import com.github.panpf.sketch.sample.vm.ListMenuViewModel
 import com.github.panpf.sketch.sample.vm.LocalPhotoListViewModel
-import com.github.panpf.sketch.sample.vm.PhotoListMenusViewModel
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -58,11 +61,12 @@ import kotlinx.serialization.json.Json
 class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
-    private val sampleMenuListViewModel by viewModels<PhotoListMenusViewModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sampleMenuListViewModel.showPlayMenu = true
+    private val listMenuViewModel by viewModels<ListMenuViewModel> {
+        ListMenuViewModel.Factory(
+            requireActivity().application,
+            showLayoutModeMenu = true,
+            showPlayMenu = true
+        )
     }
 
     override fun createViewBinding(
@@ -76,18 +80,25 @@ class LocalPhotosFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
         savedInstanceState: Bundle?
     ) {
         super.onInitViews(toolbar, binding, savedInstanceState)
-        sampleMenuListViewModel.menuList.observe(viewLifecycleOwner) {
+        listMenuViewModel.menuList.observe(viewLifecycleOwner) { list ->
             toolbar.menu.clear()
-            it?.forEachIndexed { index, menuItemInfo ->
-                toolbar.menu.add(menuItemInfo.groupId, index, index, menuItemInfo.title).apply {
-                    menuItemInfo.iconResId?.let { iconResId ->
-                        setIcon(iconResId)
+            list?.forEachIndexed { groupIndex, group ->
+                group.items.forEachIndexed { index, menuItemInfo ->
+                    toolbar.menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                        menuItemInfo.iconResId?.let { iconResId ->
+                            setIcon(iconResId)
+                        }
+                        setOnMenuItemClickListener {
+                            when (menuItemInfo) {
+                                is SwitchMenuItemInfo<*> -> menuItemInfo.click()
+                                is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
+                                is DialogFragmentItemInfo -> menuItemInfo.fragment
+                                    .show(childFragmentManager, null)
+                            }
+                            true
+                        }
+                        setShowAsAction(menuItemInfo.showAsAction)
                     }
-                    setOnMenuItemClickListener {
-                        menuItemInfo.click()
-                        true
-                    }
-                    setShowAsAction(menuItemInfo.showAsAction)
                 }
             }
         }

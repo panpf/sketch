@@ -73,6 +73,10 @@
         android:id="@+id/testFragment"
         android:name="com.github.panpf.sketch.sample.ui.TestFragment"
         android:label="TestFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.github.panpf.sketch.sample.ui.SettingsFragment"
+        android:label="SettingsFragment" />
 
     <action
         android:id="@+id/action_global_pexelsPhotosFragment"
@@ -140,6 +144,13 @@
     <action
         android:id="@+id/action_global_testFragment"
         app:destination="@id/testFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
