@@ -15,10 +15,10 @@ class SampleZoomImageView @JvmOverloads constructor(context: Context, attrs: Att
 
     init {
         appSettingsService.correctImageOrientationEnabled.observeFromViewAndInit(this) {
-            options.isCorrectImageOrientationDisabled = it == true
+            options.isCorrectImageOrientationDisabled = it != true
             if (isAttachedToWindow) {
                 redisplay { _, cacheOptions ->
-                    cacheOptions.isCorrectImageOrientationDisabled = it == true
+                    cacheOptions.isCorrectImageOrientationDisabled = it != true
                 }
             }
         }
