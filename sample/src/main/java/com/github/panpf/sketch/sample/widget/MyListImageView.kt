@@ -50,7 +50,7 @@ class MyListImageView @JvmOverloads constructor(
 
         context.appSettingsService.apply {
             mediatorLiveData.apply {
-                val observer = Observer<Boolean> {
+                val observer = Observer<Any> {
                     postValue(1)
                 }
                 addSource(disabledAnimatableDrawableInList, observer)

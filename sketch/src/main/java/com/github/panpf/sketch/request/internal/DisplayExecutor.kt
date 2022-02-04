@@ -34,11 +34,12 @@ class DisplayExecutor(private val sketch: Sketch) {
         }
 
         try {
+            // todo chain 之前的全部移到  engine 中
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
                 throw UriEmptyException(request)
             }
 
-            // todo onLayout restart
+            // todo onLayout restart，用一个拦截器实现
             val fixedSizeRequest = withContext(Dispatchers.Main) {
                 convertFixedSize(request)
             }

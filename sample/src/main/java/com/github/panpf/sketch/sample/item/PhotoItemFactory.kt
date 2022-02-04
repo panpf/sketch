@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
 import com.github.panpf.sketch.decode.Resize
-import com.github.panpf.sketch.decode.Resize.Scale.START_CROP
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
 import com.github.panpf.sketch.sample.databinding.ItemImageBinding
 import com.github.panpf.sketch.stateimage.pauseLoadWhenScrollingErrorImage
@@ -67,7 +67,6 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
                     pauseLoadWhenScrollingErrorImage()
                 }
-                resizeByViewFixedSize(scope = Resize.Scope.OnlyLongImage(), scale = START_CROP)
             }
         }
     }
@@ -99,7 +98,15 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                 }
             }
 
-            displayImage(data.firstThumbnailUrl)
+            displayImage(data.firstThumbnailUrl) {
+                val scope = if (appSettingsService.resizeOnlyLongImage.value) {
+                    Resize.Scope.OnlyLongImage()
+                } else {
+                    Resize.Scope.All
+                }
+                val scale = Resize.Scale.valueOf(appSettingsService.resizeScale.value)
+                resizeByViewFixedSize(scope = scope, scale = scale)
+            }
         }
     }
 }

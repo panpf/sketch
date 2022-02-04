@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.vm
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
+import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.bean.InfoMenu
@@ -61,6 +62,31 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 desc = "No image is loaded during list scrolling to improve the smoothness of list sliding"
             )
         )
+        add(
+            SwitchMenu(
+                title = "Resize only work for long image",
+                desc = null,
+                data = appSettingsService.resizeOnlyLongImage,
+            )
+        )
+        add(
+            MultiSelectMenu(
+                "Resize scale",
+                null,
+                Resize.Scale.values().map { it.name },
+                value = {
+                    appSettingsService.resizeScale.value
+                },
+                onSelect = { which ->
+                    appSettingsService.resizeScale.value = when (which) {
+                        0 -> Resize.Scale.START_CROP.name
+                        1 -> Resize.Scale.CENTER_CROP.name
+                        2 -> Resize.Scale.END_CROP.name
+                        3 -> Resize.Scale.FILL.name
+                        else -> throw IllegalArgumentException("$which")
+                    }
+                })
+        )
     }
 
     private fun makeDecodeMenuList(): List<Any> = buildList {
@@ -79,7 +105,7 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
                 null,
                 listOf("LOW", "MIDDEN", "HIGH"),
                 value = {
-                    appSettingsService.bitmapQuality.value ?: ""
+                    appSettingsService.bitmapQuality.value
                 },
                 onSelect = { which ->
                     appSettingsService.bitmapQuality.value = when (which) {

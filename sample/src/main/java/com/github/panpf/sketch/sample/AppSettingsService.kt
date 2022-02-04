@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample
 
 import android.content.Context
+import com.github.panpf.sketch.decode.Resize
 import com.github.panpf.sketch.sample.bean.LayoutMode
 import com.github.panpf.sketch.sample.bean.LayoutMode.GRID
 import com.github.panpf.sketch.sample.util.prefsdata.BooleanPrefsData
@@ -33,6 +34,12 @@ class AppSettingsService(val context: Context) {
     }
     val pauseLoadWhenScrollInList by lazy {
         BooleanPrefsData(context, "pauseLoadWhenScrollInList", false)
+    }
+    val resizeOnlyLongImage by lazy {
+        BooleanPrefsData(context, "resizeOnlyLongImage", true)
+    }
+    val resizeScale by lazy {
+        StringPrefsData(context, "resizeScale", Resize.Scale.START_CROP.name)
     }
 
     val inPreferQualityOverSpeed by lazy {

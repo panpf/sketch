@@ -29,13 +29,15 @@ open class MyImageView @JvmOverloads constructor(
         }
         context.appSettingsService.apply {
             mediatorLiveData.apply {
-                val observer = Observer<Boolean> {
+                val observer = Observer<Any> {
                     postValue(1)
                 }
                 addSource(disabledBitmapMemoryCache, observer)
                 addSource(disabledNetworkContentDiskCache, observer)
                 addSource(disabledBitmapResultDiskCache, observer)
                 addSource(disabledBitmapPool, observer)
+                addSource(inPreferQualityOverSpeed, observer)
+                addSource(bitmapQuality, observer)
             }
 
             showDataFrom.observeFromView(this@MyImageView) {

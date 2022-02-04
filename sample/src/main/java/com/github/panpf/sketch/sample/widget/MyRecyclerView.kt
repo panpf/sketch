@@ -2,6 +2,8 @@ package com.github.panpf.sketch.sample.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,9 +14,25 @@ import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
 class MyRecyclerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
+
+    private val mediatorLiveData = MediatorLiveData<Any>()
+
     init {
         PauseLoadWhenScrollingMixedScrollListener.attach(this)
-        context.appSettingsService.ignoreExifOrientation.observeFromView(this) {
+
+        mediatorLiveData.apply {
+            val observer = Observer<Any> {
+                postValue(1)
+            }
+            addSource(appSettingsService.resizeOnlyLongImage, observer)
+            addSource(appSettingsService.resizeScale, observer)
+        }
+
+        mediatorLiveData.observeFromView(this) {
+            adapter?.notifyDataSetChanged()
+        }
+
+        appSettingsService.ignoreExifOrientation.observeFromView(this) {
             adapter?.findPagingAdapter()?.refresh()
         }
     }
