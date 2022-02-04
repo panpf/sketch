@@ -25,7 +25,6 @@ import android.graphics.Rect
 import android.text.TextUtils
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
-import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.Size
@@ -115,7 +114,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
         val previewDrawable = imageZoomer.imageView.drawable.getLastDrawable()
         var sketchDrawable: SketchDrawable? = null
         var drawableQualified = false
-        val correctImageOrientation: Boolean
+        val exifOrientation: Int
         if (previewDrawable is SketchDrawable) {
             sketchDrawable = previewDrawable
             val previewWidth = previewDrawable.bitmapWidth
@@ -139,22 +138,20 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
                     sketchDrawable.requestKey
                 )
             }
-            correctImageOrientation =
-                previewDrawable.imageExifOrientation != ExifInterface.ORIENTATION_UNDEFINED
-                        && previewDrawable.transformedList?.getExifOrientationTransformed() != null
+            exifOrientation = previewDrawable.imageExifOrientation
         } else {
-            correctImageOrientation = false
+            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         }
         if (drawableQualified) {
             clean("setImage")
             imageUri = sketchDrawable!!.requestUri
             running = !TextUtils.isEmpty(imageUri)
-            blockDecoder.setImage(imageUri, !correctImageOrientation)
+            blockDecoder.setImage(imageUri, exifOrientation)
         } else {
             clean("setImage")
             imageUri = null
             running = false
-            blockDecoder.setImage(null, !correctImageOrientation)
+            blockDecoder.setImage(null, exifOrientation)
         }
     }
 

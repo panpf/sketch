@@ -94,8 +94,9 @@ class DecodeHandler constructor(looper: Looper, executor: BlockExecutor, imageZo
 
         // 根据图片方向恢复src区域的真实位置
         val imageSize = regionDecoder.imageSize
+        // todo 修复 bug
         val srcRect = regionDecoder.exifOrientationHelper
-            .reverseRotateRect(block.srcRect, imageSize.width, imageSize.height)
+            .addToRect(block.srcRect, imageSize)
         val options = BitmapFactory.Options()
         options.inSampleSize = inSampleSize
 //        val imageType = regionDecoder.imageFormat

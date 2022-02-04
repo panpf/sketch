@@ -42,7 +42,7 @@ class BlockDecoder constructor(
     /**
      * 设置新的图片
      */
-    fun setImage(imageUri: String?, ignoreExifOrientation: Boolean) {
+    fun setImage(imageUri: String?, exifOrientation: Int) {
         clean("setImage")
         decoder?.recycle()
         decoder = null
@@ -52,7 +52,7 @@ class BlockDecoder constructor(
             blockDisplayer.blockExecutor.submitInit(
                 imageUri,
                 initKeyCounter,
-                ignoreExifOrientation
+                exifOrientation
             )
         } else {
             initializing = false

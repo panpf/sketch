@@ -554,470 +554,448 @@ class ExifOrientationHelperTest {
     @Test
     fun testAddToResize() {
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(5, 10, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(5, 10, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(-1).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
         ExifOrientationHelper(10).apply {
-            val size = addToSize(Size(100, 50))
-            val size1 = addToSize(Size(50, 100))
-            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), 100, 50))
+            Assert.assertEquals(Resize(10, 5), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, START_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size.width, size.height)
+                addToResize(Resize(10, 5, END_CROP), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size.width, size.height)
+                addToResize(Resize(10, 5, FILL), Size(100, 50))
             )
             Assert.assertEquals(
                 Resize(10, 5, START_CROP),
-                addToResize(Resize(10, 5, START_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, START_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, CENTER_CROP),
-                addToResize(Resize(10, 5, CENTER_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, CENTER_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, END_CROP),
-                addToResize(Resize(10, 5, END_CROP), size1.width, size1.height)
+                addToResize(Resize(10, 5, END_CROP), Size(50, 100))
             )
             Assert.assertEquals(
                 Resize(10, 5, FILL),
-                addToResize(Resize(10, 5, FILL), size1.width, size1.height)
+                addToResize(Resize(10, 5, FILL), Size(50, 100))
             )
         }
     }
 
     @Test
-    fun testReverseRotateRect() {
+    fun testAddToRect() {
         Assert.assertEquals(
-            Rect(10, 50, 40, 60),
+            Rect(10, 50, 30, 60),
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(10, 50, 40, 60),
+            Rect(20, 50, 40, 60),
             ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSVERSE)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(50, 10, 60, 40),
+            Rect(50, 20, 60, 40),
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_180)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(50, 10, 60, 40),
+            Rect(50, 20, 40, 10),
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_VERTICAL)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(10, 40, 40, 50),
+            Rect(20, 40, 40, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_270)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(10, 40, 40, 50),
+            Rect(10, 40, 30, 50),
             ExifOrientationHelper(ExifInterface.ORIENTATION_TRANSPOSE)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(40, 10, 50, 40),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
-        )
-        Assert.assertEquals(
-            Rect(40, 10, 50, 40),
-            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
-        )
-        Assert.assertEquals(
-            Rect(40, 10, 50, 40),
+            Rect(50, 10, 60, 30),
             ExifOrientationHelper(ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(40, 10, 50, 40),
+            Rect(40, 10, 50, 30),
+            ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
+        )
+        Assert.assertEquals(
+            Rect(40, 10, 50, 30),
+            ExifOrientationHelper(ExifInterface.ORIENTATION_NORMAL)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
+        )
+        Assert.assertEquals(
+            Rect(40, 10, 50, 30),
             ExifOrientationHelper(-1)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
         Assert.assertEquals(
-            Rect(40, 10, 50, 40),
+            Rect(40, 10, 50, 30),
             ExifOrientationHelper(100)
-                .reverseRotateRect(Rect(40, 10, 50, 40), 100, 50)
+                .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
     }
 

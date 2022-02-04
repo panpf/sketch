@@ -49,7 +49,7 @@ internal class InitHandler(
             init(
                 decodeExecutor,
                 wrapper.imageUri,
-                wrapper.ignoreExifOrientation,
+                wrapper.exifOrientation,
                 msg.arg1,
                 wrapper.keyCounter
             )
@@ -59,21 +59,21 @@ internal class InitHandler(
 
     fun postInit(
         imageUri: String,
-        ignoreExifOrientation: Boolean,
+        exifOrientation: Int,
         key: Int,
         keyCounter: KeyCounter
     ) {
         removeMessages(WHAT_INIT)
         val message = obtainMessage(WHAT_INIT)
         message.arg1 = key
-        message.obj = Wrapper(imageUri, ignoreExifOrientation, keyCounter)
+        message.obj = Wrapper(imageUri, exifOrientation, keyCounter)
         message.sendToTarget()
     }
 
     private fun init(
         decodeExecutor: BlockExecutor?,
         imageUri: String,
-        ignoreExifOrientation: Boolean,
+        exifOrientation: Int,
         key: Int,
         keyCounter: KeyCounter
     ) {
@@ -92,7 +92,7 @@ internal class InitHandler(
         val decoder: ImageRegionDecoder = try {
             ImageRegionDecoder.build(
                 imageUri,
-                ignoreExifOrientation,
+                exifOrientation,
                 imageZoomer.imageView.sketch
             )
         } catch (e: Exception) {
@@ -126,9 +126,9 @@ internal class InitHandler(
         removeMessages(WHAT_INIT)
     }
 
-    class Wrapper(
+    class Wrapper constructor(
         var imageUri: String,
-        var ignoreExifOrientation: Boolean,
+        var exifOrientation: Int,
         var keyCounter: KeyCounter
     )
 

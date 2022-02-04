@@ -14,16 +14,16 @@ import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.DrawableDecodeResult
-import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
 import com.github.panpf.sketch.decode.internal.DecodeInterceptor
+import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.ExifOrientationInterceptor
 import com.github.panpf.sketch.decode.internal.SizeInterceptor
+import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -69,6 +69,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToLong
+
+val Context.sketch: Sketch
+    get() = SketchSingleton.sketch(this)
 
 class Sketch private constructor(
     _context: Context,
@@ -448,6 +451,3 @@ class Sketch private constructor(
         }
     }
 }
-
-val Context.sketch: Sketch
-    get() = SketchSingleton.sketch(this)

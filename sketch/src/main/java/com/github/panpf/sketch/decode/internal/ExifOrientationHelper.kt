@@ -136,10 +136,9 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         return Size(newRect.width().toInt(), newRect.height().toInt())
     }
 
-    fun addToResize(resize: Resize, imageWidth: Int, imageHeight: Int): Resize {
+    fun addToResize(resize: Resize, imageSize: Size): Resize {
         val newSize = addToSize(Size(resize.width, resize.height))
-        val correctedImageSize = applyToSize(Size(imageWidth, imageHeight))
-        val newScale = if (correctedImageSize.width > correctedImageSize.height) {
+        val newScale = if (imageSize.width > imageSize.height) {
             if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
                 || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
                 || exifOrientation == ExifInterface.ORIENTATION_ROTATE_180
@@ -179,34 +178,53 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         )
     }
 
-    fun reverseRotateRect(srcRect: Rect, imageWidth: Int, imageHeight: Int): Rect =
-        when (360 - rotationDegrees) {
-            90 -> {
-                Rect(
-                    imageHeight - srcRect.bottom,
-                    srcRect.left,
-                    imageHeight - srcRect.top,
-                    srcRect.right
-                )
-            }
-            180 -> {
-                Rect(
-                    imageWidth - srcRect.right,
-                    imageHeight - srcRect.bottom,
-                    imageWidth - srcRect.left,
-                    imageHeight - srcRect.top
-                )
-            }
-            270 -> {
-                Rect(
-                    srcRect.top,
-                    imageWidth - srcRect.right,
-                    srcRect.bottom,
-                    imageWidth - srcRect.left
-                )
-            }
+    fun addToRect(srcRect: Rect, imageSize: Size): Rect =
+        when (exifOrientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> Rect(
+                srcRect.top,
+                imageSize.width - srcRect.right,
+                srcRect.bottom,
+                imageSize.width - srcRect.left,
+            )
+            ExifInterface.ORIENTATION_TRANSVERSE -> Rect(
+                imageSize.height - srcRect.bottom,
+                imageSize.width - srcRect.right,
+                imageSize.height - srcRect.top,
+                imageSize.width - srcRect.left,
+            )
+            ExifInterface.ORIENTATION_ROTATE_180 -> Rect(
+                imageSize.width - srcRect.right,
+                imageSize.height - srcRect.bottom,
+                imageSize.width - srcRect.left,
+                imageSize.height - srcRect.top
+            )
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> Rect(
+                imageSize.width - srcRect.right,
+                imageSize.height - srcRect.bottom,
+                srcRect.left,
+                srcRect.top,
+            )
+            ExifInterface.ORIENTATION_ROTATE_270 -> Rect(
+                imageSize.height - srcRect.bottom,
+                srcRect.left,
+                imageSize.height - srcRect.top,
+                srcRect.right
+            )
+            ExifInterface.ORIENTATION_TRANSPOSE -> Rect(
+                srcRect.top,
+                srcRect.left,
+                srcRect.bottom,
+                srcRect.right
+            )
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> Rect(
+                imageSize.width - srcRect.right,
+                srcRect.top,
+                imageSize.width - srcRect.left,
+                srcRect.bottom,
+            )
             else -> srcRect
         }
+
 
     private fun applyFlipAndRotationToMatrix(
         matrix: Matrix,

@@ -79,12 +79,12 @@ class BlockExecutor(var callback: Callback, val imageZoomer: ImageZoomer) {
     fun submitInit(
         imageUri: String,
         keyCounter: KeyCounter,
-        ignoreExifOrientation: Boolean
+        exifOrientation: Int
     ) {
         installHandlerThread()
         initHandler?.postInit(
             imageUri,
-            ignoreExifOrientation,
+            exifOrientation,
             keyCounter.key,
             keyCounter
         )
