@@ -51,7 +51,7 @@ class ExifOrientationHelperTest {
             ).readExifOrientation()
         )
 
-        ExifOrientationTestFileHelper(context, "exif_origin_hor.jpeg").files().forEach {
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertEquals(
                 it.exifOrientation,
                 FileDataSource(sketch, LoadRequest(it.file.path), it.file).readExifOrientation()
@@ -95,7 +95,7 @@ class ExifOrientationHelperTest {
             ).readExifOrientationWithMimeType("image/webp")
         )
 
-        ExifOrientationTestFileHelper(context, "exif_origin_hor.jpeg").files().forEach {
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             Assert.assertEquals(
                 it.exifOrientation,
                 FileDataSource(sketch, LoadRequest(it.file.path), it.file)

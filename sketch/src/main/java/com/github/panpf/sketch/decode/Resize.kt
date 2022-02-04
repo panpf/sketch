@@ -96,7 +96,7 @@ data class Resize constructor(
                 val resizeAspectRatio = resizeWidth.toFloat().div(resizeHeight).format(1)
                 val maxAspectRatio = resizeAspectRatio.coerceAtLeast(imageAspectRatio)
                 val minAspectRatio = resizeAspectRatio.coerceAtMost(imageAspectRatio)
-                return maxAspectRatio > (minAspectRatio * minDifferenceOfAspectRatio)
+                return maxAspectRatio >= (minAspectRatio * minDifferenceOfAspectRatio)
             }
 
             override fun toString(): String =

@@ -66,7 +66,7 @@ class ResizeTest {
         }
         Resize(100, 100, scope = OnlyLongImage(), scale = FILL, precision = EXACTLY).apply {
             Assert.assertEquals(
-                "Resize(100x100,OnlyLongImage(1.5),FILL,EXACTLY)",
+                "Resize(100x100,OnlyLongImage(2.0),FILL,EXACTLY)",
                 cacheKey
             )
         }
