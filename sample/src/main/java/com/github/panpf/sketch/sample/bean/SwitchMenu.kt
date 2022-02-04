@@ -2,10 +2,10 @@ package com.github.panpf.sketch.sample.bean
 
 import androidx.lifecycle.MutableLiveData
 
-class SwitchMenu(
+class SwitchMenu constructor(
     val title: String,
+    val desc: String?,
     private val data: MutableLiveData<Boolean>,
-    val desc: String? = null,
     private val reverse: Boolean = false,
 ) {
 

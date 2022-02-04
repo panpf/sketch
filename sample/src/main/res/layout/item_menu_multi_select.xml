@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/infoMenuItemTitleText"
+        android:id="@+id/multiSelectMenuItemTitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -17,14 +17,14 @@
         android:maxLines="1"
         android:textColor="@color/text_title"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/infoMenuItemDescText"
-        app:layout_constraintEnd_toStartOf="@id/infoMenuItemInfoText"
+        app:layout_constraintBottom_toTopOf="@id/multiSelectMenuItemDescText"
+        app:layout_constraintEnd_toStartOf="@id/multiSelectMenuItemInfoText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="显示按下状态" />
 
     <TextView
-        android:id="@+id/infoMenuItemDescText"
+        android:id="@+id/multiSelectMenuItemDescText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -32,17 +32,21 @@
         android:textColor="@color/text_subtitle"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/infoMenuItemTitleText"
-        app:layout_constraintStart_toStartOf="@id/infoMenuItemTitleText"
-        app:layout_constraintTop_toBottomOf="@id/infoMenuItemTitleText"
+        app:layout_constraintEnd_toEndOf="@id/multiSelectMenuItemTitleText"
+        app:layout_constraintStart_toStartOf="@id/multiSelectMenuItemTitleText"
+        app:layout_constraintTop_toBottomOf="@id/multiSelectMenuItemTitleText"
         tools:text="这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述这是描述" />
 
-    <TextView
-        android:id="@+id/infoMenuItemInfoText"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/multiSelectMenuItemInfoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_expand_more"
+        android:drawableRight="@drawable/ic_expand_more"
+        android:gravity="center_vertical"
         android:textColor="@color/text_subtitle"
         android:textSize="14sp"
+        app:drawableTint="@color/text_subtitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

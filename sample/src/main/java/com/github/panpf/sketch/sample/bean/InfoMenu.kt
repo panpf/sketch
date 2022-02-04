@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.sample.bean
 
-abstract class InfoMenu(val title: String) {
-
-    open fun getInfo(): String? = null
-
-    abstract fun onClick()
-}
+class InfoMenu(
+    val title: String,
+    val desc: String? = null,
+    val getInfo: () -> String?,
+    val onClick: () -> Unit
+)

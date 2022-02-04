@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.item
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -9,7 +10,7 @@ import com.github.panpf.sketch.sample.bean.SwitchMenu
 import com.github.panpf.sketch.sample.databinding.ItemMenuSwitchBinding
 
 class SwitchMenuItemFactory(
-    private val showDesc: Boolean = true,
+    private val compactModel: Boolean = false,
 ) : BindingItemFactory<SwitchMenu, ItemMenuSwitchBinding>(SwitchMenu::class) {
 
     override fun createItemViewBinding(
@@ -29,6 +30,11 @@ class SwitchMenuItemFactory(
         binding.switchMenuItemSwitch.setOnCheckedChangeListener { _, isChecked ->
             item.dataOrThrow.isChecked = isChecked
         }
+
+        if (compactModel) {
+            binding.switchMenuItemTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            binding.switchMenuItemDescText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+        }
     }
 
     override fun bindItemData(
@@ -42,6 +48,6 @@ class SwitchMenuItemFactory(
         binding.switchMenuItemTitleText.text = data.title
         binding.switchMenuItemSwitch.isChecked = data.isChecked
         binding.switchMenuItemDescText.text = data.desc
-        binding.switchMenuItemDescText.isVisible = showDesc && data.desc?.isNotEmpty() == true
+        binding.switchMenuItemDescText.isVisible = !compactModel && data.desc?.isNotEmpty() == true
     }
 }

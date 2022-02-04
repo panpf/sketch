@@ -11,6 +11,7 @@ import com.github.panpf.sketch.sample.base.BindingDialogFragment
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.InfoMenuItemFactory
 import com.github.panpf.sketch.sample.item.ListSeparatorItemFactory
+import com.github.panpf.sketch.sample.item.MultiSelectMenuItemFactory
 import com.github.panpf.sketch.sample.item.SwitchMenuItemFactory
 import com.github.panpf.sketch.sample.vm.SettingsViewModel
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
@@ -50,9 +51,10 @@ class SettingsDialogFragment : BindingDialogFragment<FragmentRecyclerBinding>() 
             layoutManager = LinearLayoutManager(context)
             adapter = AssemblyRecyclerAdapter<Any>(
                 listOf(
+                    SwitchMenuItemFactory(compactModel = true),
+                    InfoMenuItemFactory(compactModel = true),
+                    MultiSelectMenuItemFactory(compactModel = true),
                     ListSeparatorItemFactory(),
-                    SwitchMenuItemFactory(showDesc = false),
-                    InfoMenuItemFactory()
                 )
             ).apply {
                 viewModel.menuListData.observe(viewLifecycleOwner) {

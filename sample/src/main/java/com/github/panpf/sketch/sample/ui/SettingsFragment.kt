@@ -11,6 +11,7 @@ import com.github.panpf.sketch.sample.base.ToolbarBindingFragment
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.item.InfoMenuItemFactory
 import com.github.panpf.sketch.sample.item.ListSeparatorItemFactory
+import com.github.panpf.sketch.sample.item.MultiSelectMenuItemFactory
 import com.github.panpf.sketch.sample.item.SwitchMenuItemFactory
 import com.github.panpf.sketch.sample.vm.SettingsViewModel
 
@@ -38,9 +39,10 @@ class SettingsFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
             layoutManager = LinearLayoutManager(context)
             adapter = AssemblyRecyclerAdapter<Any>(
                 listOf(
-                    ListSeparatorItemFactory(),
                     SwitchMenuItemFactory(),
-                    InfoMenuItemFactory()
+                    InfoMenuItemFactory(),
+                    MultiSelectMenuItemFactory(),
+                    ListSeparatorItemFactory(),
                 )
             ).apply {
                 viewModel.menuListData.observe(viewLifecycleOwner) {

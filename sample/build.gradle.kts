@@ -104,6 +104,7 @@ dependencies {
     implementation("io.github.panpf.tools4a:tools4a-toast-ktx:${property("TOOLS4A")}")
     implementation("io.github.panpf.tools4j:tools4j-math-ktx:${property("TOOLS4J")}")
     implementation("io.github.panpf.tools4j:tools4j-date-ktx:${property("TOOLS4J")}")
+    implementation("io.github.panpf.tools4j:tools4j-io-ktx:${property("TOOLS4J")}")
     implementation("io.github.panpf.tools4k:tools4k:${property("TOOLS4K")}")
     implementation("com.github.promeg:tinypinyin:${property("TINYPINYIN")}")
     implementation("io.github.panpf.liveevent:liveevent:${property("LIVEEVENT")}")

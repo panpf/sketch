@@ -77,7 +77,9 @@ class GiphyGIFFragment : ToolbarBindingFragment<FragmentRecyclerBinding>() {
                                 is SwitchMenuItemInfo<*> -> menuItemInfo.click()
                                 is NavMenuItemInfo -> findNavController().navigate(menuItemInfo.navDirections)
                                 is DialogFragmentItemInfo -> menuItemInfo.fragment
-                                    .show(childFragmentManager, null)
+                                    .javaClass.newInstance().apply {
+                                        arguments = menuItemInfo.fragment.arguments
+                                    }.show(childFragmentManager, null)
                             }
                             true
                         }
