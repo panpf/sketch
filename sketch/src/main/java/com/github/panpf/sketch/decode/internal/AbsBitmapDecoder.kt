@@ -113,7 +113,9 @@ abstract class AbsBitmapDecoder(
             calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: 1
 
-        val resizeInSampleSize = addedResize?.let {
+        val resizeInSampleSize = addedResize?.takeIf {
+            it.shouldUse(imageInfo.width, imageInfo.height)
+        }?.let {
             calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: 1
 

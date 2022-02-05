@@ -53,8 +53,9 @@ class SizeInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
     override fun toString(): String = "SizeInterceptor"
 }
 
-class ResizeTransformed constructor(val resize: Resize): Transformed {
-    override val key: String = "ResizeTransformed($resize)"
+class ResizeTransformed constructor(val resize: Resize) : Transformed {
+    override val key: String =
+        "ResizeTransformed(${resize.width}x${resize.height},${resize.scope},${resize.scale},${resize.precision})"
     override val cacheResultToDisk: Boolean = true
 
     override fun toString(): String = key

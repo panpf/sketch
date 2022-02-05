@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.test.decode.internal
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import androidx.exifinterface.media.ExifInterface
@@ -24,6 +23,11 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.test.util.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.util.cornerA
+import com.github.panpf.sketch.test.util.cornerB
+import com.github.panpf.sketch.test.util.cornerC
+import com.github.panpf.sketch.test.util.cornerD
+import com.github.panpf.sketch.test.util.corners
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -997,18 +1001,5 @@ class ExifOrientationHelperTest {
             ExifOrientationHelper(100)
                 .addToRect(Rect(40, 10, 50, 30), Size(100, 50))
         )
-    }
-
-    private val Bitmap.cornerA: Int
-        get() = getPixel(0, 0)
-    private val Bitmap.cornerB: Int
-        get() = getPixel(width - 1, 0)
-    private val Bitmap.cornerC: Int
-        get() = getPixel(width - 1, height - 1)
-    private val Bitmap.cornerD: Int
-        get() = getPixel(0, height - 1)
-
-    private fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
-        return block(this)
     }
 }
