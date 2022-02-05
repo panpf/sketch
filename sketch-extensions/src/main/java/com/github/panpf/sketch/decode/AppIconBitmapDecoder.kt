@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -12,13 +13,13 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.drawableToBitmap
 
 class AppIconBitmapDecoder(
-    val sketch: Sketch,
-    val request: LoadRequest,
+    sketch: Sketch,
+    request: LoadRequest,
     val packageName: String,
     val versionCode: Int,
-) : BitmapDecoder {
+) : AbsBitmapDecoder(sketch, request) {
 
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun executeDecode(): BitmapDecodeResult {
         val packageManager = sketch.appContext.packageManager
         val packageInfo: PackageInfo = try {
             packageManager.getPackageInfo(packageName, 0)
@@ -32,7 +33,6 @@ class AppIconBitmapDecoder(
         val iconDrawable = packageInfo.applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
         val bitmap = drawableToBitmap(iconDrawable, false, sketch.bitmapPool)
-        // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,

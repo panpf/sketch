@@ -14,12 +14,15 @@ import com.github.panpf.sketch.request.LoadRequest
 open class DefaultBitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
-    dataSource: DataSource,
-) : AbsBitmapDecoder(sketch, request, dataSource) {
+    private val dataSource: DataSource,
+) : StandardBitmapDecoder(sketch, request, dataSource.from) {
 
     companion object {
         const val MODULE = "DefaultBitmapDecoder"
     }
+
+    private val bitmapPool = sketch.bitmapPool
+    private val logger = sketch.logger
 
     override fun readImageInfo(): ImageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
 

@@ -2,22 +2,23 @@ package com.github.panpf.sketch.decode
 
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.readApkIcon
 
 class ApkIconBitmapDecoder(
-    val sketch: Sketch,
-    val request: LoadRequest,
+    sketch: Sketch,
+    request: LoadRequest,
     val fetchResult: FetchResult
-) : BitmapDecoder {
+) : AbsBitmapDecoder(sketch, request) {
 
     companion object {
         const val MIME_TYPE = "application/vnd.android.package-archive"
     }
 
-    override suspend fun decode(): BitmapDecodeResult {
+    override suspend fun executeDecode(): BitmapDecodeResult {
         val file = fetchResult.dataSource.file()
         val bitmap = readApkIcon(
             sketch.appContext,
@@ -25,7 +26,6 @@ class ApkIconBitmapDecoder(
             false,
             sketch.bitmapPool
         )
-        // todo 缓存 bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,

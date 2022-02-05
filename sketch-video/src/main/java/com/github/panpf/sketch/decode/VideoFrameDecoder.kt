@@ -11,8 +11,8 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
+import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.videoFrameMicros
@@ -32,9 +32,9 @@ import kotlin.math.roundToInt
 class VideoFrameDecoder(
     sketch: Sketch,
     request: LoadRequest,
-    dataSource: DataSource,
+    private val dataSource: DataSource,
     val mimeType: String,
-) : AbsBitmapDecoder(sketch, request, dataSource) {
+) : StandardBitmapDecoder(sketch, request, dataSource.from) {
 
     private val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
         MediaMetadataRetriever().apply {

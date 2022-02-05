@@ -6,7 +6,6 @@ import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.ExifOrientationInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
@@ -22,7 +21,7 @@ class BitmapDecodeInterceptorChainTest {
     fun testIntercept() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
-        val interceptors = listOf(ExifOrientationInterceptor(), BitmapDecodeEngineInterceptor())
+        val interceptors = listOf(BitmapDecodeEngineInterceptor())
         val loadRequest = LoadRequest(newAssetUri("sample.jpeg"))
         val chain =
             BitmapDecodeInterceptorChain(loadRequest, interceptors, 0, sketch, loadRequest, null)

@@ -20,7 +20,7 @@ import com.github.panpf.sketch.decode.Resize.Scale.END_CROP
 import com.github.panpf.sketch.decode.Resize.Scale.FILL
 import com.github.panpf.sketch.decode.Resize.Scale.START_CROP
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
+import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -28,7 +28,6 @@ import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.util.corners
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -66,27 +65,21 @@ class DefaultBitmapDecoderTest {
         }
 
         // exif
-        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files()
-            .forEach { testFile ->
-                LoadRequest(testFile.file.path).run {
-                    DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                        .use { runBlocking { it.decode() } }
-                }.apply {
-                    val exifOrientationHelper = ExifOrientationHelper(testFile.exifOrientation)
-                    val addedSize = exifOrientationHelper.addToSize(Size(1500, 750))
-                    Assert.assertEquals(
-                        "Bitmap(${addedSize.width}x${addedSize.height},ARGB_8888)",
-                        bitmap.toShortInfoString()
-                    )
-                    Assert.assertEquals(
-                        "ImageInfo(${addedSize.width}x${addedSize.height},'image/jpeg')",
-                        imageInfo.toShortString()
-                    )
-                    Assert.assertEquals(testFile.exifOrientation, exifOrientation)
-                    Assert.assertEquals(LOCAL, dataFrom)
-                    Assert.assertNull(transformedList)
-                }
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
+            LoadRequest(it.file.path).run {
+                DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, it.file))
+                    .use { runBlocking { it.decode() } }
+            }.apply {
+                Assert.assertEquals("Bitmap(1500x750,ARGB_8888)", bitmap.toShortInfoString())
+                Assert.assertEquals(
+                    "ImageInfo(1500x750,'image/jpeg')",
+                    imageInfo.toShortString()
+                )
+                Assert.assertEquals(it.exifOrientation, exifOrientation)
+                Assert.assertEquals(LOCAL, dataFrom)
+                Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             }
+        }
     }
 
     @Test
@@ -121,29 +114,20 @@ class DefaultBitmapDecoderTest {
         }
 
         // exif
-        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files()
-            .forEach { testFile ->
-                LoadRequest(testFile.file.path) {
-                    maxSize(800, 800)
-                }.run {
-                    DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                        .use { runBlocking { it.decode() } }
-                }.apply {
-                    val exifOrientationHelper = ExifOrientationHelper(testFile.exifOrientation)
-                    val addedSize = exifOrientationHelper.addToSize(Size(1500, 750))
-                    Assert.assertEquals(
-                        "Bitmap(${addedSize.width / 2}x${addedSize.height / 2},ARGB_8888)",
-                        bitmap.toShortInfoString()
-                    )
-                    Assert.assertEquals(
-                        "ImageInfo(${addedSize.width}x${addedSize.height},'image/jpeg')",
-                        imageInfo.toShortString()
-                    )
-                    Assert.assertEquals(testFile.exifOrientation, exifOrientation)
-                    Assert.assertEquals(LOCAL, dataFrom)
-                    Assert.assertNotNull(transformedList?.getInSampledTransformed())
-                }
+        ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
+            LoadRequest(it.file.path) {
+                maxSize(800, 800)
+            }.run {
+                DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, it.file))
+                    .use { runBlocking { it.decode() } }
+            }.apply {
+                Assert.assertEquals("Bitmap(750x375,ARGB_8888)", bitmap.toShortInfoString())
+                Assert.assertEquals("ImageInfo(1500x750,'image/jpeg')", imageInfo.toShortString())
+                Assert.assertEquals(it.exifOrientation, exifOrientation)
+                Assert.assertEquals(LOCAL, dataFrom)
+                Assert.assertNotNull(transformedList?.getInSampledTransformed())
             }
+        }
     }
 
     @Test
@@ -352,7 +336,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -386,7 +370,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(843x506,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -398,7 +382,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -412,7 +396,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -456,27 +440,27 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
                 .use { runBlocking { it.decode() } }
         }.bitmap
-        Assert.assertEquals(
+        Assert.assertNotEquals(
             startCropBitmap.corners().toString(),
             centerCropBitmap.corners().toString()
         )
-        Assert.assertEquals(
+        Assert.assertNotEquals(
             startCropBitmap.corners().toString(),
             endCropBitmap.corners().toString()
         )
-        Assert.assertEquals(
+        Assert.assertNotEquals(
             startCropBitmap.corners().toString(),
             fillBitmap.corners().toString()
         )
-        Assert.assertEquals(
+        Assert.assertNotEquals(
             centerCropBitmap.corners().toString(),
             endCropBitmap.corners().toString()
         )
-        Assert.assertEquals(
+        Assert.assertNotEquals(
             centerCropBitmap.corners().toString(),
             fillBitmap.corners().toString()
         )
-        Assert.assertEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
+        Assert.assertNotEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
 
         // precision
         LoadRequest(newAssetUri("sample.bmp")) {
@@ -485,7 +469,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -497,7 +481,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(843x506,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(700x1012,'image/bmp')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
@@ -520,8 +504,8 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
+            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
@@ -533,8 +517,8 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
+            Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
@@ -576,8 +560,8 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
+            Assert.assertEquals("Bitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
@@ -589,11 +573,11 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(1936x1291,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
+            Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
         }
         LoadRequest(testFile.file.path) {
             resize(300, 500, scope = Resize.Scope.All)
@@ -678,8 +662,8 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
+            Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
@@ -691,8 +675,8 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
+            Assert.assertEquals("Bitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_TRANSPOSE, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
@@ -705,7 +689,7 @@ class DefaultBitmapDecoderTest {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
                 .use { runBlocking { it.decode() } }
         }.apply {
-            Assert.assertEquals("Bitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
+            Assert.assertEquals("Bitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1936x1291,'image/jpeg')", imageInfo.toShortString())
             Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
             Assert.assertEquals(LOCAL, dataFrom)

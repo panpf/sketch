@@ -14,17 +14,17 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.drawableToBitmap
 
 class XmlDrawableBitmapDecoder(
-    val sketch: Sketch,
-    val request: LoadRequest,
+    sketch: Sketch,
+    request: LoadRequest,
     val resources: Resources,
     val drawableResId: Int
-) : BitmapDecoder {
-    override suspend fun decode(): BitmapDecodeResult {
+) : AbsBitmapDecoder(sketch, request) {
+
+    override suspend fun executeDecode(): BitmapDecodeResult {
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
             ?: throw BitmapDecodeException(request, "Invalid drawable resource id '$drawableResId'")
         val bitmap = drawableToBitmap(drawable, false, sketch.bitmapPool)
-        // todo bitmap 到磁盘缓存
         val imageInfo = ImageInfo(
             bitmap.width,
             bitmap.height,

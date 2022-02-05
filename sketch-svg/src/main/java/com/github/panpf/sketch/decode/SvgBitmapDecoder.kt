@@ -8,7 +8,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
+import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.LoadRequest
@@ -19,10 +19,10 @@ import kotlin.math.roundToInt
 class SvgBitmapDecoder(
     sketch: Sketch,
     request: LoadRequest,
-    dataSource: DataSource,
+    private val dataSource: DataSource,
     val useViewBoundsAsIntrinsicSize: Boolean = true,
     val backgroundColor: Int?,
-) : AbsBitmapDecoder(sketch, request, dataSource) {
+) : StandardBitmapDecoder(sketch, request, dataSource.from) {
 
     companion object {
         const val MIME_TYPE = "image/svg+xml"
@@ -102,9 +102,7 @@ class SvgBitmapDecoder(
 
     }
 
-    class Factory(
-        val useViewBoundsAsIntrinsicSize: Boolean = true
-    ) : BitmapDecoder.Factory {
+    class Factory(val useViewBoundsAsIntrinsicSize: Boolean = true) : BitmapDecoder.Factory {
 
         override fun create(
             sketch: Sketch,
