@@ -25,7 +25,7 @@ class BitmapDecodeResultTest {
         BitmapDecodeResult(newBitmap, imageInfo, 0, LOCAL, transformedList).apply {
             Assert.assertTrue(newBitmap === bitmap)
             Assert.assertEquals(
-                "ImageInfo(width=3000,height=500,mimeType='image/png')",
+                "ImageInfo(width=3000, height=500, mimeType='image/png')",
                 imageInfo.toString()
             )
             Assert.assertEquals(0, exifOrientation)

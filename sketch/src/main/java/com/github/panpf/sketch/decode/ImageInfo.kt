@@ -20,5 +20,5 @@ data class ImageInfo constructor(
     val height: Int,
     val mimeType: String,
 ) {
-    override fun toString(): String = "ImageInfo(width=$width,height=$height,mimeType='$mimeType')"
+    override fun toString(): String = "ImageInfo(width=$width, height=$height, mimeType='$mimeType')"
 }

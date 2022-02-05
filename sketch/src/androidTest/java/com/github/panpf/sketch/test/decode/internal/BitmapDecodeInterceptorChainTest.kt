@@ -32,7 +32,7 @@ class BitmapDecodeInterceptorChainTest {
         Assert.assertEquals(1291, result.bitmap.width)
         Assert.assertEquals(1936, result.bitmap.height)
         Assert.assertEquals(
-            "ImageInfo(width=1291,height=1936,mimeType='image/jpeg')",
+            "ImageInfo(width=1291, height=1936, mimeType='image/jpeg')",
             result.imageInfo.toString()
         )
         Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, result.exifOrientation)
