@@ -97,6 +97,8 @@ val Bitmap.byteCountCompat: Int
 val Bitmap.safeConfig: Bitmap.Config
     get() = config ?: Bitmap.Config.ARGB_8888
 
+fun Bitmap.toInfoString(): String = "Bitmap(width=${width}, height=${height}, config=$config)"
+
 /**
  * 根据宽、高和配置计算所占用的字节数
  */

@@ -1,7 +1,9 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.util.toInfoString
 import java.util.LinkedList
 
 data class BitmapDecodeResult constructor(
@@ -22,6 +24,13 @@ data class BitmapDecodeResult constructor(
         ).apply {
             block?.invoke(this)
         }.build()
+
+    override fun toString(): String =
+        "BitmapDecodeResult(bitmap=${bitmap.toInfoString()}, " +
+                "imageInfo=$imageInfo, " +
+                "exifOrientation=${exifOrientationName(exifOrientation)}, " +
+                "dataFrom=$dataFrom, " +
+                "transformedList=$transformedList)"
 
     class Builder(
         private val bitmap: Bitmap,

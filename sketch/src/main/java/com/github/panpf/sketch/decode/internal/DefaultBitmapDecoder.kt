@@ -34,7 +34,6 @@ open class DefaultBitmapDecoder(
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
         if (request.disabledBitmapPool != true) {
-            // todo 这里的宽高，貌似有问题，需要验证一下
             bitmapPool.setInBitmapForRegionDecoder(
                 options = decodeOptions,
                 imageWidth = srcRect.width(),
