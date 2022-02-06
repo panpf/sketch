@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.stateimage
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
@@ -31,16 +30,14 @@ private class SaveCellularTrafficMatcher(val saveCellularTrafficImage: StateImag
     ErrorStateImage.Matcher {
 
     override fun match(
-        context: Context,
         sketch: Sketch,
         request: DisplayRequest,
         throwable: SketchException?
     ): Boolean = throwable?.isCausedBySaveCellularTraffic == true
 
     override fun getDrawable(
-        context: Context,
         sketch: Sketch,
         request: DisplayRequest,
         throwable: SketchException?
-    ): Drawable? = saveCellularTrafficImage.getDrawable(context, sketch, request, throwable)
+    ): Drawable? = saveCellularTrafficImage.getDrawable(sketch, request, throwable)
 }

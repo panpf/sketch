@@ -6,9 +6,10 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class DefaultOptionsLoadInterceptor(
+class DefaultLoadOptionsInterceptor(
     private val defaultLoadOptions: LoadOptions?
 ) : RequestInterceptor<LoadRequest, LoadData> {
+
     override suspend fun intercept(chain: Chain<LoadRequest, LoadData>): LoadData {
         val request = if (defaultLoadOptions?.isEmpty() == true) {
             chain.request.newLoadRequest {
@@ -20,5 +21,5 @@ class DefaultOptionsLoadInterceptor(
         return chain.proceed(request)
     }
 
-    override fun toString(): String = "DefaultOptionsLoadInterceptor"
+    override fun toString(): String = "DefaultLoadOptionsInterceptor"
 }

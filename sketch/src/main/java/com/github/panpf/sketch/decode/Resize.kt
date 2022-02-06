@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.Resize.Scope.All
 import com.github.panpf.sketch.util.format
 
+// todo 将 resize 拆分成 size，scale，precision 等几个参数，貌似可以解决 将 maxSize 和 resize 合并的问题
 data class Resize constructor(
     val width: Int,
     val height: Int,

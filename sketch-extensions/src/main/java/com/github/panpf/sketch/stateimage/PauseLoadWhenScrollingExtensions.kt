@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.stateimage
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
@@ -32,16 +31,14 @@ fun ErrorStateImage.Builder.pauseLoadWhenScrollingErrorImage(
 private class PauseLoadWhenScrollingMatcher(val pauseLoadWhenScrollingImage: StateImage?) :
     ErrorStateImage.Matcher {
     override fun match(
-        context: Context,
         sketch: Sketch,
         request: DisplayRequest,
         throwable: SketchException?
     ): Boolean = throwable?.isCausedByPauseLoadWhenScrolling == true
 
     override fun getDrawable(
-        context: Context,
         sketch: Sketch,
         request: DisplayRequest,
         throwable: SketchException?
-    ): Drawable? = pauseLoadWhenScrollingImage?.getDrawable(context, sketch, request, throwable)
+    ): Drawable? = pauseLoadWhenScrollingImage?.getDrawable(sketch, request, throwable)
 }

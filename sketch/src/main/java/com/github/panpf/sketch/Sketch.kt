@@ -46,15 +46,16 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.DefaultOptionsDisplayRequestInterceptor
-import com.github.panpf.sketch.request.internal.DefaultOptionsDownloadInterceptor
-import com.github.panpf.sketch.request.internal.DefaultOptionsLoadInterceptor
+import com.github.panpf.sketch.request.internal.DefaultDisplayOptionsInterceptor
+import com.github.panpf.sketch.request.internal.DefaultDownloadOptionsInterceptor
+import com.github.panpf.sketch.request.internal.DefaultLoadOptionsInterceptor
 import com.github.panpf.sketch.request.internal.DisplayEngineInterceptor
 import com.github.panpf.sketch.request.internal.DisplayExecutor
 import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
+import com.github.panpf.sketch.request.internal.SizeResolverInterceptor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
@@ -122,15 +123,16 @@ class Sketch private constructor(
 
     val downloadInterceptors: List<RequestInterceptor<DownloadRequest, DownloadData>> =
         (_downloadInterceptors ?: listOf()) +
-                DefaultOptionsDownloadInterceptor(defaultDownloadOptions) +
+                DefaultDownloadOptionsInterceptor(defaultDownloadOptions) +
                 DownloadEngineInterceptor()
     val loadInterceptors: List<RequestInterceptor<LoadRequest, LoadData>> =
         (_loadInterceptors ?: listOf()) +
-                DefaultOptionsLoadInterceptor(defaultLoadOptions) +
+                DefaultLoadOptionsInterceptor(defaultLoadOptions) +
                 LoadEngineInterceptor()
     val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
         (_displayInterceptors ?: listOf()) +
-                DefaultOptionsDisplayRequestInterceptor(defaultDisplayOptions) +
+                DefaultDisplayOptionsInterceptor(defaultDisplayOptions) +
+                SizeResolverInterceptor() +
                 DisplayEngineInterceptor()
 
     val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =

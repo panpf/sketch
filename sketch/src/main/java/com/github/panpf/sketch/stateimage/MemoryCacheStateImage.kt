@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -29,14 +28,14 @@ class MemoryCacheStateImage(
 ) : StateImage {
 
     override fun getDrawable(
-        context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?
+        sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable? {
         val memoryCache = sketch.memoryCache
         val cachedCountBitmap = memoryCacheKey?.let { memoryCache[it] }
         return if (cachedCountBitmap != null) {
             SketchCountBitmapDrawable(cachedCountBitmap, DataFrom.MEMORY_CACHE)
         } else {
-            defaultImage?.getDrawable(context, sketch, request, throwable)
+            defaultImage?.getDrawable(sketch, request, throwable)
         }
     }
 }

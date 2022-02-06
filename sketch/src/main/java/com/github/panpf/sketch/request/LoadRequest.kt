@@ -48,9 +48,7 @@ interface LoadRequest : DownloadRequest {
 
 
     /**
-     * Limit the maximum size of the bitmap on decode, default value is [MaxSize.SCREEN_SIZE]
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inSampleSize]
+     * Limit the maximum size of the bitmap on decode, used to calculate [android.graphics.BitmapFactory.Options.inSampleSize]
      */
     val maxSize: MaxSize?
 

@@ -26,9 +26,5 @@ class MaxSizeTest {
         MaxSize(100, 40).apply {
             Assert.assertEquals("MaxSize(100x40)", cacheKey)
         }
-
-        MaxSize.SCREEN_SIZE.apply {
-            Assert.assertEquals("MaxSize(SCREEN_SIZE)", cacheKey)
-        }
     }
 }

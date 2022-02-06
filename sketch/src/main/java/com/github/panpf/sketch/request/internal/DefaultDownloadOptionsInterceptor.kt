@@ -6,9 +6,10 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class DefaultOptionsDownloadInterceptor(
+class DefaultDownloadOptionsInterceptor(
     private val defaultDownloadOptions: DownloadOptions?
 ) : RequestInterceptor<DownloadRequest, DownloadData> {
+
     override suspend fun intercept(chain: Chain<DownloadRequest, DownloadData>): DownloadData {
         val request = if (defaultDownloadOptions?.isEmpty() == true) {
             chain.request.newDownloadRequest {
@@ -20,5 +21,5 @@ class DefaultOptionsDownloadInterceptor(
         return chain.proceed(request)
     }
 
-    override fun toString(): String = "DefaultOptionsDownloadInterceptor"
+    override fun toString(): String = "DefaultDownloadOptionsInterceptor"
 }

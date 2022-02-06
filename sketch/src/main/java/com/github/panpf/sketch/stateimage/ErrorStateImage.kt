@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
@@ -26,10 +25,10 @@ import java.util.LinkedList
 class ErrorStateImage(private val matcherList: List<Matcher>) : StateImage {
 
     override fun getDrawable(
-        context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?
+        sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable? = matcherList
-        .find { it.match(context, sketch, request, throwable) }
-        ?.getDrawable(context, sketch, request, throwable)
+        .find { it.match(sketch, request, throwable) }
+        ?.getDrawable(sketch, request, throwable)
 
     companion object {
         fun new(
@@ -71,14 +70,12 @@ class ErrorStateImage(private val matcherList: List<Matcher>) : StateImage {
 
     interface Matcher {
         fun match(
-            context: Context,
             sketch: Sketch,
             request: DisplayRequest,
             throwable: SketchException?
         ): Boolean
 
         fun getDrawable(
-            context: Context,
             sketch: Sketch,
             request: DisplayRequest,
             throwable: SketchException?
@@ -87,33 +84,29 @@ class ErrorStateImage(private val matcherList: List<Matcher>) : StateImage {
 
     private class DefaultMatcher(val errorImage: StateImage) : Matcher {
         override fun match(
-            context: Context,
             sketch: Sketch,
             request: DisplayRequest,
             throwable: SketchException?
         ): Boolean = true
 
         override fun getDrawable(
-            context: Context,
             sketch: Sketch,
             request: DisplayRequest,
             throwable: SketchException?
-        ): Drawable? = errorImage.getDrawable(context, sketch, request, throwable)
+        ): Drawable? = errorImage.getDrawable(sketch, request, throwable)
     }
 
     private class EmptyMatcher(val emptyImage: StateImage) : Matcher {
         override fun match(
-            context: Context,
             sketch: Sketch,
             request: DisplayRequest,
             throwable: SketchException?
         ): Boolean = throwable is UriEmptyException
 
         override fun getDrawable(
-            context: Context,
             sketch: Sketch,
             request: DisplayRequest,
             throwable: SketchException?
-        ): Drawable? = emptyImage.getDrawable(context, sketch, request, throwable)
+        ): Drawable? = emptyImage.getDrawable(sketch, request, throwable)
     }
 }

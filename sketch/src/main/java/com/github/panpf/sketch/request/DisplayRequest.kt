@@ -93,7 +93,7 @@ interface DisplayRequest : LoadRequest {
     }.build()
 
     companion object {
-        internal const val VIEW_FIXED_SIZE: Int = -214238643
+        internal const val VIEW_BOUNDS: Int = -214238643
     }
 
     class Builder {
@@ -351,8 +351,8 @@ interface DisplayRequest : LoadRequest {
             this.maxSize = MaxSize(width, height)
         }
 
-        fun maxSizeByViewFixedSize(): Builder = apply {
-            this.maxSize = MaxSize(VIEW_FIXED_SIZE, VIEW_FIXED_SIZE)
+        fun maxSizeByViewBounds(): Builder = apply {
+            this.maxSize = MaxSize(VIEW_BOUNDS, VIEW_BOUNDS)
         }
 
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
@@ -413,12 +413,12 @@ interface DisplayRequest : LoadRequest {
             this.resize = Resize(width, height, scope, scale, precision)
         }
 
-        fun resizeByViewFixedSize(
+        fun resizeByViewBounds(
             scope: Scope = All,
             scale: Scale = CENTER_CROP,
             precision: Precision = KEEP_ASPECT_RATIO,
         ): Builder = apply {
-            this.resize = Resize(VIEW_FIXED_SIZE, VIEW_FIXED_SIZE, scope, scale, precision)
+            this.resize = Resize(VIEW_BOUNDS, VIEW_BOUNDS, scope, scale, precision)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {

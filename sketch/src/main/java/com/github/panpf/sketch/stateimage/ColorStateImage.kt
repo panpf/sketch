@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
@@ -26,7 +25,7 @@ import com.github.panpf.sketch.util.SketchException
 class ColorStateImage(@ColorInt private val color: Int) : StateImage {
 
     override fun getDrawable(
-        context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?
+        sketch: Sketch, request: DisplayRequest, throwable: SketchException?
     ): Drawable {
         return ColorDrawable(color)
     }

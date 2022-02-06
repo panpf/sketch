@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -26,7 +25,7 @@ import com.github.panpf.sketch.util.SketchException
 
 interface StateImage {
 
-    fun getDrawable(context: Context, sketch: Sketch, request: DisplayRequest, throwable: SketchException?): Drawable?
+    fun getDrawable(sketch: Sketch, request: DisplayRequest, throwable: SketchException?): Drawable?
 
     companion object {
 

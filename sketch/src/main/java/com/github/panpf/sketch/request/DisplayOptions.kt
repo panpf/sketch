@@ -20,7 +20,7 @@ import com.github.panpf.sketch.decode.Resize.Scope
 import com.github.panpf.sketch.decode.Resize.Scope.All
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.DisplayRequest.Companion.VIEW_FIXED_SIZE
+import com.github.panpf.sketch.request.DisplayRequest.Companion.VIEW_BOUNDS
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -203,7 +203,7 @@ interface DisplayOptions : LoadOptions {
         }
 
         fun maxSizeByViewFixedSize(): Builder = apply {
-            this.maxSize = MaxSize(VIEW_FIXED_SIZE, VIEW_FIXED_SIZE)
+            this.maxSize = MaxSize(VIEW_BOUNDS, VIEW_BOUNDS)
         }
 
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
@@ -269,7 +269,7 @@ interface DisplayOptions : LoadOptions {
             scale: Scale = CENTER_CROP,
             precision: Precision = KEEP_ASPECT_RATIO,
         ): Builder = apply {
-            this.resize = Resize(VIEW_FIXED_SIZE, VIEW_FIXED_SIZE, scope, scale, precision)
+            this.resize = Resize(VIEW_BOUNDS, VIEW_BOUNDS, scope, scale, precision)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {

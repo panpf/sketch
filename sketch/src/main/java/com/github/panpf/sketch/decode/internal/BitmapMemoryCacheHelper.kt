@@ -21,10 +21,10 @@ import kotlinx.coroutines.sync.Mutex
 fun newBitmapMemoryCacheHelper(
     sketch: Sketch,
     request: DisplayRequest
-): BitmapMemoryCacheHelper? {
+): BitmapMemoryCacheSynchronizer? {
     val cachePolicy = request.bitmapMemoryCachePolicy ?: ENABLED
     return if (cachePolicy.isReadOrWrite) {
-        BitmapMemoryCacheHelper(
+        BitmapMemoryCacheSynchronizer(
             sketch.memoryCache,
             cachePolicy,
             request.cacheKey,
@@ -34,6 +34,32 @@ fun newBitmapMemoryCacheHelper(
         )
     } else {
         null
+    }
+}
+
+class BitmapMemoryCacheSynchronizer(
+    private val memoryCache: MemoryCache,
+    private val cachePolicy: CachePolicy,
+    private val cacheKey: String,
+    private val logger: Logger,
+    private val request: DisplayRequest,
+    private val bitmapPool: BitmapPool,
+) {
+    private val lock: Mutex by lazy {
+        memoryCache.editLock(cacheKey)
+    }
+
+    private val helper by lazy {
+        BitmapMemoryCacheHelper(memoryCache, cachePolicy, cacheKey, logger, request, bitmapPool)
+    }
+
+    suspend fun <R> tryLock(block: suspend BitmapMemoryCacheHelper.() -> R): R {
+        lock.lock()
+        try {
+            return block(helper)
+        } finally {
+            lock.unlock()
+        }
     }
 }
 
@@ -48,10 +74,6 @@ class BitmapMemoryCacheHelper internal constructor(
 
     companion object {
         const val MODULE = "BitmapMemoryCacheHelper"
-    }
-
-    val lock: Mutex by lazy {
-        memoryCache.editLock(cacheKey)
     }
 
     fun read(): DrawableDecodeResult? =

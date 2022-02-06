@@ -105,7 +105,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     Resize.Scope.All
                 }
                 val scale = Resize.Scale.valueOf(appSettingsService.resizeScale.value)
-                resizeByViewFixedSize(scope = scope, scale = scale)
+                resizeByViewBounds(scope = scope, scale = scale)
             }
         }
     }

@@ -6,7 +6,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class DefaultOptionsDisplayRequestInterceptor(
+class DefaultDisplayOptionsInterceptor(
     private val defaultDisplayOptions: DisplayOptions?
 ) : RequestInterceptor<DisplayRequest, DisplayData> {
 
@@ -21,5 +21,5 @@ class DefaultOptionsDisplayRequestInterceptor(
         return chain.proceed(request)
     }
 
-    override fun toString(): String = "DefaultOptionsDisplayRequestInterceptor"
+    override fun toString(): String = "DefaultDisplayOptionsInterceptor"
 }
