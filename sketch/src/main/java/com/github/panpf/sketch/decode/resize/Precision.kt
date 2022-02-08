@@ -4,9 +4,9 @@ import android.graphics.Bitmap
 
 enum class Precision {
     /**
-     * The size of the [Bitmap] returned is exactly the same as [Resize]
+     * As long as the bitmap returned has fewer pixels than resize, it is ok
      */
-    EXACTLY,
+    LESS_PIXELS,
 
     /**
      * The size of the new image will not be larger than [Resize], but the aspect ratio will be the same
@@ -14,7 +14,7 @@ enum class Precision {
     KEEP_ASPECT_RATIO,
 
     /**
-     * As long as the bitmap returned has fewer pixels than resize, it is ok
+     * The size of the [Bitmap] returned is exactly the same as [Resize]
      */
-    LESS_PIXELS,
+    EXACTLY,
 }

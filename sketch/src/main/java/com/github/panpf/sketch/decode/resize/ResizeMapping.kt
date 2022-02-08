@@ -56,14 +56,39 @@ data class ResizeMapping(
 
             val newImageWidth: Int
             val newImageHeight: Int
-            if (!exactlySize && (resizeWidth > imageWidth || resizeHeight > imageHeight)) {
-                val scale = (resizeWidth.toFloat() / imageWidth)
-                    .coerceAtMost(resizeHeight.toFloat() / imageHeight)
-                newImageWidth = (resizeWidth / scale).roundToInt()
-                newImageHeight = (resizeHeight / scale).roundToInt()
-            } else {
+            if (exactlySize) {
                 newImageWidth = resizeWidth
                 newImageHeight = resizeHeight
+            } else {
+                val widthRatio = resizeWidth.toFloat() / imageWidth
+                val heightRatio = resizeHeight.toFloat() / imageHeight
+                when {
+                    resizeWidth <= imageWidth && resizeHeight <= imageHeight -> {
+                        val scale = widthRatio.coerceAtLeast(heightRatio)
+                        newImageWidth = (imageWidth * scale).roundToInt()
+                        newImageHeight = (imageHeight * scale).roundToInt()
+                    }
+                    resizeWidth >= imageWidth && resizeHeight >= imageHeight -> {
+                        val scale = widthRatio.coerceAtLeast(heightRatio)
+                        newImageWidth = (resizeWidth / scale).roundToInt()
+                        newImageHeight = (resizeHeight / scale).roundToInt()
+                    }
+                    resizeWidth >= imageWidth -> {
+                        @Suppress("UnnecessaryVariable") val scale = widthRatio
+                        newImageWidth = (resizeWidth / scale).roundToInt()
+                        newImageHeight = (resizeHeight / scale).roundToInt()
+                    }
+                    resizeHeight >= imageHeight -> {
+                        @Suppress("UnnecessaryVariable") val scale = heightRatio
+                        newImageWidth = (resizeWidth / scale).roundToInt()
+                        newImageHeight = (resizeHeight / scale).roundToInt()
+                    }
+                    else -> throw IllegalArgumentException(
+                        "Unsupported size, " +
+                                "imageSize=${imageWidth}x${imageHeight}, " +
+                                "resizeSize=${resizeWidth}x${resizeHeight}"
+                    )
+                }
             }
             val destRect = Rect(0, 0, newImageWidth, newImageHeight)
             val srcRect: Rect = when (resizeScale) {
