@@ -17,6 +17,8 @@ import kotlinx.coroutines.sync.Mutex
 import org.json.JSONException
 import org.json.JSONObject
 
+// todo 改成 editor
+
 fun newBitmapResultDiskCacheHelper(
     sketch: Sketch,
     request: LoadRequest

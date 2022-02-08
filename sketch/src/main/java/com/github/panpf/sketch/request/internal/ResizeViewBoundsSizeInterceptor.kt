@@ -4,8 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
-import com.github.panpf.sketch.decode.MaxSize
-import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.RealNewSize
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestInterceptor
@@ -18,30 +19,33 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
-class SizeResolverInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
+class ResizeViewBoundsSizeInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
 
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val request = chain.request
-        val maxSize = request.maxSize
         val resize = request.resize
-        val newRequest =
-            if (maxSize?.isNeedConversion() != false || resize?.isNeedConversion() == true) {
-                withContext(Dispatchers.Main) {
-                    val view = request.target.asOrNull<ViewTarget<*>>()?.view
-                        ?: throw IllegalArgumentException("Because you are using ViewBounds, target must be ViewTarget")
-                    val size = size(view)
-                    request.newDisplayRequest {
-                        if (maxSize != null) {
-                            maxSize(maxSize.conversion(size))
-                        } else {
-                            maxSize(MaxSize(size.width, size.height))
-                        }
-                        resize(resize?.conversion(size))
-                    }
-                }
-            } else {
-                request
+        val newRequest = if (resize?.newSize is ViewBoundsSize) {
+            val view = request.target.asOrNull<ViewTarget<*>>()?.view
+                ?: throw IllegalArgumentException("Because you are using ViewBoundsSize, target must be ViewTarget")
+            val size = withContext(Dispatchers.Main) {
+                size(view)
             }
+            request.newDisplayRequest {
+                if (size.width > 0 && size.height > 0) {
+                    resize(
+                        Resize(
+                            newSize = NewSize(size),
+                            precisionDecider = resize.precisionDecider,
+                            scale = resize.scale
+                        )
+                    )
+                } else {
+                    resize(null) // original size
+                }
+            }
+        } else {
+            request
+        }
         return chain.proceed(newRequest)
     }
 
@@ -99,7 +103,7 @@ class SizeResolverInterceptor : RequestInterceptor<DisplayRequest, DisplayData> 
     private fun getDimension(paramSize: Int, viewSize: Int, paddingSize: Int): Int? {
         // If the dimension is set to WRAP_CONTENT, use the original dimension of the image.
         if (paramSize == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            return null
+            return -1
         }
 
         // Assume the dimension will match the value in the view's layout params.
@@ -123,40 +127,6 @@ class SizeResolverInterceptor : RequestInterceptor<DisplayRequest, DisplayData> 
             removeOnPreDrawListener(victim)
         } else {
             view.viewTreeObserver.removeOnPreDrawListener(victim)
-        }
-    }
-
-    private fun MaxSize.isNeedConversion(): Boolean =
-        width == DisplayRequest.VIEW_BOUNDS || height == DisplayRequest.VIEW_BOUNDS
-
-    private fun MaxSize.conversion(size: Size): MaxSize {
-        return if (isNeedConversion()) {
-            if (width == DisplayRequest.VIEW_BOUNDS && height == DisplayRequest.VIEW_BOUNDS) {
-                MaxSize(size.width, size.height)
-            } else if (width == DisplayRequest.VIEW_BOUNDS) {
-                MaxSize(size.width, height)
-            } else {
-                MaxSize(width, size.height)
-            }
-        } else {
-            this
-        }
-    }
-
-    private fun Resize.isNeedConversion(): Boolean =
-        width == DisplayRequest.VIEW_BOUNDS || height == DisplayRequest.VIEW_BOUNDS
-
-    private fun Resize.conversion(size: Size): Resize {
-        return if (isNeedConversion()) {
-            if (width == DisplayRequest.VIEW_BOUNDS && height == DisplayRequest.VIEW_BOUNDS) {
-                Resize(size.width, size.height, this.scope, this.scale, this.precision)
-            } else if (width == DisplayRequest.VIEW_BOUNDS) {
-                Resize(size.width, height, this.scope, this.scale, this.precision)
-            } else {
-                Resize(width, size.height, this.scope, this.scale, this.precision)
-            }
-        } else {
-            this
         }
     }
 }

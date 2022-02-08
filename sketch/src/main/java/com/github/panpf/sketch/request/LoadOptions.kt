@@ -8,14 +8,11 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.MaxSize
-import com.github.panpf.sketch.decode.Resize
-import com.github.panpf.sketch.decode.Resize.Precision
-import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
-import com.github.panpf.sketch.decode.Resize.Scale
-import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.decode.Resize.Scope
-import com.github.panpf.sketch.decode.Resize.Scope.All
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.Scale
+import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.PrecisionDecider
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.LoadOptions.Builder
@@ -35,7 +32,6 @@ fun LoadOptionsBuilder(
 
 interface LoadOptions : DownloadOptions {
 
-    val maxSize: MaxSize?
     val bitmapConfig: BitmapConfig?
 
     @get:RequiresApi(VERSION_CODES.O)
@@ -52,10 +48,10 @@ interface LoadOptions : DownloadOptions {
     @Suppress("DEPRECATION")
     override fun isEmpty(): Boolean =
         super.isEmpty()
-                && maxSize == null
                 && bitmapConfig == null
                 && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
                 && preferQualityOverSpeed == null
+                && resize == null
                 && transformations == null
                 && disabledBitmapPool == null
                 && ignoreExifOrientation == null
@@ -81,7 +77,6 @@ interface LoadOptions : DownloadOptions {
         private var httpHeaders: HttpHeaders.Builder? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
 
-        private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
 
         @RequiresApi(VERSION_CODES.O)
@@ -102,7 +97,6 @@ interface LoadOptions : DownloadOptions {
             this.httpHeaders = request.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
 
-            this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
@@ -193,14 +187,6 @@ interface LoadOptions : DownloadOptions {
                 this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
             }
 
-        fun maxSize(maxSize: MaxSize?): Builder = apply {
-            this.maxSize = maxSize
-        }
-
-        fun maxSize(width: Int, height: Int): Builder = apply {
-            this.maxSize = MaxSize(width, height)
-        }
-
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             this.bitmapConfig = bitmapConfig
         }
@@ -250,13 +236,29 @@ interface LoadOptions : DownloadOptions {
         }
 
         fun resize(
+            newSize: NewSize,
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(newSize, precision, scale)
+        }
+
+        fun resize(
             @Px width: Int,
             @Px height: Int,
-            scope: Scope = All,
-            scale: Scale = CENTER_CROP,
-            precision: Precision = KEEP_ASPECT_RATIO,
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
         ): Builder = apply {
-            this.resize = Resize(width, height, scope, scale, precision)
+            this.resize = Resize(width, height, precision, scale)
+        }
+
+        fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precisionDecider: PrecisionDecider,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(width, height, precisionDecider, scale)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -287,7 +289,6 @@ interface LoadOptions : DownloadOptions {
                 httpHeaders = httpHeaders?.build(),
                 networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                 bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                maxSize = maxSize,
                 bitmapConfig = bitmapConfig,
                 colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                 preferQualityOverSpeed = preferQualityOverSpeed,
@@ -303,7 +304,6 @@ interface LoadOptions : DownloadOptions {
                 httpHeaders = httpHeaders?.build(),
                 networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                 bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                maxSize = maxSize,
                 bitmapConfig = bitmapConfig,
                 preferQualityOverSpeed = preferQualityOverSpeed,
                 resize = resize,
@@ -320,7 +320,6 @@ interface LoadOptions : DownloadOptions {
         override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
-        override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
@@ -337,7 +336,6 @@ interface LoadOptions : DownloadOptions {
             httpHeaders: HttpHeaders?,
             networkContentDiskCachePolicy: CachePolicy?,
             bitmapResultDiskCachePolicy: CachePolicy?,
-            maxSize: MaxSize?,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
@@ -346,18 +344,17 @@ interface LoadOptions : DownloadOptions {
             disabledBitmapPool: Boolean?,
             ignoreExifOrientation: Boolean?,
         ) : this(
-            depth,
-            parameters,
-            httpHeaders,
-            networkContentDiskCachePolicy,
-            bitmapResultDiskCachePolicy,
-            maxSize,
-            bitmapConfig,
-            preferQualityOverSpeed,
-            resize,
-            transformations,
-            disabledBitmapPool,
-            ignoreExifOrientation,
+            depth = depth,
+            parameters = parameters,
+            httpHeaders = httpHeaders,
+            networkContentDiskCachePolicy = networkContentDiskCachePolicy,
+            bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
+            bitmapConfig = bitmapConfig,
+            preferQualityOverSpeed = preferQualityOverSpeed,
+            resize = resize,
+            transformations = transformations,
+            disabledBitmapPool = disabledBitmapPool,
+            ignoreExifOrientation = ignoreExifOrientation,
         ) {
             _colorSpace = colorSpace
         }

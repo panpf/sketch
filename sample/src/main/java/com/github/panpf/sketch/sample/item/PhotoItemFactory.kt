@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
+import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.decode.resize.Scale
+import com.github.panpf.sketch.decode.resize.longImageCropPrecision
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
@@ -99,13 +103,30 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
             }
 
             displayImage(data.firstThumbnailUrl) {
-                val scope = if (appSettingsService.resizeOnlyLongImage.value) {
-                    Resize.Scope.OnlyLongImage()
-                } else {
-                    Resize.Scope.All
+                val scale = Scale.valueOf(appSettingsService.resizeScale.value)
+                when (appSettingsService.resizePrecision.value) {
+                    "LESS_PIXELS" -> {
+                        resizeByViewBounds(precision = LESS_PIXELS, scale = scale)
+                    }
+                    "KEEP_ASPECT_RATIO" -> {
+                        resizeByViewBounds(precision = KEEP_ASPECT_RATIO, scale = scale)
+                    }
+                    "EXACTLY" -> {
+                        resizeByViewBounds(precision = EXACTLY, scale = scale)
+                    }
+                    "LONG_IMAGE_CROP" -> {
+                        resizeByViewBounds(
+                            precisionDecider = longImageCropPrecision(precision = KEEP_ASPECT_RATIO),
+                            scale = scale
+                        )
+                    }
+                    "ORIGINAL" -> {
+                        resize(null)
+                    }
+                    else -> {
+                        resize(null)
+                    }
                 }
-                val scale = Resize.Scale.valueOf(appSettingsService.resizeScale.value)
-                resizeByViewBounds(scope = scope, scale = scale)
             }
         }
     }

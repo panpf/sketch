@@ -13,14 +13,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.MaxSize
-import com.github.panpf.sketch.decode.Resize
-import com.github.panpf.sketch.decode.Resize.Precision
-import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
-import com.github.panpf.sketch.decode.Resize.Scale
-import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.decode.Resize.Scope
-import com.github.panpf.sketch.decode.Resize.Scope.All
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.Scale
+import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.decode.resize.PrecisionDecider
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DisplayRequest.Builder
@@ -28,6 +26,7 @@ import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
+import com.github.panpf.sketch.request.internal.ViewBoundsSize
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.DisplayOptionsProvider
@@ -92,10 +91,6 @@ interface DisplayRequest : LoadRequest {
         configBlock?.invoke(this)
     }.build()
 
-    companion object {
-        internal const val VIEW_BOUNDS: Int = -214238643
-    }
-
     class Builder {
         private val uriString: String
         private val target: Target
@@ -108,7 +103,6 @@ interface DisplayRequest : LoadRequest {
         private var networkContentDiskCachePolicy: CachePolicy? = null
         private var progressListener: ProgressListener<ImageRequest>? = null
 
-        private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
 
         @RequiresApi(VERSION_CODES.O)
@@ -150,7 +144,6 @@ interface DisplayRequest : LoadRequest {
             this.progressListener =
                 request.progressListener.asOrNull<CombinedProgressListener<ImageRequest>>()?.fromBuilderProgressListener
                     ?: request.progressListener
-            this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
@@ -198,11 +191,6 @@ interface DisplayRequest : LoadRequest {
                 }
             }
 
-            if (!requestFirst || this.maxSize == null) {
-                options.maxSize?.let {
-                    this.maxSize = it
-                }
-            }
             if (!requestFirst || this.bitmapConfig == null) {
                 options.bitmapConfig?.let {
                     this.bitmapConfig = it
@@ -343,18 +331,6 @@ interface DisplayRequest : LoadRequest {
                 this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
             }
 
-        fun maxSize(maxSize: MaxSize?): Builder = apply {
-            this.maxSize = maxSize
-        }
-
-        fun maxSize(width: Int, height: Int): Builder = apply {
-            this.maxSize = MaxSize(width, height)
-        }
-
-        fun maxSizeByViewBounds(): Builder = apply {
-            this.maxSize = MaxSize(VIEW_BOUNDS, VIEW_BOUNDS)
-        }
-
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             this.bitmapConfig = bitmapConfig
         }
@@ -404,21 +380,43 @@ interface DisplayRequest : LoadRequest {
         }
 
         fun resize(
+            newSize: NewSize,
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(newSize, precision, scale)
+        }
+
+        fun resize(
             @Px width: Int,
             @Px height: Int,
-            scope: Scope = All,
-            scale: Scale = CENTER_CROP,
-            precision: Precision = KEEP_ASPECT_RATIO,
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
         ): Builder = apply {
-            this.resize = Resize(width, height, scope, scale, precision)
+            this.resize = Resize(width, height, precision, scale)
+        }
+
+        fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precisionDecider: PrecisionDecider,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(width, height, precisionDecider, scale)
         }
 
         fun resizeByViewBounds(
-            scope: Scope = All,
-            scale: Scale = CENTER_CROP,
-            precision: Precision = KEEP_ASPECT_RATIO,
+            precisionDecider: PrecisionDecider,
+            scale: Scale = Scale.CENTER_CROP,
         ): Builder = apply {
-            this.resize = Resize(VIEW_BOUNDS, VIEW_BOUNDS, scope, scale, precision)
+            this.resize = Resize(ViewBoundsSize, precisionDecider, scale)
+        }
+
+        fun resizeByViewBounds(
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(ViewBoundsSize, precision, scale)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -580,6 +578,11 @@ interface DisplayRequest : LoadRequest {
                 } else {
                     progressListener ?: viewProgressListener
                 }
+            val finalResize = resize ?: if (target is ViewTarget<*>) {
+                Resize(newSize = ViewBoundsSize, precision = LESS_PIXELS)
+            } else {
+                null
+            }
             return if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 DisplayRequestImpl(
                     uriString = uriString,
@@ -588,11 +591,10 @@ interface DisplayRequest : LoadRequest {
                     httpHeaders = httpHeaders?.build(),
                     networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                    maxSize = maxSize,
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
-                    resize = resize,
+                    resize = finalResize,
                     transformations = transformations?.toList(),
                     disabledBitmapPool = disabledBitmapPool,
                     ignoreExifOrientation = ignoreExifOrientation,
@@ -613,7 +615,6 @@ interface DisplayRequest : LoadRequest {
                     httpHeaders = httpHeaders?.build(),
                     networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                    maxSize = maxSize,
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resize = resize,
@@ -646,7 +647,6 @@ interface DisplayRequest : LoadRequest {
         override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
-        override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
@@ -672,7 +672,6 @@ interface DisplayRequest : LoadRequest {
             httpHeaders: HttpHeaders?,
             networkContentDiskCachePolicy: CachePolicy?,
             bitmapResultDiskCachePolicy: CachePolicy?,
-            maxSize: MaxSize?,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
@@ -695,7 +694,6 @@ interface DisplayRequest : LoadRequest {
             httpHeaders = httpHeaders,
             networkContentDiskCachePolicy = networkContentDiskCachePolicy,
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-            maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resize = resize,
@@ -754,9 +752,6 @@ interface DisplayRequest : LoadRequest {
                 }
                 networkContentDiskCachePolicy?.let {
                     append("_").append("networkContentDiskCachePolicy($it)")
-                }
-                maxSize?.let {
-                    append("_").append(it.cacheKey)
                 }
                 bitmapConfig?.let {
                     append("_").append(it.cacheKey)

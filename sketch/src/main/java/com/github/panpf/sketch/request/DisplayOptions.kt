@@ -10,18 +10,15 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.MaxSize
-import com.github.panpf.sketch.decode.Resize
-import com.github.panpf.sketch.decode.Resize.Precision
-import com.github.panpf.sketch.decode.Resize.Precision.KEEP_ASPECT_RATIO
-import com.github.panpf.sketch.decode.Resize.Scale
-import com.github.panpf.sketch.decode.Resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.decode.Resize.Scope
-import com.github.panpf.sketch.decode.Resize.Scope.All
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.Scale
+import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.decode.resize.PrecisionDecider
 import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.DisplayRequest.Companion.VIEW_BOUNDS
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.ViewBoundsSize
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 
@@ -71,7 +68,6 @@ interface DisplayOptions : LoadOptions {
         private var httpHeaders: HttpHeaders.Builder? = null
         private var networkContentDiskCachePolicy: CachePolicy? = null
 
-        private var maxSize: MaxSize? = null
         private var bitmapConfig: BitmapConfig? = null
 
         @RequiresApi(VERSION_CODES.O)
@@ -95,7 +91,6 @@ interface DisplayOptions : LoadOptions {
             this.parametersBuilder = request.parameters?.newBuilder()
             this.httpHeaders = request.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
-            this.maxSize = request.maxSize
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
@@ -194,18 +189,6 @@ interface DisplayOptions : LoadOptions {
                 this.bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy
             }
 
-        fun maxSize(maxSize: MaxSize?): Builder = apply {
-            this.maxSize = maxSize
-        }
-
-        fun maxSize(width: Int, height: Int): Builder = apply {
-            this.maxSize = MaxSize(width, height)
-        }
-
-        fun maxSizeByViewFixedSize(): Builder = apply {
-            this.maxSize = MaxSize(VIEW_BOUNDS, VIEW_BOUNDS)
-        }
-
         fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             this.bitmapConfig = bitmapConfig
         }
@@ -255,21 +238,43 @@ interface DisplayOptions : LoadOptions {
         }
 
         fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            scope: Scope = All,
-            scale: Scale = CENTER_CROP,
-            precision: Precision = KEEP_ASPECT_RATIO,
+            newSize: NewSize,
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
         ): Builder = apply {
-            this.resize = Resize(width, height, scope, scale, precision)
+            this.resize = Resize(newSize, precision, scale)
         }
 
-        fun resizeByViewFixedSize(
-            scope: Scope = All,
-            scale: Scale = CENTER_CROP,
-            precision: Precision = KEEP_ASPECT_RATIO,
+        fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
         ): Builder = apply {
-            this.resize = Resize(VIEW_BOUNDS, VIEW_BOUNDS, scope, scale, precision)
+            this.resize = Resize(width, height, precision, scale)
+        }
+
+        fun resize(
+            @Px width: Int,
+            @Px height: Int,
+            precisionDecider: PrecisionDecider,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(width, height, precisionDecider, scale)
+        }
+
+        fun resizeByViewBounds(
+            precisionDecider: PrecisionDecider,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(ViewBoundsSize, precisionDecider, scale)
+        }
+
+        fun resizeByViewBounds(
+            precision: Precision = Precision.LESS_PIXELS,
+            scale: Scale = Scale.CENTER_CROP,
+        ): Builder = apply {
+            this.resize = Resize(ViewBoundsSize, precision, scale)
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -359,7 +364,6 @@ interface DisplayOptions : LoadOptions {
                     httpHeaders = httpHeaders?.build(),
                     networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                    maxSize = maxSize,
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
@@ -379,7 +383,6 @@ interface DisplayOptions : LoadOptions {
                     httpHeaders = httpHeaders?.build(),
                     networkContentDiskCachePolicy = networkContentDiskCachePolicy,
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-                    maxSize = maxSize,
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
                     resize = resize,
@@ -401,7 +404,6 @@ interface DisplayOptions : LoadOptions {
         override val httpHeaders: HttpHeaders?,
         override val networkContentDiskCachePolicy: CachePolicy?,
         override val bitmapResultDiskCachePolicy: CachePolicy?,
-        override val maxSize: MaxSize?,
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
@@ -422,7 +424,6 @@ interface DisplayOptions : LoadOptions {
             httpHeaders: HttpHeaders?,
             networkContentDiskCachePolicy: CachePolicy?,
             bitmapResultDiskCachePolicy: CachePolicy?,
-            maxSize: MaxSize?,
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
@@ -440,7 +441,6 @@ interface DisplayOptions : LoadOptions {
             httpHeaders = httpHeaders,
             networkContentDiskCachePolicy = networkContentDiskCachePolicy,
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
-            maxSize = maxSize,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
             resize = resize,

@@ -24,7 +24,8 @@ import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.util.Size
 import kotlin.math.abs
 
@@ -137,7 +138,7 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
     }
 
     fun addToResize(resize: Resize, imageSize: Size): Resize {
-        val newSize = addToSize(Size(resize.width, resize.height))
+        val newSize = addToSize(resize.newSize.size)
         val newScale = if (imageSize.width > imageSize.height) {
             if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
                 || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
@@ -145,10 +146,10 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
                 || exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL
             ) {
                 when (resize.scale) {
-                    Resize.Scale.START_CROP -> Resize.Scale.END_CROP
-                    Resize.Scale.CENTER_CROP -> Resize.Scale.CENTER_CROP
-                    Resize.Scale.END_CROP -> Resize.Scale.START_CROP
-                    Resize.Scale.FILL -> Resize.Scale.FILL
+                    com.github.panpf.sketch.decode.resize.Scale.START_CROP -> com.github.panpf.sketch.decode.resize.Scale.END_CROP
+                    com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP -> com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
+                    com.github.panpf.sketch.decode.resize.Scale.END_CROP -> com.github.panpf.sketch.decode.resize.Scale.START_CROP
+                    com.github.panpf.sketch.decode.resize.Scale.FILL -> com.github.panpf.sketch.decode.resize.Scale.FILL
                 }
             } else {
                 resize.scale
@@ -160,21 +161,19 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
                 || exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
             ) {
                 when (resize.scale) {
-                    Resize.Scale.START_CROP -> Resize.Scale.END_CROP
-                    Resize.Scale.CENTER_CROP -> Resize.Scale.CENTER_CROP
-                    Resize.Scale.END_CROP -> Resize.Scale.START_CROP
-                    Resize.Scale.FILL -> Resize.Scale.FILL
+                    com.github.panpf.sketch.decode.resize.Scale.START_CROP -> com.github.panpf.sketch.decode.resize.Scale.END_CROP
+                    com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP -> com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
+                    com.github.panpf.sketch.decode.resize.Scale.END_CROP -> com.github.panpf.sketch.decode.resize.Scale.START_CROP
+                    com.github.panpf.sketch.decode.resize.Scale.FILL -> com.github.panpf.sketch.decode.resize.Scale.FILL
                 }
             } else {
                 resize.scale
             }
         }
         return Resize(
-            width = newSize.width,
-            height = newSize.height,
-            scope = resize.scope,
+            newSize = NewSize(newSize.width, newSize.height),
+            precisionDecider = resize.precisionDecider,
             scale = newScale,
-            precision = resize.precision
         )
     }
 

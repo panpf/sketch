@@ -3,7 +3,7 @@ package com.github.panpf.sketch.sample.vm
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.resize.Scale
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.bean.InfoMenu
@@ -63,26 +63,45 @@ class SettingsViewModel(application1: Application) : LifecycleAndroidViewModel(a
             )
         )
         add(
-            SwitchMenu(
-                title = "Resize only work for long image",
+            MultiSelectMenu(
+                title = "Resize precision",
                 desc = null,
-                data = appSettingsService.resizeOnlyLongImage,
+                values = listOf(
+                    "LESS_PIXELS",
+                    "KEEP_ASPECT_RATIO",
+                    "EXACTLY",
+                    "LONG_IMAGE_CROP",
+                    "ORIGINAL"
+                ),
+                value = {
+                    appSettingsService.resizePrecision.value
+                },
+                onSelect = { which ->
+                    appSettingsService.resizePrecision.value = when (which) {
+                        0 -> "LESS_PIXELS"
+                        1 -> "KEEP_ASPECT_RATIO"
+                        2 -> "EXACTLY"
+                        3 -> "LONG_IMAGE_CROP"
+                        4 -> "ORIGINAL"
+                        else -> throw IllegalArgumentException("$which")
+                    }
+                }
             )
         )
         add(
             MultiSelectMenu(
                 "Resize scale",
                 null,
-                Resize.Scale.values().map { it.name },
+                Scale.values().map { it.name },
                 value = {
                     appSettingsService.resizeScale.value
                 },
                 onSelect = { which ->
                     appSettingsService.resizeScale.value = when (which) {
-                        0 -> Resize.Scale.START_CROP.name
-                        1 -> Resize.Scale.CENTER_CROP.name
-                        2 -> Resize.Scale.END_CROP.name
-                        3 -> Resize.Scale.FILL.name
+                        0 -> Scale.START_CROP.name
+                        1 -> Scale.CENTER_CROP.name
+                        2 -> Scale.END_CROP.name
+                        3 -> Scale.FILL.name
                         else -> throw IllegalArgumentException("$which")
                     }
                 })

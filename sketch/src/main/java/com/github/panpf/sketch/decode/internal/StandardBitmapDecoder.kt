@@ -7,7 +7,10 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.ResizeTransformed
+import com.github.panpf.sketch.decode.resize.ResizeMapping
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
@@ -52,15 +55,14 @@ abstract class StandardBitmapDecoder(
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
-            addedResize?.shouldUse(imageInfo.width, imageInfo.height) == true
+            addedResize?.shouldCrop(imageInfo.width, imageInfo.height) == true
             && canDecodeRegion(imageInfo.mimeType)
         ) {
             resizeTransformed = ResizeTransformed(resize)
             decodeRegionWrapper(imageInfo, decodeConfig, addedResize)
         } else {
             resizeTransformed = null
-            val addedMaxSize = request.maxSize?.let { exifOrientationHelper.addToSize(it) }
-            decodeFullWrapper(imageInfo, decodeConfig, addedMaxSize, addedResize)
+            decodeFullWrapper(imageInfo, decodeConfig, addedResize)
         }
 
         return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataFrom)
@@ -80,13 +82,14 @@ abstract class StandardBitmapDecoder(
         decodeConfig: DecodeConfig,
         addedResize: Resize,
     ): Bitmap {
+        val precision = addedResize.precision(imageInfo.width, imageInfo.height)
         val resizeMapping = ResizeMapping.calculator(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
             resizeWidth = addedResize.width,
             resizeHeight = addedResize.height,
             resizeScale = addedResize.scale,
-            exactlySize = addedResize.precision == Resize.Precision.EXACTLY
+            exactlySize = precision == Precision.EXACTLY
         )
 
         decodeConfig.inSampleSize = calculateInSampleSize(
@@ -102,20 +105,11 @@ abstract class StandardBitmapDecoder(
     private fun decodeFullWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
-        addedMaxSize: Size?,
         addedResize: Resize?,
     ): Bitmap {
-        val maxSizeInSampleSize = addedMaxSize?.let {
+        decodeConfig.inSampleSize = addedResize?.let {
             calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
         } ?: 1
-
-        val resizeInSampleSize = addedResize?.takeIf {
-            it.shouldUse(imageInfo.width, imageInfo.height)
-        }?.let {
-            calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
-        } ?: 1
-
-        decodeConfig.inSampleSize = maxSizeInSampleSize.coerceAtLeast(resizeInSampleSize)
         return decodeFull(imageInfo, decodeConfig)
     }
 }

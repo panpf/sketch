@@ -55,7 +55,7 @@ import com.github.panpf.sketch.request.internal.DownloadEngineInterceptor
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.request.internal.LoadEngineInterceptor
 import com.github.panpf.sketch.request.internal.LoadExecutor
-import com.github.panpf.sketch.request.internal.SizeResolverInterceptor
+import com.github.panpf.sketch.request.internal.ResizeViewBoundsSizeInterceptor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
@@ -132,7 +132,7 @@ class Sketch private constructor(
     val displayInterceptors: List<RequestInterceptor<DisplayRequest, DisplayData>> =
         (_displayInterceptors ?: listOf()) +
                 DefaultDisplayOptionsInterceptor(defaultDisplayOptions) +
-                SizeResolverInterceptor() +
+                ResizeViewBoundsSizeInterceptor() +
                 DisplayEngineInterceptor()
 
     val bitmapDecodeInterceptors: List<DecodeInterceptor<LoadRequest, BitmapDecodeResult>> =

@@ -8,7 +8,10 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Resize
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.ResizeTransformed
+import com.github.panpf.sketch.decode.resize.ResizeMapping
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Size
 
@@ -49,31 +52,28 @@ abstract class AbsBitmapDecoder(
     private fun applyResize(bitmapResult: BitmapDecodeResult): BitmapDecodeResult {
         val bitmap = bitmapResult.bitmap
         val resize = request.resize
-//        val maxSize = chain.request.maxSize
         val bitmapPool = sketch.bitmapPool
-        return if (resize?.shouldUse(bitmap.width, bitmap.height) == true) {
+        return if (resize?.shouldCrop(bitmap.width, bitmap.height) == true) {
             val newBitmap = resize(bitmap, resize, bitmapPool)
             bitmapPool.free(bitmap)
             bitmapResult.new(newBitmap) {
                 addTransformed(ResizeTransformed(resize))
             }
-//        } else if(maxSize != null && bitmap.width * bitmap.height > maxSize.width * maxSize.height){
-            // todo 限制不超过 maxSize
         } else {
             bitmapResult
         }
     }
 
     private fun resize(bitmap: Bitmap, resize: Resize, bitmapPool: BitmapPool): Bitmap {
+        val precision = resize.precision(bitmap.width, bitmap.height)
         val mapping = ResizeMapping.calculator(
             imageWidth = bitmap.width,
             imageHeight = bitmap.height,
             resizeWidth = resize.width,
             resizeHeight = resize.height,
             resizeScale = resize.scale,
-            exactlySize = resize.precision == Resize.Precision.EXACTLY
+            exactlySize = precision == Precision.EXACTLY
         )
-        // todo 限制不超过 maxSize
         val config = bitmap.config ?: Bitmap.Config.ARGB_8888
         val resizeBitmap =
             bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)

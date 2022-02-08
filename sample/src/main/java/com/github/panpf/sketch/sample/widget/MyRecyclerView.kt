@@ -24,7 +24,7 @@ class MyRecyclerView @JvmOverloads constructor(
             val observer = Observer<Any> {
                 postValue(1)
             }
-            addSource(appSettingsService.resizeOnlyLongImage, observer)
+            addSource(appSettingsService.resizePrecision, observer)
             addSource(appSettingsService.resizeScale, observer)
         }
 

@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.decode.internal
+package com.github.panpf.sketch.decode.resize
 
 import android.graphics.Rect
-import com.github.panpf.sketch.decode.Resize
 import kotlin.math.roundToInt
 
 data class ResizeMapping(
@@ -43,7 +42,7 @@ data class ResizeMapping(
             imageHeight: Int,
             resizeWidth: Int,
             resizeHeight: Int,
-            resizeScale: Resize.Scale,
+            resizeScale: Scale,
             exactlySize: Boolean
         ): ResizeMapping {
             if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
@@ -68,7 +67,7 @@ data class ResizeMapping(
             }
             val destRect = Rect(0, 0, newImageWidth, newImageHeight)
             val srcRect: Rect = when (resizeScale) {
-                Resize.Scale.START_CROP -> {
+                Scale.START_CROP -> {
                     val finalScale = (imageWidth.toFloat() / newImageWidth)
                         .coerceAtMost(imageHeight.toFloat() / newImageHeight)
                     val srcWidth = (newImageWidth * finalScale).toInt()
@@ -77,7 +76,7 @@ data class ResizeMapping(
                     val srcTop = 0
                     Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
                 }
-                Resize.Scale.CENTER_CROP -> {
+                Scale.CENTER_CROP -> {
                     val finalScale = (imageWidth.toFloat() / newImageWidth)
                         .coerceAtMost(imageHeight.toFloat() / newImageHeight)
                     val srcWidth = (newImageWidth * finalScale).toInt()
@@ -86,7 +85,7 @@ data class ResizeMapping(
                     val srcTop = (imageHeight - srcHeight) / 2
                     Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
                 }
-                Resize.Scale.END_CROP -> {
+                Scale.END_CROP -> {
                     val finalScale = (imageWidth.toFloat() / newImageWidth)
                         .coerceAtMost(imageHeight.toFloat() / newImageHeight)
                     val srcWidth = (newImageWidth * finalScale).toInt()
@@ -95,7 +94,7 @@ data class ResizeMapping(
                     val srcTop: Int = imageHeight - srcHeight
                     Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight)
                 }
-                Resize.Scale.FILL -> {
+                Scale.FILL -> {
                     Rect(0, 0, imageWidth, imageHeight)
                 }
             }
