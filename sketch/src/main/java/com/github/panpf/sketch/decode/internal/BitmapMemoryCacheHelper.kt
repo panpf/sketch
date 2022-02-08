@@ -18,39 +18,29 @@ import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 
-fun newBitmapMemoryCacheHelper(
+fun newBitmapMemoryCacheEditor(
     sketch: Sketch,
     request: DisplayRequest
-): BitmapMemoryCacheSynchronizer? {
+): BitmapMemoryCacheEditor? {
     val cachePolicy = request.bitmapMemoryCachePolicy ?: ENABLED
     return if (cachePolicy.isReadOrWrite) {
-        BitmapMemoryCacheSynchronizer(
+        BitmapMemoryCacheEditor(
             sketch.memoryCache,
-            cachePolicy,
             request.cacheKey,
-            sketch.logger,
-            request,
-            sketch.bitmapPool,
+            newBitmapMemoryCacheHelper(sketch, request),
         )
     } else {
         null
     }
 }
 
-class BitmapMemoryCacheSynchronizer(
+class BitmapMemoryCacheEditor(
     private val memoryCache: MemoryCache,
-    private val cachePolicy: CachePolicy,
     private val cacheKey: String,
-    private val logger: Logger,
-    private val request: DisplayRequest,
-    private val bitmapPool: BitmapPool,
+    private val helper: BitmapMemoryCacheHelper,
 ) {
     private val lock: Mutex by lazy {
         memoryCache.editLock(cacheKey)
-    }
-
-    private val helper by lazy {
-        BitmapMemoryCacheHelper(memoryCache, cachePolicy, cacheKey, logger, request, bitmapPool)
     }
 
     suspend fun <R> tryLock(block: suspend BitmapMemoryCacheHelper.() -> R): R {
@@ -62,6 +52,18 @@ class BitmapMemoryCacheSynchronizer(
         }
     }
 }
+
+fun newBitmapMemoryCacheHelper(
+    sketch: Sketch,
+    request: DisplayRequest
+): BitmapMemoryCacheHelper = BitmapMemoryCacheHelper(
+    sketch.memoryCache,
+    request.bitmapMemoryCachePolicy ?: ENABLED,
+    request.cacheKey,
+    sketch.logger,
+    request,
+    sketch.bitmapPool,
+)
 
 class BitmapMemoryCacheHelper internal constructor(
     private val memoryCache: MemoryCache,

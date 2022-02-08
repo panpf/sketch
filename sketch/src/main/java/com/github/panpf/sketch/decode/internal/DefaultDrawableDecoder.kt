@@ -16,7 +16,7 @@ class DefaultDrawableDecoder(
 
     // todo support ImageDecoder gif wep animation heif animation
     override suspend fun decode(): DrawableDecodeResult {
-        val helper = newBitmapMemoryCacheHelper(sketch, request)
+        val helper = newBitmapMemoryCacheEditor(sketch, request)
         return helper?.tryLock {
             read() ?: decodeNewBitmap().run {
                 val drawable = write(this) ?: SketchBitmapDrawable(
