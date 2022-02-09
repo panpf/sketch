@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 
 enum class Precision {
     /**
-     * As long as the bitmap returned has fewer pixels than resize, it is ok
+     * Try to keep the number of pixels of the returned image smaller than resize. A 10% margin of error is allowed
      */
     LESS_PIXELS,
 

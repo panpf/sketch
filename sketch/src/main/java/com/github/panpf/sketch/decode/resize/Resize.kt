@@ -84,7 +84,7 @@ data class Resize constructor(
     fun precision(imageWidth: Int, imageHeight: Int): Precision =
         precisionDecider.precision(imageWidth, imageHeight, width, height)
 
-    fun shouldCrop(imageWidth: Int, imageHeight: Int): Boolean =
+    fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
         when (precision(imageWidth, imageHeight)) {
             Precision.KEEP_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)

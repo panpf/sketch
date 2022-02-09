@@ -18,9 +18,10 @@ package com.github.panpf.sketch.zoom.block
 import android.graphics.Bitmap
 import android.graphics.Rect
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.decode.internal.limitedOpenGLTextureMaxSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.byteCountCompat
-import com.github.panpf.sketch.util.calculateInSampleSize
 import com.github.panpf.sketch.zoom.block.Block.Companion.blockListToString
 import com.github.panpf.sketch.zoom.block.DecodeHandler.DecodeErrorException
 import com.github.panpf.sketch.zoom.block.internal.ObjectPool
@@ -233,7 +234,7 @@ class BlockManager(
         val targetSizeScale = blockBaseNumber.toFloat() / 10 + 1
         val targetWidth = (viewWidth * targetSizeScale).roundToInt()
         val targetHeight = (viewHeight * targetSizeScale).roundToInt()
-        return calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight)
+        return limitedOpenGLTextureMaxSize(srcWidth, srcHeight, calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight))
     }
 
     /**

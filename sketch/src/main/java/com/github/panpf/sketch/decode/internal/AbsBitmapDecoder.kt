@@ -11,7 +11,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.Precision
 import com.github.panpf.sketch.decode.resize.ResizeTransformed
-import com.github.panpf.sketch.decode.resize.ResizeMapping
+import com.github.panpf.sketch.decode.resize.calculateResizeMapping
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Size
 
@@ -53,7 +53,7 @@ abstract class AbsBitmapDecoder(
         val bitmap = bitmapResult.bitmap
         val resize = request.resize
         val bitmapPool = sketch.bitmapPool
-        return if (resize?.shouldCrop(bitmap.width, bitmap.height) == true) {
+        return if (resize?.shouldClip(bitmap.width, bitmap.height) == true) {
             val newBitmap = resize(bitmap, resize, bitmapPool)
             bitmapPool.free(bitmap)
             bitmapResult.new(newBitmap) {
@@ -66,7 +66,7 @@ abstract class AbsBitmapDecoder(
 
     private fun resize(bitmap: Bitmap, resize: Resize, bitmapPool: BitmapPool): Bitmap {
         val precision = resize.precision(bitmap.width, bitmap.height)
-        val mapping = ResizeMapping.calculator(
+        val mapping = calculateResizeMapping(
             imageWidth = bitmap.width,
             imageHeight = bitmap.height,
             resizeWidth = resize.width,

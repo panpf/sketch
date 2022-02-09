@@ -7,15 +7,14 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.ResizeTransformed
-import com.github.panpf.sketch.decode.resize.ResizeMapping
+import com.github.panpf.sketch.decode.resize.calculateResizeMapping
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.calculateInSampleSize
 
 abstract class StandardBitmapDecoder(
     sketch: Sketch,
@@ -55,7 +54,7 @@ abstract class StandardBitmapDecoder(
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
-            addedResize?.shouldCrop(imageInfo.width, imageInfo.height) == true
+            addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true
             && canDecodeRegion(imageInfo.mimeType)
         ) {
             resizeTransformed = ResizeTransformed(resize)
@@ -83,7 +82,7 @@ abstract class StandardBitmapDecoder(
         addedResize: Resize,
     ): Bitmap {
         val precision = addedResize.precision(imageInfo.width, imageInfo.height)
-        val resizeMapping = ResizeMapping.calculator(
+        val resizeMapping = calculateResizeMapping(
             imageWidth = imageInfo.width,
             imageHeight = imageInfo.height,
             resizeWidth = addedResize.width,
@@ -92,11 +91,15 @@ abstract class StandardBitmapDecoder(
             exactlySize = precision == Precision.EXACTLY
         )
 
-        decodeConfig.inSampleSize = calculateInSampleSize(
+        decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
             resizeMapping.srcRect.width(),
             resizeMapping.srcRect.height(),
-            addedResize.width,
-            addedResize.height
+            calculateInSampleSize(
+                resizeMapping.srcRect.width(),
+                resizeMapping.srcRect.height(),
+                addedResize.width,
+                addedResize.height
+            )
         )
 
         return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
@@ -107,9 +110,36 @@ abstract class StandardBitmapDecoder(
         decodeConfig: DecodeConfig,
         addedResize: Resize?,
     ): Bitmap {
-        decodeConfig.inSampleSize = addedResize?.let {
-            calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
-        } ?: 1
+        // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
+        if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
+            val precision = addedResize.precision(imageInfo.width, imageInfo.height)
+            val resizeMapping = calculateResizeMapping(
+                imageWidth = imageInfo.width,
+                imageHeight = imageInfo.height,
+                resizeWidth = addedResize.width,
+                resizeHeight = addedResize.height,
+                resizeScale = addedResize.scale,
+                exactlySize = precision == Precision.EXACTLY
+            )
+            decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
+                resizeMapping.srcRect.width(),
+                resizeMapping.srcRect.height(),
+                calculateInSampleSize(
+                    resizeMapping.srcRect.width(),
+                    resizeMapping.srcRect.height(),
+                    addedResize.width,
+                    addedResize.height
+                )
+            )
+        } else {
+            decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
+                imageInfo.width,
+                imageInfo.height,
+                addedResize?.let {
+                    calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
+                } ?: 1
+            )
+        }
         return decodeFull(imageInfo, decodeConfig)
     }
 }

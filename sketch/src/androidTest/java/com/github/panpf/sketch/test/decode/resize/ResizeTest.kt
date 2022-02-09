@@ -118,43 +118,48 @@ class ResizeTest {
     @Test
     fun testShouldCrop() {
         Resize(100, 100).apply {
-            Assert.assertFalse(shouldCrop(100, 50))
-            Assert.assertFalse(shouldCrop(100, 150))
-            Assert.assertFalse(shouldCrop(50, 100))
-            Assert.assertFalse(shouldCrop(150, 100))
-            Assert.assertFalse(shouldCrop(100, 100))
-            Assert.assertFalse(shouldCrop(50, 50))
-            Assert.assertFalse(shouldCrop(150, 150))
+            Assert.assertFalse(shouldClip(100, 50))
+            Assert.assertFalse(shouldClip(100, 150))
+            Assert.assertFalse(shouldClip(50, 100))
+            Assert.assertFalse(shouldClip(150, 100))
+            Assert.assertFalse(shouldClip(100, 100))
+            Assert.assertFalse(shouldClip(50, 50))
+            Assert.assertFalse(shouldClip(150, 150))
         }
 
         Resize(100, 100, precision = KEEP_ASPECT_RATIO).apply {
-            Assert.assertTrue(shouldCrop(100, 50))
-            Assert.assertTrue(shouldCrop(100, 150))
-            Assert.assertTrue(shouldCrop(50, 100))
-            Assert.assertTrue(shouldCrop(150, 100))
-            Assert.assertFalse(shouldCrop(100, 100))
-            Assert.assertFalse(shouldCrop(50, 50))
-            Assert.assertFalse(shouldCrop(150, 150))
+            Assert.assertTrue(shouldClip(100, 50))
+            Assert.assertTrue(shouldClip(100, 150))
+            Assert.assertTrue(shouldClip(50, 100))
+            Assert.assertTrue(shouldClip(150, 100))
+            Assert.assertFalse(shouldClip(100, 100))
+            Assert.assertFalse(shouldClip(50, 50))
+            Assert.assertFalse(shouldClip(150, 150))
         }
 
         Resize(100, 100, precision = EXACTLY).apply {
-            Assert.assertTrue(shouldCrop(100, 50))
-            Assert.assertTrue(shouldCrop(100, 150))
-            Assert.assertTrue(shouldCrop(50, 100))
-            Assert.assertTrue(shouldCrop(150, 100))
-            Assert.assertFalse(shouldCrop(100, 100))
-            Assert.assertTrue(shouldCrop(50, 50))
-            Assert.assertTrue(shouldCrop(150, 150))
+            Assert.assertTrue(shouldClip(100, 50))
+            Assert.assertTrue(shouldClip(100, 150))
+            Assert.assertTrue(shouldClip(50, 100))
+            Assert.assertTrue(shouldClip(150, 100))
+            Assert.assertFalse(shouldClip(100, 100))
+            Assert.assertTrue(shouldClip(50, 50))
+            Assert.assertTrue(shouldClip(150, 150))
         }
 
         Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
-            Assert.assertTrue(shouldCrop(100, 50))
-            Assert.assertFalse(shouldCrop(100, 150))
-            Assert.assertTrue(shouldCrop(50, 100))
-            Assert.assertFalse(shouldCrop(150, 100))
-            Assert.assertFalse(shouldCrop(100, 100))
-            Assert.assertFalse(shouldCrop(50, 50))
-            Assert.assertFalse(shouldCrop(150, 150))
+            Assert.assertTrue(shouldClip(100, 50))
+            Assert.assertFalse(shouldClip(100, 150))
+            Assert.assertTrue(shouldClip(50, 100))
+            Assert.assertFalse(shouldClip(150, 100))
+            Assert.assertFalse(shouldClip(100, 100))
+            Assert.assertFalse(shouldClip(50, 50))
+            Assert.assertFalse(shouldClip(150, 150))
         }
+    }
+
+    @Test
+    fun testPrecision() {
+        TODO()
     }
 }

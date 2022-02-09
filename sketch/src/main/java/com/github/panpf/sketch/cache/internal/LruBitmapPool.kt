@@ -7,10 +7,10 @@ import android.graphics.Color
 import android.os.Build
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.decode.internal.calculateSamplingSize
+import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
-import com.github.panpf.sketch.util.calculateSamplingSize
-import com.github.panpf.sketch.util.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.recycle.AttributeStrategy
 import com.github.panpf.sketch.util.recycle.LruPoolStrategy

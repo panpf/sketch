@@ -32,6 +32,26 @@ import java.io.IOException
 class DecodeUtilsTest {
 
     @Test
+    fun testLimitedOpenGLTextureMaxSize() {
+        TODO()
+    }
+
+    @Test
+    fun testCalculateInSampleSize() {
+        TODO()
+    }
+
+    @Test
+    fun testCalculateSamplingSizeForRegion() {
+        TODO()
+    }
+
+    @Test
+    fun testCalculateSamplingSize() {
+        TODO()
+    }
+
+    @Test
     fun testReadImageInfoWithBitmapFactory() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)

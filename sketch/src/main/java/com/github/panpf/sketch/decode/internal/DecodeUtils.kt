@@ -21,12 +21,71 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.annotation.Px
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.ImageFormat.HEIC
 import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import java.io.IOException
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
+
+/*
+ * The width and height limit cannot be greater than the maximum size allowed by OpenGL
+ */
+fun limitedOpenGLTextureMaxSize(
+    @Px imageWidth: Int,
+    @Px imageHeight: Int,
+    inSampleSize: Int
+): Int {
+    val openGLTextureMaxSize = OpenGLTexture.maxSize ?: return inSampleSize
+    var finalInSampleSize = inSampleSize
+    while ((calculateSamplingSize(imageWidth, inSampleSize) > openGLTextureMaxSize)
+        || (calculateSamplingSize(imageHeight, inSampleSize) > openGLTextureMaxSize)
+    ) {
+        finalInSampleSize *= 2
+    }
+    return finalInSampleSize
+}
+
+/**
+ * Calculate the inSampleSize for [BitmapFactory.Options]
+ *
+ * @param targetScale Margin of error is allowed for better resolution
+ */
+fun calculateInSampleSize(
+    @Px imageWidth: Int,
+    @Px imageHeight: Int,
+    @Px targetWidth: Int,
+    @Px targetHeight: Int,
+    targetScale: Float = 1.1f
+): Int {
+    val newTargetWidth: Int = targetWidth
+    val newTargetHeight: Int = targetHeight
+
+    val targetPixels = newTargetWidth.times(newTargetHeight).times(targetScale).roundToInt()
+    var inSampleSize = 1
+    while (true) {
+        val sampledWidth = calculateSamplingSize(imageWidth, inSampleSize)
+        val sampledHeight = calculateSamplingSize(imageHeight, inSampleSize)
+        if (sampledWidth.times(sampledHeight) <= targetPixels) {
+            break
+        } else {
+            inSampleSize *= 2
+        }
+    }
+    return inSampleSize
+}
+
+fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
+    return ceil((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+}
+
+fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
+    return floor((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+}
 
 fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {

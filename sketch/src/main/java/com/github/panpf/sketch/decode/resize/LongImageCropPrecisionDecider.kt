@@ -3,6 +3,7 @@ package com.github.panpf.sketch.decode.resize
 import com.github.panpf.sketch.util.format
 
 /**
+ * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
  */
