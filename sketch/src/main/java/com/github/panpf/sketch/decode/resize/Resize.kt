@@ -66,14 +66,14 @@ data class Resize constructor(
     ) : this(NewSize(size), fixedPrecision(Precision.LESS_PIXELS), scale)
 
     val width: Int
-        get() = newSize.size.width
+        get() = newSize.width
 
     val height: Int
-        get() = newSize.size.height
+        get() = newSize.height
 
     val cacheKey: String by lazy {
         val newSizeString = if (newSize is RealNewSize) {
-            "${newSize.size.width}x${newSize.size.height}"
+            "${newSize.width}x${newSize.height}"
         } else {
             newSize.toString()
         }

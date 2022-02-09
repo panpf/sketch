@@ -24,6 +24,12 @@ class XmlDrawableBitmapDecoder(
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
             ?: throw BitmapDecodeException(request, "Invalid drawable resource id '$drawableResId'")
+        if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+            throw BitmapDecodeException(
+                request,
+                "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
+            )
+        }
         val bitmap = drawableToBitmap(drawable, false, sketch.bitmapPool)
         val imageInfo = ImageInfo(
             bitmap.width,

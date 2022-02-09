@@ -10,10 +10,15 @@ import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.decode.internal.OpenGLTextureHelper
+import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.decode.internal.calculateSamplingSize
+import com.github.panpf.sketch.decode.internal.calculateSamplingSizeForRegion
 import com.github.panpf.sketch.decode.internal.decodeBitmapWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.isSrcRectError
+import com.github.panpf.sketch.decode.internal.limitedOpenGLTextureMaxSize
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
@@ -33,22 +38,44 @@ class DecodeUtilsTest {
 
     @Test
     fun testLimitedOpenGLTextureMaxSize() {
-        TODO()
+        val maxSize = OpenGLTextureHelper.maxSize
+        if (maxSize != null) {
+
+            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize - 1, maxSize, 1))
+            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize - 1, 1))
+            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize - 1, maxSize - 1, 1))
+            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize, 1))
+            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize, 1))
+            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize, maxSize + 1, 1))
+            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize + 1, 1))
+
+            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize, 0))
+            Assert.assertEquals(1, limitedOpenGLTextureMaxSize(maxSize, maxSize, -1))
+            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize + 1, -1))
+            Assert.assertEquals(2, limitedOpenGLTextureMaxSize(maxSize + 1, maxSize + 1, 0))
+        }
     }
 
     @Test
     fun testCalculateInSampleSize() {
-        TODO()
-    }
-
-    @Test
-    fun testCalculateSamplingSizeForRegion() {
-        TODO()
+        Assert.assertEquals(1, calculateInSampleSize(1000, 1000, 1100, 1100))
+        Assert.assertEquals(1, calculateInSampleSize(1000, 1000, 1000, 1000))
+        Assert.assertEquals(2, calculateInSampleSize(1000, 1000, 500, 500))
+        Assert.assertEquals(2, calculateInSampleSize(1000, 1000, 480, 480))
+        Assert.assertEquals(4, calculateInSampleSize(1000, 1000, 250, 250))
+        Assert.assertEquals(4, calculateInSampleSize(1000, 1000, 240, 240))
     }
 
     @Test
     fun testCalculateSamplingSize() {
-        TODO()
+        Assert.assertEquals(75, calculateSamplingSize(150, 2))
+        Assert.assertEquals(76, calculateSamplingSize(151, 2))
+    }
+
+    @Test
+    fun testCalculateSamplingSizeForRegion() {
+        Assert.assertEquals(75, calculateSamplingSizeForRegion(150, 2))
+        Assert.assertEquals(75, calculateSamplingSizeForRegion(151, 2))
     }
 
     @Test

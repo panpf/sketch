@@ -138,7 +138,7 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
     }
 
     fun addToResize(resize: Resize, imageSize: Size): Resize {
-        val newSize = addToSize(resize.newSize.size)
+        val newSize = addToSize(Size(resize.width, resize.height))
         val newScale = if (imageSize.width > imageSize.height) {
             if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
                 || exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE

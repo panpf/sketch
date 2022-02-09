@@ -17,8 +17,8 @@ fun longImageClipPrecision(
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
  */
-data class LongImageClipPrecisionDecider(
-    val precision: Precision = Precision.KEEP_ASPECT_RATIO,
+data class LongImageClipPrecisionDecider constructor(
+    private val precision: Precision = Precision.KEEP_ASPECT_RATIO,
     val minDifferenceOfAspectRatio: Float = DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
 ) : PrecisionDecider {
 

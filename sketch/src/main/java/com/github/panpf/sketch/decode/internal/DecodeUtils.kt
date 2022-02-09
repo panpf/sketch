@@ -40,10 +40,10 @@ fun limitedOpenGLTextureMaxSize(
     @Px imageHeight: Int,
     inSampleSize: Int
 ): Int {
-    val openGLTextureMaxSize = OpenGLTexture.maxSize ?: return inSampleSize
-    var finalInSampleSize = inSampleSize
-    while ((calculateSamplingSize(imageWidth, inSampleSize) > openGLTextureMaxSize)
-        || (calculateSamplingSize(imageHeight, inSampleSize) > openGLTextureMaxSize)
+    val openGLTextureMaxSize = OpenGLTextureHelper.maxSize ?: return inSampleSize
+    var finalInSampleSize = inSampleSize.coerceAtLeast(1)
+    while ((calculateSamplingSize(imageWidth, finalInSampleSize) > openGLTextureMaxSize)
+        || (calculateSamplingSize(imageHeight, finalInSampleSize) > openGLTextureMaxSize)
     ) {
         finalInSampleSize *= 2
     }
@@ -60,11 +60,11 @@ fun calculateInSampleSize(
     @Px imageHeight: Int,
     @Px targetWidth: Int,
     @Px targetHeight: Int,
-    targetScale: Float = 1.1f
 ): Int {
     val newTargetWidth: Int = targetWidth
     val newTargetHeight: Int = targetHeight
 
+    val targetScale = 1.1f
     val targetPixels = newTargetWidth.times(newTargetHeight).times(targetScale).roundToInt()
     var inSampleSize = 1
     while (true) {

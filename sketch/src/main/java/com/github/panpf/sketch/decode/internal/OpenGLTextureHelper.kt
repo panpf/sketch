@@ -10,7 +10,7 @@ import android.os.Build.VERSION
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 
-object OpenGLTexture {
+object OpenGLTextureHelper {
 
     /**
      * The maximum size of an image allowed by OpenGL (single side length)

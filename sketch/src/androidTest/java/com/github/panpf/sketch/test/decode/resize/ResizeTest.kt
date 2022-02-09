@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.test.decode.resize
 
 import androidx.test.runner.AndroidJUnit4
-import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
 import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.resize.Scale.END_CROP
 import com.github.panpf.sketch.decode.resize.Scale.FILL
@@ -26,34 +26,6 @@ class ResizeTest {
         Resize(10, 20).apply {
             Assert.assertEquals(10, width)
             Assert.assertEquals(20, height)
-        }
-
-        Resize(100, 30).apply {
-            Assert.assertEquals(LESS_PIXELS, precision(0, 0))
-        }
-        Resize(100, 30, precision = LESS_PIXELS).apply {
-            Assert.assertEquals(LESS_PIXELS, precision(0, 0))
-        }
-        Resize(100, 30, precision = KEEP_ASPECT_RATIO).apply {
-            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(0, 0))
-        }
-        Resize(100, 30, precision = EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, precision(0, 0))
-        }
-        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(LESS_PIXELS, precision(50, 50))
-        }
-        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(LESS_PIXELS, precision(40, 50))
-        }
-        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(LESS_PIXELS, precision(50, 40))
-        }
-        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(EXACTLY, precision(100, 50))
-        }
-        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
-            Assert.assertEquals(EXACTLY, precision(50, 100))
         }
 
         Resize(100, 100).apply {
@@ -116,7 +88,7 @@ class ResizeTest {
     }
 
     @Test
-    fun testShouldCrop() {
+    fun testShouldClip() {
         Resize(100, 100).apply {
             Assert.assertFalse(shouldClip(100, 50))
             Assert.assertFalse(shouldClip(100, 150))
@@ -160,6 +132,32 @@ class ResizeTest {
 
     @Test
     fun testPrecision() {
-        TODO()
+        Resize(100, 30).apply {
+            Assert.assertEquals(LESS_PIXELS, precision(0, 0))
+        }
+        Resize(100, 30, precision = LESS_PIXELS).apply {
+            Assert.assertEquals(LESS_PIXELS, precision(0, 0))
+        }
+        Resize(100, 30, precision = KEEP_ASPECT_RATIO).apply {
+            Assert.assertEquals(KEEP_ASPECT_RATIO, precision(0, 0))
+        }
+        Resize(100, 30, precision = EXACTLY).apply {
+            Assert.assertEquals(EXACTLY, precision(0, 0))
+        }
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
+            Assert.assertEquals(LESS_PIXELS, precision(50, 50))
+        }
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
+            Assert.assertEquals(LESS_PIXELS, precision(40, 50))
+        }
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
+            Assert.assertEquals(LESS_PIXELS, precision(50, 40))
+        }
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
+            Assert.assertEquals(EXACTLY, precision(100, 50))
+        }
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
+            Assert.assertEquals(EXACTLY, precision(50, 100))
+        }
     }
 }
