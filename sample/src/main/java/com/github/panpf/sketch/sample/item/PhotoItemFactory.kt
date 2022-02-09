@@ -14,7 +14,7 @@ import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
 import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.decode.resize.Scale
-import com.github.panpf.sketch.decode.resize.longImageCropPrecision
+import com.github.panpf.sketch.decode.resize.longImageClipPrecision
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
@@ -116,7 +116,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     }
                     "LONG_IMAGE_CROP" -> {
                         resizeByViewBounds(
-                            precisionDecider = longImageCropPrecision(precision = KEEP_ASPECT_RATIO),
+                            precisionDecider = longImageClipPrecision(precision = KEEP_ASPECT_RATIO),
                             scale = scale
                         )
                     }

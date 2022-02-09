@@ -7,17 +7,17 @@ import com.github.panpf.sketch.util.format
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
  */
-fun longImageCropPrecision(
+fun longImageClipPrecision(
     precision: Precision,
-    minDifferenceOfAspectRatio: Float = LongImageCropPrecisionDecider.DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
-): LongImageCropPrecisionDecider = LongImageCropPrecisionDecider(precision, minDifferenceOfAspectRatio)
+    minDifferenceOfAspectRatio: Float = LongImageClipPrecisionDecider.DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
+): LongImageClipPrecisionDecider = LongImageClipPrecisionDecider(precision, minDifferenceOfAspectRatio)
 
 /**
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
  */
-data class LongImageCropPrecisionDecider(
+data class LongImageClipPrecisionDecider(
     val precision: Precision = Precision.KEEP_ASPECT_RATIO,
     val minDifferenceOfAspectRatio: Float = DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
 ) : PrecisionDecider {

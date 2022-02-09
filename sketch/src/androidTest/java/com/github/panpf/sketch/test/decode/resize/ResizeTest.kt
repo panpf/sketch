@@ -9,7 +9,7 @@ import com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.resize.Scale.END_CROP
 import com.github.panpf.sketch.decode.resize.Scale.FILL
 import com.github.panpf.sketch.decode.resize.Scale.START_CROP
-import com.github.panpf.sketch.decode.resize.longImageCropPrecision
+import com.github.panpf.sketch.decode.resize.longImageClipPrecision
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,19 +40,19 @@ class ResizeTest {
         Resize(100, 30, precision = EXACTLY).apply {
             Assert.assertEquals(EXACTLY, precision(0, 0))
         }
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(LESS_PIXELS, precision(50, 50))
         }
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(LESS_PIXELS, precision(40, 50))
         }
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(LESS_PIXELS, precision(50, 40))
         }
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(EXACTLY, precision(100, 50))
         }
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(EXACTLY, precision(50, 100))
         }
 
@@ -94,7 +94,7 @@ class ResizeTest {
         Resize(100, 100, precision = LESS_PIXELS).apply {
             Assert.assertEquals("Resize(100x100,Fixed(LESS_PIXELS),CENTER_CROP)", cacheKey)
         }
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
                 "Resize(100x100,LongImageCrop(EXACTLY,2.0),CENTER_CROP)",
                 cacheKey
@@ -147,7 +147,7 @@ class ResizeTest {
             Assert.assertTrue(shouldClip(150, 150))
         }
 
-        Resize(100, 100, precisionDecider = longImageCropPrecision(EXACTLY)).apply {
+        Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertTrue(shouldClip(100, 50))
             Assert.assertFalse(shouldClip(100, 150))
             Assert.assertTrue(shouldClip(50, 100))
