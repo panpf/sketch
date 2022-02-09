@@ -18,7 +18,6 @@ import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
 import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.resize.Scale.END_CROP
 import com.github.panpf.sketch.decode.resize.Scale.FILL
@@ -304,7 +303,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
-        // precisionDecider = LongImageCropPrecisionDecider
+        // precisionDecider = LongImageClipPrecisionDecider
         LoadRequest(newAssetUri("sample.jpeg")) {
             resize(500, 333, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
@@ -549,7 +548,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
-        // precisionDecider = LongImageCropPrecisionDecider
+        // precisionDecider = LongImageClipPrecisionDecider
         LoadRequest(newAssetUri("sample.bmp")) {
             resize(500, 353, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
@@ -784,7 +783,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
-        // precisionDecider = LongImageCropPrecisionDecider
+        // precisionDecider = LongImageClipPrecisionDecider
         LoadRequest(testFile.file.path) {
             resize(500, 333, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
@@ -1037,7 +1036,7 @@ class DefaultBitmapDecoderTest {
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
-        // precisionDecider = LongImageCropPrecisionDecider
+        // precisionDecider = LongImageClipPrecisionDecider
         LoadRequest(testFile.file.path) {
             resize(333, 500, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
             ignoreExifOrientation()

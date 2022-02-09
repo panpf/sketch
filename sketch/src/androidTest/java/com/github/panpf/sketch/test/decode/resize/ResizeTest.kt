@@ -96,7 +96,7 @@ class ResizeTest {
         }
         Resize(100, 100, precisionDecider = longImageClipPrecision(EXACTLY)).apply {
             Assert.assertEquals(
-                "Resize(100x100,LongImageCrop(EXACTLY,2.0),CENTER_CROP)",
+                "Resize(100x100,LongImageClip(EXACTLY,2.0),CENTER_CROP)",
                 cacheKey
             )
         }

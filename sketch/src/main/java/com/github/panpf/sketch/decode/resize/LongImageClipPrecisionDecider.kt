@@ -48,5 +48,5 @@ data class LongImageClipPrecisionDecider(
     }
 
     override fun toString(): String =
-        "LongImageCropPrecisionDecider($precision,$minDifferenceOfAspectRatio)"
+        "LongImageClipPrecisionDecider($precision,$minDifferenceOfAspectRatio)"
 }
