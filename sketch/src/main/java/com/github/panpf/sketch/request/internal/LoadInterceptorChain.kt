@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.LoadData
@@ -14,7 +15,7 @@ internal class LoadInterceptorChain(
     override val request: LoadRequest,
 ) : RequestInterceptor.Chain<LoadRequest, LoadData> {
 
-    @WorkerThread
+    @MainThread
     override suspend fun proceed(request: LoadRequest): LoadData {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)

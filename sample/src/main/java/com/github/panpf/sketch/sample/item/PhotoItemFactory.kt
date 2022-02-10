@@ -71,6 +71,7 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
                     saveCellularTrafficErrorImage(R.drawable.im_save_cellular_traffic)
                     pauseLoadWhenScrollingErrorImage()
                 }
+                crossfadeTransition()
             }
         }
     }

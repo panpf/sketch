@@ -28,7 +28,31 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
         val assetPhotos = if (startPosition == 0) readAssetPhotos() else emptyList()
         val exifPhotos = if (startPosition == 0) readExifPhotos() else emptyList()
-        val dataList = withToIO {
+        val dataList = readLocalPhotos(startPosition, pageSize)
+
+        val photos = urisToPhotos(assetPhotos.plus(exifPhotos).plus(dataList))
+        val nextKey = if (dataList.isNotEmpty()) startPosition + pageSize else null;
+        return LoadResult.Page(photos, null, nextKey)
+    }
+
+    private suspend fun readAssetPhotos(): List<String> = withToIO {
+        AssetImages.FORMATS
+            .plus(AssetImages.HUGES)
+            .plus(AssetImages.LONGS).toList()
+    }
+
+    private suspend fun readExifPhotos(): List<String> = withToIO {
+        ExifOrientationTestFileHelper(context, "exif_origin_girl_ver.jpeg").files()
+            .map { it.file.path }
+            .plus(
+                ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg")
+                    .files()
+                    .map { it.file.path })
+            .toList()
+    }
+
+    private suspend fun readLocalPhotos(startPosition: Int, pageSize: Int): List<String> =
+        withToIO {
             val cursor = context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(
@@ -53,62 +77,40 @@ class LocalPhotoListPagingSource(private val context: Context) :
             }
         }
 
-        val nextKey = if (dataList.isNotEmpty()) {
-            startPosition + pageSize
-        } else {
-            null
-        }
-        return LoadResult.Page(
-            assetPhotos.plus(exifPhotos).plus(dataList).map { uriToPhoto(it) },
-            null,
-            nextKey
-        )
-    }
-
-    private suspend fun readAssetPhotos(): List<String> = withToIO {
-        AssetImages.FORMATS
-            .plus(AssetImages.HUGES)
-            .plus(AssetImages.LONGS).toList()
-    }
-
-    private suspend fun readExifPhotos(): List<String> = withToIO {
-        ExifOrientationTestFileHelper(context, "exif_origin_girl_ver.jpeg").files().map { it.file.path }
-            .plus(ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().map { it.file.path })
-            .toList()
-    }
-
-    private suspend fun uriToPhoto(uri: String): Photo = withToIO {
-        val sketch = context.sketch
-        val fetcher = sketch.componentRegistry.newFetcher(sketch, LoadRequest(uri))
-        val dataSource = fetcher.fetch().dataSource
-        val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrNull()
-        if (imageInfo != null) {
-            val exifOrientation =
-                if (context.appSettingsService.ignoreExifOrientation.value != true) {
-                    dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
-                } else {
-                    ExifInterface.ORIENTATION_UNDEFINED
-                }
-            val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
-            val size =
-                exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
-            Photo(
-                originalUrl = uri,
-                thumbnailUrl = null,
-                middenUrl = null,
-                width = size.width,
-                height = size.height,
-                exifOrientation = exifOrientation,
-            )
-        } else {
-            Photo(
-                originalUrl = uri,
-                thumbnailUrl = null,
-                middenUrl = null,
-                width = null,
-                height = null,
-                exifOrientation = 0,
-            )
+    private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
+        uris.map { uri ->
+            val sketch = context.sketch
+            val fetcher = sketch.componentRegistry.newFetcher(sketch, LoadRequest(uri))
+            val dataSource = fetcher.fetch().dataSource
+            val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrNull()
+            if (imageInfo != null) {
+                val exifOrientation =
+                    if (context.appSettingsService.ignoreExifOrientation.value != true) {
+                        dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
+                    } else {
+                        ExifInterface.ORIENTATION_UNDEFINED
+                    }
+                val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
+                val size =
+                    exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
+                Photo(
+                    originalUrl = uri,
+                    thumbnailUrl = null,
+                    middenUrl = null,
+                    width = size.width,
+                    height = size.height,
+                    exifOrientation = exifOrientation,
+                )
+            } else {
+                Photo(
+                    originalUrl = uri,
+                    thumbnailUrl = null,
+                    middenUrl = null,
+                    width = null,
+                    height = null,
+                    exifOrientation = 0,
+                )
+            }
         }
     }
 }

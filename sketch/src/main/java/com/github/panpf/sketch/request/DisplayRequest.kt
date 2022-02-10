@@ -20,6 +20,7 @@ import com.github.panpf.sketch.decode.resize.NewSize
 import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.decode.resize.PrecisionDecider
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DisplayRequest.Builder
 import com.github.panpf.sketch.request.internal.CombinedListener
@@ -34,6 +35,8 @@ import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
 
@@ -78,6 +81,7 @@ interface DisplayRequest : LoadRequest {
     val bitmapMemoryCachePolicy: CachePolicy?
     val placeholderImage: StateImage?
     val errorImage: StateImage?
+    val transition: Transition.Factory?
 
     fun newDisplayRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -118,6 +122,8 @@ interface DisplayRequest : LoadRequest {
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
+        private var transition: Transition.Factory? = null
+
         private var lifecycle: Lifecycle? = null
 
         constructor(uriString: String?, target: Target) {
@@ -159,6 +165,8 @@ interface DisplayRequest : LoadRequest {
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
+            this.transition = request.transition
+
             this.lifecycle = request.lifecycle
         }
 
@@ -246,6 +254,11 @@ interface DisplayRequest : LoadRequest {
             if (!requestFirst || this.errorImage == null) {
                 options.errorImage?.let {
                     this.errorImage = it
+                }
+            }
+            if (!requestFirst || this.transition == null) {
+                options.transition?.let {
+                    this.transition = it
                 }
             }
         }
@@ -521,6 +534,14 @@ interface DisplayRequest : LoadRequest {
             }
         }
 
+        fun transition(transition: Transition.Factory?): Builder = apply {
+            this.transition = transition
+        }
+
+        fun crossfadeTransition(durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION, preferExactIntrinsicSize: Boolean = false): Builder = apply {
+            transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
+        }
+
         fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             this.lifecycle = lifecycle
         }
@@ -602,6 +623,7 @@ interface DisplayRequest : LoadRequest {
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
+                    transition = transition,
                     target = target,
                     lifecycle = lifecycle ?: resolveLifecycle(),
                     listener = finalListener,
@@ -625,6 +647,7 @@ interface DisplayRequest : LoadRequest {
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
+                    transition = transition,
                     target = target,
                     lifecycle = lifecycle ?: resolveLifecycle(),
                     listener = finalListener,
@@ -658,6 +681,7 @@ interface DisplayRequest : LoadRequest {
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
+        override val transition: Transition.Factory?,
         override val target: Target,
         override val lifecycle: Lifecycle?,
         override val listener: Listener<ImageRequest, ImageResult, ImageResult>?,
@@ -683,6 +707,7 @@ interface DisplayRequest : LoadRequest {
             disabledAnimationDrawable: Boolean?,
             placeholderImage: StateImage?,
             errorImage: StateImage?,
+            transition: Transition.Factory?,
             target: Target,
             lifecycle: Lifecycle?,
             listener: Listener<ImageRequest, ImageResult, ImageResult>?,
@@ -704,6 +729,7 @@ interface DisplayRequest : LoadRequest {
             disabledAnimationDrawable = disabledAnimationDrawable,
             placeholderImage = placeholderImage,
             errorImage = errorImage,
+            transition = transition,
             target = target,
             lifecycle = lifecycle,
             listener = listener,

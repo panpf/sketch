@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
@@ -14,17 +14,10 @@ class LoadExecutor(private val sketch: Sketch) {
         const val MODULE = "LoadExecutor"
     }
 
-    @WorkerThread
+    @MainThread
     suspend fun execute(request: LoadRequest): LoadResult {
-        val listenerDelegate = request.listener?.run {
-            ListenerDelegate(this)
-        }
-
         try {
-            sketch.logger.d(MODULE) {
-                "Request started. ${request.uriString}"
-            }
-            listenerDelegate?.onStart(request)
+            onStart(request)
 
             val loadData = LoadInterceptorChain(
                 initialRequest = request,
@@ -34,28 +27,52 @@ class LoadExecutor(private val sketch: Sketch) {
                 request = request,
             ).proceed(request)
 
-            sketch.logger.d(MODULE) {
-                "Request Successful. ${request.uriString}"
-            }
-            val successResult = LoadResult.Success(request, loadData)
-            listenerDelegate?.onSuccess(request, successResult)
+            val successResult =
+                LoadResult.Success(request, loadData.bitmap, loadData.imageInfo, loadData.dataFrom)
+            onSuccess(request, successResult)
             return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                listenerDelegate?.onCancel(request)
-                sketch.logger.d(MODULE) {
-                    "Request canceled. ${request.uriString}"
-                }
+                onCancel(request)
                 throw throwable
             } else {
                 throwable.printStackTrace()
-                sketch.logger.e(MODULE, throwable, "Request error. ${throwable.message} .${request.key}")
                 val exception = throwable.asOrNull<SketchException>()
-                    ?: SketchException(request, null, throwable)
+                    ?: SketchException(request, throwable.toString(), throwable)
                 val errorResult = LoadResult.Error(request, exception)
-                listenerDelegate?.onError(request, errorResult)
+                onError(request, errorResult)
                 return errorResult
             }
         }
+    }
+
+    private fun onStart(request: LoadRequest) {
+        sketch.logger.d(MODULE) {
+            "Request started. ${request.uriString}"
+        }
+        request.listener?.onStart(request)
+    }
+
+    private fun onSuccess(request: LoadRequest, result: LoadResult.Success) {
+        sketch.logger.d(MODULE) {
+            "Request Successful. ${request.uriString}"
+        }
+        request.listener?.onSuccess(request, result)
+    }
+
+    private fun onCancel(request: LoadRequest) {
+        sketch.logger.d(MODULE) {
+            "Request canceled. ${request.uriString}"
+        }
+        request.listener?.onCancel(request)
+    }
+
+    private fun onError(request: LoadRequest, result: LoadResult.Error) {
+        sketch.logger.e(
+            MODULE,
+            result.exception,
+            "Request failed. ${result.exception.message} .${request.key}"
+        )
+        request.listener?.onError(request, result)
     }
 }

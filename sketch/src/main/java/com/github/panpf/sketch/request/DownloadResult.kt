@@ -9,7 +9,7 @@ sealed interface DownloadResult : ImageResult {
     class Success constructor(
         override val request: DownloadRequest,
         val data: DownloadData,
-        val from: DataFrom
+        val dataFrom: DataFrom
     ) : DownloadResult
 
     class Error constructor(

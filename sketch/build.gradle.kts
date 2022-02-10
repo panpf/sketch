@@ -31,9 +31,9 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
     api("androidx.appcompat:appcompat-resources:${property("ANDROIDX_APPCOMPAT")}")
+    api("androidx.core:core-ktx:${property("ANDROIDX_CORE")}")
     api("androidx.exifinterface:exifinterface:${property("ANDROIDX_EXIFINTERFACE")}")
     api("androidx.lifecycle:lifecycle-runtime:${property("ANDROIDX_LIFECYCLE")}")
-//    api("com.squareup.okio:okio:${property("OKIO")}")
 
     testImplementation("junit:junit:${property("JUNIT")}")
     testImplementation("io.github.panpf.tools4j:tools4j-test-ktx:${property("TOOLS4J")}")

@@ -81,7 +81,6 @@ class BitmapMemoryCacheHelper internal constructor(
     fun read(): DrawableDecodeResult? =
         if (cachePolicy.readEnabled) {
             val cachedCountBitmap = memoryCache[cacheKey]
-            val requestDepth = request.depth
             when {
                 cachedCountBitmap != null -> {
                     logger.d(MODULE) {
@@ -99,9 +98,6 @@ class BitmapMemoryCacheHelper internal constructor(
                         exifOrientation = cachedCountBitmap.exifOrientation,
                         dataFrom = MEMORY_CACHE
                     )
-                }
-                requestDepth != null && requestDepth >= MEMORY -> {
-                    throw RequestDepthException(request, requestDepth, request.depthFrom)
                 }
                 else -> {
                     null

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.target
 
 import android.view.View
-//import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleObserver
 
 /**
  * A [Target] with an associated [View]. Prefer this to [Target] if the given drawables will only

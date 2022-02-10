@@ -1,11 +1,12 @@
 package com.github.panpf.sketch.decode.internal
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.request.LoadRequest
-import kotlinx.coroutines.withContext
 
 class BitmapResultDiskCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
+    @WorkerThread
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>,
     ): BitmapDecodeResult {
@@ -14,13 +15,10 @@ class BitmapResultDiskCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDe
         val resultCacheHelper = newBitmapResultDiskCacheHelper(sketch, request)
         resultCacheHelper?.lock?.lock()
         try {
-            return withContext(sketch.decodeTaskDispatcher) {
-                resultCacheHelper?.read()
-            } ?: chain.proceed(request).apply {
-                withContext(sketch.decodeTaskDispatcher) {
+            return resultCacheHelper?.read()
+                ?: chain.proceed(request).apply {
                     resultCacheHelper?.write(this@apply)
                 }
-            }
         } finally {
             resultCacheHelper?.lock?.unlock()
         }

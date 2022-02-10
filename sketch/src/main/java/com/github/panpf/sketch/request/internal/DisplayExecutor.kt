@@ -4,12 +4,14 @@ import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.DisplayResult.Error
+import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.job
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
 class DisplayExecutor(private val sketch: Sketch) {
@@ -24,9 +26,6 @@ class DisplayExecutor(private val sketch: Sketch) {
         val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
         val target = request.target
-        val listenerDelegate = request.listener?.run {
-            ListenerDelegate(this)
-        }
 
         try {
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
@@ -35,58 +34,88 @@ class DisplayExecutor(private val sketch: Sketch) {
 
             // Set up the request's lifecycle observers.
             requestDelegate.start()
+            onStart(request)
 
-            sketch.logger.d(MODULE) {
-                "Request started. ${request.key}"
-            }
-            listenerDelegate?.onStart(request)
+            val data = DisplayInterceptorChain(
+                initialRequest = request,
+                interceptors = sketch.displayInterceptors,
+                index = 0,
+                sketch = sketch,
+                request = request,
+            ).proceed(request)
 
-            val displayData = withContext(sketch.decodeTaskDispatcher) {
-                DisplayInterceptorChain(
-                    initialRequest = request,
-                    interceptors = sketch.displayInterceptors,
-                    index = 0,
-                    sketch = sketch,
-                    request = request,
-                ).proceed(request)
-            }
-
-            // Successful
-            withContext(Dispatchers.Main) {
-                target.onSuccess(displayData.drawable)
-            }
-            val successResult = DisplayResult.Success(request, displayData)
-            listenerDelegate?.onSuccess(request, successResult)
-            sketch.logger.d(MODULE) {
-                "Request Successful. ${request.key}"
-            }
+            val successResult = Success(
+                request,
+                data.drawable,
+                data.imageInfo,
+                data.dataFrom
+            )
+            onSuccess(request, target, successResult)
             return successResult
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                // Canceled
-                sketch.logger.d(MODULE) {
-                    "Request canceled. ${request.key}"
-                }
-                listenerDelegate?.onCancel(request)
+                onCancel(request)
                 throw throwable
             } else {
-                // Exception
                 throwable.printStackTrace()
-                val message = "Request error. ${throwable.message}. ${request.key}"
-                sketch.logger.e(MODULE, throwable, message)
                 val exception = throwable.asOrNull<SketchException>()
-                    ?: SketchException(request, null, throwable)
+                    ?: SketchException(request, throwable.toString(), throwable)
                 val errorDrawable = request.errorImage?.getDrawable(sketch, request, exception)
                     ?: request.placeholderImage?.getDrawable(sketch, request, null)
-                val errorResult = DisplayResult.Error(request, exception, errorDrawable)
-                withContext(Dispatchers.Main) {
-                    target.onError(errorDrawable)
-                }
-                listenerDelegate?.onError(request, errorResult)
+                val errorResult = Error(request, errorDrawable, exception)
+                onError(request, target, errorResult)
                 return errorResult
             }
         } finally {
             requestDelegate.complete()
         }
+    }
+
+    private fun onStart(request: DisplayRequest) {
+        sketch.logger.d(MODULE) {
+            "Request started. ${request.key}"
+        }
+        request.listener?.onStart(request)
+    }
+
+    private fun onSuccess(request: DisplayRequest, target: Target, result: Success) {
+        sketch.logger.d(MODULE) {
+            "Request Successful. ${request.key}"
+        }
+        transition(target, result) {
+            target.onSuccess(result.drawable)
+        }
+        request.listener?.onSuccess(request, result)
+    }
+
+    private fun onError(request: DisplayRequest, target: Target, result: Error) {
+        val message = "Request failed. ${result.exception.message}. ${request.key}"
+        sketch.logger.e(MODULE, result.exception, message)
+        transition(target, result) {
+            target.onError(result.drawable)
+        }
+        request.listener?.onError(request, result)
+    }
+
+    private fun onCancel(request: DisplayRequest) {
+        sketch.logger.d(MODULE) {
+            "Request canceled. ${request.key}"
+        }
+        request.listener?.onCancel(request)
+    }
+
+    private fun transition(target: Target?, result: DisplayResult, setDrawable: () -> Unit) {
+        if (target !is TransitionTarget) {
+            setDrawable()
+            return
+        }
+
+        val transition = result.request.transition?.create(target, result)
+        if (transition == null) {
+            setDrawable()
+            return
+        }
+
+        transition.transition()
     }
 }

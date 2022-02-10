@@ -11,7 +11,7 @@ import com.github.panpf.sketch.sample.ds.LocalPhotoListPagingSource
 class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
         config = PagingConfig(
-            pageSize = 20,
+            pageSize = 40,
             enablePlaceholders = false,
         ),
         initialKey = 0,

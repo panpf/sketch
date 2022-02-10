@@ -1,5 +1,6 @@
 package com.github.panpf.sketch
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
@@ -35,6 +36,7 @@ class ComponentRegistry private constructor(
         )
     }
 
+    @WorkerThread
     fun newBitmapDecoder(
         sketch: Sketch,
         request: LoadRequest,
@@ -58,9 +60,27 @@ class ComponentRegistry private constructor(
     )
 
     override fun toString(): String =
-        "ComponentRegistry(fetcherFactoryList=${fetcherFactoryList.joinToString(prefix = "[", postfix = "]", separator = ",")}," +
-                "bitmapDecoderFactoryList=${bitmapDecoderFactoryList.joinToString(prefix = "[", postfix = "]", separator = ",")}," +
-                "drawableDecoderFactoryList=${drawableDecoderFactoryList.joinToString(prefix = "[", postfix = "]", separator = ",")})"
+        "ComponentRegistry(fetcherFactoryList=${
+            fetcherFactoryList.joinToString(
+                prefix = "[",
+                postfix = "]",
+                separator = ","
+            )
+        }," +
+                "bitmapDecoderFactoryList=${
+                    bitmapDecoderFactoryList.joinToString(
+                        prefix = "[",
+                        postfix = "]",
+                        separator = ","
+                    )
+                }," +
+                "drawableDecoderFactoryList=${
+                    drawableDecoderFactoryList.joinToString(
+                        prefix = "[",
+                        postfix = "]",
+                        separator = ","
+                    )
+                })"
 
     companion object {
         fun new(

@@ -1,15 +1,16 @@
 package com.github.panpf.sketch.decode.transform.internal
 
 import android.graphics.Bitmap
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.DecodeInterceptor
 import com.github.panpf.sketch.request.LoadRequest
-import kotlinx.coroutines.withContext
 import java.util.LinkedList
 
 class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeResult> {
 
+    @WorkerThread
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>,
     ): BitmapDecodeResult {
@@ -22,17 +23,14 @@ class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRes
         val oldBitmap = result.bitmap
         var transformedBitmap: Bitmap? = null
         val transformedList = LinkedList<Transformed>()
-        withContext(sketch.decodeTaskDispatcher) {
-            transformations.forEach {
-                val inputBitmap = transformedBitmap ?: oldBitmap
-                val transformResult = it.transform(sketch, request, inputBitmap)
-                if (transformResult != null) {
-                    sketch.bitmapPool.free(inputBitmap)
-                    transformedBitmap = transformResult.bitmap
-                    transformedList.add(transformResult.transformed)
-                }
+        transformations.forEach {
+            val inputBitmap = transformedBitmap ?: oldBitmap
+            val transformResult = it.transform(sketch, request, inputBitmap)
+            if (transformResult != null) {
+                sketch.bitmapPool.free(inputBitmap)
+                transformedBitmap = transformResult.bitmap
+                transformedList.add(transformResult.transformed)
             }
-            transformedBitmap
         }
         val newBitmap = transformedBitmap
         return if (newBitmap != null) {

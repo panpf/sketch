@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayData
@@ -14,7 +15,7 @@ internal class DisplayInterceptorChain(
     override val request: DisplayRequest,
 ) : RequestInterceptor.Chain<DisplayRequest, DisplayData> {
 
-    @WorkerThread
+    @MainThread
     override suspend fun proceed(request: DisplayRequest): DisplayData {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)

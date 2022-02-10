@@ -143,9 +143,7 @@ class Sketch private constructor(
     val drawableDecodeInterceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>> =
         (_drawableDecodeInterceptors ?: listOf()) + DrawableDecodeEngineInterceptor()
 
-    //    val singleThreadTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
     val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
-    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     init {
         appContext.applicationContext.registerComponentCallbacks(object : ComponentCallbacks2 {
@@ -170,14 +168,50 @@ class Sketch private constructor(
                 append("\n").append("memoryCache: $memoryCache")
                 append("\n").append("bitmapPool: $bitmapPool")
                 append("\n").append("diskCache: $diskCache")
-                append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList.joinToString(separator = ",")}")
-                append("\n").append("bitmapDecoders: ${componentRegistry.bitmapDecoderFactoryList.joinToString(separator = ",")}")
-                append("\n").append("drawableDecoders: ${componentRegistry.drawableDecoderFactoryList.joinToString(separator = ",")}")
+                append("\n").append(
+                    "fetchers: ${
+                        componentRegistry.fetcherFactoryList.joinToString(
+                            separator = ","
+                        )
+                    }"
+                )
+                append("\n").append(
+                    "bitmapDecoders: ${
+                        componentRegistry.bitmapDecoderFactoryList.joinToString(
+                            separator = ","
+                        )
+                    }"
+                )
+                append("\n").append(
+                    "drawableDecoders: ${
+                        componentRegistry.drawableDecoderFactoryList.joinToString(
+                            separator = ","
+                        )
+                    }"
+                )
                 append("\n").append("downloadInterceptors: ${downloadInterceptors.joinToString()}")
                 append("\n").append("loadInterceptors: ${loadInterceptors.joinToString(separator = ",")}")
-                append("\n").append("displayInterceptors: ${displayInterceptors.joinToString(separator = ",")}")
-                append("\n").append("bitmapDecodeInterceptors: ${bitmapDecodeInterceptors.joinToString(separator = ",")}")
-                append("\n").append("drawableDecodeInterceptors: ${drawableDecodeInterceptors.joinToString(separator = ",")}")
+                append("\n").append(
+                    "displayInterceptors: ${
+                        displayInterceptors.joinToString(
+                            separator = ","
+                        )
+                    }"
+                )
+                append("\n").append(
+                    "bitmapDecodeInterceptors: ${
+                        bitmapDecodeInterceptors.joinToString(
+                            separator = ","
+                        )
+                    }"
+                )
+                append("\n").append(
+                    "drawableDecodeInterceptors: ${
+                        drawableDecodeInterceptors.joinToString(
+                            separator = ","
+                        )
+                    }"
+                )
             }
         }
     }
@@ -240,7 +274,7 @@ class Sketch private constructor(
 
     @AnyThread
     fun enqueueLoad(request: LoadRequest): Disposable<LoadResult> {
-        val job = scope.async(decodeTaskDispatcher) {
+        val job = scope.async(Dispatchers.Main.immediate) {
             loadExecutor.execute(request)
         }
         return OneShotDisposable(job)
@@ -253,7 +287,7 @@ class Sketch private constructor(
     ): Disposable<LoadResult> = enqueueLoad(LoadRequest(uriString, configBlock))
 
     suspend fun executeLoad(request: LoadRequest): LoadResult = coroutineScope {
-        val job = async(decodeTaskDispatcher) {
+        val job = async(Dispatchers.Main.immediate) {
             loadExecutor.execute(request)
         }
         job.await()
@@ -269,7 +303,7 @@ class Sketch private constructor(
 
     @AnyThread
     fun enqueueDownload(request: DownloadRequest): Disposable<DownloadResult> {
-        val job = scope.async(decodeTaskDispatcher) {
+        val job = scope.async(Dispatchers.Main.immediate) {
             downloadExecutor.execute(request)
         }
         return OneShotDisposable(job)
@@ -283,7 +317,7 @@ class Sketch private constructor(
 
     suspend fun executeDownload(request: DownloadRequest): DownloadResult =
         coroutineScope {
-            val job = async(decodeTaskDispatcher) {
+            val job = async(Dispatchers.Main.immediate) {
                 downloadExecutor.execute(request)
             }
             job.await()

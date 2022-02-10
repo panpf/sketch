@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.WorkerThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadRequest
@@ -14,7 +14,7 @@ internal class DownloadInterceptorChain(
     override val request: DownloadRequest,
 ) : RequestInterceptor.Chain<DownloadRequest, DownloadData> {
 
-    @WorkerThread
+    @MainThread
     override suspend fun proceed(request: DownloadRequest): DownloadData {
         val interceptor = interceptors[index]
         val next = copy(index = index + 1, request = request)

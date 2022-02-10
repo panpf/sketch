@@ -6,10 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-
-//import androidx.lifecycle.DefaultLifecycleObserver
-//import androidx.lifecycle.LifecycleOwner
-//import com.github.panpf.sketch.transition.TransitionTarget
+import com.github.panpf.sketch.transition.TransitionTarget
 
 /**
  * An opinionated [ViewTarget] that simplifies updating the [Drawable] attached to a [View]
@@ -18,17 +15,15 @@ import androidx.lifecycle.LifecycleOwner
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ViewTarget] directly.
  */
-abstract class GenericViewTarget<T : View> : ViewTarget<T>
-//    TransitionTarget,
-    , DefaultLifecycleObserver
-{
+abstract class GenericViewTarget<T : View> : ViewTarget<T>, TransitionTarget,
+    DefaultLifecycleObserver {
 
     private var isStarted = false
 
     /**
      * The current [Drawable] attached to [view].
      */
-    abstract var drawable: Drawable?
+    abstract override var drawable: Drawable?
 
     override fun onStart(placeholder: Drawable?) = updateDrawable(placeholder)
 

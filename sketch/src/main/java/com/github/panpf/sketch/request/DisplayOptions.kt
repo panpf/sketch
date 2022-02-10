@@ -10,17 +10,20 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.decode.resize.Precision
+import com.github.panpf.sketch.decode.resize.PrecisionDecider
 import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.Scale
-import com.github.panpf.sketch.decode.resize.Precision
-import com.github.panpf.sketch.decode.resize.NewSize
-import com.github.panpf.sketch.decode.resize.PrecisionDecider
 import com.github.panpf.sketch.decode.transform.Transformation
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ViewBoundsSize
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.Transition
 
 fun DisplayOptions(
     configBlock: (DisplayOptions.Builder.() -> Unit)? = null
@@ -40,6 +43,7 @@ interface DisplayOptions : LoadOptions {
     val bitmapMemoryCachePolicy: CachePolicy?
     val placeholderImage: StateImage?
     val errorImage: StateImage?
+    val transition: Transition.Factory?
 
     override fun isEmpty(): Boolean =
         super.isEmpty()
@@ -47,6 +51,7 @@ interface DisplayOptions : LoadOptions {
                 && bitmapMemoryCachePolicy == null
                 && placeholderImage == null
                 && errorImage == null
+                && transition == null
 
     fun newDisplayOptionsBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -83,6 +88,7 @@ interface DisplayOptions : LoadOptions {
         private var disabledAnimationDrawable: Boolean? = null
         private var placeholderImage: StateImage? = null
         private var errorImage: StateImage? = null
+        private var transition: Transition.Factory? = null
 
         constructor()
 
@@ -106,6 +112,7 @@ interface DisplayOptions : LoadOptions {
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
+            this.transition = request.transition
         }
 
         fun depth(depth: RequestDepth?): Builder = apply {
@@ -356,6 +363,14 @@ interface DisplayOptions : LoadOptions {
             }
         }
 
+        fun transition(transition: Transition.Factory?): Builder = apply {
+            this.transition = transition
+        }
+
+        fun crossfadeTransition(durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION, preferExactIntrinsicSize: Boolean = false): Builder = apply {
+            transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
+        }
+
         fun build(): DisplayOptions {
             return if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 DisplayOptionsImpl(
@@ -375,6 +390,7 @@ interface DisplayOptions : LoadOptions {
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
+                    transition = transition,
                 )
             } else {
                 DisplayOptionsImpl(
@@ -393,6 +409,7 @@ interface DisplayOptions : LoadOptions {
                     disabledAnimationDrawable = disabledAnimationDrawable,
                     placeholderImage = placeholderImage,
                     errorImage = errorImage,
+                    transition = transition,
                 )
             }
         }
@@ -415,6 +432,7 @@ interface DisplayOptions : LoadOptions {
         override val disabledAnimationDrawable: Boolean?,
         override val placeholderImage: StateImage?,
         override val errorImage: StateImage?,
+        override val transition: Transition.Factory?,
     ) : DisplayOptions {
 
         @RequiresApi(VERSION_CODES.O)
@@ -435,6 +453,7 @@ interface DisplayOptions : LoadOptions {
             disabledAnimationDrawable: Boolean?,
             placeholderImage: StateImage?,
             errorImage: StateImage?,
+            transition: Transition.Factory?,
         ) : this(
             depth = depth,
             parameters = parameters,
@@ -451,6 +470,7 @@ interface DisplayOptions : LoadOptions {
             disabledAnimationDrawable = disabledAnimationDrawable,
             placeholderImage = placeholderImage,
             errorImage = errorImage,
+            transition = transition,
         ) {
             _colorSpace = colorSpace
         }
