@@ -24,10 +24,5 @@ fun interface Transition {
     fun interface Factory {
 
         fun create(target: TransitionTarget, result: DisplayResult): Transition
-
-        companion object {
-            @JvmField
-            val NONE: Factory = NoneTransition.Factory()
-        }
     }
 }

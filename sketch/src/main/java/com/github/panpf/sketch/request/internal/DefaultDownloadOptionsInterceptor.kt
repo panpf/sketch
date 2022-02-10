@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.DownloadData
 import com.github.panpf.sketch.request.DownloadOptions
 import com.github.panpf.sketch.request.DownloadRequest
@@ -10,6 +11,7 @@ class DefaultDownloadOptionsInterceptor(
     private val defaultDownloadOptions: DownloadOptions?
 ) : RequestInterceptor<DownloadRequest, DownloadData> {
 
+    @MainThread
     override suspend fun intercept(chain: Chain<DownloadRequest, DownloadData>): DownloadData {
         val request = if (defaultDownloadOptions?.isEmpty() == true) {
             chain.request.newDownloadRequest {

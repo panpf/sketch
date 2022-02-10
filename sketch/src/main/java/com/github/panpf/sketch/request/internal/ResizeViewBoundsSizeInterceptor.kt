@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.resize.NewSize
 import com.github.panpf.sketch.decode.resize.Resize
 import com.github.panpf.sketch.decode.resize.RealNewSize
@@ -21,15 +22,14 @@ import kotlin.coroutines.resume
 
 class ResizeViewBoundsSizeInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
 
+    @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val request = chain.request
         val resize = request.resize
         val newRequest = if (resize?.newSize is ViewBoundsSize) {
             val view = request.target.asOrNull<ViewTarget<*>>()?.view
                 ?: throw IllegalArgumentException("Because you are using ViewBoundsSize, target must be ViewTarget")
-            val size = withContext(Dispatchers.Main) {
-                size(view)
-            }
+            val size = size(view)
             request.newDisplayRequest {
                 if (size.width > 0 && size.height > 0) {
                     resize(

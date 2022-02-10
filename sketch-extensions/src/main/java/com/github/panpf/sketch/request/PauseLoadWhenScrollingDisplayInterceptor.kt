@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
@@ -11,6 +12,7 @@ class PauseLoadWhenScrollingDisplayInterceptor : RequestInterceptor<DisplayReque
 
     var enabled = true
 
+    @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val request = chain.request
         val requestDepth = request.depth ?: NETWORK

@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.util
 
 import android.os.Build
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.DisplayData
@@ -14,6 +15,8 @@ import com.github.panpf.sketch.sample.widget.MyListImageView
 import com.github.panpf.sketch.target.ViewTarget
 
 class SettingsDisplayRequestInterceptor : RequestInterceptor<DisplayRequest, DisplayData> {
+
+    @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val newRequest = chain.request.newDisplayRequest {
             val appSettings = chain.sketch.appContext.appSettingsService

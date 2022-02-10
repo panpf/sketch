@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayOptions
 import com.github.panpf.sketch.request.DisplayRequest
@@ -10,6 +11,7 @@ class DefaultDisplayOptionsInterceptor(
     private val defaultDisplayOptions: DisplayOptions?
 ) : RequestInterceptor<DisplayRequest, DisplayData> {
 
+    @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val request = if (defaultDisplayOptions?.isEmpty() == true) {
             chain.request.newDisplayRequest {

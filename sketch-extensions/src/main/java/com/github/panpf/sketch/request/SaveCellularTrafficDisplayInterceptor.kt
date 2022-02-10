@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.RequestDepth.NETWORK
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.stateimage.saveCellularTrafficErrorImage
@@ -12,6 +13,7 @@ class SaveCellularTrafficDisplayInterceptor : RequestInterceptor<DisplayRequest,
 
     var enabled = true
 
+    @MainThread
     override suspend fun intercept(chain: Chain<DisplayRequest, DisplayData>): DisplayData {
         val sketch = chain.sketch
         val request = chain.request

@@ -15,9 +15,9 @@ class ProgressListenerDelegate<REQUEST : ImageRequest>(
 
     @Suppress("DeferredResultUnused")
     fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
-        val lastJOb = lastDeferred
-        if (lastJOb?.isActive == true) {
-            lastJOb.cancel()
+        val lastDeferred = this.lastDeferred
+        if (lastDeferred?.isActive == true) {
+            lastDeferred.cancel()
         }
         this.lastDeferred = coroutineScope.async(Dispatchers.Main) {
             progressListener.onUpdateProgress(request, totalLength, completedLength)

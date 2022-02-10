@@ -27,9 +27,7 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
 
         val placeholderDrawable =
             request.placeholderImage?.getDrawable(sketch, request, null)
-        withContext(Dispatchers.Main) {
-            request.target.onStart(placeholderDrawable)
-        }
+        request.target.onStart(placeholderDrawable)
 
         val requestDepth = request.depth
         if (requestDepth != null && requestDepth >= MEMORY) {
