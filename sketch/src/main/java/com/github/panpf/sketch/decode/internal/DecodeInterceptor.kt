@@ -14,6 +14,8 @@ interface DecodeInterceptor<REQUEST : ImageRequest, RESULT> {
 
         val sketch: Sketch
 
+        val initialRequest: REQUEST
+
         val request: REQUEST
 
         val fetchResult: FetchResult?

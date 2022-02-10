@@ -90,7 +90,7 @@ class GifDrawableDecoder constructor(
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch, request: DisplayRequest, fetchResult: FetchResult
+            sketch: Sketch, initialRequest: DisplayRequest, request: DisplayRequest, fetchResult: FetchResult
         ): GifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
                 if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {

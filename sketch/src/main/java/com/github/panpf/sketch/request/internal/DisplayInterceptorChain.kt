@@ -1,14 +1,13 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 
 internal class DisplayInterceptorChain(
-    val initialRequest: DisplayRequest,
+    override val initialRequest: DisplayRequest,
     val interceptors: List<RequestInterceptor<DisplayRequest, DisplayData>>,
     val index: Int,
     override val sketch: Sketch,

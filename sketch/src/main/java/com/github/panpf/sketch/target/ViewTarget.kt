@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.target
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.lifecycle.LifecycleObserver
 
@@ -16,6 +17,11 @@ interface ViewTarget<T : View> : Target {
      * The [View] used by this [Target]. This field should be immutable.
      */
     val view: T
+
+    /**
+     * The [view]'s current [Drawable].
+     */
+    val drawable: Drawable?
 
     // todo support view background
 }

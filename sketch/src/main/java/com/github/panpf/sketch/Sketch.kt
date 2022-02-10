@@ -9,6 +9,7 @@ import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.WaitingUseManager
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
@@ -107,6 +108,7 @@ class Sketch private constructor(
     val bitmapPool: BitmapPool = _bitmapPool
         ?: LruBitmapPool(logger, (appContext.defaultMemoryCacheBytes() * 0.5f).roundToLong())
     val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
+    val waitingUseManager = WaitingUseManager()
 
     val componentRegistry: ComponentRegistry = (_componentRegistry ?: ComponentRegistry.new())
         .newBuilder().apply {

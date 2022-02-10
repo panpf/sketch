@@ -88,6 +88,7 @@ class ViewTargetRequestManager(private val view: View) : View.OnAttachStateChang
     @MainThread
     override fun onViewDetachedFromWindow(v: View) {
         currentRequest?.dispose()
+        currentRequest?.onViewDetachedFromWindow()
     }
 
     fun restart() {

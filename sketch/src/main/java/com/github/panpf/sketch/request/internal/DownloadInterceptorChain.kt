@@ -7,7 +7,7 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 
 internal class DownloadInterceptorChain(
-    val initialRequest: DownloadRequest,
+    override val initialRequest: DownloadRequest,
     val interceptors: List<RequestInterceptor<DownloadRequest, DownloadData>>,
     val index: Int,
     override val sketch: Sketch,

@@ -85,10 +85,6 @@ class BitmapMemoryCacheHelper internal constructor(
                         "From memory get bitmap. bitmap=%s. %s"
                             .format(cachedCountBitmap.info, request.key)
                     }
-                    cachedCountBitmap.setIsWaiting(
-                        "${MODULE}:waitingUse:fromMemory",
-                        true
-                    )
                     val drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE)
                     DrawableDecodeResult(
                         drawable = drawable,
@@ -117,7 +113,6 @@ class BitmapMemoryCacheHelper internal constructor(
                 logger = logger,
                 bitmapPool = bitmapPool
             )
-            countBitmap.setIsWaiting("${MODULE}:waitingUse:new", true)
             memoryCache.put(cacheKey, countBitmap)
             SketchCountBitmapDrawable(countBitmap, result.dataFrom)
         } else {

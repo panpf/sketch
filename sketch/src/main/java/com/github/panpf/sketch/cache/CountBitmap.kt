@@ -72,7 +72,6 @@ class CountBitmap constructor(
         )
     }
 
-    // todo Count cannot be implemented
     @MainThread
     fun setIsDisplayed(callingStation: String, displayed: Boolean) {
         check(Looper.myLooper() == Looper.getMainLooper()) {
@@ -87,11 +86,11 @@ class CountBitmap constructor(
         }
     }
 
-    @MainThread
+    @Synchronized
     fun setIsCached(callingStation: String, cached: Boolean) {
-//        check(Looper.myLooper() == Looper.getMainLooper()) {
-//            "This method can only be executed in the UI thread"
-//        }
+        check(Looper.myLooper() != Looper.getMainLooper()) {
+            "This method can only be executed in the work thread"
+        }
         if (cached) {
             cacheCount++
             countChanged(callingStation)
@@ -103,9 +102,9 @@ class CountBitmap constructor(
 
     @MainThread
     fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
-//        check(Looper.myLooper() == Looper.getMainLooper()) {
-//            "This method can only be executed in the UI thread"
-//        }
+        check(Looper.myLooper() == Looper.getMainLooper()) {
+            "This method can only be executed in the UI thread"
+        }
         if (waitingUse) {
             waitingCount++
             countChanged(callingStation)

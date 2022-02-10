@@ -50,10 +50,16 @@ class ComponentRegistry private constructor(
 
     fun newDrawableDecoder(
         sketch: Sketch,
+        initialRequest: DisplayRequest,
         request: DisplayRequest,
         fetchResult: FetchResult,
     ): DrawableDecoder = drawableDecoderFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, fetchResult)
+        it.create(
+            sketch = sketch,
+            initialRequest = initialRequest,
+            request = request,
+            fetchResult = fetchResult
+        )
     } ?: throw IllegalArgumentException(
         "No DrawableDecoder can handle this uri '${request.uriString}', " +
                 "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"

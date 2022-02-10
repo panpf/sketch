@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.util.findCountDrawable
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.util.removeAndAddObserver
 import kotlinx.coroutines.CancellationException
@@ -17,10 +18,20 @@ import kotlinx.coroutines.Job
  * Wrap [initialRequest] to automatically dispose and/or restart the [ImageRequest]
  * based on its lifecycle.
  */
-internal fun requestDelegate(sketch: Sketch, initialRequest: DisplayRequest, job: Job): RequestDelegate {
+internal fun requestDelegate(
+    sketch: Sketch,
+    initialRequest: DisplayRequest,
+    job: Job
+): RequestDelegate {
     val lifecycle = initialRequest.lifecycle
     return when (val target = initialRequest.target) {
-        is ViewTarget<*> -> ViewTargetRequestDelegate(sketch, initialRequest, target, lifecycle, job)
+        is ViewTarget<*> -> ViewTargetRequestDelegate(
+            sketch,
+            initialRequest,
+            target,
+            lifecycle,
+            job
+        )
         else -> BaseRequestDelegate(lifecycle, job)
     }
 }
@@ -29,19 +40,23 @@ sealed class RequestDelegate : DefaultLifecycleObserver {
 
     /** Throw a [CancellationException] if this request should be cancelled before starting. */
     @MainThread
-    open fun assertActive() {}
+    open fun assertActive() {
+    }
 
     /** Register all lifecycle observers. */
     @MainThread
-    open fun start() {}
+    open fun start() {
+    }
 
     /** Called when this request's job is cancelled or completes successfully/unsuccessfully. */
     @MainThread
-    open fun complete() {}
+    open fun complete() {
+    }
 
     /** Cancel this request's job and clear all lifecycle observers. */
     @MainThread
-    open fun dispose() {}
+    open fun dispose() {
+    }
 }
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
@@ -105,5 +120,9 @@ class ViewTargetRequestDelegate(
 
     override fun onDestroy(owner: LifecycleOwner) {
         target.view.requestManager.dispose()
+    }
+
+    fun onViewDetachedFromWindow() {
+        target.drawable?.findCountDrawable()?.setIsDisplayed("ImageViewTarget:set", false)
     }
 }

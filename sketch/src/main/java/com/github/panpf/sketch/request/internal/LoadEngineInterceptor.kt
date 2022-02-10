@@ -17,7 +17,7 @@ class LoadEngineInterceptor : RequestInterceptor<LoadRequest, LoadData> {
             val sketch = chain.sketch
             val request = chain.request
             BitmapDecodeInterceptorChain(
-                initialRequest = request,
+                initialRequest = chain.initialRequest,
                 interceptors = sketch.bitmapDecodeInterceptors,
                 index = 0,
                 sketch = sketch,

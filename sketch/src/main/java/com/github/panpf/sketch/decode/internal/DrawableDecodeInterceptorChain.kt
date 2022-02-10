@@ -7,7 +7,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
 
 internal class DrawableDecodeInterceptorChain(
-    val initialRequest: DisplayRequest,
+    override val initialRequest: DisplayRequest,
     val interceptors: List<DecodeInterceptor<DisplayRequest, DrawableDecodeResult>>,
     val index: Int,
     override val sketch: Sketch,

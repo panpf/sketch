@@ -68,6 +68,7 @@ class DisplayExecutor(private val sketch: Sketch) {
             }
         } finally {
             requestDelegate.complete()
+            sketch.waitingUseManager.remove("RequestCompleted", request.key)
         }
     }
 

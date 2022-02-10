@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.util
 
-import android.annotation.TargetApi
 import android.app.ActivityManager
 import android.content.ComponentCallbacks2
 import android.content.Context
@@ -11,10 +10,6 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.opengl.EGL14
-import android.opengl.EGLConfig
-import android.opengl.GLES10
-import android.opengl.GLES20
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -28,6 +23,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.SketchCountDrawable
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
@@ -35,10 +32,6 @@ import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import javax.microedition.khronos.egl.EGL10
-import javax.microedition.khronos.egl.EGLContext
-import kotlin.math.ceil
-import kotlin.math.floor
 
 
 /**
@@ -199,6 +192,14 @@ fun Drawable.getLastDrawable(): Drawable? {
     }
     return drawable
 }
+
+fun Drawable.findCountDrawable(): SketchCountDrawable? =
+    when (this) {
+        is SketchCountDrawable -> this
+        is CrossfadeDrawable -> this.end?.findCountDrawable()
+        is LayerDrawable -> this.getLastDrawable()?.findCountDrawable()
+        else -> null
+    }
 
 internal fun View.fixedWidth(): Int? {
     val layoutParams = layoutParams?.takeIf { it.width > 0 } ?: return null

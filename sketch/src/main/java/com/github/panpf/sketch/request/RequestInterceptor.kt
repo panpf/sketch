@@ -14,6 +14,8 @@ interface RequestInterceptor<REQUEST : ImageRequest, DATA : ImageData> {
 
         val sketch: Sketch
 
+        val initialRequest: REQUEST
+
         val request: REQUEST
 
         @MainThread

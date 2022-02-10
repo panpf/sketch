@@ -36,7 +36,7 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
 
         return withContext(Dispatchers.IO) {
             DrawableDecodeInterceptorChain(
-                initialRequest = request,
+                initialRequest = chain.initialRequest,
                 interceptors = sketch.drawableDecodeInterceptors,
                 index = 0,
                 sketch = sketch,
