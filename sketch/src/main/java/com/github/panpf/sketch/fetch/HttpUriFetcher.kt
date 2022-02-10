@@ -234,8 +234,8 @@ class HttpUriFetcher(
                 diskCacheEditor.commit()
                 if (contentType?.isNotEmpty() == true && contentType.isNotBlank()) {
                     val contentTypeEditor = diskCache.edit(contentTypeDiskCacheKey)
-                    contentTypeEditor?.newOutputStream()?.use {
-                        it.bufferedWriter().write(contentType)
+                    contentTypeEditor?.newOutputStream()?.bufferedWriter()?.use {
+                        it.write(contentType)
                     }
                 }
             } else {
