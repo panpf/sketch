@@ -73,6 +73,8 @@ dependencies {
     implementation(project(":sketch-video-ffmpeg"))
     implementation(project(":sketch-zoom"))
 
+    implementation("io.coil-kt:coil:1.4.0")
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("KOTLINX_SERIALIZATION_JSON")}")
