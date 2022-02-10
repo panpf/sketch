@@ -57,15 +57,15 @@ class CrossfadeTransition @JvmOverloads constructor(
             require(durationMillis > 0) { "durationMillis must be > 0." }
         }
 
-        override fun create(target: TransitionTarget, result: DisplayResult): Transition {
+        override fun create(target: TransitionTarget, result: DisplayResult): Transition? {
             // Only animate successful requests.
             if (result !is DisplayResult.Success) {
-                return Transition.Factory.NONE.create(target, result)
+                return null
             }
 
             // Don't animate if the request was fulfilled by the memory cache.
             if (result.dataFrom == MEMORY_CACHE) {
-                return Transition.Factory.NONE.create(target, result)
+                return null
             }
 
             return CrossfadeTransition(target, result, durationMillis, preferExactIntrinsicSize)

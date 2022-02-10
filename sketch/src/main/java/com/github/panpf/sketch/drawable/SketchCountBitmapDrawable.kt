@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.drawable
 
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.request.DataFrom
@@ -35,6 +37,8 @@ class SketchCountBitmapDrawable constructor(
     override val isRecycled: Boolean
         get() = countBitmap.isRecycled
 
+    private val handler by lazy { Handler(Looper.getMainLooper()) }
+
     @MainThread
     override fun setIsDisplayed(callingStation: String, displayed: Boolean) {
         countBitmap.setIsDisplayed(callingStation, displayed)
@@ -43,5 +47,17 @@ class SketchCountBitmapDrawable constructor(
     @MainThread
     override fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
         countBitmap.setIsWaiting(callingStation, waitingUse)
+    }
+
+    override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
+        if (visible) {
+            countBitmap.setIsDisplayed("Drawable:setVisible", true)
+        } else {
+            // 为什么要延迟一会儿再标记 Displayed 为 false？
+            handler.post {
+                countBitmap.setIsDisplayed("Drawable:setVisible", false)
+            }
+        }
+        return super.setVisible(visible, restart)
     }
 }

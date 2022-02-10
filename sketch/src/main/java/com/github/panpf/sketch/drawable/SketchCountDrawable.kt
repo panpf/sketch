@@ -19,7 +19,6 @@ import androidx.annotation.MainThread
 
 interface SketchCountDrawable : SketchDrawable {
 
-    // todo 完善引用计数
     @MainThread
     fun setIsDisplayed(callingStation: String, displayed: Boolean)
 

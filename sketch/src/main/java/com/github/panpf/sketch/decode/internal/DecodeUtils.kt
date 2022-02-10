@@ -27,6 +27,7 @@ import com.github.panpf.sketch.ImageFormat.HEIC
 import com.github.panpf.sketch.ImageFormat.HEIF
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.util.toHexString
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -158,3 +159,6 @@ fun isSrcRectError(throwable: Throwable): Boolean =
     } else {
         false
     }
+
+val Bitmap.logString: String
+    get() = "${width}x${height}/${config}@${toHexString()}"

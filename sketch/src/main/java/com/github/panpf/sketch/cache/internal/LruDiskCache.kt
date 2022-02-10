@@ -24,6 +24,7 @@ import com.github.panpf.sketch.util.DiskLruCache
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MD5Utils
 import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
+import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 import java.io.Closeable
@@ -32,6 +33,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.WeakHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * A disk cache that manages the cache according to a least-used rule
@@ -57,6 +59,8 @@ class LruDiskCache constructor(
     private var _cache: DiskLruCache? = null
     private val keyMapperCache = KeyMapperCache { MD5Utils.md5(it) }
     private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
+    private val getCount = AtomicInteger()
+    private val hitCount = AtomicInteger()
 
     override val size: Long
         get() = _cache?.size() ?: 0
@@ -130,7 +134,26 @@ class LruDiskCache constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return snapshot?.let { LruDiskCacheSnapshot(this, logger, key, it) }
+        return (snapshot?.let { LruDiskCacheSnapshot(this, logger, key, it) }).apply {
+            val getCount1 = getCount.addAndGet(1)
+            val hitCount1 = if (this != null) {
+                hitCount.addAndGet(1)
+            } else {
+                hitCount.get()
+            }
+            if (getCount1 == Int.MAX_VALUE || hitCount1 == Int.MAX_VALUE) {
+                getCount.set(0)
+                hitCount.set(0)
+            }
+            logger.d(MODULE) {
+                val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
+                if (this != null) {
+                    "get. Hit(${hitRatio}). $key"
+                } else {
+                    "get. NoHit(${hitRatio}). $key"
+                }
+            }
+        }
     }
 
     override fun clear() {
@@ -192,7 +215,7 @@ class LruDiskCache constructor(
             try {
                 snapshot.diskLruCache.remove(snapshot.key)
                 logger.d(MODULE) {
-                    "delete. key '$key', size ${lruDiskCache.size.formatFileSize()}"
+                    "delete. size ${lruDiskCache.size.formatFileSize()}. $key"
                 }
                 true
             } catch (e: Exception) {
@@ -222,7 +245,7 @@ class LruDiskCache constructor(
         override fun commit() {
             diskEditor.commit()
             logger.d(MODULE) {
-                "commit. key '$key', size ${lruDiskCache.size.formatFileSize()}"
+                "commit. size ${lruDiskCache.size.formatFileSize()}. $key"
             }
         }
 
@@ -233,7 +256,7 @@ class LruDiskCache constructor(
                 e.printStackTrace()
             }
             logger.d(MODULE) {
-                "abort. key '$key', size ${lruDiskCache.size.formatFileSize()}"
+                "abort. size ${lruDiskCache.size.formatFileSize()}. $key"
             }
         }
     }

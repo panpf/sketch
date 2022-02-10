@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
+import android.os.Looper
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
@@ -71,8 +72,12 @@ class CountBitmap constructor(
         )
     }
 
+    // todo Count cannot be implemented
     @MainThread
     fun setIsDisplayed(callingStation: String, displayed: Boolean) {
+        check(Looper.myLooper() == Looper.getMainLooper()) {
+            "This method can only be executed in the UI thread"
+        }
         if (displayed) {
             displayCount++
             countChanged(callingStation)
@@ -84,6 +89,9 @@ class CountBitmap constructor(
 
     @MainThread
     fun setIsCached(callingStation: String, cached: Boolean) {
+//        check(Looper.myLooper() == Looper.getMainLooper()) {
+//            "This method can only be executed in the UI thread"
+//        }
         if (cached) {
             cacheCount++
             countChanged(callingStation)
@@ -95,6 +103,9 @@ class CountBitmap constructor(
 
     @MainThread
     fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
+//        check(Looper.myLooper() == Looper.getMainLooper()) {
+//            "This method can only be executed in the UI thread"
+//        }
         if (waitingUse) {
             waitingCount++
             countChanged(callingStation)

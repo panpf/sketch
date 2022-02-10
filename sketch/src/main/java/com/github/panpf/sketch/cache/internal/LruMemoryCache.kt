@@ -20,10 +20,13 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
+import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.trimLevelName
 import kotlinx.coroutines.sync.Mutex
 import java.util.WeakHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
@@ -42,6 +45,8 @@ class LruMemoryCache constructor(
 
     private val cache: LruCache<String, CountBitmap> = CountBitmapLruCache(maxSize)
     private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
+    private val getCount = AtomicInteger()
+    private val hitCount = AtomicInteger()
 
     override val size: Long
         get() = cache.size().toLong()
@@ -50,8 +55,7 @@ class LruMemoryCache constructor(
         return if (cache[key] == null) {
             cache.put(key, countBitmap)
             logger.d(MODULE) {
-                val bitmapSize = countBitmap.byteCount.toLong().formatFileSize()
-                "put. key '$key', bitmap $bitmapSize, size ${size.formatFileSize()}"
+                "put. ${countBitmap.info}. ${size.formatFileSize()}. $key"
             }
             true
         } else {
@@ -63,8 +67,7 @@ class LruMemoryCache constructor(
     override fun remove(key: String): CountBitmap? =
         cache.remove(key).apply {
             logger.d(MODULE) {
-                val bitmapSize = this?.byteCount?.toLong()?.formatFileSize()
-                "remove. key '$key', bitmap $bitmapSize, size ${size.formatFileSize()}"
+                "remove. ${this.info}. ${size.formatFileSize()}. $key"
             }
         }
 
@@ -73,6 +76,26 @@ class LruMemoryCache constructor(
             (!it.isRecycled).apply {
                 if (!this) {
                     cache.remove(key)
+                }
+            }
+        }.apply {
+            val getCount1 = getCount.addAndGet(1)
+            val hitCount1 = if (this != null) {
+                hitCount.addAndGet(1)
+            } else {
+                hitCount.get()
+            }
+            if (getCount1 == Int.MAX_VALUE || hitCount1 == Int.MAX_VALUE) {
+                getCount.set(0)
+                hitCount.set(0)
+            }
+            logger.d(MODULE) {
+                if (this != null) {
+                    val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
+                    "get. Hit(${hitRatio}). ${this.info}/${this.bitmap!!.toHexString()}. $key"
+                } else {
+                    val hitRatio = (hitCount1.toFloat() / getCount1).format(2)
+                    "get. NoHit(${hitRatio}). $key"
                 }
             }
         }

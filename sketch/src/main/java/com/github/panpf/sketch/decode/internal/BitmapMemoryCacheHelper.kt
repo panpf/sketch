@@ -13,8 +13,6 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.RequestDepth.MEMORY
-import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 
