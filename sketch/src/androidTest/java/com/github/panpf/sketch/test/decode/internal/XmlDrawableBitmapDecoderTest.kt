@@ -9,6 +9,7 @@ import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.test.R
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4a.dimen.ktx.dp2px
@@ -35,7 +36,7 @@ class XmlDrawableBitmapDecoderTest {
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            Assert.assertNotNull(factory.create(sketch, this, fetchResult))
+            Assert.assertNotNull(factory.create(sketch, this, RequestExtras(), fetchResult))
         }
 
         LoadRequest(context.newResourceUri(R.drawable.test_error)).apply {
@@ -43,7 +44,7 @@ class XmlDrawableBitmapDecoderTest {
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            Assert.assertNotNull(factory.create(sketch, this, fetchResult))
+            Assert.assertNotNull(factory.create(sketch, this, RequestExtras(), fetchResult))
         }
 
         LoadRequest(context.newResourceUri(R.drawable.ic_launcher)).apply {
@@ -51,7 +52,7 @@ class XmlDrawableBitmapDecoderTest {
             val fetchResult = runBlocking {
                 fetcher.fetch()
             }
-            Assert.assertNull(factory.create(sketch, this, fetchResult))
+            Assert.assertNull(factory.create(sketch, this, RequestExtras(), fetchResult))
         }
     }
 
@@ -70,7 +71,7 @@ class XmlDrawableBitmapDecoderTest {
                 fetcher.fetch()
             }
             runBlocking {
-                factory.create(sketch, this@run, fetchResult)!!.decode()
+                factory.create(sketch, this@run, RequestExtras(), fetchResult)!!.decode()
             }
         }.apply {
             Assert.assertEquals(
@@ -93,7 +94,7 @@ class XmlDrawableBitmapDecoderTest {
             }
             assertThrow(BitmapDecodeException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run, fetchResult)!!.decode()
+                    factory.create(sketch, this@run, RequestExtras(), fetchResult)!!.decode()
                 }
             }
         }

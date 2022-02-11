@@ -13,6 +13,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.DataFrom.RESULT_DISK_CACHE
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
+import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONException
 import org.json.JSONObject
@@ -53,8 +54,9 @@ class BitmapResultDiskCacheHelper internal constructor(
     }
 
     @WorkerThread
-    fun read(): BitmapDecodeResult? =
-        if (cachePolicy.readEnabled) {
+    fun read(): BitmapDecodeResult? {
+        requiredWorkThread()
+        return if (cachePolicy.readEnabled) {
             val bitmapDataDiskCacheSnapshot = diskCache[bitmapDataDiskCacheKey]
             val metaDataDiskCacheSnapshot = diskCache[metaDataDiskCacheKey]
             try {
@@ -84,9 +86,12 @@ class BitmapResultDiskCacheHelper internal constructor(
         } else {
             null
         }
+    }
 
-    fun write(result: BitmapDecodeResult): Boolean =
-        if (cachePolicy.writeEnabled && result.transformedList?.any { it.cacheResultToDisk } == true) {
+    @WorkerThread
+    fun write(result: BitmapDecodeResult): Boolean {
+        requiredWorkThread()
+        return if (cachePolicy.writeEnabled && result.transformedList?.any { it.cacheResultToDisk } == true) {
             val bitmapDataEditor = diskCache.edit(bitmapDataDiskCacheKey)
             val metaDataEditor = diskCache.edit(metaDataDiskCacheKey)
             try {
@@ -117,6 +122,7 @@ class BitmapResultDiskCacheHelper internal constructor(
         } else {
             false
         }
+    }
 
     data class MetaData constructor(
         val imageInfo: ImageInfo,

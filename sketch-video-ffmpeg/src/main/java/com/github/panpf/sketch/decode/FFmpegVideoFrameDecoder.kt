@@ -12,6 +12,7 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercentDuration
@@ -118,9 +119,11 @@ class FFmpegVideoFrameDecoder(
         throw UnsupportedOperationException("FFmpegVideoFrameDecoder not support decode region")
 
     class Factory : BitmapDecoder.Factory {
+
         override fun create(
             sketch: Sketch,
             request: LoadRequest,
+            requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): FFmpegVideoFrameDecoder? {
             val mimeType = fetchResult.mimeType

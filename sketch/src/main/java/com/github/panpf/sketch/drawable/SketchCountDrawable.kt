@@ -23,7 +23,10 @@ interface SketchCountDrawable : SketchDrawable {
     fun setIsDisplayed(callingStation: String, displayed: Boolean)
 
     @MainThread
-    fun setIsWaiting(callingStation: String, waitingUse: Boolean)
+    fun setIsPending(callingStation: String, waitingUse: Boolean)
+
+    @MainThread
+    fun getPendingCount(): Int
 
     val isRecycled: Boolean
 }

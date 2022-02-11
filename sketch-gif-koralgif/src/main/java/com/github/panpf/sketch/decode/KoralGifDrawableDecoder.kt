@@ -15,6 +15,7 @@ import com.github.panpf.sketch.drawable.SketchKoralGifDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 
 class KoralGifDrawableDecoder(
     private val sketch: Sketch,
@@ -77,7 +78,10 @@ class KoralGifDrawableDecoder(
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch, initialRequest: DisplayRequest, request: DisplayRequest, fetchResult: FetchResult
+            sketch: Sketch,
+            request: DisplayRequest,
+            requestExtras: RequestExtras,
+            fetchResult: FetchResult
         ): KoralGifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
                 if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {

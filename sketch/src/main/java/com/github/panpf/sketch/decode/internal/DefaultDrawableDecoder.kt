@@ -8,13 +8,15 @@ import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchCountDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.request.internal.putCountDrawablePendingManagerKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DefaultDrawableDecoder(
     private val sketch: Sketch,
-    private val initialRequest: DisplayRequest,
     private val request: DisplayRequest,
+    private val requestExtras: RequestExtras,
     private val fetchResult: FetchResult
 ) : DrawableDecoder {
 
@@ -60,8 +62,10 @@ class DefaultDrawableDecoder(
         }
         val drawable = result.drawable
         if (drawable is SketchCountDrawable) {
+            val key = request.key
+            requestExtras.putCountDrawablePendingManagerKey(key)
             withContext(Dispatchers.Main) {
-                sketch.waitingUseManager.put("DefaultDrawableDecoder", initialRequest.key, drawable)
+                sketch.countDrawablePendingManager.mark("DefaultDrawableDecoder", key, drawable)
             }
         }
         return result
@@ -69,13 +73,13 @@ class DefaultDrawableDecoder(
 
     private suspend fun decodeNewBitmap(): BitmapDecodeResult =
         BitmapDecodeInterceptorChain(
-            initialRequest = initialRequest,
             interceptors = sketch.bitmapDecodeInterceptors,
             index = 0,
             sketch = sketch,
             request = request,
+            requestExtras = requestExtras,
             fetchResult = fetchResult
-        ).proceed(request)
+        ).proceed()
 
     override fun close() {
 
@@ -84,17 +88,16 @@ class DefaultDrawableDecoder(
     class Factory : DrawableDecoder.Factory {
         override fun create(
             sketch: Sketch,
-            initialRequest: DisplayRequest,
             request: DisplayRequest,
+            requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): DrawableDecoder = DefaultDrawableDecoder(
             sketch = sketch,
-            initialRequest = initialRequest,
             request = request,
+            requestExtras = requestExtras,
             fetchResult = fetchResult
         )
 
         override fun toString(): String = "DefaultDrawableDecoder"
     }
-
 }

@@ -10,6 +10,7 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 
 open class DefaultBitmapDecoder(
     sketch: Sketch,
@@ -128,7 +129,10 @@ open class DefaultBitmapDecoder(
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
+            sketch: Sketch,
+            request: LoadRequest,
+            requestExtras: RequestExtras,
+            fetchResult: FetchResult
         ): BitmapDecoder = DefaultBitmapDecoder(sketch, request, fetchResult.dataSource)
 
         override fun toString(): String = "DefaultBitmapDecoder"

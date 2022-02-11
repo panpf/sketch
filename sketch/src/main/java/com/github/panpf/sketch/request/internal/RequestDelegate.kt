@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.util.findCountDrawable
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 import com.github.panpf.sketch.util.removeAndAddObserver
 import kotlinx.coroutines.CancellationException
@@ -123,6 +122,7 @@ class ViewTargetRequestDelegate(
     }
 
     fun onViewDetachedFromWindow() {
-        target.drawable?.findCountDrawable()?.setIsDisplayed("ImageViewTarget:set", false)
+        // To trigger setIsDisplayed in the ImageViewTarget
+        target.drawable = null
     }
 }

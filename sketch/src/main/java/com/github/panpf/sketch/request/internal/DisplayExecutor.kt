@@ -10,6 +10,7 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
 import kotlin.coroutines.coroutineContext
@@ -22,10 +23,12 @@ class DisplayExecutor(private val sketch: Sketch) {
 
     @MainThread
     suspend fun execute(request: DisplayRequest): DisplayResult {
+        requiredMainThread()
         // Wrap the request to manage its lifecycle.
         val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
         val target = request.target
+        val requestExtras = RequestExtras()
 
         try {
             if (request.uriString.isEmpty() || request.uriString.isBlank()) {
@@ -42,6 +45,7 @@ class DisplayExecutor(private val sketch: Sketch) {
                 index = 0,
                 sketch = sketch,
                 request = request,
+                requestExtras = requestExtras,
             ).proceed(request)
 
             val successResult = Success(
@@ -67,8 +71,10 @@ class DisplayExecutor(private val sketch: Sketch) {
                 return errorResult
             }
         } finally {
+            requestExtras.getCountDrawablePendingManagerKey()?.let {
+                sketch.countDrawablePendingManager.complete("RequestCompleted", it)
+            }
             requestDelegate.complete()
-            sketch.waitingUseManager.remove("RequestCompleted", request.key)
         }
     }
 

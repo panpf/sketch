@@ -5,6 +5,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import java.io.Closeable
 
 /**
@@ -18,6 +19,11 @@ interface BitmapDecoder : Closeable {
 
     fun interface Factory {
 
-        fun create(sketch: Sketch, request: LoadRequest, fetchResult: FetchResult): BitmapDecoder?
+        fun create(
+            sketch: Sketch,
+            request: LoadRequest,
+            requestExtras: RequestExtras,
+            fetchResult: FetchResult
+        ): BitmapDecoder?
     }
 }

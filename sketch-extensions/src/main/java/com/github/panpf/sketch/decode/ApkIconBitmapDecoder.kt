@@ -6,6 +6,7 @@ import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.readApkIcon
 
 class ApkIconBitmapDecoder(
@@ -41,7 +42,10 @@ class ApkIconBitmapDecoder(
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
+            sketch: Sketch,
+            request: LoadRequest,
+            requestExtras: RequestExtras,
+            fetchResult: FetchResult
         ): BitmapDecoder? = if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
             ApkIconBitmapDecoder(sketch, request, fetchResult)
         } else {

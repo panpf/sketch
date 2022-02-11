@@ -6,6 +6,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 
 class LoadExecutor(private val sketch: Sketch) {
@@ -16,6 +17,8 @@ class LoadExecutor(private val sketch: Sketch) {
 
     @MainThread
     suspend fun execute(request: LoadRequest): LoadResult {
+        requiredMainThread()
+        val requestExtras = RequestExtras()
         try {
             onStart(request)
 
@@ -25,6 +28,7 @@ class LoadExecutor(private val sketch: Sketch) {
                 index = 0,
                 sketch = sketch,
                 request = request,
+                requestExtras = requestExtras,
             ).proceed(request)
 
             val successResult =

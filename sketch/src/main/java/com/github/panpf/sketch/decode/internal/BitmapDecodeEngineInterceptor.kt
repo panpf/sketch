@@ -15,9 +15,10 @@ class BitmapDecodeEngineInterceptor : DecodeInterceptor<LoadRequest, BitmapDecod
         val componentRegistry = sketch.componentRegistry
         val fetcher = componentRegistry.newFetcher(sketch, request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
-        return componentRegistry.newBitmapDecoder(sketch, request, fetchResult).use {
-            it.decode()
-        }
+        return componentRegistry
+            .newBitmapDecoder(sketch, request, chain.requestExtras, fetchResult).use {
+                it.decode()
+            }
     }
 
     override fun toString(): String = "BitmapDecodeEngineInterceptor"

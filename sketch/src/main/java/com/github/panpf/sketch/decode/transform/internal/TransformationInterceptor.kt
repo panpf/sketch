@@ -16,7 +16,7 @@ class TransformationInterceptor : DecodeInterceptor<LoadRequest, BitmapDecodeRes
     ): BitmapDecodeResult {
         val sketch = chain.sketch
         val request = chain.request
-        val result = chain.proceed(request)
+        val result = chain.proceed()
         val transformations = request.transformations
         if (transformations?.isNotEmpty() != true) return result
 

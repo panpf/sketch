@@ -11,6 +11,8 @@ import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.transform.RotateTransformed
 import com.github.panpf.sketch.util.toHexString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -112,8 +114,10 @@ class CountBitmapTest {
 
         createCountBitmap(sketch, "image1", 120, 300).apply {
             Assert.assertNotNull(bitmap)
-            setIsWaiting("test", true)
-            setIsWaiting("test", false)
+            runBlocking(Dispatchers.Main){
+                setIsPending("test", true)
+                setIsPending("test", false)
+            }
             Assert.assertNull(bitmap)
         }
     }
@@ -126,10 +130,14 @@ class CountBitmapTest {
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
 
-            setIsDisplayed("test", true)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", true)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsDisplayed("test", false)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", false)
+            }
             Assert.assertTrue(isRecycled)
         }
     }
@@ -142,10 +150,14 @@ class CountBitmapTest {
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertEquals(100 * 100 * 4, byteCount)
 
-            setIsDisplayed("test", true)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", true)
+            }
             Assert.assertEquals(100 * 100 * 4, byteCount)
 
-            setIsDisplayed("test", false)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", false)
+            }
             Assert.assertEquals(0, byteCount)
         }
     }
@@ -178,16 +190,24 @@ class CountBitmapTest {
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
 
-            setIsDisplayed("test", true)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", true)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsDisplayed("test", true)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", true)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsDisplayed("test", false)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", false)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsDisplayed("test", false)
+            runBlocking(Dispatchers.Main) {
+                setIsDisplayed("test", false)
+            }
             Assert.assertTrue(isRecycled)
         }
     }
@@ -215,23 +235,31 @@ class CountBitmapTest {
     }
 
     @Test
-    fun testSetIsWaiting() {
+    fun testSetIsPending() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)
 
         createCountBitmap(sketch, "image1", 100, 100).apply {
             Assert.assertFalse(isRecycled)
 
-            setIsWaiting("test", true)
+            runBlocking(Dispatchers.Main) {
+                setIsPending("test", true)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsWaiting("test", true)
+            runBlocking(Dispatchers.Main) {
+                setIsPending("test", true)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsWaiting("test", false)
+            runBlocking(Dispatchers.Main) {
+                setIsPending("test", false)
+            }
             Assert.assertFalse(isRecycled)
 
-            setIsWaiting("test", false)
+            runBlocking(Dispatchers.Main) {
+                setIsPending("test", false)
+            }
             Assert.assertTrue(isRecycled)
         }
     }

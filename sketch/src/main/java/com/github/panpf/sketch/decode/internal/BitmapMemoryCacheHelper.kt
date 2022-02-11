@@ -82,12 +82,10 @@ class BitmapMemoryCacheHelper internal constructor(
             when {
                 cachedCountBitmap != null -> {
                     logger.d(MODULE) {
-                        "From memory get bitmap. bitmap=%s. %s"
-                            .format(cachedCountBitmap.info, request.key)
+                        "From memory get bitmap. bitmap=${cachedCountBitmap.info}. ${request.key}"
                     }
-                    val drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE)
                     DrawableDecodeResult(
-                        drawable = drawable,
+                        drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE),
                         imageInfo = cachedCountBitmap.imageInfo,
                         exifOrientation = cachedCountBitmap.exifOrientation,
                         dataFrom = MEMORY_CACHE

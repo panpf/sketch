@@ -16,14 +16,15 @@
 package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap
-import android.os.Looper
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toHexString
 
 /**
@@ -45,9 +46,9 @@ class CountBitmap constructor(
     }
 
     private var bitmapHolder: Bitmap? = initBitmap
-    private var cacheCount = 0  // Memory cache count
-    private var displayCount = 0 // View display count
-    private var waitingCount = 0 // Waiting count
+    private var cachedCount = 0
+    private var displayedCount = 0
+    private var pendingCount = 0
 
     val bitmap: Bitmap?
         get() = bitmapHolder
@@ -74,44 +75,43 @@ class CountBitmap constructor(
 
     @MainThread
     fun setIsDisplayed(callingStation: String, displayed: Boolean) {
-        check(Looper.myLooper() == Looper.getMainLooper()) {
-            "This method can only be executed in the UI thread"
-        }
+        requiredMainThread()
         if (displayed) {
-            displayCount++
+            displayedCount++
             countChanged(callingStation)
-        } else if (displayCount > 0) {
-            displayCount--
+        } else if (displayedCount > 0) {
+            displayedCount--
             countChanged(callingStation)
         }
     }
 
     @Synchronized
     fun setIsCached(callingStation: String, cached: Boolean) {
-        check(Looper.myLooper() != Looper.getMainLooper()) {
-            "This method can only be executed in the work thread"
-        }
         if (cached) {
-            cacheCount++
+            cachedCount++
             countChanged(callingStation)
-        } else if (cacheCount > 0) {
-            cacheCount--
+        } else if (cachedCount > 0) {
+            cachedCount--
             countChanged(callingStation)
         }
     }
 
     @MainThread
-    fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
-        check(Looper.myLooper() == Looper.getMainLooper()) {
-            "This method can only be executed in the UI thread"
-        }
+    fun setIsPending(callingStation: String, waitingUse: Boolean) {
+        requiredMainThread()
         if (waitingUse) {
-            waitingCount++
+            pendingCount++
             countChanged(callingStation)
-        } else if (waitingCount > 0) {
-            waitingCount--
+        } else if (pendingCount > 0) {
+            pendingCount--
             countChanged(callingStation)
         }
+    }
+
+    @MainThread
+    fun getPendingCount(): Int {
+        requiredMainThread()
+        return pendingCount
     }
 
     private fun countChanged(callingStation: String) {
@@ -119,18 +119,18 @@ class CountBitmap constructor(
         if (bitmapHolder == null) {
             logger.e(MODULE, "Recycled. $callingStation. $requestKey")
         } else if (isRecycled) {
-            logger.e(MODULE, "Recycle. $callingStation. ${bitmapHolder.toHexString()}. $requestKey")
-        } else if (cacheCount == 0 && displayCount == 0 && waitingCount == 0) {
+            logger.e(MODULE, "Recycled. $callingStation. ${bitmapHolder.logString}. $requestKey")
+        } else if (cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
             bitmapPool.free(bitmapHolder)
             this.bitmapHolder = null
             logger.d(MODULE) {
-                "Free bitmap. $callingStation. ${bitmapHolder.toHexString()}. $requestKey"
+                "Free. $callingStation. ${bitmapHolder.logString}. $requestKey"
             }
         } else {
             logger.d(MODULE) {
-                "Can't free bitmap. $callingStation. " +
-                        "cacheCount $cacheCount, displayCount $displayCount, waitingCount $waitingCount. " +
-                        "${bitmapHolder.toHexString()}. $requestKey"
+                "Keep. $callingStation. " +
+                        "$cachedCount/$displayedCount/$pendingCount. " +
+                        "${bitmapHolder.logString}. $requestKey"
             }
         }
     }

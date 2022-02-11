@@ -6,6 +6,7 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 
 class DownloadExecutor(private val sketch: Sketch) {
@@ -16,6 +17,8 @@ class DownloadExecutor(private val sketch: Sketch) {
 
     @MainThread
     suspend fun execute(request: DownloadRequest): DownloadResult {
+        requiredMainThread()
+        val requestExtras = RequestExtras()
         try {
             onStart(request)
 
@@ -25,6 +28,7 @@ class DownloadExecutor(private val sketch: Sketch) {
                 index = 0,
                 sketch = sketch,
                 request = request,
+                requestExtras = requestExtras,
             ).proceed(request)
 
             val successResult = DownloadResult.Success(request, downloadData, downloadData.dataFrom)

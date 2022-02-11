@@ -17,13 +17,13 @@ class LoadEngineInterceptor : RequestInterceptor<LoadRequest, LoadData> {
             val sketch = chain.sketch
             val request = chain.request
             BitmapDecodeInterceptorChain(
-                initialRequest = chain.initialRequest,
                 interceptors = sketch.bitmapDecodeInterceptors,
                 index = 0,
                 sketch = sketch,
                 request = request,
+                requestExtras = chain.requestExtras,
                 fetchResult = null,
-            ).proceed(request).toLoadData()
+            ).proceed().toLoadData()
         }
 
     override fun toString(): String = "LoadEngineInterceptor"

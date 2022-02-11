@@ -41,8 +41,13 @@ class SketchCountBitmapDrawable constructor(
     }
 
     @MainThread
-    override fun setIsWaiting(callingStation: String, waitingUse: Boolean) {
-        countBitmap.setIsWaiting(callingStation, waitingUse)
+    override fun setIsPending(callingStation: String, waitingUse: Boolean) {
+        countBitmap.setIsPending(callingStation, waitingUse)
+    }
+
+    @MainThread
+    override fun getPendingCount(): Int {
+        return countBitmap.getPendingCount()
     }
 
     override fun hashCode(): Int {

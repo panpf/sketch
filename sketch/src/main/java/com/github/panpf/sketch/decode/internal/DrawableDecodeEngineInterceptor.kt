@@ -16,9 +16,10 @@ class DrawableDecodeEngineInterceptor : DecodeInterceptor<DisplayRequest, Drawab
         val componentRegistry = chain.sketch.componentRegistry
         val fetcher = componentRegistry.newFetcher(chain.sketch, request)
         val fetchResult = chain.fetchResult ?: fetcher.fetch()
-        componentRegistry.newDrawableDecoder(chain.sketch, chain.initialRequest, request, fetchResult).use {
-            it.decode()
-        }
+        componentRegistry
+            .newDrawableDecoder(chain.sketch, request, chain.requestExtras, fetchResult).use {
+                it.decode()
+            }
     }
 
     override fun toString(): String = "DrawableDecodeEngineInterceptor"

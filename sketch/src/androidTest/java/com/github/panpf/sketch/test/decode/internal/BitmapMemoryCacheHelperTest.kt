@@ -18,8 +18,6 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
-import com.github.panpf.sketch.request.internal.RequestDepthException
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -75,12 +73,6 @@ class BitmapMemoryCacheHelperTest {
                 depth(RequestDepth.LOCAL)
             }).read()
         )
-
-        assertThrow(RequestDepthException::class) {
-            newBitmapMemoryCacheHelper(sketch, request.newDisplayRequest {
-                depth(RequestDepth.MEMORY)
-            }).read()
-        }
 
         // There are the
         val bitmapDecodeResult = BitmapDecodeResult(

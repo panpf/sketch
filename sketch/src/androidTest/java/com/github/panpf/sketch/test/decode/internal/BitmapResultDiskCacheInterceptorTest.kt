@@ -10,6 +10,7 @@ import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -26,13 +27,14 @@ class BitmapResultDiskCacheInterceptorTest {
         val loadRequest = LoadRequest(newAssetUri("sample.jpeg")) {
             resize(500, 500)
         }
+        val requestExtras = RequestExtras()
         val chain =
-            BitmapDecodeInterceptorChain(loadRequest, interceptors, 0, sketch, loadRequest, null)
+            BitmapDecodeInterceptorChain(interceptors, 0, sketch, loadRequest, requestExtras, null)
 
         sketch.diskCache.clear()
 
         val result = runBlocking {
-            chain.proceed(loadRequest)
+            chain.proceed()
         }
         Assert.assertEquals(323, result.bitmap.width)
         Assert.assertEquals(484, result.bitmap.height)
@@ -45,7 +47,7 @@ class BitmapResultDiskCacheInterceptorTest {
         Assert.assertEquals("InSampledTransformed(4)", result.transformedList?.joinToString())
 
         val result1 = runBlocking {
-            chain.proceed(loadRequest)
+            chain.proceed()
         }
         Assert.assertEquals(323, result1.bitmap.width)
         Assert.assertEquals(484, result1.bitmap.height)

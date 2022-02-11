@@ -10,6 +10,7 @@ import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.internal.DownloadExecutor
 import com.github.panpf.sketch.test.util.TestHttpStack
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class DownloadExecutorTest {
         val normalRequest = DownloadRequest(TestHttpStack.testUris.first().uriString) {
             listener(normalDownloadListenerSupervisor)
         }
-        runBlocking {
+        runBlocking(Dispatchers.Main) {
             DownloadExecutor(normalSketch).execute(normalRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Success)
@@ -55,7 +56,7 @@ class DownloadExecutorTest {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
             listener(cancelDownloadListenerSupervisor)
         }
-        runBlocking {
+        runBlocking(Dispatchers.Main){
             val job = launch {
                 DownloadExecutor(slowSketch).execute(cancelRequest)
             }
@@ -74,7 +75,7 @@ class DownloadExecutorTest {
             networkContentDiskCachePolicy(CachePolicy.DISABLED)
             listener(errorDownloadListenerSupervisor)
         }
-        runBlocking {
+        runBlocking(Dispatchers.Main){
             DownloadExecutor(slowSketch).execute(errorRequest)
         }.apply {
             Assert.assertTrue(this is DownloadResult.Error)
@@ -82,7 +83,8 @@ class DownloadExecutorTest {
         Assert.assertEquals("onStart, onError", errorListenerActionList.joinToString())
     }
 
-    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+    private class DownloadListenerSupervisor :
+        Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
 
         val callbackActionList = mutableListOf<String>()
 

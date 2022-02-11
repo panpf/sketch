@@ -12,6 +12,7 @@ import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.util.toSoftware
 import kotlin.math.roundToInt
@@ -107,6 +108,7 @@ class SvgBitmapDecoder(
         override fun create(
             sketch: Sketch,
             request: LoadRequest,
+            requestExtras: RequestExtras,
             fetchResult: FetchResult
         ): SvgBitmapDecoder? =
             if (

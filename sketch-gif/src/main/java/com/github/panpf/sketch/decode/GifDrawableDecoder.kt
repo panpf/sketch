@@ -18,6 +18,7 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.util.animatable2CompatCallbackOf
 import java.util.Base64.Decoder
@@ -90,7 +91,10 @@ class GifDrawableDecoder constructor(
     class Factory : DrawableDecoder.Factory {
 
         override fun create(
-            sketch: Sketch, initialRequest: DisplayRequest, request: DisplayRequest, fetchResult: FetchResult
+            sketch: Sketch,
+            request: DisplayRequest,
+            requestExtras: RequestExtras,
+            fetchResult: FetchResult
         ): GifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
                 if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {

@@ -10,6 +10,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.drawableToBitmap
 
 class AppIconBitmapDecoder(
@@ -48,7 +49,10 @@ class AppIconBitmapDecoder(
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
-            sketch: Sketch, request: LoadRequest, fetchResult: FetchResult
+            sketch: Sketch,
+            request: LoadRequest,
+            requestExtras: RequestExtras,
+            fetchResult: FetchResult
         ): BitmapDecoder? {
             val dataSource = fetchResult.dataSource
             return if (

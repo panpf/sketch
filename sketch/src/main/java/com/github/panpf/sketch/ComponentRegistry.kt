@@ -8,6 +8,8 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
+import com.github.panpf.sketch.util.requiredWorkThread
 
 class ComponentRegistry private constructor(
     val fetcherFactoryList: List<Fetcher.Factory>,
@@ -27,7 +29,9 @@ class ComponentRegistry private constructor(
         configBlock?.invoke(this)
     }.build()
 
+    @WorkerThread
     fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
+        requiredWorkThread()
         return fetcherFactoryList.firstNotNullOfOrNull {
             it.create(sketch, request)
         } ?: throw IllegalArgumentException(
@@ -40,26 +44,25 @@ class ComponentRegistry private constructor(
     fun newBitmapDecoder(
         sketch: Sketch,
         request: LoadRequest,
+        requestExtras: RequestExtras,
         fetchResult: FetchResult,
-    ): BitmapDecoder = bitmapDecoderFactoryList.firstNotNullOfOrNull {
-        it.create(sketch, request, fetchResult)
-    } ?: throw IllegalArgumentException(
-        "No BitmapDecoder can handle this uri '${request.uriString}', " +
-                "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
-    )
+    ): BitmapDecoder {
+        requiredWorkThread()
+        return bitmapDecoderFactoryList.firstNotNullOfOrNull {
+            it.create(sketch, request, requestExtras, fetchResult)
+        } ?: throw IllegalArgumentException(
+            "No BitmapDecoder can handle this uri '${request.uriString}', " +
+                    "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
+        )
+    }
 
     fun newDrawableDecoder(
         sketch: Sketch,
-        initialRequest: DisplayRequest,
         request: DisplayRequest,
+        requestExtras: RequestExtras,
         fetchResult: FetchResult,
     ): DrawableDecoder = drawableDecoderFactoryList.firstNotNullOfOrNull {
-        it.create(
-            sketch = sketch,
-            initialRequest = initialRequest,
-            request = request,
-            fetchResult = fetchResult
-        )
+        it.create(sketch, request, requestExtras, fetchResult)
     } ?: throw IllegalArgumentException(
         "No DrawableDecoder can handle this uri '${request.uriString}', " +
                 "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"

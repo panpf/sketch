@@ -44,6 +44,18 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
 
 internal fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
+fun requiredMainThread() {
+    check(Looper.myLooper() == Looper.getMainLooper()) {
+        "This method must be executed in the UI thread"
+    }
+}
+
+fun requiredWorkThread() {
+    check(Looper.myLooper() != Looper.getMainLooper()) {
+        "This method must be executed in the work thread"
+    }
+}
+
 fun Context?.getLifecycle(): Lifecycle? {
     var context: Context? = this
     while (true) {
@@ -180,26 +192,26 @@ fun Float.format(newScale: Int): Float {
     return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).toFloat()
 }
 
-fun Drawable.getLastDrawable(): Drawable? {
-    val drawable = this
-    if (drawable is LayerDrawable) {
-        val layerCount = drawable.numberOfLayers
-        return if (layerCount > 0) {
-            drawable.getDrawable(layerCount - 1).getLastDrawable()
-        } else {
-            null
+fun Drawable.getLastDrawable(): Drawable? =
+    when (val drawable = this) {
+        is LayerDrawable -> {
+            val layerCount = drawable.numberOfLayers
+            if (layerCount > 0) {
+                drawable.getDrawable(layerCount - 1).getLastDrawable()
+            } else {
+                null
+            }
+        }
+        is CrossfadeDrawable -> {
+            drawable.end?.getLastDrawable()
+        }
+        else -> {
+            drawable
         }
     }
-    return drawable
-}
 
-fun Drawable.findCountDrawable(): SketchCountDrawable? =
-    when (this) {
-        is SketchCountDrawable -> this
-        is CrossfadeDrawable -> this.end?.findCountDrawable()
-        is LayerDrawable -> this.getLastDrawable()?.findCountDrawable()
-        else -> null
-    }
+fun Drawable.findLastCountDrawable(): SketchCountDrawable? =
+    getLastDrawable() as? SketchCountDrawable
 
 internal fun View.fixedWidth(): Int? {
     val layoutParams = layoutParams?.takeIf { it.width > 0 } ?: return null

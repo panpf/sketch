@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 
 interface DecodeInterceptor<REQUEST : ImageRequest, RESULT> {
 
@@ -14,13 +15,13 @@ interface DecodeInterceptor<REQUEST : ImageRequest, RESULT> {
 
         val sketch: Sketch
 
-        val initialRequest: REQUEST
-
         val request: REQUEST
+
+        val requestExtras: RequestExtras
 
         val fetchResult: FetchResult?
 
         @WorkerThread
-        suspend fun proceed(request: REQUEST): RESULT
+        suspend fun proceed(): RESULT
     }
 }

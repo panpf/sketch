@@ -16,7 +16,7 @@ class BitmapResultDiskCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDe
         resultCacheHelper?.lock?.lock()
         try {
             return resultCacheHelper?.read()
-                ?: chain.proceed(request).apply {
+                ?: chain.proceed().apply {
                     resultCacheHelper?.write(this@apply)
                 }
         } finally {
