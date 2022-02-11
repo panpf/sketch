@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Rect
 import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
@@ -29,11 +28,21 @@ class SvgBitmapDecoder(
         const val MIME_TYPE = "image/svg+xml"
     }
 
-    private val svg by lazy {
-        dataSource.newInputStream().use { SVG.getFromInputStream(it) }
+    override suspend fun executeDecode(): BitmapDecodeResult {
+        val svg = dataSource.newInputStream().use { SVG.getFromInputStream(it) }
+        val imageInfo = readImageInfo(svg)
+        val exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
+        return realDecode(
+            imageInfo = imageInfo,
+            exifOrientation = exifOrientation,
+            decodeFull = { decodeConfig: DecodeConfig ->
+                realDecodeFull(imageInfo, decodeConfig, svg)
+            },
+            decodeRegion = null
+        )
     }
 
-    override fun readImageInfo(): ImageInfo {
+    private fun readImageInfo(svg: SVG): ImageInfo {
         val width: Int
         val height: Int
         val viewBox: RectF? = svg.documentViewBox
@@ -47,10 +56,7 @@ class SvgBitmapDecoder(
         return ImageInfo(width, height, MIME_TYPE)
     }
 
-    override fun readExifOrientation(imageInfo: ImageInfo): Int =
-        ExifInterface.ORIENTATION_UNDEFINED
-
-    override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+    private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig, svg: SVG): Bitmap {
         val svgWidth: Float
         val svgHeight: Float
         val viewBox: RectF? = svg.documentViewBox
@@ -92,12 +98,6 @@ class SvgBitmapDecoder(
         svg.renderToCanvas(canvas)
         return bitmap
     }
-
-    override fun canDecodeRegion(mimeType: String): Boolean = false
-
-    override fun decodeRegion(
-        imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
-    ): Bitmap = throw UnsupportedOperationException("SVGBitmapDecoder not support decode region")
 
     override fun close() {
 

@@ -2,7 +2,6 @@ package com.github.panpf.sketch.decode
 
 import android.annotation.TargetApi
 import android.graphics.Bitmap
-import android.graphics.Rect
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build.VERSION
@@ -13,6 +12,7 @@ import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
 import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
+import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
@@ -37,28 +37,49 @@ class VideoFrameDecoder(
     val mimeType: String,
 ) : StandardBitmapDecoder(sketch, request, dataSource.from) {
 
-    private val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
-        MediaMetadataRetriever().apply {
-            if (dataSource is ContentDataSource) {
-                setDataSource(dataSource.context, dataSource.contentUri)
-            } else {
-                val file = runBlocking {
-                    dataSource.file()
+    override suspend fun executeDecode(): BitmapDecodeResult {
+        // todo 缓存视频帧到磁盘缓存
+        val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
+            MediaMetadataRetriever().apply {
+                if (dataSource is ContentDataSource) {
+                    setDataSource(dataSource.context, dataSource.contentUri)
+                } else {
+                    val file = runBlocking {
+                        dataSource.file()
+                    }
+                    setDataSource(file.path)
                 }
-                setDataSource(file.path)
+            }
+        }
+        try {
+            val imageInfo = readImageInfo(mediaMetadataRetriever)
+            val exifOrientation = if (request.ignoreExifOrientation != true) {
+                readExifOrientation(mediaMetadataRetriever)
+            } else {
+                ExifInterface.ORIENTATION_UNDEFINED
+            }
+            return realDecode(
+                imageInfo = imageInfo,
+                exifOrientation = exifOrientation,
+                decodeFull = {
+                    realDecodeFull(mediaMetadataRetriever, imageInfo, it)
+                },
+                decodeRegion = null
+            )
+        } finally {
+            if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+                mediaMetadataRetriever.close()
+            } else {
+                mediaMetadataRetriever.release()
             }
         }
     }
 
     override fun close() {
-        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            mediaMetadataRetriever.close()
-        } else {
-            mediaMetadataRetriever.release()
-        }
+
     }
 
-    override fun readImageInfo(): ImageInfo {
+    private fun readImageInfo(mediaMetadataRetriever: MediaMetadataRetriever): ImageInfo {
         val srcWidth = mediaMetadataRetriever
             .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
         val srcHeight = mediaMetadataRetriever
@@ -70,7 +91,7 @@ class VideoFrameDecoder(
         return ImageInfo(srcWidth, srcHeight, mimeType)
     }
 
-    override fun readExifOrientation(imageInfo: ImageInfo): Int =
+    private fun readExifOrientation(mediaMetadataRetriever: MediaMetadataRetriever): Int =
         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
             val videoRotation = mediaMetadataRetriever
                 .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
@@ -88,8 +109,11 @@ class VideoFrameDecoder(
             ExifInterface.ORIENTATION_UNDEFINED
         }
 
-    override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
-        // todo 缓存视频帧到磁盘缓存
+    private fun realDecodeFull(
+        mediaMetadataRetriever: MediaMetadataRetriever,
+        imageInfo: ImageInfo,
+        decodeConfig: DecodeConfig
+    ): Bitmap {
         val option = request.videoFrameOption() ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros()
             ?: request.videoFramePercentDuration()?.let { percentDuration ->
@@ -134,14 +158,6 @@ class VideoFrameDecoder(
             request, "Failed to decode frame at $frameMicros microseconds."
         )
     }
-
-    override fun canDecodeRegion(mimeType: String): Boolean = false
-
-    override fun decodeRegion(
-        imageInfo: ImageInfo,
-        srcRect: Rect,
-        decodeConfig: DecodeConfig
-    ): Bitmap = throw UnsupportedOperationException("VideoFrameDecoder not support decode region")
 
     class Factory : BitmapDecoder.Factory {
 

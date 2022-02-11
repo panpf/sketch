@@ -2,9 +2,11 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
@@ -25,15 +27,28 @@ open class DefaultBitmapDecoder(
     private val bitmapPool = sketch.bitmapPool
     private val logger = sketch.logger
 
-    override fun readImageInfo(): ImageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
+    override suspend fun executeDecode(): BitmapDecodeResult {
+        val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
+        val exifOrientation = if (request.ignoreExifOrientation != true) {
+            dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
+        } else {
+            ExifInterface.ORIENTATION_UNDEFINED
+        }
+        val canDecodeRegion = ImageFormat.valueOfMimeType(imageInfo.mimeType)
+            ?.supportBitmapRegionDecoder() == true
+        return realDecode(
+            imageInfo,
+            exifOrientation,
+            decodeFull = { decodeConfig ->
+                realDecodeFull(imageInfo, decodeConfig)
+            },
+            decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
+                realDecodeRegion(imageInfo, srcRect, decodeConfig)
+            } else null
+        )
+    }
 
-    override fun readExifOrientation(imageInfo: ImageInfo): Int =
-        dataSource.readExifOrientationWithMimeType(imageInfo.mimeType)
-
-    override fun canDecodeRegion(mimeType: String): Boolean =
-        ImageFormat.valueOfMimeType(mimeType)?.supportBitmapRegionDecoder() == true
-
-    override fun decodeRegion(
+    private fun realDecodeRegion(
         imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
     ): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
@@ -84,7 +99,7 @@ open class DefaultBitmapDecoder(
         return bitmap
     }
 
-    override fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+    private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
         val decodeOptions = decodeConfig.toBitmapOptions()
 
         // Set inBitmap from bitmap pool

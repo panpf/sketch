@@ -22,29 +22,19 @@ abstract class StandardBitmapDecoder(
     private val dataFrom: DataFrom,
 ) : AbsBitmapDecoder(sketch, request) {
 
-    protected abstract fun readImageInfo(): ImageInfo
-
-    protected abstract fun readExifOrientation(imageInfo: ImageInfo): Int
-
-    protected abstract fun canDecodeRegion(mimeType: String): Boolean
-
-    protected abstract fun decodeRegion(
-        imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig,
-    ): Bitmap
-
-    protected abstract fun decodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap
-
-    private fun readExifOrientationWrapper(imageInfo: ImageInfo): Int =
-        if (request.ignoreExifOrientation != true) {
-            readExifOrientation(imageInfo)
-        } else {
-            ExifInterface.ORIENTATION_UNDEFINED
-        }
-
-    override suspend fun executeDecode(): BitmapDecodeResult {
-        val imageInfo = readImageInfo()
-        val exifOrientation = readExifOrientationWrapper(imageInfo)
-        val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
+    protected fun realDecode(
+        imageInfo: ImageInfo,
+        exifOrientation: Int,
+        decodeFull: (decodeConfig: DecodeConfig) -> Bitmap,
+        decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
+    ): BitmapDecodeResult {
+        val exifOrientationHelper = ExifOrientationHelper(
+            if (request.ignoreExifOrientation != true) {
+                exifOrientation
+            } else {
+                ExifInterface.ORIENTATION_UNDEFINED
+            }
+        )
 
         val resize = request.resize
         val applySize = exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
@@ -55,31 +45,30 @@ abstract class StandardBitmapDecoder(
         val resizeTransformed: ResizeTransformed?
         val bitmap = if (
             addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true
-            && canDecodeRegion(imageInfo.mimeType)
+            && decodeRegion != null
         ) {
             resizeTransformed = ResizeTransformed(resize)
-            decodeRegionWrapper(imageInfo, decodeConfig, addedResize)
+            decodeRegionWrapper(imageInfo, decodeConfig, addedResize, decodeRegion)
         } else {
             resizeTransformed = null
-            decodeFullWrapper(imageInfo, decodeConfig, addedResize)
+            decodeFullWrapper(imageInfo, decodeConfig, addedResize, decodeFull)
         }
 
-        return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataFrom)
-            .apply {
-                resizeTransformed?.let {
-                    addTransformed(it)
-                }
-                val inSampleSize = decodeConfig.inSampleSize
-                if (inSampleSize != null && inSampleSize > 1) {
-                    addTransformed(InSampledTransformed(inSampleSize))
-                }
-            }.build()
+        return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataFrom).apply {
+            decodeConfig.inSampleSize?.takeIf { it > 1 }?.let {
+                addTransformed(InSampledTransformed(it))
+            }
+            resizeTransformed?.let {
+                addTransformed(it)
+            }
+        }.build()
     }
 
     private fun decodeRegionWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
         addedResize: Resize,
+        decodeRegion: (srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap
     ): Bitmap {
         val precision = addedResize.precision(imageInfo.width, imageInfo.height)
         val resizeMapping = calculateResizeMapping(
@@ -102,13 +91,14 @@ abstract class StandardBitmapDecoder(
             )
         )
 
-        return decodeRegion(imageInfo, resizeMapping.srcRect, decodeConfig)
+        return decodeRegion(resizeMapping.srcRect, decodeConfig)
     }
 
     private fun decodeFullWrapper(
         imageInfo: ImageInfo,
         decodeConfig: DecodeConfig,
         addedResize: Resize?,
+        decodeFull: (decodeConfig: DecodeConfig) -> Bitmap
     ): Bitmap {
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
         if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
@@ -140,6 +130,6 @@ abstract class StandardBitmapDecoder(
                 } ?: 1
             )
         }
-        return decodeFull(imageInfo, decodeConfig)
+        return decodeFull(decodeConfig)
     }
 }
