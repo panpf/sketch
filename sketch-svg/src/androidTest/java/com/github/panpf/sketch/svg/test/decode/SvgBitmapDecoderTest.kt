@@ -12,6 +12,7 @@ import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestExtras
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,16 +30,22 @@ class SvgBitmapDecoderTest {
         // normal
         val request = LoadRequest(newAssetUri("sample.svg"))
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample.svg"), null)
-        Assert.assertNotNull(SvgBitmapDecoder.Factory(false).create(sketch, request, fetchResult))
+        Assert.assertNotNull(
+            SvgBitmapDecoder.Factory(false).create(sketch, request, RequestExtras(), fetchResult)
+        )
 
         // not svg
         val request1 = LoadRequest(newAssetUri("sample.png"))
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
-        Assert.assertNull(SvgBitmapDecoder.Factory(false).create(sketch, request1, fetchResult1))
+        Assert.assertNull(
+            SvgBitmapDecoder.Factory(false).create(sketch, request1, RequestExtras(), fetchResult1)
+        )
 
         // external mimeType it's right
         val fetchResult2 = FetchResult(ErrorDataSource(sketch, request, LOCAL), "image/svg+xml")
-        Assert.assertNotNull(SvgBitmapDecoder.Factory(false).create(sketch, request, fetchResult2))
+        Assert.assertNotNull(
+            SvgBitmapDecoder.Factory(false).create(sketch, request, RequestExtras(), fetchResult2)
+        )
     }
 
     @Test

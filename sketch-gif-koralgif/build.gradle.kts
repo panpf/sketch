@@ -29,7 +29,7 @@ android {
 dependencies {
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
-    api("pl.droidsonroids:relinker:${property("RELINKER")}")
+    api("pl.droidsonroids.gif:android-gif-drawable:${property("ANDROID_GIF_DRAWABLE")}")
     api(project(":sketch-gif"))
 
     testImplementation("junit:junit:${property("JUNIT")}")

@@ -23,10 +23,10 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.util.byteCountCompat
+import pl.droidsonroids.gif.GifDrawable
+import pl.droidsonroids.gif.bitmapCompat
 
-/**
- * 增加了从 BitmapPool 中寻找可复用 Bitmap 的功能以及图片的信息
- */
 @SuppressLint("RestrictedApi")
 class SketchKoralGifDrawable constructor(
     override val requestKey: String,
@@ -34,8 +34,10 @@ class SketchKoralGifDrawable constructor(
     private val imageInfo: ImageInfo,
     private val exifOrientation: Int,
     override val imageDataFrom: DataFrom,
-    private val gifDrawable: ReuseGifDrawable,
+    private val gifDrawable: GifDrawable,
 ) : DrawableWrapper(gifDrawable), SketchAnimatableDrawable {
+
+    private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
 
     override val imageWidth: Int
         get() = imageInfo.width
@@ -50,32 +52,42 @@ class SketchKoralGifDrawable constructor(
         get() = exifOrientation
 
     override val bitmapWidth: Int
-        get() = gifDrawable.bitmapWidth
+        get() = gifDrawable.bitmapCompat.width
 
     override val bitmapHeight: Int
-        get() = gifDrawable.bitmapHeight
+        get() = gifDrawable.bitmapCompat.height
 
     override val bitmapByteCount: Int
-        get() = gifDrawable.bitmapByteCount
+        get() = gifDrawable.bitmapCompat.byteCountCompat
 
     override val bitmapConfig: Bitmap.Config?
-        get() = gifDrawable.bitmapConfig
+        get() = gifDrawable.bitmapCompat.config
 
     override val transformedList: List<Transformed>? = null
 
-    override fun start() = gifDrawable.start()
+    override fun start() {
+        val isRunning = isRunning
+        if (!isRunning) {
+            callbacks.forEach { it.onAnimationStart(this) }
+        }
+    }
 
-    override fun stop() = gifDrawable.stop()
-
-    override fun isRunning(): Boolean = gifDrawable.isRunning
+    override fun stop() {
+        val isRunning = isRunning
+        if (isRunning) {
+            callbacks.forEach { it.onAnimationEnd(this) }
+        }
+    }
 
     override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
-        gifDrawable.registerAnimationCallback(callback)
+        callbacks.add(callback)
     }
 
     override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
-        return gifDrawable.unregisterAnimationCallback(callback)
+        return callbacks.remove(callback)
     }
 
-    override fun clearAnimationCallbacks() = gifDrawable.clearAnimationCallbacks()
+    override fun clearAnimationCallbacks() = callbacks.clear()
+
+    override fun isRunning(): Boolean = gifDrawable.isRunning
 }
