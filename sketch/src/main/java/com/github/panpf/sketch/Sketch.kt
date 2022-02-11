@@ -7,9 +7,9 @@ import android.widget.ImageView
 import androidx.annotation.AnyThread
 import com.github.panpf.sketch.Sketch.SketchSingleton
 import com.github.panpf.sketch.cache.BitmapPool
+import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.CountDrawablePendingManager
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
@@ -104,9 +104,9 @@ class Sketch private constructor(
     val httpStack = _httpStack ?: HurlStack.new()
 
     val memoryCache: MemoryCache = _memoryCache
-        ?: LruMemoryCache(logger, (appContext.defaultMemoryCacheBytes() * 0.5f).roundToLong())
+        ?: LruMemoryCache(logger, (appContext.defaultMemoryCacheBytes() * 0.66f).roundToLong())
     val bitmapPool: BitmapPool = _bitmapPool
-        ?: LruBitmapPool(logger, (appContext.defaultMemoryCacheBytes() * 0.5f).roundToLong())
+        ?: LruBitmapPool(logger, (appContext.defaultMemoryCacheBytes() * 0.33f).roundToLong())
     val diskCache = _diskCache ?: LruDiskCache(appContext, logger)
     val countDrawablePendingManager = CountDrawablePendingManager(logger)
 

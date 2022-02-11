@@ -28,7 +28,7 @@ internal fun Context.isLowRamDevice(): Boolean {
 
 internal fun Context.defaultMemoryCacheBytes(): Int {
     val maxCacheBytes =
-        ((if (isLowRamDevice()) 0.33f else 0.4f) * getAppMemoryClassBytes()).roundToInt()
+        ((if (isLowRamDevice()) 0.25f else 0.33f) * getAppMemoryClassBytes()).roundToInt()
     val displayMetrics = resources.displayMetrics
     val screenBytes = displayMetrics.widthPixels * displayMetrics.heightPixels * 4
     // Memory is expected to cache images for up to six screens
