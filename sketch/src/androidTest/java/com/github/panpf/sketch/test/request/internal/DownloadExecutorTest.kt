@@ -9,7 +9,7 @@ import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.internal.DownloadExecutor
-import com.github.panpf.sketch.test.util.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpStack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay

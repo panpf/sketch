@@ -8,7 +8,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.test.util.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpStack
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -133,7 +133,13 @@ class SketchTest {
         }
     }
 
-    private class DownloadListenerSupervisor : Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
+    @Test
+    fun test() {
+        TODO("Perfect the test")
+    }
+
+    private class DownloadListenerSupervisor :
+        Listener<DownloadRequest, DownloadResult.Success, DownloadResult.Error> {
 
         val callbackActionList = mutableListOf<String>()
 

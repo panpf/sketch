@@ -13,7 +13,7 @@ import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.util.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpStack
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

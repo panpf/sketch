@@ -29,6 +29,10 @@ dependencies {
     api("androidx.annotation:annotation:${property("ANDROIDX_ANNOTATION")}")
     api(project(":sketch"))
     api(project(":sketch-viewability"))
+
+    testImplementation("junit:junit:${property("JUNIT")}")
+    androidTestImplementation("com.android.support.test:runner:${property("ANDROIDX_TEST_RUNNER")}")
+    androidTestImplementation("com.android.support.test:rules:${property("ANDROIDX_TEST_RULES")}")
 }
 
 /**

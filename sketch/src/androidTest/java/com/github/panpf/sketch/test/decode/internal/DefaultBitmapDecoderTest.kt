@@ -13,8 +13,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
-import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
 import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
@@ -22,15 +20,12 @@ import com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.resize.Scale.END_CROP
 import com.github.panpf.sketch.decode.resize.Scale.FILL
 import com.github.panpf.sketch.decode.resize.Scale.START_CROP
-import com.github.panpf.sketch.decode.resize.getResizeTransformed
 import com.github.panpf.sketch.decode.resize.longImageClipPrecision
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.test.util.ExifOrientationTestFileHelper
-import com.github.panpf.sketch.test.util.corners
+import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.util.format
-import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test

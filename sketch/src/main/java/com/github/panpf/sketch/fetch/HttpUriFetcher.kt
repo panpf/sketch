@@ -14,7 +14,7 @@ import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.http.ProgressListenerDelegate
 import com.github.panpf.sketch.request.internal.RequestDepthException
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import kotlinx.coroutines.CoroutineScope
