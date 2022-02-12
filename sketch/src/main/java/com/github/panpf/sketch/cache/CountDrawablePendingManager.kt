@@ -19,7 +19,7 @@ class CountDrawablePendingManager constructor(private val logger: Logger) {
         val old = map[key]
         if (old != drawable) {
             if (old != null) {
-                realComplete("$callingStation:mark", key, drawable)
+                realComplete("$callingStation:mark", key, old)
             }
             map[key] = drawable
         }
