@@ -26,7 +26,7 @@ import java.io.InputStream
 class ByteArrayDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    override val from: DataFrom,
+    override val dataFrom: DataFrom,
     val data: ByteArray,
 ) : DataSource {
 
@@ -39,5 +39,5 @@ class ByteArrayDataSource constructor(
     override fun newFileDescriptor(): FileDescriptor? = null
 
     override fun toString(): String =
-        "ByteArrayDataSource(from=$from,length=${data.size.toLong()})"
+        "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"
 }

@@ -40,7 +40,7 @@ class FileDataSourceTest {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertTrue(file === this.file)
-            Assert.assertEquals(DataFrom.LOCAL, this.from)
+            Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
 

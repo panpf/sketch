@@ -27,7 +27,7 @@ import java.io.InputStream
 class DiskCacheDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    override val from: DataFrom,
+    override val dataFrom: DataFrom,
     val diskCacheSnapshot: DiskCache.Snapshot,
 ) : DataSource {
 
@@ -48,5 +48,5 @@ class DiskCacheDataSource constructor(
     override suspend fun file(): File = diskCacheSnapshot.file
 
     override fun toString(): String =
-        "DiskCacheDataSource(from=$from,file='${diskCacheSnapshot.file.path}')"
+        "DiskCacheDataSource(from=$dataFrom,file='${diskCacheSnapshot.file.path}')"
 }

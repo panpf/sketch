@@ -36,7 +36,7 @@ interface DataSource {
     val context: Context
         get() = sketch.appContext
 
-    val from: DataFrom
+    val dataFrom: DataFrom
 
     @Throws(IOException::class)
     fun length(): Long

@@ -17,7 +17,7 @@ interface FetchResult {
     val mimeType: String?
 
     val from: DataFrom
-        get() = dataSource.from
+        get() = dataSource.dataFrom
 
     val headerBytes: HeaderBytes
 }

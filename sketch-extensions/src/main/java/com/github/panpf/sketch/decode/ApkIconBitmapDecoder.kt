@@ -2,7 +2,7 @@ package com.github.panpf.sketch.decode
 
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
+import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
@@ -10,16 +10,16 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.readApkIcon
 
 class ApkIconBitmapDecoder(
-    sketch: Sketch,
-    request: LoadRequest,
-    val fetchResult: FetchResult
-) : AbsBitmapDecoder(sketch, request) {
+    private val sketch: Sketch,
+    private val request: LoadRequest,
+    private val fetchResult: FetchResult
+) : BitmapDecoder {
 
     companion object {
         const val MIME_TYPE = "application/vnd.android.package-archive"
     }
 
-    override suspend fun executeDecode(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         val file = fetchResult.dataSource.file()
         val bitmap = readApkIcon(
             sketch.appContext,
@@ -27,16 +27,13 @@ class ApkIconBitmapDecoder(
             false,
             sketch.bitmapPool
         )
-        val imageInfo = ImageInfo(
-            bitmap.width,
-            bitmap.height,
-            MIME_TYPE,
-        )
-        return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
-    }
-
-    override fun close() {
-
+        val imageInfo = ImageInfo(bitmap.width, bitmap.height, MIME_TYPE)
+        return BitmapDecodeResult(
+            bitmap,
+            imageInfo,
+            ExifInterface.ORIENTATION_UNDEFINED,
+            LOCAL
+        ).applyResize(sketch.bitmapPool, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

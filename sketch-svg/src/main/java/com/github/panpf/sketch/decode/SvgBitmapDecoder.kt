@@ -7,7 +7,8 @@ import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
+import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isSvg
 import com.github.panpf.sketch.request.LoadRequest
@@ -17,29 +18,30 @@ import com.github.panpf.sketch.util.toSoftware
 import kotlin.math.roundToInt
 
 class SvgBitmapDecoder(
-    sketch: Sketch,
-    request: LoadRequest,
+    private val sketch: Sketch,
+    private val request: LoadRequest,
     private val dataSource: DataSource,
-    val useViewBoundsAsIntrinsicSize: Boolean = true,
-    val backgroundColor: Int?,
-) : StandardBitmapDecoder(sketch, request, dataSource.from) {
+    private val useViewBoundsAsIntrinsicSize: Boolean = true,
+    private val backgroundColor: Int?,
+) : BitmapDecoder {
 
     companion object {
         const val MIME_TYPE = "image/svg+xml"
     }
 
-    override suspend fun executeDecode(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         val svg = dataSource.newInputStream().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)
-        val exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         return realDecode(
+            request,
+            dataSource.dataFrom,
             imageInfo = imageInfo,
-            exifOrientation = exifOrientation,
+            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             decodeFull = { decodeConfig: DecodeConfig ->
                 realDecodeFull(imageInfo, decodeConfig, svg)
             },
             decodeRegion = null
-        )
+        ).applyResize(sketch.bitmapPool, request.resize)
     }
 
     private fun readImageInfo(svg: SVG): ImageInfo {
@@ -97,10 +99,6 @@ class SvgBitmapDecoder(
         }
         svg.renderToCanvas(canvas)
         return bitmap
-    }
-
-    override fun close() {
-
     }
 
     class Factory(val useViewBoundsAsIntrinsicSize: Boolean = true) : BitmapDecoder.Factory {

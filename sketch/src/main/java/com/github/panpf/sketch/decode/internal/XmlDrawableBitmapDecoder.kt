@@ -15,13 +15,13 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.drawableToBitmap
 
 class XmlDrawableBitmapDecoder(
-    sketch: Sketch,
-    request: LoadRequest,
-    val resources: Resources,
-    val drawableResId: Int
-) : AbsBitmapDecoder(sketch, request) {
+    private val sketch: Sketch,
+    private val request: LoadRequest,
+    private val resources: Resources,
+    private val drawableResId: Int
+) : BitmapDecoder {
 
-    override suspend fun executeDecode(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)
             ?: throw BitmapDecodeException(request, "Invalid drawable resource id '$drawableResId'")
@@ -38,10 +38,7 @@ class XmlDrawableBitmapDecoder(
             "image/android-xml",
         )
         return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
-    }
-
-    override fun close() {
-
+            .applyResize(sketch.bitmapPool, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

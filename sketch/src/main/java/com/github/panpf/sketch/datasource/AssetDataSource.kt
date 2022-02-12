@@ -28,7 +28,7 @@ class AssetDataSource constructor(
     val assetFileName: String
 ) : DataSource {
 
-    override val from: DataFrom
+    override val dataFrom: DataFrom
         get() = DataFrom.LOCAL
 
     private var _length = -1L

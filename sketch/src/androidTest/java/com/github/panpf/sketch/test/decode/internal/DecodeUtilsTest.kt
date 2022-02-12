@@ -79,6 +79,21 @@ class DecodeUtilsTest {
     }
 
     @Test
+    fun testRealDecode() {
+        TODO("Wait for the implementation")
+    }
+
+    @Test
+    fun testApplyExifOrientation() {
+        TODO("Wait for the implementation")
+    }
+
+    @Test
+    fun testApplyResize() {
+        TODO("Wait for the implementation")
+    }
+
+    @Test
     fun testReadImageInfoWithBitmapFactory() {
         val context = InstrumentationRegistry.getContext()
         val sketch = Sketch.new(context)

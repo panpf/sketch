@@ -31,7 +31,7 @@ class ResourceDataSourceTest {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(R.drawable.ic_launcher, this.drawableId)
-            Assert.assertEquals(DataFrom.LOCAL, this.from)
+            Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
 

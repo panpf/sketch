@@ -137,7 +137,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is DiskCacheDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is DiskCacheDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNotNull(diskCache[diskCacheKey])
@@ -146,7 +146,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.DISK_CACHE, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is DiskCacheDataSource && this.dataSource.from == DataFrom.DISK_CACHE
+                    this.dataSource is DiskCacheDataSource && this.dataSource.dataFrom == DataFrom.DISK_CACHE
                 )
             }
             Assert.assertNotNull(diskCache[diskCacheKey])
@@ -168,7 +168,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is ByteArrayDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNull(diskCache[diskCacheKey])
@@ -177,7 +177,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is ByteArrayDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNull(diskCache[diskCacheKey])
@@ -199,7 +199,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is ByteArrayDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNull(diskCache[diskCacheKey])
@@ -208,7 +208,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is ByteArrayDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNull(diskCache[diskCacheKey])
@@ -225,7 +225,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.DISK_CACHE, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is DiskCacheDataSource && this.dataSource.from == DataFrom.DISK_CACHE
+                    this.dataSource is DiskCacheDataSource && this.dataSource.dataFrom == DataFrom.DISK_CACHE
                 )
             }
             Assert.assertNotNull(diskCache[diskCacheKey])
@@ -247,7 +247,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is ByteArrayDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNotNull(diskCache[diskCacheKey])
@@ -256,7 +256,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.from)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is ByteArrayDataSource && this.dataSource.from == DataFrom.NETWORK
+                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertNotNull(diskCache[diskCacheKey])

@@ -56,7 +56,7 @@ class SvgBitmapDecoderTest {
     private class ErrorDataSource(
         override val sketch: Sketch,
         override val request: ImageRequest,
-        override val from: DataFrom
+        override val dataFrom: DataFrom
     ) : DataSource {
         override fun length(): Long = throw UnsupportedOperationException("Unsupported length()")
 

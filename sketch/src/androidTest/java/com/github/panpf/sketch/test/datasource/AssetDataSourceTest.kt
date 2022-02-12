@@ -29,7 +29,7 @@ class AssetDataSourceTest {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals("sample.jpeg", this.assetFileName)
-            Assert.assertEquals(DataFrom.LOCAL, this.from)
+            Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
 

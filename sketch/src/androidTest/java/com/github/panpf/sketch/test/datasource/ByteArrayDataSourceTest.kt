@@ -21,13 +21,13 @@ class ByteArrayDataSourceTest {
         ByteArrayDataSource(
             sketch = sketch,
             request = request,
-            from = DataFrom.MEMORY,
+            dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(37, this.length())
-            Assert.assertEquals(DataFrom.MEMORY, this.from)
+            Assert.assertEquals(DataFrom.MEMORY, this.dataFrom)
         }
     }
 
@@ -38,7 +38,7 @@ class ByteArrayDataSourceTest {
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest("http://sample.jpeg"),
-            from = DataFrom.MEMORY,
+            dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
             Assert.assertNull(newFileDescriptor())
@@ -52,7 +52,7 @@ class ByteArrayDataSourceTest {
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest("http://sample.jpeg"),
-            from = DataFrom.MEMORY,
+            dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
             newInputStream().close()
@@ -66,7 +66,7 @@ class ByteArrayDataSourceTest {
         ByteArrayDataSource(
             sketch = sketch,
             request = LoadRequest("http://sample.jpeg"),
-            from = DataFrom.MEMORY,
+            dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
             Assert.assertEquals(

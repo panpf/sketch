@@ -33,13 +33,13 @@ class DiskCacheDataSourceTest {
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
-            from = DataFrom.DISK_CACHE,
+            dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertTrue(diskCacheSnapshot === this.diskCacheSnapshot)
-            Assert.assertEquals(DataFrom.DISK_CACHE, this.from)
+            Assert.assertEquals(DataFrom.DISK_CACHE, this.dataFrom)
             Assert.assertEquals(540456, length())
         }
     }
@@ -61,7 +61,7 @@ class DiskCacheDataSourceTest {
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
-            from = DataFrom.DISK_CACHE,
+            dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertNull(newFileDescriptor())
@@ -85,7 +85,7 @@ class DiskCacheDataSourceTest {
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
-            from = DataFrom.DISK_CACHE,
+            dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             newInputStream().close()
@@ -109,7 +109,7 @@ class DiskCacheDataSourceTest {
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
-            from = DataFrom.DISK_CACHE,
+            dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             val file = runBlocking {
@@ -139,7 +139,7 @@ class DiskCacheDataSourceTest {
         DiskCacheDataSource(
             sketch = sketch,
             request = request,
-            from = DataFrom.DISK_CACHE,
+            dataFrom = DataFrom.DISK_CACHE,
             diskCacheSnapshot = diskCacheSnapshot,
         ).apply {
             Assert.assertEquals(

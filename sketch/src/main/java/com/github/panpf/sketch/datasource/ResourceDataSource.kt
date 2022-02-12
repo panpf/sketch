@@ -32,7 +32,7 @@ class ResourceDataSource constructor(
     @RawRes @DrawableRes val drawableId: Int
 ) : DataSource {
 
-    override val from: DataFrom
+    override val dataFrom: DataFrom
         get() = DataFrom.LOCAL
 
     private var _length = -1L

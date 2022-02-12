@@ -35,7 +35,7 @@ class ContentDataSource constructor(
     val contentUri: Uri
 ) : DataSource {
 
-    override val from: DataFrom = DataFrom.LOCAL
+    override val dataFrom: DataFrom = DataFrom.LOCAL
 
     private var _length = -1L
 

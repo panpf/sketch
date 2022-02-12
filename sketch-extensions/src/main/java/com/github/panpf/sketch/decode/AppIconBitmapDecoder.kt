@@ -4,7 +4,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.AbsBitmapDecoder
+import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -14,13 +14,13 @@ import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.drawableToBitmap
 
 class AppIconBitmapDecoder(
-    sketch: Sketch,
-    request: LoadRequest,
-    val packageName: String,
-    val versionCode: Int,
-) : AbsBitmapDecoder(sketch, request) {
+    private val sketch: Sketch,
+    private val request: LoadRequest,
+    private val packageName: String,
+    private val versionCode: Int,
+) : BitmapDecoder {
 
-    override suspend fun executeDecode(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         val packageManager = sketch.appContext.packageManager
         val packageInfo: PackageInfo = try {
             packageManager.getPackageInfo(packageName, 0)
@@ -39,11 +39,12 @@ class AppIconBitmapDecoder(
             bitmap.height,
             AppIconUriFetcher.MIME_TYPE,
         )
-        return BitmapDecodeResult(bitmap, imageInfo, ExifInterface.ORIENTATION_UNDEFINED, LOCAL)
-    }
-
-    override fun close() {
-
+        return BitmapDecodeResult(
+            bitmap,
+            imageInfo,
+            ExifInterface.ORIENTATION_UNDEFINED,
+            LOCAL
+        ).applyResize(sketch.bitmapPool, request.resize)
     }
 
     class Factory : BitmapDecoder.Factory {

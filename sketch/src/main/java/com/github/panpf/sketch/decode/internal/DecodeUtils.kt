@@ -16,17 +16,31 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.Px
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.ImageFormat.HEIC
 import com.github.panpf.sketch.ImageFormat.HEIF
+import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.ResizeTransformed
+import com.github.panpf.sketch.decode.resize.calculateResizeMapping
+import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toHexString
 import java.io.IOException
 import kotlin.math.ceil
@@ -53,8 +67,6 @@ fun limitedOpenGLTextureMaxSize(
 
 /**
  * Calculate the inSampleSize for [BitmapFactory.Options]
- *
- * @param targetScale Margin of error is allowed for better resolution
  */
 fun calculateInSampleSize(
     @Px imageWidth: Int,
@@ -86,6 +98,135 @@ fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
 
 fun calculateSamplingSizeForRegion(value1: Int, inSampleSize: Int): Int {
     return floor((value1 / inSampleSize.toFloat()).toDouble()).toInt()
+}
+
+fun realDecode(
+    request: LoadRequest,
+    dataFrom: DataFrom,
+    imageInfo: ImageInfo,
+    exifOrientation: Int,
+    decodeFull: (decodeConfig: DecodeConfig) -> Bitmap,
+    decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
+): BitmapDecodeResult {
+    val exifOrientationHelper = ExifOrientationHelper(
+        if (request.ignoreExifOrientation != true) {
+            exifOrientation
+        } else {
+            ExifInterface.ORIENTATION_UNDEFINED
+        }
+    )
+
+    val resize = request.resize
+    val applySize = exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
+    val addedResize = resize?.let { exifOrientationHelper.addToResize(it, applySize) }
+    val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+    val resizeTransformed: ResizeTransformed?
+    val bitmap = if (addedResize?.shouldClip(imageInfo.width, imageInfo.height) == true) {
+        val precision = addedResize.precision(imageInfo.width, imageInfo.height)
+        val resizeMapping = calculateResizeMapping(
+            imageWidth = imageInfo.width,
+            imageHeight = imageInfo.height,
+            resizeWidth = addedResize.width,
+            resizeHeight = addedResize.height,
+            resizeScale = addedResize.scale,
+            exactlySize = precision == EXACTLY
+        )
+        // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
+        decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
+            resizeMapping.srcRect.width(),
+            resizeMapping.srcRect.height(),
+            calculateInSampleSize(
+                resizeMapping.srcRect.width(),
+                resizeMapping.srcRect.height(),
+                addedResize.width,
+                addedResize.height
+            )
+        )
+        if (decodeRegion != null) {
+            resizeTransformed = ResizeTransformed(resize)
+            decodeRegion(resizeMapping.srcRect, decodeConfig)
+        } else {
+            resizeTransformed = null
+            decodeFull(decodeConfig)
+        }
+    } else {
+        resizeTransformed = null
+        decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
+            imageInfo.width,
+            imageInfo.height,
+            addedResize?.let {
+                calculateInSampleSize(
+                    imageInfo.width,
+                    imageInfo.height,
+                    it.width,
+                    it.height
+                )
+            } ?: 1
+        )
+        decodeFull(decodeConfig)
+    }
+
+    return BitmapDecodeResult.Builder(bitmap, imageInfo, exifOrientation, dataFrom).apply {
+        decodeConfig.inSampleSize?.takeIf { it > 1 }?.let {
+            addTransformed(InSampledTransformed(it))
+        }
+        resizeTransformed?.let {
+            addTransformed(it)
+        }
+    }.build()
+}
+
+fun BitmapDecodeResult.applyExifOrientation(
+    bitmapPool: BitmapPool,
+    ignoreExifOrientation: Boolean?,
+): BitmapDecodeResult {
+    val exifOrientationHelper = if (ignoreExifOrientation != true) {
+        ExifOrientationHelper(exifOrientation)
+    } else {
+        ExifOrientationHelper(ExifInterface.ORIENTATION_UNDEFINED)
+    }
+    val inBitmap = bitmap
+    val newBitmap = exifOrientationHelper.applyToBitmap(inBitmap, bitmapPool)
+    return if (newBitmap != null) {
+        bitmapPool.free(inBitmap)
+        new(newBitmap) {
+            addTransformed(ExifOrientationTransformed(exifOrientationHelper.exifOrientation))
+            val newSize = exifOrientationHelper.applyToSize(
+                Size(imageInfo.width, imageInfo.height)
+            )
+            imageInfo(ImageInfo(newSize.width, newSize.height, imageInfo.mimeType))
+        }
+    } else {
+        this
+    }
+}
+
+fun BitmapDecodeResult.applyResize(
+    bitmapPool: BitmapPool,
+    resize: Resize?,
+): BitmapDecodeResult {
+    val inBitmap = bitmap
+    return if (resize?.shouldClip(inBitmap.width, inBitmap.height) == true) {
+        val precision = resize.precision(inBitmap.width, inBitmap.height)
+        val mapping = calculateResizeMapping(
+            imageWidth = inBitmap.width,
+            imageHeight = inBitmap.height,
+            resizeWidth = resize.width,
+            resizeHeight = resize.height,
+            resizeScale = resize.scale,
+            exactlySize = precision == EXACTLY
+        )
+        val config = inBitmap.config ?: ARGB_8888
+        val newBitmap = bitmapPool.getOrCreate(mapping.newWidth, mapping.newHeight, config)
+        val canvas = Canvas(newBitmap)
+        canvas.drawBitmap(inBitmap, mapping.srcRect, mapping.destRect, null)
+        bitmapPool.free(inBitmap)
+        new(newBitmap) {
+            addTransformed(ResizeTransformed(resize))
+        }
+    } else {
+        this
+    }
 }
 
 fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {

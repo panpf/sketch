@@ -41,7 +41,7 @@ class ContentDataSourceTest {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(contentUri, this.contentUri)
-            Assert.assertEquals(DataFrom.LOCAL, this.from)
+            Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
 

@@ -11,8 +11,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BitmapDecodeException
-import com.github.panpf.sketch.decode.internal.StandardBitmapDecoder
-import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
+import com.github.panpf.sketch.decode.internal.applyExifOrientation
+import com.github.panpf.sketch.decode.internal.applyResize
+import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
@@ -31,13 +32,13 @@ import kotlin.math.roundToInt
  */
 @TargetApi(VERSION_CODES.O_MR1)
 class VideoFrameDecoder(
-    sketch: Sketch,
-    request: LoadRequest,
+    private val sketch: Sketch,
+    private val request: LoadRequest,
     private val dataSource: DataSource,
-    val mimeType: String,
-) : StandardBitmapDecoder(sketch, request, dataSource.from) {
+    private val mimeType: String,
+) : BitmapDecoder {
 
-    override suspend fun executeDecode(): BitmapDecodeResult {
+    override suspend fun decode(): BitmapDecodeResult {
         // todo 缓存视频帧到磁盘缓存
         val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
             MediaMetadataRetriever().apply {
@@ -59,13 +60,16 @@ class VideoFrameDecoder(
                 ExifInterface.ORIENTATION_UNDEFINED
             }
             return realDecode(
+                request,
+                dataSource.dataFrom,
                 imageInfo = imageInfo,
                 exifOrientation = exifOrientation,
                 decodeFull = {
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it)
                 },
                 decodeRegion = null
-            )
+            ).applyExifOrientation(sketch.bitmapPool, request.ignoreExifOrientation)
+                .applyResize(sketch.bitmapPool, request.resize)
         } finally {
             if (VERSION.SDK_INT >= VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()
@@ -73,10 +77,6 @@ class VideoFrameDecoder(
                 mediaMetadataRetriever.release()
             }
         }
-    }
-
-    override fun close() {
-
     }
 
     private fun readImageInfo(mediaMetadataRetriever: MediaMetadataRetriever): ImageInfo {
