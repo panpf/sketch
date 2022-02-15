@@ -17,8 +17,8 @@ package com.github.panpf.sketch.request
 
 enum class DataFrom {
     NETWORK,
-    DISK_CACHE,
     LOCAL,
+    DISK_CACHE,
     RESULT_DISK_CACHE,
     MEMORY_CACHE,
     MEMORY

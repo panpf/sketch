@@ -17,7 +17,6 @@ package com.github.panpf.sketch.drawable
  */
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
@@ -32,7 +31,7 @@ class SketchGifDrawable constructor(
     override val requestUri: String,
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
-    override val imageDataFrom: DataFrom,
+    override val dataFrom: DataFrom,
     private val movieDrawable: MovieDrawable,
 ) : DrawableWrapper(movieDrawable), SketchAnimatableDrawable {
 
@@ -58,5 +57,5 @@ class SketchGifDrawable constructor(
     override fun clearAnimationCallbacks() = movieDrawable.clearAnimationCallbacks()
 
     override fun toString(): String =
-        "SketchGifDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
+        "SketchGifDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$dataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }

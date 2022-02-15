@@ -29,7 +29,7 @@ open class SketchBitmapDrawable constructor(
     override val requestUri: String,
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
-    override val imageDataFrom: DataFrom,
+    override val dataFrom: DataFrom,
     override val transformedList: List<Transformed>?,
     bitmap: Bitmap,
 ) : BitmapDrawable(null, bitmap), SketchDrawable {
@@ -45,5 +45,5 @@ open class SketchBitmapDrawable constructor(
     }
 
     override fun toString(): String =
-        "SketchBitmapDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
+        "SketchBitmapDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$dataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }

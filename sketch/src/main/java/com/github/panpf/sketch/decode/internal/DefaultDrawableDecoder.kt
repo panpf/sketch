@@ -30,7 +30,7 @@ class DefaultDrawableDecoder(
                         requestUri = request.uriString,
                         imageInfo = result.imageInfo,
                         imageExifOrientation = result.exifOrientation,
-                        imageDataFrom = result.dataFrom,
+                        dataFrom = result.dataFrom,
                         transformedList = result.transformedList,
                         bitmap = result.bitmap
                     )

@@ -28,7 +28,7 @@ class SketchCountBitmapDrawable constructor(
     requestUri = countBitmap.imageUri,
     imageInfo = countBitmap.imageInfo,
     imageExifOrientation = countBitmap.exifOrientation,
-    imageDataFrom = dataFrom,
+    dataFrom = dataFrom,
     transformedList = countBitmap.transformedList,
     bitmap = countBitmap.bitmap!!
 ), SketchCountDrawable {
@@ -60,5 +60,5 @@ class SketchCountBitmapDrawable constructor(
                 && countBitmap == other.countBitmap
 
     override fun toString(): String =
-        "SketchCountBitmapDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
+        "SketchCountBitmapDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$dataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }

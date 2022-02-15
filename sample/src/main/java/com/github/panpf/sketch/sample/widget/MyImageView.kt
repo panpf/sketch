@@ -8,6 +8,7 @@ import com.github.panpf.activity.monitor.ActivityMonitor
 import com.github.panpf.liveevent.Listener
 import com.github.panpf.liveevent.MediatorLiveEvent
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
@@ -58,17 +59,30 @@ open class MyImageView @JvmOverloads constructor(
         val activity = ActivityMonitor.getLastResumedActivity() ?: return
         if (drawable !is SketchDrawable) return
         val message = buildString {
-            append(drawable.imageInfo.toShortString())
+            append("${drawable.imageInfo.toShortString()}/${exifOrientationName(drawable.imageExifOrientation)}")
             append("\n").append("\n")
             append(drawable.bitmapInfo.toShortString())
             append("\n").append("\n")
-            append(
-                "transformedList: ${
-                    drawable.transformedList?.joinToString {
-                        it.toString().replace("Transformed", "")
+            val transformedListString = drawable.transformedList?.let { list ->
+                when {
+                    list.size > 1 -> {
+                        list.joinToString(separator = "\n") { transformed ->
+                            "   ${transformed.toString().replace("Transformed", "")}"
+                        }.let {
+                            "\n$it\n"
+                        }
                     }
-                }"
-            )
+                    list.size == 1 -> {
+                        list.joinToString { transformed ->
+                            transformed.toString().replace("Transformed", "")
+                        }
+                    }
+                    else -> {
+                        null
+                    }
+                }
+            }
+            append("TransformedList(${transformedListString})/${drawable.dataFrom}")
             append("\n").append("\n")
             append(drawable.requestKey)
         }

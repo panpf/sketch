@@ -30,7 +30,7 @@ interface SketchDrawable {
 
     val imageExifOrientation: Int
 
-    val imageDataFrom: DataFrom?
+    val dataFrom: DataFrom?
 
     val transformedList: List<Transformed>?
 

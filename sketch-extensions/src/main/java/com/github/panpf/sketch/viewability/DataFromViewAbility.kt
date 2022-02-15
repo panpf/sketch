@@ -21,9 +21,9 @@ class DataFromViewAbility(
         const val DEFAULT_SIZE_DP = 20f
         private const val FROM_FLAG_COLOR_MEMORY_CACHE = 0x7700FF00   // green
         private const val FROM_FLAG_COLOR_MEMORY = 0x77008800   // dark green
-        private const val FROM_FLAG_COLOR_LOCAL = 0x771E90FF   // dodger blue
-        private const val FROM_FLAG_COLOR_DISK_CACHE = 0x77FF8800 // dark yellow
         private const val FROM_FLAG_COLOR_RESULT_DISK_CACHE = 0x77FFFF00 // yellow
+        private const val FROM_FLAG_COLOR_DISK_CACHE = 0x77FF8800 // dark yellow
+        private const val FROM_FLAG_COLOR_LOCAL = 0x771E90FF   // dodger blue
         private const val FROM_FLAG_COLOR_NETWORK = 0x77FF0000  // red
     }
 
@@ -76,29 +76,30 @@ class DataFromViewAbility(
 
         val lastDrawable = host.drawable?.getLastDrawable() ?: return false
         if (lastDrawable !is SketchDrawable) return false
-        val dataFrom = lastDrawable.imageDataFrom ?: return false
+        val dataFrom = lastDrawable.dataFrom ?: return false
         when (dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
+            DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
             DataFrom.RESULT_DISK_CACHE -> paint.color = FROM_FLAG_COLOR_RESULT_DISK_CACHE
             DataFrom.DISK_CACHE -> paint.color = FROM_FLAG_COLOR_DISK_CACHE
-            DataFrom.NETWORK -> paint.color = FROM_FLAG_COLOR_NETWORK
             DataFrom.LOCAL -> paint.color = FROM_FLAG_COLOR_LOCAL
-            DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
+            DataFrom.NETWORK -> paint.color = FROM_FLAG_COLOR_NETWORK
         }
 
         val view = host.view
+        val viewWidth = host.view.width
         path.apply {
             moveTo(
-                view.right - view.paddingRight - realSize,
-                view.top + view.paddingTop.toFloat()
+                viewWidth - view.paddingRight - realSize,
+                view.paddingTop.toFloat()
             )
             lineTo(
-                view.right - view.paddingRight.toFloat(),
-                view.top + view.paddingTop.toFloat()
+                viewWidth - view.paddingRight.toFloat(),
+                view.paddingTop.toFloat()
             )
             lineTo(
-                view.right - view.paddingRight.toFloat(),
-                view.top - view.paddingTop.toFloat() + realSize
+                viewWidth - view.paddingRight.toFloat(),
+                view.paddingTop.toFloat() + realSize
             )
             close()
         }

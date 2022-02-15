@@ -34,7 +34,7 @@ class SketchKoralGifDrawable constructor(
     override val requestUri: String,
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
-    override val imageDataFrom: DataFrom,
+    override val dataFrom: DataFrom,
     private val gifDrawable: GifDrawable,
 ) : DrawableWrapper(gifDrawable), SketchAnimatableDrawable {
 
@@ -75,5 +75,5 @@ class SketchKoralGifDrawable constructor(
     override fun isRunning(): Boolean = gifDrawable.isRunning
 
     override fun toString(): String =
-        "SketchKoralGifDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
+        "SketchKoralGifDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$dataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }
