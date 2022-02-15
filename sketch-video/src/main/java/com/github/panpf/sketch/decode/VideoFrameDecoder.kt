@@ -39,7 +39,6 @@ class VideoFrameDecoder(
 ) : BitmapDecoder {
 
     override suspend fun decode(): BitmapDecodeResult {
-        // todo 缓存视频帧到磁盘缓存
         val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
             MediaMetadataRetriever().apply {
                 if (dataSource is ContentDataSource) {
@@ -98,7 +97,6 @@ class VideoFrameDecoder(
                 ?.toIntOrNull() ?: 0
             videoRotation.run {
                 when (this) {
-                    0 -> ExifInterface.ORIENTATION_UNDEFINED
                     90 -> ExifInterface.ORIENTATION_ROTATE_90
                     180 -> ExifInterface.ORIENTATION_ROTATE_180
                     270 -> ExifInterface.ORIENTATION_ROTATE_270

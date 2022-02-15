@@ -3,7 +3,6 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.graphics.BitmapFactory
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.R
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -11,12 +10,13 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.DataFrom.RESULT_DISK_CACHE
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.sync.Mutex
-import org.json.JSONException
+import org.json.JSONArray
 import org.json.JSONObject
 
 suspend fun <R> tryLockBitmapResultDiskCache(
@@ -79,7 +79,7 @@ class BitmapResultDiskCacheHelper internal constructor(
                     val jsonString = metaDataDiskCacheSnapshot.newInputStream().use {
                         it.bufferedReader().readText()
                     }
-                    val metaData = MetaData.fromJsonString(jsonString)
+                    val metaData = MetaData(JSONObject(jsonString))
                     val imageInfo = metaData.imageInfo
                     val bitmap = BitmapFactory.decodeFile(
                         bitmapDataDiskCacheSnapshot.file.path,
@@ -90,7 +90,8 @@ class BitmapResultDiskCacheHelper internal constructor(
                         bitmap,
                         metaData.imageInfo,
                         metaData.exifOrientation,
-                        RESULT_DISK_CACHE
+                        RESULT_DISK_CACHE,
+                        metaData.transformedList
                     )
                 } else {
                     bitmapDataDiskCacheSnapshot?.remove()
@@ -121,9 +122,10 @@ class BitmapResultDiskCacheHelper internal constructor(
                     }
                     bitmapDataEditor.commit()
 
-                    val metaData = MetaData(result.imageInfo, result.exifOrientation)
+                    val metaData =
+                        MetaData(result.imageInfo, result.exifOrientation, result.transformedList)
                     metaDataEditor.newOutputStream().bufferedWriter().use {
-                        it.write(metaData.toJsonString())
+                        it.write(metaData.serializationToJSON().toString())
                     }
                     metaDataEditor.commit()
                 } else {
@@ -147,29 +149,44 @@ class BitmapResultDiskCacheHelper internal constructor(
     data class MetaData constructor(
         val imageInfo: ImageInfo,
         val exifOrientation: Int,
+        val transformedList: List<Transformed>?,
     ) {
 
-        // todo transformedList 也要缓存
-        fun toJsonString(): String = JSONObject().apply {
+        constructor(jsonObject: JSONObject) : this(
+            imageInfo = ImageInfo(
+                width = jsonObject.getInt("width"),
+                height = jsonObject.getInt("height"),
+                mimeType = jsonObject.getString("mimeType")
+            ),
+            exifOrientation = jsonObject.getInt("exifOrientation"),
+            transformedList = jsonObject.optJSONArray("transformedList")
+                ?.takeIf { it.length() > 0 }?.run {
+                    0.until(length()).map { index ->
+                        val item = getJSONObject(index)
+                        Class.forName(item.getString("transformedClassName"))
+                            .getConstructor(JSONObject::class.java)
+                            .newInstance(item.getJSONObject("transformedContent")) as Transformed
+                    }
+                },
+        )
+
+        fun serializationToJSON(): JSONObject = JSONObject().apply {
             put("width", imageInfo.width)
             put("height", imageInfo.height)
             put("mimeType", imageInfo.mimeType)
             put("exifOrientation", exifOrientation)
-        }.toString()
-
-        companion object {
-            @Throws(JSONException::class)
-            fun fromJsonString(jsonString: String): MetaData {
-                val json = JSONObject(jsonString)
-                return MetaData(
-                    imageInfo = ImageInfo(
-                        width = json.getInt("width"),
-                        height = json.getInt("height"),
-                        mimeType = json.getString("mimeType")
-                    ),
-                    exifOrientation = json.getInt("exifOrientation"),
-                )
-            }
+            put("transformedList", transformedList?.takeIf { it.isNotEmpty() }?.let { list ->
+                JSONArray().also { array ->
+                    list.forEach { transformed ->
+                        array.put(
+                            JSONObject().let {
+                                it.put("transformedClassName", transformed::class.java.name)
+                                it.put("transformedContent", transformed.serializationToJSON())
+                            }
+                        )
+                    }
+                }
+            })
         }
     }
 }

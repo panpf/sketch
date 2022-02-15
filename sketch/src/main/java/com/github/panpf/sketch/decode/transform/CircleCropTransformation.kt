@@ -5,12 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
+import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.resize.Scale
 import com.github.panpf.sketch.decode.resize.calculateResizeMapping
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.safeConfig
+import org.json.JSONObject
 
 class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transformation {
 
@@ -31,7 +33,6 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
         canvas.drawARGB(0, 0, 0, 0)
         paint.color = -0x10000
 
-        // 绘制圆形的罩子
         canvas.drawCircle(
             (resizeMapping.newWidth / 2).toFloat(),
             (resizeMapping.newHeight / 2).toFloat(),
@@ -39,16 +40,24 @@ class CircleCropTransformation(val scale: Scale = Scale.CENTER_CROP) : Transform
             paint
         )
 
-        // 应用遮罩模式并绘制图片
         paint.xfermode = PorterDuffXfermode(SRC_IN)
         canvas.drawBitmap(input, resizeMapping.srcRect, resizeMapping.destRect, paint)
         return TransformResult(circleBitmap, CircleCropTransformed(scale))
     }
 }
 
+@Keep
 class CircleCropTransformed(val scale: Scale) : Transformed {
     override val key: String = "CircleCropTransformed($scale)"
     override val cacheResultToDisk: Boolean = true
+
+    @Keep
+    constructor(jsonObject: JSONObject) : this(Scale.valueOf(jsonObject.getString("scale")))
+
+    override fun serializationToJSON(): JSONObject =
+        JSONObject().apply {
+            put("scale", scale.name)
+        }
 
     override fun toString(): String = key
 }

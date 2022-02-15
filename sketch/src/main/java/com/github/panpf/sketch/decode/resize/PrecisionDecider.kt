@@ -1,10 +1,15 @@
 package com.github.panpf.sketch.decode.resize
 
+import androidx.annotation.Keep
+import org.json.JSONObject
+
 /**
  * Decide which precision to use
  */
-fun interface PrecisionDecider {
+@Keep
+interface PrecisionDecider {
     fun precision(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision
+    fun serializationToJSON(): JSONObject
 }

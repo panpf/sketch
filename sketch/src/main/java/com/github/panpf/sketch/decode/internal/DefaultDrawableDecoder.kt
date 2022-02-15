@@ -24,15 +24,16 @@ class DefaultDrawableDecoder(
     override suspend fun decode(): DrawableDecodeResult {
         val result = tryLockBitmapMemoryCache(sketch, request) { helper ->
             helper?.read() ?: decodeNewBitmap().let { result ->
-                val drawable = helper?.write(result) ?: SketchBitmapDrawable(
-                    requestKey = request.key,
-                    requestUri = request.uriString,
-                    imageInfo = result.imageInfo,
-                    exifOrientation = result.exifOrientation,
-                    imageDataFrom = result.dataFrom,
-                    transformedList = result.transformedList,
-                    bitmap = result.bitmap
-                )
+                val drawable = helper?.write(result)
+                    ?: SketchBitmapDrawable(
+                        requestKey = request.key,
+                        requestUri = request.uriString,
+                        imageInfo = result.imageInfo,
+                        exifOrientation = result.exifOrientation,
+                        imageDataFrom = result.dataFrom,
+                        transformedList = result.transformedList,
+                        bitmap = result.bitmap
+                    )
                 DrawableDecodeResult(
                     drawable = drawable,
                     imageInfo = result.imageInfo,

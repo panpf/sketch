@@ -15,9 +15,12 @@
  */
 package com.github.panpf.sketch.decode.resize
 
+import androidx.annotation.Keep
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
+import org.json.JSONObject
 
+@Keep
 data class Resize constructor(
     val newSize: NewSize,
     val precisionDecider: PrecisionDecider,
@@ -93,6 +96,24 @@ data class Resize constructor(
             }
             Precision.EXACTLY -> imageWidth != width || imageHeight != height
             Precision.LESS_PIXELS -> false
+        }
+
+    @Keep
+    constructor(jsonObject: JSONObject) : this(
+        RealNewSize(jsonObject.getInt("newSizeWidth"), jsonObject.getInt("newSizeHeight")),
+        Class.forName(jsonObject.getString("precisionDeciderClassName"))
+            .getConstructor(JSONObject::class.java)
+            .newInstance(jsonObject.getJSONObject("precisionDeciderContent")) as PrecisionDecider,
+        Scale.valueOf(jsonObject.getString("scale"))
+    )
+
+    fun serializationToJSON(): JSONObject =
+        JSONObject().apply {
+            put("newSizeWidth", newSize.width)
+            put("newSizeHeight", newSize.height)
+            put("precisionDeciderClassName", precisionDecider::class.java.name)
+            put("precisionDeciderContent", precisionDecider.serializationToJSON())
+            put("scale", scale.name)
         }
 
     override fun toString(): String = cacheKey

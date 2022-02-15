@@ -34,7 +34,6 @@ class FFmpegVideoFrameDecoder(
 ) : BitmapDecoder {
 
     override suspend fun decode(): BitmapDecodeResult {
-        // todo 缓存视频帧到磁盘缓存
         val mediaMetadataRetriever: FFmpegMediaMetadataRetriever by lazy {
             FFmpegMediaMetadataRetriever().apply {
                 if (dataSource is ContentDataSource) {
@@ -89,7 +88,6 @@ class FFmpegVideoFrameDecoder(
             (mediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
                 ?.toIntOrNull() ?: 0).run {
                 when (this) {
-                    0 -> ExifInterface.ORIENTATION_UNDEFINED
                     90 -> ExifInterface.ORIENTATION_ROTATE_90
                     180 -> ExifInterface.ORIENTATION_ROTATE_180
                     270 -> ExifInterface.ORIENTATION_ROTATE_270

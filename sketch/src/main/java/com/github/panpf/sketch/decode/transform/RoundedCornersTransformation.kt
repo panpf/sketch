@@ -8,11 +8,13 @@ import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import androidx.annotation.Keep
 import androidx.annotation.Px
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.safeConfig
+import org.json.JSONObject
 
 class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation {
 
@@ -50,9 +52,14 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
 
     override val cacheKey: String = "RoundedCorners(${radiusArray.joinToString(separator = ",")})"
 
-    override suspend fun transform(sketch: Sketch, request: LoadRequest, input: Bitmap): TransformResult {
+    override suspend fun transform(
+        sketch: Sketch,
+        request: LoadRequest,
+        input: Bitmap
+    ): TransformResult {
         val bitmapPool = sketch.bitmapPool
-        val roundedCornersBitmap = bitmapPool.getOrCreate(input.width, input.height, input.safeConfig)
+        val roundedCornersBitmap =
+            bitmapPool.getOrCreate(input.width, input.height, input.safeConfig)
         val canvas = Canvas(roundedCornersBitmap)
         val paint = Paint()
         paint.isAntiAlias = true
@@ -76,10 +83,20 @@ class RoundedCornersTransformation(val radiusArray: FloatArray) : Transformation
     }
 }
 
-
+@Keep
 class RoundedCornersTransformed(val radiusArray: FloatArray) : Transformed {
     override val key: String = "RoundedCornersTransformed($radiusArray)"
     override val cacheResultToDisk: Boolean = true
+
+    @Keep
+    constructor(jsonObject: JSONObject) : this(
+        jsonObject.getString("radiusArray").split(",").map { it.toFloat() }.toFloatArray()
+    )
+
+    override fun serializationToJSON(): JSONObject =
+        JSONObject().apply {
+            put("radiusArray", radiusArray.joinToString(separator = ","))
+        }
 
     override fun toString(): String = key
 }

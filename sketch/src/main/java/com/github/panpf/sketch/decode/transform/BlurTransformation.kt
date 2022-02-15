@@ -4,9 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
+import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
+import org.json.JSONObject
 
 class BlurTransformation(
     /**
@@ -274,9 +276,22 @@ class BlurTransformation(
     }
 }
 
+@Keep
 class BlurTransformed(val radius: Int, val maskColor: Int?) : Transformed {
     override val key: String = "BlurTransformed($radius,${maskColor ?: -1})"
     override val cacheResultToDisk: Boolean = true
+
+    @Keep
+    constructor(jsonObject: JSONObject) : this(
+        jsonObject.getInt("radius"),
+        jsonObject.optInt("maskColor", -1).takeIf { it != -1 }
+    )
+
+    override fun serializationToJSON(): JSONObject =
+        JSONObject().apply {
+            put("radius", radius)
+            put("maskColor", maskColor)
+        }
 
     override fun toString(): String = key
 }

@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.decode.resize
 
+import androidx.annotation.Keep
 import com.github.panpf.sketch.util.format
+import org.json.JSONObject
 
 /**
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
@@ -10,13 +12,15 @@ import com.github.panpf.sketch.util.format
 fun longImageClipPrecision(
     precision: Precision,
     minDifferenceOfAspectRatio: Float = LongImageClipPrecisionDecider.DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
-): LongImageClipPrecisionDecider = LongImageClipPrecisionDecider(precision, minDifferenceOfAspectRatio)
+): LongImageClipPrecisionDecider =
+    LongImageClipPrecisionDecider(precision, minDifferenceOfAspectRatio)
 
 /**
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.KEEP_ASPECT_RATIO].
  */
+@Keep
 data class LongImageClipPrecisionDecider constructor(
     private val precision: Precision = Precision.KEEP_ASPECT_RATIO,
     val minDifferenceOfAspectRatio: Float = DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO
@@ -25,6 +29,18 @@ data class LongImageClipPrecisionDecider constructor(
     companion object {
         const val DEFAULT_MIN_DIFFERENCE_OF_ASPECT_RATIO: Float = 2f
     }
+
+    @Keep
+    constructor(jsonObject: JSONObject) : this(
+        Precision.valueOf(jsonObject.getString("precision")),
+        jsonObject.getDouble("minDifferenceOfAspectRatio").toFloat()
+    )
+
+    override fun serializationToJSON(): JSONObject =
+        JSONObject().apply {
+            put("precision", precision.name)
+            put("minDifferenceOfAspectRatio", minDifferenceOfAspectRatio)
+        }
 
     init {
         require(precision == Precision.EXACTLY || precision == Precision.KEEP_ASPECT_RATIO) {

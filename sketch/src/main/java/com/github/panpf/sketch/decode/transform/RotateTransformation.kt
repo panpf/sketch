@@ -5,10 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
+import androidx.annotation.Keep
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.request.LoadRequest
+import org.json.JSONObject
 
 class RotateTransformation(val degrees: Int) : Transformation {
 
@@ -52,9 +54,18 @@ class RotateTransformation(val degrees: Int) : Transformation {
     }
 }
 
+@Keep
 class RotateTransformed(val degrees: Int) : Transformed {
     override val key: String = "RotateTransformed($degrees)"
     override val cacheResultToDisk: Boolean = true
+
+    @Keep
+    constructor(jsonObject: JSONObject) : this(jsonObject.getInt("degrees"))
+
+    override fun serializationToJSON(): JSONObject =
+        JSONObject().apply {
+            put("degrees", degrees)
+        }
 
     override fun toString(): String = key
 }
