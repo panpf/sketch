@@ -28,7 +28,10 @@ class SwitchMenuItemFactory(
             binding.switchMenuItemSwitch.isChecked = !binding.switchMenuItemSwitch.isChecked
         }
         binding.switchMenuItemSwitch.setOnCheckedChangeListener { _, isChecked ->
-            item.dataOrThrow.isChecked = isChecked
+            val data = item.dataOrThrow
+            if (data.isChecked != isChecked) {
+                data.isChecked = isChecked
+            }
         }
 
         if (compactModel) {

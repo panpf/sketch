@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.util
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.github.panpf.liveevent.LiveEvent
 import com.github.panpf.sketch.util.isAttachedToWindowCompat
 
 fun <T> safeRun(block: () -> T): T? {
@@ -28,6 +29,24 @@ fun <T> LiveData<T>.observeFromView(view: View, observer: Observer<T>) {
 
         override fun onViewDetachedFromWindow(v: View?) {
             removeObserver(observer)
+        }
+    })
+}
+
+fun <T> LiveEvent<T>.observeFromView(view: View, observer: com.github.panpf.liveevent.Listener<T>) {
+    if (view.isAttachedToWindowCompat) {
+        listenForever(observer)
+    }
+    view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View?) {
+            try {
+                listenForever(observer)
+            } catch (e: IllegalArgumentException) {
+            }
+        }
+
+        override fun onViewDetachedFromWindow(v: View?) {
+            removeListener(observer)
         }
     })
 }

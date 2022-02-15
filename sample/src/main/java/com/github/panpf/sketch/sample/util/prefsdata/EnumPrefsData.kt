@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Looper
 import android.preference.PreferenceManager
 import androidx.lifecycle.MutableLiveData
+import com.github.panpf.liveevent.LiveEvent
 
 class EnumPrefsData<T : Enum<T>>(
     context: Context,
@@ -20,6 +21,7 @@ class EnumPrefsData<T : Enum<T>>(
     } else {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+    val liveEvent = LiveEvent<T>()
 
     init {
         // Trigger initialization, requisite
@@ -47,8 +49,10 @@ class EnumPrefsData<T : Enum<T>>(
         }.apply()
         if (Looper.myLooper() == Looper.getMainLooper()) {
             super.setValue(value ?: defaultValue)
+            liveEvent.value = value ?: defaultValue
         } else {
             super.postValue(value ?: defaultValue)
+            liveEvent.postValue(value ?: defaultValue)
         }
     }
 

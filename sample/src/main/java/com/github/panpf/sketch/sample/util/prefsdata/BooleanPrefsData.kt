@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Looper
 import android.preference.PreferenceManager
 import androidx.lifecycle.MutableLiveData
+import com.github.panpf.liveevent.LiveEvent
 
 class BooleanPrefsData(
     context: Context,
@@ -18,6 +19,7 @@ class BooleanPrefsData(
     } else {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+    val liveEvent = LiveEvent<Boolean>()
 
     init {
         // Trigger initialization, requisite
@@ -45,8 +47,10 @@ class BooleanPrefsData(
         }.apply()
         if (Looper.myLooper() == Looper.getMainLooper()) {
             super.setValue(value ?: defaultValue)
+            liveEvent.value = value ?: defaultValue
         } else {
             super.postValue(value ?: defaultValue)
+            liveEvent.postValue(value ?: defaultValue)
         }
     }
 

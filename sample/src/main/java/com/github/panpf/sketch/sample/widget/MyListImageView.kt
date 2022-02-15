@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
+import com.github.panpf.liveevent.Listener
+import com.github.panpf.liveevent.MediatorLiveEvent
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
@@ -41,7 +41,7 @@ class MyListImageView @JvmOverloads constructor(
             "image/heif" to newLogoDrawable("HEIF"),
         )
     }
-    private val mediatorLiveData = MediatorLiveData<Any>()
+    private val mediatorLiveData = MediatorLiveEvent<Any>()
 
     init {
         mediatorLiveData.observeFromView(this) {
@@ -50,12 +50,12 @@ class MyListImageView @JvmOverloads constructor(
 
         context.appSettingsService.apply {
             mediatorLiveData.apply {
-                val observer = Observer<Any> {
+                val observer = Listener<Any> {
                     postValue(1)
                 }
-                addSource(disabledAnimatableDrawableInList, observer)
-                addSource(pauseLoadWhenScrollInList, observer)
-                addSource(saveCellularTrafficInList, observer)
+                addSource(disabledAnimatableDrawableInList.liveEvent, observer)
+                addSource(pauseLoadWhenScrollInList.liveEvent, observer)
+                addSource(saveCellularTrafficInList.liveEvent, observer)
             }
 
             showProgressIndicatorInList.observeFromView(this@MyListImageView) {

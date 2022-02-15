@@ -2,11 +2,11 @@ package com.github.panpf.sketch.sample.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.github.panpf.liveevent.Listener
+import com.github.panpf.liveevent.MediatorLiveEvent
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.util.observeFromView
 import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
@@ -15,7 +15,7 @@ class MyRecyclerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
-    private val mediatorLiveData = MediatorLiveData<Any>()
+    private val mediatorLiveData = MediatorLiveEvent<Any>()
 
     init {
         val scrollListener = PauseLoadWhenScrollingMixedScrollListener()
@@ -28,18 +28,18 @@ class MyRecyclerView @JvmOverloads constructor(
         }
 
         mediatorLiveData.apply {
-            val observer = Observer<Any> {
+            val observer = Listener<Any> {
                 postValue(1)
             }
-            addSource(appSettingsService.resizePrecision, observer)
-            addSource(appSettingsService.resizeScale, observer)
+            addSource(appSettingsService.resizePrecision.liveEvent, observer)
+            addSource(appSettingsService.resizeScale.liveEvent, observer)
         }
 
         mediatorLiveData.observeFromView(this) {
             adapter?.notifyDataSetChanged()
         }
 
-        appSettingsService.ignoreExifOrientation.observeFromView(this) {
+        appSettingsService.ignoreExifOrientation.liveEvent.observeFromView(this) {
             adapter?.findPagingAdapter()?.refresh()
         }
     }

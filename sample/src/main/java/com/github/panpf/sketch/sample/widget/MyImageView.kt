@@ -2,14 +2,12 @@ package com.github.panpf.sketch.sample.widget
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.text.format.Formatter
 import android.util.AttributeSet
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import com.github.panpf.activity.monitor.ActivityMonitor
+import com.github.panpf.liveevent.Listener
+import com.github.panpf.liveevent.MediatorLiveEvent
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.sample.appSettingsService
@@ -21,7 +19,7 @@ import com.github.panpf.sketch.viewability.showDataFrom
 open class MyImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : SketchImageView(context, attrs, defStyle) {
-    private val mediatorLiveData = MediatorLiveData<Any>()
+    private val mediatorLiveData = MediatorLiveEvent<Any>()
 
     init {
         mediatorLiveData.observeFromView(this) {
@@ -29,15 +27,15 @@ open class MyImageView @JvmOverloads constructor(
         }
         context.appSettingsService.apply {
             mediatorLiveData.apply {
-                val observer = Observer<Any> {
+                val observer = Listener<Any> {
                     postValue(1)
                 }
-                addSource(disabledBitmapMemoryCache, observer)
-                addSource(disabledNetworkContentDiskCache, observer)
-                addSource(disabledBitmapResultDiskCache, observer)
-                addSource(disabledBitmapPool, observer)
-                addSource(inPreferQualityOverSpeed, observer)
-                addSource(bitmapQuality, observer)
+                addSource(disabledBitmapMemoryCache.liveEvent, observer)
+                addSource(disabledNetworkContentDiskCache.liveEvent, observer)
+                addSource(disabledBitmapResultDiskCache.liveEvent, observer)
+                addSource(disabledBitmapPool.liveEvent, observer)
+                addSource(inPreferQualityOverSpeed.liveEvent, observer)
+                addSource(bitmapQuality.liveEvent, observer)
             }
 
             showDataFrom.observeFromView(this@MyImageView) {
