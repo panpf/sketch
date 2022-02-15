@@ -93,8 +93,6 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:${property("ANDROIDX_SWIPEREFRESHLAYOUT")}")
 
     implementation("com.google.android.material:material:${property("GOOGLE_MATERIAL")}")
-    implementation("io.github.panpf.assemblyadapter:assemblyadapter:${property("ASSEMBLY_ADAPTER")}")
-    implementation("io.github.panpf.assemblyadapter:assemblyadapter-ktx:${property("ASSEMBLY_ADAPTER")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler:${property("ASSEMBLY_ADAPTER_4")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging:${property("ASSEMBLY_ADAPTER_4")}")
     implementation("io.github.panpf.assemblyadapter4:assemblyadapter-pager2:${property("ASSEMBLY_ADAPTER_4")}")

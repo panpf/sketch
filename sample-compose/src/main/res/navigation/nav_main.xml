@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/composeFragment">
+
+    <fragment
+        android:id="@+id/composeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ComposeFragment"
+        android:label="ComposeFragment" />
+
+    <action
+        android:id="@+id/action_global_composeFragment"
+        app:destination="@id/composeFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+</navigation>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/placeholder_bg" />
+            <size
+                android:width="150dp"
+                android:height="150dp" />
+        </shape>
+    </item>
+
+    <item
+        android:drawable="@drawable/ic_image_outline"
+        android:gravity="center" />
+</layer-list>

@@ -6,7 +6,7 @@ import android.widget.ImageView.ScaleType.FIT_CENTER
 import android.widget.ImageView.ScaleType.FIT_END
 import android.widget.ImageView.ScaleType.FIT_START
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.SketchCountDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayResult
 
@@ -33,7 +33,7 @@ class CrossfadeTransition @JvmOverloads constructor(
             end = result.drawable,
             fitScale = (target.view as? ImageView)?.fitScale ?: true,
             durationMillis = durationMillis,
-            fadeStart = target.drawable !is SketchCountDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
+            fadeStart = target.drawable !is SketchCountBitmapDrawable,    // If the start drawable is a placeholder drawn from the memory cache, the fade in effect is not used
             preferExactIntrinsicSize = preferExactIntrinsicSize
         )
         when (result) {

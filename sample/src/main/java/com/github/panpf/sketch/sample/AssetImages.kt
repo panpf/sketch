@@ -9,6 +9,12 @@ object AssetImages {
         "asset://sample.webp",
         "asset://sample.heic",
         "asset://sample_anim.gif",
+        "asset://sample_anim.webp",
+    )
+
+    val ANIMS = arrayOf(
+        "asset://sample_anim.gif",
+        "asset://sample_anim.webp",
     )
 
     val HUGES = arrayOf(

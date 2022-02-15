@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recyclerFragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_recyclerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.panpf.sketch.sample.widget.MyRecyclerView
+            android:id="@+id/recycler_recyclerFragment_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.github.panpf.sketch.sample.widget.HintView
+        android:id="@+id/hint_recyclerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

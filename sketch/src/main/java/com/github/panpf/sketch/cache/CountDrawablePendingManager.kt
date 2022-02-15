@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.cache
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.drawable.SketchCountDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.requiredMainThread
 
@@ -11,10 +11,10 @@ class CountDrawablePendingManager constructor(private val logger: Logger) {
         const val MODULE = "CountDrawablePendingManager"
     }
 
-    private val map = HashMap<String, SketchCountDrawable>()
+    private val map = HashMap<String, SketchCountBitmapDrawable>()
 
     @MainThread
-    fun mark(callingStation: String, key: String, drawable: SketchCountDrawable) {
+    fun mark(callingStation: String, key: String, drawable: SketchCountBitmapDrawable) {
         requiredMainThread()
         val old = map[key]
         if (old != drawable) {
@@ -39,7 +39,7 @@ class CountDrawablePendingManager constructor(private val logger: Logger) {
     }
 
     @MainThread
-    private fun realComplete(callingStation: String, key: String, drawable: SketchCountDrawable) {
+    private fun realComplete(callingStation: String, key: String, drawable: SketchCountBitmapDrawable) {
         drawable.setIsPending("$callingStation:complete", false)
         if (drawable.getPendingCount() == 0) {
             map.remove(key)

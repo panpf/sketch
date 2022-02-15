@@ -31,23 +31,23 @@ class SketchCountBitmapDrawable constructor(
     dataFrom = dataFrom,
     transformedList = countBitmap.transformedList,
     bitmap = countBitmap.bitmap!!
-), SketchCountDrawable {
+) {
 
-    override val isRecycled: Boolean
+    val isRecycled: Boolean
         get() = countBitmap.isRecycled
 
     @MainThread
-    override fun setIsDisplayed(callingStation: String, displayed: Boolean) {
+    fun setIsDisplayed(callingStation: String, displayed: Boolean) {
         countBitmap.setIsDisplayed(callingStation, displayed)
     }
 
     @MainThread
-    override fun setIsPending(callingStation: String, waitingUse: Boolean) {
+    fun setIsPending(callingStation: String, waitingUse: Boolean) {
         countBitmap.setIsPending(callingStation, waitingUse)
     }
 
     @MainThread
-    override fun getPendingCount(): Int {
+    fun getPendingCount(): Int {
         return countBitmap.getPendingCount()
     }
 

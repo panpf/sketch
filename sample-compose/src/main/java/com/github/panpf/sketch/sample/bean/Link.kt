@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2021 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable
+package com.github.panpf.sketch.sample.bean
 
-import androidx.annotation.MainThread
+import androidx.navigation.NavDirections
+import com.github.panpf.assemblyadapter.recycler.DiffKey
 
-interface SketchCountDrawable : SketchDrawable {
+data class Link(val title: String, val navDirections: NavDirections) : DiffKey {
 
-    @MainThread
-    fun setIsDisplayed(callingStation: String, displayed: Boolean)
-
-    @MainThread
-    fun setIsPending(callingStation: String, waitingUse: Boolean)
-
-    @MainThread
-    fun getPendingCount(): Int
-
-    val isRecycled: Boolean
+    override val diffKey: String = "Link-$title"
 }

@@ -5,7 +5,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.drawable.SketchBitmapDrawable
-import com.github.panpf.sketch.drawable.SketchCountDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
@@ -45,7 +45,7 @@ class DefaultDrawableDecoder(
         }
 
         val drawable = result.drawable
-        if (drawable is SketchCountDrawable) {
+        if (drawable is SketchCountBitmapDrawable) {
             val key = request.key
             requestExtras.putCountDrawablePendingManagerKey(key)
             withContext(Dispatchers.Main) {
@@ -64,10 +64,6 @@ class DefaultDrawableDecoder(
             requestExtras = requestExtras,
             fetchResult = fetchResult
         ).proceed()
-
-    override fun close() {
-
-    }
 
     class Factory : DrawableDecoder.Factory {
         override fun create(

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tagId_categoryPosition" type="id" />
+    <item name="tagId_imagePosition" type="id" />
+</resources>

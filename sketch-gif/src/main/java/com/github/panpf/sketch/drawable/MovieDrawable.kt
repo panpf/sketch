@@ -18,6 +18,7 @@ import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
@@ -58,7 +59,7 @@ class MovieDrawable constructor(
     private var startTimeMillis = 0L
     private var frameTimeMillis = 0L
 
-    private var repeatCount = REPEAT_INFINITE
+    private var repeatCount = ANIMATION_REPEAT_INFINITE
     private var loopIteration = 0
 
     private var animatedTransformation: AnimatedTransformation? = null
@@ -115,7 +116,7 @@ class MovieDrawable constructor(
             }
             val elapsedTime = (frameTimeMillis - startTimeMillis).toInt()
             loopIteration = elapsedTime / duration
-            invalidate = repeatCount == REPEAT_INFINITE || loopIteration <= repeatCount
+            invalidate = repeatCount == ANIMATION_REPEAT_INFINITE || loopIteration <= repeatCount
             time = if (invalidate) elapsedTime - loopIteration * duration else duration
         }
         movie.setTime(time)
@@ -162,10 +163,10 @@ class MovieDrawable constructor(
      * i.e. setting [repeatCount] to 2 will result in the animation playing 3 times. Setting
      * [repeatCount] to 0 will result in the animation playing once.
      *
-     * Default: [REPEAT_INFINITE]
+     * Default: [ANIMATION_REPEAT_INFINITE]
      */
     fun setRepeatCount(repeatCount: Int) {
-        require(repeatCount >= REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
+        require(repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
         this.repeatCount = repeatCount
     }
 
@@ -295,9 +296,4 @@ class MovieDrawable constructor(
     override fun clearAnimationCallbacks() = callbacks.clear()
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
-
-    companion object {
-        /** Pass this to [setRepeatCount] to repeat infinitely. */
-        const val REPEAT_INFINITE = -1
-    }
 }

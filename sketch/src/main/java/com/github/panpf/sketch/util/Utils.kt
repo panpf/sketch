@@ -24,7 +24,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.SketchCountDrawable
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
@@ -210,8 +210,8 @@ fun Drawable.getLastDrawable(): Drawable? =
         }
     }
 
-fun Drawable.findLastCountDrawable(): SketchCountDrawable? =
-    getLastDrawable() as? SketchCountDrawable
+fun Drawable.findLastCountDrawable(): SketchCountBitmapDrawable? =
+    getLastDrawable() as? SketchCountBitmapDrawable
 
 internal fun View.fixedWidth(): Int? {
     val layoutParams = layoutParams?.takeIf { it.width > 0 } ?: return null
