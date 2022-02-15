@@ -16,52 +16,41 @@ import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 
-fun newBitmapMemoryCacheEditor(
+suspend fun <R> tryLockBitmapMemoryCache(
     sketch: Sketch,
-    request: DisplayRequest
-): BitmapMemoryCacheEditor? {
-    val cachePolicy = request.bitmapMemoryCachePolicy ?: ENABLED
-    return if (cachePolicy.isReadOrWrite) {
-        BitmapMemoryCacheEditor(
-            sketch.memoryCache,
-            request.cacheKey,
-            newBitmapMemoryCacheHelper(sketch, request),
-        )
-    } else {
-        null
-    }
-}
-
-class BitmapMemoryCacheEditor(
-    private val memoryCache: MemoryCache,
-    private val cacheKey: String,
-    private val helper: BitmapMemoryCacheHelper,
-) {
-    private val lock: Mutex by lazy {
-        memoryCache.editLock(cacheKey)
-    }
-
-    suspend fun <R> tryLock(block: suspend BitmapMemoryCacheHelper.() -> R): R {
+    request: DisplayRequest,
+    block: suspend (helper: BitmapMemoryCacheHelper?) -> R
+): R {
+    val helper = newBitmapMemoryCacheHelper(sketch, request)
+    return if (helper != null) {
+        val lockKey = request.cacheKey
+        val lock: Mutex = sketch.diskCache.editLock(lockKey)
         lock.lock()
         try {
-            return block(helper)
+            block(helper)
         } finally {
             lock.unlock()
         }
+    } else {
+        block(helper)
     }
 }
 
 fun newBitmapMemoryCacheHelper(
     sketch: Sketch,
     request: DisplayRequest
-): BitmapMemoryCacheHelper = BitmapMemoryCacheHelper(
-    sketch.memoryCache,
-    request.bitmapMemoryCachePolicy ?: ENABLED,
-    request.cacheKey,
-    sketch.logger,
-    request,
-    sketch.bitmapPool,
-)
+): BitmapMemoryCacheHelper? {
+    val cachePolicy = request.bitmapMemoryCachePolicy ?: ENABLED
+    if (!cachePolicy.isReadOrWrite) return null
+    return BitmapMemoryCacheHelper(
+        sketch.memoryCache,
+        request.bitmapMemoryCachePolicy ?: ENABLED,
+        request.cacheKey,
+        sketch.logger,
+        request,
+        sketch.bitmapPool,
+    )
+}
 
 class BitmapMemoryCacheHelper internal constructor(
     private val memoryCache: MemoryCache,

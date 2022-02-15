@@ -22,44 +22,27 @@ class DefaultDrawableDecoder(
 
     // todo support ImageDecoder gif wep animation heif animation
     override suspend fun decode(): DrawableDecodeResult {
-        val helper = newBitmapMemoryCacheEditor(sketch, request)
-        val result = helper?.tryLock {
-            read() ?: decodeNewBitmap().run {
-                val drawable = write(this) ?: SketchBitmapDrawable(
+        val result = tryLockBitmapMemoryCache(sketch, request) { helper ->
+            helper?.read() ?: decodeNewBitmap().let { result ->
+                val drawable = helper?.write(result) ?: SketchBitmapDrawable(
                     requestKey = request.key,
                     requestUri = request.uriString,
-                    imageInfo = this.imageInfo,
-                    exifOrientation = this.exifOrientation,
-                    imageDataFrom = this.dataFrom,
-                    transformedList = this.transformedList,
-                    bitmap = this.bitmap
+                    imageInfo = result.imageInfo,
+                    exifOrientation = result.exifOrientation,
+                    imageDataFrom = result.dataFrom,
+                    transformedList = result.transformedList,
+                    bitmap = result.bitmap
                 )
                 DrawableDecodeResult(
                     drawable = drawable,
-                    imageInfo = this.imageInfo,
-                    exifOrientation = this.exifOrientation,
-                    dataFrom = this.dataFrom,
-                    transformedList = this.transformedList
+                    imageInfo = result.imageInfo,
+                    exifOrientation = result.exifOrientation,
+                    dataFrom = result.dataFrom,
+                    transformedList = result.transformedList
                 )
             }
-        } ?: decodeNewBitmap().run {
-            val drawable = SketchBitmapDrawable(
-                requestKey = request.key,
-                requestUri = request.uriString,
-                imageInfo = this.imageInfo,
-                exifOrientation = this.exifOrientation,
-                imageDataFrom = this.dataFrom,
-                transformedList = this.transformedList,
-                bitmap = this.bitmap
-            )
-            DrawableDecodeResult(
-                drawable = drawable,
-                imageInfo = this.imageInfo,
-                exifOrientation = this.exifOrientation,
-                dataFrom = this.dataFrom,
-                transformedList = this.transformedList
-            )
         }
+
         val drawable = result.drawable
         if (drawable is SketchCountDrawable) {
             val key = request.key

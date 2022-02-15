@@ -3,6 +3,7 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.graphics.BitmapFactory
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.R
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
@@ -18,7 +19,25 @@ import kotlinx.coroutines.sync.Mutex
 import org.json.JSONException
 import org.json.JSONObject
 
-// todo 改成 editor
+suspend fun <R> tryLockBitmapResultDiskCache(
+    sketch: Sketch,
+    request: LoadRequest,
+    block: suspend (helper: BitmapResultDiskCacheHelper?) -> R
+): R {
+    val helper = newBitmapResultDiskCacheHelper(sketch, request)
+    return if (helper != null) {
+        val lockKey = "${request.cacheKey}_result"
+        val lock: Mutex = sketch.diskCache.editLock(lockKey)
+        lock.lock()
+        try {
+            block(helper)
+        } finally {
+            lock.unlock()
+        }
+    } else {
+        block(helper)
+    }
+}
 
 fun newBitmapResultDiskCacheHelper(
     sketch: Sketch,
@@ -49,10 +68,6 @@ class BitmapResultDiskCacheHelper internal constructor(
         const val MODULE = "BitmapResultDiskCacheHelper"
     }
 
-    val lock: Mutex by lazy {
-        diskCache.editLock(bitmapDataDiskCacheKey)
-    }
-
     @WorkerThread
     fun read(): BitmapDecodeResult? {
         requiredWorkThread()
@@ -71,7 +86,12 @@ class BitmapResultDiskCacheHelper internal constructor(
                         request.newDecodeConfigByQualityParams(imageInfo.mimeType)
                             .toBitmapOptions()
                     )
-                    BitmapDecodeResult(bitmap, metaData.imageInfo, metaData.exifOrientation, RESULT_DISK_CACHE)
+                    BitmapDecodeResult(
+                        bitmap,
+                        metaData.imageInfo,
+                        metaData.exifOrientation,
+                        RESULT_DISK_CACHE
+                    )
                 } else {
                     bitmapDataDiskCacheSnapshot?.remove()
                     metaDataDiskCacheSnapshot?.remove()

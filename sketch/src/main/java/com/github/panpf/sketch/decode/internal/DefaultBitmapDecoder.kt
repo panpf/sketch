@@ -15,7 +15,7 @@ import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 open class DefaultBitmapDecoder(
-    private val sketch: Sketch,
+    sketch: Sketch,
     private val request: LoadRequest,
     private val dataSource: DataSource,
 ) : BitmapDecoder {

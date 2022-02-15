@@ -13,6 +13,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
+import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
 import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
@@ -20,12 +22,15 @@ import com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.decode.resize.Scale.END_CROP
 import com.github.panpf.sketch.decode.resize.Scale.FILL
 import com.github.panpf.sketch.decode.resize.Scale.START_CROP
+import com.github.panpf.sketch.decode.resize.getResizeTransformed
 import com.github.panpf.sketch.decode.resize.longImageClipPrecision
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -41,7 +46,7 @@ class DefaultBitmapDecoderTest {
 
         LoadRequest(newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
@@ -52,7 +57,7 @@ class DefaultBitmapDecoderTest {
 
         LoadRequest(newAssetUri("sample.webp")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
@@ -65,7 +70,7 @@ class DefaultBitmapDecoderTest {
         ExifOrientationTestFileHelper(context, "exif_origin_clock_hor.jpeg").files().forEach {
             LoadRequest(it.file.path).run {
                 DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, it.file))
-                    .use { runBlocking { it.decode() } }
+                    .let { runBlocking { it.decode() } }
             }.apply {
                 Assert.assertEquals("Bitmap(1500x750,ARGB_8888)", bitmap.toShortInfoString())
                 Assert.assertEquals(
@@ -88,7 +93,7 @@ class DefaultBitmapDecoderTest {
             bitmapConfig(RGB_565)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
@@ -101,7 +106,7 @@ class DefaultBitmapDecoderTest {
             bitmapConfig(RGB_565)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
@@ -120,7 +125,7 @@ class DefaultBitmapDecoderTest {
 
         LoadRequest(newAssetUri("sample.jpeg")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
@@ -132,7 +137,7 @@ class DefaultBitmapDecoderTest {
 
         LoadRequest(newAssetUri("sample.webp")).run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
@@ -146,7 +151,7 @@ class DefaultBitmapDecoderTest {
             colorSpace(ColorSpace.get(ADOBE_RGB))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1291x1936,'image/jpeg')", imageInfo.toShortString())
@@ -160,7 +165,7 @@ class DefaultBitmapDecoderTest {
             colorSpace(ColorSpace.get(ADOBE_RGB))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.webp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertEquals("Bitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals("ImageInfo(1080x1344,'image/webp')", imageInfo.toShortString())
@@ -181,7 +186,7 @@ class DefaultBitmapDecoderTest {
             resize(800, 800, precision = LESS_PIXELS)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -201,7 +206,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 500, precision = LESS_PIXELS)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -223,7 +228,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = KEEP_ASPECT_RATIO)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -244,7 +249,7 @@ class DefaultBitmapDecoderTest {
             resize(300, 500, precision = KEEP_ASPECT_RATIO)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -267,7 +272,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = EXACTLY)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -284,7 +289,7 @@ class DefaultBitmapDecoderTest {
             resize(300, 500, precision = EXACTLY)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -303,7 +308,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 333, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -324,7 +329,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 357, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -345,7 +350,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 384, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -368,25 +373,25 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = START_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(newAssetUri("sample.jpeg")) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = CENTER_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(newAssetUri("sample.jpeg")) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = END_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(newAssetUri("sample.jpeg")) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = FILL)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.jpeg"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         Assert.assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
@@ -425,7 +430,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 500, precision = LESS_PIXELS)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -446,7 +451,7 @@ class DefaultBitmapDecoderTest {
             resize(200, 200, precision = LESS_PIXELS)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -469,7 +474,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = KEEP_ASPECT_RATIO)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -490,7 +495,7 @@ class DefaultBitmapDecoderTest {
             resize(300, 500, precision = KEEP_ASPECT_RATIO)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -512,7 +517,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = EXACTLY)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -529,7 +534,7 @@ class DefaultBitmapDecoderTest {
             resize(300, 500, precision = EXACTLY)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -548,7 +553,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 353, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -565,7 +570,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 357, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -582,7 +587,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 384, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -601,25 +606,25 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = START_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(newAssetUri("sample.bmp")) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = CENTER_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(newAssetUri("sample.bmp")) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = END_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(newAssetUri("sample.bmp")) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = FILL)
         }.run {
             DefaultBitmapDecoder(sketch, this, AssetDataSource(sketch, this, "sample.bmp"))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         Assert.assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
@@ -661,7 +666,7 @@ class DefaultBitmapDecoderTest {
             resize(800, 800, precision = LESS_PIXELS)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -681,7 +686,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 500, precision = LESS_PIXELS)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -703,7 +708,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = KEEP_ASPECT_RATIO)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -724,7 +729,7 @@ class DefaultBitmapDecoderTest {
             resize(300, 500, precision = KEEP_ASPECT_RATIO)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -747,7 +752,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = EXACTLY)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -764,7 +769,7 @@ class DefaultBitmapDecoderTest {
             resize(300, 500, precision = EXACTLY)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -783,7 +788,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 333, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -804,7 +809,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 357, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -825,7 +830,7 @@ class DefaultBitmapDecoderTest {
             resize(500, 384, precisionDecider = longImageClipPrecision(KEEP_ASPECT_RATIO))
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -848,25 +853,25 @@ class DefaultBitmapDecoderTest {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = START_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(testFile.file.path) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = CENTER_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(testFile.file.path) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = END_CROP)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(testFile.file.path) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = FILL)
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         Assert.assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
@@ -909,7 +914,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -930,7 +935,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -953,7 +958,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -975,7 +980,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -999,7 +1004,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -1017,7 +1022,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -1037,7 +1042,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -1059,7 +1064,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -1081,7 +1086,7 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.apply {
             Assert.assertTrue(
                 "${bitmap.width}x${bitmap.height}",
@@ -1105,28 +1110,28 @@ class DefaultBitmapDecoderTest {
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val centerCropBitmap = LoadRequest(testFile.file.path) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = CENTER_CROP)
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val endCropBitmap = LoadRequest(testFile.file.path) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = END_CROP)
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         val fillBitmap = LoadRequest(testFile.file.path) {
             resize(500, 300, precision = KEEP_ASPECT_RATIO, scale = FILL)
             ignoreExifOrientation()
         }.run {
             DefaultBitmapDecoder(sketch, this, FileDataSource(sketch, this, testFile.file))
-                .use { runBlocking { it.decode() } }
+                .let { runBlocking { it.decode() } }
         }.bitmap
         Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         Assert.assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)

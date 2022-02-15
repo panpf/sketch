@@ -9,21 +9,12 @@ class BitmapResultDiskCacheInterceptor : DecodeInterceptor<LoadRequest, BitmapDe
     @WorkerThread
     override suspend fun intercept(
         chain: DecodeInterceptor.Chain<LoadRequest, BitmapDecodeResult>,
-    ): BitmapDecodeResult {
-        val request = chain.request
-        val sketch = chain.sketch
-        val resultCacheHelper = newBitmapResultDiskCacheHelper(sketch, request)
-        resultCacheHelper?.lock?.lock()
-        try {
-            return resultCacheHelper?.read()
-                ?: chain.proceed().apply {
-                    resultCacheHelper?.write(this@apply)
-                }
-        } finally {
-            resultCacheHelper?.lock?.unlock()
+    ): BitmapDecodeResult =
+        tryLockBitmapResultDiskCache(chain.sketch, chain.request) { helper ->
+            helper?.read() ?: chain.proceed().apply {
+                helper?.write(this@apply)
+            }
         }
-    }
 
     override fun toString(): String = "BitmapResultDiskCacheInterceptor"
-
 }

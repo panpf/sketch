@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheEditor
+import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
 import com.github.panpf.sketch.drawable.SketchCountDrawable
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
@@ -19,18 +19,15 @@ class DisplayEngineInterceptor : RequestInterceptor<DisplayRequest, DisplayData>
         val sketch = chain.sketch
         val request = chain.request
 
-        newBitmapMemoryCacheEditor(sketch, request)
-            ?.tryLock {
-                read()
-            }?.let { result ->
-                val drawable = result.drawable
-                if (drawable is SketchCountDrawable) {
-                    val key = request.key
-                    chain.requestExtras.putCountDrawablePendingManagerKey(key)
-                    sketch.countDrawablePendingManager.mark("DefaultDrawableDecoder", key, drawable)
-                }
-                return result.toDisplayData()
+        newBitmapMemoryCacheHelper(sketch, request)?.read()?.let { result ->
+            val drawable = result.drawable
+            if (drawable is SketchCountDrawable) {
+                val key = request.key
+                chain.requestExtras.putCountDrawablePendingManagerKey(key)
+                sketch.countDrawablePendingManager.mark("DefaultDrawableDecoder", key, drawable)
             }
+            return result.toDisplayData()
+        }
 
         val placeholderDrawable =
             request.placeholderImage?.getDrawable(sketch, request, null)
