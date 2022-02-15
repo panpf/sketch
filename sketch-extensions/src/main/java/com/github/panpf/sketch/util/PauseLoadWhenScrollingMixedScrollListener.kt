@@ -12,20 +12,9 @@ import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.request.RequestManagerUtils
 import com.github.panpf.sketch.request.isCausedByPauseLoadWhenScrolling
 
-class PauseLoadWhenScrollingMixedScrollListener : RecyclerView.OnScrollListener(),
-    AbsListView.OnScrollListener {
-
-    companion object {
-        fun attach(recyclerView: RecyclerView) {
-            recyclerView.addOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
-        }
-
-        fun attach(view: AbsListView) {
-            view.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
-        }
-    }
-
+class PauseLoadWhenScrollingMixedScrollListener(
     var absListScrollListenerWrapper: AbsListView.OnScrollListener? = null
+) : RecyclerView.OnScrollListener(), AbsListView.OnScrollListener {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)

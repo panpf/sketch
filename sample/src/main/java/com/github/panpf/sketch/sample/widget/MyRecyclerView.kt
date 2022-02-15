@@ -18,7 +18,14 @@ class MyRecyclerView @JvmOverloads constructor(
     private val mediatorLiveData = MediatorLiveData<Any>()
 
     init {
-        PauseLoadWhenScrollingMixedScrollListener.attach(this)
+        val scrollListener = PauseLoadWhenScrollingMixedScrollListener()
+        appSettingsService.pauseLoadWhenScrollInList.observeFromView(this) {
+            if (it == true) {
+                addOnScrollListener(scrollListener)
+            } else {
+                removeOnScrollListener(scrollListener)
+            }
+        }
 
         mediatorLiveData.apply {
             val observer = Observer<Any> {
