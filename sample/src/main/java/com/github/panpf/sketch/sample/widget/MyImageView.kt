@@ -60,23 +60,9 @@ open class MyImageView @JvmOverloads constructor(
         val activity = ActivityMonitor.getLastResumedActivity() ?: return
         if (drawable !is SketchDrawable) return
         val message = buildString {
-            append(
-                "image: ${
-                    drawable.run {
-                        val size = "${imageWidth}x${imageHeight}"
-                        "$size, ${imageMimeType}, ${exifOrientationName(imageExifOrientation)}"
-                    }
-                }"
-            )
+            append(drawable.imageInfo.toShortString())
             append("\n").append("\n")
-            append(
-                "bitmap: ${
-                    drawable.run {
-                        val size = Formatter.formatFileSize(activity, bitmapByteCount.toLong())
-                        "${bitmapWidth}x${bitmapHeight}, ${bitmapConfig}, $size, $imageDataFrom"
-                    }
-                }"
-            )
+            append(drawable.bitmapInfo.toShortString())
             append("\n").append("\n")
             append(
                 "transformedList: ${

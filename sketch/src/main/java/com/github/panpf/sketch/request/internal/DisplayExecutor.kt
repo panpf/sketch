@@ -87,7 +87,7 @@ class DisplayExecutor(private val sketch: Sketch) {
 
     private fun onSuccess(request: DisplayRequest, target: Target, result: Success) {
         sketch.logger.d(MODULE) {
-            "Request Successful. ${request.key}"
+            "Request Successful. ${result.drawable}. ${request.key}"
         }
         transition(target, result) {
             target.onSuccess(result.drawable)

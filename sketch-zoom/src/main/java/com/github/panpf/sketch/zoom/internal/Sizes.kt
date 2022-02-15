@@ -44,7 +44,7 @@ class Sizes {
         drawableSize[drawableWidth] = drawableHeight
         if (drawable is SketchDrawable) {
             val sketchDrawable = drawable as SketchDrawable
-            imageSize[sketchDrawable.imageWidth] = sketchDrawable.imageHeight
+            imageSize[sketchDrawable.imageInfo.width] = sketchDrawable.imageInfo.height
         } else {
             imageSize[drawableWidth] = drawableHeight
         }

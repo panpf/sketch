@@ -238,5 +238,7 @@ interface DownloadRequest : ImageRequest {
                 }
             }
         }
+
+        override fun toString(): String = key
     }
 }

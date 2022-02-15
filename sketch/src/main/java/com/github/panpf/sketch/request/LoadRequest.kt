@@ -597,6 +597,8 @@ interface LoadRequest : DownloadRequest {
                 }
             }
         }
+
+        override fun toString(): String = key
     }
 }
 

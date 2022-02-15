@@ -94,6 +94,8 @@ open class SketchZoomImageView @JvmOverloads constructor(
 
     override fun onSizeChanged(left: Int, top: Int, right: Int, bottom: Int) {
         super.onSizeChanged(left, top, right, bottom)
+        // todo 当被频繁修改尺寸时，这里会频繁触发，最后会触发 InitHandler 的 init，最后会频繁创建 BitmapRegionDecoder 消耗大量内存
+        // todo 当尺寸修改时，没必要再次初始化 BitmapRegionDecoder
         zoomer.reset("onSizeChanged")
     }
 

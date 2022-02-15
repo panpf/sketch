@@ -68,7 +68,7 @@ class KoralGifDrawableDecoder(
             requestKey = request.key,
             requestUri = request.uriString,
             imageInfo = imageInfo,
-            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             imageDataFrom = dataSource.dataFrom,
             gifDrawable = gifDrawable
         )

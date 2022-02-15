@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable
+package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.util.BitmapInfo
+import android.graphics.Bitmap
 
-interface SketchDrawable {
+data class BitmapInfo constructor(
+    val width: Int,
+    val height: Int,
+    val byteCount: Int,
+    val config: Bitmap.Config?
+) {
+    override fun toString(): String =
+        "BitmapInfo(width=$width, height=$height, byteCount=${byteCount.toLong().formatFileSize()}, config=$config)"
 
-    val requestKey: String?
-
-    val requestUri: String
-
-    val imageInfo: ImageInfo
-
-    val imageExifOrientation: Int
-
-    val imageDataFrom: DataFrom?
-
-    val transformedList: List<Transformed>?
-
-    val bitmapInfo: BitmapInfo
+    fun toShortString(): String =
+        "BitmapInfo(${width}x$height,${byteCount.toLong().formatFileSize()},$config)"
 }
+
+fun Bitmap.toBitmapInfo(): BitmapInfo = BitmapInfo(width, height, byteCountCompat, config)

@@ -17,19 +17,20 @@ package com.github.panpf.sketch.drawable
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.request.DataFrom
 
 class SketchCountBitmapDrawable constructor(
     private val countBitmap: CountBitmap,
-    imageDataFrom: DataFrom,
+    dataFrom: DataFrom,
 ) : SketchBitmapDrawable(
-    countBitmap.requestKey,
-    countBitmap.imageUri,
-    countBitmap.imageInfo,
-    countBitmap.exifOrientation,
-    imageDataFrom,
-    countBitmap.transformedList,
-    countBitmap.bitmap!!
+    requestKey = countBitmap.requestKey,
+    requestUri = countBitmap.imageUri,
+    imageInfo = countBitmap.imageInfo,
+    imageExifOrientation = countBitmap.exifOrientation,
+    imageDataFrom = dataFrom,
+    transformedList = countBitmap.transformedList,
+    bitmap = countBitmap.bitmap!!
 ), SketchCountDrawable {
 
     override val isRecycled: Boolean
@@ -57,4 +58,7 @@ class SketchCountBitmapDrawable constructor(
     override fun equals(other: Any?): Boolean =
         other is SketchCountBitmapDrawable
                 && countBitmap == other.countBitmap
+
+    override fun toString(): String =
+        "SketchCountBitmapDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }

@@ -73,7 +73,7 @@ class GifDrawableDecoder constructor(
                 requestKey = request.key,
                 requestUri = request.uriString,
                 imageInfo = imageInfo,
-                exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+                imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
                 imageDataFrom = dataSource.dataFrom,
                 movieDrawable = movieDrawable
             ),

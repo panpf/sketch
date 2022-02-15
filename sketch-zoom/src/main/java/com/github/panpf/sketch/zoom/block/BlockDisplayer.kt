@@ -117,13 +117,13 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
         val exifOrientation: Int
         if (previewDrawable is SketchDrawable) {
             sketchDrawable = previewDrawable
-            val previewWidth = previewDrawable.bitmapWidth
-            val previewHeight = previewDrawable.bitmapHeight
-            val imageWidth = sketchDrawable.imageWidth
-            val imageHeight = sketchDrawable.imageHeight
+            val previewWidth = previewDrawable.bitmapInfo.width
+            val previewHeight = previewDrawable.bitmapInfo.height
+            val imageWidth = sketchDrawable.imageInfo.width
+            val imageHeight = sketchDrawable.imageInfo.height
             drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight
             drawableQualified =
-                drawableQualified and (ImageFormat.valueOfMimeType(sketchDrawable.imageMimeType)
+                drawableQualified and (ImageFormat.valueOfMimeType(sketchDrawable.imageInfo.mimeType)
                     ?.supportBitmapRegionDecoder() == true)
             val message =
                 if (drawableQualified) "Use BlockDisplayer" else "Don't need to use BlockDisplayer"
@@ -134,7 +134,7 @@ class BlockDisplayer(context: Context, private val imageZoomer: ImageZoomer) {
                     previewHeight,
                     imageWidth,
                     imageHeight,
-                    sketchDrawable.imageMimeType,
+                    sketchDrawable.imageInfo.mimeType,
                     sketchDrawable.requestKey
                 )
             }

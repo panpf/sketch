@@ -29,7 +29,7 @@ class DefaultDrawableDecoder(
                         requestKey = request.key,
                         requestUri = request.uriString,
                         imageInfo = result.imageInfo,
-                        exifOrientation = result.exifOrientation,
+                        imageExifOrientation = result.exifOrientation,
                         imageDataFrom = result.dataFrom,
                         transformedList = result.transformedList,
                         bitmap = result.bitmap

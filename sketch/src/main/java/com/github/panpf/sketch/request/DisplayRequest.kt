@@ -814,5 +814,7 @@ interface DisplayRequest : LoadRequest {
                 }
             }
         }
+
+        override fun toString(): String = key
     }
 }

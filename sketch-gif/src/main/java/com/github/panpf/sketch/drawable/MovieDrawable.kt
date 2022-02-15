@@ -21,6 +21,7 @@ import com.github.panpf.sketch.decode.internal.calculateInSampleSize
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
+import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.isHardware
 
@@ -33,17 +34,11 @@ class MovieDrawable constructor(
     private val bitmapPool: BitmapPool,
 ) : Drawable(), Animatable2Compat {
 
-    val bitmapConfig: Bitmap.Config?
-        get() = softwareBitmap?.config
-
-    val bitmapWidth: Int
-        get() = softwareBitmap?.width ?: 0
-
-    val bitmapHeight: Int
-        get() = softwareBitmap?.height ?: 0
-
-    val bitmapByteCount: Int
-        get() = softwareBitmap?.byteCountCompat ?: 0
+    val bitmapInfo: BitmapInfo by lazy {
+        softwareBitmap?.let {
+            BitmapInfo(it.width, it.height, it.byteCountCompat, it.config)
+        } ?: BitmapInfo(0, 0, 0, null)
+    }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 

@@ -22,41 +22,22 @@ import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.util.BitmapInfo
 
 @SuppressLint("RestrictedApi")
 class SketchGifDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
-    private val imageInfo: ImageInfo,
-    private val exifOrientation: Int,
+    override val imageInfo: ImageInfo,
+    override val imageExifOrientation: Int,
     override val imageDataFrom: DataFrom,
     private val movieDrawable: MovieDrawable,
 ) : DrawableWrapper(movieDrawable), SketchAnimatableDrawable {
 
-    override val imageWidth: Int
-        get() = imageInfo.width
-
-    override val imageHeight: Int
-        get() = imageInfo.height
-
-    override val imageMimeType: String
-        get() = imageInfo.mimeType
-
-    override val imageExifOrientation: Int
-        get() = exifOrientation
-
-    override val bitmapWidth: Int
-        get() = movieDrawable.bitmapWidth
-
-    override val bitmapHeight: Int
-        get() = movieDrawable.bitmapHeight
-
-    override val bitmapByteCount: Int
-        get() = movieDrawable.bitmapByteCount
-
-    override val bitmapConfig: Bitmap.Config?
-        get() = movieDrawable.bitmapConfig
+    override val bitmapInfo: BitmapInfo
+        get() = movieDrawable.bitmapInfo
 
     override val transformedList: List<Transformed>? = null
 
@@ -75,4 +56,7 @@ class SketchGifDrawable constructor(
     }
 
     override fun clearAnimationCallbacks() = movieDrawable.clearAnimationCallbacks()
+
+    override fun toString(): String =
+        "SketchGifDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }

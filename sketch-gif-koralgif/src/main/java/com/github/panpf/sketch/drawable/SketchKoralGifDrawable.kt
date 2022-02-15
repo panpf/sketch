@@ -17,12 +17,13 @@ package com.github.panpf.sketch.drawable
  */
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
+import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.byteCountCompat
 import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.bitmapCompat
@@ -31,37 +32,19 @@ import pl.droidsonroids.gif.bitmapCompat
 class SketchKoralGifDrawable constructor(
     override val requestKey: String,
     override val requestUri: String,
-    private val imageInfo: ImageInfo,
-    private val exifOrientation: Int,
+    override val imageInfo: ImageInfo,
+    override val imageExifOrientation: Int,
     override val imageDataFrom: DataFrom,
     private val gifDrawable: GifDrawable,
 ) : DrawableWrapper(gifDrawable), SketchAnimatableDrawable {
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
 
-    override val imageWidth: Int
-        get() = imageInfo.width
-
-    override val imageHeight: Int
-        get() = imageInfo.height
-
-    override val imageMimeType: String
-        get() = imageInfo.mimeType
-
-    override val imageExifOrientation: Int
-        get() = exifOrientation
-
-    override val bitmapWidth: Int
-        get() = gifDrawable.bitmapCompat.width
-
-    override val bitmapHeight: Int
-        get() = gifDrawable.bitmapCompat.height
-
-    override val bitmapByteCount: Int
-        get() = gifDrawable.bitmapCompat.byteCountCompat
-
-    override val bitmapConfig: Bitmap.Config?
-        get() = gifDrawable.bitmapCompat.config
+    override val bitmapInfo: BitmapInfo by lazy {
+        gifDrawable.bitmapCompat.let {
+            BitmapInfo(it.width, it.height, it.byteCountCompat, it.config)
+        }
+    }
 
     override val transformedList: List<Transformed>? = null
 
@@ -90,4 +73,7 @@ class SketchKoralGifDrawable constructor(
     override fun clearAnimationCallbacks() = callbacks.clear()
 
     override fun isRunning(): Boolean = gifDrawable.isRunning
+
+    override fun toString(): String =
+        "SketchKoralGifDrawable(${imageInfo.toShortString()},${exifOrientationName(imageExifOrientation)},$imageDataFrom,${bitmapInfo.toShortString()},${transformedList},$requestKey)"
 }
