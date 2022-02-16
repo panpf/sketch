@@ -1,15 +1,12 @@
 package com.github.panpf.sketch.request
 
 import android.graphics.ImageDecoder
-import android.graphics.PixelFormat
-import android.graphics.PostProcessor
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.RequiresApi
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.transform.AnimatedTransformation
-import com.github.panpf.sketch.decode.transform.PixelOpacity
 
 /** Pass this to [repeatCount] to repeat infinitely. */
 const val ANIMATION_REPEAT_INFINITE = -1
@@ -74,7 +71,8 @@ fun DisplayRequest.Builder.animatedTransformation(animatedTransformation: Animat
 /**
  * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  */
-fun DisplayRequest.animatedTransformation(): AnimatedTransformation? = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
+fun DisplayRequest.animatedTransformation(): AnimatedTransformation? =
+    parameters?.value(ANIMATED_TRANSFORMATION_KEY)
 
 
 @RequiresApi(23)

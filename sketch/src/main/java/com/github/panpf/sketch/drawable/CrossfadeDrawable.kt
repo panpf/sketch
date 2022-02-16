@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
  *  be -1 if [start] **or** [end] return -1 for that dimension. This is useful for views that
  *  require an exact intrinsic size to scale the drawable.
  */
-// todo 用 TransitionDrawable 替代
+// todo change to TransitionDrawable
 class CrossfadeDrawable @JvmOverloads constructor(
     start: Drawable?,
     end: Drawable?,

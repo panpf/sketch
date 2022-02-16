@@ -15,10 +15,12 @@ import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.transform.asPostProcessor
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
+import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
@@ -65,11 +67,13 @@ abstract class BaseAnimatedImageDrawableDecoder(
                     info.size.width, info.size.height, resize.width, resize.height
                 )
                 decoder.setTargetSampleSize(inSampleSize)
+
                 request.colorSpace?.let {
                     decoder.setTargetColorSpace(it)
                 }
 
-                // todo AnimatedTransformation
+                // Set the animated transformation to be applied on each frame.
+                decoder.postProcessor = request.animatedTransformation()?.asPostProcessor()
             }
         }
         if (drawable !is AnimatedImageDrawable) {
@@ -80,7 +84,8 @@ abstract class BaseAnimatedImageDrawableDecoder(
             ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
             ?: AnimatedImageDrawable.REPEAT_INFINITE
 
-        val transformedList = if (inSampleSize != 1) listOf(InSampledTransformed(inSampleSize)) else null
+        val transformedList =
+            if (inSampleSize != 1) listOf(InSampledTransformed(inSampleSize)) else null
         val animatableDrawable = SketchAnimatableDrawable(
             requestKey = request.key,
             requestUri = request.uriString,

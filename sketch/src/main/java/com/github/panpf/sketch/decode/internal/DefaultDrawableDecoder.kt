@@ -21,7 +21,6 @@ class DefaultDrawableDecoder(
     private val fetchResult: FetchResult
 ) : DrawableDecoder {
 
-    // todo support ImageDecoder gif wep animation heif animation
     @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
         val result = tryLockBitmapMemoryCache(sketch, request) { helper ->
