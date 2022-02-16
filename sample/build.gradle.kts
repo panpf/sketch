@@ -65,8 +65,8 @@ android {
 
 dependencies {
     implementation(project(":sketch-extensions"))
-    implementation(project(":sketch-gif"))
-    implementation(project(":sketch-gif-koralgif"))
+    implementation(project(":sketch-gif-movie"))
+    implementation(project(":sketch-gif-koral"))
     implementation(project(":sketch-okhttp"))
     implementation(project(":sketch-svg"))
     implementation(project(":sketch-video"))
