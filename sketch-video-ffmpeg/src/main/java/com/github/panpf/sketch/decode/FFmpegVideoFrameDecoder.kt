@@ -142,8 +142,10 @@ class FFmpegVideoFrameDecoder(
             fetchResult: FetchResult
         ): FFmpegVideoFrameDecoder? {
             val mimeType = fetchResult.mimeType
-            if (mimeType?.startsWith("video/") != true) return null
-            return FFmpegVideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+            if (mimeType?.startsWith("video/") == true) {
+                return FFmpegVideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+            }
+            return null
         }
 
         override fun toString(): String = "FFmpegVideoFrameDecoder"

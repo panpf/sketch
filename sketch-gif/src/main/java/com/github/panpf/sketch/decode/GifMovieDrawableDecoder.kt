@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -29,7 +30,7 @@ import java.util.Base64.Decoder
  * A [Decoder] that uses [Movie] to decode GIFs.
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
-class GifDrawableDecoder constructor(
+class GifMovieDrawableDecoder constructor(
     private val sketch: Sketch,
     private val request: DisplayRequest,
     private val dataSource: DataSource,
@@ -64,7 +65,7 @@ class GifDrawableDecoder constructor(
         // Set the animated transformation to be applied on each frame.
         movieDrawable.setAnimatedTransformation(request.animatedTransformation())
 
-        val imageInfo = ImageInfo(width, height, MIME_TYPE)
+        val imageInfo = ImageInfo(width, height, ImageFormat.GIF.mimeType)
 
         return DrawableDecodeResult(
             drawable = SketchAnimatableDrawable(
@@ -73,6 +74,7 @@ class GifDrawableDecoder constructor(
                 imageInfo = imageInfo,
                 imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
                 dataFrom = dataSource.dataFrom,
+                transformedList = null,
                 animatableDrawable = movieDrawable,
                 "MovieDrawable"
             ),
@@ -90,22 +92,19 @@ class GifDrawableDecoder constructor(
             request: DisplayRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
-        ): GifDrawableDecoder? {
-            if (request.disabledAnimationDrawable != true) {
-                if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
-                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource)
-                } else if (fetchResult.headerBytes.isGif()) {
-                    // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
-                    return GifDrawableDecoder(sketch, request, fetchResult.dataSource)
+        ): GifMovieDrawableDecoder? {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && request.disabledAnimationDrawable != true
+            ) {
+                val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
+                // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
+                if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()) {
+                    return GifMovieDrawableDecoder(sketch, request, fetchResult.dataSource)
                 }
             }
             return null
         }
 
         override fun toString(): String = "GifDrawableDecoder"
-    }
-
-    companion object {
-        const val MIME_TYPE = "image/gif"
     }
 }

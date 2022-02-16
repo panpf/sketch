@@ -39,6 +39,7 @@ class SketchAnimatableDrawable<T> constructor(
     override val imageInfo: ImageInfo,
     override val imageExifOrientation: Int,
     override val dataFrom: DataFrom,
+    override val transformedList: List<Transformed>?,
     private val animatableDrawable: T,
     private val animatableDrawableName: String,
 ) : DrawableWrapper(animatableDrawable),
@@ -48,7 +49,6 @@ class SketchAnimatableDrawable<T> constructor(
     private var callbackMap: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>? =
         null
 
-    override val transformedList: List<Transformed>? get() = null
     override val bitmapInfo: BitmapInfo by lazy {
         BitmapInfo(
             animatableDrawable.intrinsicWidth,

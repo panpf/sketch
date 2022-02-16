@@ -2,11 +2,17 @@ package com.github.panpf.sketch.test.fetch.internal
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
 import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
+import com.github.panpf.sketch.fetch.internal.isGif
 import com.github.panpf.sketch.fetch.internal.isHeif
 import com.github.panpf.sketch.fetch.internal.isWebP
+import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -147,5 +153,21 @@ class HeaderBytesTest {
         }).apply {
             Assert.assertFalse(isAnimatedHeif())
         }
+    }
+
+    @Test
+    fun testIsGif() {
+        val context = InstrumentationRegistry.getContext()
+        val sketch = Sketch.new(context)
+
+        // normal
+        val request = LoadRequest(newAssetUri("sample_anim.gif"))
+        val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
+        Assert.assertTrue(fetchResult.headerBytes.isGif())
+
+        // not gif
+        val request1 = LoadRequest(newAssetUri("sample.png"))
+        val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
+        Assert.assertFalse(fetchResult1.headerBytes.isGif())
     }
 }

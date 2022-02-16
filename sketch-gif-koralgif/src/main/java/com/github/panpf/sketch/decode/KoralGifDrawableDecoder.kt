@@ -2,6 +2,7 @@ package com.github.panpf.sketch.decode
 
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -10,7 +11,6 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.GifDrawableDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isGif
@@ -64,13 +64,14 @@ class KoralGifDrawableDecoder(
 
         val width = gifDrawable.intrinsicWidth
         val height = gifDrawable.intrinsicHeight
-        val imageInfo = ImageInfo(width, height, MIME_TYPE)
+        val imageInfo = ImageInfo(width, height, ImageFormat.GIF.mimeType)
         val drawable = SketchAnimatableDrawable(
             requestKey = request.key,
             requestUri = request.uriString,
             imageInfo = imageInfo,
             imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
+            transformedList = null,
             animatableDrawable = gifDrawable,
             "KoralGifDrawable"
         )
@@ -99,9 +100,9 @@ class KoralGifDrawableDecoder(
             fetchResult: FetchResult
         ): KoralGifDrawableDecoder? {
             if (request.disabledAnimationDrawable != true) {
-                if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
-                    return KoralGifDrawableDecoder(request, fetchResult.dataSource)
-                } else if (fetchResult.headerBytes.isGif()) {
+                val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
+                // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
+                if (imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()) {
                     return KoralGifDrawableDecoder(request, fetchResult.dataSource)
                 }
             }

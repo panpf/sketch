@@ -72,6 +72,10 @@ private val HEIF_HEADER_MSF1 = "msf1".toByteArray()
 private val HEIF_HEADER_HEVC = "hevc".toByteArray()
 private val HEIF_HEADER_HEVX = "hevx".toByteArray()
 
+// https://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
+private val GIF_HEADER_87A = "GIF87a".toByteArray()
+private val GIF_HEADER_89A = "GIF89a".toByteArray()
+
 /**
  * Return 'true' if the [HeaderBytes] contains a WebP image.
  */
@@ -96,3 +100,9 @@ fun HeaderBytes.isAnimatedHeif(): Boolean =
     isHeif() && (rangeEquals(8, HEIF_HEADER_MSF1)
             || rangeEquals(8, HEIF_HEADER_HEVC)
             || rangeEquals(8, HEIF_HEADER_HEVX))
+
+/**
+ * Return 'true' if the [HeaderBytes] contains a GIF image.
+ */
+fun HeaderBytes.isGif(): Boolean =
+    rangeEquals(0, GIF_HEADER_89A) || rangeEquals(0, GIF_HEADER_87A)

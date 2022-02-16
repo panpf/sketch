@@ -15,6 +15,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheHelper.MetaData
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.newBitmapResultDiskCacheHelper
+import com.github.panpf.sketch.decode.resize.Resize
+import com.github.panpf.sketch.decode.resize.ResizeTransformed
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
@@ -153,12 +155,20 @@ class BitmapResultDiskCacheHelperTest {
 
     @Test
     fun testMeatDataJSON() {
-        val metaData = MetaData(ImageInfo(570, 340, "image/png"), ExifInterface.ORIENTATION_ROTATE_180)
-        MetaData.fromJsonString(metaData.toJsonString()).apply {
+        val metaData = MetaData(
+            imageInfo = ImageInfo(width = 570, height = 340, mimeType = "image/png"),
+            exifOrientation = ExifInterface.ORIENTATION_ROTATE_180,
+            transformedList = listOf(InSampledTransformed(4), ResizeTransformed(Resize(40, 30)))
+        )
+        MetaData(metaData.serializationToJSON()).apply {
             Assert.assertEquals(570, imageInfo.width)
             Assert.assertEquals(340, imageInfo.height)
             Assert.assertEquals("image/png", imageInfo.mimeType)
             Assert.assertEquals(ExifInterface.ORIENTATION_ROTATE_180, exifOrientation)
+            Assert.assertEquals(
+                transformedList?.joinToString(),
+                listOf(InSampledTransformed(4), ResizeTransformed(Resize(40, 30))).joinToString()
+            )
         }
     }
 }

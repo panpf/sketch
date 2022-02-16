@@ -5,7 +5,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.GifDrawableDecoder
+import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.DataFrom
@@ -21,7 +21,7 @@ import java.io.FileDescriptor
 import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
-class GifDrawableDecoderTest {
+class GifMovieDrawableDecoderTest {
 
     @Test
     fun testFactory() {
@@ -32,14 +32,14 @@ class GifDrawableDecoderTest {
         val request = DisplayRequest(newAssetUri("sample_anim.gif"), TestTarget())
         val fetchResult = FetchResult(AssetDataSource(sketch, request, "sample_anim.gif"), null)
         Assert.assertNotNull(
-            GifDrawableDecoder.Factory().create(sketch, request, RequestExtras(), fetchResult)
+            GifMovieDrawableDecoder.Factory().create(sketch, request, RequestExtras(), fetchResult)
         )
 
         // not gif
         val request1 = DisplayRequest(newAssetUri("sample.png"), TestTarget())
         val fetchResult1 = FetchResult(AssetDataSource(sketch, request1, "sample.png"), null)
         Assert.assertNull(
-            GifDrawableDecoder.Factory().create(sketch, request1, RequestExtras(), fetchResult1)
+            GifMovieDrawableDecoder.Factory().create(sketch, request1, RequestExtras(), fetchResult1)
         )
 
         // disabledAnimationDrawable true
@@ -48,7 +48,7 @@ class GifDrawableDecoderTest {
         }
         val fetchResult2 = FetchResult(ErrorDataSource(sketch, request2, LOCAL), null)
         Assert.assertNull(
-            GifDrawableDecoder.Factory().create(sketch, request2, RequestExtras(), fetchResult2)
+            GifMovieDrawableDecoder.Factory().create(sketch, request2, RequestExtras(), fetchResult2)
         )
 
         // mimeType error
@@ -58,7 +58,7 @@ class GifDrawableDecoderTest {
             "image/jpeg",
         )
         Assert.assertNotNull(
-            GifDrawableDecoder.Factory().create(sketch, request3, RequestExtras(), fetchResult3)
+            GifMovieDrawableDecoder.Factory().create(sketch, request3, RequestExtras(), fetchResult3)
         )
     }
 

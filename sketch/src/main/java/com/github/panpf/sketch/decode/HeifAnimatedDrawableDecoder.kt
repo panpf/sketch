@@ -7,12 +7,12 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.BaseAnimatedImageDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
+import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
 @RequiresApi(Build.VERSION_CODES.P)
-class WebpAnimatedDrawableDecoder(
+class HeifAnimatedDrawableDecoder(
     sketch: Sketch,
     request: DisplayRequest,
     dataSource: DataSource,
@@ -26,16 +26,18 @@ class WebpAnimatedDrawableDecoder(
             request: DisplayRequest,
             requestExtras: RequestExtras,
             fetchResult: FetchResult
-        ): WebpAnimatedDrawableDecoder? {
+        ): HeifAnimatedDrawableDecoder? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && request.disabledAnimationDrawable != true) {
                 val imageFormat = ImageFormat.valueOfMimeType(fetchResult.mimeType)
-                if (imageFormat == ImageFormat.WEBP && fetchResult.headerBytes.isAnimatedWebP()) {
-                    return WebpAnimatedDrawableDecoder(sketch, request, fetchResult.dataSource)
+                if ((imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
+                    && fetchResult.headerBytes.isAnimatedHeif()
+                ) {
+                    return HeifAnimatedDrawableDecoder(sketch, request, fetchResult.dataSource)
                 }
             }
             return null
         }
 
-        override fun toString(): String = "WebpAnimatedDrawableDecoder"
+        override fun toString(): String = "HeifAnimatedDrawableDecoder"
     }
 }

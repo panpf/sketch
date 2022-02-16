@@ -23,7 +23,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
-import com.github.panpf.sketch.decode.GifDrawableDecoder
+import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
+import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
+import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.KoralGifDrawableDecoder
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.VideoFrameDecoder
@@ -46,23 +48,30 @@ class MyApplication : MultiDexApplication(), Sketch.Factory {
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
             addFetcher(AppIconUriFetcher.Factory())
+
             addBitmapDecoder(SvgBitmapDecoder.Factory())
             addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
-            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-                addBitmapDecoder(VideoFrameDecoder.Factory())
-            } else {
-                addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
-            }
+            addBitmapDecoder(
+                if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+                    VideoFrameDecoder.Factory()
+                } else {
+                    FFmpegVideoFrameDecoder.Factory()
+                }
+            )
 
-            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                addDrawableDecoder(GifDrawableDecoder.Factory())
-            } else {
-                addDrawableDecoder(KoralGifDrawableDecoder.Factory())
-            }
-
+            addDrawableDecoder(
+                when {
+                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                    else -> KoralGifDrawableDecoder.Factory()
+                }
+            )
             if (VERSION.SDK_INT >= VERSION_CODES.P) {
                 addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+            }
+            if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
         }
     }

@@ -4,8 +4,7 @@ import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.BitmapParams
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
+import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
@@ -31,7 +30,7 @@ import kotlin.math.roundToInt
  * Notes：LoadRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
  * The bitmapConfig attribute takes effect only on Android 30 or later
  */
-@TargetApi(VERSION_CODES.O_MR1)
+@TargetApi(Build.VERSION_CODES.O_MR1)
 class VideoFrameDecoder(
     private val sketch: Sketch,
     private val request: LoadRequest,
@@ -72,7 +71,7 @@ class VideoFrameDecoder(
             ).applyExifOrientation(sketch.bitmapPool, request.ignoreExifOrientation)
                 .applyResize(sketch.bitmapPool, request.resize)
         } finally {
-            if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()
             } else {
                 mediaMetadataRetriever.release()
@@ -93,7 +92,7 @@ class VideoFrameDecoder(
     }
 
     private fun readExifOrientation(mediaMetadataRetriever: MediaMetadataRetriever): Int =
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val videoRotation = mediaMetadataRetriever
                 .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
                 ?.toIntOrNull() ?: 0
@@ -137,7 +136,7 @@ class VideoFrameDecoder(
             imageInfo.height
         }
         return when {
-            VERSION.SDK_INT >= VERSION_CODES.R -> {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 val bitmapParams = BitmapParams().apply {
                     val inPreferredConfigFromRequest = decodeConfig.inPreferredConfig
                     if (inPreferredConfigFromRequest != null) {
@@ -147,7 +146,7 @@ class VideoFrameDecoder(
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
             }
-            VERSION.SDK_INT >= VERSION_CODES.O_MR1 -> {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
                 mediaMetadataRetriever
                     .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
             }
@@ -159,6 +158,7 @@ class VideoFrameDecoder(
         )
     }
 
+    @TargetApi(Build.VERSION_CODES.O_MR1)
     class Factory : BitmapDecoder.Factory {
 
         override fun create(
@@ -168,8 +168,10 @@ class VideoFrameDecoder(
             fetchResult: FetchResult
         ): VideoFrameDecoder? {
             val mimeType = fetchResult.mimeType
-            if (mimeType?.startsWith("video/") != true) return null
-            return VideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+            if (mimeType?.startsWith("video/") == true) {
+                return VideoFrameDecoder(sketch, request, fetchResult.dataSource, mimeType)
+            }
+            return null
         }
 
         override fun toString(): String = "VideoFrameDecoder"
