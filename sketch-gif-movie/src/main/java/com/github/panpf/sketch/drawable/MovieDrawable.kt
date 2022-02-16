@@ -32,7 +32,7 @@ import com.github.panpf.sketch.util.isHardware
 class MovieDrawable constructor(
     private val movie: Movie,
     private val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
-    private val bitmapPool: BitmapPool,
+    private val bitmapPool: BitmapPool?,
 ) : Drawable(), Animatable2Compat {
 
     val bitmapInfo: BitmapInfo by lazy {
@@ -237,7 +237,8 @@ class MovieDrawable constructor(
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
-        val bitmap = bitmapPool.getOrCreate(bitmapWidth, bitmapHeight, config)
+        val bitmap = bitmapPool?.getOrCreate(bitmapWidth, bitmapHeight, config)
+            ?: Bitmap.createBitmap(bitmapWidth, bitmapHeight, config)
         softwareBitmap?.recycle()
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)

@@ -24,10 +24,21 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.repeatCount
-import java.util.Base64.Decoder
 
 /**
- * A [Decoder] that uses [Movie] to decode GIFs.
+ * A [DrawableDecoder] that uses [Movie] to decode GIFs.
+ *
+ * Only the following attributes are supported:
+ *
+ * repeatCount
+ *
+ * animatedTransformation
+ *
+ * onAnimationStart
+ *
+ * onAnimationEnd
+ *
+ * disabledBitmapPool
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDrawableDecoder constructor(
@@ -50,37 +61,40 @@ class GifMovieDrawableDecoder constructor(
                 movie.isOpaque && request.bitmapConfig?.isLowQuality == true -> RGB_565
                 else -> ARGB_8888
             },
-            sketch.bitmapPool,
-        )
+            if (request.disabledBitmapPool != true) sketch.bitmapPool else null,
+        ).apply {
+            setRepeatCount(request.repeatCount() ?: ANIMATION_REPEAT_INFINITE)
 
-        movieDrawable.setRepeatCount(request.repeatCount() ?: ANIMATION_REPEAT_INFINITE)
-
-        // Set the start and end animation callbacks if any one is supplied through the request.
-        val onStart = request.animationStartCallback()
-        val onEnd = request.animationEndCallback()
-        if (onStart != null || onEnd != null) {
-            movieDrawable.registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+            // Set the animated transformation to be applied on each frame.
+            setAnimatedTransformation(request.animatedTransformation())
         }
-
-        // Set the animated transformation to be applied on each frame.
-        movieDrawable.setAnimatedTransformation(request.animatedTransformation())
 
         val imageInfo = ImageInfo(width, height, ImageFormat.GIF.mimeType)
 
+        val animatableDrawable = SketchAnimatableDrawable(
+            requestKey = request.key,
+            requestUri = request.uriString,
+            imageInfo = imageInfo,
+            imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
+            dataFrom = dataSource.dataFrom,
+            transformedList = null,
+            animatableDrawable = movieDrawable,
+            "MovieDrawable"
+        ).apply {
+            // Set the start and end animation callbacks if any one is supplied through the request.
+            val onStart = request.animationStartCallback()
+            val onEnd = request.animationEndCallback()
+            if (onStart != null || onEnd != null) {
+                registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+            }
+        }
+
         return DrawableDecodeResult(
-            drawable = SketchAnimatableDrawable(
-                requestKey = request.key,
-                requestUri = request.uriString,
-                imageInfo = imageInfo,
-                imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
-                dataFrom = dataSource.dataFrom,
-                transformedList = null,
-                animatableDrawable = movieDrawable,
-                "MovieDrawable"
-            ),
+            drawable = animatableDrawable,
             imageInfo = imageInfo,
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
-            dataFrom = dataSource.dataFrom
+            dataFrom = dataSource.dataFrom,
+            transformedList = null,
         )
     }
 

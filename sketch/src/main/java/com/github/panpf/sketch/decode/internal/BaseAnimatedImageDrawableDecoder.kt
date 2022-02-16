@@ -26,6 +26,23 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
 import java.nio.ByteBuffer
 
+/**
+ * Only the following attributes are supported:
+ *
+ * resize.size
+ *
+ * resize.precision: It is always LESS_PIXELS
+ *
+ * colorSpace
+ *
+ * repeatCount
+ *
+ * animatedTransformation
+ *
+ * onAnimationStart
+ *
+ * onAnimationEnd
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseAnimatedImageDrawableDecoder(
     private val sketch: Sketch,
@@ -79,7 +96,6 @@ abstract class BaseAnimatedImageDrawableDecoder(
         if (drawable !is AnimatedImageDrawable) {
             throw Exception("Only support AnimatedImageDrawable")
         }
-
         drawable.repeatCount = request.repeatCount()
             ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
             ?: AnimatedImageDrawable.REPEAT_INFINITE
@@ -95,13 +111,12 @@ abstract class BaseAnimatedImageDrawableDecoder(
             transformedList = transformedList,
             animatableDrawable = drawable,
             drawable::class.java.simpleName
-        )
-        val onStart = request.animationStartCallback()
-        val onEnd = request.animationEndCallback()
-        if (onStart != null || onEnd != null) {
-            animatableDrawable.registerAnimationCallback(
-                animatable2CompatCallbackOf(onStart, onEnd)
-            )
+        ).apply {
+            val onStart = request.animationStartCallback()
+            val onEnd = request.animationEndCallback()
+            if (onStart != null || onEnd != null) {
+                registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+            }
         }
         return DrawableDecodeResult(
             drawable = animatableDrawable,

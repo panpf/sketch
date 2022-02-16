@@ -8,5 +8,5 @@ data class DrawableDecodeResult constructor(
     val imageInfo: ImageInfo,
     val exifOrientation: Int,
     val dataFrom: DataFrom,
-    val transformedList: List<Transformed>? = null
+    val transformedList: List<Transformed>?
 )

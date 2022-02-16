@@ -11,6 +11,23 @@ import com.github.panpf.sketch.fetch.internal.isAnimatedHeif
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 
+/**
+ * Only the following attributes are supported:
+ *
+ * resize.size
+ *
+ * resize.precision: It is always LESS_PIXELS
+ *
+ * colorSpace
+ *
+ * repeatCount
+ *
+ * animatedTransformation
+ *
+ * onAnimationStart
+ *
+ * onAnimationEnd
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 class GifAnimatedDrawableDecoder(
     sketch: Sketch,

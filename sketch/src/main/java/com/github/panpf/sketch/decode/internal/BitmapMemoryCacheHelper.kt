@@ -77,7 +77,8 @@ class BitmapMemoryCacheHelper internal constructor(
                         drawable = SketchCountBitmapDrawable(cachedCountBitmap, MEMORY_CACHE),
                         imageInfo = cachedCountBitmap.imageInfo,
                         exifOrientation = cachedCountBitmap.exifOrientation,
-                        dataFrom = MEMORY_CACHE
+                        dataFrom = MEMORY_CACHE,
+                        transformedList = null,
                     )
                 }
                 else -> {
