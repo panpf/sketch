@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode
 
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -27,6 +28,7 @@ class KoralGifDrawableDecoder(
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
+    @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
         val request = request
         val gifDrawable = when (val source = dataSource) {

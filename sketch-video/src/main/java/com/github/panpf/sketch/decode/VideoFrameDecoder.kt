@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ContentDataSource
@@ -38,6 +39,7 @@ class VideoFrameDecoder(
     private val mimeType: String,
 ) : BitmapDecoder {
 
+    @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val mediaMetadataRetriever: MediaMetadataRetriever by lazy {
             MediaMetadataRetriever().apply {

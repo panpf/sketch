@@ -50,11 +50,7 @@ import kotlin.math.roundToInt
 /*
  * The width and height limit cannot be greater than the maximum size allowed by OpenGL
  */
-fun limitedOpenGLTextureMaxSize(
-    @Px imageWidth: Int,
-    @Px imageHeight: Int,
-    inSampleSize: Int
-): Int {
+fun limitedOpenGLTextureMaxSize(@Px imageWidth: Int, @Px imageHeight: Int, inSampleSize: Int): Int {
     val openGLTextureMaxSize = OpenGLTextureHelper.maxSize ?: return inSampleSize
     var finalInSampleSize = inSampleSize.coerceAtLeast(1)
     while ((calculateSamplingSize(imageWidth, finalInSampleSize) > openGLTextureMaxSize)
@@ -89,7 +85,7 @@ fun calculateInSampleSize(
             inSampleSize *= 2
         }
     }
-    return inSampleSize
+    return limitedOpenGLTextureMaxSize(imageWidth, imageHeight, inSampleSize)
 }
 
 fun calculateSamplingSize(value1: Int, inSampleSize: Int): Int {
@@ -132,15 +128,11 @@ fun realDecode(
             exactlySize = precision == EXACTLY
         )
         // In cases where clipping is required, the clipping region is used to calculate inSampleSize, this will give you a clearer picture
-        decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
+        decodeConfig.inSampleSize = calculateInSampleSize(
             resizeMapping.srcRect.width(),
             resizeMapping.srcRect.height(),
-            calculateInSampleSize(
-                resizeMapping.srcRect.width(),
-                resizeMapping.srcRect.height(),
-                addedResize.width,
-                addedResize.height
-            )
+            addedResize.width,
+            addedResize.height
         )
         if (decodeRegion != null) {
             resizeTransformed = ResizeTransformed(resize)
@@ -151,18 +143,9 @@ fun realDecode(
         }
     } else {
         resizeTransformed = null
-        decodeConfig.inSampleSize = limitedOpenGLTextureMaxSize(
-            imageInfo.width,
-            imageInfo.height,
-            addedResize?.let {
-                calculateInSampleSize(
-                    imageInfo.width,
-                    imageInfo.height,
-                    it.width,
-                    it.height
-                )
-            } ?: 1
-        )
+        decodeConfig.inSampleSize = addedResize?.let {
+            calculateInSampleSize(imageInfo.width, imageInfo.height, it.width, it.height)
+        } ?: 1
         decodeFull(decodeConfig)
     }
 

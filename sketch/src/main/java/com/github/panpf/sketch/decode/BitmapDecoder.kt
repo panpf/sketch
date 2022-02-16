@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -12,6 +13,7 @@ import com.github.panpf.sketch.request.internal.RequestExtras
  */
 interface BitmapDecoder {
 
+    @WorkerThread
     suspend fun decode(): BitmapDecodeResult
 
     fun interface Factory {

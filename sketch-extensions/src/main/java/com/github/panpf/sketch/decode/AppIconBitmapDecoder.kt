@@ -2,6 +2,7 @@ package com.github.panpf.sketch.decode
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.applyResize
@@ -20,6 +21,7 @@ class AppIconBitmapDecoder(
     private val versionCode: Int,
 ) : BitmapDecoder {
 
+    @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val packageManager = sketch.appContext.packageManager
         val packageInfo: PackageInfo = try {

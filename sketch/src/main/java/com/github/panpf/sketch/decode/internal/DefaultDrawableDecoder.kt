@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode.internal
 
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
@@ -21,6 +22,7 @@ class DefaultDrawableDecoder(
 ) : DrawableDecoder {
 
     // todo support ImageDecoder gif wep animation heif animation
+    @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
         val result = tryLockBitmapMemoryCache(sketch, request) { helper ->
             helper?.read() ?: decodeNewBitmap().let { result ->

@@ -7,6 +7,7 @@ import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
@@ -34,6 +35,7 @@ class GifDrawableDecoder constructor(
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
+    @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
         val movie: Movie? = dataSource.newInputStream().use { Movie.decodeStream(it) }
 

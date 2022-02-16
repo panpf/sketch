@@ -5,6 +5,7 @@ import android.graphics.drawable.Animatable
 import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -12,6 +13,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.decode.internal.calculateInSampleSize
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.internal.isAnimatedWebP
@@ -22,8 +24,6 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.request.repeatCount
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -33,6 +33,7 @@ class WebpAnimatedDrawableDecoder(
     private val dataSource: DataSource,
 ) : DrawableDecoder {
 
+    @WorkerThread
     override suspend fun decode(): DrawableDecodeResult {
         val source = when (dataSource) {
             is AssetDataSource -> {
@@ -52,13 +53,28 @@ class WebpAnimatedDrawableDecoder(
                 }
             }
             else -> {
-                withContext(Dispatchers.IO) {
-                    ImageDecoder.createSource(dataSource.file())
-                }
+                ImageDecoder.createSource(dataSource.file())
             }
         }
 
-        val drawable = ImageDecoder.decodeDrawable(source)
+        var imageInfo: ImageInfo? = null
+        val drawable = ImageDecoder.decodeDrawable(source) { decoder, info, source ->
+            imageInfo = ImageInfo(info.size.width, info.size.height, info.mimeType)
+            val resize = request.resize
+            if (resize != null) {
+                decoder.setTargetSampleSize(
+                    calculateInSampleSize(
+                        info.size.width,
+                        info.size.height,
+                        resize.width,
+                        resize.height
+                    )
+                )
+                request.colorSpace?.let {
+                    decoder.setTargetColorSpace(it)
+                }
+            }
+        }
 
         if (drawable is AnimatedImageDrawable) {
             drawable.repeatCount = request.repeatCount()
@@ -67,11 +83,10 @@ class WebpAnimatedDrawableDecoder(
         }
 
         if (drawable !is Animatable) throw Exception("")
-        val imageInfo = ImageInfo(drawable.intrinsicWidth, drawable.intrinsicHeight, MIME_TYPE)
         val animatableDrawable = SketchAnimatableDrawable(
             requestKey = request.key,
             requestUri = request.uriString,
-            imageInfo = imageInfo,
+            imageInfo = imageInfo!!,
             imageExifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             animatableDrawable = drawable,
@@ -86,7 +101,7 @@ class WebpAnimatedDrawableDecoder(
         }
         return DrawableDecodeResult(
             drawable = animatableDrawable,
-            imageInfo = imageInfo,
+            imageInfo = imageInfo!!,
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED,
             dataFrom = dataSource.dataFrom,
             transformedList = null

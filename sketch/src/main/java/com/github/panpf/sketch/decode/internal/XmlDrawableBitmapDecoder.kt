@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.content.res.Resources
+import androidx.annotation.WorkerThread
 import androidx.core.content.res.ResourcesCompat
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
@@ -21,6 +22,7 @@ class XmlDrawableBitmapDecoder(
     private val drawableResId: Int
 ) : BitmapDecoder {
 
+    @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         // Be sure to use this.resources
         val drawable = ResourcesCompat.getDrawable(this.resources, drawableResId, null)

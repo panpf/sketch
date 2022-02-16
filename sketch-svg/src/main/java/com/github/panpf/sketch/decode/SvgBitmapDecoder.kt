@@ -3,6 +3,7 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.RectF
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.Sketch
@@ -29,6 +30,7 @@ class SvgBitmapDecoder(
         const val MIME_TYPE = "image/svg+xml"
     }
 
+    @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val svg = dataSource.newInputStream().use { SVG.getFromInputStream(it) }
         val imageInfo = readImageInfo(svg)

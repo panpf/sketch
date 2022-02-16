@@ -2,6 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ImageFormat
 import com.github.panpf.sketch.Sketch
@@ -27,6 +28,7 @@ open class DefaultBitmapDecoder(
     private val bitmapPool = sketch.bitmapPool
     private val logger = sketch.logger
 
+    @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
         val exifOrientation = if (request.ignoreExifOrientation != true) {

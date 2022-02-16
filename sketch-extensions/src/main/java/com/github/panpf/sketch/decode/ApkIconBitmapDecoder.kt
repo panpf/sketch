@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.decode
 
+import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.applyResize
@@ -19,6 +20,7 @@ class ApkIconBitmapDecoder(
         const val MIME_TYPE = "application/vnd.android.package-archive"
     }
 
+    @WorkerThread
     override suspend fun decode(): BitmapDecodeResult {
         val file = fetchResult.dataSource.file()
         val bitmap = readApkIcon(

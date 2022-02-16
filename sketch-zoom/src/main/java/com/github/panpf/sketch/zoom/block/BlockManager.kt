@@ -234,7 +234,7 @@ class BlockManager(
         val targetSizeScale = blockBaseNumber.toFloat() / 10 + 1
         val targetWidth = (viewWidth * targetSizeScale).roundToInt()
         val targetHeight = (viewHeight * targetSizeScale).roundToInt()
-        return limitedOpenGLTextureMaxSize(srcWidth, srcHeight, calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight))
+        return calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight)
     }
 
     /**
