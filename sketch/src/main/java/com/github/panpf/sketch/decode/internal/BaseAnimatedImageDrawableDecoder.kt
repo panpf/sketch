@@ -68,6 +68,8 @@ abstract class BaseAnimatedImageDrawableDecoder(
                 request.colorSpace?.let {
                     decoder.setTargetColorSpace(it)
                 }
+
+                // todo AnimatedTransformation
             }
         }
         if (drawable !is AnimatedImageDrawable) {

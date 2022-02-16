@@ -18,10 +18,10 @@ import android.os.SystemClock
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.calculateInSampleSize
+import com.github.panpf.sketch.decode.transform.AnimatedTransformation
+import com.github.panpf.sketch.decode.transform.PixelOpacity.OPAQUE
+import com.github.panpf.sketch.decode.transform.PixelOpacity.UNCHANGED
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
-import com.github.panpf.sketch.transform.AnimatedTransformation
-import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
-import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.byteCountCompat
 import com.github.panpf.sketch.util.isHardware

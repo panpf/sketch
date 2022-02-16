@@ -1,16 +1,22 @@
 package com.github.panpf.sketch.request
 
+import android.graphics.ImageDecoder
+import android.graphics.PixelFormat
+import android.graphics.PostProcessor
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.RequiresApi
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.decode.transform.AnimatedTransformation
+import com.github.panpf.sketch.decode.transform.PixelOpacity
 
 /** Pass this to [repeatCount] to repeat infinitely. */
 const val ANIMATION_REPEAT_INFINITE = -1
 const val ANIMATION_REPEAT_COUNT_KEY = "sketch#animation_repeat_count"
 const val ANIMATION_START_CALLBACK_KEY = "sketch#animation_start_callback"
 const val ANIMATION_END_CALLBACK_KEY = "sketch#animation_end_callback"
+const val ANIMATED_TRANSFORMATION_KEY = "sketch#animated_transformation"
 
 /**
  * Set the number of times to repeat the animation if the result is an animated [Drawable].
@@ -53,6 +59,22 @@ fun DisplayRequest.Builder.onAnimationEnd(callback: (() -> Unit)?): DisplayReque
 fun DisplayRequest.animationEndCallback(): (() -> Unit)? =
     parameters?.value(ANIMATION_END_CALLBACK_KEY)
 
+/**
+ * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
+ *
+ * Default: `null`
+ *
+ * @see MovieDrawable.setAnimatedTransformation
+ * @see ImageDecoder.setPostProcessor
+ */
+fun DisplayRequest.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): DisplayRequest.Builder {
+    return setParameter(ANIMATED_TRANSFORMATION_KEY, animatedTransformation)
+}
+
+/**
+ * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
+ */
+fun DisplayRequest.animatedTransformation(): AnimatedTransformation? = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
 
 
 @RequiresApi(23)

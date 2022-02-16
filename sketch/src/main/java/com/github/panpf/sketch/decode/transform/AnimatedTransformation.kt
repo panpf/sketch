@@ -1,6 +1,8 @@
-package com.github.panpf.sketch.transform
+package com.github.panpf.sketch.decode.transform
 
 import android.graphics.Canvas
+import android.graphics.PostProcessor
+import androidx.annotation.RequiresApi
 
 /**
  * An interface for making transformations to an animated image's pixel data.
@@ -15,3 +17,8 @@ fun interface AnimatedTransformation {
      */
     fun transform(canvas: Canvas): PixelOpacity
 }
+
+
+@RequiresApi(28)
+internal fun AnimatedTransformation.asPostProcessor() =
+    PostProcessor { canvas -> transform(canvas).flag }
