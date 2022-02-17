@@ -15,7 +15,7 @@ import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.transform.asPostProcessor
+import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.DisplayRequest

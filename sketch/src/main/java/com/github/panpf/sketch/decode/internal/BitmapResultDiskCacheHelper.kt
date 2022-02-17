@@ -11,7 +11,7 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.request.DataFrom.RESULT_DISK_CACHE
+import com.github.panpf.sketch.datasource.DataFrom.RESULT_DISK_CACHE
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.requiredWorkThread

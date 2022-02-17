@@ -17,7 +17,7 @@ package com.github.panpf.sketch.drawable
 
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.BitmapInfo
 
 interface SketchDrawable {

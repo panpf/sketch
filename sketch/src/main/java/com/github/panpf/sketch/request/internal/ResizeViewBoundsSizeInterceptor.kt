@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.decode.resize.NewSize
-import com.github.panpf.sketch.decode.resize.Resize
-import com.github.panpf.sketch.decode.resize.RealNewSize
+import com.github.panpf.sketch.resize.NewSize
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.RealNewSize
 import com.github.panpf.sketch.request.DisplayData
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestInterceptor

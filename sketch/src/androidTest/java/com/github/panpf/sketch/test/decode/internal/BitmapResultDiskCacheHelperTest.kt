@@ -15,10 +15,10 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheHelper.MetaData
 import com.github.panpf.sketch.decode.internal.InSampledTransformed
 import com.github.panpf.sketch.decode.internal.newBitmapResultDiskCacheHelper
-import com.github.panpf.sketch.decode.resize.Resize
-import com.github.panpf.sketch.decode.resize.ResizeTransformed
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.ResizeTransformed
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import org.junit.Assert
 import org.junit.Test

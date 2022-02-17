@@ -14,7 +14,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.newBitmapMemoryCacheHelper
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.RequestDepth
 import org.junit.Assert

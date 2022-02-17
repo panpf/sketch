@@ -8,7 +8,7 @@ import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import kotlinx.coroutines.runBlocking

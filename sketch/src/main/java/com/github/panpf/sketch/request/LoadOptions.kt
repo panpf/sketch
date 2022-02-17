@@ -8,15 +8,15 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.resize.Resize
-import com.github.panpf.sketch.decode.resize.Scale
-import com.github.panpf.sketch.decode.resize.NewSize
-import com.github.panpf.sketch.decode.resize.Precision
-import com.github.panpf.sketch.decode.resize.PrecisionDecider
-import com.github.panpf.sketch.decode.transform.Transformation
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.LoadOptions.Builder
 import com.github.panpf.sketch.request.internal.ImageRequest
+import com.github.panpf.sketch.resize.NewSize
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.transform.Transformation
 
 fun LoadOptions(
     configBlock: (Builder.() -> Unit)? = null

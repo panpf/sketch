@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
-import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
-import com.github.panpf.sketch.decode.resize.Precision.KEEP_ASPECT_RATIO
-import com.github.panpf.sketch.decode.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.decode.resize.Scale
-import com.github.panpf.sketch.decode.resize.longImageClipPrecision
+import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.longImageClipPrecision
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService

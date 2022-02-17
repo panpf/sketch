@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DataFrom
 import com.github.panpf.sketch.request.internal.ImageRequest
 import java.io.ByteArrayInputStream
 import java.io.FileDescriptor

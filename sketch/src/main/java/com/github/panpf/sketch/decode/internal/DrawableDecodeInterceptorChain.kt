@@ -2,6 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.DisplayRequest

@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.getLastDrawable
 import com.github.panpf.sketch.viewability.ViewAbility.AttachObserver
 import com.github.panpf.sketch.viewability.ViewAbility.DrawObserver

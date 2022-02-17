@@ -3,7 +3,7 @@ package com.github.panpf.sketch.sample.vm
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import com.github.panpf.sketch.decode.resize.Scale
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.bean.InfoMenu

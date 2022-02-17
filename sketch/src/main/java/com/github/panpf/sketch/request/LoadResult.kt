@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.util.SketchException

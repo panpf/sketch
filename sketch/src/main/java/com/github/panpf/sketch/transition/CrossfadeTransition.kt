@@ -7,7 +7,7 @@ import android.widget.ImageView.ScaleType.FIT_END
 import android.widget.ImageView.ScaleType.FIT_START
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayResult
 
 /**

@@ -18,7 +18,7 @@ package com.github.panpf.sketch.drawable
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 
 class SketchCountBitmapDrawable constructor(
     private val countBitmap: CountBitmap,

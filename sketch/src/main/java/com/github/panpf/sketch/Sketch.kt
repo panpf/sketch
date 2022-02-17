@@ -18,12 +18,12 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.internal.BitmapDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapResultDiskCacheInterceptor
-import com.github.panpf.sketch.decode.internal.DecodeInterceptor
+import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecodeEngineInterceptor
 import com.github.panpf.sketch.decode.internal.XmlDrawableBitmapDecoder
-import com.github.panpf.sketch.decode.transform.internal.TransformationInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher

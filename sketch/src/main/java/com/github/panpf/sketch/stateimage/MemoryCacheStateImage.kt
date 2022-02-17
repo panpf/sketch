@@ -18,7 +18,7 @@ package com.github.panpf.sketch.stateimage
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.util.SketchException
 

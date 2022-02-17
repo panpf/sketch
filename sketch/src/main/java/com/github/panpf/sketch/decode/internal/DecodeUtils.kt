@@ -33,11 +33,11 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.resize.Precision.EXACTLY
-import com.github.panpf.sketch.decode.resize.Resize
-import com.github.panpf.sketch.decode.resize.ResizeTransformed
-import com.github.panpf.sketch.decode.resize.calculateResizeMapping
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.ResizeTransformed
+import com.github.panpf.sketch.resize.calculateResizeMapping
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.util.Size

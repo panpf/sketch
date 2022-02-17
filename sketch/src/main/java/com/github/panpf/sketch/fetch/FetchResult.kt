@@ -2,7 +2,7 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.internal.HeaderBytes
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 
 fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
     DefaultFetchResult(dataSource, mimeType)

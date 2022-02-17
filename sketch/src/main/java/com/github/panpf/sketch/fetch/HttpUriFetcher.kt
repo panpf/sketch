@@ -10,7 +10,7 @@ import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.DownloadRequest
 import com.github.panpf.sketch.request.RequestDepth
 import com.github.panpf.sketch.request.internal.ImageRequest

@@ -8,8 +8,8 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DataFrom
-import com.github.panpf.sketch.request.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestExtras

@@ -10,7 +10,7 @@ import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.BitmapDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.drawableToBitmap

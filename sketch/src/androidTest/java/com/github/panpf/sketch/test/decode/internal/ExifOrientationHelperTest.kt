@@ -9,11 +9,11 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.resize.Resize
-import com.github.panpf.sketch.decode.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.decode.resize.Scale.END_CROP
-import com.github.panpf.sketch.decode.resize.Scale.FILL
-import com.github.panpf.sketch.decode.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.Scale.FILL
+import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.readExifOrientation

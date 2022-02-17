@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.decode.resize.NewSize
+import com.github.panpf.sketch.resize.NewSize
 
 internal object ViewBoundsSize : NewSize {
 

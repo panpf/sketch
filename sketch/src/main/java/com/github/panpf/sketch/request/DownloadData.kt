@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.internal.ImageData
 import java.io.ByteArrayInputStream
 import java.io.IOException

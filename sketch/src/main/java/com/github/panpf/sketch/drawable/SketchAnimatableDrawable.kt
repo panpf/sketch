@@ -28,7 +28,7 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.Transformed
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.BitmapInfo
 import com.github.panpf.sketch.util.computeByteCount
 

@@ -6,7 +6,7 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.RequiresApi
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.decode.transform.AnimatedTransformation
+import com.github.panpf.sketch.transform.AnimatedTransformation
 
 /** Pass this to [repeatCount] to repeat infinitely. */
 const val ANIMATION_REPEAT_INFINITE = -1

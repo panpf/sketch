@@ -5,7 +5,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert

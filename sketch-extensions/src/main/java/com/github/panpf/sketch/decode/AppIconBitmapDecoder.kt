@@ -9,7 +9,7 @@ import com.github.panpf.sketch.decode.internal.applyResize
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDataSource
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestExtras
 import com.github.panpf.sketch.util.drawableToBitmap

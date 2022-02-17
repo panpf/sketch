@@ -2,7 +2,7 @@ package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.request.DataFrom
+import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.util.toInfoString
 import java.util.LinkedList
 
