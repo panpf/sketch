@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.decode.internal
 
-import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CachePolicy
@@ -8,12 +7,14 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.isReadOrWrite
+import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.byteCountCompat
+import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 
 suspend fun <R> tryLockBitmapMemoryCache(
@@ -89,20 +90,29 @@ class BitmapMemoryCacheHelper internal constructor(
             null
         }
 
-    fun write(result: BitmapDecodeResult): Drawable? =
+    fun write(result: BitmapDecodeResult): SketchCountBitmapDrawable? =
         if (cachePolicy.writeEnabled) {
-            val countBitmap = CountBitmap(
-                initBitmap = result.bitmap,
-                requestKey = request.key,
-                imageUri = request.uriString,
-                imageInfo = result.imageInfo,
-                exifOrientation = result.exifOrientation,
-                transformedList = result.transformedList,
-                logger = logger,
-                bitmapPool = bitmapPool
-            )
-            memoryCache.put(cacheKey, countBitmap)
-            SketchCountBitmapDrawable(countBitmap, result.dataFrom)
+            if (result.bitmap.byteCountCompat < memoryCache.maxSize * 0.7f) {
+                val countBitmap = CountBitmap(
+                    initBitmap = result.bitmap,
+                    requestKey = request.key,
+                    imageUri = request.uriString,
+                    imageInfo = result.imageInfo,
+                    exifOrientation = result.exifOrientation,
+                    transformedList = result.transformedList,
+                    logger = logger,
+                    bitmapPool = bitmapPool
+                )
+                memoryCache.put(cacheKey, countBitmap)
+                SketchCountBitmapDrawable(countBitmap, result.dataFrom)
+            } else {
+                logger.w(MODULE) {
+                    "write. Reject. Too big ${
+                        result.bitmap.byteCountCompat.toLong().formatFileSize()
+                    }, maxSize ${memoryCache.maxSize.formatFileSize()}, ${result.bitmap.logString}"
+                }
+                null
+            }
         } else {
             null
         }

@@ -68,9 +68,9 @@ class LruBitmapPool constructor(
             return false
         }
         val bitmapSize = strategy.getSize(bitmap).toLong()
-        if (bitmapSize > maxSize) {
+        if (bitmapSize > maxSize * 0.7f) {
             logger.w(MODULE) {
-                "put. Reject. Too big: ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
+                "put. Reject. Too big ${bitmapSize.formatFileSize()}, maxSize ${maxSize.formatFileSize()}, ${bitmap.logString}"
             }
             return false
         }
