@@ -22,14 +22,17 @@ import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.sample.base.ToolbarFragment
+import com.github.panpf.sketch.sample.compose.AsyncImage
 import com.github.panpf.sketch.sample.compose.R
 
 class ComposeFragment : ToolbarFragment() {
     override fun createView(inflater: LayoutInflater, parent: ViewGroup?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Image(painter = painterResource(id = R.mipmap.ic_launcher), contentDescription = "")
+//                Image(painter = painterResource(id = R.mipmap.ic_launcher), contentDescription = "")
+                AsyncImage(requireContext().newResourceUri(R.mipmap.ic_launcher), contentDescription = "")
             }
         }
     }
