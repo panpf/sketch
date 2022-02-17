@@ -23,15 +23,17 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
 import com.github.panpf.sketch.decode.AppIconBitmapDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
-import com.github.panpf.sketch.decode.GifDrawableDecoder
-import com.github.panpf.sketch.decode.KoralGifDrawableDecoder
+import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
+import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
+import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
+import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.VideoFrameDecoder
+import com.github.panpf.sketch.decode.WebpAnimatedDrawableDecoder
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDisplayInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
-import com.github.panpf.sketch.sample.util.SettingsDisplayRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 
@@ -40,23 +42,34 @@ class MyApplication : MultiDexApplication(), Sketch.Factory {
     override fun createSketch(): Sketch = Sketch.new(this) {
         logger(Logger(DEBUG))
         httpStack(OkHttpStack.Builder().build())
-        addDisplayInterceptor(SettingsDisplayRequestInterceptor())
         addDisplayInterceptor(SaveCellularTrafficDisplayInterceptor())
         addDisplayInterceptor(PauseLoadWhenScrollingDisplayInterceptor())
         components {
             addFetcher(AppIconUriFetcher.Factory())
+
             addBitmapDecoder(SvgBitmapDecoder.Factory())
             addBitmapDecoder(ApkIconBitmapDecoder.Factory())
             addBitmapDecoder(AppIconBitmapDecoder.Factory())
-            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-                addBitmapDecoder(VideoFrameDecoder.Factory())
-            } else {
-                addBitmapDecoder(FFmpegVideoFrameDecoder.Factory())
+            addBitmapDecoder(
+                if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+                    VideoFrameDecoder.Factory()
+                } else {
+                    FFmpegVideoFrameDecoder.Factory()
+                }
+            )
+
+            addDrawableDecoder(
+                when {
+                    VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
+                    VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
+                    else -> GifDrawableDrawableDecoder.Factory()
+                }
+            )
+            if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
             }
-            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                addDrawableDecoder(GifDrawableDecoder.Factory())
-            } else {
-                addDrawableDecoder(KoralGifDrawableDecoder.Factory())
+            if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
             }
         }
     }

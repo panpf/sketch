@@ -8,7 +8,6 @@ import com.github.panpf.sketch.sample.util.ParamLazy
 
 object MyServices {
     val apiServiceLazy = ParamLazy<Context, ApiServices> { ApiServices(it) }
-    val appSettingsServiceLazy = ParamLazy<Context, AppSettingsService> { AppSettingsService(it) }
 }
 
 val Context.apiService: ApiServices
@@ -17,10 +16,3 @@ val Fragment.apiService: ApiServices
     get() = MyServices.apiServiceLazy.get(this.requireContext().applicationContext)
 val View.apiService: ApiServices
     get() = MyServices.apiServiceLazy.get(this.context.applicationContext)
-
-val Context.appSettingsService: AppSettingsService
-    get() = MyServices.appSettingsServiceLazy.get(this.applicationContext)
-val Fragment.appSettingsService: AppSettingsService
-    get() = MyServices.appSettingsServiceLazy.get(this.requireContext().applicationContext)
-val View.appSettingsService: AppSettingsService
-    get() = MyServices.appSettingsServiceLazy.get(this.context.applicationContext)

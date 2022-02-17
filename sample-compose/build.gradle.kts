@@ -79,14 +79,14 @@ android {
 }
 
 dependencies {
+    implementation(project(":sketch"))
     implementation(project(":sketch-extensions"))
-    implementation(project(":sketch-gif"))
-    implementation(project(":sketch-gif-koralgif"))
+    implementation(project(":sketch-gif-koral"))
+    implementation(project(":sketch-gif-movie"))
     implementation(project(":sketch-okhttp"))
     implementation(project(":sketch-svg"))
     implementation(project(":sketch-video"))
     implementation(project(":sketch-video-ffmpeg"))
-    implementation(project(":sketch-zoom"))
 
     implementation("io.coil-kt:coil:1.4.0")
 

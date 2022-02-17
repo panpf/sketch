@@ -1,5 +1,5 @@
 include(":sample")
-//include(":sample-compose")
+include(":sample-compose")
 include(":sketch")
 include(":sketch-extensions")
 include(":sketch-gif-movie")
