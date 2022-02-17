@@ -135,7 +135,7 @@ class SketchTest {
 
     @Test
     fun test() {
-        TODO("Perfect the test")
+        TODO("Write test cases")
     }
 
     private class DownloadListenerSupervisor :

@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.request.DisplayOptions
 import com.github.panpf.sketch.request.DisplayOptions.Builder
+import com.github.panpf.sketch.request.DisplayOptionsProvider
 import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.target.DisplayOptionsProvider
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 
 open class SketchImageView @JvmOverloads constructor(

@@ -30,7 +30,6 @@ import com.github.panpf.sketch.request.internal.ImageResult
 import com.github.panpf.sketch.request.internal.ViewBoundsSize
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
-import com.github.panpf.sketch.target.DisplayOptionsProvider
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target

@@ -22,6 +22,4 @@ interface ViewTarget<T : View> : Target {
      * The [view]'s current [Drawable].
      */
     var drawable: Drawable?
-
-    // todo support view background
 }
