@@ -22,7 +22,8 @@ import org.json.JSONObject
 
 @Keep
 data class Resize constructor(
-    val newSize: NewSize,
+    val width: Int,
+    val height: Int,
     val precisionDecider: PrecisionDecider,
     /**
      * Which part of the original picture should be kept when the original topic needs to be cropped.
@@ -32,56 +33,32 @@ data class Resize constructor(
 ) {
 
     constructor(
-        newSize: NewSize,
-        precision: Precision = Precision.LESS_PIXELS,
-        scale: Scale = Scale.CENTER_CROP
-    ) : this(newSize, fixedPrecision(precision), scale)
-
-    constructor(
         size: Size,
         precision: Precision = Precision.LESS_PIXELS,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(NewSize(size), fixedPrecision(precision), scale)
+    ) : this(size.width, size.height, fixedPrecision(precision), scale)
 
     constructor(
         width: Int,
         height: Int,
         precision: Precision = Precision.LESS_PIXELS,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(NewSize(width, height), fixedPrecision(precision), scale)
-
-    constructor(
-        width: Int,
-        height: Int,
-        precisionDecider: PrecisionDecider,
-        scale: Scale = Scale.CENTER_CROP
-    ) : this(NewSize(width, height), precisionDecider, scale)
+    ) : this(width, height, fixedPrecision(precision), scale)
 
     constructor(
         width: Int,
         height: Int,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(NewSize(width, height), fixedPrecision(Precision.LESS_PIXELS), scale)
+    ) : this(width, height, fixedPrecision(Precision.LESS_PIXELS), scale)
 
     constructor(
         size: Size,
         scale: Scale = Scale.CENTER_CROP
-    ) : this(NewSize(size), fixedPrecision(Precision.LESS_PIXELS), scale)
-
-    val width: Int
-        get() = newSize.width
-
-    val height: Int
-        get() = newSize.height
+    ) : this(size.width, size.height, fixedPrecision(Precision.LESS_PIXELS), scale)
 
     val cacheKey: String by lazy {
-        val newSizeString = if (newSize is RealNewSize) {
-            "${newSize.width}x${newSize.height}"
-        } else {
-            newSize.toString()
-        }
         val precisionDeciderString = precisionDecider.toString().replace("PrecisionDecider", "")
-        "Resize(${newSizeString},${precisionDeciderString},${scale})"
+        "Resize(${width}x$height,${precisionDeciderString},${scale})"
     }
 
     fun precision(imageWidth: Int, imageHeight: Int): Precision =
@@ -100,17 +77,18 @@ data class Resize constructor(
 
     @Keep
     constructor(jsonObject: JSONObject) : this(
-        RealNewSize(jsonObject.getInt("newSizeWidth"), jsonObject.getInt("newSizeHeight")),
-        Class.forName(jsonObject.getString("precisionDeciderClassName"))
+        width = jsonObject.getInt("width"),
+        height = jsonObject.getInt("height"),
+        precisionDecider = Class.forName(jsonObject.getString("precisionDeciderClassName"))
             .getConstructor(JSONObject::class.java)
             .newInstance(jsonObject.getJSONObject("precisionDeciderContent")) as PrecisionDecider,
-        Scale.valueOf(jsonObject.getString("scale"))
+        scale = Scale.valueOf(jsonObject.getString("scale"))
     )
 
     fun serializationToJSON(): JSONObject =
         JSONObject().apply {
-            put("newSizeWidth", newSize.width)
-            put("newSizeHeight", newSize.height)
+            put("width", width)
+            put("height", height)
             put("precisionDeciderClassName", precisionDecider::class.java.name)
             put("precisionDeciderContent", precisionDecider.serializationToJSON())
             put("scale", scale.name)

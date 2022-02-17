@@ -13,13 +13,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.NewSize
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DisplayRequest.Builder
@@ -27,15 +20,25 @@ import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import com.github.panpf.sketch.request.internal.ImageRequest
 import com.github.panpf.sketch.request.internal.ImageResult
-import com.github.panpf.sketch.request.internal.ViewBoundsSize
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.resize.ViewSizeResolver
+import com.github.panpf.sketch.resize.fixedPrecision
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.target.ListenerProvider
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.getLifecycle
 
@@ -82,6 +85,8 @@ interface DisplayRequest : LoadRequest {
     val errorImage: StateImage?
     val transition: Transition.Factory?
 
+    val resizeSizeResolver: SizeResolver?
+
     fun newDisplayRequestBuilder(
         configBlock: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
@@ -111,7 +116,10 @@ interface DisplayRequest : LoadRequest {
         @RequiresApi(VERSION_CODES.O)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
-        private var resize: Resize? = null
+        private var resizeSize: Size? = null
+        private var resizeSizeResolver: SizeResolver? = null
+        private var resizePrecisionDecider: PrecisionDecider? = null
+        private var resizeScale: Scale? = null
         private var transformations: MutableSet<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
@@ -155,7 +163,10 @@ interface DisplayRequest : LoadRequest {
             }
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resize = request.resize
+            this.resizeSize = request.resizeSize
+            this.resizeSizeResolver = request.resizeSizeResolver
+            this.resizePrecisionDecider = request.resizePrecisionDecider
+            this.resizeScale = request.resizeScale
             this.transformations = request.transformations?.toMutableSet()
             this.disabledBitmapPool = request.disabledBitmapPool
             this.ignoreExifOrientation = request.ignoreExifOrientation
@@ -216,9 +227,19 @@ interface DisplayRequest : LoadRequest {
                     this.preferQualityOverSpeed = it
                 }
             }
-            if (!requestFirst || this.resize == null) {
-                options.resize?.let {
-                    this.resize = it
+            if (!requestFirst || this.resizeSize == null) {
+                options.resizeSize?.let {
+                    this.resizeSize = it
+                }
+            }
+            if (!requestFirst || this.resizePrecisionDecider == null) {
+                options.resizePrecisionDecider?.let {
+                    this.resizePrecisionDecider = it
+                }
+            }
+            if (!requestFirst || this.resizeScale == null) {
+                options.resizeScale?.let {
+                    this.resizeScale = it
                 }
             }
             options.transformations?.takeIf { it.isNotEmpty() }?.let {
@@ -387,48 +408,28 @@ interface DisplayRequest : LoadRequest {
             }
         }
 
-        fun resize(resize: Resize?): Builder = apply {
-            this.resize = resize
+        fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
+            this.resizeSizeResolver = sizeResolver
         }
 
-        fun resize(
-            newSize: NewSize,
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(newSize, precision, scale)
+        fun resizeSize(size: Size?): Builder = apply {
+            this.resizeSize = size
         }
 
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(width, height, precision, scale)
+        fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
+            this.resizeSize = Size(width, height)
         }
 
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precisionDecider: PrecisionDecider,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(width, height, precisionDecider, scale)
+        fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+            this.resizePrecisionDecider = precisionDecider
         }
 
-        fun resizeByViewBounds(
-            precisionDecider: PrecisionDecider,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(ViewBoundsSize, precisionDecider, scale)
+        fun resizePrecision(precision: Precision): Builder = apply {
+            this.resizePrecisionDecider = FixedPrecisionDecider(precision)
         }
 
-        fun resizeByViewBounds(
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(ViewBoundsSize, precision, scale)
+        fun resizeScale(scale: Scale): Builder = apply {
+            this.resizeScale = scale
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -537,7 +538,10 @@ interface DisplayRequest : LoadRequest {
             this.transition = transition
         }
 
-        fun crossfadeTransition(durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION, preferExactIntrinsicSize: Boolean = false): Builder = apply {
+        fun crossfadeTransition(
+            durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
+            preferExactIntrinsicSize: Boolean = false
+        ): Builder = apply {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
@@ -598,11 +602,13 @@ interface DisplayRequest : LoadRequest {
                 } else {
                     progressListener ?: viewProgressListener
                 }
-            val finalResize = resize ?: if (target is ViewTarget<*>) {
-                Resize(newSize = ViewBoundsSize, precision = LESS_PIXELS)
-            } else {
-                null
-            }
+
+            val finalResizeResolver =
+                resizeSizeResolver ?: if (resizeSize == null && target is ViewTarget<*>) {
+                    ViewSizeResolver(target.view)
+                } else {
+                    null
+                }
             return if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 DisplayRequestImpl(
                     uriString = uriString,
@@ -614,7 +620,10 @@ interface DisplayRequest : LoadRequest {
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
-                    resize = finalResize,
+                    resizeSize = resizeSize,
+                    resizeSizeResolver = finalResizeResolver,
+                    resizePrecisionDecider = resizePrecisionDecider,
+                    resizeScale = resizeScale,
                     transformations = transformations?.toList(),
                     disabledBitmapPool = disabledBitmapPool,
                     ignoreExifOrientation = ignoreExifOrientation,
@@ -638,7 +647,10 @@ interface DisplayRequest : LoadRequest {
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
-                    resize = resize,
+                    resizeSize = resizeSize,
+                    resizeSizeResolver = finalResizeResolver,
+                    resizePrecisionDecider = resizePrecisionDecider,
+                    resizeScale = resizeScale,
                     transformations = transformations?.toList(),
                     disabledBitmapPool = disabledBitmapPool,
                     ignoreExifOrientation = ignoreExifOrientation,
@@ -672,7 +684,10 @@ interface DisplayRequest : LoadRequest {
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
-        override val resize: Resize?,
+        override val resizeSize: Size?,
+        override val resizeSizeResolver: SizeResolver?,
+        override val resizePrecisionDecider: PrecisionDecider?,
+        override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val ignoreExifOrientation: Boolean?,
@@ -698,7 +713,10 @@ interface DisplayRequest : LoadRequest {
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
-            resize: Resize?,
+            resizeSize: Size?,
+            resizeSizeResolver: SizeResolver?,
+            resizePrecisionDecider: PrecisionDecider?,
+            resizeScale: Scale?,
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
             ignoreExifOrientation: Boolean?,
@@ -720,7 +738,10 @@ interface DisplayRequest : LoadRequest {
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
-            resize = resize,
+            resizeSize = resizeSize,
+            resizeSizeResolver = resizeSizeResolver,
+            resizePrecisionDecider = resizePrecisionDecider,
+            resizeScale = resizeScale,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
             ignoreExifOrientation = ignoreExifOrientation,
@@ -747,6 +768,16 @@ interface DisplayRequest : LoadRequest {
         override val uri: Uri by lazy { Uri.parse(uriString) }
 
         override val networkContentDiskCacheKey: String = uriString
+
+        override val resize: Resize? by lazy {
+            resizeSize?.takeIf { it.width > 0 && it.height > 0 }?.let {
+                Resize(
+                    width = it.width, height = it.height,
+                    precisionDecider = resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                    scale = resizeScale ?: Scale.CENTER_CROP
+                )
+            }
+        }
 
         override val cacheKey: String by lazy {
             buildString {

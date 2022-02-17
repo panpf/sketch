@@ -10,20 +10,19 @@ import androidx.annotation.Px
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.resize.NewSize
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.request.internal.ViewBoundsSize
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.util.Size
 
 fun DisplayOptions(
     configBlock: (DisplayOptions.Builder.() -> Unit)? = null
@@ -78,7 +77,9 @@ interface DisplayOptions : LoadOptions {
         @RequiresApi(VERSION_CODES.O)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
-        private var resize: Resize? = null
+        private var resizeSize: Size? = null
+        private var resizePrecisionDecider: PrecisionDecider? = null
+        private var resizeScale: Scale? = null
         private var transformations: List<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
@@ -95,19 +96,24 @@ interface DisplayOptions : LoadOptions {
         internal constructor(request: DisplayOptions) {
             this.depth = request.depth
             this.parametersBuilder = request.parameters?.newBuilder()
+
             this.httpHeaders = request.httpHeaders?.newBuilder()
             this.networkContentDiskCachePolicy = request.networkContentDiskCachePolicy
+
             this.bitmapConfig = request.bitmapConfig
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 this.colorSpace = request.colorSpace
             }
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resize = request.resize
+            this.resizeSize = request.resizeSize
+            this.resizePrecisionDecider = request.resizePrecisionDecider
+            this.resizeScale = request.resizeScale
             this.transformations = request.transformations
             this.disabledBitmapPool = request.disabledBitmapPool
             this.ignoreExifOrientation = request.ignoreExifOrientation
             this.bitmapResultDiskCachePolicy = request.bitmapResultDiskCachePolicy
+
             this.bitmapMemoryCachePolicy = request.bitmapMemoryCachePolicy
             this.disabledAnimationDrawable = request.disabledAnimationDrawable
             this.placeholderImage = request.placeholderImage
@@ -240,48 +246,24 @@ interface DisplayOptions : LoadOptions {
             }
         }
 
-        fun resize(resize: Resize?): Builder = apply {
-            this.resize = resize
+        fun resizeSize(size: Size?): Builder = apply {
+            this.resizeSize = size
         }
 
-        fun resize(
-            newSize: NewSize,
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(newSize, precision, scale)
+        fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
+            this.resizeSize = Size(width, height)
         }
 
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(width, height, precision, scale)
+        fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+            this.resizePrecisionDecider = precisionDecider
         }
 
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precisionDecider: PrecisionDecider,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(width, height, precisionDecider, scale)
+        fun resizePrecision(precision: Precision): Builder = apply {
+            this.resizePrecisionDecider = FixedPrecisionDecider(precision)
         }
 
-        fun resizeByViewBounds(
-            precisionDecider: PrecisionDecider,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(ViewBoundsSize, precisionDecider, scale)
-        }
-
-        fun resizeByViewBounds(
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(ViewBoundsSize, precision, scale)
+        fun resizeScale(scale: Scale): Builder = apply {
+            this.resizeScale = scale
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -367,7 +349,10 @@ interface DisplayOptions : LoadOptions {
             this.transition = transition
         }
 
-        fun crossfadeTransition(durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION, preferExactIntrinsicSize: Boolean = false): Builder = apply {
+        fun crossfadeTransition(
+            durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
+            preferExactIntrinsicSize: Boolean = false
+        ): Builder = apply {
             transition(CrossfadeTransition.Factory(durationMillis, preferExactIntrinsicSize))
         }
 
@@ -382,7 +367,9 @@ interface DisplayOptions : LoadOptions {
                     bitmapConfig = bitmapConfig,
                     colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                     preferQualityOverSpeed = preferQualityOverSpeed,
-                    resize = resize,
+                    resizeSize = resizeSize,
+                    resizePrecisionDecider = resizePrecisionDecider,
+                    resizeScale = resizeScale,
                     transformations = transformations,
                     disabledBitmapPool = disabledBitmapPool,
                     ignoreExifOrientation = ignoreExifOrientation,
@@ -401,7 +388,9 @@ interface DisplayOptions : LoadOptions {
                     bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                     bitmapConfig = bitmapConfig,
                     preferQualityOverSpeed = preferQualityOverSpeed,
-                    resize = resize,
+                    resizeSize = resizeSize,
+                    resizePrecisionDecider = resizePrecisionDecider,
+                    resizeScale = resizeScale,
                     transformations = transformations,
                     disabledBitmapPool = disabledBitmapPool,
                     ignoreExifOrientation = ignoreExifOrientation,
@@ -424,7 +413,9 @@ interface DisplayOptions : LoadOptions {
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
-        override val resize: Resize?,
+        override val resizeSize: Size?,
+        override val resizePrecisionDecider: PrecisionDecider?,
+        override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val ignoreExifOrientation: Boolean?,
@@ -445,7 +436,9 @@ interface DisplayOptions : LoadOptions {
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
-            resize: Resize?,
+            resizeSize: Size?,
+            resizePrecisionDecider: PrecisionDecider?,
+            resizeScale: Scale?,
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
             ignoreExifOrientation: Boolean?,
@@ -462,7 +455,9 @@ interface DisplayOptions : LoadOptions {
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
-            resize = resize,
+            resizeSize = resizeSize,
+            resizePrecisionDecider = resizePrecisionDecider,
+            resizeScale = resizeScale,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
             ignoreExifOrientation = ignoreExifOrientation,

@@ -11,12 +11,12 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.LoadOptions.Builder
 import com.github.panpf.sketch.request.internal.ImageRequest
-import com.github.panpf.sketch.resize.NewSize
+import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.util.Size
 
 fun LoadOptions(
     configBlock: (Builder.() -> Unit)? = null
@@ -39,7 +39,9 @@ interface LoadOptions : DownloadOptions {
 
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean?
-    val resize: Resize?
+    val resizeSize: Size?
+    val resizePrecisionDecider: PrecisionDecider?
+    val resizeScale: Scale?
     val transformations: List<Transformation>?
     val disabledBitmapPool: Boolean?
     val ignoreExifOrientation: Boolean?
@@ -51,7 +53,9 @@ interface LoadOptions : DownloadOptions {
                 && bitmapConfig == null
                 && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
                 && preferQualityOverSpeed == null
-                && resize == null
+                && resizeSize == null
+                && resizePrecisionDecider == null
+                && resizeScale == null
                 && transformations == null
                 && disabledBitmapPool == null
                 && ignoreExifOrientation == null
@@ -82,7 +86,9 @@ interface LoadOptions : DownloadOptions {
         @RequiresApi(VERSION_CODES.O)
         private var colorSpace: ColorSpace? = null
         private var preferQualityOverSpeed: Boolean? = null
-        private var resize: Resize? = null
+        private var resizeSize: Size? = null
+        private var resizePrecisionDecider: PrecisionDecider? = null
+        private var resizeScale: Scale? = null
         private var transformations: MutableSet<Transformation>? = null
         private var disabledBitmapPool: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
@@ -103,7 +109,9 @@ interface LoadOptions : DownloadOptions {
             }
             @Suppress("DEPRECATION")
             this.preferQualityOverSpeed = request.preferQualityOverSpeed
-            this.resize = request.resize
+            this.resizeSize = request.resizeSize
+            this.resizePrecisionDecider = request.resizePrecisionDecider
+            this.resizeScale = request.resizeScale
             this.transformations = request.transformations?.toMutableSet()
             this.disabledBitmapPool = request.disabledBitmapPool
             this.ignoreExifOrientation = request.ignoreExifOrientation
@@ -231,34 +239,24 @@ interface LoadOptions : DownloadOptions {
             }
         }
 
-        fun resize(resize: Resize?): Builder = apply {
-            this.resize = resize
+        fun resizeSize(size: Size?): Builder = apply {
+            this.resizeSize = size
         }
 
-        fun resize(
-            newSize: NewSize,
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(newSize, precision, scale)
+        fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
+            this.resizeSize = Size(width, height)
         }
 
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precision: Precision = Precision.LESS_PIXELS,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(width, height, precision, scale)
+        fun resizePrecision(precisionDecider: PrecisionDecider): Builder = apply {
+            this.resizePrecisionDecider = precisionDecider
         }
 
-        fun resize(
-            @Px width: Int,
-            @Px height: Int,
-            precisionDecider: PrecisionDecider,
-            scale: Scale = Scale.CENTER_CROP,
-        ): Builder = apply {
-            this.resize = Resize(width, height, precisionDecider, scale)
+        fun resizePrecision(precision: Precision): Builder = apply {
+            this.resizePrecisionDecider = FixedPrecisionDecider(precision)
+        }
+
+        fun resizeScale(scale: Scale): Builder = apply {
+            this.resizeScale = scale
         }
 
         fun transformations(transformations: List<Transformation>?): Builder = apply {
@@ -292,7 +290,9 @@ interface LoadOptions : DownloadOptions {
                 bitmapConfig = bitmapConfig,
                 colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
                 preferQualityOverSpeed = preferQualityOverSpeed,
-                resize = resize,
+                resizeSize = resizeSize,
+                resizePrecisionDecider = resizePrecisionDecider,
+                resizeScale = resizeScale,
                 transformations = transformations?.toList(),
                 disabledBitmapPool = disabledBitmapPool,
                 ignoreExifOrientation = ignoreExifOrientation,
@@ -306,7 +306,9 @@ interface LoadOptions : DownloadOptions {
                 bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
                 bitmapConfig = bitmapConfig,
                 preferQualityOverSpeed = preferQualityOverSpeed,
-                resize = resize,
+                resizeSize = resizeSize,
+                resizePrecisionDecider = resizePrecisionDecider,
+                resizeScale = resizeScale,
                 transformations = transformations?.toList(),
                 disabledBitmapPool = disabledBitmapPool,
                 ignoreExifOrientation = ignoreExifOrientation,
@@ -323,7 +325,9 @@ interface LoadOptions : DownloadOptions {
         override val bitmapConfig: BitmapConfig?,
         @Suppress("OverridingDeprecatedMember")
         override val preferQualityOverSpeed: Boolean?,
-        override val resize: Resize?,
+        override val resizeSize: Size?,
+        override val resizePrecisionDecider: PrecisionDecider?,
+        override val resizeScale: Scale?,
         override val transformations: List<Transformation>?,
         override val disabledBitmapPool: Boolean?,
         override val ignoreExifOrientation: Boolean?,
@@ -339,7 +343,9 @@ interface LoadOptions : DownloadOptions {
             bitmapConfig: BitmapConfig?,
             colorSpace: ColorSpace?,
             preferQualityOverSpeed: Boolean?,
-            resize: Resize?,
+            resizeSize: Size?,
+            resizePrecisionDecider: PrecisionDecider?,
+            resizeScale: Scale?,
             transformations: List<Transformation>?,
             disabledBitmapPool: Boolean?,
             ignoreExifOrientation: Boolean?,
@@ -351,7 +357,9 @@ interface LoadOptions : DownloadOptions {
             bitmapResultDiskCachePolicy = bitmapResultDiskCachePolicy,
             bitmapConfig = bitmapConfig,
             preferQualityOverSpeed = preferQualityOverSpeed,
-            resize = resize,
+            resizeSize = resizeSize,
+            resizePrecisionDecider = resizePrecisionDecider,
+            resizeScale = resizeScale,
             transformations = transformations,
             disabledBitmapPool = disabledBitmapPool,
             ignoreExifOrientation = ignoreExifOrientation,

@@ -8,6 +8,9 @@ import org.json.JSONObject
  */
 @Keep
 interface PrecisionDecider {
+
+    val contentKey: String
+
     fun precision(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
     ): Precision

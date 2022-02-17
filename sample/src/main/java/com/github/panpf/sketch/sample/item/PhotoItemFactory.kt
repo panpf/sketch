@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.assemblyadapter.BindingItemFactory
+import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.KEEP_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.longImageClipPrecision
-import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.bean.Photo
@@ -104,28 +104,22 @@ class PhotoItemFactory : BindingItemFactory<Photo, ItemImageBinding>(Photo::clas
             }
 
             displayImage(data.firstThumbnailUrl) {
-                val scale = Scale.valueOf(appSettingsService.resizeScale.value)
+                resizeScale(Scale.valueOf(appSettingsService.resizeScale.value))
                 when (appSettingsService.resizePrecision.value) {
                     "LESS_PIXELS" -> {
-                        resizeByViewBounds(precision = LESS_PIXELS, scale = scale)
+                        resizePrecision(precision = LESS_PIXELS)
                     }
                     "KEEP_ASPECT_RATIO" -> {
-                        resizeByViewBounds(precision = KEEP_ASPECT_RATIO, scale = scale)
+                        resizePrecision(precision = KEEP_ASPECT_RATIO)
                     }
                     "EXACTLY" -> {
-                        resizeByViewBounds(precision = EXACTLY, scale = scale)
+                        resizePrecision(precision = EXACTLY)
                     }
                     "LONG_IMAGE_CROP" -> {
-                        resizeByViewBounds(
-                            precisionDecider = longImageClipPrecision(precision = KEEP_ASPECT_RATIO),
-                            scale = scale
-                        )
+                        resizePrecision(longImageClipPrecision(precision = KEEP_ASPECT_RATIO))
                     }
                     "ORIGINAL" -> {
-                        resize(null)
-                    }
-                    else -> {
-                        resize(null)
+                        resizeSize(-1, -1)
                     }
                 }
             }

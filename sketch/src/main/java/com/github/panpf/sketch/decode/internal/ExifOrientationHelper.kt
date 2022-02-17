@@ -24,8 +24,7 @@ import android.graphics.RectF
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.resize.NewSize
-import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize. Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import kotlin.math.abs
@@ -172,7 +171,8 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
             }
         }
         return Resize(
-            newSize = NewSize(newSize.width, newSize.height),
+            width = newSize.width,
+            height = newSize.height,
             precisionDecider = resize.precisionDecider,
             scale = newScale,
         )
