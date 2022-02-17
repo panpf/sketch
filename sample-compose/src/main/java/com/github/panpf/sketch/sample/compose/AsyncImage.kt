@@ -41,10 +41,13 @@ fun AsyncImage(
     val asyncImagePainter = remember {
         AsyncImagePainter(sketch, imageUri, configBlock, isPreview, filterQuality)
     }
-    val painter = asyncImagePainter.state.painter ?: return
+    // Invoke this manually so `painter.state` is up to date immediately.
+    // It must be updated immediately or it will crash in the LazyColumn or LazyVerticalGrid
+    asyncImagePainter.onRemembered()
 
     BoxWithConstraints(modifier, alignment) {
         // Resolve the size for the image request.
+        // todo Limit the size of the
 //        (request.sizeResolver as? ConstraintsSizeResolver)?.setConstraints(constraints)
 
 //        // Draw the content.
@@ -58,29 +61,33 @@ fun AsyncImage(
 //            colorFilter = colorFilter
 //        )
 
-        // Compute the intrinsic size of the content.
-        val contentSize = computeContentSize(
-            constraints = constraints,
-            srcSize = painter.intrinsicSize,
-            contentScale = contentScale
-        )
+        val state = asyncImagePainter.state
+        val painter = state.painter
+        if (painter != null) {
+            // Compute the intrinsic size of the content.
+            val contentSize = computeContentSize(
+                constraints = constraints,
+                srcSize = painter.intrinsicSize,
+                contentScale = contentScale
+            )
 
-        Image(
-            painter = painter,
-            contentDescription = contentDescription,
-            modifier = if (contentSize.isSpecified) {
-                // Apply `modifier` second to allow overriding `contentSize`.
-                Modifier
-                    .size(with(LocalDensity.current) { contentSize.toDpSize() })
-                    .then(modifier)
-            } else {
-                modifier
-            },
-            alignment = alignment,
-            contentScale = contentScale,
-            alpha = alpha,
-            colorFilter = colorFilter
-        )
+            Image(
+                painter = painter,
+                contentDescription = contentDescription,
+                modifier = if (contentSize.isSpecified) {
+                    // Apply `modifier` second to allow overriding `contentSize`.
+                    Modifier
+                        .size(with(LocalDensity.current) { contentSize.toDpSize() })
+                        .then(modifier)
+                } else {
+                    modifier
+                },
+                alignment = alignment,
+                contentScale = contentScale,
+                alpha = alpha,
+                colorFilter = colorFilter
+            )
+        }
     }
 }
 

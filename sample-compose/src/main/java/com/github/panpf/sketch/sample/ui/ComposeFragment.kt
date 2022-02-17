@@ -19,21 +19,26 @@ package com.github.panpf.sketch.sample.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
-import com.github.panpf.sketch.fetch.newResourceUri
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.sample.base.ToolbarFragment
 import com.github.panpf.sketch.sample.compose.AsyncImage
 import com.github.panpf.sketch.sample.compose.R
 
 class ComposeFragment : ToolbarFragment() {
-    override fun createView(inflater: LayoutInflater, parent: ViewGroup?): View {
-        return ComposeView(requireContext()).apply {
+    override fun createView(inflater: LayoutInflater, parent: ViewGroup?): View =
+        ComposeView(requireContext()).apply {
             setContent {
-//                Image(painter = painterResource(id = R.mipmap.ic_launcher), contentDescription = "")
-                AsyncImage(requireContext().newResourceUri(R.mipmap.ic_launcher), contentDescription = "")
+                AsyncImage(
+                    "https://i0.hdslb.com/bfs/album/c8cf4ec6849dff7115a368e980b6fd52878cf213.jpg@1036w.webp",
+                    contentDescription = ""
+                ) {
+                    placeholderImage(R.drawable.im_placeholder)
+                    errorImage(R.drawable.im_error)
+                    bitmapMemoryCachePolicy(DISABLED)
+                    bitmapResultDiskCachePolicy(DISABLED)
+                    networkContentDiskCachePolicy(DISABLED)
+                }
             }
         }
-    }
 }

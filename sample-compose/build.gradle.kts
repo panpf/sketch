@@ -88,8 +88,6 @@ dependencies {
     implementation(project(":sketch-video"))
     implementation(project(":sketch-video-ffmpeg"))
 
-    implementation("io.coil-kt:coil:1.4.0")
-
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${property("KOTLIN")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${property("KOTLINX_COROUTINES_ANDROID")}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("KOTLINX_SERIALIZATION_JSON")}")
@@ -138,6 +136,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:${property("RETROFIT")}")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${property("RETROFIT2_KOTLINX_SERIALIZATION_CONVERTER")}")
     implementation("com.google.accompanist:accompanist-drawablepainter:${property("ACCOMPANIST_DRAWABLE_PAINTER")}")
+    implementation("androidx.paging:paging-compose:${property("ANDROIDX_PAGING_COMPOSE")}")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${property("LEAK_CANARY")}")
 }

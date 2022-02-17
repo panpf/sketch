@@ -2,13 +2,24 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/composeFragment">
+    app:startDestination="@id/pexelsPhotosFragment">
 
     <fragment
         android:id="@+id/composeFragment"
         android:name="com.github.panpf.sketch.sample.ui.ComposeFragment"
         android:label="ComposeFragment" />
+    <fragment
+        android:id="@+id/pexelsPhotosFragment"
+        android:name="com.github.panpf.sketch.sample.ui.PexelsPhotosFragment"
+        android:label="PexelsPhotosFragment" />
 
+    <action
+        android:id="@+id/action_global_pexelsPhotosFragment"
+        app:destination="@id/pexelsPhotosFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
     <action
         android:id="@+id/action_global_composeFragment"
         app:destination="@id/composeFragment"

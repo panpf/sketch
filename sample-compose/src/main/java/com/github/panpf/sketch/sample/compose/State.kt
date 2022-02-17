@@ -1,8 +1,6 @@
 package com.github.panpf.sketch.sample.compose
 
 import androidx.compose.ui.graphics.painter.Painter
-import coil.request.ErrorResult
-import com.github.panpf.sketch.request.DisplayResult
 
 /**
  * The current state of the [AsyncImagePainter].
