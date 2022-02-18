@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.RequiresApi
@@ -31,6 +32,8 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScreenSizeResolver
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewSizeResolver
@@ -145,6 +148,10 @@ interface DisplayRequest : LoadRequest {
         private var errorImage: StateImage? = null
         private var transition: Transition.Factory? = null
 
+        private var resolvedLifecycle: Lifecycle? = null
+        private var resolvedResizeSizeResolver: SizeResolver? = null
+        private var resolvedResizeScale: Scale? = null
+
         constructor(context: Context, uriString: String?, target: Target) {
             this.context = context
             this.uriString = uriString.orEmpty()
@@ -192,6 +199,17 @@ interface DisplayRequest : LoadRequest {
             this.placeholderImage = request.placeholderImage
             this.errorImage = request.errorImage
             this.transition = request.transition
+
+            // If the context changes, recompute the resolved values.
+            if (request.context === context) {
+                resolvedLifecycle = request.lifecycle
+                resolvedResizeSizeResolver = request.resizeSizeResolver
+                resolvedResizeScale = request.resizeScale
+            } else {
+                resolvedLifecycle = null
+                resolvedResizeSizeResolver = null
+                resolvedResizeScale = null
+            }
         }
 
         fun listener(listener: Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?): Builder =
@@ -356,6 +374,7 @@ interface DisplayRequest : LoadRequest {
 
         fun resizeSizeResolver(sizeResolver: SizeResolver?): Builder = apply {
             this.resizeSizeResolver = sizeResolver
+            resetResolvedValues()
         }
 
         fun resizeSize(size: Size?): Builder = apply {
@@ -601,7 +620,7 @@ interface DisplayRequest : LoadRequest {
                 listener = combinationListener(),
                 progressListener = combinationProgressListener(),
                 target = target,
-                lifecycle = lifecycle ?: resolveLifecycle(),
+                lifecycle = lifecycle ?: resolvedLifecycle ?: resolveLifecycle(),
                 viewOptions = viewOptions,
                 globalOptions = globalOptions,
                 definedOptions = DisplayOptions {
@@ -657,17 +676,19 @@ interface DisplayRequest : LoadRequest {
                     ?: viewOptions?.resizeSize
                     ?: globalOptions?.resizeSize,
                 resizeSizeResolver = resizeSizeResolver
+                    ?: resolvedResizeSizeResolver
                     ?: viewOptions?.resizeSizeResolver
                     ?: globalOptions?.resizeSizeResolver
-                    ?: if (target is ViewTarget<*>)
-                        ViewSizeResolver(target.view) else ScreenSizeResolver(context),
+                    ?: resolveResizeSizeResolver(),
                 resizePrecisionDecider = resizePrecisionDecider
                     ?: viewOptions?.resizePrecisionDecider
-                    ?: globalOptions?.resizePrecisionDecider ?: fixedPrecision(LESS_PIXELS),
+                    ?: globalOptions?.resizePrecisionDecider
+                    ?: fixedPrecision(LESS_PIXELS),
                 resizeScale = resizeScale
+                    ?: resolvedResizeScale
                     ?: viewOptions?.resizeScale
                     ?: globalOptions?.resizeScale
-                    ?: CENTER_CROP,
+                    ?: resolveResizeScale(),
                 transformations = transformations?.toList()
                     .merge(viewOptions?.transformations)
                     .merge(globalOptions?.transformations),
@@ -698,11 +719,52 @@ interface DisplayRequest : LoadRequest {
                     ?: globalOptions?.transition,
             )
 
+        /** Ensure these values will be recomputed when [build] is called. */
+        private fun resetResolvedValues() {
+            resolvedLifecycle = null
+            resolvedResizeSizeResolver = null
+            resolvedResizeScale = null
+        }
+
+        private fun resolveResizeSizeResolver(): SizeResolver =
+            if (target is ViewTarget<*>) {
+                ViewSizeResolver(target.view)
+            } else {
+                ScreenSizeResolver(context)
+            }
+
         private fun resolveLifecycle(): Lifecycle? {
             val target = target
             val context = if (target is ViewTarget<*>) target.view.context else null
             return context.getLifecycle()
         }
+
+        private fun resolveResizeScale(): Scale {
+            val sizeResolver = resizeSizeResolver
+            if (sizeResolver is ViewSizeResolver<*>) {
+                val view = sizeResolver.view
+                if (view is ImageView) return view.scale
+            }
+
+            val target = target
+            if (target is ViewTarget<*>) {
+                val view = target.view
+                if (view is ImageView) return view.scale
+            }
+
+            return CENTER_CROP
+        }
+
+        private val ImageView.scale: Scale
+            get() = when (scaleType) {
+                ScaleType.FIT_START -> START_CROP
+                ScaleType.FIT_CENTER -> CENTER_CROP
+                ScaleType.FIT_END -> END_CROP
+                ScaleType.CENTER_INSIDE -> CENTER_CROP
+                ScaleType.CENTER -> CENTER_CROP
+                ScaleType.CENTER_CROP -> CENTER_CROP
+                else -> Scale.FILL
+            }
 
         private fun combinationListener(): Listener<ImageRequest, ImageResult, ImageResult>? {
             val target = target
